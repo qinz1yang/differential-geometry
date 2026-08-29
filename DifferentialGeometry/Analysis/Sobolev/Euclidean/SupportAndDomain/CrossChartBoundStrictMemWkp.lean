@@ -43,7 +43,7 @@ private lemma eLpNorm_restrict_eq_of_tsupport_subset_aux
   rw [indicator_eq_of_tsupport_subset hΩΩ' hf_supp]
 
 private lemma eLpNorm_restrict_eq_of_ae_zero_off
-    {X : Type*} [MeasurableSpace X] [TopologicalSpace X] {μ : Measure X}
+    {X : Type*} [MeasurableSpace X] {μ : Measure X}
     {α : Type*} [NormedAddCommGroup α] {p : ℝ≥0∞}
     {f : X → α}
     {Ω Ω' : Set X} (hΩ_meas : MeasurableSet Ω) (hΩ'_meas : MeasurableSet Ω')
@@ -252,7 +252,7 @@ lemma wkpNorm_eq_of_tsupport_subset
   rw [show (1 : ℕ) + 1 = 1 + 1 from rfl, Finset.sum_range_succ, Finset.sum_range_one]
   have h0_unique : ∀ α : Fin 0 → Fin d, α = (fun i : Fin 0 => i.elim0) :=
     fun α => by funext i; exact i.elim0
-  haveI : Unique (Fin 0 → Fin d) :=
+  have : Unique (Fin 0 → Fin d) :=
     { default := fun i : Fin 0 => i.elim0
       uniq := fun α => (h0_unique α).symm ▸ rfl }
   rw [Fintype.sum_unique
@@ -429,13 +429,13 @@ lemma wkpNorm_le_of_tsupport_subset_mem_small
       rw [h_eLp_Ω_eq_Ω', h_eLp_partials_eq]
     · rw [chosenWeakPartial'_of_not_mem hu_Ω]
       rw [eLpNorm_zero]
-      exact zero_le _
+      exact zero_le
   unfold iteratedWeakSobolevNorm
   rw [show (1 : ℕ) + 1 = 1 + 1 from rfl, Finset.sum_range_succ, Finset.sum_range_one]
   rw [show (1 : ℕ) + 1 = 1 + 1 from rfl, Finset.sum_range_succ, Finset.sum_range_one]
   have h0_unique : ∀ α : Fin 0 → Fin d, α = (fun i : Fin 0 => i.elim0) :=
     fun α => by funext i; exact i.elim0
-  haveI : Unique (Fin 0 → Fin d) :=
+  have : Unique (Fin 0 → Fin d) :=
     { default := fun i : Fin 0 => i.elim0
       uniq := fun α => (h0_unique α).symm ▸ rfl }
   rw [Fintype.sum_unique
@@ -461,7 +461,7 @@ lemma wkpNorm_le_of_tsupport_subset_mem_small
   exact h_partial_le (α 0)
 
 private lemma chosenWeakPartial_ae_eq_on_subset
-    {d : ℕ} [NeZero d]
+    {d : ℕ}
     {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω Ω' : Set (EuclideanSpace ℝ (Fin d))}
     (_hΩ : IsOpen Ω) (hΩ' : IsOpen Ω') (hΩΩ' : Ω' ⊆ Ω)
@@ -498,7 +498,7 @@ private lemma chosenWeakPartial_ae_eq_on_subset
     hP_Ω_loc_Ω' hP_Ω'_loc_Ω'
 
 private lemma iterWeakPartial_ae_eq_of_ae_zero_open_subset
-    {d : ℕ} [NeZero d]
+    {d : ℕ}
     {h : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω Ω' U : Set (EuclideanSpace ℝ (Fin d))}
     (hΩ : IsOpen Ω) (hΩ' : IsOpen Ω') (hU_open : IsOpen U)
@@ -551,7 +551,7 @@ private lemma iterWeakPartial_ae_eq_of_ae_zero_open_subset
       exact h_ih.trans h_congr
 
 private lemma iterWeakPartial_ae_eq_tsupport_subset
-    {d : ℕ} [NeZero d]
+    {d : ℕ}
     {j : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω Ω' : Set (EuclideanSpace ℝ (Fin d))}
     (hΩ : IsOpen Ω) (hΩ' : IsOpen Ω') (hΩΩ' : Ω' ⊆ Ω)
@@ -578,7 +578,7 @@ private lemma iterWeakPartial_ae_eq_tsupport_subset
     hΩ hΩ' hU_open hΩΩ' hU_sub hU_contains hu_mem hu_zero α
 
 lemma wkpNorm_eq_of_tsupport_subset_general
-    {d : ℕ} [NeZero d]
+    {d : ℕ}
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω Ω' : Set (EuclideanSpace ℝ (Fin d))}
     (hΩ : IsOpen Ω) (hΩ' : IsOpen Ω') (hΩΩ' : Ω' ⊆ Ω)
@@ -749,7 +749,7 @@ lemma wkpNorm_eq_of_tsupport_subset_general
   exact ⟨h_mem_Ω', h_norm_eq⟩
 
 private lemma eLpNorm_iterWeakPartial_Ω_le_Ω'_with_U
-    {d : ℕ} [NeZero d]
+    {d : ℕ}
     {j : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω Ω' U : Set (EuclideanSpace ℝ (Fin d))}
     (hΩ : IsOpen Ω) (hΩ' : IsOpen Ω') (hU_open : IsOpen U)
@@ -823,7 +823,7 @@ private lemma eLpNorm_iterWeakPartial_Ω_le_Ω'_with_U
         simp
 
 lemma wkpNorm_le_of_tsupport_subset_mem_small_general
-    {d : ℕ} [NeZero d]
+    {d : ℕ}
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {Ω Ω' : Set (EuclideanSpace ℝ (Fin d))}
     (hΩ : IsOpen Ω) (hΩ' : IsOpen Ω') (hΩΩ' : Ω' ⊆ Ω)
@@ -990,7 +990,7 @@ theorem cross_chart_bound_strict_strong_memWkp
     rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_zero_fun_zero
       (d := Module.finrank ℝ E) hp_one
       (chartTargetEuclid_isOpen (I := I) (M := M) γ)]
-    exact zero_le _
+    exact zero_le
   obtain ⟨Ω_γα, Ω_αγ, hΩγα_open, hΩαγ_open, hΩγα_subset_target, hΩαγ_subset_target,
     hΩγα_subset_overlap, _hΩαγ_subset_overlap, hKM_image_in_Ωγα, Φ,
     hΦ_eq_on_Ωγα, _hΦ_inv_eq_on_Ωαγ⟩ :=
@@ -1184,18 +1184,18 @@ theorem cross_chart_bound_strict_strong_memWkp
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_smul_smooth_bounded_le_one
       1 (le_refl _) (d := Module.finrank ℝ E) hp_one hp_top hΩα_target_open hη_α_loc_smooth
       hCmax_η_α_nonneg hη_α_loc_iter_bound
-  set K_chain : ℝ := Φ.wkpComp_const' 1 p with hK_chain_def
+  set K_chain : ℝ := Φ.wkpCompConst' 1 p with hK_chain_def
   have hK_chain_pos : 0 < K_chain := by
     have hp_zero : p ≠ 0 := by
       intro hpz; rw [hpz] at hp_one
       exact absurd hp_one (by norm_num)
     have hq_pos : 0 < p.toReal := ENNReal.toReal_pos hp_zero hp_top
-    have hjLB_pos : 0 < Φ.jacobian_lower_bound := Φ.jacobian_lower_bound_pos
-    have hjLB_inv_pos : 0 < 1 / Φ.jacobian_lower_bound := by positivity
-    have hKchg_pos : 0 < (1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal) :=
+    have hjLB_pos : 0 < Φ.jacobianLowerBound := Φ.jacobian_lower_bound_pos
+    have hjLB_inv_pos : 0 < 1 / Φ.jacobianLowerBound := by positivity
+    have hKchg_pos : 0 < (1 / Φ.jacobianLowerBound) ^ (1 / p.toReal) :=
       Real.rpow_pos_of_pos hjLB_inv_pos _
     rw [hK_chain_def]
-    unfold DifferentialGeometry.Analysis.Sobolev.Euclidean.SmoothDiffeoBoundedAtOrder.wkpComp_const'
+    unfold DifferentialGeometry.Analysis.Sobolev.Euclidean.SmoothDiffeoBoundedAtOrder.wkpCompConst'
     have h_zero_in : (0 : ℕ) ∈ Finset.range (1 + 1) :=
       Finset.mem_range.mpr (Nat.zero_lt_succ _)
     have h_at_zero : (Fintype.card (Fin 0 → Fin (Module.finrank ℝ E)) : ℝ) = 1 := by
@@ -1207,8 +1207,6 @@ theorem cross_chart_bound_strict_strong_memWkp
       have h_le := Finset.single_le_sum (s := Finset.range (1 + 1))
         (f := fun j => (Fintype.card (Fin j → Fin (Module.finrank ℝ E)) : ℝ))
         (fun j _ => by positivity) h_zero_in
-      rw [show ((fun j => (Fintype.card (Fin j → Fin (Module.finrank ℝ E)) : ℝ)) 0 : ℝ) =
-          (Fintype.card (Fin 0 → Fin (Module.finrank ℝ E)) : ℝ) from rfl] at h_le
       rw [h_at_zero] at h_le
       linarith
     have h_kfact_D_pos : 0 < ((1 : ℕ).factorial : ℝ) * Φ.derivBoundMaxOne ^ 1 := by
@@ -1531,8 +1529,8 @@ theorem cross_chart_bound_strict_strong_memWkp
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) 1 p v Ωα_target) := by
     refine h_chain_step_target.trans ?_
-    exact mul_le_mul_of_nonneg_left h_leib_α_step (zero_le _)
-  refine (mul_le_mul_of_nonneg_left h_chain_combined (zero_le _)).trans ?_
+    exact mul_le_mul_of_nonneg_left h_leib_α_step (zero_le)
+  refine (mul_le_mul_of_nonneg_left h_chain_combined (zero_le)).trans ?_
   have h_K_eq : ENNReal.ofReal K_leib *
       (ENNReal.ofReal K_chain * (ENNReal.ofReal K_leib_α *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm

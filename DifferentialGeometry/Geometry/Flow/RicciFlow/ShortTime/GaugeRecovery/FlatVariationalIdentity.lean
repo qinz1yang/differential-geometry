@@ -147,7 +147,7 @@ theorem flat_christoffel_correction_eqn
         = negCovariantSlotValue (I := I) (g_DT t)
             (deTurckVF (I := I) (g_DT t) g_bg) Φ_fam t x v
           + christoffelCorrection (I := I) (g_DT t) (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (deTurckVF (I := I) (g_DT t) g_bg) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x v) := by
   intro t ht x v
@@ -159,7 +159,19 @@ theorem flat_christoffel_correction_eqn
       (hα t ht x)
       ((deTurckVF (I := I) (g_DT t) g_bg).mdifferentiableAt)
       (hRdiff t ht x) (hCdiff t ht x)
-  rw [hjet t ht x v, negCovariantSlotValue, hbridge]
+  have hcenterSymm (w : E) :
+      (Integral.Measure.centeredChartTangentEquiv (I := I) (Φ_fam t x)).symm w = w := by
+    apply (Integral.Measure.centeredChartTangentEquiv (I := I) (Φ_fam t x)).injective
+    rw [ContinuousLinearEquiv.apply_symm_apply]
+    have hmodel : tangentSpaceModelContinuousLinearEquiv (I := I) (Φ_fam t x)
+        (show TangentSpace I (Φ_fam t x) from w) = w := rfl
+    exact hmodel.symm.trans
+      (Integral.Measure.centeredChartTangentEquiv_apply (I := I) (Φ_fam t x)
+        (show TangentSpace I (Φ_fam t x) from w)).symm
+  have hbridge' := hbridge
+  simp only [hcenterSymm, Integral.Measure.centeredChartTangentEquiv_apply,
+    tangentSpaceModelContinuousLinearEquiv_apply] at hbridge'
+  rw [hjet t ht x v, negCovariantSlotValue, hbridge']
   abel
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]

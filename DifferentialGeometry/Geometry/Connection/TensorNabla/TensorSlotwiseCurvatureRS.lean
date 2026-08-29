@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
@@ -31,7 +30,7 @@ theorem riemannSec_tensorCov_apply_eval
     (X W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (τ : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
     (Y : Cₛ^∞⟮I; Tensor0SModel r ℝ E, (fun x : M => Tensor0SSpace r I x)⟯)
-    (x : M) (u : Fin s → TangentSpace I x) :
+    (x : M) (u : Fin s → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
             riemannSec (tensorCov (I := I) g r s)
@@ -64,7 +63,7 @@ theorem riemannSec_tensorCov_apply_eval
           (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from τ x)
             (riemannSec (tensor0SCovariantDerivative I M r (LeviCivita (I := I) g))
               (fun b => X b) (fun b => W b) (fun b => Y b) x) := hkey
-  rw [heq, Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
+  rw [heq, Tensor0SSpace.toModel_sub, sub_apply]
   rfl
 
 end Connection

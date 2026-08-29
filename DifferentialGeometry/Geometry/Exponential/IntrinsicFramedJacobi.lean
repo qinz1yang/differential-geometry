@@ -27,8 +27,8 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [T2Space (TangentBundle I M)]
   [SigmaCompactSpace M] [ConnectedSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E] [T2Space (TangentBundle I M)] in
 theorem intrFrame_deriv
     [PseudoEMetricSpace M]
@@ -47,8 +47,8 @@ theorem intrFrame_deriv
   simpa only [intrinsicJacobi] using
     (intrFrame_mfderiv (I := I) g hEnorm p z v)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E] [T2Space (TangentBundle I M)] in
 theorem intr_metric_jacobi
     [PseudoEMetricSpace M]
@@ -69,8 +69,8 @@ theorem intr_metric_jacobi
           (normalFrame (I := I) g p w) 1) := by
   rw [intrFrameMetric_apply, intrFrame_deriv, intrFrame_deriv]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E] [T2Space (TangentBundle I M)] in
 theorem intrFrame_deriv_inj
     [PseudoEMetricSpace M]
@@ -111,10 +111,10 @@ theorem intrFrame_deriv_inj
   apply sub_eq_zero.mp
   exact hdv
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E] [T2Space (TangentBundle I M)] in
-theorem intrFrame_not_conj
+private theorem frame_not_conj_aux
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -122,9 +122,10 @@ theorem intrFrame_not_conj
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
-    (p : M) (z : E) {c : Real} (hc : 0 < c)
-    (hlower : ∀ v : E,
-      c * ‖v‖ ^ 2 ≤ intrFrameMetric (I := I) g hEnorm p z v v) :
+    (p : M) (z : E)
+    (hframe : Function.Injective
+      (mfderiv (modelWithCornersSelf Real E) I
+        (intrinsicFramedExp (I := I) g hEnorm p) z)) :
     ¬ IsConjVec (I := I) g hEnorm p
       (normalFrame (I := I) g p z : E) := by
   let F : E → M := fun w =>
@@ -150,16 +151,13 @@ theorem intrFrame_not_conj
       mfderiv (modelWithCornersSelf Real E) I
           (intrinsicFramedExp (I := I) g hEnorm p) z =
         (mfderiv (modelWithCornersSelf Real E) I F (L z)).comp L := by
-    simpa only [intrinsicFramedExp, F, L, Function.comp_apply] using hchain
-  have hframe :
-      Function.Injective
-        (mfderiv (modelWithCornersSelf Real E) I
-          (intrinsicFramedExp (I := I) g hEnorm p) z) :=
-    intrFrame_deriv_inj (I := I) g hEnorm p z hc hlower
+    rw [show intrinsicFramedExp (I := I) g hEnorm p = F ∘ L by rfl]
+    exact hchain
   have hLsurj : Function.Surjective L := by
     intro w
     refine ⟨(normalFrame (I := I) g p).symm w, ?_⟩
-    simp only [L, intrFrameCLM_apply, ContinuousLinearEquiv.apply_symm_apply]
+    change normalFrame (I := I) g p ((normalFrame (I := I) g p).symm w) = w
+    exact (normalFrame (I := I) g p).apply_symm_apply w
   have hraw :
       Function.Injective
         (mfderiv (modelWithCornersSelf Real E) I F (L z)) := by
@@ -174,7 +172,49 @@ theorem intrFrame_not_conj
     exact hab
   unfold IsConjVec
   push Not
-  simpa only [F, L, intrFrameCLM_apply] using hraw
+  intro a b hab
+  apply hraw
+  have hLz : L z = normalFrame (I := I) g p z := intrFrameCLM_apply (I := I) g p z
+  rw [hLz]
+  exact hab
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [ConnectedSpace M] [CompleteSpace E] [T2Space (TangentBundle I M)] in
+theorem intrFrame_not_conj
+    [PseudoEMetricSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (p : M) (z : E) {c : Real} (hc : 0 < c)
+    (hlower : ∀ v : E,
+      c * ‖v‖ ^ 2 ≤ intrFrameMetric (I := I) g hEnorm p z v v) :
+    ¬ IsConjVec (I := I) g hEnorm p
+      (normalFrame (I := I) g p z : E) := by
+  apply frame_not_conj_aux (I := I) g hEnorm p z
+  exact intrFrame_deriv_inj (I := I) g hEnorm p z hc hlower
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [ConnectedSpace M] [CompleteSpace E] [T2Space (TangentBundle I M)] in
+theorem framedExp_not_conj
+    [PseudoEMetricSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ x : M, ∀ v : TangentSpace I x,
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
+    (p : M) (z : E)
+    (hloc : IsLocalDiffeomorphAt (modelWithCornersSelf Real E) I ∞
+      (intrinsicFramedExp (I := I) g hEnorm p) z) :
+    ¬ IsConjVec (I := I) g hEnorm p
+      (normalFrame (I := I) g p z : E) := by
+  apply frame_not_conj_aux (I := I) g hEnorm p z
+  exact (hloc.mfderivToContinuousLinearEquiv (by simp)).injective
 
 end NormalCoordinates
 end Riemannian

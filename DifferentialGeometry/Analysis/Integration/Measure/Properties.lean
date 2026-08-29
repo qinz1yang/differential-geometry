@@ -245,7 +245,7 @@ theorem riemannianMeasure_compact_lt_top
     intro α hα
     have hdisj : Disjoint K (tsupport (ρ α)) := by
       rw [Set.disjoint_iff_inter_eq_empty, Set.inter_comm]
-      simp only [hS_def, Set.mem_setOf_eq, Set.not_nonempty_iff_eq_empty] at hα
+      simp only [hS_def, Set.mem_ofPred_eq, Set.not_nonempty_iff_eq_empty] at hα
       exact hα
     exact pou_term_zero_of_tsupport_disjoint (I := I) (M := M) g ρ hKmeas α hdisj
   have htsum_eq : ∑' α : M, ((chartLocalMeasure (I := I) g α).withDensity
@@ -338,7 +338,7 @@ theorem riemannianMeasure_isFiniteMeasure_of_compactSpace
     (ρ : SmoothPartitionOfUnity M I M univ)
     (hρ : ρ.IsSubordinate (fun α : M => (chartAt H α).source)) :
     IsFiniteMeasure (riemannianMeasure (I := I) g ρ) := by
-  haveI : IsFiniteMeasureOnCompacts (riemannianMeasure (I := I) g ρ) :=
+  have : IsFiniteMeasureOnCompacts (riemannianMeasure (I := I) g ρ) :=
     riemannianMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g ρ hρ
   infer_instance
 
@@ -462,7 +462,7 @@ private lemma chartLocalMeasure_open_pos_of_mem
       ∫⁻ y in W, ENNReal.ofReal (chartDensity g α ((extChartAt I α).symm y)) *
           V.indicator (fun _ => (1 : ℝ≥0∞)) ((extChartAt I α).symm y)
             ∂(modelHaar (E := E)) = 0 :=
-    le_antisymm (not_lt.mp h0') (zero_le _)
+    le_antisymm (not_lt.mp h0') zero_le
   have haem_integrand :
       AEMeasurable
         (fun y : E => ENNReal.ofReal
@@ -614,8 +614,8 @@ theorem riemannianMeasure_regular
     (ρ : SmoothPartitionOfUnity M I M univ)
     (hρ : ρ.IsSubordinate (fun α : M => (chartAt H α).source)) :
     MeasureTheory.Measure.Regular (riemannianMeasure (I := I) g ρ) := by
-  haveI : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
-  haveI : IsLocallyFiniteMeasure (riemannianMeasure (I := I) g ρ) :=
+  have : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  have : IsLocallyFiniteMeasure (riemannianMeasure (I := I) g ρ) :=
     riemannianMeasure_isLocallyFiniteMeasure (I := I) (M := M) g ρ hρ
   exact MeasureTheory.Measure.Regular.of_sigmaCompactSpace_of_isLocallyFiniteMeasure _
 

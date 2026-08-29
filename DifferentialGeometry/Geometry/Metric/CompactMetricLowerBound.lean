@@ -34,9 +34,9 @@ theorem metric_lower_on
   have hcompact : IsCompact {p : MetricUnitTangent (I := I) (M := M) gRef |
       MetricUnitTangent.base (I := I) (M := M) p ∈ K} :=
     metricUnitOn_compact (I := I) (M := M) gRef hK
-  haveI : IsManifold I 1 M :=
+  have : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M; infer_instance
   have hquad_eq : ∀ p : MetricUnitTangent (I := I) (M := M) gRef,
       f p = h.inner (MetricUnitTangent.base (I := I) (M := M) p)
@@ -60,9 +60,9 @@ theorem metric_lower_on
     by_cases hv : v = 0
     · subst hv
       have h00 : h.inner x (0 : TangentSpace I x) 0 = 0 := by
-        rw [(h.inner x).map_zero, ContinuousLinearMap.zero_apply]
+        rw [(h.inner x).map_zero, zero_apply]
       have hg00 : gRef.inner x (0 : TangentSpace I x) 0 = 0 := by
-        rw [(gRef.inner x).map_zero, ContinuousLinearMap.zero_apply]
+        rw [(gRef.inner x).map_zero, zero_apply]
       rw [h00, hg00, mul_zero]
     · have hrpos : 0 < gRef.inner x v v := gRef.pos x v hv
       set s : Real := Real.sqrt (gRef.inner x v v) with hs_def
@@ -96,9 +96,9 @@ theorem metric_lower_on
     by_cases hv : v = 0
     · subst hv
       have h00 : h.inner x (0 : TangentSpace I x) 0 = 0 := by
-        rw [(h.inner x).map_zero, ContinuousLinearMap.zero_apply]
+        rw [(h.inner x).map_zero, zero_apply]
       have hg00 : gRef.inner x (0 : TangentSpace I x) 0 = 0 := by
-        rw [(gRef.inner x).map_zero, ContinuousLinearMap.zero_apply]
+        rw [(gRef.inner x).map_zero, zero_apply]
       rw [h00, hg00, mul_zero]
     · exfalso
       have hrpos : 0 < gRef.inner x v v := gRef.pos x v hv
@@ -110,7 +110,8 @@ theorem metric_lower_on
         field_simp [ne_of_gt hspos]
         linarith [hss]
       exact hne ⟨⟨(⟨x, s⁻¹ • v⟩ : TangentBundle I M), hunit⟩, by
-        simpa [MetricUnitTangent.base] using hx⟩
+        change x ∈ K
+        exact hx⟩
 
 omit [SigmaCompactSpace M] in
 theorem metric_lower_bound_of_compact [CompactSpace M]

@@ -2,7 +2,6 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlgebraicSecti
 import DifferentialGeometry.Geometry.Curvature.AlgebraicCurvatureOperatorCone
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -26,11 +25,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance parallelCurvatureOperatorTensor04NormedAddCommGroup (x : M) :
     NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
-  Tensor0SBundle.tensor0SSpace_normedAddCommGroup 4 x
+  Tensor0SBundle.tensor0SSpaceNormedAddCommGroup 4 x
 
 private local instance parallelCurvatureOperatorTensor04NormedSpace (x : M) :
     NormedSpace Real (Tensor04At (I := I) (M := M) x) :=
-  Tensor0SBundle.tensor0SSpace_normedSpace 4 x
+  Tensor0SBundle.tensor0SSpaceNormedSpace 4 x
 
 private local instance parallelCurvatureOperatorTensor04AddCommGroup (x : M) :
     AddCommGroup (Tensor04At (I := I) (M := M) x) :=
@@ -50,6 +49,7 @@ private local instance parallelCurvatureOperatorTensor04TopologicalSpace (x : M)
         (@NormedAddCommGroup.toMetricSpace _
           (parallelCurvatureOperatorTensor04NormedAddCommGroup (I := I) x))))
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportAlgebraicCurvatureTensorCLEOnIcc_curvatureOperatorQuadraticEval
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -75,6 +75,7 @@ theorem parallelTransportAlgebraicCurvatureTensorCLEOnIcc_curvatureOperatorQuadr
   rw [algebraicCurvatureOperatorQuadraticEval_pullback]
   simp
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportAlgebraicCurvatureTensorCLEOnIcc_mem_curvatureOperatorNonnegativeCone_iff
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -89,6 +90,7 @@ theorem parallelTransportAlgebraicCurvatureTensorCLEOnIcc_mem_curvatureOperatorN
     (I := I) (M := M)
       (parallelTransportLinearEquivOnIcc (I := I) g gamma hgamma hL).symm A
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem algebraicCurvatureOperatorNonnegativeCone_map_parallelTransportOnIcc
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -105,6 +107,7 @@ theorem algebraicCurvatureOperatorNonnegativeCone_map_parallelTransportOnIcc
   algebraicCurvatureOperatorNonnegativeCone_map_pullback (I := I) (M := M)
     (parallelTransportLinearEquivOnIcc (I := I) g gamma hgamma hL).symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem algebraicCurvatureOperatorNonnegative_dualZeroFace_map_parallelTransportOnIcc
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -143,6 +146,7 @@ theorem algebraicCurvatureOperatorNonnegative_dualZeroFace_map_parallelTransport
   simpa using algebraicCurvatureOperatorNonnegative_dualZeroFace_map_pullback
     (I := I) (M := M) e.symm c (fun i => e (v i)) (fun i => e (w i))
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportAlgebraicCurvatureTensorCLEOnIcc_mem_curvatureOperatorDualZeroFace_iff
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -169,6 +173,7 @@ theorem parallelTransportAlgebraicCurvatureTensorCLEOnIcc_mem_curvatureOperatorD
   rw [parallelTransportAlgebraicCurvatureTensorCLEOnIcc_mem_curvatureOperatorNonnegativeCone_iff]
   rw [parallelTransportAlgebraicCurvatureTensorCLEOnIcc_curvatureOperatorQuadraticEval]
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp]
 theorem parallelTransportAlgebraicCurvatureTensorCLEBetween_curvatureOperatorQuadraticEval
     [I.Boundaryless]
@@ -195,6 +200,7 @@ theorem parallelTransportAlgebraicCurvatureTensorCLEBetween_curvatureOperatorQua
   rw [algebraicCurvatureOperatorQuadraticEval_pullback]
   simp
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportAlgebraicCurvatureTensorCLEBetween_mem_curvatureOperatorNonnegativeCone_iff
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -209,6 +215,7 @@ theorem parallelTransportAlgebraicCurvatureTensorCLEBetween_mem_curvatureOperato
     (I := I) (M := M)
       (parallelTransportLinearEquivBetween (I := I) g gamma hgamma hab).symm A
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem algebraicCurvatureOperatorNonnegativeCone_map_parallelTransportBetween
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -225,6 +232,7 @@ theorem algebraicCurvatureOperatorNonnegativeCone_map_parallelTransportBetween
   algebraicCurvatureOperatorNonnegativeCone_map_pullback (I := I) (M := M)
     (parallelTransportLinearEquivBetween (I := I) g gamma hgamma hab).symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem algebraicCurvatureOperatorNonnegative_dualZeroFace_map_parallelTransportBetween
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)
@@ -263,6 +271,7 @@ theorem algebraicCurvatureOperatorNonnegative_dualZeroFace_map_parallelTransport
   simpa using algebraicCurvatureOperatorNonnegative_dualZeroFace_map_pullback
     (I := I) (M := M) e.symm c (fun i => e (v i)) (fun i => e (w i))
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportAlgebraicCurvatureTensorCLEBetween_mem_curvatureOperatorDualZeroFace_iff
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (gamma : Real → M)

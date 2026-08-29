@@ -57,6 +57,7 @@ section BalLadder
 
 variable (g₀ : SmoothRiemannianMetric I M)
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma norm_iteratedCovGrad_iteratedCovGrad_eq (g : SmoothRiemannianMetric I M) (r s j i : ℕ)
@@ -95,12 +96,12 @@ lemma normSq_le_sum_normSq_of_pointwise_fiberNormSq_window (g : SmoothRiemannian
         riemannianFiberNormSq (I := I) (M := M) g rw (sw i) x ((F i).toSection x))
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g) := by
     refine MeasureTheory.Integrable.const_mul ?_ c
-    exact MeasureTheory.integrable_finset_sum _ (fun i _ =>
+    exact MeasureTheory.integrable_finsetSum _ (fun i _ =>
       integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g rw (sw i) (F i))
   have h1 := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g rz sz
     Z _ hint hpt
   rw [MeasureTheory.integral_const_mul] at h1
-  rw [MeasureTheory.integral_finset_sum _ (fun i _ =>
+  rw [MeasureTheory.integral_finsetSum _ (fun i _ =>
     integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g rw (sw i) (F i))] at h1
   refine le_trans h1 (le_of_eq ?_)
   refine congrArg (fun t => c * t) (Finset.sum_congr rfl (fun i _ => ?_))
@@ -220,6 +221,7 @@ private lemma pointwiseTensorCurvRS_jet_le (g : SmoothRiemannianMetric I M) (r s
         add_le_add (add_le_add h₀ h₁) h₂
     _ = (Real.sqrt (cc₀ j) + Real.sqrt (cc₁ j) + Real.sqrt (cc₂ j)) * Sj := by ring
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma covGrad_eq_iteratedCovGrad_one (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -543,6 +545,7 @@ private lemma connLapIterate_one_expansion (g : SmoothRiemannianMetric I M) (r s
     oneMinusConnLapSmoothIter_zero]
   rfl
 
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
 private lemma connLapIterate_succ_expansion (g : SmoothRiemannianMetric I M) (r s : ℕ) (q : ℕ)
     (S : SmoothCcTensor g r s) :
@@ -555,6 +558,7 @@ private lemma connLapIterate_succ_expansion (g : SmoothRiemannianMetric I M) (r 
   exact oneMinusConnLapSmoothIter_sub (I := I) (M := M) g r s q S
     (rawTensorConnLapSmooth (I := I) g r s S)
 
+omit [CompactSpace M] in
 private lemma sum_rawTensorConnLap_jets_bound (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (cL : ℕ → ℝ) (hcL_nn : ∀ b, 0 ≤ cL b)
     (hcL : ∀ (b : ℕ) (S : SmoothCcTensor g r s),

@@ -33,7 +33,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-set_option backward.isDefEq.respectTransparency false in
 theorem cometricCastG0_perOrder_l2_tameEnvelope_generic
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -88,7 +87,7 @@ theorem cometricCastG0_perOrder_l2_tameEnvelope_generic
   · obtain ⟨x₀⟩ := hMne
     have hδ0 : 0 ≤ δ := by
       obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-        haveI : Nontrivial (TangentSpace I x₀) := by
+        have : Nontrivial (TangentSpace I x₀) := by
           have hfr' : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
             have heq : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
             rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -202,7 +201,7 @@ theorem cometricCastG0_perOrder_l2_tameEnvelope_generic
                 ((iteratedCovGrad (I := I) g₀ 3 3 q W).toSection x)))
           (riemannianVolumeMeasure (I := I) (M := M) g₀) := by
         apply MeasureTheory.Integrable.const_mul
-        apply MeasureTheory.integrable_finset_sum
+        apply MeasureTheory.integrable_finsetSum
         intro q _
         exact integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 3 (3 + q)
           (iteratedCovGrad (I := I) g₀ 3 3 q W)
@@ -211,7 +210,7 @@ theorem cometricCastG0_perOrder_l2_tameEnvelope_generic
           hint hpt
       refine le_trans hkey ?_
       rw [MeasureTheory.integral_const_mul,
-        MeasureTheory.integral_finset_sum _ (fun q _ =>
+        MeasureTheory.integral_finsetSum _ (fun q _ =>
           integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g₀ 3 (3 + q)
             (iteratedCovGrad (I := I) g₀ 3 3 q W))]
       have hconv : ∀ q ∈ Finset.range (l + 1),
@@ -266,7 +265,7 @@ theorem cometricCastG0_perOrder_l2_tameEnvelope_generic
     nlinarith only [hsq, hstep3, haLl,
       sq_nonneg (‖iteratedCovGrad (I := I) g₀ 3 1 l Φ‖ -
         ‖iteratedCovGrad (I := I) g₀ 3 1 l (ccOperatorFieldComp (I := I) (M := M) g₀ 3 3 1 Φ W)‖)]
-  · haveI hem : IsEmpty M := not_nonempty_iff.mp hMne
+  · have hem : IsEmpty M := not_nonempty_iff.mp hMne
     have hz : ‖iteratedCovGrad (I := I) g₀ 3 1 l (cometricDoubleTraceCastG0 (I := I) g₀ g₁)‖ =
       0 := by
       rw [SmoothCcTensor.norm_def, tensorL2Norm_def, tensorL2Inner,

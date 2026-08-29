@@ -193,6 +193,7 @@ theorem oneMinusConnLapSmoothIter_l2Inner_eq_add_sum_covGrad
     ring
 
 
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
 theorem rawConnLap_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g r s) :
@@ -209,6 +210,7 @@ theorem rawConnLap_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
   abel
 
 
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
 theorem oneMinusConn_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g r s) :
@@ -220,6 +222,7 @@ theorem oneMinusConn_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
   abel
 
 
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
 theorem connLapIter_map_add (g : SmoothRiemannianMetric I M) (r s j : ℕ)
     (A B : SmoothCcTensor g r s) :
@@ -232,6 +235,7 @@ theorem connLapIter_map_add (g : SmoothRiemannianMetric I M) (r s j : ℕ)
     rw [oneMinusConnLapSmoothIter_succ, oneMinusConnLapSmoothIter_succ,
       oneMinusConnLapSmoothIter_succ, ih, oneMinusConn_add (I := I) (M := M) g r s]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem covGrad_oneMinus (g : SmoothRiemannianMetric I M) (s : ℕ)
     (S : SmoothCcTensor g 0 s) :
     covGrad (I := I) (M := M) g 0 s
@@ -254,6 +258,8 @@ theorem connLapIter_one (g : SmoothRiemannianMetric I M) (r s : ℕ)
       oneMinusConnLapSmooth (I := I) g r s S := by
   rw [oneMinusConnLapSmoothIter_succ, oneMinusConnLapSmoothIter_zero]
 
+omit [SigmaCompactSpace M] in
+omit [CompactSpace M] in
 theorem covGrad_iterL (g : SmoothRiemannianMetric I M) (s j : ℕ) :
     ∀ S : SmoothCcTensor g 0 s,
       covGrad (I := I) (M := M) g 0 s

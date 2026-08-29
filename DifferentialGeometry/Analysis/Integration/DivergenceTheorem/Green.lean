@@ -30,53 +30,62 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
+private theorem contMDiff_exp_neg {f : M → ℝ}
+    (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
+    ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x => Real.exp (-f x)) := by
+  have h := Real.contDiff_exp.contMDiff.comp hf.neg
+  convert h using 1
+  · with_reducible_and_instances rfl
+  · rfl
+
 theorem green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hh_supp : HasCompactSupport h) :
-    ∫ x, g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+    ∫ x, g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨_, hh⟩ :
+          ((gradG (I := I) g ⟨_, hh⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      -∫ x, f x * Δ_g (I := I) g ⟨_, hh⟩ x
+      -∫ x, f x * ΔG (I := I) g ⟨_, hh⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
-  set X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := grad_g (I := I) g ⟨_, hh⟩ with hX_def
+  set X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := gradG (I := I) g ⟨_, hh⟩ with hX_def
   have hX_cs : HasCompactSupport X := hasCompactSupport_grad_g (I := I) g ⟨_, hh⟩ hh_supp
   have h_ibp := integral_tangentSectionAction_eq_neg_integral_smul_divergence
     (I := I) g hf X hX_cs
   have hLHS_eq : ∀ x : M,
       tangentSectionAction (I := I) X f x =
-        g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+        g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨_, hh⟩ :
+          ((gradG (I := I) g ⟨_, hh⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
     intro x
     let fb : C^∞⟮I, M; ℝ⟯ := ⟨f, hf⟩
     change tangentSectionAction (I := I) X (⇑fb) x =
-      g.inner x ((grad_g (I := I) g fb : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨_, hh⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
+      g.inner x ((gradG (I := I) g fb : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
+        ((gradG (I := I) g ⟨_, hh⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
     rw [tangentSectionAction_eq_inner_grad_g (I := I) g fb X x]
-    change g.inner x (X x) ((grad_g (I := I) g fb : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
-      g.inner x ((grad_g (I := I) g fb : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) (X x)
+    change g.inner x (X x) ((gradG (I := I) g fb : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
+      g.inner x ((gradG (I := I) g fb : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) (X x)
     exact g.symm x _ _
   have hRHS_eq : ∀ x : M,
-      f x * divergence_g (I := I) g X x = f x * Δ_g (I := I) g ⟨_, hh⟩ x := by
+      f x * divergenceG (I := I) g X x = f x * ΔG (I := I) g ⟨_, hh⟩ x := by
     intro x
     rfl
   have hLHS_int : ∫ x, tangentSectionAction (I := I) X f x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      ∫ x, g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+      ∫ x, g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, hh⟩ :
+            ((gradG (I := I) g ⟨_, hh⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
     integral_congr_ae (Filter.Eventually.of_forall hLHS_eq)
-  have hRHS_int : ∫ x, f x * divergence_g (I := I) g X x
+  have hRHS_int : ∫ x, f x * divergenceG (I := I) g X x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      ∫ x, f x * Δ_g (I := I) g ⟨_, hh⟩ x
+      ∫ x, f x * ΔG (I := I) g ⟨_, hh⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
     integral_congr_ae (Filter.Eventually.of_forall hRHS_eq)
   rw [← hLHS_int, h_ibp, hRHS_int]
@@ -86,40 +95,42 @@ private theorem integral_inner_grad_eq_neg_integral_smul_laplacian'
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hf_supp : HasCompactSupport f) :
-    ∫ x, g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+    ∫ x, g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨_, hh⟩ :
+          ((gradG (I := I) g ⟨_, hh⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      -∫ x, h x * Δ_g (I := I) g ⟨_, hf⟩ x
+      -∫ x, h x * ΔG (I := I) g ⟨_, hf⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
-  set X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := grad_g (I := I) g ⟨_, hf⟩ with hX_def
+  set X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := gradG (I := I) g ⟨_, hf⟩ with hX_def
   have hX_cs : HasCompactSupport X := hasCompactSupport_grad_g (I := I) g ⟨_, hf⟩ hf_supp
   have h_ibp := integral_tangentSectionAction_eq_neg_integral_smul_divergence
     (I := I) g hh X hX_cs
   have hLHS_eq : ∀ x : M,
       tangentSectionAction (I := I) X h x =
-        g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+        g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨_, hh⟩ :
+          ((gradG (I := I) g ⟨_, hh⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
     intro x
-    simpa using tangentSectionAction_eq_inner_grad_g (I := I) g ⟨_, hh⟩ X x
+    rw [hX_def]
+    exact tangentSectionAction_eq_inner_grad_g (I := I) g ⟨_, hh⟩
+      (gradG (I := I) g ⟨_, hf⟩) x
   have hRHS_eq : ∀ x : M,
-      h x * divergence_g (I := I) g X x = h x * Δ_g (I := I) g ⟨_, hf⟩ x := by
+      h x * divergenceG (I := I) g X x = h x * ΔG (I := I) g ⟨_, hf⟩ x := by
     intro x; rfl
   have hLHS_int : ∫ x, tangentSectionAction (I := I) X h x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      ∫ x, g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+      ∫ x, g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, hh⟩ :
+            ((gradG (I := I) g ⟨_, hh⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
     integral_congr_ae (Filter.Eventually.of_forall hLHS_eq)
-  have hRHS_int : ∫ x, h x * divergence_g (I := I) g X x
+  have hRHS_int : ∫ x, h x * divergenceG (I := I) g X x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      ∫ x, h x * Δ_g (I := I) g ⟨_, hf⟩ x
+      ∫ x, h x * ΔG (I := I) g ⟨_, hf⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
     integral_congr_ae (Filter.Eventually.of_forall hRHS_eq)
   rw [← hLHS_int, h_ibp, hRHS_int]
@@ -128,39 +139,39 @@ theorem green_second_integral_smul_laplacian_sub_eq_zero
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h) :
-    ∫ x, (f x * Δ_g (I := I) g ⟨_, hh⟩ x - h x * Δ_g (I := I) g ⟨_, hf⟩ x)
+    ∫ x, (f x * ΔG (I := I) g ⟨_, hh⟩ x - h x * ΔG (I := I) g ⟨_, hf⟩ x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
   classical
   have hf_cs : HasCompactSupport f := HasCompactSupport.of_compactSpace _
   have hh_cs : HasCompactSupport h := HasCompactSupport.of_compactSpace _
   have h1 := green_first_integral_inner_grad_eq_neg_integral_smul_laplacian (I := I) g hf hh hh_cs
   have h2 := integral_inner_grad_eq_neg_integral_smul_laplacian' (I := I) g hf hh hf_cs
-  have h_eq : ∫ x, f x * Δ_g (I := I) g ⟨_, hh⟩ x
+  have h_eq : ∫ x, f x * ΔG (I := I) g ⟨_, hh⟩ x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-        ∫ x, h x * Δ_g (I := I) g ⟨_, hf⟩ x
+        ∫ x, h x * ΔG (I := I) g ⟨_, hf⟩ x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
-    have : -∫ x, f x * Δ_g (I := I) g ⟨_, hh⟩ x
+    have : -∫ x, f x * ΔG (I := I) g ⟨_, hh⟩ x
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-          -∫ x, h x * Δ_g (I := I) g ⟨_, hf⟩ x
+          -∫ x, h x * ΔG (I := I) g ⟨_, hf⟩ x
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
       rw [← h1, h2]
     linarith
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
-  have hΔh_cont : Continuous (Δ_g (I := I) g ⟨_, hh⟩) :=
+  have hΔh_cont : Continuous (ΔG (I := I) g ⟨_, hh⟩) :=
     (Δ_g_contMDiff (I := I) g ⟨_, hh⟩).continuous
-  have hΔf_cont : Continuous (Δ_g (I := I) g ⟨_, hf⟩) :=
+  have hΔf_cont : Continuous (ΔG (I := I) g ⟨_, hf⟩) :=
     (Δ_g_contMDiff (I := I) g ⟨_, hf⟩).continuous
   have hf_cont : Continuous f := hf.continuous
   have hh_cont : Continuous h := hh.continuous
-  have h_int_fΔh : Integrable (fun x : M => f x * Δ_g (I := I) g ⟨_, hh⟩ x)
+  have h_int_fΔh : Integrable (fun x : M => f x * ΔG (I := I) g ⟨_, hh⟩ x)
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-    have hcont : Continuous (fun x : M => f x * Δ_g (I := I) g ⟨_, hh⟩ x) :=
+    have hcont : Continuous (fun x : M => f x * ΔG (I := I) g ⟨_, hh⟩ x) :=
       hf_cont.mul hΔh_cont
     exact hcont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
-  have h_int_hΔf : Integrable (fun x : M => h x * Δ_g (I := I) g ⟨_, hf⟩ x)
+  have h_int_hΔf : Integrable (fun x : M => h x * ΔG (I := I) g ⟨_, hf⟩ x)
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-    have hcont : Continuous (fun x : M => h x * Δ_g (I := I) g ⟨_, hf⟩ x) :=
+    have hcont : Continuous (fun x : M => h x * ΔG (I := I) g ⟨_, hf⟩ x) :=
       hh_cont.mul hΔf_cont
     exact hcont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   rw [integral_sub h_int_fΔh h_int_hΔf]
@@ -172,49 +183,49 @@ theorem expNegWeightedGreen
     {f q : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hq : ContMDiff I 𝓘(ℝ, ℝ) ∞ q) :
-    ∫ x, Real.exp (-(f x)) * Δ_g (I := I) g ⟨_, hq⟩ x
+    ∫ x, Real.exp (-(f x)) * ΔG (I := I) g ⟨_, hq⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, q x *
-        Δ_g (I := I) g
+        ΔG (I := I) g
           ⟨fun x : M => Real.exp (-(f x)),
-            by simpa using Real.contDiff_exp.contMDiff.comp hf.neg⟩ x
+            contMDiff_exp_neg hf⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   let expNeg : M → ℝ := fun x => Real.exp (-(f x))
   have hexp : ContMDiff I 𝓘(ℝ, ℝ) ∞ expNeg := by
-    simpa [expNeg] using Real.contDiff_exp.contMDiff.comp hf.neg
+    exact contMDiff_exp_neg hf
   have hgreen := green_second_integral_smul_laplacian_sub_eq_zero
     (I := I) g (f := expNeg) (h := q) hexp hq
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
-  have hΔq_cont : Continuous (Δ_g (I := I) g ⟨_, hq⟩) :=
+  have hΔq_cont : Continuous (ΔG (I := I) g ⟨_, hq⟩) :=
     (Δ_g_contMDiff (I := I) g ⟨_, hq⟩).continuous
-  have hΔexp_cont : Continuous (Δ_g (I := I) g ⟨_, hexp⟩) :=
+  have hΔexp_cont : Continuous (ΔG (I := I) g ⟨_, hexp⟩) :=
     (Δ_g_contMDiff (I := I) g ⟨_, hexp⟩).continuous
   have hexp_cont : Continuous expNeg := hexp.continuous
   have hq_cont : Continuous q := hq.continuous
   have h_int_expΔq :
-      Integrable (fun x : M => expNeg x * Δ_g (I := I) g ⟨_, hq⟩ x)
+      Integrable (fun x : M => expNeg x * ΔG (I := I) g ⟨_, hq⟩ x)
         (riemannianVolumeMeasure (I := I) (M := M) g) := by
-    have hcont : Continuous (fun x : M => expNeg x * Δ_g (I := I) g ⟨_, hq⟩ x) :=
+    have hcont : Continuous (fun x : M => expNeg x * ΔG (I := I) g ⟨_, hq⟩ x) :=
       hexp_cont.mul hΔq_cont
     exact hcont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   have h_int_qΔexp :
-      Integrable (fun x : M => q x * Δ_g (I := I) g ⟨_, hexp⟩ x)
+      Integrable (fun x : M => q x * ΔG (I := I) g ⟨_, hexp⟩ x)
         (riemannianVolumeMeasure (I := I) (M := M) g) := by
-    have hcont : Continuous (fun x : M => q x * Δ_g (I := I) g ⟨_, hexp⟩ x) :=
+    have hcont : Continuous (fun x : M => q x * ΔG (I := I) g ⟨_, hexp⟩ x) :=
       hq_cont.mul hΔexp_cont
     exact hcont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   have hzero :
-      ∫ x, expNeg x * Δ_g (I := I) g ⟨_, hq⟩ x -
-          q x * Δ_g (I := I) g ⟨_, hexp⟩ x
+      ∫ x, expNeg x * ΔG (I := I) g ⟨_, hq⟩ x -
+          q x * ΔG (I := I) g ⟨_, hexp⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
     simpa [expNeg] using hgreen
   rw [integral_sub h_int_expΔq h_int_qΔexp] at hzero
   have h_eq :
-      ∫ x, expNeg x * Δ_g (I := I) g ⟨_, hq⟩ x
+      ∫ x, expNeg x * ΔG (I := I) g ⟨_, hq⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      ∫ x, q x * Δ_g (I := I) g ⟨_, hexp⟩ x
+      ∫ x, q x * ΔG (I := I) g ⟨_, hexp⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     linarith
   simpa [expNeg] using h_eq
@@ -222,26 +233,28 @@ theorem expNegWeightedGreen
 theorem expNegLap
     [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    Δ_g (I := I) g
+    ΔG (I := I) g
         ⟨fun x : M => Real.exp (-(f x)),
-          by simpa using Real.contDiff_exp.contMDiff.comp hf.neg⟩ x =
+          contMDiff_exp_neg hf⟩ x =
       Real.exp (-(f x)) *
-        (-Δ_g (I := I) g ⟨_, hf⟩ x +
-          g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+        (-ΔG (I := I) g ⟨_, hf⟩ x +
+          g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, hf⟩ :
+            ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) := by
   classical
   let expNeg : M → ℝ := fun y => Real.exp (-(f y))
   let phi : M → ℝ := fun y => -expNeg y
   have hexp : ContMDiff I 𝓘(ℝ, ℝ) ∞ expNeg := by
-    simpa [expNeg] using Real.contDiff_exp.contMDiff.comp hf.neg
+    exact contMDiff_exp_neg hf
   have hphi : ContMDiff I 𝓘(ℝ, ℝ) ∞ phi := by
     simpa [phi] using hexp.neg
+  let expNegMap : C^∞⟮I, M; ℝ⟯ := ⟨expNeg, hexp⟩
+  let fMap : C^∞⟮I, M; ℝ⟯ := ⟨f, hf⟩
   have hsection :
-      (grad_g (I := I) g ⟨_, hexp⟩ :
+      (gradG (I := I) g expNegMap :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) =
-        smoothSmul (I := I) phi hphi (grad_g (I := I) g ⟨_, hf⟩) := by
+        smoothSmul (I := I) phi hphi (gradG (I := I) g fMap) := by
     ext y
     rw [grad_g_apply, smoothSmul_apply, grad_g_apply]
     change gradFun (I := I) g (fun y : M => Real.exp (-(f y))) y =
@@ -249,29 +262,31 @@ theorem expNegLap
     dsimp [phi, expNeg]
     exact gradFun_exp_neg (I := I) g (hf.mdifferentiable (by simp) y)
   have hactExp := tangentSectionAction_grad_g_eq_inner
-    (I := I) g hexp (grad_g (I := I) g ⟨_, hf⟩) x
+    (I := I) g hexp (gradG (I := I) g fMap) x
   rw [hsection] at hactExp
   have hactPhi :
-      tangentSectionAction (I := I) (grad_g (I := I) g ⟨_, hf⟩) phi x =
+      tangentSectionAction (I := I) (gradG (I := I) g fMap) phi x =
         Real.exp (-(f x)) *
-          g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+          g.inner x ((gradG (I := I) g fMap :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, hf⟩ :
+            ((gradG (I := I) g fMap :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
     have hneg :
-        tangentSectionAction (I := I) (grad_g (I := I) g ⟨_, hf⟩) phi x =
-          -tangentSectionAction (I := I) (grad_g (I := I) g ⟨_, hf⟩) expNeg x := by
+        tangentSectionAction (I := I) (gradG (I := I) g fMap) phi x =
+          -tangentSectionAction (I := I) (gradG (I := I) g fMap) expNeg x := by
       have hmdiff_exp : MDifferentiableAt I 𝓘(ℝ, ℝ) expNeg x :=
         hexp.mdifferentiable (by simp) x
       have hmf :
           mfderiv I 𝓘(ℝ, ℝ) phi x =
             -mfderiv I 𝓘(ℝ, ℝ) expNeg x := by
-        simpa [phi] using hmdiff_exp.hasMFDerivAt.neg.mfderiv
+        dsimp [phi]
+        change mfderiv I 𝓘(ℝ, ℝ) (-expNeg) x = -mfderiv I 𝓘(ℝ, ℝ) expNeg x
+        exact hmdiff_exp.hasMFDerivAt.neg.mfderiv
       change mfderiv I 𝓘(ℝ, ℝ) phi x
-          ((grad_g (I := I) g ⟨_, hf⟩ :
+          ((gradG (I := I) g fMap :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
         -(mfderiv I 𝓘(ℝ, ℝ) expNeg x
-          ((grad_g (I := I) g ⟨_, hf⟩ :
+          ((gradG (I := I) g fMap :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
       rw [hmf]
       rfl
@@ -279,12 +294,18 @@ theorem expNegLap
     rw [smoothSmul_apply, grad_g_apply]
     dsimp [phi, expNeg]
     simp [smul_eq_mul]
-  change divergence_g (I := I) g
-      (grad_g (I := I) g ⟨_, hexp⟩) x = _
+  change divergenceG (I := I) g
+      (gradG (I := I) g expNegMap) x =
+    Real.exp (-(f x)) *
+      (-divergenceG (I := I) g (gradG (I := I) g fMap) x +
+        g.inner x ((gradG (I := I) g fMap :
+            Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
+          ((gradG (I := I) g fMap :
+            Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
   rw [hsection]
-  rw [divergence_g_smoothSmul (I := I) g phi hphi (grad_g (I := I) g ⟨_, hf⟩) x]
+  rw [divergence_g_smoothSmul (I := I) g phi hphi (gradG (I := I) g fMap) x]
   rw [hactPhi]
-  simp [Δ_g, phi, expNeg]
+  simp [phi, expNeg]
   ring
 
 theorem expNegGreen
@@ -293,14 +314,14 @@ theorem expNegGreen
     {f q : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hq : ContMDiff I 𝓘(ℝ, ℝ) ∞ q) :
-    ∫ x, Real.exp (-(f x)) * Δ_g (I := I) g ⟨_, hq⟩ x
+    ∫ x, Real.exp (-(f x)) * ΔG (I := I) g ⟨_, hq⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, q x *
         (Real.exp (-(f x)) *
-          (-Δ_g (I := I) g ⟨_, hf⟩ x +
-            g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+          (-ΔG (I := I) g ⟨_, hf⟩ x +
+            g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-              ((grad_g (I := I) g ⟨_, hf⟩ :
+              ((gradG (I := I) g ⟨_, hf⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)))
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   rw [expNegWeightedGreen (I := I) g hf hq]
@@ -308,15 +329,15 @@ theorem expNegGreen
   refine Filter.Eventually.of_forall ?_
   intro x
   change q x *
-      Δ_g (I := I) g
+      ΔG (I := I) g
         ⟨fun x : M => Real.exp (-(f x)),
-          by simpa using Real.contDiff_exp.contMDiff.comp hf.neg⟩ x =
+          contMDiff_exp_neg hf⟩ x =
     q x *
       (Real.exp (-(f x)) *
-        (-Δ_g (I := I) g ⟨_, hf⟩ x +
-          g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+        (-ΔG (I := I) g ⟨_, hf⟩ x +
+          g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, hf⟩ :
+            ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)))
   rw [expNegLap (I := I) g hf x]
 
@@ -324,32 +345,32 @@ theorem expNegLap_eq_gradSq
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
-    ∫ x, Real.exp (-(f x)) * Δ_g (I := I) g ⟨_, hf⟩ x
+    ∫ x, Real.exp (-(f x)) * ΔG (I := I) g ⟨_, hf⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       ∫ x, Real.exp (-(f x)) *
-        g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+        g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨_, hf⟩ :
+          ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   let expNeg : M → ℝ := fun x => Real.exp (-(f x))
   have hexp : ContMDiff I 𝓘(ℝ, ℝ) ∞ expNeg := by
-    simpa [expNeg] using Real.contDiff_exp.contMDiff.comp hf.neg
+    exact contMDiff_exp_neg hf
   have hgreen :=
     green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
       (I := I) g (f := expNeg) (h := f) hexp hf
       (HasCompactSupport.of_compactSpace f)
   have hleft :
-      ∫ x, g.inner x ((grad_g (I := I) g ⟨_, hexp⟩ :
+      ∫ x, g.inner x ((gradG (I := I) g ⟨_, hexp⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, hf⟩ :
+            ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
         ∫ x, -(Real.exp (-(f x)) *
-          g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+          g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, hf⟩ :
+            ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     apply integral_congr_ae
@@ -358,14 +379,14 @@ theorem expNegLap_eq_gradSq
     have hfx : MDifferentiableAt I 𝓘(ℝ, ℝ) f x :=
       hf.mdifferentiable (by simp) x
     change
-      g.inner x ((grad_g (I := I) g ⟨_, hexp⟩ :
+      g.inner x ((gradG (I := I) g ⟨_, hexp⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨_, hf⟩ :
+        ((gradG (I := I) g ⟨_, hf⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
         -(Real.exp (-(f x)) *
-          g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+          g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, hf⟩ :
+            ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
     rw [grad_g_apply (I := I) g ⟨_, hexp⟩ x, grad_g_apply (I := I) g ⟨_, hf⟩ x]
     dsimp [expNeg]
@@ -377,17 +398,17 @@ theorem expNegLap_eq_gradSq
             (gradFun (I := I) g f x))
     rw [gradFun_exp_neg (I := I) g hfx]
     rw [map_smul]
-    rw [ContinuousLinearMap.smul_apply]
+    rw [smul_apply]
     rw [smul_eq_mul]
     ring_nf
   have hneg :
       -∫ x, Real.exp (-(f x)) *
-          g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+          g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, hf⟩ :
+            ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-        -∫ x, Real.exp (-(f x)) * Δ_g (I := I) g ⟨_, hf⟩ x
+        -∫ x, Real.exp (-(f x)) * ΔG (I := I) g ⟨_, hf⟩ x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     simpa [integral_neg, expNeg] using hleft.symm.trans hgreen
   exact (neg_injective hneg).symm
@@ -398,38 +419,38 @@ theorem expNegIBP
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (hlap :
       Integrable (fun x : M =>
-        Real.exp (-(f x)) * Δ_g (I := I) g ⟨_, hf⟩ x)
+        Real.exp (-(f x)) * ΔG (I := I) g ⟨_, hf⟩ x)
         (riemannianVolumeMeasure (I := I) (M := M) g))
     (hgrad :
       Integrable (fun x : M =>
         Real.exp (-(f x)) *
-          g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+          g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, hf⟩ :
+            ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
         (riemannianVolumeMeasure (I := I) (M := M) g)) :
     ∫ x, Real.exp (-(f x)) *
-        (Δ_g (I := I) g ⟨_, hf⟩ x -
-          g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+        (ΔG (I := I) g ⟨_, hf⟩ x -
+          g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, hf⟩ :
+            ((gradG (I := I) g ⟨_, hf⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
       ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
   have hbase := expNegLap_eq_gradSq (I := I) g hf
   have hpoint :
       (fun x : M =>
         Real.exp (-(f x)) *
-          (Δ_g (I := I) g ⟨_, hf⟩ x -
-            g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+          (ΔG (I := I) g ⟨_, hf⟩ x -
+            g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-              ((grad_g (I := I) g ⟨_, hf⟩ :
+              ((gradG (I := I) g ⟨_, hf⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))) =
       fun x : M =>
-        Real.exp (-(f x)) * Δ_g (I := I) g ⟨_, hf⟩ x -
+        Real.exp (-(f x)) * ΔG (I := I) g ⟨_, hf⟩ x -
           Real.exp (-(f x)) *
-            g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+            g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-              ((grad_g (I := I) g ⟨_, hf⟩ :
+              ((gradG (I := I) g ⟨_, hf⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
     funext x
     ring
@@ -441,26 +462,26 @@ theorem laplacian_integral_eq_zero
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {h : M → ℝ} (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h) :
-    ∫ x, Δ_g (I := I) g ⟨h, hh⟩ x
+    ∫ x, ΔG (I := I) g ⟨h, hh⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
   classical
   have hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun _ : M => (1 : ℝ)) := contMDiff_const
   have hgreen := green_second_integral_smul_laplacian_sub_eq_zero g hf hh
-  have hΔf : ∀ x, Δ_g (I := I) g ⟨fun _ : M => (1 : ℝ), hf⟩ x = 0 := by
+  have hΔf : ∀ x, ΔG (I := I) g ⟨fun _ : M => (1 : ℝ), hf⟩ x = 0 := by
     intro x
     exact Δ_g_const (I := I) g (c := 1) x
   have hpointwise : ∀ x : M,
-      (1 : ℝ) * Δ_g (I := I) g ⟨h, hh⟩ x -
-          h x * Δ_g (I := I) g ⟨fun _ : M => (1 : ℝ), hf⟩ x =
-        Δ_g (I := I) g ⟨h, hh⟩ x := by
+      (1 : ℝ) * ΔG (I := I) g ⟨h, hh⟩ x -
+          h x * ΔG (I := I) g ⟨fun _ : M => (1 : ℝ), hf⟩ x =
+        ΔG (I := I) g ⟨h, hh⟩ x := by
     intro x
     rw [hΔf x]
     ring
   calc
-    (∫ x, Δ_g (I := I) g ⟨h, hh⟩ x
+    (∫ x, ΔG (I := I) g ⟨h, hh⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
-        ∫ x, ((1 : ℝ) * Δ_g (I := I) g ⟨h, hh⟩ x -
-          h x * Δ_g (I := I) g ⟨fun _ : M => (1 : ℝ), hf⟩ x)
+        ∫ x, ((1 : ℝ) * ΔG (I := I) g ⟨h, hh⟩ x -
+          h x * ΔG (I := I) g ⟨fun _ : M => (1 : ℝ), hf⟩ x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
       apply MeasureTheory.integral_congr_ae
       exact Filter.Eventually.of_forall (fun x => (hpointwise x).symm)

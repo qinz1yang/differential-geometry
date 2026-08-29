@@ -23,12 +23,17 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 
+private def modelMFDerivAt (f : E → M) (u : E) : E →L[Real] E :=
+  (tangentSpaceModelContinuousLinearEquiv (I := I) (f u)).toContinuousLinearMap.comp
+    ((mfderiv 𝓘(Real, E) I f u).comp
+      (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) u).symm.toContinuousLinearMap)
+
 theorem hasFDerivAt_chart
     {f : E → M} {u : E}
     (hf : MDifferentiableAt 𝓘(Real, E) I f u) :
     HasFDerivAt
       ((extChartAt I (f u)) ∘ f)
-      (mfderiv 𝓘(Real, E) I f u)
+      (modelMFDerivAt (I := I) f u)
       u := by
   have hf' : HasMFDerivAt 𝓘(Real, E) I f u
       (mfderiv 𝓘(Real, E) I f u) :=
@@ -45,8 +50,10 @@ theorem hasFDerivAt_chart
       ((ContinuousLinearMap.id Real E).comp
         (mfderiv 𝓘(Real, E) I f u)) :=
     hchart.comp u hf'
-  rw [ContinuousLinearMap.id_comp] at hcomp
-  exact hasMFDerivAt_iff_hasFDerivAt.mp hcomp
+  have hcomp' := hasMFDerivAt_iff_hasFDerivAt.mp hcomp
+  exact hcomp'.congr_fderiv (by
+    ext v
+    with_unfolding_all rfl)
 
 private theorem written_fderiv_inv
     {f : E → M} {u : E}
@@ -58,13 +65,13 @@ private theorem written_fderiv_inv
   have hchart := hasFDerivAt_chart (I := I) hf
   have hwritten : HasFDerivAt
       (writtenInExtChartAt 𝓘(Real, E) I u f)
-      (mfderiv 𝓘(Real, E) I f u)
+      (modelMFDerivAt (I := I) f u)
       (extChartAt 𝓘(Real, E) u u) := by
-    simpa only [writtenInExtChartAt, extChartAt_self_eq,
-      modelWithCornersSelf_coe, modelWithCornersSelf_coe_symm,
-      Function.comp_apply, id_eq] using hchart
+    simpa only [writtenInExtChartAt, extChartAt_model_space_eq_id,
+      PartialEquiv.refl_symm, PartialEquiv.refl_coe, Function.comp_id, id_eq] using hchart
   rw [hwritten.fderiv]
-  exact hinv
+  simpa only [modelMFDerivAt, ContinuousLinearMap.isInvertible_comp_equiv,
+    ContinuousLinearMap.isInvertible_equiv_comp] using hinv
 
 end ChartDerivative
 
@@ -75,8 +82,8 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -91,7 +98,7 @@ structure ExpInvBranch
     EqOn
       (fun u : E =>
         expMapIntrinsic (I := I) g hEnorm p
-          (show TangentSpace I p from u))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u))
       hom
       hom.source
 
@@ -99,56 +106,51 @@ namespace ExpInvBranch
 
 def inv
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M} (B : ExpInvBranch (I := I) g hEnorm p) : M → E :=
   B.hom.symm
 
 def dom
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M} (B : ExpInvBranch (I := I) g hEnorm p) : Set M :=
   B.hom.target
 
 theorem right_inv
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M} (B : ExpInvBranch (I := I) g hEnorm p)
     {y : M} (hy : y ∈ B.dom) :
     expMapIntrinsic (I := I) g hEnorm p
-        (show TangentSpace I p from B.inv y) = y := by
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm (B.inv y)) = y := by
   have hu : B.inv y ∈ B.hom.source := B.hom.map_target hy
   calc
     expMapIntrinsic (I := I) g hEnorm p
-        (show TangentSpace I p from B.inv y) =
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm (B.inv y)) =
       B.hom (B.inv y) := B.hom_eq hu
-    _ = y := by simpa only [inv] using B.hom.right_inv hy
+    _ = y := B.hom.right_inv hy
 
 theorem left_inv
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M} (B : ExpInvBranch (I := I) g hEnorm p)
     {u : E} (hu : u ∈ B.hom.source) :
     B.inv
         (expMapIntrinsic (I := I) g hEnorm p
-          (show TangentSpace I p from u)) = u := by
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u)) = u := by
   calc
     B.inv
         (expMapIntrinsic (I := I) g hEnorm p
-          (show TangentSpace I p from u)) =
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm u)) =
       B.inv (B.hom u) := congrArg B.inv (B.hom_eq hu)
-    _ = u := by simpa only [inv] using B.hom.left_inv hu
+    _ = u := B.hom.left_inv hu
 
 theorem inv_inf
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M} (B : ExpInvBranch (I := I) g hEnorm p) :
     ContMDiffOn I 𝓘(Real, E) ∞ B.inv B.dom := by
-  simpa only [inv, dom] using B.hom.symm.contMDiffOn_toFun
+  exact B.hom.contMDiffOn_invFun
 
 end ExpInvBranch
 
@@ -157,27 +159,33 @@ private theorem branch_of_inj
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {p : M} {u : E}
     (hu : Function.Injective
-      (mfderiv 𝓘(Real, E) I
+      (modelMFDerivAt (I := I)
         (fun z : E =>
           expMapIntrinsic (I := I) g hEnorm p
-            (show TangentSpace I p from z))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm z))
         u)) :
     ∃ B : ExpInvBranch (I := I) g hEnorm p, u ∈ B.hom.source := by
   classical
   let f : E → M := fun z : E =>
     expMapIntrinsic (I := I) g hEnorm p
-      (show TangentSpace I p from z)
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm z)
   have hf : ContMDiff 𝓘(Real, E) I ∞ f :=
     intrinsicFiber_smooth (I := I) g hEnorm p
-  have hDsurj : Function.Surjective (mfderiv 𝓘(Real, E) I f u) :=
-    LinearMap.surjective_of_injective hu
+  let A := modelMFDerivAt (I := I) f u
+  have hAinj : Function.Injective A := by
+    simpa only [f, A] using hu
+  have hAsurj : Function.Surjective A :=
+    LinearMap.surjective_of_injective hAinj
   let D : E ≃L[Real] E :=
-    ContinuousLinearEquiv.ofBijective (mfderiv 𝓘(Real, E) I f u)
-      (LinearMap.ker_eq_bot.mpr hu)
-      (LinearMap.range_eq_top.mpr hDsurj)
-  have hDinv : (mfderiv 𝓘(Real, E) I f u).IsInvertible := by
+    ContinuousLinearEquiv.ofBijective A
+      (LinearMap.ker_eq_bot.mpr hAinj)
+      (LinearMap.range_eq_top.mpr hAsurj)
+  have hAinv : A.IsInvertible := by
     refine ⟨D, ?_⟩
     rfl
+  have hDinv : (mfderiv 𝓘(Real, E) I f u).IsInvertible := by
+    simpa only [A, modelMFDerivAt, ContinuousLinearMap.isInvertible_comp_equiv,
+      ContinuousLinearMap.isInvertible_equiv_comp] using hAinv
   have hfu : MDifferentiableAt 𝓘(Real, E) I f u :=
     hf.contMDiffAt.mdifferentiableAt (by simp)
   have hfd_u : (fderiv Real
@@ -213,32 +221,61 @@ theorem branch_of_not_conj
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     {p : M} {u : TangentSpace I p}
-    (hu : ¬ IsConjVec (I := I) g hEnorm p (u : E)) :
+    (hu : ¬ IsConjVec (I := I) g hEnorm p
+      (tangentSpaceModelContinuousLinearEquiv (I := I) p u)) :
     ∃ B : ExpInvBranch (I := I) g hEnorm p,
-      (u : E) ∈ B.hom.source := by
+      tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source := by
   classical
   apply branch_of_inj (I := I) g hEnorm
-  simpa only [IsConjVec, not_not] using hu
+  have hu' : Function.Injective fun w : E =>
+      mfderiv 𝓘(Real, E) I
+        (fun z : E => expMapIntrinsic (I := I) g hEnorm p
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm z))
+            (tangentSpaceModelContinuousLinearEquiv (I := I) p u)
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(Real, E))
+            (tangentSpaceModelContinuousLinearEquiv (I := I) p u)).symm w) :=
+    Classical.not_not.mp (by
+      with_unfolding_all exact hu)
+  intro v w hvw
+  apply hu'
+  exact (tangentSpaceModelContinuousLinearEquiv (I := I)
+    (expMapIntrinsic (I := I) g hEnorm p
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm
+        (tangentSpaceModelContinuousLinearEquiv (I := I) p u)))).injective hvw
 
 namespace ExpInvBranch
 
 theorem not_conj
     {g : SmoothRiemannianMetric I M}
-    {hEnorm : ∀ (x : M) (w : TangentSpace I x),
-      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x w w))}
+    {hEnorm : IsMetricNorm (I := I) (M := M) g}
     {p : M} (B : ExpInvBranch (I := I) g hEnorm p)
     {u : TangentSpace I p}
-    (hu : (u : E) ∈ B.hom.source) :
-    ¬ IsConjVec (I := I) g hEnorm p (u : E) := by
+    (hu : tangentSpaceModelContinuousLinearEquiv (I := I) p u ∈ B.hom.source) :
+    ¬ IsConjVec (I := I) g hEnorm p
+      (tangentSpaceModelContinuousLinearEquiv (I := I) p u) := by
   classical
   let f : E → M := fun z : E =>
     expMapIntrinsic (I := I) g hEnorm p
-      (show TangentSpace I p from z)
-  have hloc : IsLocalDiffeomorphAt 𝓘(Real, E) I ∞ f (u : E) :=
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm z)
+  have hloc : IsLocalDiffeomorphAt 𝓘(Real, E) I ∞ f
+      (tangentSpaceModelContinuousLinearEquiv (I := I) p u) :=
     ⟨B.hom, hu, B.hom_eq⟩
-  have hinj : Function.Injective (mfderiv 𝓘(Real, E) I f (u : E)) :=
-    (hloc.mfderivToContinuousLinearEquiv (by simp)).injective
-  simpa only [IsConjVec, f, not_not] using hinj
+  let D := hloc.mfderivToContinuousLinearEquiv (by simp)
+  have hinj := D.injective
+  intro hconj
+  have hnotinj : ¬ Function.Injective fun w : E =>
+      mfderiv 𝓘(Real, E) I f (tangentSpaceModelContinuousLinearEquiv (I := I) p u)
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(Real, E))
+            (tangentSpaceModelContinuousLinearEquiv (I := I) p u)).symm w) := by
+    with_unfolding_all exact hconj
+  apply hnotinj
+  intro v w hvw
+  apply (tangentSpaceModelContinuousLinearEquiv
+    (I := 𝓘(Real, E))
+      (tangentSpaceModelContinuousLinearEquiv (I := I) p u)).symm.injective
+  exact hinj hvw
 
 end ExpInvBranch
 

@@ -80,8 +80,12 @@ private theorem moserPowerCutoff_functionApprox
           (measurable_abs.comp_aemeasurable
             (huΩ.memLp.aestronglyMeasurable.aemeasurable.max
               measurable_const.aemeasurable))).aestronglyMeasurable
-      simpa [f, moserPowerCutoff] using
-        hη.continuous.aestronglyMeasurable.mul hpow_meas
+      have hmul := hη.continuous.aestronglyMeasurable.mul hpow_meas
+      change AEStronglyMeasurable
+        (fun x => η x * |max (u x) 0| ^ (p / 2)) μ
+      convert hmul using 1
+      funext x
+      rfl
     · filter_upwards [hqual] with x hx
       by_cases hxη : x ∈ tsupport η
       · have hboundx : max (u x) 0 < N := hx hxη
@@ -273,12 +277,14 @@ private theorem tendsto_eLpNorm_sub_of_component_decomposition
       ext x
       exact hdecomp n x
     rw [hEq]
-    simpa [rhs] using eLpNorm_add_le
+    change eLpNorm
+        ((fun x => f₁ n x - g₁ x) + (fun x => f₂ n x - g₂ x)) 2 μ ≤ rhs n
+    exact eLpNorm_add_le
       (h₁mem n).aestronglyMeasurable (h₂mem n).aestronglyMeasurable (by norm_num)
   have hsum_tendsto : Tendsto rhs atTop (nhds 0) := by
     simpa [rhs] using h₁tendsto.add h₂tendsto
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hsum_tendsto
-    (fun _ => zero_le _) hbound
+    (fun _ => zero_le) hbound
 
 private theorem moserRegularCutoffTerm_integral_sq_bound
     {u η : E → ℝ} {p N Cη s : ℝ}
@@ -552,7 +558,9 @@ private theorem memLp_two_of_ae_tendsto_of_uniform_integral_sq_bound
         ∀ n, AEMeasurable (fun x => ENNReal.ofReal ((fn n x) ^ 2)) μ := by
       intro n
       exact (((hfn n).aestronglyMeasurable.aemeasurable.pow_const 2).ennreal_ofReal)
-    have hleft := MeasureTheory.lintegral_liminf_le' (μ := μ) hmeas
+    have hleft := MeasureTheory.lintegral_liminf_le'
+      (μ := μ) (u := atTop)
+      (f := fun n x => ENNReal.ofReal ((fn n x) ^ 2)) hmeas
     have hlim :
         (fun x => Filter.liminf (fun n => ENNReal.ofReal ((fn n x) ^ 2)) atTop) =ᵐ[μ]
           (fun x => ENNReal.ofReal ((f x) ^ 2)) := by
@@ -906,11 +914,11 @@ theorem moserPowerCutoff_memW1pWitness
     simpa [μ, hwPos] using
       moserPosPartWitness_restrict_grad_zero_on_nonpos
         (d := d) (Ω := Ω) Metric.isOpen_ball (Metric.ball_subset_ball hs1) hu1
-  letI : IsFiniteMeasure μ := by
+  let _ : IsFiniteMeasure μ := by
     refine ⟨?_⟩
     simpa [μ, Ω] using
       (measure_ball_lt_top (μ := volume) (x := (0 : E)) (r := s))
-  letI : IsFiniteMeasure μρ := by
+  let _ : IsFiniteMeasure μρ := by
     refine ⟨?_⟩
     simpa [μρ, Ωρ] using
       (measure_ball_lt_top (μ := volume) (x := (0 : E)) (r := ρ))
@@ -1204,7 +1212,10 @@ theorem moserPowerCutoff_memW1pWitness
   have hAsingSeq_memLp :
       ∀ n i, MemLp (AsingSeq n i) 2 μ := by
     intro n i
-    simpa [AsingSeq, Gn] using ((wfn n).weakGrad_component_memLp i).sub (hBn_memLp n i)
+    change MemLp (fun x => (wfn n).weakGrad x i - Bn n i x) 2 μ
+    convert ((wfn n).weakGrad_component_memLp i).sub (hBn_memLp n i) using 1
+    funext x
+    rfl
   have hAsingSeq_formula :
       ∀ n i x,
         AsingSeq n i x =
@@ -1275,7 +1286,10 @@ theorem moserPowerCutoff_memW1pWitness
   have hpIntρ_base :
       Integrable (fun x => |max (u x) 0| ^ p) μρ := by
     have hpIntΩ : Integrable (fun x => |max (u x) 0| ^ p) μ := by
-      simpa [μ, Ω] using hpInt
+      change Integrable
+        (fun x => |max (u x) 0| ^ p)
+        (volume.restrict (Metric.ball (0 : E) s))
+      exact hpInt
     exact hpIntΩ.mono_measure (Measure.restrict_mono_set volume hΩρ_sub_Ω)
   have hRhsDom_int :
       Integrable (fun x => (2 : ℝ) ^ p * (1 + |max (u x) 0| ^ p)) μρ := by
@@ -1331,7 +1345,8 @@ theorem moserPowerCutoff_memW1pWitness
         (fderiv ℝ η x) (EuclideanSpace.single i 1) = 0 := by
       exact fderiv_apply_zero_outside_of_tsupport_subset
         (Ω := tsupport η) (hf := hη) (hsub := subset_rfl) hxη i
-    simpa [wfn, wfnBig, fn, hηx, hfderiv_zero] using
+    simp only [wfn, MemW1pWitness.restrict]
+    simpa [wfnBig, fn, hηx, hfderiv_zero] using
       (moserExactRegPowerCutoffWitness_grad (d := d) (u := u) (η := η) (ε := moserEpsSeq n)
         (N := N) (p := p) (Cη := Cη) (moserEpsSeq_pos n) hN hu1 hη hη_bound
         hη_grad_bound x i)
@@ -1472,8 +1487,6 @@ theorem moserPowerCutoff_memW1pWitness
       hp hN_pos hη_nonneg hη_bound hqual hsublevelΩ
       (hwPos.weakGrad_component_memLp i)
       (fun n x => by
-        change AsingSeq n i x =
-          moserExactSingularFactor η u N p hwPos.weakGrad n i x
         rw [hAsingSeq_formula n i x]
         rfl)
       (fun n => hAsingSeq_memLp n i) (hAsing_memLp i)
@@ -1580,7 +1593,20 @@ theorem moserPowerCutoff_memW1pWitness
         Tendsto (fun y : Fin d → ℝ => WithLp.toLp 2 y) (nhds fun i : Fin d => gComp i x)
           (nhds (WithLp.toLp 2 fun i : Fin d => gComp i x)) :=
       (PiLp.continuous_toLp 2 (fun _ : Fin d => ℝ)).tendsto (fun i : Fin d => gComp i x)
-    simpa [G, hwv, Gn] using htoLp.comp hpi
+    have hseq :
+        (fun n => (wfn n).weakGrad x) =
+          fun n => WithLp.toLp 2 (fun i : Fin d => Gn n i x) := by
+      funext n
+      apply PiLp.ext
+      intro i
+      simp [Gn]
+    have hlimit :
+        hwv.weakGrad x = WithLp.toLp 2 (fun i : Fin d => gComp i x) := by
+      apply PiLp.ext
+      intro i
+      simp [hwv, G]
+    rw [hseq, hlimit]
+    exact htoLp.comp hpi
   have hFatou :
       ∫⁻ x, ENNReal.ofReal (‖hwv.weakGrad x‖ ^ 2) ∂μ ≤
         atTop.liminf (fun n => ∫⁻ x, ENNReal.ofReal (‖(wfn n).weakGrad x‖ ^ 2) ∂μ) := by
@@ -1591,7 +1617,9 @@ theorem moserPowerCutoff_memW1pWitness
           AEMeasurable (fun x => ‖(wfn n).weakGrad x‖ ^ 2) μ := by
         exact (wfn n).weakGrad_norm_memLp.aestronglyMeasurable.aemeasurable.pow_const 2
       exact hsq_meas.ennreal_ofReal
-    have hleft := MeasureTheory.lintegral_liminf_le' (μ := μ) hmeas
+    have hleft := MeasureTheory.lintegral_liminf_le'
+      (μ := μ) (u := atTop)
+      (f := fun n x => ENNReal.ofReal (‖(wfn n).weakGrad x‖ ^ 2)) hmeas
     have hlim :
         (fun x =>
           Filter.liminf (fun n => ENNReal.ofReal (‖(wfn n).weakGrad x‖ ^ 2)) atTop) =ᵐ[μ]
@@ -1615,7 +1643,8 @@ theorem moserPowerCutoff_memW1pWitness
     have hmainρ :
         ∫ x in Ωρ, ‖(wfn n).weakGrad x‖ ^ 2 ∂volume ≤
           CE * ∫ x in Ωρ, (moserEpsSeq n + |max (u x) 0|) ^ p ∂volume := by
-      simpa [CE, Ωρ, wfn, wfnBig, fn] using
+      simp only [wfn, MemW1pWitness.restrict]
+      simpa [CE, Ωρ, wfnBig, fn] using
         (moser_regularized_energy_bound (d := d) A (u := u) (η := η) (p := p) (ρ := ρ)
           (Cη := Cη) (ε := moserEpsSeq n) (N := N) hp hρ hρ1 (moserEpsSeq_pos n) hN
           hsub hu1 hη hη_nonneg hη_bound hη_grad_bound hη_sub_ρ hqualρ

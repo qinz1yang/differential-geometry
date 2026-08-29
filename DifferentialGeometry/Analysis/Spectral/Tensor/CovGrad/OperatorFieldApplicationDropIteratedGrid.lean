@@ -37,7 +37,7 @@ private theorem riemannianFiberNormSq_toSection_heq_congr_leibnizTower
   subst h; rw [eq_of_heq hYZ]
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private theorem riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_drop (g : SmoothRiemannianMetric I M)
     (s m : ℕ) (W : SmoothCcTensor g 0 s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 ((s + 1) + m) x
@@ -53,7 +53,7 @@ private lemma sum_range_shift_le_drop (n : ℕ) (f : ℕ → ℝ) (hf : ∀ i, 0
   exact le_add_of_nonneg_right (hf 0)
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_covGrad_comm (g : SmoothRiemannianMetric I M)
     (s m : ℕ) (W : SmoothCcTensor g 0 s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 ((s + 1) + m) x
@@ -93,7 +93,7 @@ def operatorFieldApplicationLeibnizTower (g : SmoothRiemannianMetric I M) (b₀ 
         castCcTensorRank g 0 (by omega : (s₀ + (w + 1)) + p = (s₀ + w) + (p + 1))
           (operatorFieldApplicationLeibnizTower g b₀ s₀ C p (w + 1) (covGrad (I := I) (M := M) g 0 (b₀ + w) W))
 
-omit [BoundarylessManifold I M] [CompleteSpace E] in
+omit [BoundarylessManifold I M] [CompleteSpace E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem DropTower_covGrad_op (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
     (C : SmoothCcTensor g b₀ s₀) (p w : ℕ) (W : SmoothCcTensor g 0 (b₀ + w)) :
@@ -120,7 +120,7 @@ def DropTowerNormalForm (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
             (iteratedCovGrad g 0 (b₀ + w) k W)
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem covGrad_dropNormalForm_sum (g : SmoothRiemannianMetric I M) (b₀ s₀ p w : ℕ)
     (Ψ : (k : ℕ) → SmoothCcTensor g ((b₀ + w) + k) ((s₀ + w) + p))
     (W : SmoothCcTensor g 0 (b₀ + w)) :
@@ -144,7 +144,7 @@ theorem covGrad_dropNormalForm_sum (g : SmoothRiemannianMetric I M) (b₀ s₀ p
   rfl
 
 omit [BoundarylessManifold I M] [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem castRankCc_operatorFieldComposition_drop_iteratedCovGrad_covGrad (g : SmoothRiemannianMetric I M)
     (b₀ s₀ p w k : ℕ)
     (Ψ : SmoothCcTensor g ((b₀ + (w + 1)) + k) ((s₀ + (w + 1)) + p))
@@ -168,7 +168,7 @@ theorem castRankCc_operatorFieldComposition_drop_iteratedCovGrad_covGrad (g : Sm
     (iteratedCovGrad g 0 (b₀ + (w + 1)) k (covGrad g 0 (b₀ + w) W))
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem dropNormalForm_succ (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
     (C : SmoothCcTensor g b₀ s₀) (p : ℕ)
     (hp : ∀ w, DropTowerNormalForm (I := I) (M := M) g b₀ s₀ C p w) (w : ℕ) :
@@ -278,7 +278,7 @@ theorem dropNormalForm_succ (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
       (iteratedCovGrad g 0 (b₀ + w) k W)) p]
   abel
 
-omit [BoundarylessManifold I M] [CompleteSpace E] in
+omit [BoundarylessManifold I M] [CompleteSpace E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem dropNormalForm_zero (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
     (C : SmoothCcTensor g b₀ s₀) (w : ℕ) :
@@ -290,7 +290,7 @@ theorem dropNormalForm_zero (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
   rfl
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem dropTower_normalForm (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
     (C : SmoothCcTensor g b₀ s₀) (p : ℕ) :
     ∀ w : ℕ, DropTowerNormalForm (I := I) (M := M) g b₀ s₀ C p w := by
@@ -320,7 +320,7 @@ def dropTowerPsi (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
                 (by omega : (s₀ + (w + 1)) + p = (s₀ + w) + (p + 1))
                 (dropTowerPsi g b₀ s₀ C p (w + 1) k)))
 
-omit [BoundarylessManifold I M] [CompleteSpace E] in
+omit [BoundarylessManifold I M] [CompleteSpace E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem dropTowerPsi_zero (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
     (C : SmoothCcTensor g b₀ s₀) (w : ℕ) :
@@ -331,7 +331,7 @@ theorem dropTowerPsi_zero (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
   rfl
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem dropTowerPsi_spec (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
     (C : SmoothCcTensor g b₀ s₀) (p w : ℕ) (W : SmoothCcTensor g 0 (b₀ + w)) :
     operatorFieldApplicationLeibnizTower (I := I) (M := M) g b₀ s₀ C p w W =
@@ -468,7 +468,7 @@ theorem dropFibreSup_fibre_le (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
       dropFibreSup (I := I) (M := M) g b₀ s₀ C p w k :=
   le_ciSup (dropFibreSup_bddAbove (I := I) (M := M) g b₀ s₀ C p w k) x
 
-omit [BoundarylessManifold I M] [CompleteSpace E] in
+omit [BoundarylessManifold I M] [CompleteSpace E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem dropFibreSup_nonneg (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
     (C : SmoothCcTensor g b₀ s₀) (p w k : ℕ) :
@@ -476,7 +476,7 @@ theorem dropFibreSup_nonneg (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
   Real.iSup_nonneg fun x => riemannianFiberNormSq_nonneg (I := I) (M := M) g ((b₀ + w) + k)
     ((s₀ + w) + p) x ((dropTowerPsi (I := I) (M := M) g b₀ s₀ C p w k).toSection x)
 
-omit [BoundarylessManifold I M] [CompleteSpace E] in
+omit [BoundarylessManifold I M] [CompleteSpace E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem dropFibreSup_le_of_fibreNormSup (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
     (C : SmoothCcTensor g b₀ s₀) (p w k : ℕ) {K : ℝ} (hK_nonneg : 0 ≤ K)
@@ -508,7 +508,7 @@ def dropKappa (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ) (C : SmoothCcTe
   fun p w => (p + 1 : ℝ) * ∑ k ∈ Finset.range (p + 1), dropFibreSup (I := I) (M := M) g b₀ s₀ C p w
                k
 
-omit [BoundarylessManifold I M] [CompleteSpace E] in
+omit [BoundarylessManifold I M] [CompleteSpace E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem dropKappa_eq_explicit (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
     (C : SmoothCcTensor g b₀ s₀) (p w : ℕ) :
@@ -516,7 +516,7 @@ theorem dropKappa_eq_explicit (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
       (p + 1 : ℝ) * ∑ k ∈ Finset.range (p + 1), dropFibreSup (I := I) (M := M) g b₀ s₀ C p w k :=
   rfl
 
-omit [BoundarylessManifold I M] [CompleteSpace E] in
+omit [BoundarylessManifold I M] [CompleteSpace E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem dropKappa_nonneg (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
     (C : SmoothCcTensor g b₀ s₀) (p w : ℕ) :
@@ -524,7 +524,7 @@ theorem dropKappa_nonneg (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
   mul_nonneg (by positivity)
     (Finset.sum_nonneg fun k _ => dropFibreSup_nonneg (I := I) (M := M) g b₀ s₀ C p w k)
 
-omit [BoundarylessManifold I M] [CompleteSpace E] in
+omit [BoundarylessManifold I M] [CompleteSpace E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem dropKappa_le_of_fibreNormSup (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
     (C : SmoothCcTensor g b₀ s₀) (p w : ℕ) (S : ℕ → ℕ → ℕ → ℝ)
@@ -741,7 +741,7 @@ theorem dropTower_riemannianFiberNormSq_iteratedCovGrad_grid (g : SmoothRiemanni
       exact add_le_add (mul_le_mul_of_nonneg_left hA (by norm_num))
         (mul_le_mul_of_nonneg_left hB (by norm_num))
 
-omit [BoundarylessManifold I M] [CompleteSpace E] in
+omit [BoundarylessManifold I M] [CompleteSpace E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem dropTowerOp_zero_eq_operatorFieldApply (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
     (C : SmoothCcTensor g b₀ s₀) (W : SmoothCcTensor g 0 b₀) :

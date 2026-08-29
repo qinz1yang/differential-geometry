@@ -251,7 +251,9 @@ theorem deTurckRemainderOnLowerState_outer_bound
         dist (d : lowerState (I := I) (M := M) g₀ 1 R) z + 1
       linarith
     apply (hK.continuousOn d hd).continuousAt
-    simpa only [Metric.mem_closedBall, Set.mem_setOf_eq] using hpre
+    change ((↑) : D → lowerState (I := I) (M := M) g₀ 1 R) ⁻¹'
+      Metric.closedBall z r ∈ nhds d
+    exact hpre
   have hcont := dense_cont_on_balls hD F z hball
   have hfull := dense_tame_extend hD F z hball e continuous_subtype_val J
     Ctop (B0 Q) (B1 Q) Q htame

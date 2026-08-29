@@ -6,7 +6,6 @@ open DifferentialGeometry.Tensor.Multilinear
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -26,11 +25,11 @@ theorem triv_coord_domDomCongr {s s' d : ℕ}
     (e : Fin s ≃ Fin s')
     (idx : Fin s' → Fin d) (x₀ x : B)
     (α : Bundle.continuousMultilinearMap 𝕜 s F E x) :
-    (continuousMultilinearMap_basis b s').repr
+    (continuousMultilinearMapBasis b s').repr
       (trivializationAt (ContinuousMultilinearMap 𝕜 (fun _ : Fin s' => F) 𝕜)
         (fun x => Bundle.continuousMultilinearMap 𝕜 s' F E x) x₀
         ⟨x, ContinuousMultilinearMap.domDomCongr e α⟩).2 idx =
-    (continuousMultilinearMap_basis b s).repr
+    (continuousMultilinearMapBasis b s).repr
       (trivializationAt (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
         (fun x => Bundle.continuousMultilinearMap 𝕜 s F E x) x₀ ⟨x, α⟩).2
         (idx ∘ e) := by
@@ -129,7 +128,7 @@ theorem product_domDomCongr_left {s s' q : ℕ} (e : Fin s ≃ Fin s')
           (product (IB := IB) n α β) := by
   refine DFunLike.ext _ _ fun x => ?_
   ext V
-  change Bundle.continuousMultilinearMap.product_fun
+  change Bundle.continuousMultilinearMap.productFun
       ((domDomCongr (IB := IB) n e α) x) (β x) V = _
   rw [domDomCongr_apply, Bundle.continuousMultilinearMap.product_fun_apply,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -137,7 +136,7 @@ theorem product_domDomCongr_left {s s' q : ℕ} (e : Fin s ≃ Fin s')
       (finSumFinEquiv.symm.trans
         ((Equiv.sumCongr e (Equiv.refl (Fin q))).trans finSumFinEquiv))
       (product (IB := IB) n α β)) x V
-    = Bundle.continuousMultilinearMap.product_fun (α x) (β x)
+    = Bundle.continuousMultilinearMap.productFun (α x) (β x)
         (fun i => V (finSumFinEquiv (Equiv.sumCongr e (Equiv.refl (Fin q))
           (finSumFinEquiv.symm i)))) from rfl]
   rw [Bundle.continuousMultilinearMap.product_fun_apply]

@@ -6,7 +6,6 @@ import Mathlib.Geometry.Manifold.VectorBundle.Hom
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry.Geometry.Curvature
@@ -74,7 +73,7 @@ theorem tensor0SFamilyContinuousOnSet_of_chartComp
             = (A q.1.1 q.2).compContinuousLinearMap
                 (fun _ : Fin s =>
                   (trivializationAt E (TangentSpace I) q₀.2).symmL Real q.2) from rfl]
-      rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
+      rfl
     rw [hpt]
     exact (hcomp q₀.2 idx).continuousAt hopen
   have hsymm :=
@@ -177,8 +176,11 @@ private lemma inCoordinates_metric_eq_chartGram_sum
     (E₁ := TangentSpace I) (E₂ := TangentSpace I) (E₃ := Bundle.Trivial M ℝ)
     (x₀ := α) (x := x) (ϕ := g.inner x) (v := v) (w := w) hx hx hxR]
   rw [(trivializationAt ℝ (Bundle.Trivial M ℝ) α).coe_linearMapAt_of_mem hxR]
+  simp only [Bundle.Trivial.fiberBundle_trivializationAt', Bundle.Trivial.trivialization_apply,
+    Integral.Measure.chartGramMatrix_apply]
   set e := trivializationAt E (TangentSpace I) α with he
-  change g.inner x (e.symmL ℝ x v) (e.symmL ℝ x w) = _
+  rw [← Bundle.Trivialization.symmL_apply (R := ℝ) e hx v,
+    ← Bundle.Trivialization.symmL_apply (R := ℝ) e hx w]
   set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ E := chartModelBasis E with hb
   have hvdec : v = ∑ i, b.repr v i • b i := (b.sum_repr v).symm
   have hwdec : w = ∑ j, b.repr w j • b j := (b.sum_repr w).symm
@@ -199,9 +201,9 @@ private lemma inCoordinates_metric_eq_chartGram_sum
     rw [map_sum]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [map_smul]
-  rw [hL, ContinuousLinearMap.sum_apply]
+  rw [hL, sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [smul_apply, smul_eq_mul]
   rw [map_sum, Finset.mul_sum]
   refine Finset.sum_congr rfl (fun j _ => ?_)
   rw [map_smul, smul_eq_mul, g_inner_eq_chartGramMatrix_basis]
@@ -289,7 +291,7 @@ theorem pullback
     (hN := fun x₀ => (Trivialization.open_baseSet _).mem_nhds
       (FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) x₀))
   intro x₀ idx
-  rw [continuousOn_iff_continuous_restrict]
+  rw [continuousOn_iff_continuous_domRestrict]
   have hslot : ∀ k : Fin s, Continuous
       (fun p : {q : {t : Real // t ∈ K} × M //
             q.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet} =>
@@ -333,13 +335,14 @@ theorem restrictOpen
     (U : TopologicalSpace.Opens M)
     [IsManifold I 1 U] :
     tensor0SFamilyContinuousOnSet (I := I) (M := U) s K
-      (fun t (x : U) => A t (x : M)) := by
+      (fun t (x : U) => (A t (x : M)).compContinuousLinearMap
+        (fun _ : Fin s => mfderiv I I (Subtype.val : U → M) x)) := by
   apply tensor0SFamilyContinuousOnSet_of_chartBasisComp (M := U)
     (N := fun x₀ => (trivializationAt E (TangentSpace I) x₀).baseSet)
     (hN := fun x₀ => (Trivialization.open_baseSet _).mem_nhds
       (FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) x₀))
   intro x₀ idx
-  rw [continuousOn_iff_continuous_restrict]
+  rw [continuousOn_iff_continuous_domRestrict]
   have hslot : ∀ k : Fin s, Continuous
       (fun p : {q : {t : Real // t ∈ K} × U //
             q.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet} =>
@@ -374,7 +377,7 @@ theorem restrictOpen
       hslot
   refine hev.congr ?_
   intro p
-  simp only [Set.restrict_apply, mfderiv_subtype_val_apply]
+  simp only [Set.domRestrict_apply]
   rfl
 
 end tensor0SFamilyContinuousOnSet

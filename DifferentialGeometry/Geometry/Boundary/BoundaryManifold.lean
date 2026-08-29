@@ -7,6 +7,7 @@ import Mathlib.Topology.Compactness.SigmaCompact
 
 noncomputable section
 
+
 open Set Function Topology
 open scoped Manifold ContDiff
 
@@ -106,7 +107,7 @@ theorem extChart_mem_frontier_of_mem_source
   have hInRange : I (chartAt H (x : M) (y : M)) ∈ Set.range I := mem_range_self _
   have hClosure : I (chartAt H (x : M) (y : M)) ∈ closure (Set.range I) := subset_closure hInRange
   have hC' : I (chartAt H (x : M) (y : M)) ∉ frontier (Set.range I) := hC
-  rw [frontier, Set.mem_diff] at hC'
+  rw [frontier, Set.mem_sdiff] at hC'
   push Not at hC'
   have hI_int : I (chartAt H (x : M) (y : M)) ∈ interior (Set.range I) := hC' hClosure
   have h_target_int :
@@ -137,6 +138,7 @@ theorem boundaryChartInvFun_val_of_mem_target
     {z : hI.boundaryH} (hz : z ∈ boundaryChartTarget (I := I) x) :
     ((boundaryChartInvFun (I := I) x z) : M) =
       (chartAt H (x : M)).symm (hI.inclH z) := by
+  classical
   unfold boundaryChartInvFun
   have hz_target : hI.inclH z ∈ (chartAt H (x : M)).target := hz
   have h_pre_in_source : (chartAt H (x : M)).symm (hI.inclH z) ∈
@@ -171,7 +173,7 @@ theorem boundaryChartInvFun_val_of_mem_target
       exact hz_target
     have h_closure : I (chartAt H (x : M) ((chartAt H (x : M)).symm (hI.inclH z))) ∈
         closure ((chartAt H (x : M)).extend I).target := subset_closure h_in_target
-    rw [frontier, Set.mem_diff] at hC
+    rw [frontier, Set.mem_sdiff] at hC
     push Not at hC
     have h_int : I (chartAt H (x : M) ((chartAt H (x : M)).symm (hI.inclH z))) ∈
         interior ((chartAt H (x : M)).extend I).target := hC h_closure
@@ -183,7 +185,14 @@ theorem boundaryChartInvFun_val_of_mem_target
   have h_isBP : I.IsBoundaryPoint ((chartAt H (x : M)).symm (hI.inclH z)) :=
     h_iff.mpr hExtFrontier
   have h_in_boundary : (chartAt H (x : M)).symm (hI.inclH z) ∈ I.boundary M := h_isBP
-  rw [dif_pos h_in_boundary]
+  have hdif :
+      (if h : (chartAt H (x : M)).symm (hI.inclH z) ∈ I.boundary M then
+          ⟨(chartAt H (x : M)).symm (hI.inclH z), h⟩
+        else x) =
+        (⟨(chartAt H (x : M)).symm (hI.inclH z), h_in_boundary⟩ :
+          BoundaryManifold I M) :=
+    dif_pos h_in_boundary
+  exact congrArg Subtype.val hdif
 
 theorem boundaryChartFun_mapsTo [Nonempty hI.boundaryH]
     (x : BoundaryManifold I M) :
@@ -201,7 +210,7 @@ theorem boundaryChartInvFun_mapsTo
       (boundaryChartSource (I := I) x) := by
   intro z hz
   unfold boundaryChartSource
-  rw [Set.mem_setOf_eq, boundaryChartInvFun_val_of_mem_target (I := I) x hz]
+  rw [Set.mem_ofPred_eq, boundaryChartInvFun_val_of_mem_target (I := I) x hz]
   exact (chartAt H (x : M)).map_target hz
 
 theorem boundaryChart_left_inv [Nonempty hI.boundaryH]
@@ -246,7 +255,7 @@ theorem continuousOn_boundaryChartFun [Nonempty hI.boundaryH]
 theorem continuousOn_boundaryChartInvFun
     (x : BoundaryManifold I M) :
     ContinuousOn (boundaryChartInvFun (I := I) x) (boundaryChartTarget (I := I) x) := by
-  rw [continuousOn_iff_continuous_restrict]
+  rw [continuousOn_iff_continuous_domRestrict]
   have h_underlying : Continuous
       (fun w : (boundaryChartTarget (I := I) x) =>
         (chartAt H (x : M)).symm (hI.inclH (w : hI.boundaryH))) := by
@@ -367,13 +376,13 @@ instance chartedSpace : ChartedSpace hI.boundaryH (BoundaryManifold I M) where
   chartAt x := defaultBoundaryChart (I := I) x
   mem_chart_source := fun x => by
     by_cases h : Nonempty hI.boundaryH
-    · haveI : Nonempty hI.boundaryH := h
+    · have : Nonempty hI.boundaryH := h
       rw [defaultBoundaryChart_eq_boundaryChart (I := I) x]
       change x ∈ (boundaryChart (I := I) x).source
       rw [boundaryChart_source_eq]
       exact mem_boundaryChartSource_self (I := I) x
-    · haveI : IsEmpty hI.boundaryH := not_nonempty_iff.mp h
-      haveI : IsEmpty (BoundaryManifold I M) := isEmpty_of_isEmpty_boundaryH (I := I)
+    · have : IsEmpty hI.boundaryH := not_nonempty_iff.mp h
+      have : IsEmpty (BoundaryManifold I M) := isEmpty_of_isEmpty_boundaryH (I := I)
       exact (IsEmpty.false x).elim
   chart_mem_atlas := fun x => ⟨x, rfl⟩
 
@@ -577,7 +586,7 @@ theorem contDiffOn_boundaryChart_trans [Nonempty hI.boundaryH]
 
 instance isManifold : IsManifold hI.boundaryI ∞ (BoundaryManifold I M) := by
   by_cases h : Nonempty hI.boundaryH
-  · haveI hN : Nonempty hI.boundaryH := h
+  · have hN : Nonempty hI.boundaryH := h
     apply isManifold_of_contDiffOn
     intro e e' he he'
     rw [chartedSpace_atlas (I := I) (M := M)] at he he'
@@ -589,8 +598,8 @@ instance isManifold : IsManifold hI.boundaryI ∞ (BoundaryManifold I M) := by
     subst hx'
     subst hx
     exact contDiffOn_boundaryChart_trans (I := I) x x'
-  · haveI : IsEmpty hI.boundaryH := not_nonempty_iff.mp h
-    haveI : IsEmpty (BoundaryManifold I M) := isEmpty_of_isEmpty_boundaryH (I := I)
+  · have : IsEmpty hI.boundaryH := not_nonempty_iff.mp h
+    have : IsEmpty (BoundaryManifold I M) := isEmpty_of_isEmpty_boundaryH (I := I)
     infer_instance
 
 end BoundaryManifold

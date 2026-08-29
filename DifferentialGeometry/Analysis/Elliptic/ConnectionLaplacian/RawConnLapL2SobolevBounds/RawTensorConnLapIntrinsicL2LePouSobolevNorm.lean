@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter MeasureTheory
 open scoped Manifold Topology Bundle ContDiff BigOperators ENNReal NNReal
@@ -45,7 +44,7 @@ local notation "EuclN" =>
   EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private noncomputable def tensorPouSobolevNormSqSum_one
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (T : SmoothCcTensor g r s) : ℝ≥0∞ :=
   ∑' α : M,
@@ -64,11 +63,14 @@ private noncomputable def tensorPouSobolevNormSqSum_one
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorPouSobolevNorm_one_sq_eq
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [hcompact : CompactSpace M] [hboundary : I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (T : SmoothCcTensor g r s) :
     (tensorPouSobolevNorm (I := I) (M := M) g 1 T) ^ 2 =
       tensorPouSobolevNormSqSum_one (I := I) (M := M) g T := by
+  let _ := hcompact
+  let _ := hboundary
   classical
   rw [tensorPouSobolevNorm_eq]
   set BigSum : ℝ≥0∞ :=
@@ -95,11 +97,12 @@ private lemma tensorPouSobolevNorm_one_sq_eq
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorPouSobolevNormSqSum_one_eq_finsetSum
-    [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [hcompact : CompactSpace M] [hboundary : I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (T : SmoothCcTensor g r s) :
     tensorPouSobolevNormSqSum_one (I := I) (M := M) g T =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
             (Fin s → Fin (Module.finrank ℝ E)),
           ∑ j ∈ Finset.range 3,
@@ -112,9 +115,11 @@ private lemma tensorPouSobolevNormSqSum_one_eq_finsetSum
                         ∘ (extChartAt I α).symm)
                       ((toEuclidean (E := E)).symm y)‖ ^ 2)
               ∂(volume : Measure EuclN) := by
+  let _ := hcompact
+  let _ := hboundary
   classical
   unfold tensorPouSobolevNormSqSum_one
-  rw [tsum_eq_sum (s := chartAtlasPOU_finset (I := I) (M := M))]
+  rw [tsum_eq_sum (s := chartAtlasPOUFinset (I := I) (M := M))]
   intro α hα
   have hρ_zero : ∀ x : M,
       (chartAtlasPOU I M α : M → ℝ) x = 0 := fun x =>
@@ -196,7 +201,7 @@ private noncomputable def compNormSqOnM
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma compNormSqOnM_measurable
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T₀ : SmoothCcTensor g r s)
     (α : M) (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
@@ -337,14 +342,14 @@ private lemma per_alpha_measurable_lintegral_le
     rw [h_integrand_eq]
     rw [lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
     congr 1
-    rw [lintegral_finset_sum _ (fun Idx _ =>
+    rw [lintegral_finsetSum _ (fun Idx _ =>
       Finset.measurable_sum _ (fun Jdx _ =>
         Finset.measurable_sum _ (fun j _ => hSum_meas Idx Jdx j)))]
     refine Finset.sum_congr rfl (fun Idx _ => ?_)
-    rw [lintegral_finset_sum _ (fun Jdx _ =>
+    rw [lintegral_finsetSum _ (fun Jdx _ =>
       Finset.measurable_sum _ (fun j _ => hSum_meas Idx Jdx j))]
     refine Finset.sum_congr rfl (fun Jdx _ => ?_)
-    exact lintegral_finset_sum _ (fun j _ => hSum_meas Idx Jdx j)
+    exact lintegral_finsetSum _ (fun j _ => hSum_meas Idx Jdx j)
   change ∫⁻ b, ENNReal.ofReal (rho b * CB * BigSum_M b) ∂hμ_g ≤ _
   rw [h_int_rw]
   have hper_summand_le : ∀ Idx Jdx j,
@@ -516,7 +521,7 @@ private lemma per_alpha_measurable_lintegral_le
                   ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ≤
               ENNReal.ofReal Msup :=
           ENNReal.ofReal_le_ofReal h_density_le_Msup
-        exact mul_le_mul_of_nonneg_right h_density_le_E (zero_le _)
+        exact mul_le_mul_of_nonneg_right h_density_le_E (zero_le)
     have h_int_density_bound :
         (∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
             ENNReal.ofReal
@@ -642,7 +647,7 @@ theorem rawTensorConnLap_intrinsicL2_le_tensorPouSobolevNorm_sq
         C * (tensorPouSobolevNorm (I := I) (M := M) g 1 T₀) ^ 2 := by
   classical
   set n := Module.finrank ℝ E with hn_def
-  set S : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hS_def
+  set S : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have h_bridge_choose :
       ∀ α : M, ∃ CB : ℝ, 0 ≤ CB ∧
         ∀ T₀' : SmoothCcTensor g r s,
@@ -853,7 +858,7 @@ theorem rawTensorConnLap_intrinsicL2_le_tensorPouSobolevNorm_sq
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
         ∑ α ∈ S, ∫⁻ b, H_alpha α b
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
-    lintegral_finset_sum S (fun α _ => hH_alpha_meas α)
+    lintegral_finsetSum S (fun α _ => hH_alpha_meas α)
   rw [h_sum_swap] at h_int_M_le
   have h_per_α_int : ∀ α ∈ S,
       ∫⁻ b, H_alpha α b

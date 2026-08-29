@@ -162,7 +162,8 @@ lemma chartBasisVecFiber_pullback
   have hx1' : x ∈ T₁.baseSet := hx1
   have hdef1 :
       chartBasisVecFiber (I := I) x₁ i x =
-        T₁.symm x ((chartModelBasis E) i) := rfl
+        T₁.symm x ((chartModelBasis E) i) := by
+    rw [chartBasisVecFiber, T₁.symmL_apply hx1']
   have hcompeq' :=
     Bundle.Trivialization.comp_continuousLinearEquivAt_eq_coord_change
       (R := ℝ) (F := E) (E := (TangentSpace I : M → Type _))
@@ -205,13 +206,15 @@ lemma chartBasisVecFiber_pullback
         ⟨hx1', hx0'⟩ _
   rw [hdef1, hequiv, hcc, tangentCoordChange_chartModelBasis_eq_sum (I := I) x₀ x₁ x i]
   have hsymmL : (T₀.symm x : E → TangentSpace I x) =
-      (T₀.symmL ℝ x : E →L[ℝ] TangentSpace I x) := rfl
+      (T₀.symmL ℝ x : E →L[ℝ] TangentSpace I x) := by
+    funext v
+    exact (T₀.symmL_apply hx0' v).symm
   rw [hsymmL]
   rw [map_sum]
   refine Finset.sum_congr rfl ?_
   intro k _
   rw [map_smul]
-  rfl
+  rw [chartBasisVecFiber, T₀.symmL_apply hx0']
 
 lemma chartGramMatrix_pullback_eq_sum
     (g : SmoothRiemannianMetric I M) (x₀ x₁ : M) {x : M}
@@ -242,10 +245,10 @@ lemma chartGramMatrix_pullback_eq_sum
     intro k _
     rw [map_smul]
   rw [hL]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl ?_
   intro k _
-  rw [ContinuousLinearMap.smul_apply]
+  rw [smul_apply]
   have hR :
       g.inner x (chartBasisVecFiber (I := I) x₀ k x)
           (∑ l, transitionMatrix (I := I) x₀ x₁ x l j •
@@ -879,7 +882,7 @@ lemma tsum_integral_pou_eq_subtype
   refine tsum_subtype_eq_of_support_subset (s := {α : M | (Function.support (ρ α)).Nonempty})
     (f := fun α => ∫⁻ x, ENNReal.ofReal (ρ α x) * F x ∂(cLM α)) ?_
   intro α hα
-  simp only [Set.mem_setOf_eq]
+  simp only [Set.mem_ofPred_eq]
   by_contra hne
   rw [Set.not_nonempty_iff_eq_empty] at hne
   exact hα (lintegral_ofReal_pou_zero_of_support_empty ρ α hne (cLM α) F)
@@ -933,9 +936,9 @@ theorem riemannianMeasure_eq_of_pou_independent
   rw [riemannianMeasure_lintegral_eq (I := I) g ρ' hF]
   set Tρ : Set M := {α : M | (Function.support (ρ α)).Nonempty}
   set Tρ' : Set M := {β : M | (Function.support (ρ' β)).Nonempty}
-  haveI hCρ : Countable Tρ :=
+  have hCρ : Countable Tρ :=
     (countable_nonempty_support_of_pou (I := I) ρ).to_subtype
-  haveI hCρ' : Countable Tρ' :=
+  have hCρ' : Countable Tρ' :=
     (countable_nonempty_support_of_pou (I := I) ρ').to_subtype
   rw [tsum_integral_pou_eq_subtype (I := I) ρ (chartLocalMeasure (I := I) g) F]
   rw [tsum_integral_pou_eq_subtype (I := I) ρ' (chartLocalMeasure (I := I) g) F]
@@ -1036,7 +1039,7 @@ lemma finBasis_repr_sum
             • (Module.finBasis ℝ E) k :=
   (((Module.finBasis ℝ E).sum_repr (L ((Module.finBasis ℝ E) i)))).symm
 
-def transitionMatrix_gen (x₀ x₁ : M) (x : M) :
+def transitionMatrixGen (x₀ x₁ : M) (x : M) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun k i =>
     (Module.finBasis ℝ E).repr
@@ -1044,25 +1047,25 @@ def transitionMatrix_gen (x₀ x₁ : M) (x : M) :
 
 @[simp] lemma transitionMatrix_apply_gen (x₀ x₁ : M) (x : M)
     (k i : Fin (Module.finrank ℝ E)) :
-    transitionMatrix_gen (I := I) x₀ x₁ x k i =
+    transitionMatrixGen (I := I) x₀ x₁ x k i =
       (Module.finBasis ℝ E).repr
         ((tangentCoordChange I x₁ x₀ x) ((Module.finBasis ℝ E) i)) k := rfl
 
 lemma tangentCoordChange_finBasis_eq_sum
     (x₀ x₁ : M) (x : M) (i : Fin (Module.finrank ℝ E)) :
     (tangentCoordChange I x₁ x₀ x) ((Module.finBasis ℝ E) i) =
-      ∑ k, transitionMatrix_gen (I := I) x₀ x₁ x k i • (Module.finBasis ℝ E) k :=
+      ∑ k, transitionMatrixGen (I := I) x₀ x₁ x k i • (Module.finBasis ℝ E) k :=
   finBasis_repr_sum (tangentCoordChange I x₁ x₀ x) i
 
 lemma transitionMatrix_det_gen (x₀ x₁ : M) (x : M) :
-    (transitionMatrix_gen (I := I) x₀ x₁ x).det =
+    (transitionMatrixGen (I := I) x₀ x₁ x).det =
       (tangentCoordChange I x₁ x₀ x : E →L[ℝ] E).det := by
   have hL :
-      transitionMatrix_gen (I := I) x₀ x₁ x =
+      transitionMatrixGen (I := I) x₀ x₁ x =
         LinearMap.toMatrix (Module.finBasis ℝ E) (Module.finBasis ℝ E)
           (tangentCoordChange I x₁ x₀ x : E →L[ℝ] E).toLinearMap := by
     ext k i
-    simp [transitionMatrix_gen, LinearMap.toMatrix_apply]
+    simp [transitionMatrixGen, LinearMap.toMatrix_apply]
   rw [hL]
   rw [LinearMap.det_toMatrix]
 

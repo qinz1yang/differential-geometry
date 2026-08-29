@@ -52,8 +52,9 @@ theorem ricciAt_continuousOn_time
           · simpa using (continuous_const : Continuous (fun p : K =>
               (⟨x, w⟩ : TangentBundle I M))))
     simpa [K, vec2] using heval
-  rw [continuousOn_iff_continuous_restrict]
-  simpa [K, vec2] using hcont
+  rw [continuousOn_iff_continuous_domRestrict]
+  change Continuous (fun p : K => S.ricciAt p.1 x (vec2 v w))
+  exact hcont.congr fun _ => rfl
 
 noncomputable def solutionUhlenbeckIota
     {T : ℝ} (hT : 0 < T) [I.Boundaryless]

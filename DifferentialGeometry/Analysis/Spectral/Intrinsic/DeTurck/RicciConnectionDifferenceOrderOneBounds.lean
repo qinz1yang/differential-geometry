@@ -38,20 +38,20 @@ private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
 private local instance oneTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance oneTensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance oneTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance oneTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 private local instance oneTensorRSNormedAddCommGroupOfRiemannianBundle
     (r s : ℕ) [Bundle.RiemannianBundle (fun y : M => TensorRSSpace r s I y)] (x : M) :
@@ -157,6 +157,7 @@ private theorem oneKer_split
         oneArm3 (I := I) (M := M) g gm +
         oneArm4 (I := I) (M := M) g gm) := rfl
 
+omit [SigmaCompactSpace M] in
 private theorem oneArm_riemannianFiberNormSq
     (g gm : SmoothRiemannianMetric I M)
     (sigma : Equiv.Perm (Fin 4)) (q : Nat) (x : M) :
@@ -187,6 +188,7 @@ private theorem oneArm_riemannianFiberNormSq
             (connectionDifferenceContravariantInsertionField (I := I) g gm).toSection y) d) := rfl
   rw [hy, slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel]
 
+omit [SigmaCompactSpace M] in
 private theorem oneFull_riemannianFiberNormSq
     (g gm : SmoothRiemannianMetric I M)
     (sigma : Equiv.Perm (Fin 4)) (rho : Equiv.Perm (Fin 3))
@@ -225,6 +227,7 @@ private theorem one_riemannianFiberNormSq_neg
     tensorInnerPointwise_smul_left, tensorInnerPointwise_smul_right]
   ring
 
+omit [SigmaCompactSpace M] in
 theorem linearizedRicciConnectionDifferenceOrderOneKernel_fiberNormSq_le
     (g gm : SmoothRiemannianMetric I M) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 3 4 x
@@ -277,6 +280,7 @@ theorem linearizedRicciConnectionDifferenceOrderOneKernel_fiberNormSq_le
   rw [one_riemannianFiberNormSq_neg (I := I) (M := M) g 3 4 x]
   exact hsum
 
+omit [SigmaCompactSpace M] in
 private theorem one_insert_riemannianFiberNormSq
     (g gm : SmoothRiemannianMetric I M) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 3 4 x
@@ -319,8 +323,8 @@ private theorem one_insert_riemannianFiberNormSq
       simp only [A]
       ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem linearizedRicciConnectionDifferenceOrderOneCoefficient_fiberNormSq_le (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (gm : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2)
@@ -351,9 +355,9 @@ theorem linearizedRicciConnectionDifferenceOrderOneCoefficient_fiberNormSq_le (g
     exact mul_nonneg (hCt0 0) (by positivity)
   refine ⟨Real.sqrt K, Real.sqrt_nonneg _, ?_⟩
   intro gm P htie delta hdelta hdelta0 hPbound x
-  letI instTens : Bundle.RiemannianBundle
+  let instTens : Bundle.RiemannianBundle
       (fun y : M => TensorRSSpace 0 3 I y) :=
-    tensorRS_riemannianBundle (I := I) (M := M) g 0 3
+    tensorRSRiemannianBundle (I := I) (M := M) g 0 3
   let P1 : Real := riemannianFiberNormSq (I := I) (M := M) g 0 3 x
     ((iteratedCovGrad (I := I) g 0 2 1 P).toSection x)
   let Ac : Real := riemannianFiberNormSq (I := I) (M := M) g 1 2 x
@@ -416,6 +420,7 @@ theorem linearizedRicciConnectionDifferenceOrderOneCoefficient_fiberNormSq_le (g
       ring
     _ = (Real.sqrt K) ^ 2 * P1 := by rw [Real.sq_sqrt hK0]
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 private theorem onePair_point
     (g : SmoothRiemannianMetric I M)

@@ -245,7 +245,23 @@ theorem mfderiv_normalChartAt_self (g : SmoothRiemannianMetric I M) (p : M) :
   classical
   have h := mfderiv_normalChartAt_comp_expMapDiffeo (I := I) g p
   rw [mfderiv_expMapDiffeo_at_zero_eq_id (I := I) g p] at h
-  simpa using h
+  rw [normalChartAt_centre (I := I) g p]
+  let B : TangentSpace 𝓘(ℝ, E) (0 : E) →L[ℝ] TangentSpace I p :=
+    ContinuousLinearMap.id ℝ E
+  let C : TangentSpace I p →L[ℝ] TangentSpace 𝓘(ℝ, E) (0 : E) :=
+    ContinuousLinearMap.id ℝ E
+  have hB : (ContinuousLinearMap.id ℝ E :
+      TangentSpace 𝓘(ℝ, E) (0 : E) →L[ℝ] TangentSpace I p) = B := rfl
+  rw [hB] at h
+  ext v
+  have happ := DFunLike.congr_fun h (C v)
+  have hBC : B (C v) = v := by
+    with_unfolding_all rfl
+  rw [ContinuousLinearMap.comp_apply] at happ
+  change mfderiv I 𝓘(ℝ, E) (normalChartAt (I := I) g p) p v = v
+  exact ((congrArg
+      (fun w => mfderiv I 𝓘(ℝ, E) (normalChartAt (I := I) g p) p w)
+      hBC.symm).trans happ).trans hBC
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem mfderiv_normalChartAt_symm_zero (g : SmoothRiemannianMetric I M) (p : M) :

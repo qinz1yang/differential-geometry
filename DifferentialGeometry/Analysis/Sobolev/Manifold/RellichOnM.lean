@@ -711,7 +711,6 @@ private lemma tsupport_pou_mul_sub_subset_tsupport_pou_aux
       (subset_tsupport _ hv_supp)
 
 private lemma memLp_pou_mul_riemannianMeasure_aux
-    [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : M → ℝ} (hu_meas : Measurable u)
@@ -762,7 +761,6 @@ private lemma memLp_pou_mul_riemannianMeasure_aux
 
 omit [I.Boundaryless] in
 private lemma eLpNorm_pou_mul_diff_riemannianMeasure_le
-    [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p) (α : M) :
     ∃ C : ℝ, 0 < C ∧
@@ -889,7 +887,6 @@ private lemma eLpNorm_chartPushedRaw_diff_chartTarget_eq_chartNbhdM
   rw [Set.inter_self]
 
 private lemma eLpNorm_chartPushed_jk_NbhdM_le_of_tendsto
-    [NeZero (Module.finrank ℝ E)]
     {p : ℝ} (hp_one : 1 < p)
     {u : ℕ → M → ℝ}
     (hu_mem : ∀ n, MemWkpChart (I := I) (M := M) 1 (ENNReal.ofReal p) (u n))
@@ -1026,7 +1023,6 @@ private lemma eLpNorm_chartPushed_jk_NbhdM_le_of_tendsto
   exact add_le_add hjN hkN
 
 private lemma exists_riemannianMeasure_limit_pou_mul
-    [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : ℕ → M → ℝ}
@@ -1063,21 +1059,21 @@ private lemma exists_riemannianMeasure_limit_pou_mul
   set μ_g : Measure M :=
     DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) with hμ_g_def
-  set f_seq : ℕ → M → ℝ := fun k x =>
+  set fSeq : ℕ → M → ℝ := fun k x =>
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
       : C^∞⟮I, M; ℝ⟯) x * u (φ k) x with hf_seq_def
-  have hf_seq_mem : ∀ n, MemLp (f_seq n) (ENNReal.ofReal p) μ_g := fun n =>
+  have hf_seq_mem : ∀ n, MemLp (fSeq n) (ENNReal.ofReal p) μ_g := fun n =>
     memLp_pou_mul_riemannianMeasure_aux (I := I) (M := M) g hp_one
       (hu_meas (φ n)) (hu_mem (φ n)) α
-  haveI hp_fact : Fact (1 ≤ ENNReal.ofReal p) := ⟨by
+  have hp_fact : Fact (1 ≤ ENNReal.ofReal p) := ⟨by
     simpa using (ENNReal.ofReal_le_ofReal hp_one.le :
       ENNReal.ofReal (1 : ℝ) ≤ ENNReal.ofReal p)⟩
   let F : ℕ → MeasureTheory.Lp ℝ (ENNReal.ofReal p) μ_g := fun n =>
-    (hf_seq_mem n).toLp (f_seq n)
+    (hf_seq_mem n).toLp (fSeq n)
   have hF_cauchy : CauchySeq F := by
     rw [MeasureTheory.Lp.cauchySeq_Lp_iff_cauchySeq_eLpNorm]
     have hCauchy_manifold : ∀ ε > 0, ∃ N, ∀ j ≥ N, ∀ k ≥ N,
-        eLpNorm (fun x : M => f_seq j x - f_seq k x) (ENNReal.ofReal p) μ_g ≤
+        eLpNorm (fun x : M => fSeq j x - fSeq k x) (ENNReal.ofReal p) μ_g ≤
           ENNReal.ofReal ε := by
       intro ε hε
       obtain ⟨C, hC_pos, hC_bnd⟩ :=
@@ -1145,10 +1141,10 @@ private lemma exists_riemannianMeasure_limit_pou_mul
     have hk : N ≤ nm.2 := hnm.2
     have h_le := hN nm.1 hj nm.2 hk
     have h_ae_eq : ((F nm.1 : M → ℝ) - (F nm.2 : M → ℝ)) =ᵐ[μ_g]
-        (fun x => f_seq nm.1 x - f_seq nm.2 x) := by
+        (fun x => fSeq nm.1 x - fSeq nm.2 x) := by
       filter_upwards [(hf_seq_mem nm.1).coeFn_toLp, (hf_seq_mem nm.2).coeFn_toLp,
         Lp.coeFn_sub (F nm.1) (F nm.2)] with x hx1 hx2 hx_sub
-      show ((F nm.1 : M → ℝ) - (F nm.2 : M → ℝ)) x = f_seq nm.1 x - f_seq nm.2 x
+      show ((F nm.1 : M → ℝ) - (F nm.2 : M → ℝ)) x = fSeq nm.1 x - fSeq nm.2 x
       have h_pi : ((F nm.1 : M → ℝ) - (F nm.2 : M → ℝ)) x =
           (F nm.1 : M → ℝ) x - (F nm.2 : M → ℝ) x := rfl
       rw [h_pi, hx1, hx2]
@@ -1168,11 +1164,11 @@ private lemma exists_riemannianMeasure_limit_pou_mul
       (fun k => eLpNorm ((F k : M → ℝ) - (↑F_lim : M → ℝ)) (ENNReal.ofReal p) μ_g)
       Filter.atTop (𝓝 0) := h_iff.mp hF_tendsto
   have h_eLpFn_eq : (fun k => eLpNorm ((F k : M → ℝ) - (↑F_lim : M → ℝ)) (ENNReal.ofReal p) μ_g) =
-      fun k => eLpNorm (fun x => f_seq k x - (↑F_lim : M → ℝ) x) (ENNReal.ofReal p) μ_g := by
+      fun k => eLpNorm (fun x => fSeq k x - (↑F_lim : M → ℝ) x) (ENNReal.ofReal p) μ_g := by
     funext k
     apply eLpNorm_congr_ae
     filter_upwards [(hf_seq_mem k).coeFn_toLp] with x hx
-    show ((F k : M → ℝ) - (↑F_lim : M → ℝ)) x = f_seq k x - (↑F_lim : M → ℝ) x
+    show ((F k : M → ℝ) - (↑F_lim : M → ℝ)) x = fSeq k x - (↑F_lim : M → ℝ) x
     have : ((F k : M → ℝ) - (↑F_lim : M → ℝ)) x = (F k : M → ℝ) x - (↑F_lim : M → ℝ) x := rfl
     rw [this, hx]
   rw [h_eLpFn_eq] at h_eLp_tendsto
@@ -1205,7 +1201,7 @@ theorem rellich_kondrachov_chart_seq
           Filter.atTop (𝓝 0) := by
   classical
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M) with hS_def
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M) with hS_def
   rcases exists_diagonal_chart_extraction_M (I := I) (M := M) g hp_one
     hu_mem hu_bdd S with ⟨φ, hφ_mono, hP_S⟩
   have h_per_α : ∀ α ∈ S, ∃ v_α : M → ℝ,
@@ -1244,7 +1240,7 @@ theorem rellich_kondrachov_chart_seq
   have hu_lim_memLp : MemLp u_lim (ENNReal.ofReal p)
       (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) := by
-    exact memLp_finset_sum S.attach (fun α _ => hv_memLp α.1 α.2)
+    exact memLp_finsetSum S.attach (fun α _ => hv_memLp α.1 α.2)
   refine ⟨φ, hφ_mono, u_lim, hu_lim_memLp, ?_⟩
   refine ENNReal.tendsto_atTop_zero.mpr ?_
   intro ε hε
@@ -1265,7 +1261,7 @@ theorem rellich_kondrachov_chart_seq
     · exfalso
       have h_one := chartAtlasPOU_finset_sum_eq_one (I := I) (M := M)
         (Classical.choice hM_ne)
-      have h_S : DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+      have h_S : DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
           (I := I) (M := M) = ∅ := hS_empty
       rw [h_S] at h_one
       simp at h_one
@@ -1275,7 +1271,7 @@ theorem rellich_kondrachov_chart_seq
         exact absurd ⟨x⟩ hM_empty
       rw [h_diff_zero]
       rw [eLpNorm_zero]
-      exact zero_le _
+      exact zero_le
   have hn_pos : 0 < n := Nat.pos_of_ne_zero hn
   have h_per_α_eLp : ∀ α ∈ S.attach, ∃ N : ℕ, ∀ k ≥ N,
       eLpNorm

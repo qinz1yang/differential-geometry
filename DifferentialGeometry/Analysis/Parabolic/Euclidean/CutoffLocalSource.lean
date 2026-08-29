@@ -48,13 +48,13 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_local_cutoff_source_
     (hchiCont : Continuous chi) (huCont : Continuous u)
     (hchi0 : chi 0 = 0)
     (hchiHolder : HolderWith Kchi alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ chi p.time p.space)))
     (hsourceHolder : HolderWith Ksource alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ ∩ U).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ ∩ U).domRestrict
         (parabolicVariableMatrixOperator a (fun t x ↦ u t x))))
     (hcommHolder : HolderWith Kcomm alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (parabolicCutoffOperatorCommutator a
           (fun p ↦ dtimeChi p.time p.space)
           (fun p ↦ dchi p.time p.space)
@@ -78,7 +78,7 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_local_cutoff_source_
           (fun t x ↦ u t x) (fun q ↦ du q.time q.space) p‖ ≤ Bcomm)
     (Ka omega : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict (a i j)))
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict (a i j)))
     (homega : ∀ i j p,
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
         ‖a i j p0 - a i j p‖ ≤ omega i j)

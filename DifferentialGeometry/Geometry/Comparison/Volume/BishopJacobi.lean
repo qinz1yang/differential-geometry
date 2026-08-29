@@ -47,8 +47,8 @@ theorem hasDerivAt_denRatio
         (curveMean (I := I) g γ V t - hypMeanCurv q d t)) t := by
   have hden : HasDerivAt (curveDensity (I := I) g γ V)
       (curveMean (I := I) g γ V t * curveDensity (I := I) g γ V t) t := by
-    simpa only [curveMean] using
-      hasDerivAt_symmDen (I := I) hn g γ V t hγ hVdiff hpos hW
+    refine (hasDerivAt_symmDen (I := I) hn g γ V t hγ hVdiff hpos hW).congr_deriv ?_
+    rw [curveMean, curveShape]
   exact hasDerivAt_hypRatio
     (j' := fun r => curveMean (I := I) g γ V r *
       curveDensity (I := I) g γ V r)

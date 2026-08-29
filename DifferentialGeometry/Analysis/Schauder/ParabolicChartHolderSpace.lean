@@ -51,7 +51,7 @@ theorem gauge_ne_top
     eParabolicC2HolderGaugeInEuclideanChartsOn
       alpha I center Q u ≠ ⊤ := by
   classical
-  letI := Fintype.ofFinite A
+  let := Fintype.ofFinite A
   let C : A → NNReal := fun i ↦
     (eParabolicC2HolderGaugeInEuclideanChartOn
       alpha I (center i) (Q i) u).toNNReal

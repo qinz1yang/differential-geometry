@@ -2,7 +2,6 @@ import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Coordinate
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -23,7 +22,7 @@ noncomputable def twoTensorLeftKernel
     {x : M}
     (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :
     Submodule Real (TangentSpace I x) :=
-  LinearMap.ker ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap)
+  LinearMap.ker ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap)
 
 omit [FiniteDimensional Real E] [IsManifold I ∞ M] in
 theorem mem_twoTensorLeftKernel_iff
@@ -32,14 +31,14 @@ theorem mem_twoTensorLeftKernel_iff
     (v : TangentSpace I x) :
     v ∈ twoTensorLeftKernel (I := I) (M := M) A ↔
       ∀ w : TangentSpace I x, eval02 (I := I) (M := M) A v w = 0 := by
-  change (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A) v = 0 ↔ _
+  change (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x A) v = 0 ↔ _
   constructor
   · intro hv w
     have h := congrArg
       (fun B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 1 x ↦ B (fun _ : Fin 1 ↦ w)) hv
     change
-      ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A) v)
+      ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x A) v)
           (fun _ : Fin 1 ↦ w) = 0 at h
     rw [Tensor0SBundle.tensor0S_curry_one_apply] at h
     simpa [eval02] using h

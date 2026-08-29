@@ -547,7 +547,7 @@ theorem scalarGalField_norm_le
     calc
       ‖Pert v‖ = ‖Lap v + Pot (Inc v)‖ := by
         simp only [Pert, scalarGalPert, Lap, Pot, Inc, q,
-          ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply]
+          add_apply, ContinuousLinearMap.comp_apply]
       _ ≤ ‖Lap v‖ + ‖Pot (Inc v)‖ := norm_add_le _ _
       _ ≤ ‖Lap‖ * ‖v‖ + ‖Pot‖ * ‖Inc v‖ :=
         add_le_add (Lap.le_opNorm v) (Pot.le_opNorm (Inc v))
@@ -566,7 +566,7 @@ theorem scalarGalField_norm_le
     ‖scalarGalField (I := I) (M := M) S T F t w‖ =
         ‖Diag w + Rst (Pert (Emb w))‖ := by
       simp only [scalarGalField, q, Diag, Rst, Pert, Emb,
-        ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply]
+        add_apply, ContinuousLinearMap.comp_apply]
     _ ≤ ‖Diag w‖ + ‖Rst (Pert (Emb w))‖ := norm_add_le _ _
     _ ≤ ‖Diag‖ * ‖w‖ + ‖Rst‖ * ‖Pert (Emb w)‖ :=
       add_le_add (Diag.le_opNorm w) (Rst.le_opNorm (Pert (Emb w)))
@@ -683,7 +683,7 @@ theorem scalar_galerkin_perturbation_uniform_bound_on
       (Set.Icc (0 : Real) tau)) :
     ∃ C : NNReal, ∀ t ∈ Set.Icc (0 : Real) tau,
       ‖scalarGalPert (I := I) (M := M) S T t‖ ≤ (C : Real) := by
-  letI : SeminormedAddCommGroup
+  let _ : SeminormedAddCommGroup
       (tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 2 →L[Real]
         tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
@@ -698,7 +698,6 @@ theorem scalar_galerkin_perturbation_uniform_bound_on
   change ‖scalarGalPert (I := I) (M := M) S T t‖ ≤ max C 0
   exact (hC ⟨t, ht, rfl⟩).trans (le_max_left _ _)
 
-set_option backward.isDefEq.respectTransparency false in
 
 theorem gal_exists_on
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
@@ -748,7 +747,7 @@ theorem gal_exists_on
       ‖scalarGalField (I := I) (M := M) S T F t w‖ =
           ‖Diag w + Rst (Pert (Emb w))‖ := by
         simp only [scalarGalField, q, Diag, Rst, Pert, Emb,
-          ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply]
+          add_apply, ContinuousLinearMap.comp_apply]
       _ ≤ ‖Diag w‖ + ‖Rst (Pert (Emb w))‖ := norm_add_le _ _
       _ ≤ ‖Diag‖ * ‖w‖ + ‖Rst‖ * ‖Pert (Emb w)‖ :=
         add_le_add (Diag.le_opNorm w) (Rst.le_opNorm (Pert (Emb w)))
@@ -771,7 +770,9 @@ theorem gal_exists_on
     intro t ht
     refine LipschitzWith.of_dist_le_mul (fun w w' => ?_)
     rw [dist_eq_norm, dist_eq_norm, ← map_sub]
-    simpa only [K, NNReal.coe_mk] using hfield_apply t ht (w - w')
+    change ‖scalarGalField (I := I) (M := M) S T F t (w - w')‖ ≤
+      B * ‖w - w'‖
+    exact hfield_apply t ht (w - w')
   have hcont_t : ∀ w : EuclideanSpace Real {i // i ∈ F},
       ContinuousOn (fun t => scalarGalField (I := I) (M := M) S T F t w)
         (Set.Icc (0 : Real) tau) := by
@@ -783,15 +784,18 @@ theorem gal_exists_on
         (fun t => Rst (scalarGalPert (I := I) (M := M) S T t (Emb w)))
         (Set.Icc (0 : Real) tau) :=
       Rst.continuous.comp_continuousOn hPert
-    simpa only [scalarGalField, q, Diag, Rst, Emb,
-      ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply] using
-        (continuousOn_const.add hRst)
+    change ContinuousOn
+      ((fun _ : Real => Diag w) +
+        fun t => Rst (scalarGalPert (I := I) (M := M) S T t (Emb w)))
+      (Set.Icc (0 : Real) tau)
+    exact continuousOn_const.add hRst
   have haff_t : ∀ t ∈ Set.Icc (0 : Real) tau,
       ∀ w : EuclideanSpace Real {i // i ∈ F},
         ‖scalarGalField (I := I) (M := M) S T F t w‖ ≤
           0 + (K : Real) * ‖w‖ := by
     intro t ht w
-    simpa only [zero_add, K, NNReal.coe_mk] using hfield_apply t ht w
+    change ‖scalarGalField (I := I) (M := M) S T F t w‖ ≤ 0 + B * ‖w‖
+    simpa only [zero_add] using hfield_apply t ht w
   let w0 : EuclideanSpace Real {i // i ∈ F} :=
     WithLp.toLp 2 (fun j : {i // i ∈ F} => u0.coeff j.1)
   obtain ⟨γ, hγ0, hγcont, hγderiv⟩ :=
@@ -823,7 +827,6 @@ theorem gal_time_mono
   · intro t ht i hi
     exact hV.deriv t ⟨ht.1, ht.2.trans_le hle⟩ i hi
 
-set_option backward.isDefEq.respectTransparency false in
 
 theorem scalar_gal_exists
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
@@ -853,7 +856,11 @@ theorem scalar_gal_exists
   have hpert : ContinuousOn
       (fun t : Real ↦ scalarGalPert (I := I) (M := M) S T t)
       (Set.Icc (0 : Real) tau) := by
-    simpa only [scalarGalPert, q, Inc] using (hcont2.mono hIcc2).add hPot
+    change ContinuousOn
+      ((fun t : Real => lapDiffA20 (I := I) (M := M) S.family.metric T t) +
+        fun t => conjA1 (I := I) (M := M) S T t |>.comp Inc)
+      (Set.Icc (0 : Real) tau)
+    exact (hcont2.mono hIcc2).add hPot
   exact ⟨⟨tau⟩, gal_exists_on (I := I) (M := M) S T htau htau_one hpert⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Entropy

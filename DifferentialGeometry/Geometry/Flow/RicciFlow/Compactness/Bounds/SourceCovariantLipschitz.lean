@@ -110,10 +110,14 @@ theorem covRic0_le
   · rw [Tensor0SBundle.sqrt_normSq0S_smul]
     have habs : |(-2 : Real)| = 2 := by norm_num
     rw [habs]
+    have hric :
+        ricCovTower (I := I) (gSeq i t) (gSeq i t) 0 x =
+          ricCovTower (I := I) (gSeq i t) gRef 0 x := by
+      rfl
     have hcomp := Tensor0SBundle.sqrt_normSq0S_le_of_metric_equiv
       (I := I) (g := gSeq i t) (h := gRef) x 2 hB
       (fun v => hsymm.2 x (Set.mem_univ x) v)
-      (ricCovTower (I := I) (gSeq i t) (gSeq i t) 0 x)
+      (ricCovTower (I := I) (gSeq i t) gRef 0 x)
     have hnabla :
         Real.sqrt
             (Tensor0SBundle.normSq0S (I := I) gRef x (0 + 2)
@@ -123,7 +127,7 @@ theorem covRic0_le
               (Tensor0SBundle.normSq0S (I := I) (gSeq i t) x 2
                 (ricCovTower (I := I) (gSeq i t) (gSeq i t) 0 x)) := by
       rw [nablaRicReal_normSq]
-      simpa using hcomp
+      simpa only [← hric] using hcomp
     exact le_trans (mul_le_mul_of_nonneg_left hnabla (by norm_num))
       (mul_le_mul_of_nonneg_left
         (mul_le_mul_of_nonneg_left hShi (Real.sqrt_nonneg _)) (by norm_num))
@@ -245,11 +249,11 @@ theorem srcCovLip_of_flow
                 (refRes (I := I) Φ R k) y ≤ Cq) :
     SrcCovLipData (I := I) Φ R hsrc htgt β ψ := by
   classical
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   have hcore0 : ∃ C0 L0 : ℝ, 0 ≤ C0 ∧ 0 ≤ L0 ∧
       (∀ k : Nat,
         letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
@@ -294,15 +298,15 @@ theorem srcCovLip_of_flow
     · exact mul_nonneg (by norm_num)
         (mul_nonneg (Real.sqrt_nonneg _) hK0)
     · intro k
-      letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+      let : TopologicalSpace (SourceDomain (I := I) Φ k) :=
         sourceDomTop (I := I) Φ k
-      letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+      let : ChartedSpace H (SourceDomain (I := I) Φ k) :=
         sourceDomCharted (I := I) Φ k
-      letI : T2Space (SourceDomain (I := I) Φ k) :=
+      let : T2Space (SourceDomain (I := I) Φ k) :=
         sourceDomT2 (I := I) Φ k
-      letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+      let : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
         sourceDomSmooth (I := I) Φ k
-      letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+      let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
         sourceDomSigmaOf (I := I) Φ k (hsrc k)
       intro t ht y
       exact
@@ -312,15 +316,15 @@ theorem srcCovLip_of_flow
           (B := Bmax) (K := K0) hBmax (hequiv k t ht) y
           (hShi0 k 0 le_rfl 0 t ht y (Set.mem_univ y))).1
     · intro k
-      letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+      let : TopologicalSpace (SourceDomain (I := I) Φ k) :=
         sourceDomTop (I := I) Φ k
-      letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+      let : ChartedSpace H (SourceDomain (I := I) Φ k) :=
         sourceDomCharted (I := I) Φ k
-      letI : T2Space (SourceDomain (I := I) Φ k) :=
+      let : T2Space (SourceDomain (I := I) Φ k) :=
         sourceDomT2 (I := I) Φ k
-      letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+      let : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
         sourceDomSmooth (I := I) Φ k
-      letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+      let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
         sourceDomSigmaOf (I := I) Φ k (hsrc k)
       intro t ht y
       exact
@@ -418,25 +422,25 @@ theorem srcCovLip_of_flow
                       (srcMetric (I := I) Φ hsrc htgt k t)
                       (refRes (I := I) Φ R k) y ≤ Cq := by
           intro k
-          letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+          let : TopologicalSpace (SourceDomain (I := I) Φ k) :=
             sourceDomTop (I := I) Φ k
-          letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+          let : ChartedSpace H (SourceDomain (I := I) Φ k) :=
             sourceDomCharted (I := I) Φ k
-          letI : T2Space (SourceDomain (I := I) Φ k) :=
+          let : T2Space (SourceDomain (I := I) Φ k) :=
             sourceDomT2 (I := I) Φ k
-          letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+          let : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
             sourceDomSmooth (I := I) Φ k
-          letI : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
+          let : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
             IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
               (n := (∞ : WithTop ℕ∞)) (by decide)
-          letI : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
+          let : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
             IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
               (n := (∞ : WithTop ℕ∞)) (by decide)
-          letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+          let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
               (SourceDomain (I := I) Φ k) := by
             change IsManifold I ∞ (SourceDomain (I := I) Φ k)
             infer_instance
-          letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+          let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
             sourceDomSigmaOf (I := I) Φ k (hsrc k)
           have hDreg : ∀ {r : ℝ}, r ∈ (D k).regular →
               (D k).regular ∈ nhds r :=
@@ -493,25 +497,25 @@ theorem srcCovLip_of_flow
                             (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
                             (refRes (I := I) Φ R k) q 0 t y)) ≤ Lq := by
           intro k
-          letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+          let : TopologicalSpace (SourceDomain (I := I) Φ k) :=
             sourceDomTop (I := I) Φ k
-          letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+          let : ChartedSpace H (SourceDomain (I := I) Φ k) :=
             sourceDomCharted (I := I) Φ k
-          letI : T2Space (SourceDomain (I := I) Φ k) :=
+          let : T2Space (SourceDomain (I := I) Φ k) :=
             sourceDomT2 (I := I) Φ k
-          letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+          let : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
             sourceDomSmooth (I := I) Φ k
-          letI : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
+          let : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
             IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
               (n := (∞ : WithTop ℕ∞)) (by decide)
-          letI : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
+          let : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
             IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
               (n := (∞ : WithTop ℕ∞)) (by decide)
-          letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+          let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
               (SourceDomain (I := I) Φ k) := by
             change IsManifold I ∞ (SourceDomain (I := I) Φ k)
             infer_instance
-          letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+          let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
             sourceDomSigmaOf (I := I) Φ k (hsrc k)
           intro t ht y
           rw [Tensor0SBundle.sqrt_normSq0S_smul]
@@ -595,25 +599,25 @@ theorem srcCovLip_of_flow
       exact Finset.sum_nonneg fun q _ => hLq0 q
     refine ⟨Lp, hLp0, ?_⟩
     intro k
-    letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+    let : TopologicalSpace (SourceDomain (I := I) Φ k) :=
       sourceDomTop (I := I) Φ k
-    letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+    let : ChartedSpace H (SourceDomain (I := I) Φ k) :=
       sourceDomCharted (I := I) Φ k
-    letI : T2Space (SourceDomain (I := I) Φ k) :=
+    let : T2Space (SourceDomain (I := I) Φ k) :=
       sourceDomT2 (I := I) Φ k
-    letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+    let : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
       sourceDomSmooth (I := I) Φ k
-    letI : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
+    let : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
       IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
         (n := (∞ : WithTop ℕ∞)) (by decide)
-    letI : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
+    let : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
       IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
         (n := (∞ : WithTop ℕ∞)) (by decide)
-    letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+    let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
         (SourceDomain (I := I) Φ k) := by
       change IsManifold I ∞ (SourceDomain (I := I) Φ k)
       infer_instance
-    letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+    let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
       sourceDomSigmaOf (I := I) Φ k (hsrc k)
     intro s t hs ht q hqp y
     have hDreg : ∀ {r : ℝ}, r ∈ (D k).regular → (D k).regular ∈ nhds r :=
@@ -734,11 +738,11 @@ theorem srcCovLip_of_soln
                 (refRes (I := I) Φ R k) y ≤ Cq) :
     SrcCovLipData (I := I) Φ R hsrc htgt β ψ := by
   classical
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   have hcore0 : ∃ C0 L0 : ℝ, 0 ≤ C0 ∧ 0 ≤ L0 ∧
       (∀ k : Nat,
         letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
@@ -783,15 +787,15 @@ theorem srcCovLip_of_soln
     · exact mul_nonneg (by norm_num)
         (mul_nonneg (Real.sqrt_nonneg _) hK0)
     · intro k
-      letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+      let : TopologicalSpace (SourceDomain (I := I) Φ k) :=
         sourceDomTop (I := I) Φ k
-      letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+      let : ChartedSpace H (SourceDomain (I := I) Φ k) :=
         sourceDomCharted (I := I) Φ k
-      letI : T2Space (SourceDomain (I := I) Φ k) :=
+      let : T2Space (SourceDomain (I := I) Φ k) :=
         sourceDomT2 (I := I) Φ k
-      letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+      let : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
         sourceDomSmooth (I := I) Φ k
-      letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+      let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
         sourceDomSigmaOf (I := I) Φ k (hsrc k)
       intro t ht y
       exact
@@ -801,15 +805,15 @@ theorem srcCovLip_of_soln
           (B := Bmax) (K := K0) hBmax (hequiv k t ht) y
           (hShi0 k 0 le_rfl 0 t ht y (Set.mem_univ y))).1
     · intro k
-      letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+      let : TopologicalSpace (SourceDomain (I := I) Φ k) :=
         sourceDomTop (I := I) Φ k
-      letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+      let : ChartedSpace H (SourceDomain (I := I) Φ k) :=
         sourceDomCharted (I := I) Φ k
-      letI : T2Space (SourceDomain (I := I) Φ k) :=
+      let : T2Space (SourceDomain (I := I) Φ k) :=
         sourceDomT2 (I := I) Φ k
-      letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+      let : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
         sourceDomSmooth (I := I) Φ k
-      letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+      let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
         sourceDomSigmaOf (I := I) Φ k (hsrc k)
       intro t ht y
       exact
@@ -907,25 +911,25 @@ theorem srcCovLip_of_soln
                       (srcMetric (I := I) Φ hsrc htgt k t)
                       (refRes (I := I) Φ R k) y ≤ Cq := by
           intro k
-          letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+          let : TopologicalSpace (SourceDomain (I := I) Φ k) :=
             sourceDomTop (I := I) Φ k
-          letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+          let : ChartedSpace H (SourceDomain (I := I) Φ k) :=
             sourceDomCharted (I := I) Φ k
-          letI : T2Space (SourceDomain (I := I) Φ k) :=
+          let : T2Space (SourceDomain (I := I) Φ k) :=
             sourceDomT2 (I := I) Φ k
-          letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+          let : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
             sourceDomSmooth (I := I) Φ k
-          letI : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
+          let : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
             IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
               (n := (∞ : WithTop ℕ∞)) (by decide)
-          letI : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
+          let : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
             IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
               (n := (∞ : WithTop ℕ∞)) (by decide)
-          letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+          let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
               (SourceDomain (I := I) Φ k) := by
             change IsManifold I ∞ (SourceDomain (I := I) Φ k)
             infer_instance
-          letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+          let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
             sourceDomSigmaOf (I := I) Φ k (hsrc k)
           have hDreg : ∀ {r : ℝ}, r ∈ X.D.regular →
               X.D.regular ∈ nhds r :=
@@ -983,25 +987,25 @@ theorem srcCovLip_of_soln
                             (fun _ t' ↦ srcMetric (I := I) Φ hsrc htgt k t')
                             (refRes (I := I) Φ R k) q 0 t y)) ≤ Lq := by
           intro k
-          letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+          let : TopologicalSpace (SourceDomain (I := I) Φ k) :=
             sourceDomTop (I := I) Φ k
-          letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+          let : ChartedSpace H (SourceDomain (I := I) Φ k) :=
             sourceDomCharted (I := I) Φ k
-          letI : T2Space (SourceDomain (I := I) Φ k) :=
+          let : T2Space (SourceDomain (I := I) Φ k) :=
             sourceDomT2 (I := I) Φ k
-          letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+          let : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
             sourceDomSmooth (I := I) Φ k
-          letI : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
+          let : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
             IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
               (n := (∞ : WithTop ℕ∞)) (by decide)
-          letI : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
+          let : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
             IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
               (n := (∞ : WithTop ℕ∞)) (by decide)
-          letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+          let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
               (SourceDomain (I := I) Φ k) := by
             change IsManifold I ∞ (SourceDomain (I := I) Φ k)
             infer_instance
-          letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+          let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
             sourceDomSigmaOf (I := I) Φ k (hsrc k)
           intro t ht y
           rw [Tensor0SBundle.sqrt_normSq0S_smul]
@@ -1085,25 +1089,25 @@ theorem srcCovLip_of_soln
       exact Finset.sum_nonneg fun q _ => hLq0 q
     refine ⟨Lp, hLp0, ?_⟩
     intro k
-    letI : TopologicalSpace (SourceDomain (I := I) Φ k) :=
+    let : TopologicalSpace (SourceDomain (I := I) Φ k) :=
       sourceDomTop (I := I) Φ k
-    letI : ChartedSpace H (SourceDomain (I := I) Φ k) :=
+    let : ChartedSpace H (SourceDomain (I := I) Φ k) :=
       sourceDomCharted (I := I) Φ k
-    letI : T2Space (SourceDomain (I := I) Φ k) :=
+    let : T2Space (SourceDomain (I := I) Φ k) :=
       sourceDomT2 (I := I) Φ k
-    letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
+    let : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
       sourceDomSmooth (I := I) Φ k
-    letI : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
+    let : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
       IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
         (n := (∞ : WithTop ℕ∞)) (by decide)
-    letI : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
+    let : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
       IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
         (n := (∞ : WithTop ℕ∞)) (by decide)
-    letI : IsManifold I ((∞ : WithTop ℕ∞) + 1)
+    let : IsManifold I ((∞ : WithTop ℕ∞) + 1)
         (SourceDomain (I := I) Φ k) := by
       change IsManifold I ∞ (SourceDomain (I := I) Φ k)
       infer_instance
-    letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+    let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
       sourceDomSigmaOf (I := I) Φ k (hsrc k)
     intro s t hs ht q hqp y
     have hDreg : ∀ {r : ℝ}, r ∈ X.D.regular → X.D.regular ∈ nhds r :=

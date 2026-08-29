@@ -70,9 +70,19 @@ private lemma iterCovGrad_unit_eq_iterCov
             (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ) from rfl,
         ← ccTensorMultilinear_apply (I := I) gBase
           (metricCcTensor (I := I) (M := M) gBase h) x]
+      let _ := Tensor0SBundle.tensor0SBundleTopology
+        (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
       unfold ccTensorMultilinear metricCcTensor
-      rw [MixedSection.toMultilinearSection_fromMultilinearSection]
-      rfl
+      unfold MixedSection.toMultilinearSection MixedSection.fromMultilinearSection
+      change
+        (MixedSection.eval₀ (𝕜 := ℝ) (F := E)
+          (E := (TangentSpace I : M → Type _)) x).smulRight
+            (metricCcTensorFib (I := I) h x)
+            (ContinuousMultilinearMap.constOfIsEmpty ℝ
+              (fun _ : Fin 0 => TangentSpace I x) 1) =
+          metricCcTensorFib (I := I) h x
+      rw [ContinuousLinearMap.smulRight_apply, MixedSection.eval₀_apply,
+        ContinuousMultilinearMap.constOfIsEmpty_apply, one_smul]
     rw [h1]
     ext m
     rw [metricCcTensorFib_apply, Tensor0SBundle.metricTensorField_apply]
@@ -85,9 +95,15 @@ private lemma iterCovGrad_unit_eq_iterCov
         (covGrad (I := I) (M := M) gBase 0 (2 + j) Tj).toSection x)
         (unitZeroSec (I := I) (M := M) x) =
       iterCov (I := I) gBase 2 (Tensor0SBundle.metricTensorField (I := I) h) (j + 1) x
-    apply Tensor0SSpace.toModel_injective
-    apply ContinuousMultilinearMap.ext
+    apply Tensor0SBundle.tensor0SSpace_ext (I := I) (2 + j + 1) x
     intro v
+    change Tensor0SSpace.eval
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace ((2 + j) + 1) I x from
+          (covGrad (I := I) (M := M) gBase 0 (2 + j) Tj).toSection x)
+          (unitZeroSec (I := I) (M := M) x)) v =
+      Tensor0SSpace.eval
+        (iterCov (I := I) gBase 2
+          (Tensor0SBundle.metricTensorField (I := I) h) (j + 1) x) v
     obtain ⟨X, hXx⟩ := ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞))
       (F := E) (V := (TangentSpace I : M → Type _)) x (v 0)
     have hcons : v = Fin.cons (v 0) (Matrix.vecTail v) := by
@@ -96,7 +112,9 @@ private lemma iterCovGrad_unit_eq_iterCov
       · simp
       · intro k; simp [Matrix.vecTail]
     rw [covGrad_apply_unit_eval_genVal (I := I) (M := M) gBase (2 + j) Tj x v]
-    rw [tensorCovDerivAt_def (I := I) (M := M) gBase 0 (2 + j) Tj x (v 0)]
+    rw [tensorCovDerivAt_def (I := I) (M := M) gBase 0 (2 + j) Tj x
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x (v 0)),
+      ContinuousLinearEquiv.symm_apply_apply]
     rw [covDeriv_unit_eval_eq_genVal (I := I) (M := M) gBase (2 + j) (Tj.toSection) x (v 0)]
     rw [ih]
     rw [← hXx]
@@ -105,15 +123,7 @@ private lemma iterCovGrad_unit_eq_iterCov
     rw [iterCov_succ, covStep_apply]
     have hcons2 : v = Fin.cons (X x) (Matrix.vecTail v) := by rw [hXx]; exact hcons
     conv_rhs => rw [hcons2]
-    rw [show Tensor0SSpace.toModel (totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-          (2 + j) (leviCivitaConnectionOfMetric (I := I) gBase)
-          (iterCov (I := I) gBase 2 (Tensor0SBundle.metricTensorField (I := I) h) j) x)
-          (Fin.cons (X x) (Matrix.vecTail v)) =
-        totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-          (2 + j) (leviCivitaConnectionOfMetric (I := I) gBase)
-          (iterCov (I := I) gBase 2 (Tensor0SBundle.metricTensorField (I := I) h) j) x
-          (Fin.cons (X x) (Matrix.vecTail v)) from rfl]
-    rw [totalNabla0SFun_apply_section (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+    rw [totalNabla0SFun_eval_section (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (2 + j) (leviCivitaConnectionOfMetric (I := I) gBase) X
       (iterCov (I := I) gBase 2 (Tensor0SBundle.metricTensorField (I := I) h) j) x
       (Matrix.vecTail v)]
@@ -126,7 +136,8 @@ private lemma lowerAllUpper_zero_eq_unit
     (W : SmoothCcTensor gBase 0 s) (w : Fin (0 + s) → TangentSpace I x) :
     lowerAllUpperIndices (I := I) (M := M) gBase 0 s x
         (TensorRSSpace.toModel
-          (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x)) w =
+          (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x))
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (w i)) =
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x)
         (unitZeroSec (I := I) (M := M) x) (fun j : Fin s => w (Fin.natAdd 0 j)) := by
   rw [lowerAllUpperIndices_apply, separableFormAt_zero]
@@ -161,35 +172,37 @@ private lemma riemannianFiberNormSq_eq_normSq0S_unit
     (metricInverseInBasis_of_orthonormal (I := I) gBase basis hON) _]
   symm
   refine Fintype.sum_equiv
-    (Equiv.arrowCongr (finCongr (Nat.zero_add s).symm) (Equiv.refl _)) _ _ ?_
+    (Equiv.arrowCongr (finCongr (Nat.zero_add s).symm)
+      (finCongr (show Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E from by
+        with_unfolding_all rfl))) _ _ ?_
   intro slots
   rw [Tensor0SBundle.component0S_apply]
   rw [lowerAllUpper_zero_eq_unit (I := I) gBase s x W]
   rw [sq]
   congr 1 <;>
     (congr 1; funext a;
-     simp only [Equiv.arrowCongr_apply, Equiv.coe_refl, Function.comp_apply, id_eq];
+     simp only [Equiv.arrowCongr_apply, Function.comp_apply];
      congr 1;
      apply Fin.ext;
      simp)
 
 omit [NeZero (Module.finrank ℝ E)] in
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
-  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
-  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
+  Bundle.continuousMultilinearMap.mixedInstNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixedInstNormedSpace in
 theorem normBridge (h gBase : SmoothRiemannianMetric I M) (j : ℕ) (x : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) gBase 0 (2 + j)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) gBase 0 (2 + j)
     ‖((iteratedCovGrad gBase 0 2 j (metricCcTensor (I := I) (M := M) gBase h)).toSection x :
         TensorRSSpace 0 (2 + j) I x)‖ =
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) gBase x (j + 2)
         (metricCovDeriv (I := I) h gBase j x)) := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) gBase 0 (2 + j)
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) gBase 0 (2 + j)
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gBase x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gBase x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gBase x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) gBase basis hON

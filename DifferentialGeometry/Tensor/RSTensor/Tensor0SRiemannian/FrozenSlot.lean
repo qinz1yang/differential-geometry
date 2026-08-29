@@ -21,7 +21,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-set_option backward.isDefEq.respectTransparency false in
 noncomputable def freezeAllBut0SField {s : ℕ}
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
@@ -30,7 +29,7 @@ noncomputable def freezeAllBut0SField {s : ℕ}
       (TangentSpace I : M → Type _)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 1 := by
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 1
   let F : (p : M) →
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 p :=
@@ -75,8 +74,9 @@ noncomputable def freezeAllBut0SField {s : ℕ}
     have hA := TensorMultilinear.contMDiffAt_section_apply_gen
       (𝕜 := Real) (I := I) (M := M) (n := s)
       (T := fun y : M => A y) (A.contMDiff x₀) v hv
-    simpa [v, Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply]
-      using hA
+    change ContMDiffAt I (modelWithCornersSelf ℝ ℝ) (∞ : WithTop ℕ∞)
+      (fun y : M => A y (fun i : Fin s => v i y)) x₀ at hA
+    simpa only [v] using hA
   refine hcoeff.congr_of_eventuallyEq ?_
   let e := coordinateTrivializationAt (𝕜 := Real) (I := I) x₀
   have hx₀ : x₀ ∈ coordinateFrameSet (𝕜 := Real) (I := I) x₀ :=
@@ -91,28 +91,41 @@ noncomputable def freezeAllBut0SField {s : ℕ}
       (fun a : Fin 1 => b (σ a)) =
     A y (Function.update (fun i : Fin s => Y i y) q
       (coordinateFrameAt (I := I) x₀ (σ 0) y))
-  change (F y).compContinuousLinearMap
+  change (Tensor0SSpace.toModel (F y)).compContinuousLinearMap
       (fun _ : Fin 1 =>
-        (trivializationAt E (TangentSpace I : M → Type _) x₀).symmL Real y)
+        (tangentSpaceModelContinuousLinearEquiv (I := I) y).toContinuousLinearMap.comp
+          ((trivializationAt E (TangentSpace I : M → Type _) x₀).symmL Real y))
       (fun a : Fin 1 => b (σ a)) =
     A y (Function.update (fun i : Fin s => Y i y) q
       (coordinateFrameAt (I := I) x₀ (σ 0) y))
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
+  rw [Tensor0SSpace.toModel_apply_model_vector]
+  simp only [ContinuousLinearMap.comp_apply]
+  have hy_e : y ∈ e.baseSet := by
+    simpa [e, coordinateFrameSet] using hy
   have hslot :
       (fun a : Fin 1 =>
-        (trivializationAt E (TangentSpace I : M → Type _) x₀).symmL Real y
-          (b (σ a))) =
+        (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) y).toContinuousLinearMap
+            ((trivializationAt E (TangentSpace I : M → Type _) x₀).symmL Real y
+              (b (σ a))))) =
         (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ (σ 0) y) := by
     funext a
     fin_cases a
     · change
-        (coordinateTrivializationAt (𝕜 := Real) (I := I) x₀).symmL Real y
-            (b (σ 0)) =
+        (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) y).toContinuousLinearMap
+            ((trivializationAt E (TangentSpace I : M → Type _) x₀).symmL Real y
+              (b (σ 0)))) =
           coordinateFrameAt (I := I) x₀ (σ 0) y
+      rw [ContinuousLinearEquiv.coe_apply,
+        (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm_apply_apply]
       change e.symmL Real y (b (σ 0)) = e.localFrame b (σ 0) y
       rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet
-        (e := e) (b := b) (i := σ 0) hy]
-      rfl
+        (e := e) (b := b) (i := σ 0) hy_e]
+      change e.symmL Real y (b (σ 0)) =
+        (e.linearEquivAt Real y hy_e).symm (b (σ 0))
+      rw [e.symmL_apply hy_e, e.linearEquivAt_symm_apply]
   rw [hslot]
   change F y (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ (σ 0) y) = _
   simp only [F, oneFormAtSlot0S_apply]
@@ -126,6 +139,7 @@ noncomputable def freezeAllBut0SField {s : ℕ}
     (x : M) :
     freezeAllBut0SField (I := I) (M := M) A q Y x =
       oneFormAtSlot0S (I := I) (A x) (fun i : Fin s => Y i x) q := by
+  unfold freezeAllBut0SField
   rfl
 
 theorem freezeAllBut0SField_apply_vec {s : ℕ}
@@ -198,9 +212,9 @@ theorem freezeNabla_leibniz {s : ℕ}
     nabla0SFun_eval_smooth_slots (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) cov X V4 A x
   have hderiv :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun p : M => B p (fun a : Fin 1 => V1 a p)) x (X x) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun p : M => A p (fun a : Fin s => V4 a p)) x (X x) := by
     have hfun :
         (fun p : M => B p (fun a : Fin 1 => V1 a p)) =
@@ -301,7 +315,7 @@ theorem freezeNabla_leibniz {s : ℕ}
         have hBeval' :
             nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                 1 cov X B x (fun _ : Fin 1 => U) =
-              extDerivFun (I := I)
+              mvfderiv (I := I)
                   (fun p : M => B p (fun a : Fin 1 => V1 a p)) x (X x) -
                 ∑ a : Fin 1,
                   B x
@@ -312,7 +326,7 @@ theorem freezeNabla_leibniz {s : ℕ}
         have hAeval' :
             nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                 s cov X A x (Function.update (fun i : Fin s => Y i x) q U) =
-              extDerivFun (I := I)
+              mvfderiv (I := I)
                   (fun p : M => A p (fun a : Fin s => V4 a p)) x (X x) -
                 ∑ a : Fin s,
                   A x

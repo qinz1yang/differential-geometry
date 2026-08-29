@@ -149,8 +149,8 @@ theorem contDiffHolderSpaceLowerOrderTerm_apply
         fderiv Real (contDiffHolderSpaceFun u) x
           (EuclideanSpace.basisFun n Real i)) + c x • u x := by
   simp only [contDiffHolderSpaceLowerOrderTerm,
-    ContinuousLinearMap.add_apply, boundedHolderSpace_add_apply,
-    ContinuousLinearMap.sum_apply, boundedHolderSpace_sum_apply,
+    add_apply, boundedHolderSpace_add_apply,
+    sum_apply, boundedHolderSpace_sum_apply,
     ContinuousLinearMap.comp_apply, boundedHolderSpaceSmu_apply,
     boundedHolderSpaceMap_apply, gradientComponentEval_apply,
     contDiffHolderSpaceFDerivHolder_apply,
@@ -284,7 +284,7 @@ theorem contDiffHolderSpaceNondivergenceOperator_apply
           fderiv Real (contDiffHolderSpaceFun u) x
             (EuclideanSpace.basisFun n Real i)) + c x • u x) := by
   simp only [contDiffHolderSpaceNondivergenceOperator,
-    ContinuousLinearMap.add_apply, boundedHolderSpace_add_apply,
+    add_apply, boundedHolderSpace_add_apply,
     contDiffHolderSpaceVariableMatrixLaplacian_apply,
     contDiffHolderSpaceLowerOrderTerm_apply]
 
@@ -342,8 +342,8 @@ theorem parabolicC2HolderSpaceLowerOrderTerm_apply
         (fun i q ↦ b i q) (fun q ↦ c q)
         (parabolicC2HolderSpaceFun u) p := by
   simp only [parabolicC2HolderSpaceLowerOrderTerm,
-    ContinuousLinearMap.add_apply, boundedHolderSpace_add_apply,
-    ContinuousLinearMap.sum_apply, boundedHolderSpace_sum_apply,
+    add_apply, boundedHolderSpace_add_apply,
+    sum_apply, boundedHolderSpace_sum_apply,
     ContinuousLinearMap.comp_apply, boundedHolderSpaceSmu_apply,
     boundedHolderSpaceMap_apply, gradientComponentEval_apply,
     parabolicC2HolderSpaceSpatialGradient_apply,
@@ -483,7 +483,7 @@ theorem parabolicC2HolderSpaceNondivergenceOperator_apply
         (fun i j q ↦ a i j q) (fun i q ↦ b i q) (fun q ↦ c q)
         (parabolicC2HolderSpaceFun u) p := by
   simp only [parabolicC2HolderSpaceNondivergenceOperator,
-    ContinuousLinearMap.sub_apply, boundedHolderSpace_sub_apply,
+    sub_apply, boundedHolderSpace_sub_apply,
     parabolicC2HolderSpaceVariableMatrixOperator_apply,
     parabolicC2HolderSpaceLowerOrderTerm_apply,
     parabolicNondivergenceOperator, parabolicVariableMatrixOperator,
@@ -608,8 +608,10 @@ theorem potentialTerm_holderWith
     (hcNorm : ∀ x, ‖c x‖ ≤ Bc) (huNorm : ∀ x, ‖u x‖ ≤ Mu) :
     HolderWith (Bc * Ku + Mu * Kc) alpha
       (potentialTerm c u : Euc n → F) := by
-  simpa only [potentialTerm_apply] using
+  let h : HolderWith (Bc * Ku + Mu * Kc) alpha
+      (potentialTerm c u : Euc n → F) :=
     holderWith_smul_of_norm_le hc hu hcNorm huNorm
+  exact h
 
 def lowerOrderSupConst
     (Bb : n → NNReal) (Bc Mdu Mu : NNReal) : NNReal :=
@@ -811,9 +813,9 @@ theorem nondivergence_schauder_norm_estimate_of_small_oscillation
     fun i j ↦ boundedHolderSpaceOscillationAt (a i j) x0
   have hu : ∀ x : Euc n, HasFDerivAt (u0 : Euc n → F) (du x) x := by
     intro x
-    simpa only [u0, du,
-      contDiffHolderSpaceToBoundedContinuousFunction_apply] using
+    let h : HasFDerivAt (u0 : Euc n → F) (du x) x :=
       contDiffHolderSpace_hasFDerivAt 2 alpha (by omega) u x
+    exact h
   have hdu : ∀ x : Euc n,
       HasFDerivAt (du : Euc n → Euc n →L[Real] F) (d2u x) x := by
     intro x
@@ -853,8 +855,9 @@ theorem nondivergence_schauder_norm_estimate_of_small_oscillation
   have hLHolder : HolderWith ‖Lu‖₊ alpha
       (nondivergenceOperator a0 b0 c0 u0 du d2u) := by
     rw [hLsource]
-    simpa only [boundedHolderSpaceToBoundedContinuousFunction_apply]
-      using boundedHolderSpace_holderWith Lu
+    let h : HolderWith ‖Lu‖₊ alpha (L0 : Euc n → F) :=
+      boundedHolderSpace_holderWith Lu
+    exact h
   have hloBound : ‖lowerOrderTerm b0 c0 u0 du‖ ≤ ‖lo‖₊ := by
     rw [hlosource, BoundedContinuousFunction.norm_le (NNReal.coe_nonneg _)]
     intro x
@@ -863,14 +866,15 @@ theorem nondivergence_schauder_norm_estimate_of_small_oscillation
   have hloHolder : HolderWith ‖lo‖₊ alpha
       (lowerOrderTerm b0 c0 u0 du) := by
     rw [hlosource]
-    simpa only [boundedHolderSpaceToBoundedContinuousFunction_apply]
-      using boundedHolderSpace_holderWith lo
+    let h : HolderWith ‖lo‖₊ alpha (lo0 : Euc n → F) :=
+      boundedHolderSpace_holderWith lo
+    exact h
   have ha : ∀ i j, HolderWith (Ka i j) alpha
       (a0 i j : Euc n → Real) := by
     intro i j
-    simpa only [Ka, a0,
-      boundedHolderSpaceToBoundedContinuousFunction_apply] using
+    let h : HolderWith (Ka i j) alpha (a0 i j : Euc n → Real) :=
       boundedHolderSpace_holderWith_holderConst (a i j)
+    exact h
   have homega : ∀ i j x, ‖a0 i j x0 - a0 i j x‖ ≤ omega i j := by
     intro i j x
     simp only [a0, boundedHolderSpaceToBoundedContinuousFunction_apply]
@@ -881,8 +885,10 @@ theorem nondivergence_schauder_norm_estimate_of_small_oscillation
     simpa using norm_boundedHolderSpace_apply_le d2 x
   have hd2uHolder : HolderWith ‖d2‖₊ alpha
       (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F) := by
-    simpa only [d2u, boundedHolderSpaceToBoundedContinuousFunction_apply]
-      using boundedHolderSpace_holderWith d2
+    let h : HolderWith ‖d2‖₊ alpha
+        (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F) :=
+      boundedHolderSpace_holderWith d2
+    exact h
   have hsmall' : spdLaplacianSchauderDefectConst
       (fun i j ↦ a0 i j x0) hA alpha
         (∑ i, ∑ j, (omega i j + Ka i j))
@@ -895,10 +901,9 @@ theorem nondivergence_schauder_norm_estimate_of_small_oscillation
       hd2unorm hd2uHolder hsmall'
   rw [norm_contDiffHolderSpace_eq]
   have hreal := ENNReal.toReal_mono ENNReal.coe_ne_top hgauge
-  simpa only [u0, Lu, lo, a0,
-    boundedHolderSpaceToBoundedContinuousFunction_apply,
-    nondivergenceSchauderNormConst,
-    variableCoefficientSchauderDefectConst, omega, Ka] using hreal
+  let h : ‖u‖ ≤ nondivergenceSchauderNormConst
+      alpha halpha1.le a x0 hA b c u := hreal
+  exact h
 
 end DifferentialGeometry.Analysis.Schauder
 

@@ -5,23 +5,42 @@ import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Analysis.Calculus.MeanValue
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Topology Manifold ContDiff
 
 namespace DifferentialGeometry
 
-theorem extDerivFun_real_eq_mfderiv
+theorem mvfderiv_real_eq_mfderiv
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners Real E H)
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     (f : M -> Real) (x : M) (V : TangentSpace I x) :
-    extDerivFun (I := I) f x V =
-      mfderiv I 𝓘(Real, Real) f x V := by
-  simp [extDerivFun, NormedSpace.fromTangentSpace]
+    mvfderiv (I := I) f x V =
+      NormedSpace.fromTangentSpace (f x)
+        (mfderiv I 𝓘(Real, Real) f x V) := by
+  rfl
+
+theorem mvfderiv_real_model_eq_fderiv
+    (f : Real -> Real) (x : Real)
+    (V : TangentSpace 𝓘(Real, Real) x) :
+    mvfderiv (I := 𝓘(Real, Real)) f x V =
+      fderiv Real f x (NormedSpace.fromTangentSpace x V) := by
+  unfold mvfderiv
+  rw [mfderiv_eq_fderiv]
+  rfl
+
+private theorem writtenInExtChartAt_real_apply
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+    (f : M -> Real) (x : M) (y : E) :
+    writtenInExtChartAt I 𝓘(Real, Real) x f y =
+      f ((extChartAt I x).symm y) := by
+  rw [writtenInExtChartAt, extChartAt_model_space_eq_id]
+  rfl
 
 
-theorem extDerivFun_comp_diffeomorph
+theorem mvfderiv_comp_diffeomorph
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     {M N : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -29,13 +48,13 @@ theorem extDerivFun_comp_diffeomorph
     (f : N -> Real) (Phi : M ≃ₘ⟮I, I⟯ N) (x : M)
     (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f (Phi x)) :
-    extDerivFun (I := I) (fun y : M => f (Phi y)) x v =
-      extDerivFun (I := I) f (Phi x) (mfderiv I I (Phi : M -> N) x v) := by
+    mvfderiv (I := I) (fun y : M => f (Phi y)) x v =
+      mvfderiv (I := I) f (Phi x) (mfderiv I I (Phi : M -> N) x v) := by
   have hPhi : MDifferentiableAt I I (Phi : M -> N) x :=
     Phi.mdifferentiable (by decide : (∞ : WithTop ℕ∞) ≠ 0) x
-  rw [extDerivFun_real_eq_mfderiv, extDerivFun_real_eq_mfderiv]
-  simpa [Function.comp_def] using
-    mfderiv_comp_apply (I := I) (I' := I) (I'' := 𝓘(Real, Real)) x hf hPhi v
+  rw [mvfderiv_real_eq_mfderiv, mvfderiv_real_eq_mfderiv]
+  exact congrArg (NormedSpace.fromTangentSpace (f (Phi x)))
+    (mfderiv_comp_apply (I := I) (I' := I) (I'' := 𝓘(Real, Real)) x hf hPhi v)
 
 theorem writtenInExtChartAt_diffAt
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -57,7 +76,9 @@ theorem writtenInExtChartAt_diffAt
   have hdiff_within :
       DifferentiableWithinAt Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
         (Set.range I) (extChartAt I x p) := by
-    simpa [writtenInExtChartAt] using hmd_within.differentiableWithinAt
+    rw [show writtenInExtChartAt I 𝓘(Real, Real) x f =
+      f ∘ (extChartAt I x).symm from funext (writtenInExtChartAt_real_apply f x)]
+    exact hmd_within.differentiableWithinAt
   have hrange : Set.range I ∈ nhds z := by
     rw [ModelWithCorners.Boundaryless.range_eq_univ (I := I)]
     exact Filter.univ_mem
@@ -67,7 +88,7 @@ theorem writtenInExtChartAt_diffAt
   rw [hpoint] at hdiff_within
   exact hdiff_within.differentiableAt hrange
 
-theorem extDerivFun_tangentConstInChart_eq_fderiv
+theorem mvfderiv_tangentConstInChart_eq_fderiv
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     [I.Boundaryless]
@@ -75,8 +96,8 @@ theorem extDerivFun_tangentConstInChart_eq_fderiv
     {f : M -> Real} {x p : M}
     (hp : p ∈ (chartAt H x).source)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f p)
-    (v : TangentSpace I x) :
-    extDerivFun (I := I) f p
+    (v : E) :
+    mvfderiv (I := I) f p
         (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x v p) =
       fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x f) (extChartAt I x p) v := by
   let z : E := extChartAt I x p
@@ -112,13 +133,32 @@ theorem extDerivFun_tangentConstInChart_eq_fderiv
   have hchain_apply :
       fderivWithin Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
           (Set.range I) z v =
-        mfderiv I 𝓘(Real, Real) f p
-          ((mfderivWithin 𝓘(Real, E) I (extChartAt I x).symm
-            (Set.range I) z) v) := by
+        NormedSpace.fromTangentSpace (𝕜 := Real) (f p)
+          (mfderiv I 𝓘(Real, Real) f p
+            ((mfderivWithin 𝓘(Real, E) I (extChartAt I x).symm
+              (Set.range I) z) v)) := by
     have happ := congrArg (fun L => L v) hchain
-    rw [mfderivWithin_eq_fderivWithin, mfderivWithin_univ] at happ
-    rw [hsymm] at happ
-    simpa [writtenInExtChartAt, z, ContinuousLinearMap.comp_apply] using happ
+    rw [mfderivWithin_univ, hsymm] at happ
+    have happ' := congrArg (NormedSpace.fromTangentSpace (𝕜 := Real) (f p)) happ
+    calc
+      fderivWithin Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
+          (Set.range I) z v =
+          NormedSpace.fromTangentSpace (𝕜 := Real) (f p)
+            ((mfderivWithin 𝓘(Real, E) 𝓘(Real, Real)
+              (f ∘ (extChartAt I x).symm) (Set.range I) z) v) := by
+        rw [mfderivWithin_eq_fderivWithin]
+        simp [writtenInExtChartAt, NormedSpace.fromTangentSpace]
+        rfl
+      _ = NormedSpace.fromTangentSpace (𝕜 := Real) (f p)
+          ((mfderiv I 𝓘(Real, Real) f p ∘L
+            mfderivWithin 𝓘(Real, E) I (extChartAt I x).symm
+              (Set.range I) z) v) := happ'
+      _ = NormedSpace.fromTangentSpace (𝕜 := Real) (f p)
+          (mfderiv I 𝓘(Real, Real) f p
+            ((mfderivWithin 𝓘(Real, E) I (extChartAt I x).symm
+              (Set.range I) z) v)) := by
+        exact congrArg (NormedSpace.fromTangentSpace (𝕜 := Real) (f p))
+          (ContinuousLinearMap.comp_apply _ _ v)
   have hfield :
       TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x v p =
         (mfderivWithin 𝓘(Real, E) I (extChartAt I x).symm
@@ -126,14 +166,28 @@ theorem extDerivFun_tangentConstInChart_eq_fderiv
     have hlin := TangentBundle.symmL_trivializationAt
       (𝕜 := Real) (I := I) (x₀ := x) (x := p) hp
     have happ := congrArg (fun L => L v) hlin
-    simpa [TensorLieDeriv.tangentConstInChart, z] using happ
+    change ((trivializationAt E (TangentSpace I) x).symmL Real p) v = _
+    exact happ
   have hwithin_to_fderiv :
       fderivWithin Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
           (Set.range I) z v =
         fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x f) z v := by
     rw [fderivWithin_of_mem_nhds hrange]
-  rw [extDerivFun_real_eq_mfderiv, hfield]
-  exact hchain_apply.symm.trans hwithin_to_fderiv
+  calc
+    mvfderiv (I := I) f p
+          (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x v p) =
+        NormedSpace.fromTangentSpace (𝕜 := Real) (f p)
+          (mfderiv I 𝓘(Real, Real) f p
+            (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x v p)) := by
+      exact mvfderiv_real_eq_mfderiv I f p
+        (TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x v p)
+    _ = NormedSpace.fromTangentSpace (𝕜 := Real) (f p)
+          (mfderiv I 𝓘(Real, Real) f p
+            ((mfderivWithin 𝓘(Real, E) I (extChartAt I x).symm
+              (Set.range I) z) v)) := by rw [hfield]
+    _ = fderivWithin Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
+          (Set.range I) z v := hchain_apply.symm
+    _ = fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x f) z v := hwithin_to_fderiv
 
 theorem isLocallyConstant_of_mfderiv_eq_zero
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -167,11 +221,11 @@ theorem isLocallyConstant_of_mfderiv_eq_zero
     have hmap : e p = z := by
       exact e.right_inv hz
     have hder :=
-      extDerivFun_tangentConstInChart_eq_fderiv (I := I) (f := f)
+      mvfderiv_tangentConstInChart_eq_fderiv (I := I) (f := f)
         (x := x) (p := p) hp_chart (hf p) v
     rw [hmap] at hder
     rw [← hder]
-    simp [extDerivFun_real_eq_mfderiv, hzero p]
+    simp [mvfderiv_real_eq_mfderiv, hzero p]
   have hopen :
       IsOpen (e.target ∩ F ⁻¹' ({F (e x)} : Set Real)) :=
     (isOpen_extChartAt_target (I := I) x).isOpen_inter_preimage_of_fderiv_eq_zero
@@ -192,7 +246,7 @@ theorem isLocallyConstant_of_mfderiv_eq_zero
   change f (e.symm (e y)) = f (e.symm (e x)) at hFy
   simpa [hsymm_y, hsymm_x] using hFy
 
-theorem extDerivFun_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
+theorem mvfderiv_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
     [I.Boundaryless]
@@ -203,20 +257,23 @@ theorem extDerivFun_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
       writtenInExtChartAt I 𝓘(Real, Real) x f
         =ᶠ[nhds (extChartAt I x x)] φ)
     (V : TangentSpace I x) :
-    extDerivFun (I := I) f x V =
+    mvfderiv (I := I) f x V =
       fderiv Real φ (extChartAt I x x) V := by
   let z₀ : E := extChartAt I x x
   have hrange : Set.range I ∈ nhds z₀ := by
     rw [ModelWithCorners.Boundaryless.range_eq_univ (I := I)]
     exact Filter.univ_mem
   calc
-    extDerivFun (I := I) f x V =
-        mfderiv I 𝓘(Real, Real) f x V := by
-          rw [extDerivFun_real_eq_mfderiv]
+    mvfderiv (I := I) f x V =
+        NormedSpace.fromTangentSpace (𝕜 := Real) (f x)
+          (mfderiv I 𝓘(Real, Real) f x V) := by
+          exact mvfderiv_real_eq_mfderiv I f x V
     _ = fderivWithin Real
           (writtenInExtChartAt I 𝓘(Real, Real) x f)
           (Set.range I) z₀ V := by
-          simpa [z₀] using congrArg (fun L => L V) hf.mfderiv
+          dsimp only [z₀]
+          exact congrArg (NormedSpace.fromTangentSpace (𝕜 := Real) (f x))
+            (congrArg (fun L => L V) hf.mfderiv)
     _ = fderiv Real
           (writtenInExtChartAt I 𝓘(Real, Real) x f) z₀ V := by
           rw [fderivWithin_of_mem_nhds hrange]
@@ -232,8 +289,8 @@ def FixedBaseExtDerivTimeDerivativeOn
   forall (t : ℝ) (x : M), x ∈ u ->
     forall V : TangentSpace I x,
       HasDerivWithinAt
-        (fun s : ℝ => extDerivFun (I := I) (F s) x V)
-        (extDerivFun (I := I) (Ft t) x V)
+        (fun s : ℝ => mvfderiv (I := I) (F s) x V)
+        (mvfderiv (I := I) (Ft t) x V)
       timeSet
       t
 
@@ -247,8 +304,8 @@ def FixedBaseExtDerivTimeDerivativeOnRegular
     forall (x : M), x ∈ u ->
       forall V : TangentSpace I x,
         HasDerivWithinAt
-          (fun s : ℝ => extDerivFun (I := I) (F s) x V)
-          (extDerivFun (I := I) (Ft t) x V)
+          (fun s : ℝ => mvfderiv (I := I) (F s) x V)
+          (mvfderiv (I := I) (Ft t) x V)
           timeSet
           t
 
@@ -261,8 +318,8 @@ theorem fixedBaseExtDerivTimeDerivativeOn_apply
     (h : FixedBaseExtDerivTimeDerivativeOn (I := I) timeSet u F Ft)
     {t : ℝ} {x : M} (hx : x ∈ u) (V : TangentSpace I x) :
     HasDerivWithinAt
-      (fun s : ℝ => extDerivFun (I := I) (F s) x V)
-      (extDerivFun (I := I) (Ft t) x V)
+      (fun s : ℝ => mvfderiv (I := I) (F s) x V)
+      (mvfderiv (I := I) (Ft t) x V)
       timeSet
       t :=
   h t x hx V
@@ -280,8 +337,8 @@ theorem fixedBaseExtDerivTimeDerivativeOnRegular_apply
     {t : ℝ} (ht : t ∈ regularSet) {x : M} (hx : x ∈ u)
     (V : TangentSpace I x) :
     HasDerivWithinAt
-      (fun s : ℝ => extDerivFun (I := I) (F s) x V)
-      (extDerivFun (I := I) (Ft t) x V)
+      (fun s : ℝ => mvfderiv (I := I) (F s) x V)
+      (mvfderiv (I := I) (Ft t) x V)
       timeSet
       t :=
   h t ht x hx V
@@ -331,21 +388,21 @@ theorem fixedBaseExtDerivTimeDerivativeOn_singleton_of_chart_contDiff
       (E := E) Φ hΦ (timeSet := timeSet) (t := t) z₀ V
   have hleft :
       ∀ s : Real,
-        extDerivFun (I := I) (F s) x₀ V =
+        mvfderiv (I := I) (F s) x₀ V =
           fderiv Real (Φ s) z₀ V := by
     intro s
     exact
-      extDerivFun_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
+      mvfderiv_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
         (I := I) (x := x₀) (f := F s) (φ := Φ s)
         (hFdiff s) (hFchart s) V
   have hright :
-      extDerivFun (I := I) (Ft t) x₀ V =
+      mvfderiv (I := I) (Ft t) x₀ V =
         fderiv Real
           (fun y : E =>
             (fderiv Real (fun p : Real × E => Φ p.1 p.2) (t, y)) (1, 0))
           z₀ V := by
     exact
-      extDerivFun_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
+      mvfderiv_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
         (I := I) (x := x₀) (f := Ft t)
         (φ := fun y : E =>
           (fderiv Real (fun p : Real × E => Φ p.1 p.2) (t, y)) (1, 0))
@@ -422,21 +479,21 @@ theorem fixedBaseExtDerivTimeDerivativeOnRegular_singleton_of_chart_contDiffOnTi
       (E := E) Φ hΦ (timeSet := timeSet) (t := t) z₀ V
   have hleft :
       ∀ s : Real, s ∈ timeSet ->
-        extDerivFun (I := I) (F s) x₀ V =
+        mvfderiv (I := I) (F s) x₀ V =
           fderiv Real (Φ s) z₀ V := by
     intro s hs
     exact
-      extDerivFun_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
+      mvfderiv_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
         (I := I) (x := x₀) (f := F s) (φ := Φ s)
         (hFdiff s hs) (hFchart s hs) V
   have hright :
-      extDerivFun (I := I) (Ft t) x₀ V =
+      mvfderiv (I := I) (Ft t) x₀ V =
         fderiv Real
           (fun y : E =>
             (fderiv Real (fun p : Real × E => Φ p.1 p.2) (t, y)) (1, 0))
           z₀ V := by
     exact
-      extDerivFun_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
+      mvfderiv_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
         (I := I) (x := x₀) (f := Ft t)
         (φ := fun y : E =>
           (fderiv Real (fun p : Real × E => Φ p.1 p.2) (t, y)) (1, 0))
@@ -476,8 +533,8 @@ theorem eventuallyEq_timeFDeriv
       HasDerivAt
         (fun s : Real => A (L s))
         ((fderiv Real A (t, y)) (1, 0)) t := by
-    simpa [A, L] using
-      hy_diff.hasFDerivAt.comp_hasDerivAt t hline
+    change HasDerivAt (A ∘ L) ((fderiv Real A (t, y)) (1, 0)) t
+    exact hy_diff.hasFDerivAt.comp_hasDerivAt t hline
   have htime_deriv :
       HasDerivAt (fun s : Real => Φ s y) (Ψ t y) t :=
     hy_deriv.hasDerivAt htime
@@ -528,21 +585,21 @@ theorem fixedBaseAtReg
       (E := E) (F := Φ) (t := t) (x := z₀) (V := V) (hΦ t ht)).hasDerivWithinAt
   have hleft :
       ∀ s : Real, s ∈ timeSet ->
-        extDerivFun (I := I) (F s) x₀ V =
+        mvfderiv (I := I) (F s) x₀ V =
           fderiv Real (Φ s) z₀ V := by
     intro s hs
     exact
-      extDerivFun_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
+      mvfderiv_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
         (I := I) (x := x₀) (f := F s) (φ := Φ s)
         (hFdiff s hs) (hFchart s hs) V
   have hright :
-      extDerivFun (I := I) (Ft t) x₀ V =
+      mvfderiv (I := I) (Ft t) x₀ V =
         fderiv Real
           (fun y : E =>
             (fderiv Real (fun p : Real × E => Φ p.1 p.2) (t, y)) (1, 0))
           z₀ V := by
     exact
-      extDerivFun_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
+      mvfderiv_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
         (I := I) (x := x₀) (f := Ft t)
         (φ := fun y : E =>
           (fderiv Real (fun p : Real × E => Φ p.1 p.2) (t, y)) (1, 0))
@@ -573,9 +630,13 @@ theorem contDiffAt_prodChart
         Set.univ (t, extChartAt I x x) := by
     convert hsrc using 1
     · ext p
-      have hp : p ∈ Set.range (Prod.map id (I : H -> E)) := by
-        simp [Set.range_prodMap, ModelWithCorners.range_eq_univ]
-      simp [hp]
+      simp only [Function.comp_apply, extChartAt_prod, PartialEquiv.prod_coe_symm,
+        extChartAt_model_space_eq_id, PartialEquiv.refl_symm, PartialEquiv.refl_coe,
+        extChartAt_coe_symm, Function.id_def]
+    · rw [ModelWithCorners.Boundaryless.range_eq_univ]
+    · rw [extChartAt_prod]
+      rw [extChartAt_model_space_eq_id]
+      rfl
   simpa [contDiffWithinAt_univ] using hsrc'
 
 theorem fixedBaseOnReg_of_timeDerivWithin
@@ -630,7 +691,7 @@ theorem fixedBaseOnReg_of_timeDerivWithin
       exact hFdiff s hs x hx
     · intro s hs
       filter_upwards [extChartAt_target_mem_nhds (I := I) x] with y hy
-      simp [Φ, writtenInExtChartAt, extChartAt]
+      exact writtenInExtChartAt_real_apply (F s) x y
     · intro τ hτ
       exact hFtdiff τ hτ x hx
     · intro τ hτ
@@ -670,7 +731,7 @@ theorem fixedBaseOnReg_of_timeDerivWithin
             =ᶠ[𝓝 (extChartAt I x x)]
               fun y : E => Ft τ ((extChartAt I x).symm y) := by
         filter_upwards [extChartAt_target_mem_nhds (I := I) x] with y hy
-        simp [writtenInExtChartAt, extChartAt]
+        exact writtenInExtChartAt_real_apply (Ft τ) x y
       exact hFt_raw.trans hraw
   exact hsingle t ht x (by simp) V
 
@@ -727,7 +788,7 @@ theorem fixedBaseOnRegLocal
       exact hFdiff s hs x hx
     · intro s hs
       filter_upwards [extChartAt_target_mem_nhds (I := I) x] with y hy
-      simp [Φ, writtenInExtChartAt, extChartAt]
+      exact writtenInExtChartAt_real_apply (F s) x y
     · intro τ hτ
       exact hFtdiff τ hτ x hx
     · intro τ hτ
@@ -777,7 +838,7 @@ theorem fixedBaseOnRegLocal
             =ᶠ[𝓝 (extChartAt I x x)]
               fun y : E => Ft τ ((extChartAt I x).symm y) := by
         filter_upwards [extChartAt_target_mem_nhds (I := I) x] with y hy
-        simp [writtenInExtChartAt, extChartAt]
+        exact writtenInExtChartAt_real_apply (Ft τ) x y
       exact hFt_raw.trans hraw
   exact hsingle t ht x (by simp) V
 

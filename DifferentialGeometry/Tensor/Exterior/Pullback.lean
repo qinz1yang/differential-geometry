@@ -1,8 +1,10 @@
 import DifferentialGeometry.Tensor.Exterior.Basic
+import DifferentialGeometry.Bundle.TangentSpace
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.ContMDiffMap
 
 noncomputable section
+
 
 open Bundle Set ContinuousAlternatingMap Function Filter
 open scoped Topology Manifold ContDiff Bundle
@@ -33,30 +35,37 @@ private lemma pullback_localRep_eq {f : M → N} (η : DifferentialForm IN N k) 
       ((trivializationAt (EN [⋀^Fin k]→L[ℝ] ℝ)
         (Bundle.continuousAlternatingMap ℝ (Fin k) EN (TangentSpace IN) ℝ
           (Bundle.Trivial N ℝ)) (f x₀) ⟨f x, η (f x)⟩).2).compContinuousLinearMap
-          (inTangentCoordinates IM IN id f (fun x : M => mfderiv IM IN f x) x₀ x) := by
+          (inTangentCoordinates IM IN id f
+            (fun x : M => tangentLinearMapToModel (mfderiv IM IN f x)) x₀ x) := by
   rw [continuousAlternatingMap_trivializationAt_apply (m := k) (IM := IM) (M := M) (x₀ := x₀)
     (x := x)
       (L := (η (f x)).compContinuousLinearMap (mfderiv IM IN f x)),
     continuousAlternatingMap_trivializationAt_apply (m := k) (IM := IN) (M := N) (x₀ := f x₀)
       (x := f x)
       (L := η (f x))]
-  rw [ContinuousAlternatingMap.compContinuousLinearMap_compContinuousLinearMap,
-    ContinuousAlternatingMap.compContinuousLinearMap_compContinuousLinearMap]
-  congr 1
   rw [inTangentCoordinates_eq (I := IM) (I' := IN) (f := (id : M → M)) (g := f)
-    (ϕ := fun x : M => mfderiv IM IN f x)
+    (ϕ := fun x : M => tangentLinearMapToModel (mfderiv IM IN f x))
     (by simpa [extChartAt_source] using hx₀)
     (by simpa [extChartAt_source] using hfx)]
   rw [← TangentBundle.continuousLinearMapAt_trivializationAt_eq_core (𝕜 := ℝ) (I := IN) (M := N)
     (by simpa [extChartAt_source] using hfx)]
   rw [← TangentBundle.symmL_trivializationAt_eq_core (𝕜 := ℝ) (I := IM) (M := M)
     (by simpa [extChartAt_source] using hx₀)]
-  ext v
-  simp only [ContinuousLinearMap.comp_apply]
+  apply ContinuousAlternatingMap.ext
+  intro v
+  change η (f x) (fun i =>
+      (mfderiv IM IN f x) ((trivializationAt EM (TangentSpace IM) x₀).symmL ℝ x (v i))) =
+    η (f x) (fun i =>
+      (trivializationAt EN (TangentSpace IN) (f x₀)).symmL ℝ (f x)
+        ((trivializationAt EN (TangentSpace IN) (f x₀)).continuousLinearMapAt ℝ (f x)
+          (tangentLinearMapToModel (mfderiv IM IN f x)
+            ((trivializationAt EM (TangentSpace IM) x₀).symmL ℝ x (v i)))))
+  congr 1
+  funext i
   exact (Trivialization.symmL_continuousLinearMapAt (R := ℝ)
     (trivializationAt EN (TangentSpace IN) (f x₀))
     (by simpa [extChartAt_source] using hfx)
-    ((mfderiv IM IN f x) ((trivializationAt EM (TangentSpace IM) (id x₀)).symmL ℝ (id x) v))).symm
+    ((mfderiv IM IN f x) ((trivializationAt EM (TangentSpace IM) x₀).symmL ℝ x (v i)))).symm
 
 private lemma contMDiffAt_localRep (η : DifferentialForm IN N k) (y₀ : N) :
     ContMDiffAt IN 𝓘(ℝ, EN [⋀^Fin k]→L[ℝ] ℝ) ⊤
@@ -89,12 +98,22 @@ noncomputable def pullback (f : M → N) (hf : ContMDiff IM IN ⊤ f)
       exact (contMDiffAt_localRep η (f x₀)).comp x₀ hf.contMDiffAt
     have htc : ContMDiffAt IM 𝓘(ℝ, EM →L[ℝ] EN) ⊤
         (fun x : M => inTangentCoordinates IM IN id f
-          (fun x : M => mfderiv IM IN f x) x₀ x) x₀ := by
-      exact ContMDiffAt.mfderiv_const (I := IM) (I' := IN) (f := f) (hf := hf.contMDiffAt)
-        (m := ⊤) (by simp)
+          (fun x : M => tangentLinearMapToModel (mfderiv IM IN f x)) x₀ x) x₀ := by
+      have hmap (x : M) : tangentLinearMapToModel (mfderiv IM IN f x) =
+          (mfderiv IM IN f x : EM →L[ℝ] EN) := by
+        apply ContinuousLinearMap.ext
+        intro v
+        rw [tangentLinearMapToModel_apply,
+          tangentSpaceModelContinuousLinearEquiv_apply,
+          tangentSpaceModelContinuousLinearEquiv_symm_apply]
+        rfl
+      simpa only [hmap] using
+        (ContMDiffAt.mfderiv_const (I := IM) (I' := IN) (f := f) (hf := hf.contMDiffAt)
+          (m := ⊤) (by simp))
     let g : M → (EN [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin k]→L[ℝ] ℝ) := fun x =>
       ContinuousAlternatingMap.compContinuousLinearMapCLM
-        (inTangentCoordinates IM IN id f (fun x : M => mfderiv IM IN f x) x₀ x)
+        (inTangentCoordinates IM IN id f
+          (fun x : M => tangentLinearMapToModel (mfderiv IM IN f x)) x₀ x)
     have hg : ContMDiffAt IM 𝓘(ℝ, (EN [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin k]→L[ℝ] ℝ)) ⊤ g x₀ := by
       exact (ContinuousAlternatingMap.compContinuousLinearMapCLM_contMDiff_of_space_real
         (F₁ := EM) (F₁' := EN) (F₂ := ℝ) (ι := Fin k)).contMDiffAt.comp x₀ htc
@@ -146,9 +165,10 @@ private lemma fderiv_chartLocalMap_eq_inTangentCoordinates (f : M → N)
     (hfz : f z ∈ (extChartAt IN (f x₀)).source) :
     fderiv ℝ (fun y : EM => (extChartAt IN (f x₀)) (f ((extChartAt IM x₀).symm y)))
         ((extChartAt IM x₀) z) =
-      inTangentCoordinates IM IN id f (fun x : M => mfderiv IM IN f x) x₀ z := by
-  haveI : IsManifold IM 1 M := IsManifold.of_le (m := 1) (n := ⊤) (by norm_num)
-  haveI : IsManifold IN 1 N := IsManifold.of_le (m := 1) (n := ⊤) (by norm_num)
+      inTangentCoordinates IM IN id f
+        (fun x : M => tangentLinearMapToModel (mfderiv IM IN f x)) x₀ z := by
+  have : IsManifold IM 1 M := IsManifold.of_le (m := 1) (n := ⊤) (by norm_num)
+  have : IsManifold IN 1 N := IsManifold.of_le (m := 1) (n := ⊤) (by norm_num)
   let c₀ := extChartAt IM x₀
   let c₁ := extChartAt IN (f x₀)
   let c₁' := extChartAt IN (f z)
@@ -264,78 +284,35 @@ private lemma fderiv_chartLocalMap_eq_inTangentCoordinates (f : M → N)
   have hfC : fderiv ℝ C (c₀ z) = tangentCoordChange IM x₀ z z := by
     exact fderiv_chartChange_rev_eq_tangentCoordChange (IM := IM) (M := M) hz
       (BoundarylessManifold.isInteriorPoint (I := IM) (M := M) (x := z))
-  have hfB : fderiv ℝ B (c_z z) = mfderiv IM IN f z := by
+  have hfB : fderiv ℝ B (c_z z) =
+      tangentLinearMapToModel (mfderiv IM IN f z) := by
     have hmd : MDifferentiableAt IM IN f z :=
       ContMDiff.mdifferentiableAt (I := IM) (I' := IN) hf (by norm_num)
-    rw [mfderiv]
-    rw [if_pos hmd]
+    have hmodel : tangentLinearMapToModel (mfderiv IM IN f z) =
+        fderivWithin ℝ (writtenInExtChartAt IM IN z f) (range IM) ((extChartAt IM z) z) := by
+      apply ContinuousLinearMap.ext
+      intro v
+      rw [tangentLinearMapToModel_apply,
+        tangentSpaceModelContinuousLinearEquiv_apply,
+        tangentSpaceModelContinuousLinearEquiv_symm_apply]
+      rw [hmd.mfderiv]
+      rfl
     have hw : writtenInExtChartAt IM IN z f = fun y : EM => c₁' (f (c_z.symm y)) := by
       rfl
-    rw [hw]
-    rw [fderivWithin_of_mem_nhds]
     have hmem : (c_z z) ∈ interior (c_z.target) :=
       (ModelWithCorners.isInteriorPoint_iff (I := IM)).mp
         (BoundarylessManifold.isInteriorPoint (I := IM) (M := M) (x := z))
-    exact mem_interior_iff_mem_nhds.mp
-      (interior_mono (extChartAt_target_subset_range (I := IM) z) hmem)
+    rw [hmodel, hw, fderivWithin_of_mem_nhds
+      (mem_interior_iff_mem_nhds.mp
+        (interior_mono (extChartAt_target_subset_range (I := IM) z) hmem))]
   have hfA : fderiv ℝ A (c₁' (f z)) = tangentCoordChange IN (f z) (f x₀) (f z) := by
     exact fderiv_chartChange_eq_tangentCoordChange (IM := IN) (M := N) hfz
       (BoundarylessManifold.isInteriorPoint (I := IN) (M := N) (x := f z))
   rw [hfC, hfB, hfA]
-  have hmfA : mfderiv IN 𝓘(ℝ, EN) (extChartAt IN (f x₀)) (f z) =
-      tangentCoordChange IN (f z) (f x₀) (f z) := by
-    have hmd : MDifferentiableAt IN 𝓘(ℝ, EN) (extChartAt IN (f x₀)) (f z) :=
-      mdifferentiableAt_extChartAt (by simpa [extChartAt_source] using hfz)
-    rw [mfderiv]
-    rw [if_pos hmd]
-    have hw : writtenInExtChartAt IN 𝓘(ℝ, EN) (f z) (extChartAt IN (f x₀)) =
-        fun y : EN => c₁ (c₁'.symm y) := by
-      rfl
-    rw [hw]
-    have hmem : (c₁' (f z)) ∈ interior ((extChartAt IN (f z)).target) :=
-      (ModelWithCorners.isInteriorPoint_iff_of_mem_atlas (I := IN) (n := 1)
-        (e := (chartAt HN (f z))) (hn := by norm_num)
-        (he := chart_mem_atlas (H := HN) (f z))
-        (hx := by simp)).1
-        (BoundarylessManifold.isInteriorPoint (I := IN) (M := N) (x := f z))
-    rw [fderivWithin_of_mem_nhds
-      (mem_interior_iff_mem_nhds.mp
-        (interior_mono (extChartAt_target_subset_range (I := IN) (f z)) hmem))]
-    simpa [A] using hfA
-  have hmfC : mfderivWithin 𝓘(ℝ, EM) IM (extChartAt IM x₀).symm (range IM) (c₀ z) =
-      tangentCoordChange IM x₀ z z := by
-    have hmd : MDifferentiableWithinAt 𝓘(ℝ, EM) IM (extChartAt IM x₀).symm (range IM) (c₀ z) :=
-      mdifferentiableWithinAt_extChartAt_symm (c₀.map_source hz)
-    rw [mfderivWithin]
-    rw [if_pos hmd]
-    have hw : writtenInExtChartAt 𝓘(ℝ, EM) IM (c₀ z) (extChartAt IM x₀).symm =
-        fun y : EM => c_z (c₀.symm y) := by
-      funext y
-      simp only [writtenInExtChartAt, extChartAt_model_space_eq_id]
-      rw [c₀.left_inv hz]
-      rfl
-    rw [hw]
-    have hmem : (c₀ z) ∈ interior ((extChartAt IM x₀).target) :=
-      (ModelWithCorners.isInteriorPoint_iff_of_mem_atlas (I := IM) (n := 1)
-        (e := (chartAt HM x₀)) (hn := by norm_num)
-        (he := chart_mem_atlas (H := HM) x₀)
-        (hx := by simpa [extChartAt_source] using hz)).1
-        (BoundarylessManifold.isInteriorPoint (I := IM) (M := M) (x := z))
-    simp only [extChartAt, OpenPartialHomeomorph.extend,
-      OpenPartialHomeomorph.refl_partialEquiv, PartialEquiv.refl_source,
-      OpenPartialHomeomorph.singletonChartedSpace_chartAt_eq, modelWithCornersSelf_partialEquiv,
-      PartialEquiv.trans_refl, PartialEquiv.refl_symm, PartialEquiv.refl_coe, preimage_id_eq,
-      id_eq, modelWithCornersSelf_coe, range_id, inter_univ]
-    rw [fderivWithin_of_mem_nhds
-      (mem_interior_iff_mem_nhds.mp
-        (interior_mono (extChartAt_target_subset_range (I := IM) x₀) hmem))]
-    simpa [C] using hfC
-  rw [inTangentCoordinates_eq_mfderiv_comp (I := IM) (I' := IN) (f := (id : M → M)) (g := f)
-    (ϕ := fun x : M => mfderiv IM IN f x)
+  rw [inTangentCoordinates_eq (I := IM) (I' := IN) (f := (id : M → M)) (g := f)
+    (ϕ := fun x : M => tangentLinearMapToModel (mfderiv IM IN f x))
     (by simpa [extChartAt_source] using hz) (by simpa [extChartAt_source] using hfz)]
-  simp only [id_eq]
-  rw [hmfA, hmfC]
-  rfl
+  simp only [id_eq, tangentBundleCore_coordChange]
 
 private lemma pullback_localRep_fderiv (η : DifferentialForm IN N k) (f : M → N)
     (hf : ContMDiff IM IN ⊤ f) [BoundarylessManifold IM M] [BoundarylessManifold IN N]
@@ -378,7 +355,8 @@ theorem exteriorDerivative_pullback [BoundarylessManifold IM M] [BoundarylessMan
     (f : M → N) (hf : ContMDiff IM IN ⊤ f) (η : DifferentialForm IN N k) :
     pullback f hf (exteriorDerivative (IM := IN) (M := N) η) =
       exteriorDerivative (pullback f hf η) := by
-  ext x
+  apply ContMDiffSection.ext
+  intro x
   let c₀ := extChartAt IM x
   let c₁ := extChartAt IN (f x)
   let e := trivializationAt (EM [⋀^Fin (k + 1)]→L[ℝ] ℝ)
@@ -556,16 +534,20 @@ variable {EP : Type*} [NormedAddCommGroup EP] [NormedSpace ℝ EP]
 
 theorem pullback_id (α : DifferentialForm IM M k) :
     pullback (id : M → M) (contMDiff_id (I := IM) (M := M)) α = α := by
-  ext x
+  apply ContMDiffSection.ext
+  intro x
   rw [pullback_apply]
   change (α x).compContinuousLinearMap (mfderiv IM IM (id : M → M) x) = α x
   rw [mfderiv_id]
-  rw [ContinuousAlternatingMap.compContinuousLinearMap_id]
+  apply ContinuousAlternatingMap.ext
+  intro v
+  rfl
 
 theorem pullback_comp (f : M → N) (hf : ContMDiff IM IN ⊤ f) (g : N → P)
     (hg : ContMDiff IN IP ⊤ g) (η : DifferentialForm IP P k) :
     pullback (g ∘ f) (hg.comp hf) η = pullback f hf (pullback g hg η) := by
-  ext x
+  apply ContMDiffSection.ext
+  intro x
   rw [pullback_apply, pullback_apply, pullback_apply]
   change (η (g (f x))).compContinuousLinearMap (mfderiv IM IP (g ∘ f) x) =
     ((η (g (f x))).compContinuousLinearMap (mfderiv IN IP g (f x))).compContinuousLinearMap
@@ -574,13 +556,16 @@ theorem pullback_comp (f : M → N) (hf : ContMDiff IM IN ⊤ f) (g : N → P)
       (mfderiv IN IP g (f x)).comp (mfderiv IM IN f x) from
     mfderiv_comp (g := g) (f := f) (x := x)
       (hg := hg.mdifferentiableAt (by norm_num)) (hf := hf.mdifferentiableAt (by norm_num))]
-  rw [ContinuousAlternatingMap.compContinuousLinearMap_compContinuousLinearMap]
+  apply ContinuousAlternatingMap.ext
+  intro v
+  rfl
 
 theorem pullback_wedge (f : M → N) (hf : ContMDiff IM IN ⊤ f)
     (α : DifferentialForm IN N k) (β : DifferentialForm IN N l) :
     pullback f hf (DifferentialForm.wedge α β) =
       DifferentialForm.wedge (pullback f hf α) (pullback f hf β) := by
-  ext x
+  apply ContMDiffSection.ext
+  intro x
   change ((α (f x)) ∧[ℝ] (β (f x))).compContinuousLinearMap (mfderiv IM IN f x) =
     ((α (f x)).compContinuousLinearMap (mfderiv IM IN f x)) ∧[ℝ]
       ((β (f x)).compContinuousLinearMap (mfderiv IM IN f x))
@@ -591,7 +576,8 @@ theorem pullback_wedge (f : M → N) (hf : ContMDiff IM IN ⊤ f)
 theorem pullback_add (f : M → N) (hf : ContMDiff IM IN ⊤ f)
     (α β : DifferentialForm IN N k) :
     pullback f hf (α + β) = pullback f hf α + pullback f hf β := by
-  ext x
+  apply ContMDiffSection.ext
+  intro x
   change (α (f x) + β (f x)).compContinuousLinearMap (mfderiv IM IN f x) =
     (α (f x)).compContinuousLinearMap (mfderiv IM IN f x) +
     (β (f x)).compContinuousLinearMap (mfderiv IM IN f x)
@@ -601,7 +587,8 @@ theorem pullback_add (f : M → N) (hf : ContMDiff IM IN ⊤ f)
 theorem pullback_smul (c : ℝ) (f : M → N) (hf : ContMDiff IM IN ⊤ f)
     (α : DifferentialForm IN N k) :
     pullback f hf (c • α) = c • pullback f hf α := by
-  ext x
+  apply ContMDiffSection.ext
+  intro x
   change (c • α (f x)).compContinuousLinearMap (mfderiv IM IN f x) =
     c • (α (f x)).compContinuousLinearMap (mfderiv IM IN f x)
   exact ContinuousAlternatingMap.compContinuousLinearMap_smul c (α (f x))
@@ -615,12 +602,14 @@ noncomputable def pullbackLinearMap (f : M → N) (hf : ContMDiff IM IN ⊤ f) (
 
 theorem pullbackMap_id (α : DifferentialForm IM M k) :
     pullbackMap (ContMDiffMap.id (I := IM) (M := M) : C^⊤⟮IM, M; IM, M⟯) α = α := by
-  simpa [pullbackMap] using pullback_id α
+  unfold pullbackMap ContMDiffMap.id
+  exact pullback_id α
 
 theorem pullbackMap_comp (f : C^⊤⟮IM, M; IN, N⟯) (g : C^⊤⟮IN, N; IP, P⟯)
     (η : DifferentialForm IP P k) :
     pullbackMap (ContMDiffMap.comp g f) η = pullbackMap f (pullbackMap g η) := by
-  simpa [pullbackMap] using pullback_comp f.1 f.2 g.1 g.2 η
+  unfold pullbackMap ContMDiffMap.comp
+  exact pullback_comp f.1 f.2 g.1 g.2 η
 
 theorem pullbackMap_wedge (f : C^⊤⟮IM, M; IN, N⟯)
     (α : DifferentialForm IN N k) (β : DifferentialForm IN N l) :

@@ -146,8 +146,8 @@ theorem nnreal_affine_geometric_hole_filling
   have hreal := geometric_hole_filling hXreal theta.coe_nonneg
     (by exact_mod_cast hB) A.coe_nonneg (by exact_mod_cast hthetaB) (fun k ↦ ?_)
   · apply NNReal.coe_le_coe.mp
-    simpa only [NNReal.coe_div, NNReal.coe_sub hthetaB.le,
-      NNReal.coe_one, NNReal.coe_mul] using hreal
+    rw [NNReal.coe_div, NNReal.coe_sub hthetaB.le, NNReal.coe_one, NNReal.coe_mul]
+    exact hreal
   · calc
       (X k : Real) ≤ data k + factor k * X (k + 1) := by
         exact_mod_cast hstep k

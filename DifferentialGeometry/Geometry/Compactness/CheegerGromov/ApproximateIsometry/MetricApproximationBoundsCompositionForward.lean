@@ -35,11 +35,10 @@ section PartialDataComp
 
 open TopologicalSpace
 
-set_option backward.isDefEq.respectTransparency false in
 
-noncomputable def compSepFwd [I.Boundaryless]
+noncomputable def compSepFwd
     {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
-    [T2Space N] [SigmaCompactSpace N] [T2Space P]
+    [T2Space N] [hSigmaCompactN : SigmaCompactSpace N] [T2Space P]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
     (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ∞))
@@ -89,6 +88,7 @@ noncomputable def compSepFwd [I.Boundaryless]
     (D₂ : PartialDiffeomorphMetricApproximationBounds (I := I) (K₂ : Set N) c0' cov' p Φ' h h') :
     MapMetricApproximationBoundsOn (I := I) K c0'' cov'' p
       (PartialDiffeomorph.trans (I := I) Φ Φ' : M → P) g h' := by
+  let _ := hSigmaCompactN
   classical
   set Ψ := PartialDiffeomorph.trans (I := I) Φ Φ' with hΨdef
   have hsrcU : (U₁ : Set M) ⊆ Ψ.source := by
@@ -111,7 +111,9 @@ noncomputable def compSepFwd [I.Boundaryless]
         (by decide : (∞ : WithTop ℕ∞) ≠ 0)
     have hcomp := mfderiv_comp y hΦ'd hΦd
     have happ := DFunLike.congr_fun hcomp v
-    simpa [ContinuousLinearMap.comp_apply] using happ
+    rw [hΨdef]
+    change mfderiv I I ((Φ' : N → P) ∘ (Φ : M → N)) y v = _
+    exact happ
   haveI : LocallyCompactSpace M := Manifold.locallyCompact_of_finiteDimensional I
   let KG : Set M := Classical.choose (exists_compact_between hK U₁.2 hKU)
   have hKGspec := Classical.choose_spec (exists_compact_between hK U₁.2 hKU)
@@ -152,8 +154,15 @@ noncomputable def compSepFwd [I.Boundaryless]
   have hc0T : ∀ x ∈ KG, metricTensorErrorNorm (I := I) P₁ g x ≤ c0 := by
     intro x hxKG
     have hval : P₁ x = D₁.forward.pullback x := by
-      refine ContinuousMultilinearMap.ext (fun w => ?_)
-      rw [hP₁apply x hxKG w, D₁.forward.pullback_apply x (hKGU hxKG) w]
+      apply Tensor0SBundle.tensor0SSpace_ext (I := I) 2 x
+      intro w
+      change Tensor0SBundle.Tensor0SSpace.eval (P₁ x) w =
+        Tensor0SBundle.Tensor0SSpace.eval (D₁.forward.pullback x) w
+      have hp := hP₁apply x hxKG w
+      change Tensor0SBundle.Tensor0SSpace.eval (P₁ x) w = _ at hp
+      have hd := D₁.forward.pullback_apply x (hKGU hxKG) w
+      change Tensor0SBundle.Tensor0SSpace.eval (D₁.forward.pullback x) w = _ at hd
+      exact hp.trans hd.symm
     unfold metricTensorErrorNorm
     rw [hval]
     exact D₁.forward.c0_small x (hKGU hxKG)
@@ -235,7 +244,11 @@ noncomputable def compSepFwd [I.Boundaryless]
         mfderiv I I (Φ.symm : N → M) ((Φ : M → N) x)
           (mfderiv I I (Φ : M → N) x w) = w := by
       intro w
-      simpa using DFunLike.congr_fun hcomp w
+      have hw := DFunLike.congr_fun hcomp w
+      rw [ContinuousLinearMap.comp_apply] at hw
+      change mfderiv I I (Φ.symm : N → M) ((Φ : M → N) x)
+        (mfderiv I I (Φ : M → N) x w) = w at hw
+      exact hw
     rw [D₁.reverse.pullback_apply ((Φ : M → N) x) hΦxImg
         (fun q => mfderiv I I (Φ : M → N) x (v q))]
     rw [Tensor0SBundle.metricTensorField_apply]
@@ -331,30 +344,41 @@ noncomputable def compSepFwd [I.Boundaryless]
     (fun x hx k hkp => hδ₁F5 ⟨⟨x, hx⟩⟩ x hx k hkp)
   have hgermz : ∀ (a : ℕ) (x : M), x ∈ (V : Set M) →
       ∀ slots : Fin (a + 2) → TangentSpace I x,
-      covDerivOfField (I := I) g (P₁ - D₁.forward.pullback) a x slots = 0 := by
+      Tensor0SBundle.Tensor0SSpace.eval
+        (covDerivOfField (I := I) g (P₁ - D₁.forward.pullback) a x) slots = 0 := by
     intro a x hxV slots
-    haveI : Nonempty V := ⟨⟨x, hxV⟩⟩
+    have : Nonempty V := ⟨⟨x, hxV⟩⟩
     have hA0 : ∀ (q : V) (w : Fin 2 → TangentSpace I q),
         (0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
           (I := I) (M := V) (n := (∞ : WithTop ℕ∞)) 2) q w
           = (P₁ - D₁.forward.pullback) (q : M) w := by
       intro q w
       have hv : P₁ (q : M) w = D₁.forward.pullback (q : M) w := by
-        rw [hP₁apply _ (hVKG q.2) w, D₁.forward.pullback_apply _ (hKGU (hVKG q.2)) w]
-      simp [ContMDiffSection.coe_sub, Pi.sub_apply, hv]
+        rw [hP₁apply _ (hVKG q.2) w,
+          D₁.forward.pullback_apply _ (hKGU (hVKG q.2)) w]
+      with_unfolding_all
+        change 0 = P₁ (q : M) w - D₁.forward.pullback (q : M) w
+        exact (sub_eq_zero.mpr hv).symm
     have hres := covDerivOfField_restrictOpen (I := I) g V
       (0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := V) (n := (∞ : WithTop ℕ∞)) 2)
       (P₁ - D₁.forward.pullback) hA0 a ⟨x, hxV⟩ slots
+    change Tensor0SBundle.Tensor0SSpace.eval
+        (covDerivOfField (I := I) (g.restrictOpen (I := I) V)
+          (0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
+            (I := I) (M := V) (n := (∞ : WithTop ℕ∞)) 2) a ⟨x, hxV⟩) slots =
+      Tensor0SBundle.Tensor0SSpace.eval
+        (covDerivOfField (I := I) g (P₁ - D₁.forward.pullback) a x) slots at hres
     rw [← hres, covDOF_zero]
-    simp
+    exact Tensor0SBundle.Tensor0SSpace.eval_zero slots
   have hcovP'' : ∀ a : ℕ, 1 ≤ a → a ≤ p → ∀ x ∈ K,
       tensor02CovDerivNormWith (I := I) a P'' g g x ≤ q + e1 * C := by
     intro a ha1 hap x hxK
     have hxV : x ∈ (V : Set M) := hKV hxK
     obtain ⟨a', rfl⟩ : ∃ a', a = a' + 1 := ⟨a - 1, by omega⟩
     have hgermzI : ∀ slots : Fin (2 + (a' + 1)) → TangentSpace I x,
-        iterCov (I := I) g 2 (P₁ - D₁.forward.pullback) (a' + 1) x slots = 0 := by
+        Tensor0SBundle.Tensor0SSpace.eval
+          (iterCov (I := I) g 2 (P₁ - D₁.forward.pullback) (a' + 1) x) slots = 0 := by
       intro slots
       have hfe := covDerivOfField_eq_iterCov (I := I) g
         (P₁ - D₁.forward.pullback) (a' + 1)
@@ -378,10 +402,15 @@ noncomputable def compSepFwd [I.Boundaryless]
             - (P₁ - D₁.forward.pullback) := by
         rw [hδ₀def, hδ₁def]
         exact add_sub_add_sub_eq_sub_sub _ _ _ _
-      refine ContinuousMultilinearMap.ext (fun slots => ?_)
+      apply Tensor0SBundle.tensor0SSpace_ext (I := I) (2 + (a' + 1)) x
+      intro slots
+      change Tensor0SBundle.Tensor0SSpace.eval
+          (iterCov (I := I) g 2 P'' (a' + 1) x) slots =
+        Tensor0SBundle.Tensor0SSpace.eval
+          (iterCov (I := I) g 2 (δ₀ + δ₁) (a' + 1) x) slots
       rw [hsplit, iterCov_sub, iterCov_sub, iterCov_metric_zero, sub_zero]
       simp only [ContMDiffSection.coe_sub, Pi.sub_apply]
-      rw [Tensor0SBundle.Tensor0SSpace.sub_apply, hgermzI slots, sub_zero]
+      rw [Tensor0SBundle.Tensor0SSpace.eval_sub, hgermzI slots, sub_zero]
     obtain ⟨basis, hON⟩ :=
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
     have hinv := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
@@ -394,8 +423,15 @@ noncomputable def compSepFwd [I.Boundaryless]
     have hxV : x ∈ (V : Set M) := hKV hxK
     have hxKG : x ∈ KG := hVKG hxV
     have h3 : P₁ x = D₁.forward.pullback x := by
-      refine ContinuousMultilinearMap.ext (fun w => ?_)
-      rw [hP₁apply x hxKG w, D₁.forward.pullback_apply x (hKGU hxKG) w]
+      apply Tensor0SBundle.tensor0SSpace_ext (I := I) 2 x
+      intro w
+      change Tensor0SBundle.Tensor0SSpace.eval (P₁ x) w =
+        Tensor0SBundle.Tensor0SSpace.eval (D₁.forward.pullback x) w
+      have hp := hP₁apply x hxKG w
+      change Tensor0SBundle.Tensor0SSpace.eval (P₁ x) w = _ at hp
+      have hd := D₁.forward.pullback_apply x (hKGU hxKG) w
+      change Tensor0SBundle.Tensor0SSpace.eval (D₁.forward.pullback x) w = _ at hd
+      exact hp.trans hd.symm
     have hval : P'' x - Tensor0SBundle.metricTensorField (I := I) g x
         = δ₀ x + δ₁ x := by
       simp only [hδ₀def, hδ₁def, ContMDiffSection.coe_sub, Pi.sub_apply]

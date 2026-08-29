@@ -25,7 +25,7 @@ theorem compContinuousMultilinearMapL_diag_continuous :
       (ContinuousMultilinearMap.compContinuousLinearMapL (fun _ : ι ↦ p) :
         ContinuousMultilinearMap 𝕜 (fun _ ↦ M') N →L[𝕜] ContinuousMultilinearMap 𝕜 (fun _ ↦ M) N))
   := by
-  letI := Fintype.ofFinite ι
+  let := Fintype.ofFinite ι
   let φ : ContinuousMultilinearMap 𝕜 (fun _ : ι ↦ M →L[𝕜] M') _ :=
     ContinuousMultilinearMap.compContinuousLinearMapContinuousMultilinear
     𝕜 (fun _ : ι ↦ M) (fun _ : ι ↦ M') N
@@ -47,7 +47,7 @@ theorem ContinuousMultilinearMap.compContinuousLinearMapL_diag_continuous :
   (ContinuousMultilinearMap.compContinuousLinearMapL (fun _ : ι ↦ p) :
     ContinuousMultilinearMap 𝕜 (fun _ ↦ F₁) F₂ →L[𝕜] ContinuousMultilinearMap 𝕜 (fun _ ↦ F₁) F₂))
   := by
-  letI := Fintype.ofFinite ι
+  let := Fintype.ofFinite ι
   let φ : ContinuousMultilinearMap 𝕜 (fun _ : ι ↦ F₁ →L[𝕜] F₁) _ :=
     ContinuousMultilinearMap.compContinuousLinearMapContinuousMultilinear
     𝕜 (fun _ : ι ↦ F₁) (fun _ : ι ↦ F₁) F₂

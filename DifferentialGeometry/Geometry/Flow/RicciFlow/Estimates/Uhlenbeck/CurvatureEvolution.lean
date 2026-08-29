@@ -94,8 +94,8 @@ theorem solutionCurvatureComponents_eq_lowered_connection_curvature_coefficients
       (coordinateFrameAt (I := I) x₀ (m 3) x₀),
     DifferentialGeometry.Geometry.Curvature.rm13_eval_eq_christoffelCurvCoord
       (I := I) (S.family.connection t) hcov (S.base.rm13 t) x₀
-      (dualToCotangent_gen (I := I)
-        ((tangentFlatLinear_gen (I := I) (S.base.metric t) x₀)
+      (dualToCotangentGen (I := I)
+        ((tangentFlatLinearGen (I := I) (S.base.metric t) x₀)
           (coordinateFrameAt (I := I) x₀ (m 3) x₀)))
       hRm hcurv (m 0) (m 1) (m 2)]
   refine Finset.sum_congr rfl fun p _ => ?_
@@ -338,7 +338,7 @@ theorem solution_rm04_timeDeriv_kn
     ((((((hXZ.neg.mul (hg Y W)).add ((hYZ.mul (hg X W)))).add (hXW.mul (hg Y Z))).sub
       (hYW.mul (hg X Z))).add
       (((hSc.div_const 2).mul (((hg X Z).mul (hg Y W)).sub ((hg Y Z).mul (hg X W)))))))
-  convert hd using 1
+  refine (hd.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl) rfl).congr_deriv ?_
   simp only [Pi.neg_apply, Pi.mul_apply, Pi.sub_apply]
   ring
 
@@ -482,7 +482,7 @@ theorem ricDot_ortho
   ring
 
 open DifferentialGeometry.Dim3Reaction in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem ricDot_of_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -535,13 +535,14 @@ theorem ricDot_of_solution
     unfold rm kd
     ring
   have hinv :
-      MetricInverseInBasis_gen (I := I) (S.base.metric (t : Real)) x basis
+      MetricInverseInBasisGen (I := I) (S.base.metric (t : Real)) x basis
         (identityInvMetric (Idx := Fin 3)) :=
     by
       have hinv' :=
         DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
           (I := I) (S.base.metric (t : Real)) basis horthf
-      simpa [identityInvMetric, diagonalInvMetric] using hinv'
+      unfold identityInvMetric diagonalInvMetric
+      exact hinv'
   have hreact :
       ricciActualReactAt (I := I) S (t : Real) x
           (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (basis i) (basis j)) =
@@ -719,7 +720,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
 theorem metricCompatSol
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
       (S.family.connection t) (S.family.metric t) := by
   simpa [SolutionFamily.connection, SolutionOn.family_metric] using
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -739,7 +740,6 @@ theorem ricNablaRealizes
   totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     2 (S.family.connection t) (S.ricci t) _
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -750,27 +750,20 @@ theorem knTermRealizes
     (e : Fin (2 + 2) ≃ Fin (2 + 2)) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (2 + 2) (S.family.connection t)
-      (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞) e
-        (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2)
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2)
           (S.ricci t) (metricTensorField (I := I) (S.family.metric t))))
-      (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞)
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
         (frontExtendEquiv e)
-        (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 2)
-            (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1) (q := 2)
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 2)
+            (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2)
               (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                 2 (S.family.connection t) (S.ricci t)
                 (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
                   2 (S.family.connection t) (connSmoothSol (I := I) S t) (S.ricci t)))
               (metricTensorField (I := I) (S.family.metric t)))
-          + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 2)
-            (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2 + 1)
+          + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 2)
+            (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2 + 1)
               (S.ricci t) 0))) :=
   totalNabla0SRealizes_domDomCongr (I := I)
     (S.family.connection t) e _ _
@@ -780,7 +773,6 @@ theorem knTermRealizes
       (zero_realizes_metric (I := I) (S.family.connection t)
         (S.family.metric t) (metricCompatSol (I := I) S t)))
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -791,33 +783,25 @@ theorem knScalRealizes
     (e : Fin (2 + 2) ≃ Fin (2 + 2)) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (2 + 2) (S.family.connection t)
-      (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞) e
-        (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2)
-          (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2)
+          (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
             (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
             (S.scalar t) (scalarSmoothOfSol (I := I) S t)
             (metricTensorField (I := I) (S.family.metric t)))
           (metricTensorField (I := I) (S.family.metric t))))
-      (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞)
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
         (frontExtendEquiv e)
-        (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 2)
-            (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1) (q := 2)
-              (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 1) (q := 2)
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 2)
+            (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2)
+              (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 1) (q := 2)
                 (DifferentialGeometry.Geometry.Operator.duSec (I := I)
                   (S.scalar t) (scalarSmoothOfSol (I := I) S t))
                 (metricTensorField (I := I) (S.family.metric t)))
               (metricTensorField (I := I) (S.family.metric t)))
-          + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 2)
-            (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2 + 1)
-              (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+          + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 2)
+            (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2 + 1)
+              (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
                 (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
                 (S.scalar t) (scalarSmoothOfSol (I := I) S t)
                 (metricTensorField (I := I) (S.family.metric t)))
@@ -833,14 +817,13 @@ theorem knScalRealizes
           (S.scalar t) (scalarSmoothOfSol (I := I) S t))
         (fun x v => by
           rw [DifferentialGeometry.Geometry.Operator.duSec_apply]
-          exact DifferentialGeometry.Geometry.Operator.differential1FormFun_apply_eq_extDerivFun
+          exact DifferentialGeometry.Geometry.Operator.differential1FormFun_apply_eq_mvfderiv
             (I := I) (S.scalar t) x v))
       (zero_realizes_metric (I := I) (S.family.connection t)
         (S.family.metric t) (metricCompatSol (I := I) S t)))
 
 section KnField
 
-set_option backward.isDefEq.respectTransparency false
 
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
@@ -849,10 +832,8 @@ private noncomputable def knRicT
     (e : Fin (2 + 2) ≃ Fin (2 + 2)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (2 + 2) :=
-  MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-    (E := TangentSpace I) (∞ : WithTop ℕ∞) e
-    (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2)
+  Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e
+    (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2)
       (S.ricci t) (metricTensorField (I := I) (S.family.metric t)))
 
 private noncomputable def knScalT
@@ -860,11 +841,9 @@ private noncomputable def knScalT
     (e : Fin (2 + 2) ≃ Fin (2 + 2)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (2 + 2) :=
-  MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-    (E := TangentSpace I) (∞ : WithTop ℕ∞) e
-    (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2)
-      (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+  Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e
+    (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2)
+      (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
         (S.scalar t) (scalarSmoothOfSol (I := I) S t)
         (metricTensorField (I := I) (S.family.metric t)))
@@ -946,21 +925,16 @@ private noncomputable def knRicD
     (e : Fin (2 + 2) ≃ Fin (2 + 2)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (2 + 2 + 1) :=
-  MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-    (E := TangentSpace I) (∞ : WithTop ℕ∞) (frontExtendEquiv e)
-    (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 2)
-        (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1) (q := 2)
+  Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (frontExtendEquiv e)
+    (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 2)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2)
           (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             2 (S.family.connection t) (S.ricci t)
             (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
               2 (S.family.connection t) (connSmoothSol (I := I) S t) (S.ricci t)))
           (metricTensorField (I := I) (S.family.metric t)))
-      + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 2)
-        (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2 + 1)
+      + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 2)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2 + 1)
           (S.ricci t) 0))
 
 private noncomputable def knScalD
@@ -968,23 +942,17 @@ private noncomputable def knScalD
     (e : Fin (2 + 2) ≃ Fin (2 + 2)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (2 + 2 + 1) :=
-  MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-    (E := TangentSpace I) (∞ : WithTop ℕ∞) (frontExtendEquiv e)
-    (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 2)
-        (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1) (q := 2)
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 1) (q := 2)
+  Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (frontExtendEquiv e)
+    (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 2)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2)
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 1) (q := 2)
             (DifferentialGeometry.Geometry.Operator.duSec (I := I)
               (S.scalar t) (scalarSmoothOfSol (I := I) S t))
             (metricTensorField (I := I) (S.family.metric t)))
           (metricTensorField (I := I) (S.family.metric t)))
-      + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 2)
-        (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2 + 1)
-          (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+      + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 2)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2 + 1)
+          (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
             (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
             (S.scalar t) (scalarSmoothOfSol (I := I) S t)
             (metricTensorField (I := I) (S.family.metric t)))
@@ -1008,16 +976,12 @@ private theorem knTerm2Realizes
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (2 + 2 + 1) (S.family.connection t)
       (knRicD (I := I) S t e)
-      (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞)
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
         (frontExtendEquiv (frontExtendEquiv e))
-        (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (∞ : WithTop ℕ∞)
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
             (frontExtendEquiv (leibnizLeftEquiv 2 2))
-            (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizLeftEquiv (2 + 1) 2)
-                (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1 + 1) (q := 2)
+            (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv (2 + 1) 2)
+                (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1 + 1) (q := 2)
                   (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                     (2 + 1) (S.family.connection t)
                     (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -1027,31 +991,24 @@ private theorem knTerm2Realizes
                     (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
                       (2 + 1) (S.family.connection t) (connSmoothSol (I := I) S t) _))
                   (metricTensorField (I := I) (S.family.metric t)))
-              + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizRightEquiv (2 + 1) 2)
-                (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1) (q := 2 + 1)
+              + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv (2 + 1) 2)
+                (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2 + 1)
                   (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                     2 (S.family.connection t) (S.ricci t)
                     (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
                       2 (S.family.connection t) (connSmoothSol (I := I) S t) (S.ricci t)))
                   0))
-          + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (∞ : WithTop ℕ∞)
+          + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
             (frontExtendEquiv (leibnizRightEquiv 2 2))
-            (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 (2 + 1))
-                (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1) (q := 2 + 1)
+            (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 (2 + 1))
+                (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2 + 1)
                   (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                     2 (S.family.connection t) (S.ricci t)
                     (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
                       2 (S.family.connection t) (connSmoothSol (I := I) S t) (S.ricci t)))
                   0)
-              + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 (2 + 1))
-                (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2 + 1 + 1)
+              + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 (2 + 1))
+                (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2 + 1 + 1)
                   (S.ricci t) 0)))) :=
   totalNabla0SRealizes_domDomCongr (I := I)
     (S.family.connection t) (frontExtendEquiv e) _ _
@@ -1078,20 +1035,14 @@ private theorem knScal2Realizes
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (2 + 2 + 1) (S.family.connection t)
       (knScalD (I := I) S t e)
-      (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞)
+      (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
         (frontExtendEquiv (frontExtendEquiv e))
-        (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (∞ : WithTop ℕ∞)
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
             (frontExtendEquiv (leibnizLeftEquiv 2 2))
-            (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizLeftEquiv (2 + 1) 2)
-                (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1 + 1) (q := 2)
-                  (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                      (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizLeftEquiv 1 2)
-                      (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                        (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 1 + 1) (q := 2)
+            (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv (2 + 1) 2)
+                (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1 + 1) (q := 2)
+                  (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 1 2)
+                      (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 1 + 1) (q := 2)
                         (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
                           1 (S.family.connection t)
                           (DifferentialGeometry.Geometry.Operator.duSec (I := I)
@@ -1099,42 +1050,31 @@ private theorem knScal2Realizes
                           (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
                             1 (S.family.connection t) (connSmoothSol (I := I) S t) _))
                         (metricTensorField (I := I) (S.family.metric t)))
-                    + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                      (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizRightEquiv 1 2)
-                      (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                        (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 1) (q := 2 + 1)
+                    + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 1 2)
+                      (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 1) (q := 2 + 1)
                         (DifferentialGeometry.Geometry.Operator.duSec (I := I)
                           (S.scalar t) (scalarSmoothOfSol (I := I) S t))
                         0))
                   (metricTensorField (I := I) (S.family.metric t)))
-              + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizRightEquiv (2 + 1) 2)
-                (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1) (q := 2 + 1)
-                  (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                    (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 1) (q := 2)
+              + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv (2 + 1) 2)
+                (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2 + 1)
+                  (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 1) (q := 2)
                     (DifferentialGeometry.Geometry.Operator.duSec (I := I)
                       (S.scalar t) (scalarSmoothOfSol (I := I) S t))
                     (metricTensorField (I := I) (S.family.metric t)))
                   0))
-          + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (∞ : WithTop ℕ∞)
+          + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
             (frontExtendEquiv (leibnizRightEquiv 2 2))
-            (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 (2 + 1))
-                (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1) (q := 2 + 1)
-                  (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                    (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 1) (q := 2)
+            (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 (2 + 1))
+                (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2 + 1)
+                  (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 1) (q := 2)
                     (DifferentialGeometry.Geometry.Operator.duSec (I := I)
                       (S.scalar t) (scalarSmoothOfSol (I := I) S t))
                     (metricTensorField (I := I) (S.family.metric t)))
                   0)
-              + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 (2 + 1))
-                (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2 + 1 + 1)
-                  (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+              + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 (2 + 1))
+                (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2 + 1 + 1)
+                  (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
                     (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
                     (S.scalar t) (scalarSmoothOfSol (I := I) S t)
                     (metricTensorField (I := I) (S.family.metric t)))
@@ -1166,24 +1106,25 @@ private theorem knScal2Realizes
             (fun x v => by
               rw [DifferentialGeometry.Geometry.Operator.duSec_apply]
               exact
-                DifferentialGeometry.Geometry.Operator.differential1FormFun_apply_eq_extDerivFun
+                DifferentialGeometry.Geometry.Operator.differential1FormFun_apply_eq_mvfderiv
                 (I := I) (S.scalar t) x v))
           (zero_realizes_nabla (I := I) (2 + 1) (S.family.connection t)))))
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 private theorem knField_eq_rm04
-    [IsManifold I 2 M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     (hdim : forall x : M, Module.finrank Real (TangentSpace I x) = 3) :
     knField (I := I) S t = S.base.rm04 t := by
   classical
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+  let _ := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (s := 2 + 2)
   apply DFunLike.ext
   intro x
-  apply ContinuousMultilinearMap.ext
+  apply tensor0SSpace_ext (I := I) (2 + 2) x
   intro v
+  change Tensor0SSpace.eval (knField (I := I) S t x) v =
+    Tensor0SSpace.eval (S.base.rm04 t x) v
   have hric : forall (w : Fin 2 -> TangentSpace I x) (a b : Fin 4),
       w 0 = v a -> w 1 = v b ->
       S.ricci t x w =
@@ -1196,29 +1137,22 @@ private theorem knField_eq_rm04
     fin_cases j
     · simpa [DifferentialGeometry.Geometry.Curvature.vec2] using h0
     · simpa [DifferentialGeometry.Geometry.Curvature.vec2] using h1
-  rw [solution_rm04_kn_all (I := I) S t x (hdim x) v]
-  have hadd (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-      (n := (∞ : WithTop ℕ∞)) (2 + 2)) :
-      ((A + B) x) v = A x v + B x v := by
-    rw [ContMDiffSection.coe_add, Pi.add_apply, Tensor0SSpace.add_apply]
-  have hsmul (c : Real)
-      (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-        (n := (∞ : WithTop ℕ∞)) (2 + 2)) :
-      ((c • A) x) v = c * A x v := by
-    rw [ContMDiffSection.coe_smul, Pi.smul_apply, Tensor0SSpace.smul_apply,
-      smul_eq_mul]
+  have hrm := solution_rm04_kn_all (I := I) S t x (hdim x) v
+  change Tensor0SSpace.eval (S.base.rm04 t x) v = _ at hrm
+  rw [hrm]
   have hricT (e : Fin (2 + 2) ≃ Fin (2 + 2)) :
-      knRicT (I := I) S t e x v =
+      Tensor0SSpace.eval (knRicT (I := I) S t e x) v =
         S.ricci t x ((fun i => v (e i)) ∘ Fin.castAdd 2) *
           (S.base.metric t).inner x
             (((fun i => v (e i)) ∘ Fin.natAdd 2) 0)
             (((fun i => v (e i)) ∘ Fin.natAdd 2) 1) := by
-    unfold knRicT
-    change (ContinuousMultilinearMap.domDomCongr e _) v = _
-    rw [Tensor0SSpace.domDomCongr_apply, tensor0SField_product_apply,
-      metricTensorField_apply, SolutionOn.family_metric]
+    rw [knRicT, Tensor0SField.domDomCongr_apply]
+    rw [Tensor0SSpace.eval_domDomCongr, tensor0SField_product_eval]
+    simp only [Tensor0SSpace.eval_eq]
+    rw [metricTensorField_apply, SolutionOn.family_metric]
+    rfl
   have hscalT (e : Fin (2 + 2) ≃ Fin (2 + 2)) :
-      knScalT (I := I) S t e x v =
+      Tensor0SSpace.eval (knScalT (I := I) S t e x) v =
         S.scalar t x *
             (S.base.metric t).inner x
               (((fun i => v (e i)) ∘ Fin.castAdd 2) 0)
@@ -1226,12 +1160,13 @@ private theorem knField_eq_rm04
           (S.base.metric t).inner x
             (((fun i => v (e i)) ∘ Fin.natAdd 2) 0)
             (((fun i => v (e i)) ∘ Fin.natAdd 2) 1) := by
-    unfold knScalT
-    change (ContinuousMultilinearMap.domDomCongr e _) v = _
-    rw [Tensor0SSpace.domDomCongr_apply, tensor0SField_product_apply,
-      tensor0SField_smulByFun_apply,
+    rw [knScalT, Tensor0SField.domDomCongr_apply]
+    rw [Tensor0SSpace.eval_domDomCongr, tensor0SField_product_eval]
+    simp only [Tensor0SSpace.eval_eq]
+    rw [tensor0SField_smulByFun_apply,
       Tensor0SSpace.smul_apply, smul_eq_mul, metricTensorField_apply,
       metricTensorField_apply, SolutionOn.family_metric]
+    rfl
   have hE1 : (fun i : Fin (2 + 2) => v (knE1 i)) =
       DifferentialGeometry.Geometry.Curvature.vec4
         (v 0) (v 2) (v 1) (v 3) := by
@@ -1261,8 +1196,8 @@ private theorem knField_eq_rm04
       simp [knE4, DifferentialGeometry.Geometry.Curvature.vec4,
         Equiv.swap_apply_def]
   unfold knField
-  repeat rw [hadd]
-  repeat rw [hsmul]
+  simp only [ContMDiffSection.coe_add, Pi.add_apply, Tensor0SSpace.eval_add,
+    ContMDiffSection.coe_smul, Pi.smul_apply, Tensor0SSpace.eval_smul, smul_eq_mul]
   rw [hricT knE1, hricT knE2, hricT knE3, hricT knE4,
     hscalT knE1, hscalT knE2]
   rw [hric _ 0 2 (by simp [knE1, Equiv.swap_apply_def])
@@ -1330,7 +1265,7 @@ open DifferentialGeometry.Integral.Connection in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I 1 M]
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private theorem traceRicWit
-    [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 1 M]
     (gm : SmoothRiemannianMetric I M)
     (e : Fin (2 + 2) ≃ Fin (2 + 2))
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -1342,45 +1277,32 @@ private theorem traceRicWit
     (gf : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2) :
     metricTraceFirstTwoField (I := I) (M := M) gm
-        (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (∞ : WithTop ℕ∞)
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
           (frontExtendEquiv (frontExtendEquiv e))
-          (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (∞ : WithTop ℕ∞)
+          (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
               (frontExtendEquiv (leibnizLeftEquiv 2 2))
-              (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizLeftEquiv (2 + 1) 2)
-                  (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                    (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1 + 1) (q := 2)
+              (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv (2 + 1) 2)
+                  (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1 + 1) (q := 2)
                     A gf)
-                + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizRightEquiv (2 + 1) 2)
-                  (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                    (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1) (q := 2 + 1)
+                + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv (2 + 1) 2)
+                  (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2 + 1)
                     B 0))
-            + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (∞ : WithTop ℕ∞)
+            + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
               (frontExtendEquiv (leibnizRightEquiv 2 2))
-              (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 (2 + 1))
-                  (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                    (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1) (q := 2 + 1)
+              (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 (2 + 1))
+                  (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2 + 1)
                     B 0)
-                + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 (2 + 1))
-                  (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                    (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2 + 1 + 1)
+                + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 (2 + 1))
+                  (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2 + 1 + 1)
                     C 0))))
-      = MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (∞ : WithTop ℕ∞) e
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2)
+      = Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2)
             (metricTraceFirstTwoField (I := I) (M := M) gm A) gf) := by
   rw [metricTraceFirstTwoField_domDomCongr]
   congr 1
-  simp only [MultilinearSection.product_zero, MultilinearSection.domDomCongr_zero,
+  simp only [tensor0SField_product_zero, Tensor0SField.domDomCongr_zero,
     add_zero]
-  rw [MultilinearSection.domDomCongr_id_of_valPres (∞ : WithTop ℕ∞)
+  rw [Tensor0SField.domDomCongr_id_of_valPres (∞ : WithTop ℕ∞)
       (frontExtendEquiv (leibnizLeftEquiv 2 2)) (by
     intro i
     refine Fin.cases ?_ (fun j => ?_) i
@@ -1393,7 +1315,7 @@ private theorem traceRicWit
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I 1 M]
     [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private theorem traceScalWit
-    [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 1 M]
     (gm : SmoothRiemannianMetric I M)
     (e : Fin (2 + 2) ≃ Fin (2 + 2))
     (Hess : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -1405,64 +1327,44 @@ private theorem traceScalWit
     (gf : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2) :
     metricTraceFirstTwoField (I := I) (M := M) gm
-        (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (∞ : WithTop ℕ∞)
+        (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
           (frontExtendEquiv (frontExtendEquiv e))
-          (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (∞ : WithTop ℕ∞)
+          (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
               (frontExtendEquiv (leibnizLeftEquiv 2 2))
-              (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizLeftEquiv (2 + 1) 2)
-                  (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                    (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1 + 1) (q := 2)
-                    (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                        (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizLeftEquiv 1 2)
-                        (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                          (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 1 + 1) (q := 2)
+              (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv (2 + 1) 2)
+                  (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1 + 1) (q := 2)
+                    (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 1 2)
+                        (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 1 + 1) (q := 2)
                           Hess gf)
-                      + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                        (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizRightEquiv 1 2)
-                        (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                          (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 1) (q := 2 + 1)
+                      + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 1 2)
+                        (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 1) (q := 2 + 1)
                           D1 0))
                     gf)
-                + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizRightEquiv (2 + 1) 2)
-                  (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                    (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1) (q := 2 + 1)
-                    (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                      (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 1) (q := 2)
+                + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv (2 + 1) 2)
+                  (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2 + 1)
+                    (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 1) (q := 2)
                       D1 gf)
                     0))
-            + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (∞ : WithTop ℕ∞)
+            + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞)
               (frontExtendEquiv (leibnizRightEquiv 2 2))
-              (MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 (2 + 1))
-                  (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                    (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2 + 1) (q := 2 + 1)
-                    (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                      (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 1) (q := 2)
+              (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv 2 (2 + 1))
+                  (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2 + 1) (q := 2 + 1)
+                    (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 1) (q := 2)
                       D1 gf)
                     0)
-                + MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-                  (E := TangentSpace I) (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 (2 + 1))
-                  (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-                    (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2 + 1 + 1)
+                + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv 2 (2 + 1))
+                  (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2 + 1 + 1)
                     Sg 0))))
-      = MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-          (E := TangentSpace I) (∞ : WithTop ℕ∞) e
-          (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-            (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2)
-            (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-              (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 0) (q := 2)
+      = Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2)
+            (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 0) (q := 2)
               (metricTraceFirstTwoField (I := I) (M := M) gm Hess) gf)
             gf) := by
   rw [metricTraceFirstTwoField_domDomCongr]
   congr 1
-  simp only [MultilinearSection.product_zero, MultilinearSection.domDomCongr_zero,
+  simp only [tensor0SField_product_zero, Tensor0SField.domDomCongr_zero,
     add_zero]
-  rw [MultilinearSection.domDomCongr_id_of_valPres (∞ : WithTop ℕ∞)
+  rw [Tensor0SField.domDomCongr_id_of_valPres (∞ : WithTop ℕ∞)
       (frontExtendEquiv (leibnizLeftEquiv 2 2)) (by
     intro i
     refine Fin.cases ?_ (fun j => ?_) i
@@ -1473,15 +1375,13 @@ private theorem traceScalWit
   rw [metricTraceFirstTwoField_product, metricTraceFirstTwoField_product]
 
 private noncomputable def knRicLapT
-    [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 2 M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     (e : Fin (2 + 2) ≃ Fin (2 + 2)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (2 + 2) :=
-  MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-    (E := TangentSpace I) (∞ : WithTop ℕ∞) e
-    (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2)
+  Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e
+    (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2)
       (metricTraceFirstTwoField (I := I) (M := M) (S.family.metric t)
         (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           (2 + 1) (S.family.connection t)
@@ -1494,17 +1394,14 @@ private noncomputable def knRicLapT
       (metricTensorField (I := I) (S.family.metric t)))
 
 private noncomputable def knScalLapT
-    [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 2 M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     (e : Fin (2 + 2) ≃ Fin (2 + 2)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (2 + 2) :=
-  MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-    (E := TangentSpace I) (∞ : WithTop ℕ∞) e
-    (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-      (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 2) (q := 2)
-      (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (n := (∞ : WithTop ℕ∞)) (s := 0) (q := 2)
+  Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e
+    (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 2) (q := 2)
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞) (s := 0) (q := 2)
         (metricTraceFirstTwoField (I := I) (M := M) (S.family.metric t)
           (totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             1 (S.family.connection t)
@@ -1516,7 +1413,7 @@ private noncomputable def knScalLapT
       (metricTensorField (I := I) (S.family.metric t)))
 
 private noncomputable def lapRm04Kn
-    [IsManifold I 1 M] [IsManifold I 2 M]
+    [IsManifold I 2 M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (2 + 2) :=
@@ -1570,9 +1467,11 @@ private theorem lapRm04Kn_apply
           (S.base.metric t).inner x
             (((fun i => v (e i)) ∘ Fin.natAdd 2) 0)
             (((fun i => v (e i)) ∘ Fin.natAdd 2) 1) := by
-    unfold knRicLapT
-    change (ContinuousMultilinearMap.domDomCongr e _) v = _
-    rw [Tensor0SSpace.domDomCongr_apply, tensor0SField_product_apply,
+    rw [knRicLapT, Tensor0SField.domDomCongr_apply]
+    change Tensor0SSpace.eval (Tensor0SSpace.domDomCongr _ e) v = _
+    rw [Tensor0SSpace.eval_domDomCongr, tensor0SField_product_eval]
+    simp only [Tensor0SSpace.eval_eq]
+    rw [
       metricTraceFirstTwoField_apply, metricTraceFirstTwo0STensor_apply,
       metricTensorField_apply, SolutionOn.family_metric]
     rfl
@@ -1595,13 +1494,13 @@ private theorem lapRm04Kn_apply
           1 (S.family.connection t) (connSmoothSol (I := I) S t) _)
     have hHess : rawHess = scalarHessSec (I := I) S t := by
       simp only [rawHess, scalarHessSec, hessianSec, SolutionOn.family_connection]
-    unfold knScalLapT
-    change (ContinuousMultilinearMap.domDomCongr e _) v = _
-    rw [Tensor0SSpace.domDomCongr_apply, tensor0SField_product_apply]
-    change (Bundle.continuousMultilinearMap.product_fun _ _) _ * _ = _
-    rw [Bundle.continuousMultilinearMap.product_fun_apply]
+    rw [knScalLapT, Tensor0SField.domDomCongr_apply]
+    change Tensor0SSpace.eval (Tensor0SSpace.domDomCongr _ e) v = _
+    rw [Tensor0SSpace.eval_domDomCongr, tensor0SField_product_eval,
+      tensor0SField_product_eval]
+    simp only [Tensor0SSpace.eval_eq]
     have hzero :
-        (((fun i => v (e i)) ∘ Fin.castAdd 2) ∘ Fin.castAdd 2) =
+        (((v ∘ e) ∘ Fin.castAdd 2) ∘ Fin.castAdd 2) =
           (Fin.elim0 : Fin 0 → TangentSpace I x) := Subsingleton.elim _ _
     rw [hzero]
     change ((metricTraceFirstTwoField (I := I) (M := M)
@@ -1702,11 +1601,12 @@ theorem roughRm04_comp
             kd (I0 1) (I0 2) * kd (I0 0) (I0 3)) := by
   classical
   let v : Fin 4 → TangentSpace I x := fun p => basis (I0 p)
-  have hinv : MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis
+  have hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
       (identityInvMetric (Idx := Fin 3)) := by
     have hinv' := metricInverseInBasis_of_orthonormal
       (I := I) (S.base.metric t) basis horth
-    simpa [identityInvMetric, diagonalInvMetric] using hinv'
+    unfold identityInvMetric diagonalInvMetric
+    exact hinv'
   have htrace :
       tensor0SComponent (I := I)
           (metricTrace0S2TensorInBasis (I := I) basis
@@ -1734,7 +1634,7 @@ theorem roughRm04_comp
 end KnField
 
 open DifferentialGeometry.Dim3Reaction in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemann_component_evolution_in_orthonormal_frame_of_solution
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)

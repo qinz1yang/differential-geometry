@@ -4,7 +4,7 @@ import DifferentialGeometry.Analysis.Elliptic.Operator.SmoothBridge
 import DifferentialGeometry.Analysis.Sobolev.Manifold.RellichOnM
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceReverse
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence
-import Mathlib.Analysis.Normed.Operator.Compact
+import Mathlib.Analysis.Normed.Operator.Compact.Basic
 import Mathlib.Topology.Sequences
 open DifferentialGeometry.Geometry.Operator
 
@@ -70,17 +70,17 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma SmoothScalar.sqrt_g_inner_grad_memLp_two
     {g : SmoothRiemannianMetric I M} (s : SmoothScalar g) :
     MemLp (fun x : M => Real.sqrt
-        (g.inner x ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+        (g.inner x ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+          ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)))
       2 (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   have h_cont : Continuous (fun x : M => Real.sqrt
-      (g.inner x ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+      (g.inner x ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+        ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))) :=
     Real.continuous_sqrt.comp (s.continuous_inner_grad s)
   exact h_cont.memLp_of_hasCompactSupport
@@ -90,16 +90,16 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma eLpNorm_sqrt_g_inner_grad_le_norm_smoothScalar
     {g : SmoothRiemannianMetric I M} (s : SmoothScalar g) :
     eLpNorm (fun x : M => Real.sqrt
-        (g.inner x ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+        (g.inner x ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+          ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)))
       2 (riemannianVolumeMeasure (I := I) (M := M) g) ≤
       ENNReal.ofReal ‖s‖ := by
   set f : M → ℝ := fun x : M => Real.sqrt
-      (g.inner x ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+      (g.inner x ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+        ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) with hf_def
   have hf_memLp : MemLp f 2 (riemannianVolumeMeasure (I := I) (M := M) g) :=
     s.sqrt_g_inner_grad_memLp_two
@@ -121,31 +121,31 @@ private lemma eLpNorm_sqrt_g_inner_grad_le_norm_smoothScalar
     rw [integral_congr_ae hae] at h
     exact h.symm
   have h_f_sq : ∀ x : M, f x * f x =
-      g.inner x ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+      g.inner x ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+        ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
     intro x
-    have hnn : 0 ≤ g.inner x ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+    have hnn : 0 ≤ g.inner x ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+        ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) :=
       SmoothRiemannianMetric_inner_self_nonneg g x _
     rw [hf_def]
     rw [show Real.sqrt _ * Real.sqrt _ = (Real.sqrt _) ^ 2 from (sq _).symm]
     exact Real.sq_sqrt hnn
   rw [show (fun x : M => f x * f x) = fun x => g.inner x
-        ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+        ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+        ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) from
       funext h_f_sq] at h_norm_sq
   have h_decomp : ‖s‖ ^ 2 =
       (∫ x, s.toFun x * s.toFun x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) +
-      (∫ x, g.inner x ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+      (∫ x, g.inner x ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+            ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) := by
     rw [s.norm_sq_eq_inner_self]
@@ -153,9 +153,9 @@ private lemma eLpNorm_sqrt_g_inner_grad_le_norm_smoothScalar
   have h_l2_nn : 0 ≤ ∫ x, s.toFun x * s.toFun x
       ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
     s.integral_mul_self_nonneg
-  have h_grad_le : (∫ x, g.inner x ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+  have h_grad_le : (∫ x, g.inner x ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨s.toFun, s.smooth⟩ :
+            ((gradG (I := I) g ⟨s.toFun, s.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ≤ ‖s‖ ^ 2 := by
     linarith
@@ -281,12 +281,12 @@ theorem H1ComplToLp_isCompactOperator (g : SmoothRiemannianMetric I M) :
               (DifferentialGeometry.Geometry.Operator.gradFun
                 (I := I) g (s n).toFun x))) =
           (fun x : M => Real.sqrt
-            (g.inner x ((grad_g (I := I) g ⟨(s n).toFun, (s n).smooth⟩ :
+            (g.inner x ((gradG (I := I) g ⟨(s n).toFun, (s n).smooth⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-              ((grad_g (I := I) g ⟨(s n).toFun, (s n).smooth⟩ :
+              ((gradG (I := I) g ⟨(s n).toFun, (s n).smooth⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))) := by
       funext x
-      simp [grad_g_apply]
+      rfl
     rw [h_eq] at h
     have h_l2 := eLpNorm_smoothScalar_le_norm_smoothScalar (I := I) (M := M) (s n)
     have h_grad := eLpNorm_sqrt_g_inner_grad_le_norm_smoothScalar (I := I) (M := M) (s n)
@@ -294,9 +294,9 @@ theorem H1ComplToLp_isCompactOperator (g : SmoothRiemannianMetric I M) :
         eLpNorm (s n).toFun 2
             (riemannianVolumeMeasure (I := I) (M := M) g) +
           eLpNorm (fun x : M => Real.sqrt
-            (g.inner x ((grad_g (I := I) g ⟨(s n).toFun, (s n).smooth⟩ :
+            (g.inner x ((gradG (I := I) g ⟨(s n).toFun, (s n).smooth⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-              ((grad_g (I := I) g ⟨(s n).toFun, (s n).smooth⟩ :
+              ((gradG (I := I) g ⟨(s n).toFun, (s n).smooth⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))) 2
               (riemannianVolumeMeasure (I := I) (M := M) g) ≤
           ENNReal.ofReal ‖s n‖ + ENNReal.ofReal ‖s n‖ :=
@@ -361,7 +361,9 @@ theorem H1ComplToLp_isCompactOperator (g : SmoothRiemannianMetric I M) :
         (f_ℒp := fun k => (s (φ k)).memLp_two)
         (f_lim := u_lim)
         (f_lim_ℒp := hu_lim_memLp_pou)).mpr hu_lim_tendsto_pou
-    convert h using 2
+    rw [hL_def]
+    refine h.congr' (Filter.Eventually.of_forall fun k ↦ ?_)
+    exact smoothToLp_apply (I := I) (M := M) g (s (φ k))
   have h_y_tendsto : Tendsto (fun k => y (φ k)) atTop (𝓝 L) := by
     rw [tendsto_iff_dist_tendsto_zero]
     refine squeeze_zero (f := fun k : ℕ =>

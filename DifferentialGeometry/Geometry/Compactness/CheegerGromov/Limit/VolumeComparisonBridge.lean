@@ -77,25 +77,25 @@ theorem exists_pairR_of_boundedGeometry
               (Bhi * Bhi) ^ Module.finrank Real E)) *
             (ENNReal.ofReal (Rup ^ Module.finrank Real E) *
               (Integral.Measure.modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : IsManifold I 1 Y.M :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : IsManifold I 1 Y.M :=
     IsManifold.of_le (I := I) (M := Y.M) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace Y.M := Manifold.metrizableSpace I Y.M
-  letI : T3Space Y.M := inferInstance
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : Y.M → Type _) :=
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace.MetrizableSpace Y.M := Manifold.metrizableSpace I Y.M
+  let : T3Space Y.M := inferInstance
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : Y.M → Type _) :=
     Y.metric.toContinuousRiemannianMetric
-  letI : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
+  let : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
     ⟨cg.toRiemannianMetric⟩
-  letI : EMetricSpace Y.M := EMetricSpace.ofRiemannianMetric I Y.M
-  letI : PseudoEMetricSpace Y.M := inferInstance
-  letI : ConnectedSpace Y.M := hconn
-  letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
+  let : EMetricSpace Y.M := EMetricSpace.ofRiemannianMetric I Y.M
+  let : PseudoEMetricSpace Y.M := inferInstance
+  let : ConnectedSpace Y.M := hconn
+  let : CompleteSpace Y.M := MetricComplete.complete (I := I) Y hcomplete
   have hEnorm := fun x v =>
     (DifferentialGeometry.Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
       (I := I) Y.metric x v)
@@ -162,25 +162,25 @@ theorem exists_pairR_of_seqBoundedGeometry
             (ENNReal.ofReal (Rup ^ Module.finrank Real E) *
               (Integral.Measure.modelHaar (E := E)) (Metric.ball (0 : E) 1)) := by
   let Y := X.obj k
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : IsManifold I 1 Y.M :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : IsManifold I 1 Y.M :=
     IsManifold.of_le (I := I) (M := Y.M) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace Y.M := Manifold.metrizableSpace I Y.M
-  letI : T3Space Y.M := inferInstance
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : Y.M → Type _) :=
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace.MetrizableSpace Y.M := Manifold.metrizableSpace I Y.M
+  let : T3Space Y.M := inferInstance
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : Y.M → Type _) :=
     Y.metric.toContinuousRiemannianMetric
-  letI : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
+  let : Bundle.RiemannianBundle (fun x : Y.M => TangentSpace I x) :=
     ⟨cg.toRiemannianMetric⟩
-  letI : EMetricSpace Y.M := EMetricSpace.ofRiemannianMetric I Y.M
-  letI : PseudoEMetricSpace Y.M := inferInstance
-  letI : ConnectedSpace Y.M := hconn k
-  letI : CompleteSpace Y.M := MetricComplete.complete (I := I) Y (hcomplete.complete k)
+  let : EMetricSpace Y.M := EMetricSpace.ofRiemannianMetric I Y.M
+  let : PseudoEMetricSpace Y.M := inferInstance
+  let : ConnectedSpace Y.M := hconn k
+  let : CompleteSpace Y.M := MetricComplete.complete (I := I) Y (hcomplete.complete k)
   let hgeom_k : BoundedGeometry (I := I) Y := {
     C := hgeom.C
     nonneg := hgeom.nonneg
@@ -206,11 +206,11 @@ theorem ricciLower_of_seq
       (I := I) Y.metric
       (-((Module.finrank Real E : Real) ^ 2 * hgeom.C 0)) := by
   let Y := X.obj k
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
   refine Geometry.Riemannian.BonnetMyers.ricciLower_of_rm
     (I := I) Y.metric ?_
   simpa [Geometry.Riemannian.VolumeComparison.Rm04GlobalBound] using
@@ -283,13 +283,13 @@ def toVCInput {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
   ballMult := by
     intro m k α _ _ centers r hr hcap hsep z J hJz
     let Y := X.obj k
-    letI : TopologicalSpace Y.M := Y.topology
-    letI : ChartedSpace H Y.M := Y.charted
-    letI : IsManifold I ∞ Y.M := Y.smooth
-    letI : T2Space Y.M := Y.t2
-    letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-    letI : MetricSpace Y.M := h.ms k
-    letI : MeasurableSpace Y.M := borel Y.M
+    let : TopologicalSpace Y.M := Y.topology
+    let : ChartedSpace H Y.M := Y.charted
+    let : IsManifold I ∞ Y.M := Y.smooth
+    let : T2Space Y.M := Y.t2
+    let : SigmaCompactSpace Y.M := Y.sigmaCompact
+    let : MetricSpace Y.M := h.ms k
+    let : MeasurableSpace Y.M := borel Y.M
     let μ := DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I)
       (M := Y.M) Y.metric
     have hsep_metric :

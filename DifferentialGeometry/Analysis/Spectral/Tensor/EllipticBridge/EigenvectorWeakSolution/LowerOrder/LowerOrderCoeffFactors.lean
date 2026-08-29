@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators Matrix ENNReal NNReal
@@ -36,6 +35,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
+omit [CompactSpace M] in
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma chartPushedRaw_tensorChartComponentRaw_pouSmul_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -73,6 +73,7 @@ lemma principalRotationFactor_contDiffOn
     (euclidPartial_contDiffOn_target (I := I) (M := M) α l
       (gramInvEntry_contDiffOn (I := I) (M := M) g r s α Q P₀))
 
+omit [CompactSpace M] in
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma covDerivLowerOrderTerm_pouSmul_eqOn_coeffFactors
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -128,6 +129,7 @@ lemma weightedGradFactor_contDiffOn
       g r s α k P.1 p.1 P.2 p.2)).mul
     (covChartMetricGramInv_entry_contDiffOn (I := I) (M := M) g r s α Q P₀)
 
+omit [CompactSpace M] in
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma weightedGradCoeff_pouSmul_eqOn_section
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -309,6 +311,7 @@ lemma valueComponentFactor_contDiffOn
           g r s α P₀ l Q))).mul
     (covDerivLowerOrderCoeff_contDiffOn (I := I) (M := M) g r s α k P.1 p.1 P.2 p.2)
 
+omit [CompactSpace M] in
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma covLowerOrderRotationValueCoeff_pouSmul_eqOn_section
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

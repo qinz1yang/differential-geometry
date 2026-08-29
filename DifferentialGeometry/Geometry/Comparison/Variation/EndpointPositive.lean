@@ -26,8 +26,9 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] in
 omit [InnerProductSpace ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem jacobi_pair_pos
@@ -154,7 +155,7 @@ theorem jacobi_pair_pos
         simp only [v, perpCoeff_apply],
       g.symm (γ 1) (e i 1) (DJ 1)]
     rw [map_smul]
-    simp [real_inner_eq_re_inner, RCLike.inner_apply]
+    simp [RCLike.inner_apply]
   rw [hread]
   exact hpair
 

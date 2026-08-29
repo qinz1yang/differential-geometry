@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelTransport
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Existence
 import DifferentialGeometry.Geometry.Comparison.Variation.FixedChartIdentities
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeAlong
@@ -134,14 +134,84 @@ private lemma mfderiv_partial_t_eq
     mfderiv_prod_eq_add_comp (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ)) (I'' := I)
       (f := fun q : ℝ × ℝ => f q.1 q.2) (p := (s, t)) hf_mdiff
   conv_lhs => rw [hpartials]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.coe_comp',
-    Function.comp_apply, id_eq]
+  simp only [    ]
   change ((mfderiv (𝓘(ℝ, ℝ)) I (fun z : ℝ => f z t) s) (0 : ℝ)) +
       ((mfderiv (𝓘(ℝ, ℝ)) I (fun z : ℝ => f s z) t) (1 : ℝ)) =
     (mfderiv (𝓘(ℝ, ℝ)) I (fun z : ℝ => f s z) t) (1 : ℝ)
   have hzero : (mfderiv (𝓘(ℝ, ℝ)) I (fun z : ℝ => f z t) s) (0 : ℝ) = 0 :=
     ContinuousLinearMap.map_zero _
   rw [hzero, zero_add]
+
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    [SigmaCompactSpace M] in
+theorem velocity_mdiff_at
+    (n : ℕ∞) (f : ℝ → ℝ → M) (p₀ : ℝ × ℝ)
+    (hf : ContMDiffAt (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) I (n + 1)
+      (fun p : ℝ × ℝ => f p.1 p.2) p₀) :
+    ContMDiffAt (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) n
+      (fun p : ℝ × ℝ =>
+        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+          (f p.1 p.2) (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f p.1 u) p.2 (1 : ℝ)) :
+            TangentBundle I M)) p₀ := by
+  classical
+  rw [Bundle.contMDiffAt_totalSpace]
+  refine ⟨hf.of_le (by simp), ?_⟩
+  have hF_smooth : ContMDiffAt
+      ((𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)).prod (𝓘(ℝ, ℝ))) I (n + 1)
+      (Function.uncurry (fun q : ℝ × ℝ => fun u : ℝ => f q.1 u))
+      (p₀, p₀.2) := by
+    have hfun : (Function.uncurry (fun q : ℝ × ℝ => fun u : ℝ => f q.1 u)) =
+        fun r : (ℝ × ℝ) × ℝ => f r.1.1 r.2 := rfl
+    rw [hfun]
+    have hproj : ContMDiff
+        ((𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)).prod (𝓘(ℝ, ℝ)))
+        (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞
+        (fun r : (ℝ × ℝ) × ℝ => (r.1.1, r.2)) :=
+      contMDiff_fst.fst.prodMk contMDiff_snd
+    exact hf.comp (p₀, p₀.2) (hproj.contMDiffAt.of_le (by exact_mod_cast le_top))
+  have h_smooth_mfd := ContMDiffAt.mfderiv_apply
+    (I := 𝓘(ℝ, ℝ)) (I' := I)
+    (f := fun q : ℝ × ℝ => fun u : ℝ => f q.1 u)
+    (g := fun q : ℝ × ℝ => q.2)
+    (g₁ := id) (g₂ := fun _ : ℝ × ℝ => (1 : ℝ))
+    (x₀ := p₀) (n := n + 1) (m := n)
+    hF_smooth contMDiffAt_snd contMDiffAt_id contMDiffAt_const le_rfl
+  have h_nhds : ((fun p : ℝ × ℝ => f p.1 p.2) ⁻¹'
+      (trivializationAt E (TangentSpace I) (f p₀.1 p₀.2)).baseSet) ∈ nhds p₀ :=
+    hf.continuousAt.preimage_mem_nhds
+      ((Trivialization.open_baseSet _).mem_nhds
+        (mem_baseSet_trivializationAt E (TangentSpace I) (f p₀.1 p₀.2)))
+  have h_eq : ∀ᶠ p in nhds p₀,
+      (trivializationAt E (TangentSpace I) (f p₀.1 p₀.2)
+            ⟨f p.1 p.2, mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f p.1 u) p.2 (1 : ℝ)⟩).2
+        = inTangentCoordinates 𝓘(ℝ, ℝ) I (fun q : ℝ × ℝ => q.2)
+            (fun q : ℝ × ℝ => f q.1 q.2)
+            (fun q : ℝ × ℝ => mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f q.1 u) q.2)
+            p₀ p (1 : ℝ) := by
+    filter_upwards [h_nhds] with p hp
+    symm
+    unfold inTangentCoordinates
+    change ((trivializationAt E (TangentSpace I) (f p₀.1 p₀.2)).continuousLinearMapAt ℝ
+              (f p.1 p.2)
+            ∘L (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f p.1 u) p.2)
+            ∘L ((trivializationAt ℝ (TangentSpace
+                  (𝓘(ℝ, ℝ) : ModelWithCorners ℝ ℝ ℝ)) p₀.2).symmL ℝ p.2 : ℝ →L[ℝ] ℝ))
+            (1 : ℝ)
+          = _
+    rw [TangentBundle.symmL_model_space]
+    change ((trivializationAt E (TangentSpace I) (f p₀.1 p₀.2)).continuousLinearMapAt ℝ
+            (f p.1 p.2))
+          (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f p.1 u) p.2 (1 : ℝ))
+        = _
+    change ((trivializationAt E (TangentSpace I) (f p₀.1 p₀.2)).linearMapAt ℝ
+            (f p.1 p.2))
+          (mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f p.1 u) p.2 (1 : ℝ))
+        = _
+    rw [Trivialization.coe_linearMapAt_of_mem _ hp]
+  change ContMDiffAt _ 𝓘(ℝ, E) n
+      (fun p : ℝ × ℝ => (trivializationAt E (TangentSpace I) (f p₀.1 p₀.2)
+        ⟨f p.1 p.2, mfderiv (𝓘(ℝ, ℝ)) I (fun u : ℝ => f p.1 u) p.2 (1 : ℝ)⟩).2) p₀
+  exact h_smooth_mfd.congr_of_eventuallyEq h_eq
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -237,8 +307,8 @@ private lemma velocity_totalSpace_continuous
           TangentBundle I M)) :=
   (velocity_totalSpace_contMDiff (I := I) (M := M) f hf).continuous
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private lemma continuous_g_inner_along_param
@@ -249,9 +319,9 @@ private lemma continuous_g_inner_along_param
     (hw : Continuous (fun p : ℝ × ℝ => TotalSpace.mk' E
       (E := (TangentSpace I : M → Type _)) (b p) (w p))) :
     Continuous (fun p : ℝ × ℝ => g.inner (b p) (v p) (w p)) := by
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
   have h := Continuous.inner_bundle (F := E) (B := M)
     (E := (TangentSpace I : M → Type _)) (b := b) (v := v) (w := w) hv hw

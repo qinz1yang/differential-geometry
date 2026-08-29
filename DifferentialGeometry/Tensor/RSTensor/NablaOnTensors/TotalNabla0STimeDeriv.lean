@@ -2,7 +2,6 @@ import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -32,9 +31,9 @@ theorem nabla0SFun_hasDerivWithinAt_pt {s : ℕ}
     (timeSet : Set Real) (x₀ : M) (t : Real)
     (hswap :
       HasDerivWithinAt
-        (fun r : Real => extDerivFun (I := I)
+        (fun r : Real => mvfderiv (I := I)
           (fun p : M => (α r) p (fun a : Fin s => V a p)) x₀ (X x₀))
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
           (fun p : M => (β t) p (fun a : Fin s => V a p)) x₀ (X x₀))
         timeSet t)
     (hpt : ∀ a : Fin s,
@@ -111,9 +110,9 @@ theorem totalNabla0SFun_hasDerivWithinAt_pt {s : ℕ}
     (timeSet : Set Real) (x₀ : M) (t : Real)
     (hswap :
       HasDerivWithinAt
-        (fun r : Real => extDerivFun (I := I)
+        (fun r : Real => mvfderiv (I := I)
           (fun p : M => (α r) p (fun a : Fin s => V a p)) x₀ (X x₀))
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
           (fun p : M => (β t) p (fun a : Fin s => V a p)) x₀ (X x₀))
         timeSet t)
     (hpt : ∀ a : Fin s,

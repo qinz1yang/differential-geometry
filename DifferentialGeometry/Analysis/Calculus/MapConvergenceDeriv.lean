@@ -23,7 +23,7 @@ theorem mapDerivNorm_fderivApply_le (r : ℕ) (v : E) {Φk Φinf : E → F} {x :
     have hd : fderiv ℝ (fun y => Φk y - Φinf y) z = fderiv ℝ Φk z - fderiv ℝ Φinf z :=
       fderiv_sub (hk.differentiable (by simp)).differentiableAt
         (hinf.differentiable (by simp)).differentiableAt
-    rw [hd, ContinuousLinearMap.sub_apply]
+    rw [hd, sub_apply]
   rw [mapDerivNorm, hfun]
   set g : E → F := fun y => Φk y - Φinf y with hg
   have hgcd : ContDiff ℝ (∞ : WithTop ℕ∞) g := hk.sub hinf
@@ -90,10 +90,10 @@ theorem contDiff_clm_flip :
       (E →L[ℝ] F →L[ℝ] ℝ) → (F →L[ℝ] E →L[ℝ] ℝ)) := by
   let A := E →L[ℝ] F →L[ℝ] ℝ
   let B := F →L[ℝ] E →L[ℝ] ℝ
-  letI : SeminormedAddCommGroup A := NormedAddCommGroup.toSeminormedAddCommGroup
-  letI : NormedSpace ℝ A := inferInstance
-  letI : SeminormedAddCommGroup B := NormedAddCommGroup.toSeminormedAddCommGroup
-  letI : NormedSpace ℝ B := inferInstance
+  let : SeminormedAddCommGroup A := NormedAddCommGroup.toSeminormedAddCommGroup
+  let : NormedSpace ℝ A := inferInstance
+  let : SeminormedAddCommGroup B := NormedAddCommGroup.toSeminormedAddCommGroup
+  let : NormedSpace ℝ B := inferInstance
   let flipIso : A ≃ₗᵢ[ℝ] B := {
     toFun := ContinuousLinearMap.flip
     invFun := ContinuousLinearMap.flip

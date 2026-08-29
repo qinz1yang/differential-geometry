@@ -378,7 +378,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le
               Ω := by
     rw [← h_part_atom_eq]
     refine h_part_bound.trans ?_
-    exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal (le_max_left _ _)) (zero_le _)
+    exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal (le_max_left _ _)) (zero_le)
   have hcomp : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
         (fun y => ∑ x : TensorCompIdx (E := E) r s
           × TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E)
@@ -392,7 +392,7 @@ theorem wkpNorm_covLowerOrderRotationValueCoeffLimit_le
               Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
             Ω := by
     refine h_comp_bound.trans ?_
-    exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal (le_max_right _ _)) (zero_le _)
+    exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal (le_max_right _ _)) (zero_le)
   have h_part_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
       (fun y => ∑ x : TensorCompIdx (E := E) r s
         × TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E)
@@ -712,7 +712,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le
               Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
             Ω := by
     refine h_comp_bound.trans ?_
-    exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal (le_max_left _ _)) (zero_le _)
+    exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal (le_max_left _ _)) (zero_le)
   have hpart : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2
         (fun y => ∑ x : TensorCompIdx (E := E) r s
           × TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E)
@@ -727,7 +727,7 @@ theorem wkpNorm_weightedGradCoeffDivLimit_le
               Ω := by
     rw [← h_part_atom_eq]
     refine h_part_bound.trans ?_
-    exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal (le_max_right _ _)) (zero_le _)
+    exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal (le_max_right _ _)) (zero_le)
   have h_comp_memWkp : MemWkp (d := Module.finrank ℝ E) K 2
       (fun y => ∑ x : TensorCompIdx (E := E) r s
         × TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E)

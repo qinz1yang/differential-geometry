@@ -9,7 +9,7 @@ namespace DifferentialGeometry.Geometry.Connection.Realization
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
+
 
 open scoped Manifold ContDiff Topology
 open _root_.Bundle
@@ -25,11 +25,12 @@ variable
 
 noncomputable def vectorFieldAction
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (f : C^∞⟮I, M; ℝ⟯) : M → ℝ :=
-  fun x => extDerivFun (I := I) f x (X x)
+  fun x => mvfderiv (I := I) f x (X x)
 
 noncomputable def vectorFieldActionSmooth
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (f : C^∞⟮I, M; ℝ⟯) : C^∞⟮I, M; ℝ⟯ :=
-  ⟨vectorFieldAction I M X f, by
+  ⟨vectorFieldAction I M X f, show ContMDiff I 𝓘(ℝ, ℝ) ∞
+      (vectorFieldAction I M X f) from by
     intro x₀
     have hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f := f.2
     have htangent : ContMDiff (I.prod 𝓘(ℝ, E)) (𝓘(ℝ, ℝ).prod 𝓘(ℝ, ℝ)) ∞
@@ -43,7 +44,7 @@ noncomputable def vectorFieldActionSmooth
     obtain ⟨_, hfiber⟩ := hcomp
     convert hfiber using 1
     ext x
-    simp only [vectorFieldAction, extDerivFun, tangentMap,
+    simp only [vectorFieldAction, mvfderiv, tangentMap,
       trivializationAt_model_space_apply]
     rfl⟩
 
@@ -64,9 +65,9 @@ theorem vectorFieldActionSmooth_add
     vectorFieldAction I M X f x + vectorFieldAction I M X g x
   unfold vectorFieldAction
   rw [show ((f + g : C^∞⟮I, M; ℝ⟯) : M → ℝ) = (f : M → ℝ) + (g : M → ℝ) from rfl]
-  rw [extDerivFun_add (contMDiffMap_mdifferentiableAt I M f x)
+  rw [mvfderiv_add (contMDiffMap_mdifferentiableAt I M f x)
     (contMDiffMap_mdifferentiableAt I M g x)]
-  simp [ContinuousLinearMap.add_apply]
+  simp [add_apply]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem vectorFieldActionSmooth_smul
@@ -82,11 +83,11 @@ theorem vectorFieldActionSmooth_smul
   have hf := contMDiffMap_mdifferentiableAt I M f x
   have hmfderiv : mfderiv I 𝓘(ℝ, ℝ) (c • (f : M → ℝ)) x = c • mfderiv I 𝓘(ℝ, ℝ) f x :=
     (hf.hasMFDerivAt.const_smul c).mfderiv
-  simp only [extDerivFun, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+  simp only [mvfderiv, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
     hmfderiv]
   change (NormedSpace.fromTangentSpace _) ((c • mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x) (X x)) =
     c * (NormedSpace.fromTangentSpace _) ((mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x) (X x))
-  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk, LinearEquiv.coe_mk]
+  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk]
   exact smul_eq_mul c _
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -104,14 +105,12 @@ theorem vectorFieldActionSmooth_leibniz
   have hg := contMDiffMap_mdifferentiableAt I M g x
   rw [show ((f * g : C^∞⟮I, M; ℝ⟯) : M → ℝ) = (f : M → ℝ) • (g : M → ℝ) from by
     ext y; simp [Pi.mul_apply, smul_eq_mul]]
-  have h := fromTangentSpace_mfderiv_smul_apply (I := I) hf hg (X x)
-  change (extDerivFun (I := I) ((f : M → ℝ) • (g : M → ℝ)) x) (X x) =
-    (f : M → ℝ) x * (extDerivFun (I := I) (g : M → ℝ) x) (X x) +
-    (g : M → ℝ) x * (extDerivFun (I := I) (f : M → ℝ) x) (X x)
-  simp only [smul_eq_mul] at h
-  exact h.trans (by
-    simp only [extDerivFun, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
-    ring)
+  change (mvfderiv (I := I) ((f : M → ℝ) • (g : M → ℝ)) x) (X x) =
+    (f : M → ℝ) x * (mvfderiv (I := I) (g : M → ℝ) x) (X x) +
+    (g : M → ℝ) x * (mvfderiv (I := I) (f : M → ℝ) x) (X x)
+  rw [mvfderiv_smul hf hg]
+  simp only [add_apply, smul_apply, ContinuousLinearMap.smulRight_apply, smul_eq_mul]
+  ring
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem vectorFieldActionSmooth_map_one_eq_zero
@@ -121,7 +120,7 @@ theorem vectorFieldActionSmooth_map_one_eq_zero
   change vectorFieldAction I M X 1 x = 0
   unfold vectorFieldAction
   rw [show ((1 : C^∞⟮I, M; ℝ⟯) : M → ℝ) = fun (_ : M) => (1 : ℝ) from by ext; simp]
-  rw [show extDerivFun (I := I) (fun (_ : M) => (1 : ℝ)) x (X x) =
+  rw [show mvfderiv (I := I) (fun (_ : M) => (1 : ℝ)) x (X x) =
     ((NormedSpace.fromTangentSpace (1 : ℝ)).toContinuousLinearMap ∘L
       mfderiv I 𝓘(ℝ, ℝ) (fun (_ : M) => (1 : ℝ)) x) (X x) from rfl]
   simp [mfderiv_const]
@@ -166,7 +165,7 @@ theorem embedDeriv_smul
   rw [show (φ • X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x = φ x • X x from by
     simp [ContMDiffSection.coe_smulContMDiffMap]]
   rw [ContinuousLinearMap.map_smul]
-  change φ x • extDerivFun (I := I) f x (X x) =
+  change φ x • mvfderiv (I := I) f x (X x) =
     ((φ • embedDeriv I M X) f : M → ℝ) x
   simp only [Derivation.coe_smul, Pi.smul_apply, smul_eq_mul]
   rfl
@@ -189,6 +188,114 @@ private theorem mfderiv_extChartAt_ne_zero
   apply hinv.injective
   rw [h, map_zero]
 
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
+    [T2Space M] in
+private theorem mvfderiv_continuousLinearMap_self
+    (L : E →L[ℝ] ℝ) (x : E) (v : TangentSpace 𝓘(ℝ, E) x) :
+    mvfderiv (I := 𝓘(ℝ, E)) L x v =
+      L (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) x v) := by
+  rw [L.mdifferentiableAt.mvfderiv]
+  rw [writtenInExtChartAt_model_space, modelWithCornersSelf_coe,
+    Set.range_id, fderivWithin_univ]
+  rw [L.fderiv]
+  rfl
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [IsManifold I ∞ M] in
+private theorem mvfderiv_eq_chartFDeriv
+    (h : M → ℝ) (x : M) (hh : MDifferentiableAt I 𝓘(ℝ, ℝ) h x) :
+    mvfderiv (I := I) h x =
+      (fderivWithin ℝ (h ∘ (extChartAt I x).symm) (Set.range I)
+        (extChartAt I x x)).comp
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x).toContinuousLinearMap := by
+  ext v
+  rw [hh.mvfderiv]
+  rw [show writtenInExtChartAt I 𝓘(ℝ, ℝ) x h =
+      h ∘ (extChartAt I x).symm from by
+    unfold writtenInExtChartAt
+    rw [extChartAt_model_space_eq_id]
+    rfl]
+  rfl
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+private theorem mfderiv_extChartAt_inverse_model
+    (x : M) (z : E) :
+    tangentSpaceModelContinuousLinearEquiv (I := I) x
+        ((mfderiv I 𝓘(ℝ, E) (extChartAt I x) x).inverse
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(ℝ, E)) (extChartAt I x x)).symm z)) = z := by
+  let d := mfderiv I 𝓘(ℝ, E) (extChartAt I x) x
+  have hd : d.IsInvertible := isInvertible_mfderiv_extChartAt (mem_extChartAt_source x)
+  have hcoord :
+      (tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(ℝ, E)) (extChartAt I x x)).toContinuousLinearMap.comp d =
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x).toContinuousLinearMap := by
+    rw [show d = mfderiv I 𝓘(ℝ, E) (extChartAt I x) x from rfl,
+      mfderiv_extChartAt_self]
+    ext v
+    rfl
+  have hright (w : TangentSpace 𝓘(ℝ, E) (extChartAt I x x)) :
+      d (d.inverse w) = w :=
+    ((hd.inverse_apply_eq).mp rfl).symm
+  calc
+    tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (d.inverse ((tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(ℝ, E)) (extChartAt I x x)).symm z)) =
+      tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(ℝ, E)) (extChartAt I x x)
+          (d (d.inverse ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(ℝ, E)) (extChartAt I x x)).symm z))) := by
+              exact (DFunLike.congr_fun hcoord _).symm
+    _ = z := by
+      rw [hright]
+      exact (tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(ℝ, E)) (extChartAt I x x)).apply_symm_apply z
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+private theorem mfderivWithin_extChartAt_symm_inverse_model
+    (x : M) (v : TangentSpace I x) :
+    tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) (extChartAt I x x)
+        ((mfderivWithin 𝓘(ℝ, E) I (extChartAt I x).symm (Set.range I)
+          (extChartAt I x x)).inverse v) =
+      tangentSpaceModelContinuousLinearEquiv (I := I) x v := by
+  rw [mfderivWithin_extChartAt_symm_inverse_apply]
+  rfl
+
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
+private theorem mlieBracket_model
+    (X Y : (x : M) → TangentSpace I x) (x : M) :
+    let φ := extChartAt I x
+    let s := Set.range I
+    let V' := VectorField.mpullbackWithin 𝓘(ℝ, E) I φ.symm X s
+    let W' := VectorField.mpullbackWithin 𝓘(ℝ, E) I φ.symm Y s
+    let V : E → E := fun y =>
+      tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) y (V' y)
+    let W : E → E := fun y =>
+      tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) y (W' y)
+    tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (VectorField.mlieBracket I X Y x) =
+      VectorField.lieBracketWithin ℝ V W s (φ x) := by
+  dsimp only
+  change tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (VectorField.mlieBracketWithin I X Y Set.univ x) = _
+  rw [VectorField.mlieBracketWithin_apply]
+  change tangentSpaceModelContinuousLinearEquiv (I := I) x
+      ((mfderiv I 𝓘(ℝ, E) (extChartAt I x) x).inverse
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(ℝ, E)) (extChartAt I x x)).symm
+        (VectorField.lieBracketWithin ℝ
+          (fun y : E => tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) y
+            (VectorField.mpullbackWithin 𝓘(ℝ, E) I (extChartAt I x).symm X
+              (Set.range I) y))
+          (fun y : E => tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) y
+            (VectorField.mpullbackWithin 𝓘(ℝ, E) I (extChartAt I x).symm Y
+              (Set.range I) y))
+          ((extChartAt I x).symm ⁻¹' Set.univ ∩ Set.range I) (extChartAt I x x)))) = _
+  rw [mfderiv_extChartAt_inverse_model]
+  congr 2
+  ext y
+  simp only [Set.preimage_univ, Set.univ_inter]
+
 omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem embedLinearMap_injective :
     Function.Injective (embedLinearMap I M) := by
@@ -203,7 +310,8 @@ theorem embedLinearMap_injective :
       vectorFieldAction I M (X - Y) f x = 0 := by
     intro f x
     have h := DFunLike.congr_fun (Derivation.ext_iff.mp hD f) x
-    simpa [embedLinearMap, embedDeriv, vectorFieldActionSmooth] using h
+    change vectorFieldAction I M (X - Y) f x = 0 at h
+    exact h
   set v := (X - Y) x₀ with hv_def
   have hv : v ≠ 0 := by
     intro heq
@@ -212,12 +320,14 @@ theorem embedLinearMap_injective :
     exact sub_eq_zero.mp this
   have hmem : x₀ ∈ (extChartAt I x₀).source := mem_extChartAt_source x₀
   have hinv := isInvertible_mfderiv_extChartAt (I := I) hmem
-  set w := mfderiv I 𝓘(ℝ, E) (extChartAt I x₀) x₀ v
+  set w := mvfderiv (I := I) (extChartAt I x₀) x₀ v
   have hw : w ≠ 0 := by
     intro heq
-    apply hv
-    apply hinv.injective
-    rw [map_zero]; exact heq
+    apply mfderiv_extChartAt_ne_zero I M v hv
+    apply (tangentSpaceModelContinuousLinearEquiv
+      (I := 𝓘(ℝ, E)) (extChartAt I x₀ x₀)).injective
+    rw [map_zero]
+    exact heq
   have : ∃ i, (Module.finBasis ℝ E).coord i w ≠ 0 := by
     by_contra h
     apply hw
@@ -242,35 +352,31 @@ theorem embedLinearMap_injective :
     hf_eq_g.mfderiv_eq
   have h_ext_diff : MDifferentiableAt I 𝓘(ℝ, E) (extChartAt I x₀) x₀ :=
     mdifferentiableAt_extChartAt (mem_chart_source H x₀)
-  have h_sub_diff : MDifferentiableAt I 𝓘(ℝ, E)
-      (fun x => extChartAt I x₀ x - extChartAt I x₀ x₀) x₀ :=
-    h_ext_diff.sub mdifferentiableAt_const
-  have h_mfderiv_g : mfderiv I 𝓘(ℝ, ℝ) g x₀ =
-      ℓ_clm.comp (mfderiv I 𝓘(ℝ, E) (extChartAt I x₀) x₀) := by
-    have hg_eq : g =ᶠ[𝓝 x₀]
+  have h_comp_diff : MDifferentiableAt I 𝓘(ℝ, ℝ)
+      (fun x => ℓ_clm (extChartAt I x₀ x)) x₀ :=
+    ℓ_clm.mdifferentiableAt.comp x₀ h_ext_diff
+  have h_mvfderiv_g : mvfderiv (I := I) g x₀ v = ℓ_clm w := by
+    have hg_eq : g =
         ((fun x => ℓ_clm (extChartAt I x₀ x)) - fun _ => ℓ_clm (extChartAt I x₀ x₀)) := by
-      filter_upwards with x
-      simp [g, sub_eq_add_neg]
-    rw [hg_eq.mfderiv_eq]
-    have h_comp_diff : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun x => ℓ_clm (extChartAt I x₀ x)) x₀ :=
-      ℓ_clm.mdifferentiableAt.comp x₀ h_ext_diff
-    rw [mfderiv_sub h_comp_diff mdifferentiableAt_const, mfderiv_const, sub_zero]
-    rw [show (fun x => ℓ_clm (extChartAt I x₀ x)) = ℓ_clm ∘ (extChartAt I x₀) from rfl]
-    rw [mfderiv_comp x₀ ℓ_clm.mdifferentiableAt h_ext_diff, ℓ_clm.mfderiv_eq]
-  have h_zero := hD_action f x₀
-  have hf_mfderiv_v : mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x₀ v = ℓ_clm w := by
-    have h1 : mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x₀ = mfderiv I 𝓘(ℝ, ℝ) g x₀ := hf_mfderiv
-    rw [h1, h_mfderiv_g]
+      funext x
+      simp [g, map_sub]
+    rw [hg_eq, mvfderiv_sub h_comp_diff mdifferentiableAt_const,
+      sub_apply, mvfderiv_const, zero_apply, sub_zero]
+    rw [show (fun x => ℓ_clm (extChartAt I x₀ x)) =
+      ℓ_clm ∘ (extChartAt I x₀) from rfl]
+    rw [mvfderiv_comp_apply x₀ ℓ_clm.mdifferentiableAt h_ext_diff]
+    rw [mvfderiv_continuousLinearMap_self]
     rfl
-  change extDerivFun (I := I) (f : M → ℝ) x₀ ((X - Y) x₀) = 0 at h_zero
-  rw [show extDerivFun (I := I) (f : M → ℝ) x₀ ((X - Y) x₀) =
-    (NormedSpace.fromTangentSpace ((f : M → ℝ) x₀))
-      (mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x₀ v) from rfl] at h_zero
-  rw [hf_mfderiv_v] at h_zero
-  have h_ℓw : (ℓ_clm : E → ℝ) w = 0 :=
-    (NormedSpace.fromTangentSpace ((f : M → ℝ) x₀)).injective
-      (by rw [map_zero]; exact h_zero)
-  exact hi h_ℓw
+  have h_zero := hD_action f x₀
+  have hf_mvfderiv : mvfderiv (I := I) (f : M → ℝ) x₀ =
+      mvfderiv (I := I) g x₀ := by
+    change mvfderiv (I := I) (fun x => ψ x • g x) x₀ =
+      mvfderiv (I := I) g x₀
+    unfold mvfderiv
+    rw [hf_eq_g.self_of_nhds, hf_mfderiv]
+  change mvfderiv (I := I) (f : M → ℝ) x₀ ((X - Y) x₀) = 0 at h_zero
+  rw [hf_mvfderiv, h_mvfderiv_g] at h_zero
+  exact hi h_zero
 
 noncomputable def mlieBracketSection
     (X Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
@@ -278,11 +384,11 @@ noncomputable def mlieBracketSection
   ⟨VectorField.mlieBracket I X Y, by
     have hX := X.contMDiff
     have hY := Y.contMDiff
-    haveI : IsManifold I (minSmoothness ℝ 2) M := by
+    have : IsManifold I (minSmoothness ℝ 2) M := by
       rw [minSmoothness_of_isRCLikeNormedField]; infer_instance
-    haveI : IsManifold I (minSmoothness ℝ 3) M := by
+    have : IsManifold I (minSmoothness ℝ 3) M := by
       rw [minSmoothness_of_isRCLikeNormedField]; infer_instance
-    haveI : IsManifold I ((⊤ : ℕ∞) + 1) M := by
+    have : IsManifold I ((⊤ : ℕ∞) + 1) M := by
       have : ((⊤ : ℕ∞) + 1 : WithTop ℕ∞) = ∞ := by
         show ((⊤ : ℕ∞) + 1 : WithTop ℕ∞) = ∞
         simp
@@ -305,8 +411,6 @@ theorem embedDeriv_mlieBracket
     vectorFieldAction I M X (vectorFieldActionSmooth I M Y f) x₀ -
     vectorFieldAction I M Y (vectorFieldActionSmooth I M X f) x₀
   simp only [vectorFieldAction, mlieBracketSection, ContMDiffSection.coeFn_mk]
-  simp only [extDerivFun, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
-  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk, LinearEquiv.coe_mk]
   set φ := extChartAt I x₀ with hφ
   set y₀ := φ x₀ with hy₀
   set s := Set.range I with hs
@@ -317,41 +421,51 @@ theorem embedDeriv_mlieBracket
   set g := (f : M → ℝ) ∘ φ.symm
   set V' := VectorField.mpullbackWithin 𝓘(ℝ, E) I φ.symm (fun x => X x) s
   set W' := VectorField.mpullbackWithin 𝓘(ℝ, E) I φ.symm (fun x => Y x) s
-  have mfderiv_eq : ∀ (h : M → ℝ), MDifferentiableAt I 𝓘(ℝ, ℝ) h x₀ →
-      mfderiv I 𝓘(ℝ, ℝ) h x₀ = fderivWithin ℝ (h ∘ φ.symm) s y₀ := by
-    intro h hh; simp only [mfderiv, if_pos hh]; congr 1
+  set V : E → E := fun y =>
+    tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) y (V' y)
+  set W : E → E := fun y =>
+    tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) y (W' y)
+  have mvfderiv_eq : ∀ (h : M → ℝ), MDifferentiableAt I 𝓘(ℝ, ℝ) h x₀ →
+      mvfderiv (I := I) h x₀ =
+        (fderivWithin ℝ (h ∘ φ.symm) s y₀).comp
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x₀).toContinuousLinearMap := by
+    intro h hh
+    simpa only [φ, s, y₀] using mvfderiv_eq_chartFDeriv I M h x₀ hh
   have hf_diff : MDifferentiableAt I 𝓘(ℝ, ℝ) (f : M → ℝ) x₀ :=
     f.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
-  rw [mfderiv_eq _ hf_diff]
-  have bracket_eq : VectorField.mlieBracket I (fun x => X x) (fun x => Y x) x₀ =
-      VectorField.lieBracketWithin ℝ V' W' s y₀ := by
-    have h1 : VectorField.mlieBracket I (fun x => X x) (fun x => Y x) x₀ =
-        (mfderiv I 𝓘(ℝ, E) φ x₀).inverse
-          (VectorField.lieBracketWithin ℝ V' W' (↑φ.symm ⁻¹' Set.univ ∩ s) y₀) :=
-      VectorField.mlieBracketWithin_apply
-    rw [h1, mfderiv_extChartAt_self (I := I)]
-    erw [ContinuousLinearMap.inverse_id, ContinuousLinearMap.id_apply]
-    simp only [Set.preimage_univ, Set.univ_inter]
+  rw [mvfderiv_eq _ hf_diff]
+  rw [ContinuousLinearMap.comp_apply]
+  have bracket_eq :
+      tangentSpaceModelContinuousLinearEquiv (I := I) x₀
+          (VectorField.mlieBracket I X Y x₀) =
+        VectorField.lieBracketWithin ℝ V W s y₀ := by
+    simpa only [φ, s, V', W', V, W, y₀] using
+      mlieBracket_model I M X Y x₀
+  change fderivWithin ℝ ((f : M → ℝ) ∘ φ.symm) s y₀
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x₀
+        (VectorField.mlieBracket I X Y x₀)) = _
   rw [bracket_eq]
-  have hV'_y₀ : V' y₀ = X x₀ := by
-    simp only [V', VectorField.mpullbackWithin]
+  have hV_y₀ : V y₀ =
+      tangentSpaceModelContinuousLinearEquiv (I := I) x₀ (X x₀) := by
+    simp only [V, V', VectorField.mpullbackWithin]
     rw [φ.left_inv hmem]
-    exact mfderivWithin_extChartAt_symm_inverse_apply (I := I) _
-  have hW'_y₀ : W' y₀ = Y x₀ := by
-    simp only [W', VectorField.mpullbackWithin]
+    convert mfderivWithin_extChartAt_symm_inverse_model I M x₀ (X x₀) using 1 ; rfl
+  have hW_y₀ : W y₀ =
+      tangentSpaceModelContinuousLinearEquiv (I := I) x₀ (Y x₀) := by
+    simp only [W, W', VectorField.mpullbackWithin]
     rw [φ.left_inv hmem]
-    exact mfderivWithin_extChartAt_symm_inverse_apply (I := I) _
+    convert mfderivWithin_extChartAt_symm_inverse_model I M x₀ (Y x₀) using 1 ; rfl
   have hg_smooth : ContDiffWithinAt ℝ ∞ g s y₀ :=
     (contMDiffAt_iff.mp (f.contMDiff.contMDiffAt (x := x₀))).2
   have hy₀_closure : y₀ ∈ closure (interior s) := I.range_subset_closure_interior hy₀s
-  have hV'_diff : DifferentiableWithinAt ℝ V' s y₀ := by
+  have hV_diff : DifferentiableWithinAt ℝ V s y₀ := by
     have hX_mdiff : MDifferentiableWithinAt _ _
         (fun x => (⟨x, X x⟩ : TangentBundle I M)) Set.univ x₀ :=
       X.contMDiff.contMDiffAt.mdifferentiableAt (by simp) |>.mdifferentiableWithinAt
     have h := hX_mdiff.differentiableWithinAt_mpullbackWithin_vectorField (I := I)
     simp only [Set.preimage_univ, Set.univ_inter] at h
     exact h
-  have hW'_diff : DifferentiableWithinAt ℝ W' s y₀ := by
+  have hW_diff : DifferentiableWithinAt ℝ W s y₀ := by
     have hY_mdiff : MDifferentiableWithinAt _ _
         (fun x => (⟨x, Y x⟩ : TangentBundle I M)) Set.univ x₀ :=
       Y.contMDiff.contMDiffAt.mdifferentiableAt (by simp) |>.mdifferentiableWithinAt
@@ -364,12 +478,14 @@ theorem embedDeriv_mlieBracket
   have hXf_diff : MDifferentiableAt I 𝓘(ℝ, ℝ)
       (vectorFieldActionSmooth I M X f : M → ℝ) x₀ :=
     (vectorFieldActionSmooth I M X f).contMDiff.contMDiffAt.mdifferentiableAt (by simp)
-  suffices hsuff : fderivWithin ℝ g s y₀ (VectorField.lieBracketWithin ℝ V' W' s y₀) =
-    fderivWithin ℝ (↑(vectorFieldActionSmooth I M Y f) ∘ ↑φ.symm) s y₀ (X x₀) -
-    fderivWithin ℝ (↑(vectorFieldActionSmooth I M X f) ∘ ↑φ.symm) s y₀ (Y x₀) by
-    simp only [mfderiv_eq _ hYf_diff, mfderiv_eq _ hXf_diff] at hsuff ⊢
+  suffices hsuff : fderivWithin ℝ g s y₀ (VectorField.lieBracketWithin ℝ V W s y₀) =
+    fderivWithin ℝ (↑(vectorFieldActionSmooth I M Y f) ∘ ↑φ.symm) s y₀
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x₀ (X x₀)) -
+    fderivWithin ℝ (↑(vectorFieldActionSmooth I M X f) ∘ ↑φ.symm) s y₀
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x₀ (Y x₀)) by
+    rw [mvfderiv_eq _ hYf_diff, mvfderiv_eq _ hXf_diff]
     exact hsuff
-  have mfderiv_fderivWithin_chain : ∀ z ∈ φ.source,
+  have hmfderiv_chain : ∀ z ∈ φ.source,
       mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) z =
         (fderivWithin ℝ g s (φ z)).comp (mfderiv I 𝓘(ℝ, E) φ z) := by
     intro z hz
@@ -409,6 +525,14 @@ theorem embedDeriv_mlieBracket
     rw [mfderivWithin_eq_mfderiv hUniq hgφ_diff] at hchain
     rw [mfderivWithin_eq_fderivWithin] at hchain
     exact hchain
+  have mvfderiv_fderivWithin_chain : ∀ z ∈ φ.source,
+      mvfderiv (I := I) (f : M → ℝ) z =
+        (fderivWithin ℝ g s (φ z)).comp (mvfderiv (I := I) φ z) := by
+    intro z hz
+    ext v
+    unfold mvfderiv
+    rw [hmfderiv_chain z hz]
+    rfl
   have W'_eq : ∀ y ∈ φ.target,
       W' y = mfderiv I 𝓘(ℝ, E) φ (φ.symm y) (Y (φ.symm y)) := by
     intro y hy
@@ -426,42 +550,44 @@ theorem embedDeriv_mlieBracket
     exact ContinuousLinearMap.inverse_eq
       (mfderivWithin_extChartAt_symm_comp_mfderiv_extChartAt (I := I) hy)
       (mfderiv_extChartAt_comp_mfderivWithin_extChartAt_symm (I := I) hy)
-  have extDerivFun_eq_mfderiv : ∀ (x : M) (v : TangentSpace I x),
-      extDerivFun (I := I) (f : M → ℝ) x v = mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x v := by
-    intro x v
-    simp only [extDerivFun, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
-    simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk, LinearEquiv.coe_mk]
+  have W_eq : ∀ y ∈ φ.target,
+      W y = mvfderiv (I := I) φ (φ.symm y) (Y (φ.symm y)) := by
+    intro y hy
+    simp only [W]
+    rw [W'_eq y hy]
+    unfold mvfderiv
+    rw [φ.right_inv hy]
+    rfl
+  have V_eq : ∀ y ∈ φ.target,
+      V y = mvfderiv (I := I) φ (φ.symm y) (X (φ.symm y)) := by
+    intro y hy
+    simp only [V]
+    rw [V'_eq y hy]
+    unfold mvfderiv
+    rw [φ.right_inv hy]
     rfl
   have hYf_eq : (↑(vectorFieldActionSmooth I M Y f) ∘ ↑φ.symm) =ᶠ[𝓝[s] y₀]
-      (fun y => fderivWithin ℝ g s y (W' y)) := by
+      (fun y => fderivWithin ℝ g s y (W y)) := by
     filter_upwards [extChartAt_target_mem_nhdsWithin_of_mem hmem_tgt] with y hy
     simp only [Function.comp_def, vectorFieldActionSmooth, ContMDiffMap.coeFn_mk,
       vectorFieldAction]
-    rw [extDerivFun_eq_mfderiv]
     have hy_src : φ.symm y ∈ φ.source := φ.map_target hy
-    have h1 := mfderiv_fderivWithin_chain (φ.symm y) hy_src
-    have h2 : mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) (φ.symm y) (Y (φ.symm y)) =
-        fderivWithin ℝ g s (φ (φ.symm y)) (mfderiv I 𝓘(ℝ, E) φ (φ.symm y) (Y (φ.symm y))) := by
-      rw [h1]; rfl
-    rw [h2, φ.right_inv hy]; congr 1; exact (W'_eq y hy).symm
+    rw [mvfderiv_fderivWithin_chain (φ.symm y) hy_src,
+      ContinuousLinearMap.comp_apply, φ.right_inv hy, ← W_eq y hy]
   have hXf_eq : (↑(vectorFieldActionSmooth I M X f) ∘ ↑φ.symm) =ᶠ[𝓝[s] y₀]
-      (fun y => fderivWithin ℝ g s y (V' y)) := by
+      (fun y => fderivWithin ℝ g s y (V y)) := by
     filter_upwards [extChartAt_target_mem_nhdsWithin_of_mem hmem_tgt] with y hy
     simp only [Function.comp_def, vectorFieldActionSmooth, ContMDiffMap.coeFn_mk,
       vectorFieldAction]
-    rw [extDerivFun_eq_mfderiv]
     have hy_src : φ.symm y ∈ φ.source := φ.map_target hy
-    have h1 := mfderiv_fderivWithin_chain (φ.symm y) hy_src
-    have h2 : mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) (φ.symm y) (X (φ.symm y)) =
-        fderivWithin ℝ g s (φ (φ.symm y)) (mfderiv I 𝓘(ℝ, E) φ (φ.symm y) (X (φ.symm y))) := by
-      rw [h1]; rfl
-    rw [h2, φ.right_inv hy]; congr 1; exact (V'_eq y hy).symm
+    rw [mvfderiv_fderivWithin_chain (φ.symm y) hy_src,
+      ContinuousLinearMap.comp_apply, φ.right_inv hy, ← V_eq y hy]
   rw [hYf_eq.fderivWithin_eq (hYf_eq.self_of_nhdsWithin hy₀s),
       hXf_eq.fderivWithin_eq (hXf_eq.self_of_nhdsWithin hy₀s)]
-  rw [← hV'_y₀, ← hW'_y₀]
+  rw [← hV_y₀, ← hW_y₀]
   exact VectorField.fderivWithin_apply_lieBracket hg_smooth
     (by rw [minSmoothness_of_isRCLikeNormedField]; norm_cast)
-    huniq hy₀_closure hy₀s hW'_diff hV'_diff
+    huniq hy₀_closure hy₀s hW_diff hV_diff
 
 omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] in
 theorem embed_bracket_closed

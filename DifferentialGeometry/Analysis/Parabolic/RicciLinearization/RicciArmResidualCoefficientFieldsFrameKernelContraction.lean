@@ -22,7 +22,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -80,7 +79,7 @@ private def decompositionKernelArgumentPairEvalCLM (x : M) (v : Fin 2 → E) :
   LinearMap.toContinuousLinearMap
     { toFun := fun D => Tensor0SSpace.toModel (𝕜 := ℝ) D v
       map_add' := fun D₁ D₂ => by
-        rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+        rw [Tensor0SSpace.toModel_add, add_apply]
       map_smul' := fun c D => by
         rw [Tensor0SSpace.toModel_smul]
         rfl }
@@ -113,9 +112,9 @@ lemma decompositionKernelContractionMonomialFibFixedFrame_apply
         curvatureActionMonomialCLM (I := I) (M := M) x
           (Tensor0SSpace.toModel (𝕜 := ℝ) D ![(B a x : E), (B b x : E)]) σ
           (B a x) (B b x) (Gs x) := by
-  rw [curvatureDecompositionMonomialFrameContraction, ContinuousLinearMap.sum_apply]
+  rw [curvatureDecompositionMonomialFrameContraction, sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun b _ => ?_)
   rw [ContinuousLinearMap.smulRight_apply, decompositionKernelArgumentPairEvalCLM_apply,
     curvatureDecompositionMonomialFib_apply]
@@ -135,11 +134,13 @@ lemma decompositionKernelContractionMonomialFibFixedFrame_toModel
               (σ i)) := by
   classical
   rw [decompositionKernelContractionMonomialFibFixedFrame_apply, ← Tensor0SSpace.toModelL_apply,
-    map_sum, ContinuousMultilinearMap.sum_apply]
+    map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [← Tensor0SSpace.toModelL_apply, map_sum, ContinuousMultilinearMap.sum_apply]
+  rw [← Tensor0SSpace.toModelL_apply, map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun b _ => ?_)
   rw [Tensor0SSpace.toModelL_apply, curvatureDecompositionMonomialFib_toModel]
+  with_unfolding_all
+    rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -157,7 +158,7 @@ private theorem decompositionKernelContractionMonomialFibFixedFrame_apply_sectio
         (E := fun z : M => Tensor0SSpace 2 I z) x
         (curvatureDecompositionMonomialFrameContraction (I := I) (M := M) Gs σ B x (Y x))) := by
   classical
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
   set Gσ : Cₛ^∞⟮I; Tensor0SModel 4 ℝ E, fun z : M => Tensor0SSpace 4 I z⟯ :=
     { toFun := fun x : M => tensorRank4PermuteCLM (I := I) (M := M) x σ (Gs x)
       contMDiff_toFun := by
@@ -260,9 +261,9 @@ private theorem decompositionKernelContractionMonomialFibFixedFrame_apply_sectio
     rw [hcoeOuter, Finset.sum_apply]
     refine Finset.sum_congr rfl (fun a _ => ?_)
     rw [hcoeInner a, Finset.sum_apply]
-  rw [hsum, ContinuousLinearMap.sum_apply]
+  rw [hsum, sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   rfl
 
 private def kcInnerPairBilin (x : M)
@@ -281,7 +282,7 @@ private lemma kcInnerPairBilin_apply (x : M)
     (X Y Y' : TangentSpace I x) :
     kcInnerPairBilin (I := I) x K L X Y Y' = K X Y * L X Y' := by
   rw [kcInnerPairBilin, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
-    ContinuousLinearMap.smul_apply, smul_eq_mul]
+    smul_apply, smul_eq_mul]
 
 private def kcOuterPairBilin (g : SmoothRiemannianMetric I M) (x : M)
     (K L : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) :
@@ -289,12 +290,16 @@ private def kcOuterPairBilin (g : SmoothRiemannianMetric I M) (x : M)
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   LinearMap.toContinuousLinearMap
     { toFun := fun X => ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
-        (chartInvGramMatrix (I := I) g x x k l * K X (chartModelBasis E k)) •
-          (ContinuousLinearMap.flip L (chartModelBasis E l))
+        (chartInvGramMatrix (I := I) g x x k l *
+          K X ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+            (chartModelBasis E k))) •
+          (ContinuousLinearMap.flip L
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              (chartModelBasis E l)))
       map_add' := fun X X' => by
         ext Y'
-        simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.coe_sum',
-          ContinuousLinearMap.coe_smul', Finset.sum_apply, Pi.smul_apply,
+        simp only [add_apply, FunLike.coe_sum,
+          FunLike.coe_smul, Finset.sum_apply, Pi.smul_apply,
           ContinuousLinearMap.flip_apply, map_add, smul_eq_mul]
         rw [← Finset.sum_add_distrib]
         refine Finset.sum_congr rfl (fun k _ => ?_)
@@ -303,8 +308,8 @@ private def kcOuterPairBilin (g : SmoothRiemannianMetric I M) (x : M)
         ring
       map_smul' := fun c X => by
         ext Y'
-        simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.coe_sum',
-          ContinuousLinearMap.coe_smul', Finset.sum_apply, Pi.smul_apply,
+        simp only [smul_apply, FunLike.coe_sum,
+          FunLike.coe_smul, Finset.sum_apply, Pi.smul_apply,
           ContinuousLinearMap.flip_apply, map_smul, smul_eq_mul, RingHom.id_apply]
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl (fun k _ => ?_)
@@ -319,9 +324,12 @@ private lemma kcOuterPairBilin_apply (g : SmoothRiemannianMetric I M) (x : M)
     kcOuterPairBilin (I := I) g x K L X X' =
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g x x k l *
-          (K X (chartModelBasis E k) * L X' (chartModelBasis E l)) := by
+          (K X ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              (chartModelBasis E k)) *
+            L X' ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              (chartModelBasis E l))) := by
   rw [kcOuterPairBilin, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
-  simp only [ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply, smul_eq_mul,
+  simp only [sum_apply, smul_apply, smul_eq_mul,
     ContinuousLinearMap.flip_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   refine Finset.sum_congr rfl (fun l _ => ?_)
@@ -337,8 +345,14 @@ private theorem kc_double_frame_bilin_trace_eq_fixed
     ∑ a, ∑ b, K (B a) (B b) * L (B a) (B b) =
       ∑ m, ∑ n, chartInvGramMatrix (I := I) g x x m n *
         (∑ k, ∑ l, chartInvGramMatrix (I := I) g x x k l *
-          (K (chartModelBasis E m) (chartModelBasis E k) *
-            L (chartModelBasis E n) (chartModelBasis E l))) := by
+          (K ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              (chartModelBasis E m))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                (chartModelBasis E k)) *
+            L ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              (chartModelBasis E n))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                (chartModelBasis E l)))) := by
   classical
   have hinner : ∀ a, ∑ b, K (B a) (B b) * L (B a) (B b) =
       kcOuterPairBilin (I := I) g x K L (B a) (B a) := by
@@ -347,14 +361,19 @@ private theorem kc_double_frame_bilin_trace_eq_fixed
     have h := orthonormal_basis_bilin_trace (I := I) (M := M) g (x := x)
       (kcInnerPairBilin (I := I) x K L (B a)) B hB
     simp only [kcInnerPairBilin_apply] at h
-    rw [h]
+    simp_rw [centeredChartTangentBasis_apply, centeredChartTangentEquiv_symm_apply] at h
+    exact h
   rw [Finset.sum_congr rfl (fun a _ => hinner a)]
   have hout := orthonormal_basis_bilin_trace (I := I) (M := M) g (x := x)
     (kcOuterPairBilin (I := I) g x K L) B hB
+  simp_rw [centeredChartTangentBasis_apply, centeredChartTangentEquiv_symm_apply] at hout
   rw [hout]
   refine Finset.sum_congr rfl (fun m _ => ?_)
   refine Finset.sum_congr rfl (fun n _ => ?_)
-  rw [kcOuterPairBilin_apply]
+  exact congrArg (fun z : ℝ => chartInvGramMatrix (I := I) g x x m n * z)
+    (kcOuterPairBilin_apply (I := I) g x K L
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (chartModelBasis E m))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (chartModelBasis E n)))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -375,7 +394,7 @@ private def kcToModelEvalCLM (s : ℕ) (x : M) (v : Fin s → E) :
   LinearMap.toContinuousLinearMap
     { toFun := fun D => Tensor0SSpace.toModel (𝕜 := ℝ) D v
       map_add' := fun D₁ D₂ => by
-        rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+        rw [Tensor0SSpace.toModel_add, add_apply]
       map_smul' := fun c D => by
         rw [Tensor0SSpace.toModel_smul]
         rfl }
@@ -391,14 +410,14 @@ private def kcPairFeedScalarCLM (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   LinearMap.toContinuousLinearMap
     { toFun := fun p => (kcToModelEvalCLM (I := I) (M := M) s x v).comp
-        (tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) s x
-          ((tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p))
+        (tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) s x
+          ((tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p))
       map_add' := fun p p' => by
         rw [map_add, map_add, ContinuousLinearMap.comp_add]
       map_smul' := fun c p => by
         rw [map_smul, map_smul, RingHom.id_apply]
         ext q
-        simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply,
+        simp only [ContinuousLinearMap.comp_apply, smul_apply,
           map_smul] }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -409,10 +428,12 @@ private lemma kcPairFeedScalarCLM_apply (s : ℕ) (x : M) (G : Tensor0SSpace (s 
       Tensor0SSpace.toModel (𝕜 := ℝ) G (Fin.cons (p : E) (Fin.cons (q : E) v)) := by
   rw [kcPairFeedScalarCLM, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
     ContinuousLinearMap.comp_apply, kcToModelEvalCLM_apply,
-    TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-      (T := (tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p) (v0 := q) (vs := v),
-    TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-      (T := G) (v0 := p) (vs := Fin.cons (q : E) v)]
+    TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
+      (T := (tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p) (v0 := q) (vs := v),
+    TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
+      (T := G) (v0 := p)
+      (vs := Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x q) v)]
+  rfl
 
 def curvatureDecompositionMonomialOrthonormalFrameBiContraction (g₁ : SmoothRiemannianMetric I M)
     (Gs : Π b : M, Tensor0SSpace 4 I b) (σ : Equiv.Perm (Fin 4)) (x : M) :
@@ -590,8 +611,8 @@ theorem decompositionKernelContractionField_toSection_eq_kernelFib_sum
         - (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
             (decompositionKernelContractionMonomialField (I := I) (M := M) g₀ g₁ G σ₄).toSection x))
         D) = _
-  rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply,
-    ContinuousLinearMap.add_apply, happly σ₁, happly σ₂, happly σ₃, happly σ₄]
+  rw [sub_apply, sub_apply,
+    add_apply, happly σ₁, happly σ₂, happly σ₃, happly σ₄]
   have hker : (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
       curvatureActionKernelCLM (I := I) (M := M) x
         (Tensor0SSpace.toModel (𝕜 := ℝ) D
@@ -632,8 +653,8 @@ theorem decompositionKernelContractionField_toSection_eq_kernelFib_sum
                     (smoothOrthoFrame (I := I) g₁ x b x : E)]) σ₄
                 (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x))
         from rfl]
-    rw [ContinuousLinearMap.smul_apply, ContinuousLinearMap.sub_apply,
-      ContinuousLinearMap.sub_apply, ContinuousLinearMap.add_apply]
+    rw [smul_apply, sub_apply,
+      sub_apply, add_apply]
   rw [hker]
   have hsplit : (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
       (1 / 2 : ℝ) • (F σ₁ a b + F σ₂ a b - F σ₃ a b - F σ₄ a b)) =
@@ -662,6 +683,7 @@ theorem decompositionKernelContractionField_toSection_eq_kernelFib_sum
   rw [hsplit, hdist]
 
 omit [I.Boundaryless] [BoundarylessManifold I M] in
+omit [SigmaCompactSpace M] in
 theorem decompositionKernelContractionField_zero_argument (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ₁ σ₂ σ₃ σ₄ : Equiv.Perm (Fin 4)) :
     decompositionKernelContractionField (I := I) (M := M) g₀ g₁
@@ -704,15 +726,15 @@ theorem decompositionKernelContractionField_zero_argument (g₀ g₁ : SmoothRie
                 (Fin.cons ((smoothOrthoFrame (I := I) g₁ x b x : E)) v) : Fin 4 → E)
                 (σ i))) = 0 from
         Finset.sum_eq_zero (fun a _ => Finset.sum_eq_zero (fun b _ => by
-          rw [hGs, Tensor0SSpace.toModel_zero, ContinuousMultilinearMap.zero_apply,
+          rw [hGs, Tensor0SSpace.toModel_zero, zero_apply,
             mul_zero]))]
-      simp only [ContinuousLinearMap.zero_apply, Tensor0SSpace.toModel_zero,
-        ContinuousMultilinearMap.zero_apply]
+      simp only [zero_apply, Tensor0SSpace.toModel_zero]
     rw [hzero]
     rfl
   rw [decompositionKernelContractionField, hmono σ₁, hmono σ₂, hmono σ₃, hmono σ₄]
   rw [show (0 : SmoothCcTensor g₀ 2 2) + 0 - 0 - 0 = 0 from by abel, smul_zero]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem foldIteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s j : ℕ)
@@ -723,6 +745,7 @@ private theorem foldIteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (
   | zero => simp only [iteratedCovGrad_zero]
   | succ j ih => rw [iteratedCovGrad_succ, iteratedCovGrad_succ, ih, covGrad_smul]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma foldIteratedCovGrad_zero_arg (g₀ : SmoothRiemannianMetric I M) (r s j : ℕ) :
@@ -731,6 +754,7 @@ private lemma foldIteratedCovGrad_zero_arg (g₀ : SmoothRiemannianMetric I M) (
       (zero_smul ℝ _).symm,
     foldIteratedCovGrad_smul_real, zero_smul]
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 theorem decompositionKernelContractionField_zero_weight (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ₁ σ₂ σ₃ σ₄ : Equiv.Perm (Fin 4)) :
@@ -739,6 +763,7 @@ theorem decompositionKernelContractionField_zero_weight (g₀ g₁ : SmoothRiema
   rw [foldIteratedCovGrad_zero_arg (I := I) (M := M) g₀ 0 2 2,
     decompositionKernelContractionField_zero_argument]
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 theorem decompositionKernelContractionField_self (g₀ : SmoothRiemannianMetric I M)
     (σ₁ σ₂ σ₃ σ₄ : Equiv.Perm (Fin 4)) :
@@ -790,9 +815,9 @@ theorem operatorFieldApplication_decompositionKernelContractionField
   rw [curvatureDecompositionKernelCoeffField_toSection_eq_kernelFib_sum (I := I) (M := M)
     g₀ g₁ (ccTensorUnitValueSection (I := I) (M := M) g₀ W)
     (ccTensorUnitValueSection_contMDiff (I := I) (M := M) g₀ W) σ₁ σ₂ σ₃ σ₄ x]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun b _ => ?_)
   rfl
 

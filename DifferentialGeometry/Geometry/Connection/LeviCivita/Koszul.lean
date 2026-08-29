@@ -28,7 +28,7 @@ lemma SmoothRiemannianMetric.eq_of_inner_eq
   have hpair : ∀ ζ : TangentSpace I x, g.inner x (v - w) ζ = 0 := by
     intro ζ
     have hsub : g.inner x (v - w) ζ = g.inner x v ζ - g.inner x w ζ := by
-      simp [map_sub, ContinuousLinearMap.sub_apply]
+      simp [map_sub, sub_apply]
     rw [hsub, h ζ, sub_self]
   have hself : g.inner x (v - w) (v - w) = 0 := hpair (v - w)
   by_contra hne
@@ -95,7 +95,7 @@ theorem koszul_identity_on
   have lin_sub_1 : ∀ a b c : TangentSpace I x,
       g.inner x (a - b) c = g.inner x a c - g.inner x b c := by
     intro a b c
-    simp [map_sub, ContinuousLinearMap.sub_apply]
+    simp [map_sub, sub_apply]
   have step_XY :
       g.inner x (VectorField.mlieBracket I X Y x) (Z x)
         = g.inner x (cov Y x (X x)) (Z x) - g.inner x (cov X x (Y x)) (Z x) := by

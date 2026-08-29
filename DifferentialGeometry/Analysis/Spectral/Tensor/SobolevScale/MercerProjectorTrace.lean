@@ -84,14 +84,14 @@ private lemma finiteEigenCombo_toSection_apply (g : SmoothRiemannianMetric I M)
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [DifferentialGeometry.Analysis.Sobolev.smoothCcTensor_toSection_smul_apply]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 private lemma eigenProjector_frame_component_sq_le (g : SmoothRiemannianMetric I M)
     {C : ℝ} (hC_nn : 0 ≤ C) (Λ : ℝ) (hΛ : 0 ≤ Λ)
     (hC : ∀ (x : M)
         (c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ),
         letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 2
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 2
         ‖(DifferentialGeometry.Analysis.Spectral.finiteEigenCombo
             (I := I) (M := M) g (eigenSubLevel (I := I) (M := M) g Λ) c).toSection x‖ ≤
           C * (1 + Λ) ^ (2 * mercerHalfOrder (E := E)) *
@@ -101,12 +101,12 @@ private lemma eigenProjector_frame_component_sq_le (g : SmoothRiemannianMetric I
     (x : M)
     (v : TensorRSSpace 0 2 I x) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 2
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 2
     ∑ i ∈ eigenSubLevel (I := I) (M := M) g Λ,
         (inner ℝ ((eigenSmooth (I := I) (M := M) g i).toSection x) v) ^ 2 ≤
       (C * (1 + Λ) ^ (2 * mercerHalfOrder (E := E))) ^ 2 * ‖v‖ ^ 2 := by
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 2
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 2
   classical
   set S := eigenSubLevel (I := I) (M := M) g Λ with hS
   set c : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ :=
@@ -147,8 +147,8 @@ private lemma eigenProjector_frame_component_sq_le (g : SmoothRiemannianMetric I
     _ ≤ (D * ‖v‖) ^ 2 := pow_le_pow_left₀ hN_nn hN_le 2
     _ = D ^ 2 * ‖v‖ ^ 2 := by rw [mul_pow]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem eigenProjector_diagonal_le (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 < C ∧ ∀ (Λ : ℝ) (x : M),
       ∑ i ∈ eigenSubLevel (I := I) (M := M) g Λ,
@@ -156,9 +156,9 @@ theorem eigenProjector_diagonal_le (g : SmoothRiemannianMetric I M) :
             ((eigenSmooth (I := I) (M := M) g i).toSection x) ≤
         C * (1 + Λ) ^ ((mercerSobolevExp (E := E) : ℕ) : ℝ) := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
-  letI instRB : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 2
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let instRB : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 2
   set k₂ : ℕ := mercerHalfOrder (E := E) with hk₂
   have hsuper : 2 * k₂ > Module.finrank ℝ E := two_mul_mercerHalfOrder_gt_finrank (E := E)
   obtain ⟨C₂, hC₂_pos, hC₂⟩ :=
@@ -313,7 +313,7 @@ omit [BoundarylessManifold I M] in
 private theorem eigenSmooth_toL2_norm_eq_one (g : SmoothRiemannianMetric I M)
     (i : TensorEigenIdx (I := I) (M := M) g 0 2) :
     ‖(eigenSmooth (I := I) (M := M) g i : TensorL2 0 2 g)‖ = 1 := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   set b :=
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.tensorResolventHilbertEigenbasisSigma
     (I := I) (M := M) (hCompact (I := I) (M := M) g) with hb_def
@@ -333,7 +333,7 @@ private theorem integral_riemannianFiberNormSq_eigenSmooth_eq_one
     ∫ x, riemannianFiberNormSq (I := I) (M := M) g 0 2 x
         ((eigenSmooth (I := I) (M := M) g i).toSection x)
       ∂riemannianVolumeMeasure I M g = 1 := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   have hkey := tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq
     (I := I) (M := M) g 2 (eigenSmooth (I := I) (M := M) g i)
   have hnorm : tensorL2Norm (I := I) (M := M) g 0 2
@@ -352,8 +352,8 @@ theorem eigenProjector_card_le_mercer (g : SmoothRiemannianMetric I M) :
       (Nat.card {i : TensorEigenIdx (I := I) (M := M) g 0 2 |
         1 + TensorEigenIdx.lambda (I := I) (M := M) i < Λ} : ℝ) ≤
         K * (1 + Λ) ^ ((mercerSobolevExp (E := E) : ℕ) : ℝ) := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   obtain ⟨C, hC, hdiag⟩ := eigenProjector_diagonal_le (I := I) (M := M) g
   set vol : ℝ := ((riemannianVolumeMeasure I M g) Set.univ).toReal with hvol_def
@@ -365,7 +365,7 @@ theorem eigenProjector_card_le_mercer (g : SmoothRiemannianMetric I M) :
     have hset : {i : TensorEigenIdx (I := I) (M := M) g 0 2 |
         1 + TensorEigenIdx.lambda (I := I) (M := M) i < Λ} = (F : Set _) := by
       ext i
-      rw [Set.mem_setOf_eq, Finset.mem_coe,
+      rw [Set.mem_ofPred_eq, Finset.mem_coe,
         mem_eigenSubLevel (I := I) (M := M) g Λ i]
     rw [hset, Nat.card_coe_set_eq, Set.ncard_coe_finset]
   rw [hcard]
@@ -373,7 +373,7 @@ theorem eigenProjector_card_le_mercer (g : SmoothRiemannianMetric I M) :
       ∫ x, (∑ i ∈ F, riemannianFiberNormSq (I := I) (M := M) g 0 2 x
           ((eigenSmooth (I := I) (M := M) g i).toSection x))
         ∂riemannianVolumeMeasure I M g := by
-    rw [integral_finset_sum F
+    rw [integral_finsetSum F
       (fun i _ => integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g 0 2
         (eigenSmooth (I := I) (M := M) g i))]
     rw [Finset.sum_congr rfl

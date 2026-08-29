@@ -8,6 +8,7 @@ import Mathlib.Analysis.Fourier.Convolution
 import Mathlib.Analysis.Distribution.SchwartzSpace.Fourier
 import Mathlib.MeasureTheory.Function.L2Space
 
+
 noncomputable section
 
 open Complex MeasureTheory Real Set
@@ -32,9 +33,20 @@ private noncomputable def sourceSch (f : ℝ × V → ℝ)
   have hg_compact : HasCompactSupport g := by
     have hraw : HasCompactSupport (fun z : WithLp 2 (ℝ × V) =>
         f (WithLp.ofLp z)) := by
-      simpa only [Function.comp_apply] using
-        hfc.comp_homeomorph (WithLp.homeomorphProd 2 ℝ V)
-    simpa only [g] using hraw.comp_left (map_zero Complex.ofRealCLM)
+      have hcomp := hfc.comp_homeomorph (WithLp.homeomorphProd 2 ℝ V)
+      have heq : f ∘ (WithLp.homeomorphProd 2 ℝ V) =
+          fun z : WithLp 2 (ℝ × V) => f (WithLp.ofLp z) := by
+        funext z
+        rfl
+      rw [heq] at hcomp
+      exact hcomp
+    have hcomp := hraw.comp_left (map_zero Complex.ofRealCLM)
+    have heq : Complex.ofRealCLM ∘ (fun z : WithLp 2 (ℝ × V) => f (WithLp.ofLp z)) =
+        g := by
+      funext z
+      rfl
+    rw [heq] at hcomp
+    exact hcomp
   exact hg_compact.toSchwartzMap hg_smooth
 
 private noncomputable def sourceD2Sch (v w : V) (f : ℝ × V → ℝ)
@@ -61,7 +73,8 @@ private theorem sourceD2_apply (v w : V) (f : ℝ × V → ℝ)
   let mV : Fin 2 → V := ![v, w]
   have h12 : (1 : WithTop ℕ∞) + 1 ≤ 2 := by norm_num
   have h1inf : (1 : WithTop ℕ∞) + 1 ≤ ∞ := by
-    simpa using (by decide : (2 : WithTop ℕ∞) ≤ ∞)
+    rw [show (1 : WithTop ℕ∞) + 1 = 2 by norm_num]
+    decide
   have hsrcD : DifferentiableAt ℝ (fderiv ℝ (sourceSch f hf hfc)) x :=
     ((((sourceSch f hf hfc).smooth 2).fderiv_right
       (m := (1 : WithTop ℕ∞)) h12).differentiable (by norm_num)) x
@@ -141,8 +154,8 @@ private theorem sourceD2_fourier (v w : V) (f : ℝ × V → ℝ)
     ((innerSL ℝ).flip (spaceDir w)).hasTemperateGrowth
   rw [← SchwartzMap.smulLeftCLM_ofReal ℂ hv,
     ← SchwartzMap.smulLeftCLM_ofReal ℂ hw]
-  rw [SchwartzMap.smul_apply, SchwartzMap.smulLeftCLM_apply_apply (by fun_prop),
-    SchwartzMap.smul_apply, SchwartzMap.smulLeftCLM_apply_apply (by fun_prop)]
+  rw [smul_apply, SchwartzMap.smulLeftCLM_apply_apply (by fun_prop),
+    smul_apply, SchwartzMap.smulLeftCLM_apply_apply (by fun_prop)]
   simp only [smul_eq_mul]
   rw [WithLp.prod_inner_apply, WithLp.prod_inner_apply]
   simp only [spaceDir, WithLp.ofLp_toLp, inner_zero_right, zero_add,
@@ -343,7 +356,12 @@ private theorem dampConv_rep {δ : ℝ} (hδ : 0 < δ) (v w : V)
   have hφC_cont : Continuous φC :=
     Complex.ofRealCLM.continuous.comp hφ.continuous
   have hφC_supp : HasCompactSupport φC := by
-    simpa only [φC] using hφc.comp_left (map_zero Complex.ofRealCLM)
+    have hcomp := hφc.comp_left (map_zero Complex.ofRealCLM)
+    have heq : Complex.ofRealCLM ∘ φ = φC := by
+      funext x
+      rfl
+    rw [heq] at hcomp
+    exact hcomp
   have hφC_mem : MemLp φC 2 (volume : Measure (WithLp 2 (ℝ × V))) :=
     hφC_cont.memLp_of_hasCompactSupport hφC_supp
   let φLp : Lp ℂ 2 (volume : Measure (WithLp 2 (ℝ × V))) :=
@@ -392,7 +410,7 @@ private theorem dampConv_rep {δ : ℝ} (hδ : 0 < δ) (v w : V)
           exact integral_congr_ae (Filter.Eventually.of_forall hinner)
     _ = inner ℂ φLp
         (lpOpKernel (fun q => B (k q)) srcLp) := by
-          letI : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
+          let : Fact ((2 : ENNReal) ≠ ⊤) := ⟨by norm_num⟩
           unfold lpOpKernel
           exact integral_inner (lpOpKernel_int hK srcLp) φLp
     _ = inner ℂ φLp out := by rfl
@@ -497,8 +515,8 @@ private theorem dampProd_memLp {δ : ℝ} (hδ : 0 < δ) (v w : V)
   have hFsrc : MemLp (fun q : WithLp 2 (ℝ × V) =>
       𝓕 (sourceSch f hf hfc) q) 2 volume :=
     (𝓕 (sourceSch f hf hfc)).memLp 2
-  simpa only [smul_eq_mul] using
-    hFsrc.smul (dampSym_memLp hδ v w)
+  exact MemLp.ae_eq (Filter.Eventually.of_forall fun _ => rfl)
+    (hFsrc.smul (dampSym_memLp hδ v w))
 
 private theorem dampConv_fourierLp {δ : ℝ} (hδ : 0 < δ) (v w : V)
     (f : ℝ × V → ℝ) (hf : ContDiff ℝ ∞ f) (hfc : HasCompactSupport f) :

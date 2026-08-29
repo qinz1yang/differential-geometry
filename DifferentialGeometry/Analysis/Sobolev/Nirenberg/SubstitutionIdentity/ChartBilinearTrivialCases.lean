@@ -45,8 +45,8 @@ private lemma principalTerm_chartBilinear_zero_h
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (K_0 : Set EuclN) (η : EuclN → ℝ)
     (k : Fin (Module.finrank ℝ E)) :
-    principalTerm_chartBilinear (I := I) (M := M) D K_0 η k 0 = 0 := by
-  unfold principalTerm_chartBilinear
+    principalTermChartBilinear (I := I) (M := M) D K_0 η k 0 = 0 := by
+  unfold principalTermChartBilinear
   have h_eq : (fun x : EuclN =>
     (∑ i : Fin (Module.finrank ℝ E),
       ∑ j : Fin (Module.finrank ℝ E),
@@ -55,15 +55,15 @@ private lemma principalTerm_chartBilinear_zero_h
           (fun y => weightedInvGramOnEuclid (I := I) g α i j y) x *
         (η x) ^ 2 *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k 0 (D.weak_partial i) x *
+          (d := Module.finrank ℝ E) k 0 (D.weakPartial i) x *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k 0 (D.weak_partial j) x)) =
+          (d := Module.finrank ℝ E) k 0 (D.weakPartial j) x)) =
       (fun _ => (0 : ℝ)) := by
     funext x
     refine Finset.sum_eq_zero (fun i _ => ?_)
     refine Finset.sum_eq_zero (fun j _ => ?_)
     have h_dq : DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k 0 (D.weak_partial i) x = 0 := by
+        (d := Module.finrank ℝ E) k 0 (D.weakPartial i) x = 0 := by
       simp [DifferentialGeometry.Analysis.Sobolev.diffQuot]
     rw [h_dq]; ring
   rw [h_eq]
@@ -76,8 +76,8 @@ private lemma cross_1_term_chartBilinear_zero_h
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (K_0 : Set EuclN) (η : EuclN → ℝ)
     (k : Fin (Module.finrank ℝ E)) :
-    cross_1_term_chartBilinear (I := I) (M := M) D K_0 η k 0 = 0 := by
-  unfold cross_1_term_chartBilinear
+    cross1TermChartBilinear (I := I) (M := M) D K_0 η k 0 = 0 := by
+  unfold cross1TermChartBilinear
   refine Finset.sum_eq_zero (fun i _ => ?_)
   refine Finset.sum_eq_zero (fun j _ => ?_)
   have h_eq : (fun x : EuclN =>
@@ -88,12 +88,12 @@ private lemma cross_1_term_chartBilinear_zero_h
         (η x) *
         ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k 0 (D.weak_partial i) x *
+          (d := Module.finrank ℝ E) k 0 (D.weakPartial i) x *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k 0 D.u_chart x) = (fun _ => (0 : ℝ)) := by
+          (d := Module.finrank ℝ E) k 0 D.uChart x) = (fun _ => (0 : ℝ)) := by
     funext x
     have h_dq : DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k 0 (D.weak_partial i) x = 0 := by
+        (d := Module.finrank ℝ E) k 0 (D.weakPartial i) x = 0 := by
       simp [DifferentialGeometry.Analysis.Sobolev.diffQuot]
     rw [h_dq]; ring
   rw [h_eq]
@@ -106,8 +106,8 @@ private lemma cross_2_term_chartBilinear_zero_h
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (K_0 : Set EuclN) (η : EuclN → ℝ)
     (k : Fin (Module.finrank ℝ E)) :
-    cross_2_term_chartBilinear (I := I) (M := M) D K_0 η k 0 = 0 := by
-  unfold cross_2_term_chartBilinear
+    cross2TermChartBilinear (I := I) (M := M) D K_0 η k 0 = 0 := by
+  unfold cross2TermChartBilinear
   refine Finset.sum_eq_zero (fun i _ => ?_)
   refine Finset.sum_eq_zero (fun j _ => ?_)
   have h_eq : (fun x : EuclN =>
@@ -115,9 +115,9 @@ private lemma cross_2_term_chartBilinear_zero_h
         (d := Module.finrank ℝ E) k 0
         (fun y => weightedInvGramOnEuclid (I := I) g α i j y) x *
       (η x) ^ 2 *
-      D.weak_partial i x *
+      D.weakPartial i x *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k 0 (D.weak_partial j) x) =
+        (d := Module.finrank ℝ E) k 0 (D.weakPartial j) x) =
       (fun _ => (0 : ℝ)) := by
     funext x
     have h_dq : DifferentialGeometry.Analysis.Sobolev.diffQuot
@@ -135,8 +135,8 @@ private lemma cross_3_term_chartBilinear_zero_h
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (K_0 : Set EuclN) (η : EuclN → ℝ)
     (k : Fin (Module.finrank ℝ E)) :
-    cross_3_term_chartBilinear (I := I) (M := M) D K_0 η k 0 = 0 := by
-  unfold cross_3_term_chartBilinear
+    cross3TermChartBilinear (I := I) (M := M) D K_0 η k 0 = 0 := by
+  unfold cross3TermChartBilinear
   refine Finset.sum_eq_zero (fun i _ => ?_)
   refine Finset.sum_eq_zero (fun j _ => ?_)
   have h_eq : (fun x : EuclN =>
@@ -146,12 +146,12 @@ private lemma cross_3_term_chartBilinear_zero_h
           (fun y => weightedInvGramOnEuclid (I := I) g α i j y) x *
         (η x) *
         ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-        D.weak_partial i x *
+        D.weakPartial i x *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k 0 D.u_chart x) = (fun _ => (0 : ℝ)) := by
+          (d := Module.finrank ℝ E) k 0 D.uChart x) = (fun _ => (0 : ℝ)) := by
     funext x
     have h_dq : DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k 0 D.u_chart x = 0 := by
+        (d := Module.finrank ℝ E) k 0 D.uChart x = 0 := by
       simp [DifferentialGeometry.Analysis.Sobolev.diffQuot]
     rw [h_dq]; ring
   rw [h_eq]
@@ -164,17 +164,17 @@ private lemma c_term_chartBilinear_zero_h
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (K_0 : Set EuclN) (η : EuclN → ℝ)
     (k : Fin (Module.finrank ℝ E)) :
-    c_term_chartBilinear (I := I) (M := M) D K_0 η k 0 = 0 := by
-  unfold c_term_chartBilinear
+    cTermChartBilinear (I := I) (M := M) D K_0 η k 0 = 0 := by
+  unfold cTermChartBilinear
   have h_eq : (fun x : EuclN =>
-      densityOnEuclid (I := I) g α x * D.u_chart x *
+      densityOnEuclid (I := I) g α x * D.uChart x *
         standardNirenbergTest
-          (d := Module.finrank ℝ E) k 0 η D.u_chart x) = (fun _ => (0 : ℝ)) := by
+          (d := Module.finrank ℝ E) k 0 η D.uChart x) = (fun _ => (0 : ℝ)) := by
     funext x
     have h_test : standardNirenbergTest
-        (d := Module.finrank ℝ E) k 0 η D.u_chart x = 0 := by
+        (d := Module.finrank ℝ E) k 0 η D.uChart x = 0 := by
       have := standardNirenbergTest_zero_h
-        (d := Module.finrank ℝ E) k η D.u_chart
+        (d := Module.finrank ℝ E) k η D.uChart
       exact congrArg (fun f : EuclN → ℝ => f x) this
     rw [h_test]; ring
   rw [h_eq]
@@ -187,17 +187,17 @@ private lemma f_term_chartBilinear_zero_h
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (K_0 : Set EuclN) (η : EuclN → ℝ)
     (k : Fin (Module.finrank ℝ E)) :
-    f_term_chartBilinear (I := I) (M := M) D K_0 η k 0 = 0 := by
-  unfold f_term_chartBilinear
+    fTermChartBilinear (I := I) (M := M) D K_0 η k 0 = 0 := by
+  unfold fTermChartBilinear
   have h_eq : (fun x : EuclN =>
-      densityOnEuclid (I := I) g α x * D.f_chart x *
+      densityOnEuclid (I := I) g α x * D.fChart x *
         standardNirenbergTest
-          (d := Module.finrank ℝ E) k 0 η D.u_chart x) = (fun _ => (0 : ℝ)) := by
+          (d := Module.finrank ℝ E) k 0 η D.uChart x) = (fun _ => (0 : ℝ)) := by
     funext x
     have h_test : standardNirenbergTest
-        (d := Module.finrank ℝ E) k 0 η D.u_chart x = 0 := by
+        (d := Module.finrank ℝ E) k 0 η D.uChart x = 0 := by
       have := standardNirenbergTest_zero_h
-        (d := Module.finrank ℝ E) k η D.u_chart
+        (d := Module.finrank ℝ E) k η D.uChart
       exact congrArg (fun f : EuclN → ℝ => f x) this
     rw [h_test]; ring
   rw [h_eq]
@@ -210,9 +210,9 @@ private lemma chartBilinear_substitution_identity_zero_h
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α)
     (K_0 : Set EuclN) (η : EuclN → ℝ)
     (k : Fin (Module.finrank ℝ E)) :
-    chartBilinear_LHS (I := I) (M := M) D K_0 η k 0 =
-    chartBilinear_RHS (I := I) (M := M) D K_0 η k 0 := by
-  unfold chartBilinear_LHS chartBilinear_RHS
+    chartBilinearLHS (I := I) (M := M) D K_0 η k 0 =
+    chartBilinearRHS (I := I) (M := M) D K_0 η k 0 := by
+  unfold chartBilinearLHS chartBilinearRHS
   rw [principalTerm_chartBilinear_zero_h, cross_1_term_chartBilinear_zero_h,
     cross_2_term_chartBilinear_zero_h, cross_3_term_chartBilinear_zero_h,
     f_term_chartBilinear_zero_h, c_term_chartBilinear_zero_h]
@@ -227,8 +227,8 @@ private lemma chartBilinear_substitution_identity_K_0_empty
     (η : EuclN → ℝ)
     (hη_supp_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E)) (h : ℝ) :
-    chartBilinear_LHS (I := I) (M := M) D K_0 η k h =
-    chartBilinear_RHS (I := I) (M := M) D K_0 η k h := by
+    chartBilinearLHS (I := I) (M := M) D K_0 η k h =
+    chartBilinearRHS (I := I) (M := M) D K_0 η k h := by
   classical
   have hη_zero : η = 0 := by
     have h_supp_empty : tsupport η = ∅ := by
@@ -240,15 +240,15 @@ private lemma chartBilinear_substitution_identity_K_0_empty
     rw [h_supp_empty] at hx_in_supp
     exact hx_in_supp
   have h_test_zero : standardNirenbergTest
-      (d := Module.finrank ℝ E) k h η D.u_chart = 0 := by
+      (d := Module.finrank ℝ E) k h η D.uChart = 0 := by
     rw [hη_zero]
     funext x
     unfold standardNirenbergTest
     simp [DifferentialGeometry.Analysis.Sobolev.diffQuot]
-  unfold chartBilinear_LHS chartBilinear_RHS
-  unfold principalTerm_chartBilinear cross_1_term_chartBilinear
-    cross_2_term_chartBilinear cross_3_term_chartBilinear
-    c_term_chartBilinear f_term_chartBilinear
+  unfold chartBilinearLHS chartBilinearRHS
+  unfold principalTermChartBilinear cross1TermChartBilinear
+    cross2TermChartBilinear cross3TermChartBilinear
+    cTermChartBilinear fTermChartBilinear
   rw [hK_0_empty]
   simp only [Measure.restrict_empty, integral_zero_measure, Finset.sum_const,
     Finset.card_univ, smul_zero, zero_add]
@@ -269,10 +269,10 @@ theorem chart_bilinear_substitution_identity_of_nonzero_nonempty
     (k : Fin (Module.finrank ℝ E)) {h : ℝ}
     (h_substitution_identity_holds :
       h ≠ 0 → K_0 ≠ ∅ →
-      chartBilinear_LHS (I := I) (M := M) D K_0 η k h =
-      chartBilinear_RHS (I := I) (M := M) D K_0 η k h) :
-    chartBilinear_LHS (I := I) (M := M) D K_0 η k h =
-    chartBilinear_RHS (I := I) (M := M) D K_0 η k h := by
+      chartBilinearLHS (I := I) (M := M) D K_0 η k h =
+      chartBilinearRHS (I := I) (M := M) D K_0 η k h) :
+    chartBilinearLHS (I := I) (M := M) D K_0 η k h =
+    chartBilinearRHS (I := I) (M := M) D K_0 η k h := by
   classical
   by_cases hh : h = 0
   · rw [hh]

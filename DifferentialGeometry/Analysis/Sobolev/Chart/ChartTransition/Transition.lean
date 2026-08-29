@@ -21,7 +21,6 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [IsManifold I ∞ M] in
 private lemma chartTransitionEuclid_comp_eq_id_on_overlap
-    [I.Boundaryless]
     (γ α : M) {y : EuclN}
     (hy : y ∈ chartOverlapEuclid (I := I) (M := M) γ α) :
     (fun z => chartTransitionEuclid (I := I) (M := M) α γ
@@ -95,7 +94,7 @@ private lemma chartTransitionEuclid_det_fderiv_ne_zero
           (chartTransitionEuclid (I := I) (M := M) γ α z)) y =
         ContinuousLinearMap.id ℝ EuclN := by
     rw [h_evt.fderiv_eq]
-    exact fderiv_id'
+    exact fderiv_fun_id
   have h_comp_eq :
       (fderiv ℝ (chartTransitionEuclid (I := I) (M := M) α γ)
           (chartTransitionEuclid (I := I) (M := M) γ α y)).comp
@@ -172,7 +171,6 @@ private lemma abs_det_fderiv_chartTransitionEuclid_continuousOn
   exact (h_cont_abs.comp h_cont_det).continuousOn.comp h_cont_fderiv (Set.mapsTo_univ _ _)
 
 private lemma chartTransitionEuclid_continuousOn_overlap
-    [I.Boundaryless]
     (γ α : M) :
     ContinuousOn (chartTransitionEuclid (I := I) (M := M) γ α)
       (chartOverlapEuclid (I := I) (M := M) γ α) :=
@@ -478,11 +476,11 @@ theorem chartTransition_smoothDiffeoBoundedAtOrder
       invFun_bijOn := hBijOn_T_αγ,
       left_inv := hLeft_inv,
       right_inv := hRight_inv,
-      deriv_bound := B,
+      derivBound := B,
       deriv_bound_pos := hB_pos,
       iter_deriv_bounded_at := hB_γ_bound,
       iter_deriv_invFun_bounded_at := hB_α_bound,
-      jacobian_lower_bound := 1,
+      jacobianLowerBound := 1,
       jacobian_lower_bound_pos := one_pos,
       jacobian_lower := ?_
     }, ?_⟩
@@ -529,11 +527,11 @@ theorem chartTransition_smoothDiffeoBoundedAtOrder
       invFun_bijOn := hBijOn_T_αγ,
       left_inv := hLeft_inv,
       right_inv := hRight_inv,
-      deriv_bound := B,
+      derivBound := B,
       deriv_bound_pos := hB_pos,
       iter_deriv_bounded_at := hB_γ_bound,
       iter_deriv_invFun_bounded_at := hB_α_bound,
-      jacobian_lower_bound := J,
+      jacobianLowerBound := J,
       jacobian_lower_bound_pos := hJ_pos,
       jacobian_lower := hJ_lower_T_γα
     }, ?_⟩

@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Trace
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -437,8 +438,8 @@ private theorem ricci_mdiffAt_finset_sum
   classical
   induction t using Finset.induction_on with
   | empty =>
-      simpa using (mdifferentiableAt_const
-        (I := I) (I' := 𝓘(Real, Real)) (c := (0 : Real)) (x := x))
+      change MDifferentiableAt I 𝓘(Real, Real) (fun _ : M => (0 : Real)) x
+      exact mdifferentiableAt_const
   | insert i t hit ih =>
       have hfi : MDifferentiableAt I 𝓘(Real, Real) (f i) x := hf i (by simp [hit])
       have hft : ∀ j ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f j) x := by
@@ -450,12 +451,12 @@ private theorem ricci_mdiffAt_finset_sum
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I 1 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
-theorem ricci_extDerivFun_finset_sum
+theorem ricci_mvfderiv_finset_sum
     {ι : Type*} (t : Finset ι) (f : ι -> M -> Real)
     {x : M} (v : TangentSpace I x)
     (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f i) x) :
-    extDerivFun (I := I) (t.sum f) x v =
-      t.sum (fun i => extDerivFun (I := I) (f i) x v) := by
+    mvfderiv (I := I) (t.sum f) x v =
+      t.sum (fun i => mvfderiv (I := I) (f i) x v) := by
   classical
   induction t using Finset.induction_on with
   | empty =>
@@ -468,88 +469,78 @@ theorem ricci_extDerivFun_finset_sum
       have hsum : MDifferentiableAt I 𝓘(Real, Real) (t.sum f) x := by
         exact ricci_mdiffAt_finset_sum (I := I) t f hft
       calc
-        extDerivFun (I := I) ((insert i t).sum f) x v
-            = extDerivFun (I := I) (f i + t.sum f) x v := by
+        mvfderiv (I := I) ((insert i t).sum f) x v
+            = mvfderiv (I := I) (f i + t.sum f) x v := by
               simp [Finset.sum_insert, hit]
-        _ = extDerivFun (I := I) (f i) x v +
-              extDerivFun (I := I) (t.sum f) x v := by
-              have hadd := congr($(extDerivFun_add
+        _ = mvfderiv (I := I) (f i) x v +
+              mvfderiv (I := I) (t.sum f) x v := by
+              have hadd := congr($(mvfderiv_add
                 (I := I) (g := f i) (g' := t.sum f)
                 (x := x) hfi hsum) v)
               simpa [Pi.add_apply] using hadd
-        _ = (insert i t).sum (fun j => extDerivFun (I := I) (f j) x v) := by
+        _ = (insert i t).sum (fun j => mvfderiv (I := I) (f j) x v) := by
               rw [ih hft]
               simp [Finset.sum_insert, hit]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I 1 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
-theorem ricci_extDerivFun_mul
+theorem ricci_mvfderiv_mul
     {f g : M -> Real} {x : M} (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
     (hg : MDifferentiableAt I 𝓘(Real, Real) g x) :
-    extDerivFun (I := I) (fun y : M => f y * g y) x v =
-      f x * extDerivFun (I := I) g x v +
-        extDerivFun (I := I) f x v * g x := by
-  change extDerivFun (I := I) (f • g) x v =
-      f x * extDerivFun (I := I) g x v +
-        extDerivFun (I := I) f x v * g x
-  have hprod := fromTangentSpace_mfderiv_smul_apply
-    (I := I) (f := f) (g := g) hf hg v
-  simpa [extDerivFun, Pi.smul_apply, smul_eq_mul, mul_comm, mul_left_comm, mul_assoc]
-    using hprod
+    mvfderiv (I := I) (fun y : M => f y * g y) x v =
+      f x * mvfderiv (I := I) g x v +
+        mvfderiv (I := I) f x v * g x := by
+  change mvfderiv (I := I) (f * g) x v =
+      f x * mvfderiv (I := I) g x v +
+        mvfderiv (I := I) f x v * g x
+  have hprod := congrArg (fun L => L v) (mvfderiv_mul (I := I) hf hg)
+  simpa only [add_apply, smul_apply, smul_eq_mul, mul_comm] using hprod
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I 1 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
-theorem ricci_extDerivFun_add
+theorem ricci_mvfderiv_add
     {f g : M -> Real} {x : M} (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
     (hg : MDifferentiableAt I 𝓘(Real, Real) g x) :
-    extDerivFun (I := I) (fun y : M => f y + g y) x v =
-      extDerivFun (I := I) f x v + extDerivFun (I := I) g x v := by
-  have hadd := congr($(extDerivFun_add
+    mvfderiv (I := I) (fun y : M => f y + g y) x v =
+      mvfderiv (I := I) f x v + mvfderiv (I := I) g x v := by
+  change mvfderiv (I := I) (f + g) x v = _
+  have hadd := congr($(mvfderiv_add
     (I := I) (g := f) (g' := g) (x := x) hf hg) v)
-  simpa [Pi.add_apply] using hadd
+  exact hadd
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I 1 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
-theorem ricci_extDerivFun_neg
-    {f : M -> Real} {x : M} (v : TangentSpace I x)
-    (hf : MDifferentiableAt I 𝓘(Real, Real) f x) :
-    extDerivFun (I := I) (fun y : M => -f y) x v =
-      -extDerivFun (I := I) f x v := by
-  have hfun : (fun y : M => -f y) = ((fun _ : M => (-1 : Real)) • f) := by
-    ext y
-    simp
-  rw [hfun]
-  have hprod := fromTangentSpace_mfderiv_smul_apply
-    (I := I) (f := fun _ : M => (-1 : Real)) (g := f)
-    (mdifferentiableAt_const (I := I) (I' := 𝓘(Real, Real)) (c := (-1 : Real)) (x := x))
-    hf v
-  simpa [extDerivFun, Pi.smul_apply, smul_eq_mul] using hprod
+theorem ricci_mvfderiv_neg
+    {f : M -> Real} {x : M} (v : TangentSpace I x) :
+    mvfderiv (I := I) (fun y : M => -f y) x v =
+      -mvfderiv (I := I) f x v := by
+  change mvfderiv (I := I) (-f) x v = _
+  have hneg := congrArg (fun L => L v) (mvfderiv_neg (I := I) (g := f) (x := x))
+  exact hneg
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I 1 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
-theorem ricci_extDerivFun_sub
+theorem ricci_mvfderiv_sub
     {f g : M -> Real} {x : M} (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
     (hg : MDifferentiableAt I 𝓘(Real, Real) g x) :
-    extDerivFun (I := I) (fun y : M => f y - g y) x v =
-      extDerivFun (I := I) f x v - extDerivFun (I := I) g x v := by
-  have hneg := ricci_extDerivFun_neg (I := I) (f := g) (x := x) v hg
-  have hadd := congr($(extDerivFun_add
-    (I := I) (g := f) (g' := fun y : M => -g y)
-    (x := x) hf hg.neg) v)
-  simpa [Pi.add_apply, sub_eq_add_neg, hneg] using hadd
+    mvfderiv (I := I) (fun y : M => f y - g y) x v =
+      mvfderiv (I := I) f x v - mvfderiv (I := I) g x v := by
+  change mvfderiv (I := I) (f - g) x v = _
+  have hsub := congrArg (fun L => L v) (mvfderiv_sub (I := I) hf hg)
+  exact hsub
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [IsManifold I 1 M] [CompleteSpace E]
     [SigmaCompactSpace M] [T2Space M] in
-theorem ricci_extDerivFun_congr_eventually
+theorem ricci_mvfderiv_congr_eventually
     {f g : M -> Real} {x : M} (v : TangentSpace I x)
     (h : f =ᶠ[nhds x] g) :
-    extDerivFun (I := I) f x v = extDerivFun (I := I) g x v := by
+    mvfderiv (I := I) f x v = mvfderiv (I := I) g x v := by
   have hmf := Filter.EventuallyEq.mfderiv_eq (I := I) (I' := 𝓘(Real, Real)) h
   have hx : f x = g x := h.eq_of_nhds
-  unfold extDerivFun
+  unfold mvfderiv
   rw [hmf, hx]
 
 omit [DecidableEq Idx] in
@@ -569,7 +560,7 @@ theorem contractedTrace13CovDeriv_eq_nabla2RicTrace
     (hginv_zero : ∀ k l : Idx,
       inverseMetricCovDerivCompInFrame (I := I) gInv
         (S.family.connection t) frame hframe t x d k l = 0) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => ∑ k : Idx, ∑ l : Idx,
           gInv t y k l * nablaRic t y k j l)
         x (frame d x) -
@@ -587,12 +578,12 @@ theorem contractedTrace13CovDeriv_eq_nabla2RicTrace
       (S.family.connection t) frame hframe x d low up
   let G : Idx -> Idx -> Real := fun k l => gInv t x k l
   let dG : Idx -> Idx -> Real := fun k l =>
-    extDerivFun (I := I) (fun y : M => gInv t y k l) x (frame d x)
+    mvfderiv (I := I) (fun y : M => gInv t y k l) x (frame d x)
   let N : Idx -> Idx -> Idx -> Real := fun a b c => nablaRic t x a b c
   let dN : Idx -> Idx -> Idx -> Real := fun a b c =>
-    extDerivFun (I := I) (fun y : M => nablaRic t y a b c) x (frame d x)
+    mvfderiv (I := I) (fun y : M => nablaRic t y a b c) x (frame d x)
   have hderiv :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => ∑ k : Idx, ∑ l : Idx,
             gInv t y k l * nablaRic t y k j l)
           x (frame d x) =
@@ -606,7 +597,7 @@ theorem contractedTrace13CovDeriv_eq_nabla2RicTrace
       ext y
       simp
     rw [hsumfun]
-    rw [ricci_extDerivFun_finset_sum (I := I)
+    rw [ricci_mvfderiv_finset_sum (I := I)
       (t := (Finset.univ : Finset Idx))
       (f := fun k y => ∑ l : Idx, gInv t y k l * nablaRic t y k j l)
       (x := x) (v := frame d x)]
@@ -618,12 +609,12 @@ theorem contractedTrace13CovDeriv_eq_nabla2RicTrace
         ext y
         simp
       rw [hsumfun_l]
-      rw [ricci_extDerivFun_finset_sum (I := I)
+      rw [ricci_mvfderiv_finset_sum (I := I)
         (t := (Finset.univ : Finset Idx))
         (f := fun l y => gInv t y k l * nablaRic t y k j l)
         (x := x) (v := frame d x)]
       · refine Finset.sum_congr rfl fun l _ => ?_
-        rw [ricci_extDerivFun_mul (I := I) (v := frame d x)
+        rw [ricci_mvfderiv_mul (I := I) (v := frame d x)
           (f := fun y : M => gInv t y k l)
           (g := fun y : M => nablaRic t y k j l)
           (hginv_mdiff k l) (hN_mdiff k j l)]
@@ -648,7 +639,7 @@ theorem contractedTrace13CovDeriv_eq_nabla2RicTrace
     have hz := hginv_zero k l
     simpa [covDInv, Γ, G, dG, inverseMetricCovDerivCompInFrame] using hz
   calc
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => ∑ k : Idx, ∑ l : Idx,
           gInv t y k l * nablaRic t y k j l)
         x (frame d x) -
@@ -689,7 +680,7 @@ theorem contractedTrace23CovDeriv_eq_nabla2RicTrace
     (hginv_zero : ∀ k l : Idx,
       inverseMetricCovDerivCompInFrame (I := I) gInv
         (S.family.connection t) frame hframe t x d k l = 0) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => ∑ k : Idx, ∑ l : Idx,
           gInv t y k l * nablaRic t y j k l)
         x (frame d x) -
@@ -707,12 +698,12 @@ theorem contractedTrace23CovDeriv_eq_nabla2RicTrace
       (S.family.connection t) frame hframe x d low up
   let G : Idx -> Idx -> Real := fun k l => gInv t x k l
   let dG : Idx -> Idx -> Real := fun k l =>
-    extDerivFun (I := I) (fun y : M => gInv t y k l) x (frame d x)
+    mvfderiv (I := I) (fun y : M => gInv t y k l) x (frame d x)
   let N : Idx -> Idx -> Idx -> Real := fun a b c => nablaRic t x a b c
   let dN : Idx -> Idx -> Idx -> Real := fun a b c =>
-    extDerivFun (I := I) (fun y : M => nablaRic t y a b c) x (frame d x)
+    mvfderiv (I := I) (fun y : M => nablaRic t y a b c) x (frame d x)
   have hderiv :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => ∑ k : Idx, ∑ l : Idx,
             gInv t y k l * nablaRic t y j k l)
           x (frame d x) =
@@ -726,7 +717,7 @@ theorem contractedTrace23CovDeriv_eq_nabla2RicTrace
       ext y
       simp
     rw [hsumfun]
-    rw [ricci_extDerivFun_finset_sum (I := I)
+    rw [ricci_mvfderiv_finset_sum (I := I)
       (t := (Finset.univ : Finset Idx))
       (f := fun k y => ∑ l : Idx, gInv t y k l * nablaRic t y j k l)
       (x := x) (v := frame d x)]
@@ -738,12 +729,12 @@ theorem contractedTrace23CovDeriv_eq_nabla2RicTrace
         ext y
         simp
       rw [hsumfun_l]
-      rw [ricci_extDerivFun_finset_sum (I := I)
+      rw [ricci_mvfderiv_finset_sum (I := I)
         (t := (Finset.univ : Finset Idx))
         (f := fun l y => gInv t y k l * nablaRic t y j k l)
         (x := x) (v := frame d x)]
       · refine Finset.sum_congr rfl fun l _ => ?_
-        rw [ricci_extDerivFun_mul (I := I) (v := frame d x)
+        rw [ricci_mvfderiv_mul (I := I) (v := frame d x)
           (f := fun y : M => gInv t y k l)
           (g := fun y : M => nablaRic t y j k l)
           (hginv_mdiff k l) (hN_mdiff j k l)]
@@ -768,7 +759,7 @@ theorem contractedTrace23CovDeriv_eq_nabla2RicTrace
     have hz := hginv_zero k l
     simpa [covDInv, Γ, G, dG, inverseMetricCovDerivCompInFrame] using hz
   calc
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => ∑ k : Idx, ∑ l : Idx,
           gInv t y k l * nablaRic t y j k l)
         x (frame d x) -
@@ -809,7 +800,7 @@ theorem contractedTraceBianchiCovDeriv_eq_nabla2RicTrace
     (hginv_zero : ∀ k l : Idx,
       inverseMetricCovDerivCompInFrame (I := I) gInv
         (S.family.connection t) frame hframe t x d k l = 0) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => ∑ k : Idx, ∑ l : Idx,
           gInv t y k l * nablaRic t y l k j)
         x (frame d x) -
@@ -827,14 +818,14 @@ theorem contractedTraceBianchiCovDeriv_eq_nabla2RicTrace
       (S.family.connection t) frame hframe x d low up
   let G : Idx -> Idx -> Real := fun k l => gInv t x k l
   let dG : Idx -> Idx -> Real := fun k l =>
-    extDerivFun (I := I) (fun y : M => gInv t y k l) x (frame d x)
+    mvfderiv (I := I) (fun y : M => gInv t y k l) x (frame d x)
   let N : Idx -> Idx -> Idx -> Real := fun a b c => nablaRic t x a b c
   let dN : Idx -> Idx -> Idx -> Real := fun a b c =>
-    extDerivFun (I := I) (fun y : M => nablaRic t y a b c) x (frame d x)
+    mvfderiv (I := I) (fun y : M => nablaRic t y a b c) x (frame d x)
   let B : Idx -> Idx -> Idx -> Real := fun a b c => N c b a
   let dB : Idx -> Idx -> Idx -> Real := fun a b c => dN c b a
   have hderiv :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M => ∑ k : Idx, ∑ l : Idx,
             gInv t y k l * nablaRic t y l k j)
           x (frame d x) =
@@ -848,7 +839,7 @@ theorem contractedTraceBianchiCovDeriv_eq_nabla2RicTrace
       ext y
       simp
     rw [hsumfun]
-    rw [ricci_extDerivFun_finset_sum (I := I)
+    rw [ricci_mvfderiv_finset_sum (I := I)
       (t := (Finset.univ : Finset Idx))
       (f := fun k y => ∑ l : Idx, gInv t y k l * nablaRic t y l k j)
       (x := x) (v := frame d x)]
@@ -860,12 +851,12 @@ theorem contractedTraceBianchiCovDeriv_eq_nabla2RicTrace
         ext y
         simp
       rw [hsumfun_l]
-      rw [ricci_extDerivFun_finset_sum (I := I)
+      rw [ricci_mvfderiv_finset_sum (I := I)
         (t := (Finset.univ : Finset Idx))
         (f := fun l y => gInv t y k l * nablaRic t y l k j)
         (x := x) (v := frame d x)]
       · refine Finset.sum_congr rfl fun l _ => ?_
-        rw [ricci_extDerivFun_mul (I := I) (v := frame d x)
+        rw [ricci_mvfderiv_mul (I := I) (v := frame d x)
           (f := fun y : M => gInv t y k l)
           (g := fun y : M => nablaRic t y l k j)
           (hginv_mdiff k l) (hN_mdiff l k j)]
@@ -890,7 +881,7 @@ theorem contractedTraceBianchiCovDeriv_eq_nabla2RicTrace
     have hz := hginv_zero k l
     simpa [covDInv, Γ, G, dG, inverseMetricCovDerivCompInFrame] using hz
   calc
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => ∑ k : Idx, ∑ l : Idx,
           gInv t y k l * nablaRic t y l k j)
         x (frame d x) -
@@ -942,8 +933,6 @@ theorem contractedTrace23_mdiffAt
     (t := (Finset.univ : Finset Idx))
     (f := fun k y => ∑ l : Idx, gInv t y k l * nablaRic t y j k l) ?_
   intro k _hk
-  change MDifferentiableAt I 𝓘(Real, Real)
-    (fun y : M => ∑ l : Idx, gInv t y k l * nablaRic t y j k l) x
   have hsumfun_l :
       (fun y : M => ∑ l : Idx, gInv t y k l * nablaRic t y j k l) =
         ((Finset.univ : Finset Idx).sum

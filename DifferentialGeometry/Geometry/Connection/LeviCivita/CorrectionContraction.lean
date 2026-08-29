@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.LeviCivita.LeviCivitaChartLocal
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import DifferentialGeometry.Geometry.Geodesic.Equation
+import DifferentialGeometry.Bundle.TangentSpace
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -83,44 +84,68 @@ theorem correction_eq_contr
 omit [NeZero (Module.finrank ℝ E)] in
 theorem const_cov_eq_contr
     (g : SmoothRiemannianMetric 𝓘(Real, E) E) (a z v w : E) :
-    (leviCivitaConnectionOfMetric (I := 𝓘(Real, E)) g
-        (fun _ : E ↦ w) z) v =
+    tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z
+        ((leviCivitaConnectionOfMetric (I := 𝓘(Real, E)) g
+          (fun p : E ↦
+            (tangentSpaceModelContinuousLinearEquiv
+              (I := 𝓘(Real, E)) p).symm w) z)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) z).symm v)) =
       chartChristoffelContraction (I := 𝓘(Real, E)) g a v w z := by
+  let W : (p : E) → TangentSpace 𝓘(Real, E) p := fun p ↦
+    (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) p).symm w
   have hzgood : z ∈ chartLeviCivitaGoodSet (I := 𝓘(Real, E)) a := by
-    rw [mem_chartLeviCivitaGoodSet_iff]
-    simp
+    rw [chartLeviCivitaGoodSet_eq_extChartAt_source,
+      extChartAt_source, chartAt_self_eq]
+    exact Set.mem_univ z
   have hfield :
-      (tangentConstAt (I := 𝓘(Real, E)) z w : E → E) = fun _ : E ↦ w := by
+      tangentConstAt (I := 𝓘(Real, E)) z
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) z).symm w) = W := by
     funext p
     unfold tangentConstAt TensorLieDeriv.tangentConstInChart
     rw [TangentBundle.symmL_trivializationAt_eq_core
-      (I := 𝓘(Real, E)) (b₀ := z) (b := p) (by simp)]
-    rw [TangentBundle.coordChange_model_space]
-    rfl
+      (I := 𝓘(Real, E)) (b₀ := z) (b := p) (by
+        rw [chartAt_self_eq]
+        exact Set.mem_univ p)]
+    rw [TangentBundle.coordChange_model_space,
+      TangentBundle.continuousLinearMapAt_model_space]
+    exact (tangentSpaceModelContinuousLinearEquiv
+      (I := 𝓘(Real, E)) p).symm_apply_apply w
   have hrepr :
-      chartE_section_repr (I := 𝓘(Real, E)) a (fun _ : E ↦ w) =
+      chartESectionRepr (I := 𝓘(Real, E)) a W =
         fun _ : E ↦ w := by
     funext p
     rw [chartE_section_repr_eq_trivToE]
-    change (trivializationAt E (TangentSpace 𝓘(Real, E)) a).continuousLinearMapAt
-      Real p w = w
-    rw [TangentBundle.continuousLinearMapAt_model_space]
-    rfl
+    unfold trivToE W
+    rw [
+      TangentBundle.continuousLinearMapAt_model_space]
+    exact (tangentSpaceModelContinuousLinearEquiv
+      (I := 𝓘(Real, E)) p).apply_symm_apply w
+  change tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z
+    ((LeviCivita (I := 𝓘(Real, E)) g).toFun W z
+      ((tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(Real, E)) z).symm v)) = _
   rw [← hfield]
-  change (LeviCivita (I := 𝓘(Real, E)) g).toFun
-      (tangentConstAt (I := 𝓘(Real, E)) z w) z v = _
   rw [LeviCivita_chart_apply (I := 𝓘(Real, E)) g a hzgood
-    (mdifferentiableAt_tangentConstAt_self (I := 𝓘(Real, E)) z w) v]
+    (mdifferentiableAt_tangentConstAt_self (I := 𝓘(Real, E)) z
+      ((tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(Real, E)) z).symm w))
+    ((tangentSpaceModelContinuousLinearEquiv
+      (I := 𝓘(Real, E)) z).symm v)]
   rw [hfield]
   rw [chartLeviCivita_apply (I := 𝓘(Real, E)) g a
-    (fun _ : E ↦ w) hzgood v]
+    W hzgood ((tangentSpaceModelContinuousLinearEquiv
+      (I := 𝓘(Real, E)) z).symm v)]
   rw [hrepr]
   rw [show ((fun _ : E ↦ w) ∘ (extChartAt 𝓘(Real, E) a).symm) =
     (fun _ : E ↦ w) from rfl]
-  rw [fderiv_const_apply, ContinuousLinearMap.zero_apply, zero_add]
+  rw [fderiv_const_apply, zero_apply, zero_add]
   rw [correction_eq_contr]
   simp only [trivFromE, trivToE, TangentBundle.symmL_model_space,
     TangentBundle.continuousLinearMapAt_model_space,
+    tangentSpaceModelContinuousLinearEquiv_apply,
+    tangentSpaceModelContinuousLinearEquiv_symm_apply,
     extChartAt_self_apply, modelWithCornersSelf_coe, id_eq]
   change chartChristoffelContraction (I := 𝓘(Real, E)) g a v w z = _
   rfl

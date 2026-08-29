@@ -2,13 +2,12 @@ import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.Geometry.Manifold.ContMDiffMap
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorField.LieBracket
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import Mathlib.Analysis.Calculus.VectorField
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Topology Manifold ContDiff
 
@@ -20,7 +19,7 @@ noncomputable abbrev vderiv
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     (f : M -> 𝕜) (X : (x : M) -> TangentSpace I x) : M -> 𝕜 :=
-  fun x => extDerivFun (I := I) f x (X x)
+  fun x => mvfderiv (I := I) f x (X x)
 
 @[simp] theorem vderiv_apply
     {𝕜 : Type*} [NontriviallyNormedField 𝕜]
@@ -28,15 +27,13 @@ noncomputable abbrev vderiv
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners 𝕜 E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     (f : M -> 𝕜) (X : (x : M) -> TangentSpace I x) (x : M) :
-    vderiv (I := I) f X x = extDerivFun (I := I) f x (X x) := by
+    vderiv (I := I) f X x = mvfderiv (I := I) f x (X x) := by
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem mfderiv_eq_fderivWithin_chart_comp
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-    [FiniteDimensional Real E] [CompleteSpace E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I 1 M]
     (f : M -> Real) (x : M) (z : M) (hz : z ∈ (extChartAt I x).source)
     (hg_diffWithin : DifferentiableWithinAt Real (f ∘ (extChartAt I x).symm)
@@ -75,12 +72,11 @@ private theorem mfderiv_eq_fderivWithin_chart_comp
   rw [mfderivWithin_eq_fderivWithin] at hchain
   exact hchain
 
-set_option backward.isDefEq.respectTransparency false in
 theorem vderiv_mlieBracket
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-    [FiniteDimensional Real E] [CompleteSpace E]
+    [CompleteSpace E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I 1 M] [IsManifold I 2 M]
     (X Y : (p : M) -> TangentSpace I p) (f : M -> Real) (x : M)
     (hX : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% X) x)
@@ -89,27 +85,39 @@ theorem vderiv_mlieBracket
     vderiv (I := I) f (VectorField.mlieBracket I X Y) x =
       vderiv (I := I) (vderiv (I := I) f Y) X x -
         vderiv (I := I) (vderiv (I := I) f X) Y x := by
-  simp only [vderiv, extDerivFun, ContinuousLinearMap.comp_apply,
-    ContinuousLinearEquiv.coe_coe]
-  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk,
-    LinearEquiv.coe_mk]
+  change
+    mvfderiv (I := I) f x (VectorField.mlieBracket I X Y x) =
+      mvfderiv (I := I) (vderiv (I := I) f Y) x (X x) -
+        mvfderiv (I := I) (vderiv (I := I) f X) x (Y x)
   let φ := extChartAt I x
   let y₀ : E := φ x
   let s : Set E := Set.range I
   let g : E -> Real := f ∘ φ.symm
   let V' : E -> E := VectorField.mpullbackWithin 𝓘(Real, E) I φ.symm X s
   let W' : E -> E := VectorField.mpullbackWithin 𝓘(Real, E) I φ.symm Y s
-  letI : NormedAddCommGroup (TangentSpace I x) := by
+  let : NormedAddCommGroup (TangentSpace I x) := by
     change NormedAddCommGroup E
     infer_instance
-  letI : NormedSpace Real (TangentSpace I x) := by
+  let : NormedSpace Real (TangentSpace I x) := by
     change NormedSpace Real E
     infer_instance
-  letI : NormedAddCommGroup (TangentSpace 𝓘(Real, E) y₀) := by
+  let : ∀ y : E, NormedAddCommGroup (TangentSpace 𝓘(Real, E) y) := fun _ => by
     change NormedAddCommGroup E
     infer_instance
-  letI : NormedSpace Real (TangentSpace 𝓘(Real, E) y₀) := by
+  let : ∀ y : E, Module Real (TangentSpace 𝓘(Real, E) y) := fun _ => by
+    change Module Real E
+    infer_instance
+  let : ∀ y : E, NormedSpace Real (TangentSpace 𝓘(Real, E) y) := fun _ => by
     change NormedSpace Real E
+    infer_instance
+  let : ∀ r : Real, NormedAddCommGroup (TangentSpace 𝓘(Real, Real) r) := fun _ => by
+    change NormedAddCommGroup Real
+    infer_instance
+  let : ∀ r : Real, Module Real (TangentSpace 𝓘(Real, Real) r) := fun _ => by
+    change Module Real Real
+    infer_instance
+  let : ∀ r : Real, NormedSpace Real (TangentSpace 𝓘(Real, Real) r) := fun _ => by
+    change NormedSpace Real Real
     infer_instance
   have hxmem : x ∈ φ.source := mem_extChartAt_source (I := I) x
   have hy₀tgt : y₀ ∈ φ.target := φ.map_source hxmem
@@ -127,28 +135,64 @@ theorem vderiv_mlieBracket
       (1 : WithTop ℕ∞) + 1 ≤ (minSmoothness Real 2 : WithTop ℕ∞) := by
     rw [hmin]; norm_num
   have h_two_le : minSmoothness Real 2 ≤ (minSmoothness Real 2 : WithTop ℕ∞) := le_rfl
-  have mfderiv_eq :
+  have mvfderiv_eq :
       ∀ (h : M -> Real), MDifferentiableAt I 𝓘(Real, Real) h x ->
-        mfderiv I 𝓘(Real, Real) h x =
-          fderivWithin Real (h ∘ φ.symm) s y₀ := by
-    intro h hh
-    simp only [mfderiv, if_pos hh]
-    congr 1
+        ∀ v : TangentSpace I x,
+          mvfderiv (I := I) h x v =
+            fderivWithin Real (h ∘ φ.symm) s y₀ (show E from v) := by
+    intro h hh v
+    have hh_chart : DifferentiableWithinAt Real (h ∘ φ.symm) s y₀ := by
+      have hh_model :=
+        (mdifferentiableAt_iff_source_of_mem_source
+          (I := I) (I' := 𝓘(Real, Real)) (f := h)
+          (x := x) (x' := x) (mem_chart_source H x)).mp hh
+      have hh_model' :
+          MDifferentiableWithinAt 𝓘(Real, E) 𝓘(Real, Real)
+            (h ∘ φ.symm) s y₀ := by
+        simpa [φ, s, y₀] using hh_model
+      exact hh_model'.differentiableWithinAt
+    have hchain :=
+      mfderiv_eq_fderivWithin_chart_comp h x x hxmem hh_chart
+    have happ := congrArg (fun L => L v) hchain
+    erw [ContinuousLinearMap.comp_apply, mfderiv_extChartAt_self (I := I)] at happ
+    have hid :
+        (show E from (ContinuousLinearMap.id Real (TangentSpace I x)) v) =
+          (show E from v) :=
+      congrArg (fun w : TangentSpace I x => (show E from w))
+        (ContinuousLinearMap.id_apply (R₁ := Real) v)
+    let D := fderivWithin Real (h ∘ (extChartAt I x).symm) (Set.range I)
+      ((extChartAt I x) x)
+    have hfd := congrArg D hid
+    have hscalar := congrArg
+      (NormedSpace.fromTangentSpace (𝕜 := Real) (h x)) happ
+    have hright := congrArg
+      (NormedSpace.fromTangentSpace (𝕜 := Real) (h x)) hfd
+    have hresult := hscalar.trans hright
+    have hfrom :
+        NormedSpace.fromTangentSpace (𝕜 := Real) (h x)
+            (show TangentSpace 𝓘(Real, Real) (h x) from D (show E from v)) =
+          D (show E from v) := by
+      rfl
+    have hfinal := hresult.trans hfrom
+    simpa [mvfderiv, D, φ, s, y₀] using hfinal
   have hf_diff : MDifferentiableAt I 𝓘(Real, Real) f x :=
     hf.mdifferentiableAt hn_ne_zero
-  rw [mfderiv_eq f hf_diff]
+  rw [mvfderiv_eq f hf_diff]
   have bracket_eq :
-      VectorField.mlieBracket I X Y x =
-        VectorField.lieBracketWithin Real V' W' s y₀ := by
+      (VectorField.mlieBracket I X Y x : E) =
+        VectorField.lieBracketWithin (E := E) Real V' W' s y₀ := by
     have h1 : VectorField.mlieBracket I X Y x =
         (mfderiv I 𝓘(Real, E) φ x).inverse
-          (VectorField.lieBracketWithin Real V' W'
+          (VectorField.lieBracketWithin (E := E) Real V' W'
             (φ.symm ⁻¹' Set.univ ∩ s) y₀) := by
       exact (VectorField.mlieBracketWithin_apply (I := I)
         (V := X) (W := Y) (s := Set.univ) (x₀ := x))
-    rw [h1, mfderiv_extChartAt_self (I := I)]
-    erw [ContinuousLinearMap.inverse_id, ContinuousLinearMap.id_apply]
+    rw [h1]
+    apply (isInvertible_mfderiv_extChartAt (I := I) hxmem).inverse_apply_eq.mpr
+    rw [mfderiv_extChartAt_self (I := I)]
+    erw [ContinuousLinearMap.id_apply (R₁ := Real)]
     simp only [Set.preimage_univ, Set.univ_inter]
+    rfl
   rw [bracket_eq]
   have hV'_y₀ : V' y₀ = X x := by
     simp only [V', VectorField.mpullbackWithin_apply, y₀]
@@ -159,7 +203,9 @@ theorem vderiv_mlieBracket
     rw [φ.left_inv hxmem]
     exact mfderivWithin_extChartAt_symm_inverse_apply (I := I) (x := x) (Y x)
   have hg_smooth : ContDiffWithinAt Real (minSmoothness Real 2) g s y₀ := by
-    simpa [g, s, φ, y₀] using (contMDiffAt_iff.mp hf).2
+    have hg_model := (contMDiffAt_iff.mp hf).2
+    rw [extChartAt_self_eq] at hg_model
+    simpa [g, s, φ, y₀] using hg_model
   have hX_mdiff : MDifferentiableWithinAt I (I.prod 𝓘(Real, E))
       (fun x => (X x : TangentBundle I M)) Set.univ x := by
     exact (hX.mdifferentiableAt hn_ne_zero).mdifferentiableWithinAt
@@ -168,10 +214,10 @@ theorem vderiv_mlieBracket
     exact (hY.mdifferentiableAt hn_ne_zero).mdifferentiableWithinAt
   have hV'_diff : DifferentiableWithinAt Real V' s y₀ := by
     have h := hX_mdiff.differentiableWithinAt_mpullbackWithin_vectorField (I := I)
-    simpa [V', s, y₀] using h
+    simpa [V', s, y₀] using! h
   have hW'_diff : DifferentiableWithinAt Real W' s y₀ := by
     have h := hY_mdiff.differentiableWithinAt_mpullbackWithin_vectorField (I := I)
-    simpa [W', s, y₀] using h
+    simpa [W', s, y₀] using! h
   have hg_event :
       ∀ᶠ y in 𝓝[s] y₀,
         ContDiffWithinAt Real (minSmoothness Real 2) g s y := by
@@ -191,12 +237,8 @@ theorem vderiv_mlieBracket
     exact ContinuousLinearMap.inverse_eq
       (mfderivWithin_extChartAt_symm_comp_mfderiv_extChartAt (I := I) hy)
       (mfderiv_extChartAt_comp_mfderivWithin_extChartAt_symm (I := I) hy)
-  have W'_eq : ∀ y ∈ φ.target,
-      W' y = mfderiv I 𝓘(Real, E) φ (φ.symm y) (Y (φ.symm y)) := pull_eq Y
-  have V'_eq : ∀ y ∈ φ.target,
-      V' y = mfderiv I 𝓘(Real, E) φ (φ.symm y) (X (φ.symm y)) := pull_eq X
   have hZf_eq : ∀ Z : (p : M) -> TangentSpace I p,
-      ((fun p : M => mfderiv I 𝓘(Real, Real) f p (Z p)) ∘ φ.symm)
+      ((fun p : M => mvfderiv (I := I) f p (Z p)) ∘ φ.symm)
         =ᶠ[𝓝[s] y₀] (fun y => fderivWithin Real g s y
           (VectorField.mpullbackWithin 𝓘(Real, E) I φ.symm Z s y)) := by
     intro Z
@@ -207,33 +249,20 @@ theorem vderiv_mlieBracket
         DifferentiableWithinAt Real g s (φ (φ.symm y)) := by
       simpa [φ.right_inv hy] using hgy.differentiableWithinAt hn_ne_zero
     have h1 := mfderiv_fderivWithin_chain (φ.symm y) hy_src hgy_diff
-    have h2 : mfderiv I 𝓘(Real, Real) f (φ.symm y) (Z (φ.symm y)) =
+    have h2raw := congrArg (fun L => L (Z (φ.symm y))) h1
+    erw [ContinuousLinearMap.comp_apply] at h2raw
+    have h2 : mvfderiv (I := I) f (φ.symm y) (Z (φ.symm y)) =
         fderivWithin Real g s (φ (φ.symm y))
           (mfderiv I 𝓘(Real, E) φ (φ.symm y) (Z (φ.symm y))) := by
-      rw [h1]
-      rfl
+      simpa [mvfderiv, NormedSpace.fromTangentSpace] using! h2raw
     simp only [Function.comp_def]
     rw [h2, φ.right_inv hy]
     congr 1
     exact (pull_eq Z y hy).symm
-  have hYf_eq : ((fun p : M => mfderiv I 𝓘(Real, Real) f p (Y p)) ∘ φ.symm)
-      =ᶠ[𝓝[s] y₀] (fun y => fderivWithin Real g s y (W' y)) := hZf_eq Y
-  have hXf_eq : ((fun p : M => mfderiv I 𝓘(Real, Real) f p (X p)) ∘ φ.symm)
-      =ᶠ[𝓝[s] y₀] (fun y => fderivWithin Real g s y (V' y)) := hZf_eq X
-  have hZf_eq_v : ∀ (Z : (p : M) -> TangentSpace I p) (P : E -> E),
-      ((fun p : M => mfderiv I 𝓘(Real, Real) f p (Z p)) ∘ φ.symm)
-          =ᶠ[𝓝[s] y₀] (fun y => fderivWithin Real g s y (P y)) ->
-      ((vderiv (I := I) f Z) ∘ φ.symm)
-          =ᶠ[𝓝[s] y₀] (fun y => fderivWithin Real g s y (P y)) := by
-    intro Z P hZ
-    filter_upwards [hZ] with y hy
-    simpa only [vderiv, extDerivFun, NormedSpace.fromTangentSpace,
-      ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
-      ContinuousLinearEquiv.coe_mk, LinearEquiv.coe_mk] using hy
   have hYf_eq_v : ((vderiv (I := I) f Y) ∘ φ.symm)
-      =ᶠ[𝓝[s] y₀] (fun y => fderivWithin Real g s y (W' y)) := hZf_eq_v Y W' hYf_eq
+      =ᶠ[𝓝[s] y₀] (fun y => fderivWithin Real g s y (W' y)) := hZf_eq Y
   have hXf_eq_v : ((vderiv (I := I) f X) ∘ φ.symm)
-      =ᶠ[𝓝[s] y₀] (fun y => fderivWithin Real g s y (V' y)) := hZf_eq_v X V' hXf_eq
+      =ᶠ[𝓝[s] y₀] (fun y => fderivWithin Real g s y (V' y)) := hZf_eq X
   have hfd_diff : DifferentiableWithinAt Real (fderivWithin Real g s) s y₀ :=
     (hg_smooth.fderivWithin_right huniq h_one_add_le hy₀s).differentiableWithinAt
       (by norm_num : (1 : WithTop ℕ∞) ≠ 0)
@@ -266,7 +295,7 @@ theorem vderiv_mlieBracket
       (vderiv (I := I) f Y) x := hZf_diff Y hYf_chart_diff
   have hXf_diff : MDifferentiableAt I 𝓘(Real, Real)
       (vderiv (I := I) f X) x := hZf_diff X hXf_chart_diff
-  rw [mfderiv_eq _ hYf_diff, mfderiv_eq _ hXf_diff]
+  rw [mvfderiv_eq _ hYf_diff, mvfderiv_eq _ hXf_diff]
   have hYf_fd :
       fderivWithin Real
           ((vderiv (I := I) f Y) ∘ φ.symm)
@@ -285,21 +314,21 @@ theorem vderiv_mlieBracket
   rw [hYf_fd, hXf_fd]
   exact hmain
 
-theorem extDerivFun_apply_mlieBracket
+theorem mvfderiv_apply_mlieBracket
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-    [FiniteDimensional Real E] [CompleteSpace E]
+    [CompleteSpace E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I 1 M] [IsManifold I 2 M]
     (X Y : (p : M) -> TangentSpace I p) (f : M -> Real) (x : M)
     (hX : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% X) x)
     (hY : ContMDiffAt I (I.prod 𝓘(Real, E)) (minSmoothness Real 2) (T% Y) x)
     (hf : ContMDiffAt I 𝓘(Real, Real) (minSmoothness Real 2) f x) :
-    extDerivFun (I := I) f x (VectorField.mlieBracket I X Y x) =
-      extDerivFun (I := I)
-          (fun y : M => extDerivFun (I := I) f y (Y y)) x (X x) -
-        extDerivFun (I := I)
-          (fun y : M => extDerivFun (I := I) f y (X y)) x (Y x) := by
+    mvfderiv (I := I) f x (VectorField.mlieBracket I X Y x) =
+      mvfderiv (I := I)
+          (fun y : M => mvfderiv (I := I) f y (Y y)) x (X x) -
+        mvfderiv (I := I)
+          (fun y : M => mvfderiv (I := I) f y (X y)) x (Y x) := by
   exact vderiv_mlieBracket (I := I) X Y f x hX hY hf
 
 theorem contMDiff_partial_deriv_fst_gen
@@ -309,12 +338,6 @@ theorem contMDiff_partial_deriv_fst_gen
     (F : C^∞⟮𝓘(ℝ, ℝ).prod I, ℝ × M; ℝ⟯) :
     ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M => deriv (fun t => F (t, p.2)) p.1) := by
-  have hrw : (fun p : ℝ × M => deriv (fun t => F (t, p.2)) p.1) =
-      fun p : ℝ × M => (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun t => F (t, p.2)) p.1) (1 : ℝ) := by
-    funext p
-    rw [mfderiv_eq_fderiv]
-    exact (fderiv_apply_one_eq_deriv (f := fun t => F (t, p.2)) (x := p.1)).symm
-  rw [hrw]
   rw [contMDiff_infty]
   intro n p₀
   have harg : ContMDiff ((𝓘(ℝ, ℝ).prod I).prod 𝓘(ℝ, ℝ)) (𝓘(ℝ, ℝ).prod I) ∞
@@ -337,7 +360,7 @@ theorem contMDiff_partial_deriv_fst_gen
       contMDiffAt_id
       contMDiffAt_const
       le_rfl
-  simpa [inTangentCoordinates_model_space] using h_apply
+  simpa [inTangentCoordinates_model_space] using! h_apply
 
 theorem timeDeriv_smoothAt
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -350,15 +373,6 @@ theorem timeDeriv_smoothAt
     ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
       (modelWithCornersSelf Real Real) m
       (fun p : Real × M => deriv (fun t => F (t, p.2)) p.1) p0 := by
-  have hrw :
-      (fun p : Real × M => deriv (fun t => F (t, p.2)) p.1) =
-        fun p : Real × M =>
-          (mfderiv (modelWithCornersSelf Real Real)
-            (modelWithCornersSelf Real Real) (fun t => F (t, p.2)) p.1) (1 : Real) := by
-    funext p
-    rw [mfderiv_eq_fderiv]
-    exact (fderiv_apply_one_eq_deriv (f := fun t => F (t, p.2)) (x := p.1)).symm
-  rw [hrw]
   have harg :
       ContMDiffAt
         (((modelWithCornersSelf Real Real).prod I).prod
@@ -383,44 +397,40 @@ theorem timeDeriv_smoothAt
       (g₂ := fun _ : Real × M => (1 : Real))
       (x₀ := p0) (m := m) (n := n)
       hF' contMDiffAt_fst contMDiffAt_id contMDiffAt_const hmn
-  simpa [inTangentCoordinates_model_space] using h_apply
+  simpa [inTangentCoordinates_model_space] using! h_apply
 
-theorem extDerivFun_const_mul
+theorem mvfderiv_const_mul
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     (c : ℝ) {f : M -> ℝ} {x : M}
     (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x) :
-    extDerivFun (I := I) (fun y : M => c * f y) x =
-      c • extDerivFun (I := I) f x := by
-  change extDerivFun (I := I) (c • f) x =
-    c • extDerivFun (I := I) f x
-  ext v
-  have hmul := fromTangentSpace_mfderiv_smul_apply
-    (I := I) (f := fun _ : M => c) (g := f)
-    (by exact mdifferentiableAt_const (c := c)) hf v
-  simpa [extDerivFun] using hmul
+    mvfderiv (I := I) (fun y : M => c * f y) x =
+      c • mvfderiv (I := I) f x := by
+  have hfun : (fun y : M => c * f y) = (fun _ : M => c) * f := by
+    ext y
+    rfl
+  rw [hfun]
+  have h := mvfderiv_smul (I := I) (a := fun _ : M => c) (g := f)
+    (by exact mdifferentiableAt_const (c := c)) hf
+  rw [mvfderiv_const] at h
+  simpa using h
 
-theorem extDerivFun_mul_at
+theorem mvfderiv_mul_at
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     {f g : M -> ℝ} {x : M} (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x)
     (hg : MDifferentiableAt I 𝓘(ℝ, ℝ) g x) :
-    extDerivFun (I := I) (fun y : M => f y * g y) x v =
-      f x * extDerivFun (I := I) g x v + g x * extDerivFun (I := I) f x v := by
+    mvfderiv (I := I) (fun y : M => f y * g y) x v =
+      f x * mvfderiv (I := I) g x v + g x * mvfderiv (I := I) f x v := by
   have hsmul : (fun y : M => f y * g y) = (f • g) := by
     funext y; simp [smul_eq_mul]
   rw [hsmul]
-  have hmul := fromTangentSpace_mfderiv_smul_apply
-    (I := I) (f := f) (g := g) hf hg v
-  rw [show extDerivFun (I := I) (f • g) x v =
-        f x * extDerivFun (I := I) g x v + extDerivFun (I := I) f x v * g x from by
-      simpa [extDerivFun, smul_eq_mul] using hmul]
-  ring
+  simpa [smul_eq_mul] using congr($(mvfderiv_mul (I := I) hf hg) v)
 
-theorem extDerivFun_finset_sum_mul_at
+theorem mvfderiv_finset_sum_mul_at
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -428,10 +438,10 @@ theorem extDerivFun_finset_sum_mul_at
     {x : M} (v : TangentSpace I x)
     (hU : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (U i) x)
     (hB : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (B i) x) :
-    extDerivFun (I := I) (fun y : M => ∑ i ∈ t, U i y * B i y) x v =
+    mvfderiv (I := I) (fun y : M => ∑ i ∈ t, U i y * B i y) x v =
       ∑ i ∈ t,
-        (U i x * extDerivFun (I := I) (B i) x v +
-          B i x * extDerivFun (I := I) (U i) x v) := by
+        (U i x * mvfderiv (I := I) (B i) x v +
+          B i x * mvfderiv (I := I) (U i) x v) := by
   classical
   have hsumdiff :
       ∀ (s : Finset ι), (∀ i ∈ s, MDifferentiableAt I 𝓘(ℝ, ℝ) (U i) x) →
@@ -454,7 +464,7 @@ theorem extDerivFun_finset_sum_mul_at
         rw [heqfun]
         exact (hUa.mul hBa).add htail
   induction t using Finset.induction_on with
-  | empty => simp
+  | empty => simp [mvfderiv_const]
   | insert a t hat ih =>
       have hUa : MDifferentiableAt I 𝓘(ℝ, ℝ) (U a) x := hU a (by simp)
       have hBa : MDifferentiableAt I 𝓘(ℝ, ℝ) (B a) x := hB a (by simp)
@@ -475,29 +485,29 @@ theorem extDerivFun_finset_sum_mul_at
           (fun y : M => ∑ i ∈ t, U i y * B i y) x :=
         hsumdiff t hUt hBt
       rw [hsplit]
-      have hadd := congr($(extDerivFun_add (I := I)
+      have hadd := congr($(mvfderiv_add (I := I)
         (g := fun y : M => U a y * B a y)
         (g' := fun y : M => ∑ i ∈ t, U i y * B i y)
         (x := x) hsummand_diff hsumtail_diff) v)
-      rw [show (extDerivFun (I := I)
+      rw [show (mvfderiv (I := I)
             ((fun y : M => U a y * B a y) +
               fun y : M => ∑ i ∈ t, U i y * B i y) x) v =
-          (extDerivFun (I := I) (fun y : M => U a y * B a y) x) v +
-            (extDerivFun (I := I) (fun y : M => ∑ i ∈ t, U i y * B i y) x) v from by
+          (mvfderiv (I := I) (fun y : M => U a y * B a y) x) v +
+            (mvfderiv (I := I) (fun y : M => ∑ i ∈ t, U i y * B i y) x) v from by
         simpa [Pi.add_apply] using hadd]
-      rw [extDerivFun_mul_at (I := I) v hUa hBa]
+      rw [mvfderiv_mul_at (I := I) v hUa hBa]
       rw [ih hUt hBt]
       rw [Finset.sum_insert hat]
 
-theorem extDerivFun_finset_sum_at'
+theorem mvfderiv_finset_sum_at'
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     {ι : Type*} (t : Finset ι) (F : ι -> M -> ℝ)
     {x : M} (v : TangentSpace I x)
     (hF : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (F i) x) :
-    extDerivFun (I := I) (fun y : M => ∑ i ∈ t, F i y) x v =
-      ∑ i ∈ t, extDerivFun (I := I) (F i) x v := by
+    mvfderiv (I := I) (fun y : M => ∑ i ∈ t, F i y) x v =
+      ∑ i ∈ t, mvfderiv (I := I) (F i) x v := by
   classical
   have hsumdiff :
       ∀ (s : Finset ι), (∀ i ∈ s, MDifferentiableAt I 𝓘(ℝ, ℝ) (F i) x) →
@@ -516,7 +526,7 @@ theorem extDerivFun_finset_sum_at'
         rw [heqfun]
         exact hFa.add htail
   induction t using Finset.induction_on with
-  | empty => simp
+  | empty => simp [mvfderiv_const]
   | insert a t hat ih =>
       have hFa : MDifferentiableAt I 𝓘(ℝ, ℝ) (F a) x := hF a (by simp)
       have hFt : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (F i) x :=
@@ -526,18 +536,18 @@ theorem extDerivFun_finset_sum_at'
             (fun y : M => F a y) + (fun y : M => ∑ i ∈ t, F i y) := by
         funext y; simp only [Pi.add_apply]; rw [Finset.sum_insert hat]
       rw [hsplit]
-      have hadd := congr($(extDerivFun_add (I := I)
+      have hadd := congr($(mvfderiv_add (I := I)
         (g := fun y : M => F a y) (g' := fun y : M => ∑ i ∈ t, F i y)
         (x := x) hFa (hsumdiff t hFt)) v)
-      rw [show (extDerivFun (I := I)
+      rw [show (mvfderiv (I := I)
             ((fun y : M => F a y) + fun y : M => ∑ i ∈ t, F i y) x) v =
-          (extDerivFun (I := I) (fun y : M => F a y) x) v +
-            (extDerivFun (I := I) (fun y : M => ∑ i ∈ t, F i y) x) v from by
+          (mvfderiv (I := I) (fun y : M => F a y) x) v +
+            (mvfderiv (I := I) (fun y : M => ∑ i ∈ t, F i y) x) v from by
         simpa [Pi.add_apply] using hadd]
       rw [ih hFt]
       rw [Finset.sum_insert hat]
 
-theorem extDerivFun_finset_sum_sum_mul_at
+theorem mvfderiv_finset_sum_sum_mul_at
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
@@ -545,10 +555,10 @@ theorem extDerivFun_finset_sum_sum_mul_at
     {x : M} (v : TangentSpace I x)
     (hU : ∀ i ∈ s, ∀ j ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (U i j) x)
     (hB : ∀ i ∈ s, ∀ j ∈ t, MDifferentiableAt I 𝓘(ℝ, ℝ) (B i j) x) :
-    extDerivFun (I := I) (fun y : M => ∑ i ∈ s, ∑ j ∈ t, U i j y * B i j y) x v =
+    mvfderiv (I := I) (fun y : M => ∑ i ∈ s, ∑ j ∈ t, U i j y * B i j y) x v =
       ∑ i ∈ s, ∑ j ∈ t,
-        (U i j x * extDerivFun (I := I) (B i j) x v +
-          B i j x * extDerivFun (I := I) (U i j) x v) := by
+        (U i j x * mvfderiv (I := I) (B i j) x v +
+          B i j x * mvfderiv (I := I) (U i j) x v) := by
   classical
   have hinner_diff :
       ∀ i ∈ s, MDifferentiableAt I 𝓘(ℝ, ℝ)
@@ -575,13 +585,13 @@ theorem extDerivFun_finset_sum_sum_mul_at
           rw [heqfun]
           exact (hUa.mul hBa).add htail
     exact haux t (fun j hj => hU i hi j hj) (fun j hj => hB i hi j hj)
-  rw [extDerivFun_finset_sum_at' (I := I) s
+  rw [mvfderiv_finset_sum_at' (I := I) s
     (fun i => fun y : M => ∑ j ∈ t, U i j y * B i j y) v hinner_diff]
   refine Finset.sum_congr rfl fun i hi => ?_
-  rw [extDerivFun_finset_sum_mul_at (I := I) t (fun j => U i j) (fun j => B i j) v
+  rw [mvfderiv_finset_sum_mul_at (I := I) t (fun j => U i j) (fun j => B i j) v
     (fun j hj => hU i hi j hj) (fun j hj => hB i hi j hj)]
 
-theorem extDerivFun_apply_contMDiff
+theorem mvfderiv_apply_contMDiff
     {𝕜 : Type*} [NontriviallyNormedField 𝕜]
     {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners 𝕜 E H)
@@ -589,7 +599,7 @@ theorem extDerivFun_apply_contMDiff
     (f : M -> 𝕜) (hf : ContMDiff I 𝓘(𝕜, 𝕜) ∞ f)
     (X : ContMDiffSection I E ∞ (TangentSpace I : M -> Type _)) :
     ContMDiff I 𝓘(𝕜, 𝕜) ∞
-      (fun p : M => extDerivFun (I := I) f p (X p)) := by
+      (fun p : M => mvfderiv (I := I) f p (X p)) := by
   rw [contMDiff_infty]
   intro n x₀
   let e := trivializationAt E (TangentSpace I : M -> Type _) x₀
@@ -634,7 +644,8 @@ theorem extDerivFun_apply_contMDiff
     have hp_src : p ∈ (chartAt H x₀).source := by
       simpa [e, TangentBundle.trivializationAt_baseSet] using hp
     have hf_src : f p ∈ (chartAt 𝕜 (f x₀)).source := by
-      simp
+      rw [chartAt_self_eq]
+      exact Set.mem_univ _
     rw [inTangentCoordinates_eq (I := I) (I' := 𝓘(𝕜, 𝕜))
       (f := fun p : M => p) (g := f)
       (ϕ := fun p : M => mfderiv I 𝓘(𝕜, 𝕜) f p)
@@ -643,21 +654,19 @@ theorem extDerivFun_apply_contMDiff
         (tangentBundleCore 𝓘(𝕜, 𝕜) 𝕜).coordChange
           (achart 𝕜 (f p)) (achart 𝕜 (f x₀)) (f p) = (1 : 𝕜 →L[𝕜] 𝕜) := by
       simp
-    have hsource :
-        (tangentBundleCore I M).coordChange (achart H x₀) (achart H p) p =
-          e.symmL 𝕜 p := by
-      simpa [e] using
-        (TangentBundle.symmL_trivializationAt_eq_core
-          (𝕜 := 𝕜) (I := I) (b₀ := x₀) (b := p) hp_src).symm
+    have hsource :=
+      (TangentBundle.symmL_trivializationAt_eq_core
+        (𝕜 := 𝕜) (I := I) (b₀ := x₀) (b := p) hp_src).symm
     have hcancel :
         e.symmL 𝕜 p (Xcoord p) = X p := by
       exact e.symmL_continuousLinearMapAt (R := 𝕜) hp (X p)
-    rw [htarget, hsource]
+    rw [htarget]
+    erw [hsource]
     change (mfderiv I 𝓘(𝕜, 𝕜) f p) (X p) =
       (mfderiv I 𝓘(𝕜, 𝕜) f p) (e.symmL 𝕜 p (Xcoord p))
     rw [hcancel]
 
-theorem extDerivFun_apply_contMDiffAt
+theorem mvfderiv_apply_contMDiffAt
     {𝕜 : Type*} [NontriviallyNormedField 𝕜]
     {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners 𝕜 E H)
@@ -666,7 +675,7 @@ theorem extDerivFun_apply_contMDiffAt
     (hf : ContMDiffAt I 𝓘(𝕜, 𝕜) ∞ f x₀)
     (X : ContMDiffSection I E ∞ (TangentSpace I : M -> Type _)) :
     ContMDiffAt I 𝓘(𝕜, 𝕜) ∞
-      (fun p : M => extDerivFun (I := I) f p (X p)) x₀ := by
+      (fun p : M => mvfderiv (I := I) f p (X p)) x₀ := by
   rw [contMDiffAt_infty]
   intro n
   let e := trivializationAt E (TangentSpace I : M -> Type _) x₀
@@ -711,7 +720,8 @@ theorem extDerivFun_apply_contMDiffAt
   have hp_src : p ∈ (chartAt H x₀).source := by
     simpa [e, TangentBundle.trivializationAt_baseSet] using hp
   have hf_src : f p ∈ (chartAt 𝕜 (f x₀)).source := by
-    simp
+    rw [chartAt_self_eq]
+    exact Set.mem_univ _
   rw [inTangentCoordinates_eq (I := I) (I' := 𝓘(𝕜, 𝕜))
     (f := fun p : M => p) (g := f)
     (ϕ := fun p : M => mfderiv I 𝓘(𝕜, 𝕜) f p)
@@ -720,16 +730,14 @@ theorem extDerivFun_apply_contMDiffAt
       (tangentBundleCore 𝓘(𝕜, 𝕜) 𝕜).coordChange
         (achart 𝕜 (f p)) (achart 𝕜 (f x₀)) (f p) = (1 : 𝕜 →L[𝕜] 𝕜) := by
     simp
-  have hsource :
-      (tangentBundleCore I M).coordChange (achart H x₀) (achart H p) p =
-        e.symmL 𝕜 p := by
-    simpa [e] using
-      (TangentBundle.symmL_trivializationAt_eq_core
-        (𝕜 := 𝕜) (I := I) (b₀ := x₀) (b := p) hp_src).symm
+  have hsource :=
+    (TangentBundle.symmL_trivializationAt_eq_core
+      (𝕜 := 𝕜) (I := I) (b₀ := x₀) (b := p) hp_src).symm
   have hcancel :
       e.symmL 𝕜 p (Xcoord p) = X p := by
     exact e.symmL_continuousLinearMapAt (R := 𝕜) hp (X p)
-  rw [htarget, hsource]
+  rw [htarget]
+  erw [hsource]
   change (mfderiv I 𝓘(𝕜, 𝕜) f p) (X p) =
     (mfderiv I 𝓘(𝕜, 𝕜) f p) (e.symmL 𝕜 p (Xcoord p))
   rw [hcancel]
@@ -747,7 +755,7 @@ theorem prodExtDerivAt
     ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real)
       (2 : WithTop ℕ∞)
       (fun p : Real × M =>
-        extDerivFun (I := I) (fun y : M => F (p.1, y)) p.2 (X p.2))
+        mvfderiv (I := I) (fun y : M => F (p.1, y)) p.2 (X p.2))
       (t, x) := by
   let e := trivializationAt E (TangentSpace I : M -> Type _) x
   let XcoordM : M -> E := fun y => e.continuousLinearMapAt Real y (X y)
@@ -812,7 +820,8 @@ theorem prodExtDerivAt
   have hp_src : p.2 ∈ (chartAt H x).source := by
     simpa [e, TangentBundle.trivializationAt_baseSet] using hp
   have hf_src : F (p.1, p.2) ∈ (chartAt Real (F (t, x))).source := by
-    simp
+    rw [chartAt_self_eq]
+    exact Set.mem_univ _
   rw [inTangentCoordinates_eq (I := I) (I' := 𝓘(Real, Real))
     (f := fun p : Real × M => p.2) (g := fun p : Real × M => F (p.1, p.2))
     (ϕ := fun p : Real × M =>
@@ -823,16 +832,14 @@ theorem prodExtDerivAt
         (achart Real (F (p.1, p.2))) (achart Real (F (t, x))) (F (p.1, p.2)) =
           (1 : Real →L[Real] Real) := by
     simp
-  have hsource :
-      (tangentBundleCore I M).coordChange (achart H x) (achart H p.2) p.2 =
-        e.symmL Real p.2 := by
-    simpa [e] using
-      (TangentBundle.symmL_trivializationAt_eq_core
-        (𝕜 := Real) (I := I) (b₀ := x) (b := p.2) hp_src).symm
+  have hsource :=
+    (TangentBundle.symmL_trivializationAt_eq_core
+      (𝕜 := Real) (I := I) (b₀ := x) (b := p.2) hp_src).symm
   have hcancel :
       e.symmL Real p.2 (Xcoord p) = X p.2 := by
     exact e.symmL_continuousLinearMapAt (R := Real) hp (X p.2)
-  rw [htarget, hsource]
+  rw [htarget]
+  erw [hsource]
   change
     (mfderiv I 𝓘(Real, Real) (fun y : M => F (p.1, y)) p.2) (X p.2) =
       (mfderiv I 𝓘(Real, Real) (fun y : M => F (p.1, y)) p.2)
@@ -850,7 +857,7 @@ theorem prodExtDerivAt_gen
       (∞ : WithTop ℕ∞) (T% X) x) :
     ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) m
       (fun p : Real × M =>
-        extDerivFun (I := I) (fun y : M => F (p.1, y)) p.2 (X p.2))
+        mvfderiv (I := I) (fun y : M => F (p.1, y)) p.2 (X p.2))
       (t, x) := by
   let e := trivializationAt E (TangentSpace I : M -> Type _) x
   let XcoordM : M -> E := fun y => e.continuousLinearMapAt Real y (X y)
@@ -913,7 +920,8 @@ theorem prodExtDerivAt_gen
   have hp_src : p.2 ∈ (chartAt H x).source := by
     simpa [e, TangentBundle.trivializationAt_baseSet] using hp
   have hf_src : F (p.1, p.2) ∈ (chartAt Real (F (t, x))).source := by
-    simp
+    rw [chartAt_self_eq]
+    exact Set.mem_univ _
   rw [inTangentCoordinates_eq (I := I) (I' := 𝓘(Real, Real))
     (f := fun p : Real × M => p.2) (g := fun p : Real × M => F (p.1, p.2))
     (ϕ := fun p : Real × M =>
@@ -924,16 +932,14 @@ theorem prodExtDerivAt_gen
         (achart Real (F (p.1, p.2))) (achart Real (F (t, x))) (F (p.1, p.2)) =
           (1 : Real →L[Real] Real) := by
     simp
-  have hsource :
-      (tangentBundleCore I M).coordChange (achart H x) (achart H p.2) p.2 =
-        e.symmL Real p.2 := by
-    simpa [e] using
-      (TangentBundle.symmL_trivializationAt_eq_core
-        (𝕜 := Real) (I := I) (b₀ := x) (b := p.2) hp_src).symm
+  have hsource :=
+    (TangentBundle.symmL_trivializationAt_eq_core
+      (𝕜 := Real) (I := I) (b₀ := x) (b := p.2) hp_src).symm
   have hcancel :
       e.symmL Real p.2 (Xcoord p) = X p.2 := by
     exact e.symmL_continuousLinearMapAt (R := Real) hp (X p.2)
-  rw [htarget, hsource]
+  rw [htarget]
+  erw [hsource]
   change
     (mfderiv I 𝓘(Real, Real) (fun y : M => F (p.1, y)) p.2) (X p.2) =
       (mfderiv I 𝓘(Real, Real) (fun y : M => F (p.1, y)) p.2)
@@ -952,7 +958,7 @@ theorem prodExtDerivAt_inf
       (∞ : WithTop ℕ∞) (T% X) x) :
     ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) (∞ : WithTop ℕ∞)
       (fun p : Real × M =>
-        extDerivFun (I := I) (fun y : M => F (p.1, y)) p.2 (X p.2))
+        mvfderiv (I := I) (fun y : M => F (p.1, y)) p.2 (X p.2))
       (t, x) := by
   rw [contMDiffAt_infty]
   intro n
@@ -974,7 +980,7 @@ theorem prodExtDeriv_joint
     ContMDiffWithinAt (𝓘(Real, Real).prod I) 𝓘(Real, Real)
       (∞ : WithTop ℕ∞)
       (fun p : Real × M =>
-        extDerivFun (I := I) (fun y : M => F (p.1, y)) p.2 (X p.2))
+        mvfderiv (I := I) (fun y : M => F (p.1, y)) p.2 (X p.2))
       (J ×ˢ u) (t, x) := by
   let e := trivializationAt E (TangentSpace I : M -> Type _) x
   let XcoordM : M -> E := fun y => e.continuousLinearMapAt Real y (X y)
@@ -1042,7 +1048,8 @@ theorem prodExtDeriv_joint
       simpa [e, TangentBundle.trivializationAt_baseSet] using hp
     have hf_src : F (p.1, p.2) ∈
         (chartAt Real (F (t, x))).source := by
-      simp
+      rw [chartAt_self_eq]
+      exact Set.mem_univ _
     rw [inTangentCoordinates_eq (I := I) (I' := 𝓘(Real, Real))
       (f := fun p : Real × M => p.2)
       (g := fun p : Real × M => F (p.1, p.2))
@@ -1055,17 +1062,14 @@ theorem prodExtDeriv_joint
           (achart Real (F (p.1, p.2))) (achart Real (F (t, x)))
             (F (p.1, p.2)) = (1 : Real →L[Real] Real) := by
       simp
-    have hsource :
-        (tangentBundleCore I M).coordChange
-            (achart H x) (achart H p.2) p.2 =
-          e.symmL Real p.2 := by
-      simpa [e] using
-        (TangentBundle.symmL_trivializationAt_eq_core
-          (𝕜 := Real) (I := I) (b₀ := x) (b := p.2) hp_src).symm
+    have hsource :=
+      (TangentBundle.symmL_trivializationAt_eq_core
+        (𝕜 := Real) (I := I) (b₀ := x) (b := p.2) hp_src).symm
     have hcancel :
         e.symmL Real p.2 (Xcoord p) = X p.2 := by
       exact e.symmL_continuousLinearMapAt (R := Real) hp (X p.2)
-    rw [htarget, hsource]
+    rw [htarget]
+    erw [hsource]
     change
       (mfderiv I 𝓘(Real, Real) (fun y : M => F (p.1, y)) p.2) (X p.2) =
         (mfderiv I 𝓘(Real, Real) (fun y : M => F (p.1, y)) p.2)

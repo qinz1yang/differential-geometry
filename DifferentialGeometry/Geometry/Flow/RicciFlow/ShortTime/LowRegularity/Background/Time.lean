@@ -92,7 +92,15 @@ theorem lowCoreBackground_split
     hδ_le hδ0
     (hreal S (lowRadial_norm (I := I) (M := M) g hρ T))
     (zero_fibre_bound (I := I) (M := M) g hδ0)
-  simpa only [S, lowCoreActionCoefficientsBackground] using hs.1
+  have hA : lowCoreActionCoefficientsBackground (I := I) (M := M)
+      g gB hρ hδ0 hδ_le hreal T =
+    lowerScaleActionCoefficients (I := I) (M := M) g gB S
+      (lt_of_le_of_lt hδ_le (by norm_num))
+      (hreal S (lowRadial_norm (I := I) (M := M) g hρ T))
+      (zero_fibre_bound (I := I) (M := M) g hδ0) := rfl
+  have hs' := hs.1
+  rw [← hA] at hs'
+  simpa only [S] using hs'
 
 private abbrev lowA2LoBackgroundOp (g : SmoothRiemannianMetric I M) :=
   tensorHs (I := I) (M := M) g 0 2 (3 : ℝ) →L[ℝ]
@@ -467,7 +475,10 @@ theorem radialFirstOrderActionBackground_pairing_bound
   have hTU₃ :
       covariantJetNormSq (I := I) (M := M) g 3 (T₀ - U₀) ≤ D₃ ^ 2 := by
     refine (hjet₃ (T₀ - U₀)).trans ?_
-    simpa only [D₃, mul_assoc] using pow_le_pow_left₀
+    dsimp only [D₃]
+    have hthree : ((3 : ℕ) : ℝ) = (3 : ℝ) := by norm_num
+    rw [hthree]
+    simpa only [mul_assoc] using pow_le_pow_left₀
       (mul_nonneg hC₃ (norm_nonneg _))
       (mul_le_mul_of_nonneg_left hrad₃ hC₃) 2
   have hout := hpair T₀ U₀
@@ -722,7 +733,10 @@ theorem radialFirstOrderActionThirdToSecondOrder_self
   have hTU₃ :
       covariantJetNormSq (I := I) (M := M) g 3 (T₀ - U₀) ≤ D₃ ^ 2 := by
     refine (hjet₃ (T₀ - U₀)).trans ?_
-    simpa only [D₃, mul_assoc] using pow_le_pow_left₀
+    dsimp only [D₃]
+    have hthree : ((3 : ℕ) : ℝ) = (3 : ℝ) := by norm_num
+    rw [hthree]
+    simpa only [mul_assoc] using pow_le_pow_left₀
       (mul_nonneg hC₃ (norm_nonneg _))
       (mul_le_mul_of_nonneg_left hrad₃ hC₃) 2
   have hout := hpair T₀ U₀
@@ -964,7 +978,10 @@ theorem radialFirstOrderActionThirdToSecondOrderBackground_pairing_bound
   have hTU3 :
       covariantJetNormSq (I := I) (M := M) g 3 (T0 - U0) ≤ D3r ^ 2 := by
     refine (hjet3 (T0 - U0)).trans ?_
-    simpa only [D3r, mul_assoc] using pow_le_pow_left₀
+    dsimp only [D3r]
+    have hthree : ((3 : ℕ) : ℝ) = (3 : ℝ) := by norm_num
+    rw [hthree]
+    simpa only [mul_assoc] using pow_le_pow_left₀
       (mul_nonneg hC3 (norm_nonneg _))
       (mul_le_mul_of_nonneg_left hrad3 hC3) 2
   have hout := hpair T0 U0
@@ -1354,12 +1371,20 @@ private theorem lowBackground_ext_lip
     (ccToHsLin_dense (I := I) (M := M) g 2 (by positivity)) _ ?_
   apply LipschitzWith.of_dist_le_mul
   intro x y
-  simpa only [NNReal.coe_mk, dist_eq_norm, Subtype.dist_eq] using
-    lowBackgroundCore_pair (I := I) (M := M)
-      g gB hρ hδ0 hδ_le hreal proj hpair x y
+  have hxy := lowBackgroundCore_pair (I := I) (M := M)
+    g gB hρ hδ0 hδ_le hreal proj hpair x y
+  have hcoe : ((⟨C, hC⟩ : NNReal) : ℝ) = C := rfl
+  calc
+    dist (lowBackgroundCore (I := I) (M := M)
+        g gB hρ hδ0 hδ_le hreal proj x)
+        (lowBackgroundCore (I := I) (M := M)
+          g gB hρ hδ0 hδ_le hreal proj y) ≤
+      C * dist x y := by
+        simpa only [dist_eq_norm, Subtype.dist_eq] using hxy
+    _ = ((⟨C, hC⟩ : NNReal) : ℝ) * dist x y := by rw [hcoe]
 
 private theorem lowBackground_ext_core
-    {Y : Type*} [NormedAddCommGroup Y] [CompleteSpace Y]
+    {Y : Type*} [NormedAddCommGroup Y]
     (g gB : SmoothRiemannianMetric I M)
     {ρ δ C : ℝ} (hρ : 0 ≤ ρ) (hδ0 : 0 ≤ δ) (hδ_le : δ ≤ 1 / 3)
     (hreal : ∀ S : SmoothCcTensor g 0 2,
@@ -1388,9 +1413,13 @@ private theorem lowBackground_ext_core
   have hF : LipschitzWith ⟨C, hC⟩ F := by
     apply LipschitzWith.of_dist_le_mul
     intro x y
-    simpa only [NNReal.coe_mk, dist_eq_norm, Subtype.dist_eq, F] using
-      lowBackgroundCore_pair (I := I) (M := M)
-        g gB hρ hδ0 hδ_le hreal proj hpair x y
+    have hxy := lowBackgroundCore_pair (I := I) (M := M)
+      g gB hρ hδ0 hδ_le hreal proj hpair x y
+    have hcoe : ((⟨C, hC⟩ : NNReal) : ℝ) = C := rfl
+    calc
+      dist (F x) (F y) ≤ C * dist x y := by
+        simpa only [dist_eq_norm, Subtype.dist_eq, F] using hxy
+      _ = ((⟨C, hC⟩ : NNReal) : ℝ) * dist x y := by rw [hcoe]
   let x : D :=
     ⟨ccToHsLin (I := I) (M := M) g 2 (2 : ℝ) T, ⟨T, rfl⟩⟩
   have hext :=

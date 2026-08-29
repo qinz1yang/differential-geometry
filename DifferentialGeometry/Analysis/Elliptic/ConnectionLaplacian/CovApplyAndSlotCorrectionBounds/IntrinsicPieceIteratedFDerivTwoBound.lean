@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -32,11 +31,11 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 private local instance intrinsicPieceTwoTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance intrinsicPieceTwoTensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private lemma choose_two_product_sum (p q : ℕ → ℝ) :
     ∑ i ∈ Finset.range (2 + 1),
@@ -108,12 +107,12 @@ private lemma c_contDiffOn_goodSet
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : SmoothCcTensor g r s) :
     ContDiffOn ℝ ∞
-      (fderiv ℝ (tensorRSChartE_section_repr (I := I) r s α
+      (fderiv ℝ (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => T.toSection y) ∘ (extChartAt I α).symm))
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) := by
   classical
   have hF_cd : ContDiffOn ℝ ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => T.toSection y) ∘ (extChartAt I α).symm)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     R_contDiffOn_goodSet (I := I) (M := M) g r s α T
@@ -128,7 +127,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma u_contDiffOn_goodSet'
     (α : M) (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ContDiffOn ℝ ∞
-      (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) := by
   classical
   have hB_total : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -158,36 +157,36 @@ private lemma iteratedFDeriv_u_continuousOn
     (k : ℕ) :
     ContinuousOn
       (fun y : E => ‖iteratedFDeriv ℝ k
-        (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm) y‖)
+        (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm) y‖)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) := by
   classical
   set U : Set E := (extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α
     with hU_def
   have hU_open : IsOpen U := chartLeviCivitaGoodSet_image_isOpen (I := I) α
   have hu_cd : ContDiffOn ℝ ∞
-      (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm) U :=
+      (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm) U :=
     u_contDiffOn_goodSet' (I := I) α B
   have hk_le : ((k : ℕ) : WithTop ℕ∞) ≤ ∞ := by
     show ((k : ℕ) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞)
     have h1 : ((k : ℕ) : ℕ∞) ≤ (⊤ : ℕ∞) := le_top
     exact (WithTop.coe_le_coe.mpr h1 : _)
   have hcd_k : ContDiffOn ℝ k
-      (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm) U :=
+      (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm) U :=
     hu_cd.of_le hk_le
   have h_within_cont : ContinuousOn
       (iteratedFDerivWithin ℝ k
-        (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm) U) U :=
+        (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm) U) U :=
     hcd_k.continuousOn_iteratedFDerivWithin (m := k) (le_refl _)
       (hU_open.uniqueDiffOn)
   have h_eq : EqOn
       (iteratedFDerivWithin ℝ k
-        (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm) U)
+        (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm) U)
       (iteratedFDeriv ℝ k
-        (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)) U :=
+        (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)) U :=
     iteratedFDerivWithin_of_isOpen k hU_open
   have h_iter_cont : ContinuousOn
       (iteratedFDeriv ℝ k
-        (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)) U := by
+        (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)) U := by
     refine h_within_cont.congr ?_
     intro y hy
     exact (h_eq hy).symm
@@ -200,13 +199,13 @@ private lemma iteratedFDeriv_u_bound_012
       ∀ b ∈ tsupport (fun x : M =>
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x),
         ‖iteratedFDeriv ℝ 0
-          (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)
+          (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)
           (extChartAt I α b)‖ ≤ C ∧
         ‖iteratedFDeriv ℝ 1
-          (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)
+          (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)
           (extChartAt I α b)‖ ≤ C ∧
         ‖iteratedFDeriv ℝ 2
-          (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)
+          (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)
           (extChartAt I α b)‖ ≤ C := by
   classical
   set K_set : Set M := tsupport (fun x : M =>
@@ -226,17 +225,17 @@ private lemma iteratedFDeriv_u_bound_012
   have hφ_cont : ContinuousOn (extChartAt I α) K_set :=
     (hφ_cm.continuousOn).mono hK_sub
   have h_cont_0 : ContinuousOn (fun b : M => ‖iteratedFDeriv ℝ 0
-      (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)
       (extChartAt I α b)‖) K_set :=
     (iteratedFDeriv_u_continuousOn (I := I) α B 0).comp
       hφ_cont hmaps
   have h_cont_1 : ContinuousOn (fun b : M => ‖iteratedFDeriv ℝ 1
-      (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)
       (extChartAt I α b)‖) K_set :=
     (iteratedFDeriv_u_continuousOn (I := I) α B 1).comp
       hφ_cont hmaps
   have h_cont_2 : ContinuousOn (fun b : M => ‖iteratedFDeriv ℝ 2
-      (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)
       (extChartAt I α b)‖) K_set :=
     (iteratedFDeriv_u_continuousOn (I := I) α B 2).comp
       hφ_cont hmaps
@@ -273,37 +272,37 @@ theorem intrinsic_piece_iteratedFDeriv_two_bound
             chartLeviCivitaGoodSet (I := I) α →
         ‖iteratedFDeriv ℝ 2
           (fun y : E =>
-            fderiv ℝ (tensorRSChartE_section_repr (I := I) r s α
+            fderiv ℝ (tensorRSChartESectionRepr (I := I) r s α
                 (fun y' : M => T.toSection y')
                 ∘ (extChartAt I α).symm) y
               (trivToE (I := I) α ((extChartAt I α).symm y)
                 (B.toFun ((extChartAt I α).symm y))))
           (extChartAt I α b)‖ ≤
-        K * (‖iteratedFDeriv ℝ 3 (tensorRSChartE_section_repr (I := I) r s α
+        K * (‖iteratedFDeriv ℝ 3 (tensorRSChartESectionRepr (I := I) r s α
                 (fun y : M => T.toSection y) ∘ (extChartAt I α).symm)
                 (extChartAt I α b)‖ +
-             ‖iteratedFDeriv ℝ 2 (tensorRSChartE_section_repr (I := I) r s α
+             ‖iteratedFDeriv ℝ 2 (tensorRSChartESectionRepr (I := I) r s α
                 (fun y : M => T.toSection y) ∘ (extChartAt I α).symm)
                 (extChartAt I α b)‖ +
-             ‖fderiv ℝ (tensorRSChartE_section_repr (I := I) r s α
+             ‖fderiv ℝ (tensorRSChartESectionRepr (I := I) r s α
                 (fun y : M => T.toSection y) ∘ (extChartAt I α).symm)
                 (extChartAt I α b)‖) := by
   classical
-  letI _h_top : TopologicalSpace
+  let _h_top : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
-    tensorRSBundle_topology r s
-  letI _h_fib : FiberBundle (TensorRSModel r s ℝ E)
+    tensorRSBundleTopology r s
+  let _h_fib : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   obtain ⟨C, hC_nn, hC_bound⟩ := iteratedFDeriv_u_bound_012 (I := I) (M := M) α B
   refine ⟨2 * C, by positivity, ?_⟩
   intro T b hb
   set F : E → TensorRSModel r s ℝ E :=
-    tensorRSChartE_section_repr (I := I) r s α
+    tensorRSChartESectionRepr (I := I) r s α
       (fun y : M => T.toSection y) ∘ (extChartAt I α).symm with hF_def
   set u : E → E :=
-    chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm with hu_def
+    chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm with hu_def
   set x : E := extChartAt I α b with hx_def
   set U : Set E := (extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α
     with hU_def
@@ -321,7 +320,7 @@ theorem intrinsic_piece_iteratedFDeriv_two_bound
           ‖iteratedFDeriv ℝ 3 F x‖ * ‖iteratedFDeriv ℝ 0 u x‖ :=
     iteratedFDeriv_two_fderiv_apply_norm_le F u U x hF_cd hu_cd hU_open hx_mem
   have h_goalLHS_fn : (fun y : E =>
-        fderiv ℝ (tensorRSChartE_section_repr (I := I) r s α
+        fderiv ℝ (tensorRSChartESectionRepr (I := I) r s α
             (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm) y
           (trivToE (I := I) α ((extChartAt I α).symm y)
             (B.toFun ((extChartAt I α).symm y)))) =

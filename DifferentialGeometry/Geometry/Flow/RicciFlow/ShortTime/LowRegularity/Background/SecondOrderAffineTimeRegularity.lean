@@ -467,21 +467,37 @@ theorem affineSecondOrderActionBackground_data
   have hmeasHi : AEStronglyMeasurable
       (highAffineSecondOrderActionBackground (I := I) (M := M)
         g hρ hδ0 hδ_le hreal u) (timeMeasure T) := by
-    simpa only [highAffineSecondOrderActionBackground] using
+    have hraw :=
       (ContinuousLinearMap.compL ℝ
         (metricH4 (I := I) (M := M) g)
         (metricH4 (I := I) (M := M) g)
         (metricH2 (I := I) (M := M) g)).continuous₂
           |>.comp_aestronglyMeasurable₂ hAHi hR4
+    with_unfolding_all
+      change @AEStronglyMeasurable ℝ (a2HiOp (I := I) (M := M) g)
+        PseudoMetricSpace.toUniformSpace.toTopologicalSpace
+        Real.measurableSpace Real.measurableSpace
+        (highAffineSecondOrderActionBackground (I := I) (M := M)
+          g hρ hδ0 hδ_le hreal u) (timeMeasure T)
+      refine hraw.congr (Filter.Eventually.of_forall fun t => ?_)
+      rfl
   have hmeasLo : AEStronglyMeasurable
       (lowAffineSecondOrderActionBackground (I := I) (M := M)
         g hρ hδ0 hδ_le hreal u) (timeMeasure T) := by
-    simpa only [lowAffineSecondOrderActionBackground] using
+    have hraw :=
       (ContinuousLinearMap.compL ℝ
         (metricThirdOrderSobolev (I := I) (M := M) g)
         (metricThirdOrderSobolev (I := I) (M := M) g)
         (metricH1 (I := I) (M := M) g)).continuous₂
           |>.comp_aestronglyMeasurable₂ hALo hR3
+    with_unfolding_all
+      change @AEStronglyMeasurable ℝ (a2LoOp (I := I) (M := M) g)
+        PseudoMetricSpace.toUniformSpace.toTopologicalSpace
+        Real.measurableSpace Real.measurableSpace
+        (lowAffineSecondOrderActionBackground (I := I) (M := M)
+          g hρ hδ0 hδ_le hreal u) (timeMeasure T)
+      refine hraw.congr (Filter.Eventually.of_forall fun t => ?_)
+      rfl
   refine ⟨hmeasHi, Filter.Eventually.of_forall fun t => ?_, hmeasLo,
     Filter.Eventually.of_forall fun t => ?_⟩
   · exact (highAffineSecondOrderActionBackground_norm_le (I := I) (M := M)

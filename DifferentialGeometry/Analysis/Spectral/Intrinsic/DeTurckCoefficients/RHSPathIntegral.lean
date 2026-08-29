@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Set Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap MeasureTheory
     intervalIntegral
@@ -38,7 +37,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem unitModel_add_app
     (g₀ : SmoothRiemannianMetric I M) (A B : SmoothCcTensor g₀ 0 2)
-    (x : M) (v : Fin 2 → TangentSpace I x) :
+    (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2 (A + B) x v =
       unitModel (I := I) (M := M) g₀ 2 A x v +
         unitModel (I := I) (M := M) g₀ 2 B x v := by
@@ -47,14 +46,14 @@ private theorem unitModel_add_app
         unitModel (I := I) (M := M) g₀ 2 B x := by
     simp only [unitModel]
     rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
-      ContinuousLinearMap.add_apply, Tensor0SBundle.Tensor0SSpace.toModel_add]
-  rw [hfun, ContinuousMultilinearMap.add_apply]
+      add_apply, Tensor0SBundle.Tensor0SSpace.toModel_add]
+  rw [hfun, add_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M]
     [T2Space M] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem unitModel_sub_app
     (g₀ : SmoothRiemannianMetric I M) (A B : SmoothCcTensor g₀ 0 2)
-    (x : M) (v : Fin 2 → TangentSpace I x) :
+    (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2 (A - B) x v =
       unitModel (I := I) (M := M) g₀ 2 A x v -
         unitModel (I := I) (M := M) g₀ 2 B x v := by
@@ -63,8 +62,8 @@ private theorem unitModel_sub_app
         unitModel (I := I) (M := M) g₀ 2 B x := by
     simp only [unitModel]
     rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-      ContinuousLinearMap.sub_apply, Tensor0SBundle.Tensor0SSpace.toModel_sub]
-  rw [hfun, ContinuousMultilinearMap.sub_apply]
+      sub_apply, Tensor0SBundle.Tensor0SSpace.toModel_sub]
+  rw [hfun, sub_apply]
 
 def deTurckRHSAtMetricPerturbation
     (g₀ g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -78,6 +77,7 @@ def deTurckRHSAtMetricPerturbation
     (deTurckRHSSection (I := I) g_bg
       (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ)).hasCompactSupport
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem rhs_top_path_joint
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -162,6 +162,26 @@ def ricciDeTurckRemainderFirstOrderPathIntegral
       exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ'_lt)
     (ricciDeTurckRemainderFirstOrderCoefficient_path_joint (I := I) (M := M) g₀ g_bg T T' hδ hδ')
 
+omit [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+lemma ricciDeTurckRemainderFirstOrderPathIntegral_toModel
+    (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
+    {δ : ℝ} (hδ_lt : δ < 1)
+    (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
+      (ccTensorBilinSymm (I := I) g₀ T) δ)
+    {δ' : ℝ} (hδ'_lt : δ' < 1)
+    (hδ' : metricCauchySchwarzBound (I := I) (M := M) g₀
+      (ccTensorBilinSymm (I := I) g₀ T') δ') (x : M) :
+    TensorRSSpace.toModel
+        ((ricciDeTurckRemainderFirstOrderPathIntegral (I := I) (M := M)
+          g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ').toSection x) =
+      ∫ s in (0 : ℝ)..1, TensorRSSpace.toModel
+        ((ricciDeTurckRemainderFirstOrderCoefficient (I := I) (M := M)
+          g₀ g_bg T T' hδ hδ' s).toSection x) := by
+  unfold ricciDeTurckRemainderFirstOrderPathIntegral
+  exact pathIntegralCoeffField_toModel (I := I) (M := M) g₀ 3 2 _ _ _ _ _ x
+
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem rhs_chart_sum_one
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -172,12 +192,16 @@ theorem rhs_chart_sum_one
     (x : M) (v w : TangentSpace I x) :
     rhsChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w 1 =
       unitModel (I := I) (M := M) g₀ 2
-        (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T hδ_lt hδ) x ![v, w] := by
+        (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T hδ_lt hδ) x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x w] := by
   classical
   rw [rhsChartSum, metricPerturbationPath_one (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ']
+  simp only [centeredChartTangentBasis_repr, centeredChartTangentEquiv_apply]
   calc
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+        ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+          ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
           deTurckRicciRHS (I := I) g_bg
             (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) x
             (chartBasisVecFiber (I := I) x i x)
@@ -187,7 +211,8 @@ theorem rhs_chart_sum_one
         (I := I) (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) g_bg x i k
         (self_mem_chartLeviCivitaGoodSet (I := I) x)]
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+        ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+          ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
           deTurckRicciRHS (I := I) g_bg
             (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) x
             (chartBasisVecFiber (I := I) x k x)
@@ -196,17 +221,22 @@ theorem rhs_chart_sum_one
       rw [deTurckRicciRHS_symm (I := I) g_bg
         (tensorSectionRealizeMetric (I := I) g₀ T hδ_lt hδ) x]
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+        ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+          ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
           unitModel (I := I) (M := M) g₀ 2
             (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T hδ_lt hδ) x
             ![(chartModelBasis E) k, (chartModelBasis E) i] := by
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun k _ => ?_))
       rw [unitModel_of_deTurckRHSSection_realize (I := I) g₀ g_bg T hδ_lt hδ
         (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T hδ_lt hδ) rfl]
-      simp only [Matrix.cons_val_zero, Matrix.cons_val_one, chartBasisVecFiber_self]
+      simp only [Matrix.cons_val_zero, Matrix.cons_val_one, chartBasisVecFiber_self,
+        tangent_model_equiv_symm_chart_basis]
     _ = _ := unitModel_basis_expand_two (I := I) (M := M) g₀
-      (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T hδ_lt hδ) x ![v, w]
+      (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T hδ_lt hδ) x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x w]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem rhs_chart_sum_zero
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
@@ -217,12 +247,16 @@ theorem rhs_chart_sum_zero
     (x : M) (v w : TangentSpace I x) :
     rhsChartSum (I := I) g₀ g_bg T T' hδ hδ' x v w 0 =
       unitModel (I := I) (M := M) g₀ 2
-        (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T' hδ'_lt hδ') x ![v, w] := by
+        (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T' hδ'_lt hδ') x
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x w] := by
   classical
   rw [rhsChartSum, metricPerturbationPath_zero (I := I) g₀ T T' hδ_lt hδ hδ'_lt hδ']
+  simp only [centeredChartTangentBasis_repr, centeredChartTangentEquiv_apply]
   calc
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+        ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+          ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
           deTurckRicciRHS (I := I) g_bg
             (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ') x
             (chartBasisVecFiber (I := I) x i x)
@@ -232,7 +266,8 @@ theorem rhs_chart_sum_zero
         (I := I) (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ') g_bg x i k
         (self_mem_chartLeviCivitaGoodSet (I := I) x)]
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+        ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+          ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
           deTurckRicciRHS (I := I) g_bg
             (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ') x
             (chartBasisVecFiber (I := I) x k x)
@@ -241,17 +276,22 @@ theorem rhs_chart_sum_zero
       rw [deTurckRicciRHS_symm (I := I) g_bg
         (tensorSectionRealizeMetric (I := I) g₀ T' hδ'_lt hδ') x]
     _ = ∑ i : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).repr v) k * ((chartModelBasis E).repr w) i *
+        ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x v)) k *
+          ((chartModelBasis E).repr (tangentSpaceModelContinuousLinearEquiv (I := I) x w)) i *
           unitModel (I := I) (M := M) g₀ 2
             (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T' hδ'_lt hδ') x
             ![(chartModelBasis E) k, (chartModelBasis E) i] := by
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun k _ => ?_))
       rw [unitModel_of_deTurckRHSSection_realize (I := I) g₀ g_bg T' hδ'_lt hδ'
         (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T' hδ'_lt hδ') rfl]
-      simp only [Matrix.cons_val_zero, Matrix.cons_val_one, chartBasisVecFiber_self]
+      simp only [Matrix.cons_val_zero, Matrix.cons_val_one, chartBasisVecFiber_self,
+        tangent_model_equiv_symm_chart_basis]
     _ = _ := unitModel_basis_expand_two (I := I) (M := M) g₀
-      (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T' hδ'_lt hδ') x ![v, w]
+      (deTurckRHSAtMetricPerturbation (I := I) g₀ g_bg T' hδ'_lt hδ') x
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x v,
+        tangentSpaceModelContinuousLinearEquiv (I := I) x w]
 
+omit [SigmaCompactSpace M] in
 theorem de_turck_rhs_at_metric_perturbation_sub_eq_path_integrals
     (g₀ g_bg : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -336,8 +376,14 @@ theorem de_turck_rhs_at_metric_perturbation_sub_eq_path_integrals
     funext i
     fin_cases i <;> rfl
   rw [hv, unitModel_sub_app]
-  rw [← rhs_chart_sum_one (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x,
-    ← rhs_chart_sum_zero (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x]
+  have hone := rhs_chart_sum_one (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
+  have hzero := rhs_chart_sum_zero (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
+  simp only [ContinuousLinearEquiv.apply_symm_apply] at hone hzero
+  rw [← hone, ← hzero]
   rw [rhsSum_sub_eq_int (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ' x]
   have hI0 : IntervalIntegrable (fun s : ℝ =>
       unitModel (I := I) (M := M) g₀ 2
@@ -365,7 +411,8 @@ theorem de_turck_rhs_at_metric_perturbation_sub_eq_path_integrals
       (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSI hc2 x ![v 0, v 1]
   have hintegrand : ∀ᵐ s ∂volume, s ∈ Set.uIoc (0 : ℝ) 1 →
       rhsSumSlope (I := I) g₀ g_bg T T' hδ_lt hδ hδ'_lt hδ'
-          x (v 0) (v 1) s =
+          x ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) s =
         unitModel (I := I) (M := M) g₀ 2
             (operatorFieldApply (I := I) (M := M) g₀ 2 2 (Ψ₀ s)
               (iteratedCovGrad (I := I) g₀ 0 2 0 (T - T'))) x ![v 0, v 1] +
@@ -378,7 +425,7 @@ theorem de_turck_rhs_at_metric_perturbation_sub_eq_path_integrals
     rw [MeasureTheory.ae_iff]
     have hnull : volume ({1} : Set ℝ) = 0 := by simp
     refine MeasureTheory.measure_mono_null (fun s hs => ?_) hnull
-    rw [Set.mem_setOf_eq, Classical.not_imp] at hs
+    rw [Set.mem_ofPred_eq, Classical.not_imp] at hs
     obtain ⟨hsmem, hsneq⟩ := hs
     rw [Set.uIoc_of_le zero_le_one, Set.mem_Ioc] at hsmem
     rw [Set.mem_singleton_iff]
@@ -386,9 +433,12 @@ theorem de_turck_rhs_at_metric_perturbation_sub_eq_path_integrals
     have hsIoo : s ∈ Set.Ioo (0 : ℝ) 1 :=
       ⟨hsmem.1, lt_of_le_of_ne hsmem.2 hne⟩
     refine hsneq ?_
-    simpa only [hΨ₀def, hΨ₁def, hΨ₂def, unitModel_add_app] using
+    simpa only [hΨ₀def, hΨ₁def, hΨ₂def, unitModel_add_app,
+      ContinuousLinearEquiv.apply_symm_apply] using
       ricciDeTurckRemainderSlope_eq_arms (I := I) g₀ g_bg T T' hTsymm hT'symm
-        hδ_lt hδ hδ'_lt hδ' x (v 0) (v 1) hsIoo
+        hδ_lt hδ hδ'_lt hδ' x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) hsIoo
   rw [intervalIntegral.integral_congr_ae hintegrand]
   rw [intervalIntegral.integral_add (hI0.add hI1) hI2,
     intervalIntegral.integral_add hI0 hI1]

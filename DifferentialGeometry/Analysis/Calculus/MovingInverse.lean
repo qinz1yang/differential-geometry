@@ -50,7 +50,9 @@ private theorem partial_sub_snd
       fderiv Real f x := by
   have hcomp : HasFDerivAt (fun z : X × X ↦ f z.2)
       ((fderiv Real f x).comp (ContinuousLinearMap.snd Real X X)) (p, x) := by
-    simpa using hf.hasFDerivAt.comp (p, x) hasFDerivAt_snd
+    change HasFDerivAt (f ∘ Prod.snd)
+      ((fderiv Real f x).comp (ContinuousLinearMap.snd Real X X)) (p, x)
+    exact hf.hasFDerivAt.comp (p, x) hasFDerivAt_snd
   have hderiv : fderiv Real (fun z : X × X ↦ f z.2 - z.1) (p, x) =
       (fderiv Real f x).comp (ContinuousLinearMap.snd Real X X) -
         ContinuousLinearMap.fst Real X X :=

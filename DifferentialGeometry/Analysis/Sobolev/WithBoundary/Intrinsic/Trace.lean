@@ -95,7 +95,7 @@ instance instIsFiniteMeasureSurfaceMeasure
       (modelWithCornersEuclideanHalfSpace n) M) :
     IsFiniteMeasure
       (surfaceMeasure (I := modelWithCornersEuclideanHalfSpace n) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts
+  have : IsFiniteMeasureOnCompacts
       (surfaceMeasure (I := modelWithCornersEuclideanHalfSpace n) (M := M) g) :=
     surfaceMeasure_isFiniteMeasureOnCompacts (I := modelWithCornersEuclideanHalfSpace n)
       (M := M) g

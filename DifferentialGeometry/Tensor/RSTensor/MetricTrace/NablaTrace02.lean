@@ -50,7 +50,6 @@ private theorem freezeHead03Slots_vec3
   funext q
   fin_cases q <;> rfl
 
-set_option backward.isDefEq.respectTransparency false in
 noncomputable def freezeHead03Field
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 3)
@@ -58,11 +57,11 @@ noncomputable def freezeHead03Field
       (TangentSpace I : M -> Type _)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 := by
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 2
   let F : (p : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 p :=
-    fun p : M => tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 p (A p) (Y p)
+    fun p : M => tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 p (A p) (Y p)
   refine ⟨F, ?_⟩
   let d := Module.finrank Real E
   let b : Module.Basis (Fin d) Real E := Module.finBasis Real E
@@ -92,8 +91,9 @@ noncomputable def freezeHead03Field
     have hA := TensorMultilinear.contMDiffAt_section_apply_gen
       (𝕜 := Real) (I := I) (M := M) (n := 3)
       (T := fun y : M => A y) (A.contMDiff x₀) v hv
-    simpa [v, Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply]
-      using hA
+    change ContMDiffAt I (modelWithCornersSelf ℝ ℝ) (∞ : WithTop ℕ∞)
+      (fun y : M => A y (fun q : Fin 3 => v q y)) x₀ at hA
+    simpa only [v] using hA
   refine hcoeff.congr_of_eventuallyEq ?_
   let e := coordinateTrivializationAt (𝕜 := Real) (I := I) x₀
   have hx₀ : x₀ ∈ coordinateFrameSet (𝕜 := Real) (I := I) x₀ :=
@@ -107,12 +107,18 @@ noncomputable def freezeHead03Field
       ⟨y, F y⟩).2)
       (fun a : Fin 2 => b (σ a)) =
     A y (fun q : Fin 3 => freezeHead03Slots (I := I) x₀ σ Y q y)
-  change (F y).compContinuousLinearMap
+  change (tensor0SSpaceFiberContinuousLinearEquiv
+      (I := I) (M := M) 2 y (F y)).compContinuousLinearMap
       (fun _ : Fin 2 =>
         (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real y)
       (fun a : Fin 2 => b (σ a)) =
     A y (fun q : Fin 3 => freezeHead03Slots (I := I) x₀ σ Y q y)
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
+  change F y (fun a : Fin 2 =>
+      (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real y
+        (b (σ a))) = _
+  have hye : y ∈ e.baseSet := by
+    simpa [e, coordinateFrameSet] using hy
   have hslot :
       (fun a : Fin 2 =>
         (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real y
@@ -128,16 +134,20 @@ noncomputable def freezeHead03Field
           coordinateFrameAt (I := I) x₀ (σ 0) y
       change e.symmL Real y (b (σ 0)) = e.localFrame b (σ 0) y
       rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet
-        (e := e) (b := b) (i := σ 0) hy]
-      rfl
+        (e := e) (b := b) (i := σ 0) hye]
+      change e.symmL Real y (b (σ 0)) =
+        (e.linearEquivAt Real y hye).symm (b (σ 0))
+      rw [e.symmL_apply hye, e.linearEquivAt_symm_apply]
     · change
         (coordinateTrivializationAt (𝕜 := Real) (I := I) x₀).symmL Real y
             (b (σ 1)) =
           coordinateFrameAt (I := I) x₀ (σ 1) y
       change e.symmL Real y (b (σ 1)) = e.localFrame b (σ 1) y
       rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet
-        (e := e) (b := b) (i := σ 1) hy]
-      rfl
+        (e := e) (b := b) (i := σ 1) hye]
+      change e.symmL Real y (b (σ 1)) =
+        (e.linearEquivAt Real y hye).symm (b (σ 1))
+      rw [e.symmL_apply hye, e.linearEquivAt_symm_apply]
   rw [hslot]
   rw [metricTrace_tensor0S_curry_apply_cons]
   rw [metricTrace_finCons_vec2_eq_vec3]
@@ -150,7 +160,8 @@ noncomputable def freezeHead03Field
       (TangentSpace I : M -> Type _))
     (x : M) :
     freezeHead03Field (I := I) (M := M) A Y x =
-      tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x (A x) (Y x) := by
+      tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x (A x) (Y x) := by
+  unfold freezeHead03Field
   rfl
 
 private def freezeTail04Slots
@@ -175,7 +186,6 @@ private theorem freezeTail04Slots_vec4
   funext q
   fin_cases q <;> rfl
 
-set_option backward.isDefEq.respectTransparency false in
 noncomputable def freezeTail04Field
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
@@ -183,7 +193,7 @@ noncomputable def freezeTail04Field
       (TangentSpace I : M -> Type _)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 := by
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 2
   let F : (p : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 p :=
@@ -219,8 +229,9 @@ noncomputable def freezeTail04Field
     have hA := TensorMultilinear.contMDiffAt_section_apply_gen
       (𝕜 := Real) (I := I) (M := M) (n := 4)
       (T := fun y : M => A y) (A.contMDiff x₀) v hv
-    simpa [v, Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply]
-      using hA
+    change ContMDiffAt I (modelWithCornersSelf ℝ ℝ) (∞ : WithTop ℕ∞)
+      (fun y : M => A y (fun q : Fin 4 => v q y)) x₀ at hA
+    simpa only [v] using hA
   refine hcoeff.congr_of_eventuallyEq ?_
   let e := coordinateTrivializationAt (𝕜 := Real) (I := I) x₀
   have hx₀ : x₀ ∈ coordinateFrameSet (𝕜 := Real) (I := I) x₀ :=
@@ -234,12 +245,18 @@ noncomputable def freezeTail04Field
       ⟨y, F y⟩).2)
       (fun a : Fin 2 => b (σ a)) =
     A y (fun q : Fin 4 => freezeTail04Slots (I := I) x₀ σ Y Z q y)
-  change (F y).compContinuousLinearMap
+  change (tensor0SSpaceFiberContinuousLinearEquiv
+      (I := I) (M := M) 2 y (F y)).compContinuousLinearMap
       (fun _ : Fin 2 =>
         (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real y)
       (fun a : Fin 2 => b (σ a)) =
     A y (fun q : Fin 4 => freezeTail04Slots (I := I) x₀ σ Y Z q y)
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
+  change F y (fun a : Fin 2 =>
+      (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real y
+        (b (σ a))) = _
+  have hye : y ∈ e.baseSet := by
+    simpa [e, coordinateFrameSet] using hy
   have hslot :
       (fun a : Fin 2 =>
         (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real y
@@ -255,16 +272,20 @@ noncomputable def freezeTail04Field
           coordinateFrameAt (I := I) x₀ (σ 0) y
       change e.symmL Real y (b (σ 0)) = e.localFrame b (σ 0) y
       rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet
-        (e := e) (b := b) (i := σ 0) hy]
-      rfl
+        (e := e) (b := b) (i := σ 0) hye]
+      change e.symmL Real y (b (σ 0)) =
+        (e.linearEquivAt Real y hye).symm (b (σ 0))
+      rw [e.symmL_apply hye, e.linearEquivAt_symm_apply]
     · change
         (coordinateTrivializationAt (𝕜 := Real) (I := I) x₀).symmL Real y
             (b (σ 1)) =
           coordinateFrameAt (I := I) x₀ (σ 1) y
       change e.symmL Real y (b (σ 1)) = e.localFrame b (σ 1) y
       rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet
-        (e := e) (b := b) (i := σ 1) hy]
-      rfl
+        (e := e) (b := b) (i := σ 1) hye]
+      change e.symmL Real y (b (σ 1)) =
+        (e.linearEquivAt Real y hye).symm (b (σ 1))
+      rw [e.symmL_apply hye, e.linearEquivAt_symm_apply]
   rw [hslot]
   rw [freezeFirstTwo0S_apply]
   rw [metricTrace_input_vec2_eq_vec4]
@@ -278,6 +299,7 @@ noncomputable def freezeTail04Field
     (x : M) :
     freezeTail04Field (I := I) (M := M) A Y Z x =
       freezeFirstTwo0S (I := I) (A x) (vec2 (I := I) (Y x) (Z x)) := by
+  unfold freezeTail04Field
   rfl
 
 private def freezeMiddle04Slots
@@ -302,7 +324,6 @@ private theorem freezeMiddle04Slots_vec4
   funext q
   fin_cases q <;> rfl
 
-set_option backward.isDefEq.respectTransparency false in
 noncomputable def freezeMiddle04Field
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
@@ -310,7 +331,7 @@ noncomputable def freezeMiddle04Field
       (TangentSpace I : M -> Type _)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 := by
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 2
   let F : (p : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 p :=
@@ -347,8 +368,9 @@ noncomputable def freezeMiddle04Field
     have hA := TensorMultilinear.contMDiffAt_section_apply_gen
       (𝕜 := Real) (I := I) (M := M) (n := 4)
       (T := fun y : M => A y) (A.contMDiff x₀) v hv
-    simpa [v, Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply]
-      using hA
+    change ContMDiffAt I (modelWithCornersSelf ℝ ℝ) (∞ : WithTop ℕ∞)
+      (fun y : M => A y (fun q : Fin 4 => v q y)) x₀ at hA
+    simpa only [v] using hA
   refine hcoeff.congr_of_eventuallyEq ?_
   let e := coordinateTrivializationAt (𝕜 := Real) (I := I) x₀
   have hx₀ : x₀ ∈ coordinateFrameSet (𝕜 := Real) (I := I) x₀ :=
@@ -362,12 +384,18 @@ noncomputable def freezeMiddle04Field
       ⟨y, F y⟩).2)
       (fun a : Fin 2 => b (σ a)) =
     A y (fun q : Fin 4 => freezeMiddle04Slots (I := I) x₀ σ Y Z q y)
-  change (F y).compContinuousLinearMap
+  change (tensor0SSpaceFiberContinuousLinearEquiv
+      (I := I) (M := M) 2 y (F y)).compContinuousLinearMap
       (fun _ : Fin 2 =>
         (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real y)
       (fun a : Fin 2 => b (σ a)) =
     A y (fun q : Fin 4 => freezeMiddle04Slots (I := I) x₀ σ Y Z q y)
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
+  change F y (fun a : Fin 2 =>
+      (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real y
+        (b (σ a))) = _
+  have hye : y ∈ e.baseSet := by
+    simpa [e, coordinateFrameSet] using hy
   have hslot :
       (fun a : Fin 2 =>
         (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real y
@@ -383,19 +411,23 @@ noncomputable def freezeMiddle04Field
           coordinateFrameAt (I := I) x₀ (σ 0) y
       change e.symmL Real y (b (σ 0)) = e.localFrame b (σ 0) y
       rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet
-        (e := e) (b := b) (i := σ 0) hy]
-      rfl
+        (e := e) (b := b) (i := σ 0) hye]
+      change e.symmL Real y (b (σ 0)) =
+        (e.linearEquivAt Real y hye).symm (b (σ 0))
+      rw [e.symmL_apply hye, e.linearEquivAt_symm_apply]
     · change
         (coordinateTrivializationAt (𝕜 := Real) (I := I) x₀).symmL Real y
             (b (σ 1)) =
           coordinateFrameAt (I := I) x₀ (σ 1) y
       change e.symmL Real y (b (σ 1)) = e.localFrame b (σ 1) y
       rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet
-        (e := e) (b := b) (i := σ 1) hy]
-      rfl
+        (e := e) (b := b) (i := σ 1) hye]
+      change e.symmL Real y (b (σ 1)) =
+        (e.linearEquivAt Real y hye).symm (b (σ 1))
+      rw [e.symmL_apply hye, e.linearEquivAt_symm_apply]
   rw [hslot]
   rw [freezeFirstTwo0S_apply]
-  rw [ContinuousMultilinearMap.domDomCongr_apply]
+  rw [Tensor0SSpace.domDomCongr_apply]
   rw [metricTrace_input_vec2_eq_vec4]
   rw [freezeMiddle04Slots_vec4]
   congr 1
@@ -412,6 +444,7 @@ noncomputable def freezeMiddle04Field
       freezeFirstTwo0S (I := I)
         ((A x).domDomCongr trace04Perm)
         (vec2 (I := I) (Y x) (Z x)) := by
+  unfold freezeMiddle04Field
   rfl
 
 theorem nablaTrace02
@@ -419,13 +452,13 @@ theorem nablaTrace02
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
     (X : TangentSpace I x) :
     let traceA : M -> Real := fun y => metricTracePair0SAt (I := I) g (A y)
     let nablaA :=
@@ -458,7 +491,7 @@ theorem nablaTrace02
         (Tensor0SBundle.metricTensorField (I := I) g) x = 0 :=
     Tensor0SBundle.nabla_metric_zero (I := I) cov g hmc Xsec x
   have htrace :
-      extDerivFun (I := I) traceA x (Xsec x) =
+      mvfderiv (I := I) traceA x (Xsec x) =
         metricTracePair0SAt (I := I) g
           (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             2 cov Xsec A x) := by
@@ -506,9 +539,9 @@ theorem nablaTrace02
     simpa [nablaA, hXsec, metricTrace_finCons_vec2_eq_vec3 (I := I)] using h
   calc
     dTrace (fun _ : Fin 1 => X)
-        = extDerivFun (I := I) traceA x X := by
-            simp [dTrace, differential1FormFun_apply_eq_extDerivFun]
-    _ = extDerivFun (I := I) traceA x (Xsec x) := by
+        = mvfderiv (I := I) traceA x X := by
+            simp [dTrace, differential1FormFun_apply_eq_mvfderiv]
+    _ = mvfderiv (I := I) traceA x (Xsec x) := by
             rw [hXsec]
     _ = metricTracePair0SAt (I := I) g
           (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -534,7 +567,7 @@ theorem dTrace02_eq
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -547,13 +580,13 @@ theorem dTrace02_eq
           2 cov X A x) := by
   classical
   let traceA : M -> Real := fun y => metricTracePair0SAt (I := I) g (A y)
-  let basis := coordinateFrameAt_toBasis (I := I) x
+  let basis := coordinateFrameAtToBasis (I := I) x
   let gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun i j =>
-      inverseMetricFlatModelInChart_component (I := I) g x i j
+      inverseMetricFlatModelInChartComponent (I := I) g x i j
         (extChartAt I x x)
   have hinv :
-      MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv := by
+      MetricInverseInBasisGen (I := I) (M := M) g x basis gInv := by
     simpa [basis, gInv] using
       (inverseMetricFlatModelInChart_metricInverseInBasis_center (I := I) g x)
   have htrace :=

@@ -19,7 +19,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators NNReal
@@ -55,7 +54,7 @@ private theorem exists_smoothCcTensor_of_allOrder_spectralMass
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2 with hhc
   obtain ⟨B0, hB0s, hB0le⟩ := hmass 0 le_rfl
   set v0 : tensorHs (I := I) (M := M) g₀ 0 2 0 :=
-    tensorHs_of_spectralMass_majorant (I := I) (M := M) d B0 hB0s hB0le with hv0_def
+    tensorHsOfSpectralMassMajorant (I := I) (M := M) d B0 hB0s hB0le with hv0_def
   set u : TensorL2 0 2 g₀ :=
     tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hc le_rfl v0 with hu_def
   have hu_coeff : ∀ i, tensorL2Coeff (I := I) (M := M) hc u i = d i := by
@@ -170,8 +169,8 @@ private theorem iteratedPartialSnd_contMDiffOn_Icc
     ∀ j : ℕ, ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
       (fun p : M × ℝ => iteratedDerivWithin j (fun s => f p.1 s) (Set.Icc (0 : ℝ) T) p.2)
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) := by
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let _ : MeasurableSpace M := borel M
+  have _ : BorelSpace M := ⟨rfl⟩
   intro j
   induction j generalizing f with
   | zero =>
@@ -224,7 +223,7 @@ private theorem reconChartRepr_jointContMDiffOn
     (α : M) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, Tensor0SBundle.TensorRSModel 0 2 ℝ E) ∞
       (fun p : M × ℝ =>
-        DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr (I := I) 0 2 α
+        DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) 0 2 α
           (fun z : M =>
             (deTurckRHSReconSection (I := I) g₀ g_bg (F p.2) hδ_lt (hδ p.2)).toSection z) p.1)
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
@@ -252,7 +251,7 @@ private theorem reconChartRepr_jointContMDiffOn
     exact hbase.comp hswap hmaps
   have hFieldRepr : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, Tensor0SBundle.Tensor0SModel 2 ℝ E) ∞
       (fun p : M × ℝ =>
-        DifferentialGeometry.Geometry.Connection.tensor0SChartE_section_repr (I := I) 2 α
+        DifferentialGeometry.Geometry.Connection.tensor0SChartESectionRepr (I := I) 2 α
           (fun z : M => deTurckRHSField (I := I) g_bg (gfam p.2) z) p.1)
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
     intro p hp
@@ -343,8 +342,23 @@ private theorem reconChartRepr_jointContMDiffOn
         (deTurckRHSField (I := I) g_bg (gfam p.2) p.1)
         ((trivializationAt (Tensor0SBundle.Tensor0SModel 0 ℝ E)
           (fun y : M => Tensor0SBundle.Tensor0SSpace 0 I y) α).symmL ℝ p.1 D) = _
-    rw [ContinuousLinearMap.smulRight_apply, MixedSection.eval₀_apply]
-    exact congrArg (· • deTurckRHSField (I := I) g_bg (gfam p.2) p.1) hsymm0
+    change MixedSection.eval₀ (F := E) (E := (TangentSpace I : M → Type _)) p.1
+        (Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv
+          (I := I) 0 p.1
+          ((trivializationAt (Tensor0SBundle.Tensor0SModel 0 ℝ E)
+            (fun y : M => Tensor0SBundle.Tensor0SSpace 0 I y) α).symmL ℝ p.1 D)) •
+          deTurckRHSField (I := I) g_bg (gfam p.2) p.1 = _
+    rw [MixedSection.eval₀_apply]
+    have hbridge :
+        Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv
+            (I := I) 0 p.1
+            ((trivializationAt (Tensor0SBundle.Tensor0SModel 0 ℝ E)
+              (fun y : M => Tensor0SBundle.Tensor0SSpace 0 I y) α).symmL ℝ p.1 D)
+              Fin.elim0 =
+          ((trivializationAt (Tensor0SBundle.Tensor0SModel 0 ℝ E)
+            (fun y : M => Bundle.continuousMultilinearMap ℝ 0 E (TangentSpace I) y) α).symmL
+              ℝ p.1 D) Fin.elim0 := rfl
+    rw [hbridge, hsymm0]
   rw [Function.comp_apply,
     DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply_model
       (I := I) 0 2 α
@@ -413,7 +427,7 @@ private theorem reconSec_jointContMDiffOn
   rw [hsub_eq]
   have hCR : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, Tensor0SBundle.TensorRSModel 0 2 ℝ E) ∞
       (fun p : M × ℝ =>
-        DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr (I := I) 0 2 α
+        DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) 0 2 α
           (fun z : M =>
             (deTurckRHSReconSection (I := I) g₀ g_bg (F p.2) hδ_lt (hδ p.2)).toSection z) p.1)
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) :=
@@ -488,8 +502,8 @@ private theorem vec_iteratedPartialSnd_contMDiffOn_Icc
       (fun p : M × ℝ => iteratedDerivWithin j (fun s => Vf p.1 s) (Set.Icc (0 : ℝ) T) p.2)
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) := by
   classical
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let _ : MeasurableSpace M := borel M
+  have _ : BorelSpace M := ⟨rfl⟩
   set A : V ≃L[ℝ] (Module.Basis.ofVectorSpaceIndex ℝ V → ℝ) :=
     (Module.Basis.ofVectorSpace ℝ V).equivFun.toContinuousLinearEquiv with hA
   have hAVf : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, (Module.Basis.ofVectorSpaceIndex ℝ V → ℝ)) ∞
@@ -686,7 +700,8 @@ private theorem iteratedDerivWithin_integral_param_Icc
       rw [iteratedDerivWithin_congr hderiv_eqOn ht₀]
       rw [ih Fd hFd_joint t₀ ht₀]
       refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
-      exact (iteratedDerivWithin_succ').symm
+      exact (congrFun (iteratedDerivWithin_succ'
+        (n := n) (f := fun s : ℝ => f x s) (s := Set.Icc (0 : ℝ) T)) t₀).symm
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -717,9 +732,8 @@ private theorem partialSnd_set_contMDiffOn_Icc
     (uniqueDiffOn_Icc hT0).uniqueMDiffOn
   have hrw : (fun p : M × ℝ => derivWithin (fun s => f p.1 s) (Set.Icc (0 : ℝ) T) p.2) =
       fun p : M × ℝ =>
-        (mfderivWithin 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s => f p.1 s) (Set.Icc (0 : ℝ) T) p.2) (1 : ℝ) := by
+        (fderivWithin ℝ (fun s => f p.1 s) (Set.Icc (0 : ℝ) T) p.2) (1 : ℝ) := by
     funext p
-    rw [mfderivWithin_eq_fderivWithin]
     exact (fderivWithin_derivWithin (𝕜 := ℝ) (f := fun s => f p.1 s)
       (s := Set.Icc (0 : ℝ) T) (x := p.2)).symm
   rw [hrw, contMDiffOn_infty]
@@ -751,7 +765,7 @@ private theorem partialSnd_set_contMDiffOn_Icc
       contMDiffWithinAt_snd contMDiffWithinAt_id contMDiffWithinAt_const le_rfl
       (Set.mapsTo_id _) hp₀
       (fun q hq => hq.2) hUM
-  simpa [inTangentCoordinates_model_space] using h_apply
+  simpa [inTangentCoordinates_model_space, mfderivWithin_eq_fderivWithin] using h_apply
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -880,8 +894,8 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
             (E := fun z : M => Tensor0SBundle.TensorRSSpace 0 2 I z) p.1 ((Rjt p.2).toSection p.1))
           ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) := by
   classical
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let _ : MeasurableSpace M := borel M
+  have _ : BorelSpace M := ⟨rfl⟩
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2 with hhc
   set Rec : ℝ → SmoothCcTensor g₀ 0 2 :=
     fun s => deTurckRHSReconSection (I := I) g₀ g_bg (F s) hδ_lt (hδ s) with hRec
@@ -893,7 +907,7 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
   have hfiberRepr : ∀ (α : M) (x : M), x ∈ (chartAt H α).source →
       ∀ t ∈ Set.Icc (0 : ℝ) T,
       ContDiffWithinAt ℝ ∞
-        (fun s => DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+        (fun s => DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
           (I := I) 0 2 α (fun z : M => (Rec s).toSection z) x)
         (Set.Icc (0 : ℝ) T) t := by
     intro α x hx t ht
@@ -929,7 +943,7 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
         (DifferentialGeometry.Geometry.Connection.tensorRSChartFiberFromModel (I := I) 0 2 α x)
       with hL
     have hLeq : ∀ s : ℝ, L
-        (DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+        (DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
           (I := I) 0 2 α (fun z : M => (Rec s).toSection z) x) = (Rec s).toFun x := by
       intro s
       rw [hL, ContinuousLinearMap.comp_apply,
@@ -950,10 +964,10 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
     · simp only [Function.comp_apply]
       exact (hLeq t).symm
   have hChartCommute : ∀ (α : M) (x : M), x ∈ (chartAt H α).source → ∀ t ∈ Set.Icc (0 : ℝ) T,
-      DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr (I := I) 0 2 α
+      DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) 0 2 α
           (fun z : M => Tensor0SBundle.TensorRSSpace.ofModel (jetD z t)) x =
         iteratedDerivWithin j
-          (fun s => DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+          (fun s => DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
             (I := I) 0 2 α (fun z : M => (Rec s).toSection z) x)
           (Set.Icc (0 : ℝ) T) t := by
     intro α x hx t ht
@@ -971,30 +985,30 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
     let Φ : Tensor0SBundle.TensorRSModel 0 2 ℝ E →L[ℝ] Tensor0SBundle.TensorRSModel 0 2 ℝ E :=
       ((trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α).continuousLinearMapAt ℝ x).comp
-        ((Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) 0 2 x).symm
+        ((Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) 0 2 x).symm
           : Tensor0SBundle.TensorRSModel 0 2 ℝ E →L[ℝ] Tensor0SBundle.TensorRSSpace 0 2 I x)
     have hΦ : Φ =
         ((trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α).continuousLinearMapAt ℝ x).comp
-          ((Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) 0 2 x).symm
+          ((Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) 0 2 x).symm
             : Tensor0SBundle.TensorRSModel 0 2 ℝ E →L[ℝ]
               Tensor0SBundle.TensorRSSpace 0 2 I x) := rfl
     have hΦeq : ∀ s : ℝ, Φ ((Rec s).toFun x) =
-        DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+        DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
           (I := I) 0 2 α (fun z : M => (Rec s).toSection z) x := by
       intro s
       rw [hΦ, ContinuousLinearMap.comp_apply,
         DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply]
-      have hsymm : ((Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) 0 2 x).symm
+      have hsymm : ((Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) 0 2 x).symm
           : Tensor0SBundle.TensorRSModel 0 2 ℝ E →L[ℝ] Tensor0SBundle.TensorRSSpace 0 2 I x)
           ((Rec s).toFun x) = (Rec s).toSection x := by
-        change (Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) 0 2 x).symm
-            ((Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) 0 2 x)
+        change (Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) 0 2 x).symm
+            ((Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) 0 2 x)
               ((Rec s).toSection x)) = (Rec s).toSection x
-        exact (Tensor0SBundle.tensorRSSpace_continuousLinearEquiv
+        exact (Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv
           (I := I) 0 2 x).symm_apply_apply _
       rw [hsymm]
-    have hΦLHS : DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+    have hΦLHS : DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
           (I := I) 0 2 α (fun z : M => Tensor0SBundle.TensorRSSpace.ofModel (jetD z t)) x =
         Φ (jetD x t) := by
       rw [DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply, hΦ,
@@ -1011,7 +1025,7 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
   have hChartJet : ∀ α : M, ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
       𝓘(ℝ, Tensor0SBundle.TensorRSModel 0 2 ℝ E) ∞
       (fun p : M × ℝ =>
-        DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr (I := I) 0 2 α
+        DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) 0 2 α
           (fun z : M => Tensor0SBundle.TensorRSSpace.ofModel (jetD z p.2)) p.1)
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
     intro α
@@ -1019,7 +1033,7 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
       φ hφ_smooth hcoeff hmodemass α
     have hvecjet := vec_iteratedPartialSnd_set_contMDiffOn_Icc
       (V := Tensor0SBundle.TensorRSModel 0 2 ℝ E) (U := (chartAt H α).source)
-      (fun x s => DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+      (fun x s => DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
         (I := I) 0 2 α (fun z : M => (Rec s).toSection z) x) hT hCR j
     refine hvecjet.congr ?_
     intro p hp
@@ -1133,7 +1147,7 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
     rw [this, hRjtSection t ht x, Tensor0SBundle.TensorRSSpace.toModel_ofModel]
   refine ⟨Rjt, ?_, ?_⟩
   · intro i t ht
-    haveI : IsFiniteMeasure
+    have _ : IsFiniteMeasure
         (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g₀) :=
       DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
         g₀
@@ -1439,7 +1453,8 @@ private theorem deTurckRemainder_pathCoeff_timeJet_allOrderMass
       rw [hcongr]
       have hsub := iteratedDerivWithin_sub (f := reconRaw i) (g := rawRaw i)
         (n := j) ht hUDO hcds hcdr
-      simpa only [Pi.sub_apply] using hsub
+      change iteratedDerivWithin j (reconRaw i - rawRaw i) (Set.Icc (0 : ℝ) T) t = _
+      exact hsub
     have hrawDerivEq : iteratedDerivWithin j (rawRaw i) (Set.Icc (0 : ℝ) T) t =
         -i.lambda * iteratedDeriv j (φ i) t := by
       have hcongr : iteratedDerivWithin j (rawRaw i) (Set.Icc (0 : ℝ) T) t =

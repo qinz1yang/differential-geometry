@@ -35,9 +35,12 @@ noncomputable def MemW1pWitness.unitBallDilate
       have hlt : lam⁻¹ < 1 := by
         exact inv_lt_one_of_one_lt₀ hlam
       exact lt_trans hx hlt)
-  simpa [DeGiorgi.unitBallDilate] using
-    (MemW1pWitness.rescale_to_unitBall (d := d) (x₀ := (0 : E))
-      (R := lam⁻¹) (u := u) (by positivity) hwSmall)
+  rw [show DeGiorgi.unitBallDilate (d := d) lam u =
+      (fun z ↦ u ((0 : E) + lam⁻¹ • z)) by
+    funext z
+    rw [unitBallDilate_apply, zero_add]]
+  exact MemW1pWitness.rescaleToUnitBall (d := d) (x₀ := (0 : E))
+    (R := lam⁻¹) (u := u) (by positivity) hwSmall
 
 lemma one_lt_midpoint_of_one_lt {lam : ℝ} (hlam : 1 < lam) :
     1 < (1 + lam) / 2 := by
@@ -119,7 +122,11 @@ private lemma weakPartialDeriv_unitBallDilate_to_ball
   intro φ hφ_smooth hφ_supp hφ_sub
   set ψ : E → ℝ := fun z => φ (lam • z)
   have hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ := by
-    simpa [ψ] using hφ_smooth.comp (contDiff_const_smul lam)
+    have hψ : ψ = φ ∘ fun z ↦ lam • z := by
+      funext z
+      rfl
+    rw [hψ]
+    exact hφ_smooth.comp (contDiff_const_smul lam)
   have hψ_supp : HasCompactSupport ψ := by
     set h : E ≃ₜ E := Homeomorph.smulOfNeZero lam hlam.ne'
     exact (show ψ = φ ∘ h from by
@@ -139,12 +146,13 @@ private lemma weakPartialDeriv_unitBallDilate_to_ball
     intro z
     set S : E → E := fun y => lam • y
     have hS_fd : HasFDerivAt S (lam • ContinuousLinearMap.id ℝ E) z := by
-      simpa [S] using (hasFDerivAt_id (𝕜 := ℝ) z).const_smul lam
+      exact ((hasFDerivAt_id (𝕜 := ℝ) z).const_smul lam).congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ ↦ rfl)
     have hφ_at : HasFDerivAt φ (fderiv ℝ φ (lam • z)) (lam • z) :=
       ((hφ_smooth.differentiable (by simp)).differentiableAt (x := lam • z)).hasFDerivAt
     have hcomp := hφ_at.comp z hS_fd
     rw [show ψ = φ ∘ S from rfl, hcomp.fderiv]
-    simp [ei, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp [ei, smul_apply, smul_eq_mul]
   set A : ℝ := ∫ x in Metric.ball (0 : E) lam,
       u (lam⁻¹ • x) * (fderiv ℝ φ x) ei
   set B : ℝ := ∫ x in Metric.ball (0 : E) lam,
@@ -197,7 +205,7 @@ private lemma weakPartialDeriv_unitBallDilate_to_ball
     _ = -∫ x in Metric.ball (0 : E) lam, lam⁻¹ * g (lam⁻¹ • x) * φ x := by rw [hconst]
 
 /-- Outward dilation from the unit ball to the larger ball `B(0, lam)`. -/
-noncomputable def MemW1pWitness.unitBallDilate_largeBall
+noncomputable def MemW1pWitness.unitBallDilateLargeBall
     {p : ℝ} (_hp : 1 ≤ p)
     {u : E → ℝ} {lam : ℝ}
     (hlam : 1 < lam)
@@ -217,7 +225,9 @@ noncomputable def MemW1pWitness.unitBallDilate_largeBall
           (Measure.map S (volume.restrict (Metric.ball (0 : E) lam))) := by
       rw [hmap]
       exact hw.memLp.smul_measure ENNReal.ofReal_ne_top
-    simpa [S, DeGiorgi.unitBallDilate] using (hS_emb.memLp_map_measure_iff).1 hu_map
+    unfold DeGiorgi.unitBallDilate
+    exact MemLp.ae_eq (Filter.Eventually.of_forall fun _ ↦ rfl)
+      ((hS_emb.memLp_map_measure_iff).1 hu_map)
   weakGrad := fun x => lam⁻¹ • hw.weakGrad (lam⁻¹ • x)
   weakGrad_component_memLp := by
     intro i
@@ -232,12 +242,16 @@ noncomputable def MemW1pWitness.unitBallDilate_largeBall
           (Measure.map S (volume.restrict (Metric.ball (0 : E) lam))) := by
       rw [hmap]
       exact ((hw.weakGrad_component_memLp i).const_mul lam⁻¹).smul_measure ENNReal.ofReal_ne_top
-    simpa [S, smul_eq_mul] using (hS_emb.memLp_map_measure_iff).1 hgi_map
+    exact MemLp.ae_eq (Filter.Eventually.of_forall fun _ ↦ rfl)
+      ((hS_emb.memLp_map_measure_iff).1 hgi_map)
   isWeakGrad := by
     intro i
-    simpa [DeGiorgi.unitBallDilate, smul_eq_mul] using
-      weakPartialDeriv_unitBallDilate_to_ball (d := d)
-        (i := i) (lam := lam) (u := u) (g := fun x => hw.weakGrad x i)
-        (show 0 < lam from lt_trans zero_lt_one hlam) (hw.isWeakGrad i)
+    unfold DeGiorgi.unitBallDilate
+    change HasWeakPartialDeriv i
+      (fun x ↦ lam⁻¹ * hw.weakGrad (lam⁻¹ • x) i)
+      (fun x ↦ u (lam⁻¹ • x)) (Metric.ball (0 : E) lam)
+    exact weakPartialDeriv_unitBallDilate_to_ball (d := d)
+      (i := i) (lam := lam) (u := u) (g := fun x ↦ hw.weakGrad x i)
+      (show 0 < lam from lt_trans zero_lt_one hlam) (hw.isWeakGrad i)
 
 end DeGiorgi

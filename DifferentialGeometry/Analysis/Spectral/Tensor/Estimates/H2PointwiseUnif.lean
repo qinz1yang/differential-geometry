@@ -208,8 +208,8 @@ theorem hs2_fiber_sq_action
       ring
 
 omit [BoundarylessManifold I M] in
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 theorem gFibreOp_of_fiberSq
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2) {K : ℝ}
@@ -218,10 +218,10 @@ theorem gFibreOp_of_fiberSq
       riemannianFiberNormSq (I := I) (M := M) g 0 2 x (T.toSection x) ≤ K ^ 2) :
     gFibreOpBound (I := I) (M := M) g (ccTensorBilinSymm (I := I) g T) K := by
   intro x v w
-  letI instTens : Bundle.RiemannianBundle
+  let instTens : Bundle.RiemannianBundle
       (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 2
-  letI instNormed : ∀ b : M,
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 2
+  let instNormed : ∀ b : M,
       NormedAddCommGroup (Tensor0SBundle.TensorRSSpace 0 2 I b) :=
     fun b =>
       Bundle.instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal

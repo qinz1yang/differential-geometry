@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -62,25 +61,23 @@ private lemma operatorFieldApplication_sub_left_local (g : SmoothRiemannianMetri
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma unitModel_add2_apply_local (g₀ : SmoothRiemannianMetric I M)
-    (S S' : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
+    (S S' : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2 (S + S') x v =
       unitModel (I := I) (M := M) g₀ 2 S x v + unitModel (I := I) (M := M) g₀ 2 S' x v := by
   simp only [unitModel]
   rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
-    ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add,
-    ContinuousMultilinearMap.add_apply]
+    add_apply, Tensor0SSpace.toModel_add, add_apply]
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma unitModel_sub2_apply_local (g₀ : SmoothRiemannianMetric I M)
-    (S S' : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
+    (S S' : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2 (S - S') x v =
       unitModel (I := I) (M := M) g₀ 2 S x v - unitModel (I := I) (M := M) g₀ 2 S' x v := by
   simp only [unitModel]
   rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-    ContinuousLinearMap.sub_apply, Tensor0SSpace.toModel_sub,
-    ContinuousMultilinearMap.sub_apply]
+    sub_apply, Tensor0SSpace.toModel_sub, sub_apply]
 
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -88,14 +85,14 @@ omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 theorem deTurckLieTraceCoeff_apply_eq (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) (D : SmoothCcTensor g₀ 0 4) (x : M)
-    (v : Fin 2 → TangentSpace I x) :
+    (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
           (deTurckLieTraceCoeff (I := I) (M := M) g₀ g₁ σ) D) x v =
       ∑ k : Fin (Module.finrank ℝ E),
         ContinuousMultilinearMap.domDomCongr σ (unitModel (I := I) (M := M) g₀ 4 D x)
           (Fin.cons (cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
   rw [unitModel, operatorFieldApplication_toSection]
@@ -124,7 +121,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 theorem deTurckLieArm2PrincipalCoeff_apply_eq (g₀ g₁ : SmoothRiemannianMetric I M)
-    (D : SmoothCcTensor g₀ 0 4) (x : M) (v : Fin 2 → TangentSpace I x) :
+    (D : SmoothCcTensor g₀ 0 4) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 4 2
           (deTurckLieArm2PrincipalCoeff (I := I) g₀ g₁) D) x v =
@@ -132,21 +129,21 @@ theorem deTurckLieArm2PrincipalCoeff_apply_eq (g₀ g₁ : SmoothRiemannianMetri
           unitModel (I := I) (M := M) g₀ 4 D x
             ![v 0,
               cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)),
               v 1, (Module.finBasis ℝ E) k])
         + ∑ k : Fin (Module.finrank ℝ E),
             unitModel (I := I) (M := M) g₀ 4 D x
               ![v 1,
                 cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)),
                 v 0, (Module.finBasis ℝ E) k])
       - ∑ k : Fin (Module.finrank ℝ E),
           unitModel (I := I) (M := M) g₀ 4 D x
             ![v 0, v 1,
               cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)),
               (Module.finBasis ℝ E) k] := by
   rw [deTurckLieArm2PrincipalCoeff, operatorFieldApplication_sub_left_local, operatorFieldApplication_add_left,
@@ -172,14 +169,16 @@ theorem deTurckLieArm2PrincipalCoeff_apply_eq (g₀ g₁ : SmoothRiemannianMetri
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma interior_product_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I x)
-    (D : Tensor0SBundle.Tensor0SSpace (s + 1) I x) (w : Fin s → TangentSpace I x) :
+    (D : Tensor0SBundle.Tensor0SSpace (s + 1) I x) (w : Fin s → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) w =
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D) w =
       Tensor0SBundle.Tensor0SSpace.toModel D
-        (Fin.cons (show E from v) (fun k => (show E from w k))) := by
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
+          w) := by
   have h1 : Tensor0SBundle.Tensor0SSpace.toModel
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) =
-      Tensor0SBundle.model_interior_product (𝕜 := ℝ) (E := E) s (show E from v)
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D) =
+      Tensor0SBundle.modelInteriorProduct (𝕜 := ℝ) (E := E) s
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
         (Tensor0SBundle.Tensor0SSpace.toModel D) := rfl
   rw [h1]
   rfl
@@ -188,19 +187,22 @@ private lemma interior_product_toModel_eval (s : ℕ) (x : M) (v : TangentSpace 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma connectionDifferenceFib_toModel_eval (g₁ g₀ : SmoothRiemannianMetric I M) (x : M)
-    (om : Tensor0SBundle.Tensor0SSpace 1 I x) (w : Fin 2 → TangentSpace I x) :
+    (om : Tensor0SBundle.Tensor0SSpace 1 I x) (w : Fin 2 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
         ((show Tensor0SBundle.Tensor0SSpace 1 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
           connectionDifferenceFib (I := I) g₁ g₀ x) om) w =
       Tensor0SBundle.Tensor0SSpace.toModel om
-        (fun _ : Fin 1 => (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 0) (w 1))) := rfl
+        (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 1)))) := rfl
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma deTurckLiePairTraceFib_toModel_eval (g₁ gA gB : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 6)) (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x)
-    (w : Fin 2 → TangentSpace I x) :
+    (w : Fin 2 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
         (deTurckLiePairTraceFib (I := I) g₁ σ x
           (metricConnectionDifferenceLoweredFib (I := I) g₁ gA gB x) D) w =
@@ -211,11 +213,11 @@ private lemma deTurckLiePairTraceFib_toModel_eval (g₁ gA gB : SmoothRiemannian
             (Tensor0SBundle.Tensor0SSpace.toModel
               (metricConnectionDifferenceLoweredFib (I := I) g₁ gA gB x)))
           (Fin.cons (cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis l)))
             (Fin.cons ((Module.finBasis ℝ E) l)
               (Fin.cons (cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)))
                 (Fin.cons ((Module.finBasis ℝ E) k) w)))) := by
   rw [deTurckLiePairTraceFib, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
@@ -229,16 +231,19 @@ omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma deTurckLieKoszulTraceFib_toModel_eval (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 3)) (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x)
-    (w : Fin 2 → TangentSpace I x) :
+    (w : Fin 2 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
         (deTurckLieKoszulTraceFib (I := I) g₀ g₁ σ x D) w =
       ∑ k : Fin (Module.finrank ℝ E),
         ContinuousMultilinearMap.domDomCongr σ (Tensor0SBundle.Tensor0SSpace.toModel D)
           ![cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             (Module.finBasis ℝ E) k,
-            (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 0) (w 1))] := by
+            tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 1)))] := by
   rw [deTurckLieKoszulTraceFib, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     connectionDifferenceFib_toModel_eval, cometricDoubleTraceFib_toModel, domDomCongrFibRank_apply,
     Tensor0SSpace.toModel_ofModel, modelDoubleTrace_apply]
@@ -252,68 +257,87 @@ omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
-    (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (a b : TangentSpace I x) :
+    (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (a b : E) :
     Tensor0SBundle.Tensor0SSpace.toModel
         (deTurckLieArm1CoreFib (I := I) g₀ g₁ g_bg x D) ![a, b] =
       (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           Tensor0SBundle.Tensor0SSpace.toModel D
               ![a,
                 cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis l)),
                 cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k))] *
             g₁.inner x
-              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x b ((Module.finBasis ℝ E) l))
-              ((Module.finBasis ℝ E) k))
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm b)
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((Module.finBasis ℝ E) l)))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                ((Module.finBasis ℝ E) k)))
       - (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           Tensor0SBundle.Tensor0SSpace.toModel D
               ![a,
                 cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis l)),
                 cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k))] *
             g₁.inner x
-              (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x ((Module.finBasis ℝ E) l)
-                ((Module.finBasis ℝ E) k)) b)
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((Module.finBasis ℝ E) l))
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((Module.finBasis ℝ E) k)))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm b))
       - Tensor0SBundle.Tensor0SSpace.toModel D
           ![a, b,
-            (show E from
-              (PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)]
+            tangentSpaceModelContinuousLinearEquiv (I := I) x
+              ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)]
       - (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           Tensor0SBundle.Tensor0SSpace.toModel D
               ![cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis l)),
                 b,
                 cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k))] *
             g₁.inner x
-              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x a ((Module.finBasis ℝ E) k))
-              ((Module.finBasis ℝ E) l))
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm a)
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((Module.finBasis ℝ E) k)))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                ((Module.finBasis ℝ E) l)))
       - (∑ k : Fin (Module.finrank ℝ E),
           Tensor0SBundle.Tensor0SSpace.toModel D
             ![cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)),
-              (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x a b),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm a)
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm b)),
               (Module.finBasis ℝ E) k])
       - (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           Tensor0SBundle.Tensor0SSpace.toModel D
               ![cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis l)),
                 b,
                 cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k))] *
             g₁.inner x
-              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x a ((Module.finBasis ℝ E) l))
-              ((Module.finBasis ℝ E) k)) := by
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm a)
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((Module.finBasis ℝ E) l)))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                ((Module.finBasis ℝ E) k))) := by
   have hS2 : Tensor0SBundle.Tensor0SSpace.toModel
       (deTurckLiePairTraceFib (I := I) g₁ deTurckLieArm1PairPermInnerTwo x
         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D) ![a, b] =
@@ -321,14 +345,18 @@ private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemann
         Tensor0SBundle.Tensor0SSpace.toModel D
             ![a,
               cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis l)),
               cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k))] *
           g₁.inner x
-            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x b ((Module.finBasis ℝ E) l))
-            ((Module.finBasis ℝ E) k) := by
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm b)
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                ((Module.finBasis ℝ E) l)))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              ((Module.finBasis ℝ E) k)) := by
     rw [deTurckLiePairTraceFib_toModel_eval]
     refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
     rw [ContinuousMultilinearMap.domDomCongr_apply,
@@ -343,14 +371,18 @@ private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemann
         Tensor0SBundle.Tensor0SSpace.toModel D
             ![a,
               cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis l)),
               cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k))] *
           g₁.inner x
-            (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x ((Module.finBasis ℝ E) l)
-              ((Module.finBasis ℝ E) k)) b := by
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                ((Module.finBasis ℝ E) l))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                ((Module.finBasis ℝ E) k)))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm b) := by
     rw [deTurckLiePairTraceFib_toModel_eval]
     refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
     rw [ContinuousMultilinearMap.domDomCongr_apply,
@@ -359,13 +391,13 @@ private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemann
     · exact congrArg (fun t : Fin 3 → E => Tensor0SBundle.Tensor0SSpace.toModel D t)
         (by funext i; fin_cases i <;> rfl)
   have hT2 : Tensor0SBundle.Tensor0SSpace.toModel
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 2 x
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 2 x
         ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)
         (domDomCongrFibRank (I := I) 3 deTurckLieArm1VecSlotPerm x D)) ![a, b] =
       Tensor0SBundle.Tensor0SSpace.toModel D
         ![a, b,
-          (show E from
-            (PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)] := by
+          tangentSpaceModelContinuousLinearEquiv (I := I) x
+            ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)] := by
     rw [interior_product_toModel_eval, domDomCongrFibRank_apply,
       Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
     exact congrArg (fun t : Fin 3 → E => Tensor0SBundle.Tensor0SSpace.toModel D t)
@@ -376,15 +408,19 @@ private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemann
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.toModel D
             ![cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis l)),
               b,
               cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k))] *
           g₁.inner x
-            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x a ((Module.finBasis ℝ E) k))
-            ((Module.finBasis ℝ E) l) := by
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm a)
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                ((Module.finBasis ℝ E) k)))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              ((Module.finBasis ℝ E) l)) := by
     rw [deTurckLiePairTraceFib_toModel_eval]
     refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
     rw [ContinuousMultilinearMap.domDomCongr_apply,
@@ -397,9 +433,12 @@ private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemann
       ∑ k : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.toModel D
           ![cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
-            (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x a b),
+            tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm a)
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm b)),
             (Module.finBasis ℝ E) k] := by
     rw [deTurckLieKoszulTraceFib_toModel_eval]
     refine Finset.sum_congr rfl fun k _ => ?_
@@ -412,15 +451,19 @@ private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemann
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.toModel D
             ![cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis l)),
               b,
               cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k))] *
           g₁.inner x
-            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x a ((Module.finBasis ℝ E) l))
-            ((Module.finBasis ℝ E) k) := by
+            (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm a)
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                ((Module.finBasis ℝ E) l)))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              ((Module.finBasis ℝ E) k)) := by
     rw [deTurckLiePairTraceFib_toModel_eval]
     refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => ?_
     rw [ContinuousMultilinearMap.domDomCongr_apply,
@@ -429,8 +472,8 @@ private lemma deTurckLieArm1CoreFib_toModel_eval (g₀ g₁ g_bg : SmoothRiemann
     · exact congrArg (fun t : Fin 3 → E => Tensor0SBundle.Tensor0SSpace.toModel D t)
         (by funext i; fin_cases i <;> rfl)
   rw [deTurckLieArm1CoreFib]
-  simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.comp_apply,
-    Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
+  simp only [sub_apply, ContinuousLinearMap.comp_apply,
+    Tensor0SSpace.toModel_sub]
   rw [hS2, hB, hT2, hT3, hT4, hT5]
 
 
@@ -438,68 +481,87 @@ omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private lemma deTurckLieArm1CoreFib_toModel_eval' (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
-    (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (w : Fin 2 → TangentSpace I x) :
+    (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (w : Fin 2 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
         (deTurckLieArm1CoreFib (I := I) g₀ g₁ g_bg x D) w =
       (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           Tensor0SBundle.Tensor0SSpace.toModel D
               ![w 0,
                 cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis l)),
                 cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k))] *
             g₁.inner x
-              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 1) ((Module.finBasis ℝ E) l))
-              ((Module.finBasis ℝ E) k))
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 1))
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((Module.finBasis ℝ E) l)))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                ((Module.finBasis ℝ E) k)))
       - (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           Tensor0SBundle.Tensor0SSpace.toModel D
               ![w 0,
                 cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis l)),
                 cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k))] *
             g₁.inner x
-              (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x ((Module.finBasis ℝ E) l)
-                ((Module.finBasis ℝ E) k)) (w 1))
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((Module.finBasis ℝ E) l))
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((Module.finBasis ℝ E) k)))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 1)))
       - Tensor0SBundle.Tensor0SSpace.toModel D
           ![w 0, w 1,
-            (show E from
-              (PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)]
+            tangentSpaceModelContinuousLinearEquiv (I := I) x
+              ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)]
       - (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           Tensor0SBundle.Tensor0SSpace.toModel D
               ![cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis l)),
                 w 1,
                 cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k))] *
             g₁.inner x
-              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 0) ((Module.finBasis ℝ E) k))
-              ((Module.finBasis ℝ E) l))
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((Module.finBasis ℝ E) k)))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                ((Module.finBasis ℝ E) l)))
       - (∑ k : Fin (Module.finrank ℝ E),
           Tensor0SBundle.Tensor0SSpace.toModel D
             ![cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)),
-              (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 0) (w 1)),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 1))),
               (Module.finBasis ℝ E) k])
       - (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
           Tensor0SBundle.Tensor0SSpace.toModel D
               ![cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis l)),
                 w 1,
                 cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k))] *
             g₁.inner x
-              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (w 0) ((Module.finBasis ℝ E) l))
-              ((Module.finBasis ℝ E) k)) := by
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((Module.finBasis ℝ E) l)))
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                ((Module.finBasis ℝ E) k))) := by
   have hw : w = ![w 0, w 1] := by funext i; fin_cases i <;> rfl
   conv_lhs => rw [hw]
   exact deTurckLieArm1CoreFib_toModel_eval (I := I) g₀ g₁ g_bg x D (w 0) (w 1)
@@ -509,7 +571,7 @@ omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private lemma deTurckLieArm1_swapCore_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
-    (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (v : Fin 2 → TangentSpace I x) :
+    (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (v : Fin 2 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
         (domDomCongrFibRank (I := I) 2 (Equiv.swap (0 : Fin 2) 1) x
           (deTurckLieArm1CoreFib (I := I) g₀ g₁ g_bg x D)) v =
@@ -526,13 +588,13 @@ omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private lemma deTurckLieArm1_interiorProduct_eval (g₁ g_bg : SmoothRiemannianMetric I M)
-    (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (v : Fin 2 → TangentSpace I x) :
+    (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (v : Fin 2 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 2 x
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 2 x
           ((PDE.DeTurck.deTurckVF (I := I) g₁ g_bg : Π y : M, TangentSpace I y) x) D) v =
       Tensor0SBundle.Tensor0SSpace.toModel D
-        ![(show E from
-            (PDE.DeTurck.deTurckVF (I := I) g₁ g_bg : Π y : M, TangentSpace I y) x),
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+            ((PDE.DeTurck.deTurckVF (I := I) g₁ g_bg : Π y : M, TangentSpace I y) x),
           v 0, v 1] := by
   rw [interior_product_toModel_eval]
   exact congrArg (fun t : Fin 3 → E => Tensor0SBundle.Tensor0SSpace.toModel D t)
@@ -542,14 +604,17 @@ private lemma deTurckLieArm1_interiorProduct_eval (g₁ g_bg : SmoothRiemannianM
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma deTurckLieArm1_koszulZero_eval (g₀ g₁ : SmoothRiemannianMetric I M)
-    (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (v : Fin 2 → TangentSpace I x) :
+    (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (v : Fin 2 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
         (deTurckLieKoszulTraceFib (I := I) g₀ g₁ deTurckLieArm1KoszulZeroPerm x D) v =
       ∑ k : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.toModel D
-          ![(show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 0) (v 1)),
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))),
             cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             (Module.finBasis ℝ E) k] := by
   rw [deTurckLieKoszulTraceFib_toModel_eval]
@@ -563,137 +628,178 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 omit [I.Boundaryless] in
 theorem deTurckLieArm1Coeff_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
-    (D : SmoothCcTensor g₀ 0 3) (x : M) (v : Fin 2 → TangentSpace I x) :
+    (D : SmoothCcTensor g₀ 0 3) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 3 2
           (deTurckLieArm1Coeff (I := I) (M := M) g₀ g₁ g_bg) D) x v =
       unitModel (I := I) (M := M) g₀ 3 D x
-          ![(show E from
-              (PDE.DeTurck.deTurckVF (I := I) g₁ g_bg : Π y : M, TangentSpace I y) x),
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+              ((PDE.DeTurck.deTurckVF (I := I) g₁ g_bg : Π y : M, TangentSpace I y) x),
             v 0, v 1]
       + ((∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
             unitModel (I := I) (M := M) g₀ 3 D x
                 ![v 0,
                   cometricLmodel (I := I) g₁ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis l)),
                   cometricLmodel (I := I) g₁ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k))] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 1) ((Module.finBasis ℝ E) l))
-                ((Module.finBasis ℝ E) k))
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                    ((Module.finBasis ℝ E) l)))
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((Module.finBasis ℝ E) k)))
           - (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
               unitModel (I := I) (M := M) g₀ 3 D x
                   ![v 0,
                     cometricLmodel (I := I) g₁ x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis l)),
                     cometricLmodel (I := I) g₁ x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis k))] *
                 g₁.inner x
-                  (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x ((Module.finBasis ℝ E) l)
-                    ((Module.finBasis ℝ E) k)) (v 1))
+                  (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                      ((Module.finBasis ℝ E) l))
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                      ((Module.finBasis ℝ E) k)))
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)))
           - unitModel (I := I) (M := M) g₀ 3 D x
               ![v 0, v 1,
-                (show E from
-                  (PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)]
+                tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)]
           - (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
               unitModel (I := I) (M := M) g₀ 3 D x
                   ![cometricLmodel (I := I) g₁ x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis l)),
                     v 1,
                     cometricLmodel (I := I) g₁ x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis k))] *
                 g₁.inner x
-                  (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 0) ((Module.finBasis ℝ E) k))
-                  ((Module.finBasis ℝ E) l))
+                  (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                      ((Module.finBasis ℝ E) k)))
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                    ((Module.finBasis ℝ E) l)))
           - (∑ k : Fin (Module.finrank ℝ E),
               unitModel (I := I) (M := M) g₀ 3 D x
                 ![cometricLmodel (I := I) g₁ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)),
-                  (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 0) (v 1)),
+                  tangentSpaceModelContinuousLinearEquiv (I := I) x
+                    (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+                      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))),
                   (Module.finBasis ℝ E) k])
           - (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
               unitModel (I := I) (M := M) g₀ 3 D x
                   ![cometricLmodel (I := I) g₁ x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis l)),
                     v 1,
                     cometricLmodel (I := I) g₁ x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis k))] *
                 g₁.inner x
-                  (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 0) ((Module.finBasis ℝ E) l))
-                  ((Module.finBasis ℝ E) k)))
+                  (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                      ((Module.finBasis ℝ E) l)))
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                    ((Module.finBasis ℝ E) k))))
       + ((∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
             unitModel (I := I) (M := M) g₀ 3 D x
                 ![v 1,
                   cometricLmodel (I := I) g₁ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis l)),
                   cometricLmodel (I := I) g₁ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k))] *
               g₁.inner x
-                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 0) ((Module.finBasis ℝ E) l))
-                ((Module.finBasis ℝ E) k))
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                    ((Module.finBasis ℝ E) l)))
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((Module.finBasis ℝ E) k)))
           - (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
               unitModel (I := I) (M := M) g₀ 3 D x
                   ![v 1,
                     cometricLmodel (I := I) g₁ x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis l)),
                     cometricLmodel (I := I) g₁ x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis k))] *
                 g₁.inner x
-                  (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x ((Module.finBasis ℝ E) l)
-                    ((Module.finBasis ℝ E) k)) (v 0))
+                  (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                      ((Module.finBasis ℝ E) l))
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                      ((Module.finBasis ℝ E) k)))
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)))
           - unitModel (I := I) (M := M) g₀ 3 D x
               ![v 1, v 0,
-                (show E from
-                  (PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)]
+                tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)]
           - (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
               unitModel (I := I) (M := M) g₀ 3 D x
                   ![cometricLmodel (I := I) g₁ x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis l)),
                     v 0,
                     cometricLmodel (I := I) g₁ x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis k))] *
                 g₁.inner x
-                  (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 1) ((Module.finBasis ℝ E) k))
-                  ((Module.finBasis ℝ E) l))
+                  (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                      ((Module.finBasis ℝ E) k)))
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                    ((Module.finBasis ℝ E) l)))
           - (∑ k : Fin (Module.finrank ℝ E),
               unitModel (I := I) (M := M) g₀ 3 D x
                 ![cometricLmodel (I := I) g₁ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)),
-                  (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 1) (v 0)),
+                  tangentSpaceModelContinuousLinearEquiv (I := I) x
+                    (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
+                      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))),
                   (Module.finBasis ℝ E) k])
           - (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
               unitModel (I := I) (M := M) g₀ 3 D x
                   ![cometricLmodel (I := I) g₁ x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis l)),
                     v 0,
                     cometricLmodel (I := I) g₁ x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis k))] *
                 g₁.inner x
-                  (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 1) ((Module.finBasis ℝ E) l))
-                  ((Module.finBasis ℝ E) k)))
+                  (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                      ((Module.finBasis ℝ E) l)))
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                    ((Module.finBasis ℝ E) k))))
       + ∑ k : Fin (Module.finrank ℝ E),
           unitModel (I := I) (M := M) g₀ 3 D x
-            ![(show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (v 0) (v 1)),
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))),
               cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)),
               (Module.finBasis ℝ E) k] := by
   rw [unitModel, operatorFieldApplication_toSection]
@@ -715,8 +821,8 @@ theorem deTurckLieArm1Coeff_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I 
         ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 3 I x from
           D.toSection x) (unitTensor (I := I) (M := M) x)) from rfl]
   rw [deTurckLieArm1Fib]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply,
-    Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply]
+  simp only [add_apply, ContinuousLinearMap.comp_apply,
+    Tensor0SSpace.toModel_add]
   rw [deTurckLieArm1_interiorProduct_eval, deTurckLieArm1CoreFib_toModel_eval',
     deTurckLieArm1_swapCore_eval, deTurckLieArm1CoreFib_toModel_eval,
     deTurckLieArm1_koszulZero_eval]
@@ -726,61 +832,130 @@ theorem deTurckLieArm1Coeff_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem deTurckLieCoeffField_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
-    (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
+    (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
           (deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg) W) x v =
       (- ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           unitModel (I := I) (M := M) g₀ 2 W x
-              (fun j => if j = 0 then smoothOrthoFrame (I := I) g₁ x a x
-                else smoothOrthoFrame (I := I) g₁ x b x) *
+              (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (if j = 0 then smoothOrthoFrame (I := I) g₁ x a x
+                  else smoothOrthoFrame (I := I) g₁ x b x)) *
             (g₁.inner x
                 (deTurckConnectionDifferenceCovDeriv (I := I) g₁ g_bg
-                  (smoothExtensionTangent (I := I) x (v 0))
+                  (smoothExtensionTangent (I := I) x
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)))
                   (smoothExtensionTangent (I := I) x (smoothOrthoFrame (I := I) g₁ x a x))
                   (smoothExtensionTangent (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)) x)
-                (v 1)
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
               + g₁.inner x
                 (deTurckConnectionDifferenceCovDeriv (I := I) g₁ g_bg
-                  (smoothExtensionTangent (I := I) x (v 1))
+                  (smoothExtensionTangent (I := I) x
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)))
                   (smoothExtensionTangent (I := I) x (smoothOrthoFrame (I := I) g₁ x a x))
                   (smoothExtensionTangent (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)) x)
-                (v 0)))
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))))
         + (unitModel (I := I) (M := M) g₀ 2 W x
               (fun j => if j = 0 then
-                deTurckVFCovDeriv (I := I) g₁ g_bg
-                  (smoothExtensionTangent (I := I) x (v 0)) x
+                tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (deTurckVFCovDeriv (I := I) g₁ g_bg
+                    (smoothExtensionTangent (I := I) x
+                      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) x)
                 else v 1)
             + unitModel (I := I) (M := M) g₀ 2 W x
               (fun j => if j = 0 then v 0
-                else deTurckVFCovDeriv (I := I) g₁ g_bg
-                  (smoothExtensionTangent (I := I) x (v 1)) x)) :=
-  ricciArmOrder0DeTurckLieCoeff_operatorFieldApplication_eq (I := I) (M := M) g₀ g₁ g_bg W x v
+                else tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (deTurckVFCovDeriv (I := I) g₁ g_bg
+                    (smoothExtensionTangent (I := I) x
+                      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))) x))) := by
+  rw [unitModel, operatorFieldApplication_toSection]
+  rw [show ((show Tensor0SBundle.Tensor0SSpace 2 I x →L[ℝ]
+        Tensor0SBundle.Tensor0SSpace 2 I x from
+          (deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg).toSection x).comp
+        (show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ]
+          Tensor0SBundle.Tensor0SSpace 2 I x from W.toSection x))
+        (unitTensor (I := I) (M := M) x) =
+      (show Tensor0SBundle.Tensor0SSpace 2 I x →L[ℝ]
+        Tensor0SBundle.Tensor0SSpace 2 I x from
+          (deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg).toSection x)
+        ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ]
+          Tensor0SBundle.Tensor0SSpace 2 I x from W.toSection x)
+            (unitTensor (I := I) (M := M) x)) from rfl]
+  rw [deTurckLieCoeffField_toSection]
+  rw [show (show Tensor0SBundle.Tensor0SSpace 2 I x →L[ℝ]
+        Tensor0SBundle.Tensor0SSpace 2 I x from
+          (show Tensor0SBundle.TensorRSSpace 2 2 I x from
+            Tensor0SBundle.TensorRSSpace.ofCLM (deTurckLieFib (I := I) g₁ g_bg x)))
+        ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ]
+          Tensor0SBundle.Tensor0SSpace 2 I x from W.toSection x)
+            (unitTensor (I := I) (M := M) x)) =
+      deTurckLieFib (I := I) g₁ g_bg x
+        ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ]
+          Tensor0SBundle.Tensor0SSpace 2 I x from W.toSection x)
+            (unitTensor (I := I) (M := M) x)) from rfl]
+  set D : Tensor0SBundle.Tensor0SSpace 2 I x :=
+    (show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ]
+      Tensor0SBundle.Tensor0SSpace 2 I x from W.toSection x)
+        (unitTensor (I := I) (M := M) x)
+  rw [deTurckLieFib, add_apply, Tensor0SSpace.toModel_add]
+  change Tensor0SSpace.toModel
+      (connectionDifferenceCovDerivBiContrFib (I := I) g₁ g_bg x D) v +
+    Tensor0SSpace.toModel
+      (deTurckLieCovariantDerivativeInsertionFib (I := I) g₁ g_bg x D) v = _
+  congr 1
+  · rw [connectionDifferenceCovDerivBiContrFib,
+      deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel, neg_one_mul]
+    refine congrArg (fun t => -t) ?_
+    refine Finset.sum_congr rfl (fun a _ => ?_)
+    refine Finset.sum_congr rfl (fun b _ => ?_)
+    rw [deTurckLieConnectionDifferenceDerivativeCovKernel_apply_extend,
+      deTurckLieConnectionDifferenceDerivativeCovKernel_apply_extend, mul_comm]
+    congr 1
+    rw [unitModel]
+    congr 1
+    funext j
+    fin_cases j <;> simp
+  · rw [deTurckLieCovariantDerivativeInsertionFib_toModel]
+    rw [tangentLinearMapToModel_apply, tangentLinearMapToModel_apply,
+      deTurckVectorFieldCovariantDerivativeEndomorphism_apply,
+      deTurckVectorFieldCovariantDerivativeEndomorphism_apply]
+    congr 1
+    · rw [unitModel]
+      congr 1
+      funext j
+      fin_cases j <;> simp
+    · rw [unitModel]
+      congr 1
+      funext j
+      fin_cases j <;> simp
 
 
 omit [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 theorem deTurckLieConnectionDifferenceDerivCoeffField_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
-    (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
+    (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
           (deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g_bg) W) x v =
       - ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           unitModel (I := I) (M := M) g₀ 2 W x
-              (fun j => if j = 0 then smoothOrthoFrame (I := I) g₁ x a x
-                else smoothOrthoFrame (I := I) g₁ x b x) *
+              (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (if j = 0 then smoothOrthoFrame (I := I) g₁ x a x
+                  else smoothOrthoFrame (I := I) g₁ x b x)) *
             (g₁.inner x
                 (deTurckConnectionDifferenceCovDeriv (I := I) g₁ g_bg
-                  (smoothExtensionTangent (I := I) x (v 0))
+                  (smoothExtensionTangent (I := I) x
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)))
                   (smoothExtensionTangent (I := I) x (smoothOrthoFrame (I := I) g₁ x a x))
                   (smoothExtensionTangent (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)) x)
-                (v 1)
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
               + g₁.inner x
                 (deTurckConnectionDifferenceCovDeriv (I := I) g₁ g_bg
-                  (smoothExtensionTangent (I := I) x (v 1))
+                  (smoothExtensionTangent (I := I) x
+                    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)))
                   (smoothExtensionTangent (I := I) x (smoothOrthoFrame (I := I) g₁ x a x))
                   (smoothExtensionTangent (I := I) x (smoothOrthoFrame (I := I) g₁ x b x)) x)
-                (v 0)) := by
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) := by
   rw [unitModel, operatorFieldApplication_toSection]
   rw [show ((show Tensor0SBundle.Tensor0SSpace 2 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
         (deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g_bg).toSection x).comp
@@ -815,19 +990,23 @@ omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem deTurckLieCovariantDerivativeInsertionField_apply_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
-    (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
+    (W : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g₀ 2
         (operatorFieldApply (I := I) (M := M) g₀ 2 2
           (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg) W) x v =
       unitModel (I := I) (M := M) g₀ 2 W x
           (fun j => if j = 0 then
-            deTurckVFCovDeriv (I := I) g₁ g_bg
-              (smoothExtensionTangent (I := I) x (v 0)) x
+            tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (deTurckVFCovDeriv (I := I) g₁ g_bg
+                (smoothExtensionTangent (I := I) x
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) x)
             else v 1)
         + unitModel (I := I) (M := M) g₀ 2 W x
           (fun j => if j = 0 then v 0
-            else deTurckVFCovDeriv (I := I) g₁ g_bg
-              (smoothExtensionTangent (I := I) x (v 1)) x) := by
+            else tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (deTurckVFCovDeriv (I := I) g₁ g_bg
+                (smoothExtensionTangent (I := I) x
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))) x)) := by
   rw [unitModel, operatorFieldApplication_toSection]
   rw [show ((show Tensor0SBundle.Tensor0SSpace 2 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
         (deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g_bg).toSection x).comp
@@ -847,7 +1026,9 @@ theorem deTurckLieCovariantDerivativeInsertionField_apply_eq (g₀ g₁ g_bg : S
         ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
           W.toSection x) (unitTensor (I := I) (M := M) x)) from rfl]
   rw [deTurckLieCovariantDerivativeInsertionFib_toModel]
-  rw [deTurckVectorFieldCovariantDerivativeEndomorphism_apply, deTurckVectorFieldCovariantDerivativeEndomorphism_apply]
+  rw [tangentLinearMapToModel_apply, tangentLinearMapToModel_apply,
+    deTurckVectorFieldCovariantDerivativeEndomorphism_apply,
+    deTurckVectorFieldCovariantDerivativeEndomorphism_apply]
   congr 1
   · rw [unitModel]
     congr 1
@@ -863,11 +1044,14 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 private lemma christoffelCorrection_chartModelBasis_pair_self
     (g : SmoothRiemannianMetric I M) (x : M) (i j : Fin (Module.finrank ℝ E)) :
-    christoffelCorrection (I := I) g x x ((chartModelBasis E) j) ((chartModelBasis E) i) =
+    christoffelCorrection (I := I) g x x ((chartModelBasis E) j)
+        (centeredChartTangentBasis (I := I) x i) =
       ∑ m : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g x i j m (extChartAt I x x) • (chartModelBasis E) m := by
   classical
-  rw [christoffelCorrection_apply, trivToE_self_apply (I := I) x ((chartModelBasis E) i)]
+  rw [christoffelCorrection_apply,
+    trivToE_self_apply (I := I) x (centeredChartTangentBasis (I := I) x i),
+    centeredChartTangentBasis_apply, ContinuousLinearEquiv.apply_symm_apply]
   rw [Finset.sum_eq_single i]
   · rw [Finset.sum_eq_single j]
     · refine Finset.sum_congr rfl (fun m _ => ?_)
@@ -901,7 +1085,7 @@ private lemma leviCivita_toFun_chartBasis_eval_of_localComponents
       σ b = ∑ p : Fin (Module.finrank ℝ E),
         c p (extChartAt I x b) • chartBasisVecFiber (I := I) x p b)
     (i : Fin (Module.finrank ℝ E)) :
-    (LeviCivita (I := I) g₁).toFun σ x ((chartModelBasis E) i) =
+    (LeviCivita (I := I) g₁).toFun σ x (centeredChartTangentBasis (I := I) x i) =
       ∑ p : Fin (Module.finrank ℝ E),
         (partialDeriv (E := E) i (c p) (extChartAt I x x) +
           ∑ m : Fin (Module.finrank ℝ E),
@@ -919,15 +1103,19 @@ private lemma leviCivita_toFun_chartBasis_eval_of_localComponents
     intro jj
     rw [Module.Basis.repr_sum_self]
   have hσx : σ x = ∑ m : Fin (Module.finrank ℝ E),
-      c m (extChartAt I x x) • (chartModelBasis E) m := by
+      c m (extChartAt I x x) • centeredChartTangentBasis (I := I) x m := by
     rw [hloc x hx_good]
     refine Finset.sum_congr rfl (fun m _ => ?_)
     rw [chartBasisVecFiber_self (I := I) x m]
-  have hrepr_x : chartE_section_repr (I := I) x σ x =
+  have hrepr_x : chartESectionRepr (I := I) x σ x =
       ∑ m : Fin (Module.finrank ℝ E),
         c m (extChartAt I x x) • (chartModelBasis E) m := by
-    rw [chartE_section_repr_eq_trivToE, trivToE_self_apply (I := I) x (σ x), hσx]
-  have hev : (chartE_section_repr (I := I) x σ ∘ (extChartAt I x).symm) =ᶠ[𝓝 (extChartAt I x x)]
+    rw [chartE_section_repr_eq_trivToE, trivToE_self_apply (I := I) x (σ x), hσx,
+      map_sum]
+    refine Finset.sum_congr rfl (fun m _ => ?_)
+    rw [map_smul, centeredChartTangentBasis_apply,
+      ContinuousLinearEquiv.apply_symm_apply]
+  have hev : (chartESectionRepr (I := I) x σ ∘ (extChartAt I x).symm) =ᶠ[𝓝 (extChartAt I x x)]
       fun y : E => ∑ p : Fin (Module.finrank ℝ E), c p y • (chartModelBasis E) p := by
     have hopen : IsOpen (interior ((extChartAt I x).target : Set E) ∩
         (extChartAt I x).symm ⁻¹' chartLeviCivitaGoodSet (I := I) x) :=
@@ -947,7 +1135,7 @@ private lemma leviCivita_toFun_chartBasis_eval_of_localComponents
       chartLeviCivitaGoodSet_mem_baseSet (I := I) hb_good
     have hby : extChartAt I x ((extChartAt I x).symm y) = y :=
       (extChartAt I x).right_inv (interior_subset hy_int)
-    change chartE_section_repr (I := I) x σ ((extChartAt I x).symm y) =
+    change chartESectionRepr (I := I) x σ ((extChartAt I x).symm y) =
       ∑ p : Fin (Module.finrank ℝ E), c p y • (chartModelBasis E) p
     rw [chartE_section_repr_eq_trivToE, hloc _ hb_good, hby, map_sum]
     refine Finset.sum_congr rfl (fun p _ => ?_)
@@ -957,7 +1145,7 @@ private lemma leviCivita_toFun_chartBasis_eval_of_localComponents
         (trivFromE (I := I) x ((extChartAt I x).symm y) ((chartModelBasis E) p)) =
       (chartModelBasis E) p
     exact trivToE_trivFromE (I := I) x hb_base ((chartModelBasis E) p)
-  have hfder : fderiv ℝ (chartE_section_repr (I := I) x σ ∘ (extChartAt I x).symm)
+  have hfder : fderiv ℝ (chartESectionRepr (I := I) x σ ∘ (extChartAt I x).symm)
       (extChartAt I x x) ((chartModelBasis E) i) =
       ∑ p : Fin (Module.finrank ℝ E),
         partialDeriv (E := E) i (c p) (extChartAt I x x) • (chartModelBasis E) p := by
@@ -969,18 +1157,21 @@ private lemma leviCivita_toFun_chartBasis_eval_of_localComponents
         (extChartAt I x x) :=
       HasFDerivAt.fun_sum (fun p _ =>
         ((hc p).hasFDerivAt.smul_const ((chartModelBasis E) p)))
-    rw [hhas.fderiv, ContinuousLinearMap.sum_apply]
+    rw [hhas.fderiv, sum_apply]
     refine Finset.sum_congr rfl (fun p _ => ?_)
     rw [ContinuousLinearMap.smulRight_apply]
     rfl
   have hchris : christoffelCorrection (I := I) g₁ x x
       (∑ m : Fin (Module.finrank ℝ E),
-        c m (extChartAt I x x) • (chartModelBasis E) m) ((chartModelBasis E) i) =
+        c m (extChartAt I x x) • (chartModelBasis E) m)
+        (centeredChartTangentBasis (I := I) x i) =
       ∑ p : Fin (Module.finrank ℝ E),
         (∑ m : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g₁ x i m p (extChartAt I x x) *
             c m (extChartAt I x x)) • (chartModelBasis E) p := by
-    rw [christoffelCorrection_apply, trivToE_self_apply (I := I) x ((chartModelBasis E) i)]
+    rw [christoffelCorrection_apply,
+      trivToE_self_apply (I := I) x (centeredChartTangentBasis (I := I) x i),
+      centeredChartTangentBasis_apply, ContinuousLinearEquiv.apply_symm_apply]
     rw [Finset.sum_eq_single i]
     · rw [Finset.sum_comm]
       refine Finset.sum_congr rfl (fun p _ => ?_)
@@ -994,14 +1185,17 @@ private lemma leviCivita_toFun_chartBasis_eval_of_localComponents
         zero_mul, zero_smul]
     · intro h
       exact absurd (Finset.mem_univ i) h
-  rw [LeviCivita_chart_apply (I := I) g₁ x hx_good hσ ((chartModelBasis E) i),
-    chartLeviCivita_apply (I := I) g₁ x σ hx_good ((chartModelBasis E) i),
-    trivToE_self_apply (I := I) x ((chartModelBasis E) i), hfder, hrepr_x, hchris,
+  rw [LeviCivita_chart_apply (I := I) g₁ x hx_good hσ (centeredChartTangentBasis (I := I) x i),
+    chartLeviCivita_apply (I := I) g₁ x σ hx_good (centeredChartTangentBasis (I := I) x i),
+    trivToE_self_apply (I := I) x (centeredChartTangentBasis (I := I) x i),
+    hrepr_x, hchris,
+    centeredChartTangentBasis_apply, ContinuousLinearEquiv.apply_symm_apply,
+    hfder,
     ← Finset.sum_add_distrib, map_sum]
   refine Finset.sum_congr rfl (fun p _ => ?_)
   rw [chartBasisVecFiber_self (I := I) x p, map_add, ContinuousLinearMap.map_smul,
     ContinuousLinearMap.map_smul, trivFromE_self_apply (I := I) x ((chartModelBasis E) p),
-    ← add_smul]
+    centeredChartTangentBasis_apply, ← add_smul]
 
 
 open DifferentialGeometry.PDE.DeTurck.DeTurckLinearization in
@@ -1011,7 +1205,7 @@ omit [SigmaCompactSpace M] in
 theorem deTurckLieCovariantDerivativeW_chartBasis_eq (g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (i : Fin (Module.finrank ℝ E)) :
     deTurckVFCovDeriv (I := I) g₁ g_bg
-        (smoothExtensionTangent (I := I) x ((chartModelBasis E) i)) x =
+        (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i)) x =
       ∑ p : Fin (Module.finrank ℝ E),
         (partialDeriv (E := E) i
             (fun y => chartDeTurckVFComp (I := I) g₁ g_bg x p y) (extChartAt I x x) +
@@ -1044,9 +1238,9 @@ omit [SigmaCompactSpace M] in
 theorem deTurckLieCovariantDerivativeA_chartBasis_eq (g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (i j k : Fin (Module.finrank ℝ E)) :
     deTurckConnectionDifferenceCovDeriv (I := I) g₁ g_bg
-        (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
-        (smoothExtensionTangent (I := I) x ((chartModelBasis E) j))
-        (smoothExtensionTangent (I := I) x ((chartModelBasis E) k)) x =
+        (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+        (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x j))
+        (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x k)) x =
       ∑ p : Fin (Module.finrank ℝ E),
         (partialDeriv (E := E) i
             (fun y => chartChristoffel (I := I) g₁ x k j p y -
@@ -1090,27 +1284,26 @@ theorem deTurckLieCovariantDerivativeA_chartBasis_eq (g₁ g_bg : SmoothRiemanni
           (chartBasisVecFiber (I := I) x k b))) x :=
     connectionDifference_pairing_mdiffAt (I := I) g₁ g_bg hYm hZm
   have hswap : deTurckConnectionDifferenceCovDeriv (I := I) g₁ g_bg
-      (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
-      (smoothExtensionTangent (I := I) x ((chartModelBasis E) j))
-      (smoothExtensionTangent (I := I) x ((chartModelBasis E) k)) x =
+      (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
+      (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x j))
+      (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x k)) x =
       deTurckConnectionDifferenceCovDeriv (I := I) g₁ g_bg
-        (smoothExtensionTangent (I := I) x ((chartModelBasis E) i))
+        (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i))
         (fun b => chartBasisVecFiber (I := I) x j b)
         (fun b => chartBasisVecFiber (I := I) x k b) x := by
     have h1 := deTurckLieConnectionDifferenceDerivativeCovKernel_apply_extend (I := I) g₁ g_bg x
-      ((chartModelBasis E) i) ((chartModelBasis E) j) ((chartModelBasis E) k)
-    have h2 := deTurckLieConnectionDifferenceDerivativeCovKernel_apply_field (I := I) g₁ g_bg x ((chartModelBasis E) i)
+      (centeredChartTangentBasis (I := I) x i) (centeredChartTangentBasis (I := I) x j)
+      (centeredChartTangentBasis (I := I) x k)
+    have h2 := deTurckLieConnectionDifferenceDerivativeCovKernel_apply_field (I := I) g₁ g_bg x
+      (centeredChartTangentBasis (I := I) x i)
       (fun b => chartBasisVecFiber (I := I) x j b)
       (fun b => chartBasisVecFiber (I := I) x k b) hYm hZm
     rw [← h1, ← h2]
-    rw [show (fun b => chartBasisVecFiber (I := I) x j b) x = (chartModelBasis E) j from
-        chartBasisVecFiber_self (I := I) x j,
-      show (fun b => chartBasisVecFiber (I := I) x k b) x = (chartModelBasis E) k from
-        chartBasisVecFiber_self (I := I) x k]
+    rw [chartBasisVecFiber_self (I := I) x j, chartBasisVecFiber_self (I := I) x k]
   have hterm1 : (LeviCivita (I := I) g₁).toFun
       (fun b : M => PDE.DeTurck.connectionDifference (I := I) g₁ g_bg b
         (chartBasisVecFiber (I := I) x j b) (chartBasisVecFiber (I := I) x k b)) x
-      ((chartModelBasis E) i) =
+      (centeredChartTangentBasis (I := I) x i) =
       ∑ p : Fin (Module.finrank ℝ E),
         (partialDeriv (E := E) i
             (fun y => chartChristoffel (I := I) g₁ x k j p y -
@@ -1130,30 +1323,35 @@ theorem deTurckLieCovariantDerivativeA_chartBasis_eq (g₁ g_bg : SmoothRiemanni
       (fun b hb => PDE.DeTurck.connectionDifference_chartBasis_pair_eq_sum (I := I) g₁ g_bg x hb j k)
       i
   have hLCj : (LeviCivita (I := I) g₁).toFun
-      (fun b => chartBasisVecFiber (I := I) x j b) x ((chartModelBasis E) i) =
+      (fun b => chartBasisVecFiber (I := I) x j b) x
+        (centeredChartTangentBasis (I := I) x i) =
       ∑ m : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g₁ x i j m (extChartAt I x x) •
           chartBasisVecFiber (I := I) x m x := by
     rw [PDE.DeTurck.LeviCivita_chartBasisVecFiber_eq (I := I) g₁ x hx_good j
-      ((chartModelBasis E) i)]
+      (centeredChartTangentBasis (I := I) x i)]
     rw [christoffelCorrection_chartModelBasis_pair_self (I := I) g₁ x i j, map_sum]
     refine Finset.sum_congr rfl (fun m _ => ?_)
     rw [chartBasisVecFiber_self (I := I) x m, ContinuousLinearMap.map_smul,
-      trivFromE_self_apply (I := I) x ((chartModelBasis E) m)]
+      trivFromE_self_apply (I := I) x ((chartModelBasis E) m),
+      centeredChartTangentBasis_apply]
   have hLCk : (LeviCivita (I := I) g₁).toFun
-      (fun b => chartBasisVecFiber (I := I) x k b) x ((chartModelBasis E) i) =
+      (fun b => chartBasisVecFiber (I := I) x k b) x
+        (centeredChartTangentBasis (I := I) x i) =
       ∑ m : Fin (Module.finrank ℝ E),
         chartChristoffel (I := I) g₁ x i k m (extChartAt I x x) •
           chartBasisVecFiber (I := I) x m x := by
     rw [PDE.DeTurck.LeviCivita_chartBasisVecFiber_eq (I := I) g₁ x hx_good k
-      ((chartModelBasis E) i)]
+      (centeredChartTangentBasis (I := I) x i)]
     rw [christoffelCorrection_chartModelBasis_pair_self (I := I) g₁ x i k, map_sum]
     refine Finset.sum_congr rfl (fun m _ => ?_)
     rw [chartBasisVecFiber_self (I := I) x m, ContinuousLinearMap.map_smul,
-      trivFromE_self_apply (I := I) x ((chartModelBasis E) m)]
+      trivFromE_self_apply (I := I) x ((chartModelBasis E) m),
+      centeredChartTangentBasis_apply]
   have hterm2 : PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x
       ((LeviCivita (I := I) g₁).toFun
-        (fun b => chartBasisVecFiber (I := I) x j b) x ((chartModelBasis E) i))
+        (fun b => chartBasisVecFiber (I := I) x j b) x
+          (centeredChartTangentBasis (I := I) x i))
       (chartBasisVecFiber (I := I) x k x) =
       ∑ p : Fin (Module.finrank ℝ E),
         (∑ m : Fin (Module.finrank ℝ E),
@@ -1161,7 +1359,7 @@ theorem deTurckLieCovariantDerivativeA_chartBasis_eq (g₁ g_bg : SmoothRiemanni
             (chartChristoffel (I := I) g₁ x k m p (extChartAt I x x) -
               chartChristoffel (I := I) g_bg x k m p (extChartAt I x x))) •
         chartBasisVecFiber (I := I) x p x := by
-    rw [hLCj, map_sum, ContinuousLinearMap.sum_apply]
+    rw [hLCj, map_sum, sum_apply]
     have hstep : ∀ m : Fin (Module.finrank ℝ E),
         PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x
           (chartChristoffel (I := I) g₁ x i j m (extChartAt I x x) •
@@ -1173,7 +1371,7 @@ theorem deTurckLieCovariantDerivativeA_chartBasis_eq (g₁ g_bg : SmoothRiemanni
               chartChristoffel (I := I) g_bg x k m p (extChartAt I x x))) •
           chartBasisVecFiber (I := I) x p x := by
       intro m
-      rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply]
+      rw [ContinuousLinearMap.map_smul, smul_apply]
       rw [PDE.DeTurck.connectionDifference_chartBasis_pair_eq_sum (I := I) g₁ g_bg x hx_good m k]
       rw [Finset.smul_sum]
       refine Finset.sum_congr rfl (fun p _ => ?_)
@@ -1184,7 +1382,8 @@ theorem deTurckLieCovariantDerivativeA_chartBasis_eq (g₁ g_bg : SmoothRiemanni
   have hterm3 : PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x
       (chartBasisVecFiber (I := I) x j x)
       ((LeviCivita (I := I) g₁).toFun
-        (fun b => chartBasisVecFiber (I := I) x k b) x ((chartModelBasis E) i)) =
+        (fun b => chartBasisVecFiber (I := I) x k b) x
+          (centeredChartTangentBasis (I := I) x i)) =
       ∑ p : Fin (Module.finrank ℝ E),
         (∑ m : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g₁ x i k m (extChartAt I x x) *
@@ -1211,22 +1410,22 @@ theorem deTurckLieCovariantDerivativeA_chartBasis_eq (g₁ g_bg : SmoothRiemanni
     refine Finset.sum_congr rfl (fun p _ => ?_)
     rw [← Finset.sum_smul]
   rw [hswap]
-  have hXeq : smoothExtensionTangent (I := I) x ((chartModelBasis E) i) x =
-      (chartModelBasis E) i :=
-    smoothExtensionTangent_eq (I := I) x ((chartModelBasis E) i)
+  have hXeq : smoothExtensionTangent (I := I) x
+      (centeredChartTangentBasis (I := I) x i) x = centeredChartTangentBasis (I := I) x i :=
+    smoothExtensionTangent_eq (I := I) x (centeredChartTangentBasis (I := I) x i)
   change (LeviCivita (I := I) g₁).toFun
       (fun b : M => PDE.DeTurck.connectionDifference (I := I) g₁ g_bg b
         (chartBasisVecFiber (I := I) x j b) (chartBasisVecFiber (I := I) x k b)) x
-      (smoothExtensionTangent (I := I) x ((chartModelBasis E) i) x)
+      (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i) x)
     - PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x
         ((LeviCivita (I := I) g₁).toFun
           (fun b => chartBasisVecFiber (I := I) x j b) x
-          (smoothExtensionTangent (I := I) x ((chartModelBasis E) i) x))
+          (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i) x))
         (chartBasisVecFiber (I := I) x k x)
     - PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (chartBasisVecFiber (I := I) x j x)
         ((LeviCivita (I := I) g₁).toFun
           (fun b => chartBasisVecFiber (I := I) x k b) x
-          (smoothExtensionTangent (I := I) x ((chartModelBasis E) i) x)) = _
+          (smoothExtensionTangent (I := I) x (centeredChartTangentBasis (I := I) x i) x)) = _
   rw [hXeq, hterm1, hterm2, hterm3, ← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl (fun p _ => ?_)
   rw [← sub_smul, ← sub_smul]

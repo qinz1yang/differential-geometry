@@ -165,7 +165,7 @@ theorem invVelSum_conv
       (fun z i ↦ muInf z i • (eInf.symm (ctrInf z, xiInf z i)).2) U :=
     contDiffOn_pi.mpr hsummandInfC
   have hsum := mapCInfConv_clm hU Lsum hpi hpiC hpiInfC
-  simpa only [invVelSum, Lsum, ContinuousLinearMap.sum_apply,
+  simpa only [invVelSum, Lsum, sum_apply,
     ContinuousLinearMap.proj_apply] using hsum
 
 theorem invVelCfg_conv

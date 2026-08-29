@@ -197,7 +197,7 @@ private lemma eigenvectorChartComponent_eLpNorm_tendsto
             Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)) 2
         (chartL2Measure (I := I) (M := M) α))
       atTop (𝓝 0) := by
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   exact (MeasureTheory.Lp.tendsto_Lp_iff_tendsto_eLpNorm'
     (fun n => tensorL2ChartComponent (I := I) (M := M) g r s
       ((i.fst.val)⁻¹ •
@@ -255,7 +255,7 @@ theorem eigenvectorChartWeakPartial_hasWeakPartialDeriv
         Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ)
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   set uApprox : ℕ → EuclN → ℝ := fun n =>
     ((tensorL2ChartComponent (I := I) (M := M) g r s
         ((i.fst.val)⁻¹ •

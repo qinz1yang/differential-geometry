@@ -29,7 +29,7 @@ def rm13RealizesConnection
   forall (X Y Z : SmoothTangentSection (I := I) (M := M)) (x : M)
     (alpha : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x),
       Rm13 x alpha (vec3 (X x) (Y x) (Z x)) =
-        cotangentToDual_gen (I := I) alpha
+        cotangentToDualGen (I := I) alpha
           ((connectionRiemannCurvatureField (I := I) cov
             (fun p : M => X p) (fun p : M => Y p) (fun p : M => Z p)) x)
 
@@ -151,7 +151,7 @@ theorem rm13_comp_eq_connection
       hframe.coeff a x ((connectionRiemannCurvatureField (I := I) cov
         (fun y => frame b y) (fun y => frame c y) (fun y => frame d y)) x) := by
   simpa [rm13Comp] using
-    hRm (frame b) (frame c) (frame d) x (dualToCotangent_gen (hframe.coeff a x))
+    hRm (frame b) (frame c) (frame d) x (dualToCotangentGen (hframe.coeff a x))
 
 namespace CurvatureSections
 

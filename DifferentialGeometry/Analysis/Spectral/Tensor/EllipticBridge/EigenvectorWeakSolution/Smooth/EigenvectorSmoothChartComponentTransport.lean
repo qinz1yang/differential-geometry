@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
@@ -168,7 +167,7 @@ private lemma eigenvectorChartComponentFun_ae_eq_chartKernelCutoffPushed_mul
           (chartTargetEuclid (I := I) (M := M) γ \
             chartPouKernel (I := I) (M := M) γ) := by
       rw [Measure.restrict_restrict hK_meas.compl, Set.inter_comm,
-        ← Set.diff_eq]
+        ← Set.sdiff_eq]
     rw [h_restrict_eq]
     exact h_off_raw
   have h_off_K : ∀ᵐ y ∂((volume : Measure EuclN).restrict

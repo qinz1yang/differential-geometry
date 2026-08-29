@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
@@ -47,10 +46,10 @@ theorem rawTensorConnLap_eq_chart
       letI _h_top : TopologicalSpace
           (TotalSpace (TensorRSModel r s ℝ E)
             (fun x : M => TensorRSSpace r s I x)) :=
-        tensorRSBundle_topology r s
+        tensorRSBundleTopology r s
       letI _h_fib : FiberBundle (TensorRSModel r s ℝ E)
           (fun x : M => TensorRSSpace r s I x) :=
-        tensorRSBundle_fiber r s
+        tensorRSBundleFiber r s
       Cₛ^∞⟮I; TensorRSModel r s ℝ E,
         fun b => TensorRSSpace r s I b⟯)
     {y : M} (hy : y ∈ chartLeviCivitaGoodSet (I := I) α) :
@@ -67,13 +66,13 @@ theorem rawTensorConnLap_eq_chart
               (smoothOrthoFrame (I := I) g y i) y
               (smoothOrthoFrame (I := I) g y i y))) := by
   classical
-  letI _h_top : TopologicalSpace
+  let _h_top : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
-    tensorRSBundle_topology r s
-  letI _h_fib : FiberBundle (TensorRSModel r s ℝ E)
+    tensorRSBundleTopology r s
+  let _h_fib : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   rw [rawTensorConnLap_frame_trace (I := I) g r s T.toFun y]
   refine Finset.sum_congr rfl ?_
   intro i _

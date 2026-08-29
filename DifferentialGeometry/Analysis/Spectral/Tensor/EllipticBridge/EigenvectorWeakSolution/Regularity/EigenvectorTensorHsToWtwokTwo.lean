@@ -293,7 +293,7 @@ private lemma summand_wtwokTwoNorm_le_unconditional
     have h := hC_bound i
     rw [h_vec_norm, ENNReal.ofReal_one, mul_one] at h
     exact h
-  exact mul_le_mul_of_nonneg_left h_bd (zero_le _)
+  exact mul_le_mul_of_nonneg_left h_bd (zero_le)
 
 omit [CompleteSpace E] in
 private lemma partialSum_wtwokTwoNorm_le_sum_unconditional

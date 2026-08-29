@@ -50,7 +50,12 @@ theorem hasDerivWithinAt_Ici_of_tendsto_nhdsGT
         intro x hx
         have hxab : x ∈ Ioo a b := ⟨lt_of_lt_of_le hsa hx.1, lt_trans hx.2 htb⟩
         have h1 : HasDerivAt (fun x => f x - x • L) (f' x - L) x := by
-          simpa using (hderiv x hxab).sub ((hasDerivAt_id x).smul_const L)
+          have hfun : f - (fun y => y • L) = fun y => f y - y • L := by
+            funext y
+            rfl
+          rw [← hfun]
+          simpa only [id_eq, one_smul] using
+            (hderiv x hxab).sub ((hasDerivAt_id x).smul_const L)
         exact h1.hasDerivWithinAt
       have hbound : ∀ x ∈ Ico s t, ‖f' x - L‖ ≤ ε := by
         intro x hx
@@ -73,7 +78,16 @@ theorem hasDerivWithinAt_Ici_of_tendsto_nhdsGT
       have := inter_mem_nhdsWithin (Ioi a) (Iio_mem_nhds hta)
       rwa [Set.Ioi_inter_Iio] at this
     filter_upwards [hIoomem] with s hs using hmvt s hs
-  rw [hasDerivWithinAt_iff_tendsto_slope, Set.Ici_diff_left, Metric.tendsto_nhdsWithin_nhds]
+  rw [hasDerivWithinAt_iff_tendsto_slope]
+  have hset : Set.Ici a \ {a} = Set.Ioi a := by
+    ext t
+    simp only [Set.mem_sdiff, Set.mem_Ici, Set.mem_singleton_iff, Set.mem_Ioi]
+    constructor
+    · rintro ⟨hat, hne⟩
+      exact lt_of_le_of_ne hat (Ne.symm hne)
+    · intro hat
+      exact ⟨hat.le, ne_of_gt hat⟩
+  rw [hset, Metric.tendsto_nhdsWithin_nhds]
   intro ε hε
   obtain ⟨c, hac, hest⟩ := key (ε / 2) (by linarith)
   refine ⟨c - a, by linarith, fun t ht hdist => ?_⟩

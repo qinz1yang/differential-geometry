@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.PairTrace
 
+
 noncomputable section
 
 open DifferentialGeometry.Analysis.Sobolev
@@ -105,7 +106,7 @@ theorem slotIterJet (g : SmoothRiemannianMetric I M) (r s m w : ℕ)
   have hfr : (0 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := Nat.cast_nonneg _
   induction w with
   | zero =>
-    simpa only [pow_zero, one_mul] using
+    simpa only [slotExtendIter, Nat.add_zero, pow_zero, one_mul] using
       le_refl (∑ j ∈ Finset.range (m + 1),
         ‖iteratedCovGrad (I := I) g r s j A‖ ^ 2)
   | succ w ih =>

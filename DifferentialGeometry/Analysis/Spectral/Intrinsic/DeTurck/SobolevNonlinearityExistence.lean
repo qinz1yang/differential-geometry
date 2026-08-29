@@ -1779,7 +1779,7 @@ theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
           c * smoothCcTensorBilinForm (I := I) g₀ X x v w := by
       intros c X x v w
       rw [ccTensorBilin_apply, ccTensorBilin_apply, ccTensorModel_smul,
-        ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+        smul_apply, smul_eq_mul]
     have hRSSsymm : ∀ (Y : SmoothCcTensor g₀ 0 2)
         (x : M) (v w : TangentSpace I x),
         smoothCcTensorBilinForm (I := I) g₀
@@ -2025,7 +2025,7 @@ theorem deTurckSobolevNonlinearitySymm_mixed_lipschitz_pointwise
   intro u u'
   have hmem : ((u, u') : _ × _) ∈ {p | lhs p ≤ rhs p} := by rw [huniv]; trivial
   have := hmem
-  rw [Set.mem_setOf_eq, hlhs_def, hrhs_def] at this
+  rw [Set.mem_ofPred_eq, hlhs_def, hrhs_def] at this
   simpa only [hJ_def] using this
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in

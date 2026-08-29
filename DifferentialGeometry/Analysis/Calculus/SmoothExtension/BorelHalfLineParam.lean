@@ -167,7 +167,10 @@ private theorem paramScalar_iteratedDeriv (n i : ℕ) (t : ℝ) :
       L⁻¹ ^ n • iteratedDeriv i (fun s => borelBumpMono n (L * s)) t := by
     have := iteratedDeriv_const_smul (𝕜 := ℝ) (R := ℝ) (n := i) (x := t)
       (f := fun s => borelBumpMono n (L * s)) hcd (L⁻¹ ^ n)
-    simpa only [paramScalar, hLdef, Pi.smul_apply, smul_eq_mul] using this
+    change iteratedDeriv i
+      ((paramScale a ha hsupp n)⁻¹ ^ n •
+        fun s => borelBumpMono n (paramScale a ha hsupp n * s)) t = _
+    simpa only [hLdef, Pi.smul_apply, smul_eq_mul] using this
   rw [hconst]
   have hcomp : iteratedDeriv i (fun s => borelBumpMono n (L * s)) t =
       L ^ i • iteratedDeriv i (borelBumpMono n) (L * t) := by
@@ -559,7 +562,8 @@ private theorem exists_contDiff_tsupport_subset_eventuallyEq_one
   have ρ_supp : Function.support ρ ⊆ Euclidean.ball x d := by
     intro y hy
     have : toEuclidean y ∈ Function.support c := by
-      simpa only [Function.mem_support, Function.comp_apply, Ne] using hy
+      rw [hρ_def] at hy
+      exact hy
     rwa [c.support_eq] at this
   have ρ_tsupp : tsupport ρ ⊆ Euclidean.closedBall x d := by
     rw [tsupport, ← Euclidean.closure_ball _ d_pos.ne']
@@ -576,7 +580,9 @@ private theorem exists_contDiff_tsupport_subset_eventuallyEq_one
   · have hc1 : c =ᶠ[𝓝 (toEuclidean x)] (1 : EuclideanSpace ℝ (Fin _) → ℝ) := c.eventuallyEq_one
     have := hc1.comp_tendsto (toEuclidean.continuous.continuousAt
       (x := x) : Filter.Tendsto toEuclidean (𝓝 x) (𝓝 (toEuclidean x)))
-    simpa only [hρ_def, Function.comp_def, Pi.one_apply] using this
+    change (c ∘ toEuclidean) =ᶠ[𝓝 x] (fun _ : E => 1)
+    filter_upwards [this] with y hy
+    simpa only [Function.comp_def, Pi.one_apply] using hy
 
 
 theorem borel_halfLine_extend_param [FiniteDimensional ℝ E] [CompleteSpace F]
@@ -855,7 +861,7 @@ private theorem tsupport_intervalCutoff_fst (T : ℝ) (hT : 0 < T) :
   apply closure_minimal
   · intro p hp
     simp only [Function.mem_support] at hp
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     by_contra h
     exact hp (intervalCutoff_eq_zero T hT (le_of_lt (lt_of_not_ge h)))
   · exact isClosed_le continuous_fst continuous_const

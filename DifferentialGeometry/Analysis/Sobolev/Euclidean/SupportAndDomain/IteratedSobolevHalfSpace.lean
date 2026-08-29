@@ -44,7 +44,7 @@ theorem closedHalfSpace_eq_union :
     closedHalfSpace (d := d) = openHalfSpace ∪ boundaryHyperplane := by
   ext y
   simp only [closedHalfSpace, openHalfSpace, boundaryHyperplane,
-    mem_setOf_eq, mem_union]
+    mem_ofPred_eq, mem_union]
   constructor
   · intro h
     rcases lt_or_eq_of_le h with h | h
@@ -147,7 +147,7 @@ theorem interiorHalfSpace_eq_inter_openHalfSpace
   unfold interiorHalfSpace
   rw [hU_eq]
   ext y
-  simp only [mem_inter_iff, closedHalfSpace, openHalfSpace, mem_setOf_eq]
+  simp only [mem_inter_iff, closedHalfSpace, openHalfSpace, mem_ofPred_eq]
   constructor
   · rintro ⟨⟨hU, _⟩, h_open⟩
     exact ⟨hU, h_open⟩
@@ -167,7 +167,7 @@ theorem symmDiff_interiorHalfSpace_subset_boundaryHyperplane
     Ω \ interiorHalfSpace Ω ⊆ boundaryHyperplane := by
   intro y ⟨hy_in, hy_notIn⟩
   unfold interiorHalfSpace at hy_notIn
-  simp only [mem_inter_iff, openHalfSpace, mem_setOf_eq, not_and, not_lt]
+  simp only [mem_inter_iff, openHalfSpace, mem_ofPred_eq, not_and, not_lt]
     at hy_notIn
   have h_le : y 0 ≤ 0 := hy_notIn hy_in
   have h_ge : 0 ≤ y 0 := hΩ.subset_closedHalfSpace hy_in
@@ -185,9 +185,9 @@ theorem ae_eq_interiorHalfSpace [NeZero d]
   have h_diff2 : (volume : Measure E) (interiorHalfSpace Ω \ Ω) = 0 := by
     have h_empty : interiorHalfSpace Ω \ Ω = ∅ := by
       ext y
-      simp only [mem_diff, mem_empty_iff_false, iff_false, not_and, not_not]
+      simp only [Set.mem_sdiff, Set.mem_empty_iff_false, iff_false]
       intro hy
-      exact interiorHalfSpace_subset Ω hy
+      exact hy.2 (interiorHalfSpace_subset Ω hy.1)
     rw [h_empty]
     exact measure_empty
   exact (MeasureTheory.ae_eq_set).mpr ⟨h_diff1, h_diff2⟩

@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -56,45 +55,14 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
 private lemma connectionDifferenceSection_eq_armSlotEndoCc_zero_deTurckLieConnectionDifferenceDerivative (g₀ gc : SmoothRiemannianMetric I M) :
     connectionDifferenceSection (I := I) gc g₀ =
       bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc) := by
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  apply ContinuousLinearMap.ext
-  intro om
-  apply Tensor0SSpace.toModel_injective
-  apply ContinuousMultilinearMap.ext
-  intro v
-  rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0
-          (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc)).toSection x) om) =
-      bilinearSlotInsertCLM (I := I) (M := M) 0 x (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc x) om
-      from rfl]
-  rw [armSlotFib_apply_eval (I := I) (M := M) 0 x
-    (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc x) om v]
-  rw [slotInsertEndoFib_apply_eval]
-  rw [show (Function.update (Matrix.vecTail (fun k : Fin 2 => (v k : E))) 0
-        (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc x (v 0)
-          (Matrix.vecTail (fun k : Fin 2 => (v k : E)) 0))) =
-      (fun _ : Fin 1 => (show E from
-        PDE.DeTurck.connectionDifference (I := I) gc g₀ x (v 0) (v 1))) from by
-    funext k
-    rw [show k = (0 : Fin 1) from Subsingleton.elim k 0]
-    rw [Function.update_self]
-    rfl]
-  rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-        (connectionDifferenceSection (I := I) gc g₀).toSection x) om) =
-      connectionDifferencePairing (I := I) gc g₀ x om from rfl]
-  change connectionDifferencePairing (I := I) gc g₀ x om v = _
-  rw [connectionDifferencePairing_apply]
-  rfl
+  exact DifferentialGeometry.Analysis.Spectral.CurvatureCoefficientDifferenceJetTower.connectionDifferenceSection_eq_armSlotEndoCc_zero
+    (I := I) (M := M) g₀ gc
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma armSlotEndoCc_one_eq_reindex_slotExtend_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M)
@@ -105,156 +73,9 @@ private lemma armSlotEndoCc_one_eq_reindex_slotExtend_deTurckLieConnectionDiffer
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
           (slotExtend (I := I) (M := M) g₀ 1 2 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)))
         (Equiv.swap (0 : Fin 2) 1) := by
-  classical
-  apply SmoothCcTensor.ext
-  apply ContMDiffSection.ext
-  intro x
-  apply ContinuousLinearMap.ext
-  intro D
-  apply Tensor0SSpace.toModel_injective
-  apply ContinuousMultilinearMap.ext
-  intro w
-  have hτ0 : (finRotate 3).symm (0 : Fin 3) = (2 : Fin 3) := by decide
-  have hτ1 : (finRotate 3).symm (1 : Fin 3) = (0 : Fin 3) := by decide
-  have hτ2 : (finRotate 3).symm (2 : Fin 3) = (1 : Fin 3) := by decide
-  set D' : Tensor0SSpace 2 I x := Tensor0SSpace.ofModel
-    (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
-      (Tensor0SSpace.toModel D)) with hD'_def
-  have hLHS : Tensor0SSpace.toModel
-      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-        (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Arm).toSection x) D) w =
-      Tensor0SSpace.toModel D
-        (Function.update (Matrix.vecTail w) 0 (Arm x (w 0) (Matrix.vecTail w 0))) := by
-    rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-          (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Arm).toSection x) D) =
-        bilinearSlotInsertCLM (I := I) (M := M) 1 x (Arm x) D from rfl]
-    rw [armSlotFib_apply_eval (I := I) (M := M) 1 x (Arm x) D w]
-    rw [slotInsertEndoFib_apply_eval]
-  have e1 : Tensor0SSpace.toModel
-      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 3
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
-            (slotExtend (I := I) (M := M) g₀ 1 2 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)))
-          (Equiv.swap (0 : Fin 2) 1)).toSection x) D) w =
-      Tensor0SSpace.toModel
-        ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-          tensorRS_domDomCongr (finRotate 3).symm
-            ((slotExtend (I := I) (M := M) g₀ 1 2
-              (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)).toSection x)) D') w := by
-    have h1 : ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-        (reindexCoeffGen (I := I) (M := M) g₀ 2 3
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
-            (slotExtend (I := I) (M := M) g₀ 1 2 (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)))
-          (Equiv.swap (0 : Fin 2) 1)).toSection x) D) =
-        ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-          tensorRS_domDomCongr (finRotate 3).symm
-            ((slotExtend (I := I) (M := M) g₀ 1 2
-              (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)).toSection x)) D') := by
-      rw [reindexCoeffGen_toSection]
-      rw [reindexCoeffFibGen_apply (I := I) 2 3 (Equiv.swap (0 : Fin 2) 1) x
-        (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 2 3 (finRotate 3).symm
-            (slotExtend (I := I) (M := M) g₀ 1 2
-              (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm))).toSection x) D]
-      rw [← hD'_def]
-      rw [rsDomDomCongrSection_toSection]
-    exact congrArg (fun t : Tensor0SSpace 3 I x => Tensor0SSpace.toModel t w) h1
-  have e2 : Tensor0SSpace.toModel
-      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-        tensorRS_domDomCongr (finRotate 3).symm
-          ((slotExtend (I := I) (M := M) g₀ 1 2
-            (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)).toSection x)) D') w =
-      Tensor0SSpace.toModel
-        ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-          (slotExtend (I := I) (M := M) g₀ 1 2
-            (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)).toSection x) D')
-        (fun i => w ((finRotate 3).symm i)) := by
-    rw [toModel_rsDomDomCongr_apply (I := I) (M := M) (finRotate 3).symm
-      ((slotExtend (I := I) (M := M) g₀ 1 2
-        (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)).toSection x) D']
-    rw [ContinuousMultilinearMap.domDomCongr_apply]
-  have e3 : Tensor0SSpace.toModel
-      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-        (slotExtend (I := I) (M := M) g₀ 1 2
-          (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)).toSection x) D')
-      (fun i => w ((finRotate 3).symm i)) =
-      Tensor0SSpace.toModel
-        (bilinearSlotInsertCLM (I := I) (M := M) 0 x (Arm x)
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0))))
-        (Matrix.vecTail (fun i => w ((finRotate 3).symm i))) := by
-    rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
-          (slotExtend (I := I) (M := M) g₀ 1 2
-            (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)).toSection x) D') =
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x).symm
-          ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-              (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm).toSection x).comp
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D')) from rfl]
-    rw [show (fun i => w ((finRotate 3).symm i)) =
-        Fin.cons (w ((finRotate 3).symm 0))
-          (Matrix.vecTail (fun i => w ((finRotate 3).symm i))) from by
-      funext k
-      refine Fin.cases rfl (fun j => rfl) k]
-    have hkey := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 2)
-      (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x).symm
-        ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
-            (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm).toSection x).comp
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D')))
-      (v0 := w ((finRotate 3).symm 0))
-      (vs := Matrix.vecTail (fun i => w ((finRotate 3).symm i)))
-    rw [ContinuousLinearEquiv.apply_symm_apply] at hkey
-    rw [← hkey]
-    rfl
-  have e4 : Tensor0SSpace.toModel
-      (bilinearSlotInsertCLM (I := I) (M := M) 0 x (Arm x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0))))
-      (Matrix.vecTail (fun i => w ((finRotate 3).symm i))) =
-      Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0)))
-        (fun _ : Fin 1 => (show E from
-          Arm x (w ((finRotate 3).symm 1)) (w ((finRotate 3).symm 2)))) := by
-    rw [armSlotFib_apply_eval (I := I) (M := M) 0 x (Arm x)
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0)))
-      (Matrix.vecTail (fun i => w ((finRotate 3).symm i)))]
-    rw [slotInsertEndoFib_apply_eval]
-    congr 1
-    funext k
-    refine Fin.cases ?_ (fun j => j.elim0) k
-    rw [Function.update_self]
-    rfl
-  have e5 : Tensor0SSpace.toModel
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0)))
-      (fun _ : Fin 1 => (show E from
-        Arm x (w ((finRotate 3).symm 1)) (w ((finRotate 3).symm 2)))) =
-      Tensor0SSpace.toModel D'
-        (Fin.cons (w ((finRotate 3).symm 0))
-          (fun _ : Fin 1 => (show E from
-            Arm x (w ((finRotate 3).symm 1)) (w ((finRotate 3).symm 2))))) :=
-    TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 1)
-      (T := D') (v0 := w ((finRotate 3).symm 0))
-      (vs := fun _ : Fin 1 => (show E from
-        Arm x (w ((finRotate 3).symm 1)) (w ((finRotate 3).symm 2))))
-  have e6 : Tensor0SSpace.toModel D'
-      (Fin.cons (w ((finRotate 3).symm 0))
-        (fun _ : Fin 1 => (show E from
-          Arm x (w ((finRotate 3).symm 1)) (w ((finRotate 3).symm 2))))) =
-      Tensor0SSpace.toModel D
-        (Function.update (Matrix.vecTail w) 0 (Arm x (w 0) (Matrix.vecTail w 0))) := by
-    rw [hD'_def, Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
-    rw [hτ0, hτ1, hτ2]
-    congr 1
-    funext k
-    refine Fin.cases ?_ ?_ k
-    · rw [show (Function.update (Matrix.vecTail w) 0
-            (Arm x (w 0) (Matrix.vecTail w 0)) (0 : Fin 2)) =
-          Arm x (w 0) (Matrix.vecTail w 0) from Function.update_self _ _ _]
-      rfl
-    · intro j
-      refine Fin.cases ?_ (fun j2 => j2.elim0) j
-      rw [show (Fin.succ (0 : Fin 1)) = (1 : Fin 2) from rfl]
-      rw [Function.update_of_ne (by decide : (1 : Fin 2) ≠ 0)]
-      rfl
-  rw [hLHS, e1, e2, e3, e4, e5, e6]
-
+  exact DifferentialGeometry.Analysis.Spectral.CurvatureCoefficientDifferenceJetTower.armSlotEndoCc_one_eq_reindex_slotExtend
+    (I := I) (M := M) g₀ Arm
+omit [SigmaCompactSpace M] in
 private lemma riemannianFiberNormSq_iteratedCovGrad_armSlotPass_connArm_le_deTurckLieConnectionDifferenceDerivative
     (g₀ gc : SmoothRiemannianMetric I M) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + j) x
@@ -276,6 +97,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_armSlotPass_connArm_le_deTur
     (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 (deTurckLieConnectionDifferenceDerivativeConnArmPt (I := I) (M := M) g₀ gc)) j x) ?_
   rw [← connectionDifferenceSection_eq_armSlotEndoCc_zero_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ gc]
 
+omit [SigmaCompactSpace M] in
 lemma deTurckLieConnectionDifferenceDerivativeQuad_tower_of_factors (g₀ ga gb : SmoothRiemannianMetric I M)
     (j : ℕ) (x : M) (b : ℕ → ℝ) (hb : ∀ l, 0 ≤ b l)
     (Ba Bb : ℕ → ℝ) (hBa_nn : ∀ i, 0 ≤ Ba i) (hBb_nn : ∀ l, 0 ≤ Bb l)
@@ -579,6 +401,7 @@ theorem exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDerivativeLow
   rw [hbridge]
   exact hC g₁ T htie hδ_le hδ0 hbound i x
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma riemannianFiberNormSq_iteratedCovGrad_symmS_le_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (j : ℕ) (x : M) :
@@ -653,21 +476,25 @@ lemma riemannianFiberNormSq_symmS_zero_le_deTurckLieConnectionDifferenceDerivati
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
               (ccTensor02Symm (I := I) (M := M) g₀ T).toSection x)
               (coframeS (I := I) (M := M) g₀ x 0 e K))
-            (fun i : Fin 2 => (e (J i) : E)) from rfl]
+            (fun i : Fin 2 => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J i))) from rfl]
       rw [hcof]
       rw [show Tensor0SSpace.toModel
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
             (ccTensor02Symm (I := I) (M := M) g₀ T).toSection x)
             (unitTensor (I := I) (M := M) x))
-          (fun i : Fin 2 => (e (J i) : E)) =
+          (fun i : Fin 2 => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J i))) =
           unitModel (I := I) (M := M) g₀ 2 (ccTensor02Symm (I := I) (M := M) g₀ T) x
-            ![e (J 0), e (J 1)] from by
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J 0)),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J 1))] from by
         rw [unitModel]
         refine congrArg _ ?_
         funext k
         fin_cases k <;> rfl]
       rw [unitModel_eq_ccTensorBilin_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀
-        (ccTensor02Symm (I := I) (M := M) g₀ T) x (e (J 0)) (e (J 1))]
+        (ccTensor02Symm (I := I) (M := M) g₀ T) x
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J 0)))
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J 1)))]
+      rw [ContinuousLinearEquiv.symm_apply_apply, ContinuousLinearEquiv.symm_apply_apply]
       rw [ccTensorBilin_symmS (I := I) (M := M) g₀ T x (e (J 0)) (e (J 1))]
     rw [hval]
     have habs := hbound x (e (J 0)) (e (J 1))
@@ -695,6 +522,7 @@ lemma riemannianFiberNormSq_symmS_zero_le_deTurckLieConnectionDifferenceDerivati
           ring
         rw [hc0, hc2, one_mul, hnE]
 
+omit [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_iteratedCovGrad_slotInsert3_deTurckLieConnectionDifferenceDerivativePerturb_le (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 4 (4 + j) x

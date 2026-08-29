@@ -47,7 +47,7 @@ theorem evolving_weak_harnack_of_localized_crossover_of_volume_le
     (hSobolev : ∀ t ∈ Icc a t₁,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s ↦ u s x) t)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
@@ -122,7 +122,7 @@ theorem evolving_weak_harnack_of_localized_rpow_crossover_of_volume_le
     (hSobolev : ∀ t ∈ Icc a t₁,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s ↦ u s x) t)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
@@ -196,7 +196,7 @@ theorem evolving_harnack_of_localized_crossover_of_volume_le
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s ↦ u s x) t =
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)

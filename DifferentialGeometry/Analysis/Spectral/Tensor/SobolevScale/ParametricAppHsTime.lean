@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -80,7 +79,8 @@ private theorem affine_uIcc {S : Set ℝ} {a h : ℝ}
   intro θ hθ
   apply hseg
   have hθ' : 0 ≤ θ ∧ θ ≤ 1 := by
-    simpa only [Set.uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)] using hθ
+    rw [Set.uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)] at hθ
+    exact hθ
   rw [Set.mem_uIcc]
   by_cases hh : 0 ≤ h
   · exact Or.inl ⟨by nlinarith, by nlinarith⟩
@@ -122,7 +122,17 @@ private theorem joint_const
         (E := fun x : M => TensorRSSpace b c I x) p.1
         (Φ.toSection p.1))
       ((Set.univ : Set M) ×ˢ S) := by
-  simpa only using Φ.toSection.contMDiff.comp_contMDiffOn contMDiffOn_fst
+  have hfst : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) I ∞
+      (Prod.fst : M × ℝ → M) ((Set.univ : Set M) ×ˢ S) :=
+    contMDiffOn_fst
+  have h := Φ.toSection.contMDiff.comp_contMDiffOn hfst
+  have hfun : ((fun x : M => TotalSpace.mk' (TensorRSModel b c ℝ E)
+      (E := fun y : M => TensorRSSpace b c I y) x (Φ.toSection x)) ∘ Prod.fst) =
+      fun p : M × ℝ => TotalSpace.mk' (TensorRSModel b c ℝ E)
+        (E := fun x : M => TensorRSSpace b c I x) p.1 (Φ.toSection p.1) := by
+    rfl
+  rw [hfun] at h
+  exact h
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -325,7 +335,7 @@ private theorem coeff_secant
     rw [← ContinuousLinearMap.intervalIntegral_comp_comm L hΨAppInt]
     refine intervalIntegral.integral_congr (fun θ _ => ?_)
     simp only [Ψ, SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
-      Pi.sub_apply, TensorRSSpace.toModel_sub, ContinuousLinearMap.sub_apply,
+      Pi.sub_apply, TensorRSSpace.toModel_sub, sub_apply,
       f']
     rw [L.map_sub]
     change
@@ -348,10 +358,11 @@ private theorem coeff_secant
   simpa only [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub,
     Pi.sub_apply, SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul,
     Pi.smul_apply, TensorRSSpace.toModel_sub, TensorRSSpace.toModel_smul,
-    ContinuousLinearMap.sub_apply, ContinuousLinearMap.smul_apply,
-    ContinuousMultilinearMap.sub_apply, ContinuousMultilinearMap.smul_apply,
+    sub_apply, smul_apply,
+    sub_apply, smul_apply,
     smul_eq_mul, eval_eq, f, f'] using hscalar
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem coeffRem_jet
     (g : SmoothRiemannianMetric I M) (b c n : ℕ)
@@ -967,8 +978,13 @@ theorem appHs_dyn_cont
       (𝓝 0)
       (𝓝 (0 : tensorHs (I := I) (M := M) g 0 c (n : ℝ))) :=
     by
-      simpa only [Function.comp_apply, map_zero] using
-        ((appHs g b c n (Φ t)).continuous.tendsto 0).comp hdiffU
+      have h := ((appHs g b c n (Φ t)).continuous.tendsto 0).comp hdiffU
+      have hfun : (↑(appHs g b c n (Φ t)) ∘
+          fun h : ℝ => U (t + h) - U t) =
+          fun h : ℝ => appHs g b c n (Φ t) (U (t + h) - U t) := by
+        rfl
+      rw [hfun] at h
+      simpa only [map_zero] using h
   have hdapp : Tendsto
       (fun h : ℝ => appHs g b c n (dΦ t) (U (t + h)))
       (𝓝 0) (𝓝 (appHs g b c n (dΦ t) (U t))) :=
@@ -977,7 +993,12 @@ theorem appHs_dyn_cont
       (fun h : ℝ => h • appHs g b c n (dΦ t) (U (t + h)))
       (𝓝 0)
       (𝓝 (0 : tensorHs (I := I) (M := M) g 0 c (n : ℝ))) := by
-    simpa only [zero_smul] using tendsto_id.smul hdapp
+    have h := tendsto_id.smul hdapp
+    have hfun : (fun x : ℝ => id x • appHs g b c n (dΦ t) (U (t + x))) =
+        fun h : ℝ => h • appHs g b c n (dΦ t) (U (t + h)) := by
+      rfl
+    rw [hfun] at h
+    simpa only [zero_smul] using h
   have hrem := coeffRem0_move (I := I) (M := M)
     g b c n dΦ hS hdjoint ht U hUAt
   have hrsmall : Tendsto
@@ -986,7 +1007,14 @@ theorem appHs_dyn_cont
         (U (t + h)))
       (𝓝 0)
       (𝓝 (0 : tensorHs (I := I) (M := M) g 0 c (n : ℝ))) := by
-    simpa only [zero_smul] using tendsto_id.smul hrem
+    have h := tendsto_id.smul hrem
+    have hfun : (fun x : ℝ => id x • appHs g b c n
+        (coeffRem0 (I := I) (M := M) g b c dΦ S hS hdjoint t x) (U (t + x))) =
+        fun x : ℝ => x • appHs g b c n
+          (coeffRem0 (I := I) (M := M) g b c dΦ S hS hdjoint t x) (U (t + x)) := by
+      rfl
+    rw [hfun] at h
+    simpa only [zero_smul] using h
   have htarget : Tendsto
       (fun h : ℝ =>
         h • appHs g b c n
@@ -1067,9 +1095,12 @@ theorem appHs_dyn_cont
         (fun _ : ℝ => appHs g b c n (Φ t) (U t))
         (𝓝 0) (𝓝 (appHs g b c n (Φ t) (U t))))
   have hsub : Tendsto (fun τ : ℝ => τ - t) (𝓝 t) (𝓝 0) := by
-    simpa only [sub_self] using
-      (tendsto_id : Tendsto (fun τ : ℝ => τ) (𝓝 t) (𝓝 t)).sub
-        (tendsto_const_nhds : Tendsto (fun _ : ℝ => t) (𝓝 t) (𝓝 t))
+    have h := (tendsto_id : Tendsto (fun τ : ℝ => τ) (𝓝 t) (𝓝 t)).sub
+      (tendsto_const_nhds : Tendsto (fun _ : ℝ => t) (𝓝 t) (𝓝 t))
+    have hfun : (fun x : ℝ => id x - t) = fun τ : ℝ => τ - t := by
+      rfl
+    rw [hfun] at h
+    simpa only [sub_self] using h
   have hcomp := hshift.comp hsub
   have heq :
       (fun τ : ℝ => appHs g b c n (Φ (t + (τ - t))) (U (t + (τ - t)))) =

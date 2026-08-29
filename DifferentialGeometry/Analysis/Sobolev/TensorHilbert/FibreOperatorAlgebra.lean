@@ -14,7 +14,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [T2Space M] [SigmaCompactSpace M] [InnerProductSpace ℝ E]
+  [T2Space M] [SigmaCompactSpace M]
 
 abbrev FibreOpL2Algebra (g₀ : SmoothRiemannianMetric I M) : Type _ :=
   Integral.L2.TensorL2 0 2 g₀ →L[ℝ] Integral.L2.TensorL2 0 2 g₀
@@ -37,7 +37,6 @@ variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
   {Dom : Type*} [NormedAddCommGroup Dom] [NormedSpace ℝ Dom]
 
 
-omit [InnerProductSpace ℝ E] in
 theorem contDiffOn_inverseGram_clm
     (g₀ : SmoothRiemannianMetric I M) {s : Set Dom}
     {L : Dom →L[ℝ] FibreOpL2Algebra (I := I) (M := M) g₀}
@@ -46,7 +45,6 @@ theorem contDiffOn_inverseGram_clm
     ContDiffOn ℝ n (fun x => Ring.inverse (1 - L x) * c) s :=
   contDiffOn_oneSub_inverse_clm_mul_const (A := FibreOpL2Algebra (I := I) (M := M) g₀) hlt
 
-omit [InnerProductSpace ℝ E] in
 theorem contDiffOn_inverseGram_entry_clm
     (g₀ : SmoothRiemannianMetric I M) {s : Set Dom}
     {L : Dom →L[ℝ] FibreOpL2Algebra (I := I) (M := M) g₀}
@@ -57,7 +55,6 @@ theorem contDiffOn_inverseGram_entry_clm
   contDiffOn_continuousLinearMap_comp_oneSub_inverse_clm
     (A := FibreOpL2Algebra (I := I) (M := M) g₀) Φ hlt
 
-omit [InnerProductSpace ℝ E] in
 theorem contDiffOn_inverseGram_of_uniform_bound
     (g₀ : SmoothRiemannianMetric I M) {s : Set Dom}
     {L : Dom →L[ℝ] FibreOpL2Algebra (I := I) (M := M) g₀}

@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
@@ -50,8 +49,9 @@ noncomputable def coframePair
     (g : SmoothRiemannianMetric I M) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (a b : Fin n) :
     Tensor0SSpace 2 I x :=
-  (ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 2) ℝ).compContinuousLinearMap
-    (fun k : Fin 2 => g.inner x (e ((![a, b] : Fin 2 → Fin n) k)))
+  (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).symm
+    ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 2) ℝ).compContinuousLinearMap
+      (fun k : Fin 2 => g.inner x (e ((![a, b] : Fin 2 → Fin n) k))))
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
@@ -70,6 +70,11 @@ lemma coframe2_apply
     coframePair (I := I) (M := M) g x e a b u =
       g.inner x (e a) (u 0) * g.inner x (e b) (u 1) := by
   unfold coframePair
+  change Tensor0SSpace.eval
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).symm
+        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 2) ℝ).compContinuousLinearMap
+          (fun k : Fin 2 => g.inner x (e ((![a, b] : Fin 2 → Fin n) k))))) u = _
+  rw [Tensor0SSpace.eval_fiber_equiv_symm]
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
     ContinuousMultilinearMap.mkPiAlgebra_apply]
   rw [Fin.prod_univ_two]
@@ -105,24 +110,27 @@ lemma fiberNormSqComponent_dualTensorFrame
         (dualTensorFrame (I := I) (M := M) g x e a b) n e K J =
       (if a = J 0 then (1 : ℝ) else 0) * (if b = J 1 then (1 : ℝ) else 0) := by
   classical
-  unfold fiberNormSqComponent
-  rw [show ((dualTensorFrame (I := I) (M := M) g x e a b :
-          Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x)
-          ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-            (fun k => g.inner x (e (K k))))) =
-        tensor00Scalar (I := I) (M := M) x
-            ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-              (fun k => g.inner x (e (K k)))) •
-          coframePair (I := I) (M := M) g x e a b from
-      dualTensorFrame_apply (I := I) (M := M) g x e a b _]
-  have hscalar : tensor00Scalar (I := I) (M := M) x
+  let ωK : Tensor0SSpace 0 I x :=
+    (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 0 x).symm
       ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-        (fun k => g.inner x (e (K k)))) = 1 := by
-    rw [tensor00Scalar_apply (I := I) (M := M) x _ (fun k : Fin 0 => k.elim0),
+        (fun k => g.inner x (e (K k))))
+  change Tensor0SSpace.eval
+      ((dualTensorFrame (I := I) (M := M) g x e a b :
+        Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x) ωK)
+      (fun k : Fin 2 => e (J k)) = _
+  rw [dualTensorFrame_apply (I := I) (M := M) g x e a b ωK]
+  have hscalar : tensor00Scalar (I := I) (M := M) x ωK = 1 := by
+    rw [tensor00Scalar_apply (I := I) (M := M) x ωK (fun k : Fin 0 => k.elim0)]
+    change Tensor0SSpace.eval
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) 0 x).symm
+          ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
+            (fun k => g.inner x (e (K k))))) (fun k : Fin 0 => k.elim0) = 1
+    rw [Tensor0SSpace.eval_fiber_equiv_symm,
       ContinuousMultilinearMap.compContinuousLinearMap_apply,
       ContinuousMultilinearMap.mkPiAlgebra_apply]
     simp
   rw [hscalar, one_smul]
+  rw [Tensor0SSpace.eval_eq]
   rw [coframe2_apply (I := I) (M := M) g x e a b (fun k : Fin 2 => e (J k))]
   rw [horth a (J 0), horth b (J 1)]
 
@@ -163,11 +171,11 @@ lemma tensor02_coframe_expansion
           (A (fun k : Fin 2 => e ((![a, b] : Fin 2 → Fin n) k))) •
             coframePair (I := I) (M := M) g x e a b)
         (fun i : Fin 2 => e (v i)) = _
-    rw [ContinuousMultilinearMap.sum_apply]
+    rw [Tensor0SSpace.sum_apply]
     refine Finset.sum_congr rfl (fun a _ => ?_)
-    rw [ContinuousMultilinearMap.sum_apply]
+    rw [Tensor0SSpace.sum_apply]
     refine Finset.sum_congr rfl (fun b _ => ?_)
-    rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    rw [Tensor0SSpace.smul_apply, smul_eq_mul]
   change Acmm (fun i : Fin 2 => e (v i)) = _
   rw [hRHS_eval]
   have hcoframe : ∀ a b : Fin n,
@@ -221,9 +229,9 @@ lemma tangent_orthonormalBasis_witness
   have hbnd : Bornology.IsVonNBounded ℝ {v : TangentSpace I x |
       RCLike.re (cd.inner v v) < 1} :=
     g.toRiemannianMetric.isVonNBounded x
-  letI nag : NormedAddCommGroup (TangentSpace I x) :=
+  let nag : NormedAddCommGroup (TangentSpace I x) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+  let ips : InnerProductSpace ℝ (TangentSpace I x) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
   set n : ℕ := Module.finrank ℝ (TangentSpace I x) with hn_def
   set eob : OrthonormalBasis (Fin n) ℝ (TangentSpace I x) := stdOrthonormalBasis ℝ _
@@ -279,15 +287,18 @@ lemma tensor_dualFrame_expansion
   intro τ
   set c : ℝ := tensor00Scalar (I := I) (M := M) x τ with hc_def
   set ωK : Tensor0SSpace 0 I x :=
-    (ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-      (fun k => g.inner x (e (K₀ k))) with hωK_def
+    (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 0 x).symm
+      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
+        (fun k => g.inner x (e (K₀ k)))) with hωK_def
   have hτ : τ = c • ωK := by
     apply tensor0SSpace_ext (𝕜 := ℝ) 0 x
     intro m
     rw [hc_def, tensor00Scalar_apply (I := I) (M := M) x τ m]
-    rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    rw [Tensor0SSpace.smul_apply, smul_eq_mul]
     have hωK1 : ωK m = 1 := by
-      rw [hωK_def, ContinuousMultilinearMap.compContinuousLinearMap_apply,
+      change Tensor0SSpace.eval ωK m = 1
+      rw [hωK_def, Tensor0SSpace.eval_fiber_equiv_symm,
+        ContinuousMultilinearMap.compContinuousLinearMap_apply,
         ContinuousMultilinearMap.mkPiAlgebra_apply]
       simp
     rw [hωK1, mul_one]
@@ -322,11 +333,11 @@ lemma tensor_dualFrame_expansion
       ∑ a : Fin n, ∑ b : Fin n,
         (fiberNormSqComponent (I := I) (M := M) g x 0 2 T n e K₀ (![a, b])) •
           (c • coframePair (I := I) (M := M) g x e a b) := by
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl (fun a _ => ?_)
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl (fun b _ => ?_)
-    rw [ContinuousLinearMap.smul_apply,
+    rw [smul_apply,
       dualTensorFrame_apply (I := I) (M := M) g x e a b τ, ← hc_def]
   rw [hLHS', hRHS']
 

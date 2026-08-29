@@ -47,7 +47,8 @@ theorem cont_extend_lip {X Y : Type*} [PseudoMetricSpace X] [PseudoMetricSpace Y
     rw [le_principal_iff]
     have hpre : ((↑) : D → X) ⁻¹' Metric.closedBall x₀ R ∈ l :=
       preimage_mem_comap hclosed
-    simpa only [S, Metric.mem_closedBall, Set.mem_setOf_eq] using hpre
+    change ((↑) : D → X) ⁻¹' Metric.closedBall x₀ R ∈ l
+    exact hpre
   exact hl.map_of_le hK.uniformContinuousOn hlS
 
 theorem eq_of_lipPair {ι X Y : Type*} [SeminormedAddCommGroup X]
@@ -69,7 +70,8 @@ private theorem lipBalls_of_pair {ι X Y : Type*} [SeminormedAddCommGroup X]
       LipschitzOnWith K F {x : ↥(Set.range j) | dist (x : X) 0 ≤ R} := by
   intro R
   obtain ⟨K, hK⟩ := hpair R
-  refine ⟨⟨max K 0, le_max_right _ _⟩, ?_⟩
+  let K' : ℝ≥0 := ⟨max K 0, le_max_right _ _⟩
+  refine ⟨K', ?_⟩
   rw [lipschitzOnWith_iff_dist_le_mul]
   intro x hx y hy
   obtain ⟨v, hv⟩ := x.2
@@ -83,7 +85,8 @@ private theorem lipBalls_of_pair {ι X Y : Type*} [SeminormedAddCommGroup X]
   have hxv : x = ⟨j v, ⟨v, rfl⟩⟩ := Subtype.ext hv.symm
   have hyw : y = ⟨j w, ⟨w, rfl⟩⟩ := Subtype.ext hw.symm
   rw [hxv, hyw, hval, hval]
-  simp only [Subtype.dist_eq, dist_eq_norm, NNReal.coe_mk]
+  simp only [Subtype.dist_eq, dist_eq_norm]
+  change ‖f v - f w‖ ≤ max K 0 * ‖j v - j w‖
   exact (hK v w hvR hwR).trans
     (mul_le_mul_of_nonneg_right (le_max_left K 0) (norm_nonneg _))
 

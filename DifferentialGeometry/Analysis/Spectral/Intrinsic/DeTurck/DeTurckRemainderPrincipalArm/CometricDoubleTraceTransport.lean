@@ -48,24 +48,39 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M]
 
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
+    [SigmaCompactSpace M] in
+private lemma tangentSpaceModel_cons_cons (x : M) {s : ℕ}
+    (a b : TangentSpace I x) (m : Fin s → TangentSpace I x) :
+    (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+      ((Fin.cons a (Fin.cons b m) : Fin (s + 2) → TangentSpace I x) i)) =
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x a)
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x b)
+          (fun i : Fin s => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i))) :
+            Fin (s + 2) → E) := by
+  funext i
+  refine Fin.cases ?_ (fun j => Fin.cases ?_ (fun k => ?_) j) i <;> rfl
+
 section BalLadder
 
 variable (g₀ : SmoothRiemannianMetric I M)
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Tensor0SBundle in
+omit [CompactSpace M] in
+omit [SigmaCompactSpace M] in
 private lemma rawTensorConnLap_frame_sum_apply (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (x : M) (D : Tensor0SSpace r I x)
     (m : Fin s → TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
           (rawTensorConnLapSmooth (I := I) g r s Φ).toSection x) D) m =
       ∑ i : Fin (Module.finrank ℝ E),
-        Tensor0SSpace.toModel
+        Tensor0SSpace.eval
           ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 2) I x from
             (iteratedCovGrad (I := I) g r s 2 Φ).toSection x) D)
-          (Fin.cons ((smoothOrthoFrame (I := I) g x i x : TangentSpace I x) : E)
-            (Fin.cons ((smoothOrthoFrame (I := I) g x i x : TangentSpace I x) : E) m)) := by
+          (Fin.cons (smoothOrthoFrame (I := I) g x i x)
+            (Fin.cons (smoothOrthoFrame (I := I) g x i x) m)) := by
   classical
   have hsec : (rawTensorConnLapSmooth (I := I) g r s Φ).toSection x =
       ∑ i : Fin (Module.finrank ℝ E),
@@ -83,8 +98,8 @@ private lemma rawTensorConnLap_frame_sum_apply (g : SmoothRiemannianMetric I M) 
           tensorSecondCovDeriv (I := I) g r s
             (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
             (fun z : M => Φ.toSection z) x) D := by
-    rw [hsec, ContinuousLinearMap.sum_apply]
-  rw [happ, toModel_sum_eval]
+    rw [hsec, sum_apply]
+  rw [happ, Tensor0SSpace.eval_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [show (iteratedCovGrad (I := I) g r s 2 Φ).toSection x =
       (covGrad (I := I) (M := M) g r (s + 1)
@@ -93,7 +108,6 @@ private lemma rawTensorConnLap_frame_sum_apply (g : SmoothRiemannianMetric I M) 
     (smoothOrthoFrame_smooth (I := I) g x i) (smoothOrthoFrame_smooth (I := I) g x i)
     x D m).symm
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Tensor0SBundle in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -101,32 +115,39 @@ omit [I.Boundaryless] in
 private lemma operatorFieldComposition_cometricDoubleTrace_apply (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (K : SmoothCcTensor g r (s + 2)) (x : M) (D : Tensor0SSpace r I x)
     (m : Fin s → TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
           (ccOperatorFieldComp (I := I) (M := M) g r (s + 2) s
             (DeTurck.cometricDoubleTraceField (I := I) g s) K).toSection x) D) m =
       ∑ k : Fin (Module.finrank ℝ E),
-        Tensor0SSpace.toModel
+        Tensor0SSpace.eval
           ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 2) I x from
             K.toSection x) D)
-          (Fin.cons (DeTurck.cometricLmodel (I := I) g x
-              (model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                ((Module.finBasis ℝ E).cDualBasis k)))
-            (Fin.cons ((Module.finBasis ℝ E) k) m)) := by
+          (Fin.cons ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              (DeTurck.cometricLmodel (I := I) g x
+                (modelCovectorOfCLM (𝕜 := ℝ) (E := E)
+                  ((Module.finBasis ℝ E).cDualBasis k))))
+            (Fin.cons ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              ((Module.finBasis ℝ E) k)) m)) := by
   rw [show (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
         (ccOperatorFieldComp (I := I) (M := M) g r (s + 2) s
           (DeTurck.cometricDoubleTraceField (I := I) g s) K).toSection x) D =
       DeTurck.cometricDoubleTraceFib (I := I) g s x
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 2) I x from
           K.toSection x) D) from rfl]
+  rw [← Tensor0SSpace.toModel_apply_tangent]
   rw [DeTurck.cometricDoubleTraceFib_toModel]
-  exact DeTurck.modelDoubleTrace_apply (E := E) s (DeTurck.cometricLmodel (I := I) g x)
-    (Tensor0SSpace.toModel
-      ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 2) I x from
-        K.toSection x) D)) m
+  simp only [← Tensor0SSpace.toModel_apply_tangent]
+  simpa only [tangentSpaceModel_cons_cons, Fin.cons_zero, Fin.cons_succ,
+    ContinuousLinearEquiv.apply_symm_apply] using
+    DeTurck.modelDoubleTrace_apply (E := E) s (DeTurck.cometricLmodel (I := I) g x)
+      (Tensor0SSpace.toModel
+        ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 2) I x from
+          K.toSection x) D))
+      (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i))
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Tensor0SBundle in
+omit [SigmaCompactSpace M] in
 private lemma rawTensorConnLap_toSection_eq_cometricDoubleTrace (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (x : M) :
     (rawTensorConnLapSmooth (I := I) g r s Φ).toSection x =
@@ -134,18 +155,22 @@ private lemma rawTensorConnLap_toSection_eq_cometricDoubleTrace (g : SmoothRiema
         (DeTurck.cometricDoubleTraceField (I := I) g s)
         (iteratedCovGrad (I := I) g r s 2 Φ)).toSection x := by
   classical
-  apply tensorRS_eq_of_toModel_eval_eq
+  apply tensorRS_eq_of_eval_eq
   intro D m
   refine (rawTensorConnLap_frame_sum_apply (I := I) g r s Φ x D m).trans ?_
   refine Eq.trans ?_ (operatorFieldComposition_cometricDoubleTrace_apply (I := I) g r s
     (iteratedCovGrad (I := I) g r s 2 Φ) x D m).symm
-  exact (DeTurck.cometric_dualTrace_eq_orthoFrame_diag (I := I) g (s := s) x
-    (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
-    (Tensor0SSpace.toModel
-      ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 2) I x from
-        (iteratedCovGrad (I := I) g r s 2 Φ).toSection x) D)) m).symm
+  simp only [← Tensor0SSpace.toModel_apply_tangent]
+  simpa only [tangentSpaceModel_cons_cons, Fin.cons_zero, Fin.cons_succ,
+    ContinuousLinearEquiv.apply_symm_apply] using
+    (DeTurck.cometric_dualTrace_eq_orthoFrame_diag (I := I) g (s := s) x
+      (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
+      (Tensor0SSpace.toModel
+        ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 2) I x from
+          (iteratedCovGrad (I := I) g r s 2 Φ).toSection x) D))
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (m i))).symm
 
-set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 theorem rawTensorConnLapSmooth_eq_operatorFieldComposition_cometricDoubleTrace_rs
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (Φ : SmoothCcTensor g r s) :
     rawTensorConnLapSmooth (I := I) g r s Φ =
@@ -157,7 +182,8 @@ theorem rawTensorConnLapSmooth_eq_operatorFieldComposition_cometricDoubleTrace_r
   intro x
   exact rawTensorConnLap_toSection_eq_cometricDoubleTrace (I := I) g r s Φ x
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 private lemma operatorFieldApplication_sub_right (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (A B : SmoothCcTensor g 0 r) :
     operatorFieldApply (I := I) (M := M) g r s Φ (A - B) =
@@ -170,6 +196,7 @@ private lemma operatorFieldApplication_sub_right (g : SmoothRiemannianMetric I M
     operatorFieldApplication_smul_right (I := I) (M := M) g r s (-1 : ℝ) Φ B,
     neg_one_smul, ← sub_eq_add_neg]
 
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
 lemma oneMinusConnLapSmoothIter_sub (g : SmoothRiemannianMetric I M) (r s : ℕ) (q : ℕ)
     (A B : SmoothCcTensor g r s) :
@@ -185,6 +212,7 @@ lemma oneMinusConnLapSmoothIter_sub (g : SmoothRiemannianMetric I M) (r s : ℕ)
     rw [rawTensorConnLapSmooth_sub]
     abel
 
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
 private lemma rawTensorConnLap_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g r s) :
@@ -203,6 +231,7 @@ private lemma rawTensorConnLap_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
   rw [sub_neg_eq_add, hneg, sub_neg_eq_add] at this
   exact this
 
+omit [SigmaCompactSpace M] in
 omit [CompactSpace M] [I.Boundaryless] in
 private lemma commutatorCorrection_add (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (A B : SmoothCcTensor g r s) :
@@ -212,6 +241,7 @@ private lemma commutatorCorrection_add (g : SmoothRiemannianMetric I M) (r s : �
   rw [rawTensorConnLap_add]
   abel
 
+omit [SigmaCompactSpace M] in
 private lemma operatorFieldApplication_connLap_commutator (Φ : SmoothCcTensor g₀ 2 2) (W : SmoothCcTensor g₀ 0 2) :
     oneMinusConnLapSmooth (I := I) g₀ 0 2 (operatorFieldApply (I := I) (M := M) g₀ 2 2 Φ W) =
       operatorFieldApply (I := I) (M := M) g₀ 2 2 (oneMinusConnLapSmooth (I := I) g₀ 2 2 Φ) W +
@@ -243,6 +273,7 @@ private lemma operatorFieldApplication_connLap_commutator (Φ : SmoothCcTensor g
     (rawTensorConnLapSmooth (I := I) g₀ 2 2 Φ) W, hlap]
   abel
 
+omit [SigmaCompactSpace M] in
 lemma DeTurckRemainderPrincipalArm.connLapIterate_operatorFieldApplication_decomposition (Φ : SmoothCcTensor g₀ 2 2) (W : SmoothCcTensor g₀ 0 2) (p : ℕ) :
     oneMinusConnLapSmoothIter (I := I) g₀ 0 2 p (operatorFieldApply (I := I) (M := M) g₀ 2 2 Φ W) =
       operatorFieldApply (I := I) (M := M) g₀ 2 2 (oneMinusConnLapSmoothIter (I := I) g₀ 2 2 p Φ) W

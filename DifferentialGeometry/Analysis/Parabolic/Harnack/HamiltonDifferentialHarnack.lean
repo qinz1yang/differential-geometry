@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Harnack.LiYau
 import DifferentialGeometry.Analysis.Parabolic.Harnack.LiYauHarnack
 
+
 noncomputable section
 
 open Set Filter Bundle Manifold MeasureTheory DifferentialGeometry
@@ -23,7 +24,7 @@ variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 private abbrev deltaLegacy
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ f) : M → ℝ :=
-  Δ_g (I := I) g ⟨f, hf⟩
+  ΔG (I := I) g ⟨f, hf⟩
 
 omit [SigmaCompactSpace M] in
 private theorem deltaLegacy_contMDiff
@@ -64,7 +65,7 @@ theorem hasDerivAt_inner_self_of_hasDerivAt
   have hval : (((g.inner x).precompR ℝ (G t) Gf +
           (g.inner x).precompL ℝ Gf (G t)) (1 : ℝ)) =
       2 * g.inner x G' (G t) := by
-    rw [ContinuousLinearMap.add_apply]
+    rw [add_apply]
     have hr : ((g.inner x).precompR ℝ (G t) Gf) (1 : ℝ) =
         g.inner x (G t) (Gf (1 : ℝ)) := by
       rfl
@@ -115,7 +116,11 @@ theorem gradientFun_add
     (g : SmoothRiemannianMetric I M) {f h : M → ℝ} (x : M)
     (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x) (hh : MDifferentiableAt I 𝓘(ℝ, ℝ) h x) :
     gradientFun (I := I) g (f + h) x = gradientFun (I := I) g f x + gradientFun (I := I) g h x := by
-  simpa using (DifferentialGeometry.Geometry.Operator.gradFun_add g hf hh)
+  have hbridge (k : M → ℝ) :
+      gradientFun (I := I) g k x = gradFun (I := I) g k x := by
+    exact gradient_eq_gradFun (I := I) g k x
+  rw [hbridge (f + h), hbridge f, hbridge h]
+  exact DifferentialGeometry.Geometry.Operator.gradFun_add g hf hh
 
 omit [SigmaCompactSpace M] in
 theorem normGradSq_log_heat_evolution_identity
@@ -182,7 +187,9 @@ theorem normGradSq_log_heat_evolution_identity
     (hNslice t ht).mdifferentiableAt (x := x) (by norm_num)
   have hdel_cd : ContMDiff I 𝓘(ℝ, ℝ) ∞
       (fun y : M => deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) := by
-    simpa using (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))
+    change ContMDiff I 𝓘(ℝ, ℝ) ∞
+      (deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)))
+    exact deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht))
   have hDel_mdiff : MDifferentiableAt I 𝓘(ℝ, ℝ)
       (fun y : M => deltaLegacy (I := I) g (hlogslice t (D.regular_subset ht)) y) x :=
     hdel_cd.mdifferentiableAt (x := x) (by norm_num)
@@ -202,7 +209,7 @@ theorem normGradSq_log_heat_evolution_identity
     DifferentialGeometry.Geometry.Curvature.bochner_pointwise_grad_normSq_of_boundaryless
     (I := I) g hslice_ft x
   have hbochner' : deltaLegacy (I := I) g (hNslice t ht) x =
-      2 * frobeniusSq_grad_vector (I := I) g (fun b => gradFun (I := I) g (fun y => f t y) b) x +
+      2 * frobeniusSqGradVector (I := I) g (fun b => gradFun (I := I) g (fun y => f t y) b) x +
         2 * ricciTensor (I := I) g x (gradFun (I := I) g (fun y => f t y) x) (gradFun (I := I) g
           (fun y => f t y) x) +
         2 * g.inner x (gradFun (I := I) g (fun y => f t y) x) (gradFun (I := I) g (deltaLegacy
@@ -214,13 +221,20 @@ theorem normGradSq_log_heat_evolution_identity
       rw [Filter.eventuallyEq_iff_exists_mem]
       refine ⟨Set.univ, Filter.univ_mem, ?_⟩
       intro y hy
-      simp [f, normGradSqFun]
+      have hbridge : gradientFun (I := I) g (fun z ↦ f t z) y =
+          gradFun (I := I) g (fun z ↦ f t z) y := by
+        exact gradient_eq_gradFun (I := I) g (fun z ↦ f t z) y
+      change g.inner y (gradientFun (I := I) g (fun z ↦ f t z) y)
+          (gradientFun (I := I) g (fun z ↦ f t z) y) =
+        g.inner y (gradFun (I := I) g (fun z ↦ f t z) y)
+          (gradFun (I := I) g (fun z ↦ f t z) y)
+      rw [hbridge]
     exact hcongr.trans hbochner
   have hmain : deriv (fun s : ℝ => N s x) t -
         deltaLegacy (I := I) g (hNslice t ht) x =
       2 * g.inner x (gradientFun (I := I) g (fun y => Real.log (u t y)) x)
           (gradientFun (I := I) g (N t) x) -
-        2 * frobeniusSq_grad_vector (I := I) g (fun b => gradFun (I := I) g (fun y => f t y) b) x -
+        2 * frobeniusSqGradVector (I := I) g (fun b => gradFun (I := I) g (fun y => f t y) b) x -
         2 * ricciTensor (I := I) g x (gradFun (I := I) g (fun y => f t y) x)
           (gradFun (I := I) g (fun y => f t y) x) := by
     rw [hder_N]
@@ -235,15 +249,16 @@ theorem normGradSq_log_heat_evolution_identity
       rfl
     rw [hΔf_eq]
     ring
-  have hfrob : frobeniusSq_grad_vector (I := I) g (fun b => gradFun (I := I) g
+  have hfrob : frobeniusSqGradVector (I := I) g (fun b => gradFun (I := I) g
     (fun y => f t y) b) x =
       chartHessFrobeniusSq (I := I) g (fun y => Real.log (u t y)) x := by
-    change frobeniusSq_grad_vector (I := I) g (fun b => gradFun (I := I) g
+    change frobeniusSqGradVector (I := I) g (fun b => gradFun (I := I) g
       (fun y => f t y) b) x = chartHessFrobeniusSq (I := I) g (fun y => f t y) x
     exact frobeniusSq_grad_vector_eq_chartHessFrobeniusSq (I := I) g hslice_ft x
   rw [hfrob] at hmain
   exact hmain
 
+omit [SigmaCompactSpace M] in
 theorem liYauQuantity_sq_div_n_le_chartHessFrobeniusSq
     [NeZero (Module.finrank ℝ E)]
     {D : RealTimeInterval}
@@ -297,11 +312,7 @@ theorem hamiltonF_ricci_dissipation_of_ricci_lower_bound
   let logut : M → ℝ := fun y => Real.log (u t y)
   have hvecg : ∀ h : M → ℝ, gradientFun (I := I) g h x = gradFun (I := I) g h x := by
     intro h
-    apply (metricFlatEquiv (I := I) g x).injective
-    ext w
-    change g.inner x (gradientFun (I := I) g h x) w = g.inner x (gradFun (I := I) g h x) w
-    rw [inner_gradientFun (I := I) g h x w]
-    rw [inner_gradFun (I := I) g h x w]
+    exact gradient_eq_gradFun (I := I) g h x
   have hr := hRic x (gradFun (I := I) g logut x)
   have hin : g.inner x (gradientFun (I := I) g logut x) (gradientFun (I := I) g logut x) =
       g.inner x (gradFun (I := I) g logut x) (gradFun (I := I) g logut x) := by
@@ -343,6 +354,7 @@ theorem hamiltonF_ricci_dissipation_of_ricci_lower_bound
           ring
     _ ≤ 0 := by simpa using hmul
 
+omit [SigmaCompactSpace M] in
 theorem hamiltonF_evolution_inequality_of_ricci_lower_bound
     [NeZero (Module.finrank ℝ E)]
     {D : RealTimeInterval}
@@ -503,13 +515,18 @@ theorem hamiltonF_evolution_inequality_of_ricci_lower_bound
           ((-(c2 * Real.exp (c2 * s))) * N s x +
             (1 - Real.exp (c2 * s)) * deriv (fun τ' : ℝ => N τ' x) s) s := by
       have hlin : HasDerivAt (fun τ' : ℝ => c2 * τ') c2 s := by
-        simpa using (hasDerivAt_const s c2).mul (hasDerivAt_id s)
+        convert ((hasDerivAt_const s c2).mul (hasDerivAt_id s)).congr_of_eventuallyEq
+          (Filter.Eventually.of_forall fun _ ↦ rfl) using 1
+        all_goals first | rfl | ring
       have hdexp : HasDerivAt (fun τ' : ℝ => Real.exp (c2 * τ'))
           (Real.exp (c2 * s) * c2) s := by
-        simpa using (Real.hasDerivAt_exp (c2 * s)).comp s hlin
+        exact ((Real.hasDerivAt_exp (c2 * s)).comp s hlin).congr_of_eventuallyEq
+          (Filter.Eventually.of_forall fun _ ↦ rfl)
       have hcoefd : HasDerivAt (fun τ' : ℝ => 1 - Real.exp (c2 * τ'))
           (-(Real.exp (c2 * s) * c2)) s := by
-        simpa using (hasDerivAt_const s (1 : ℝ)).sub hdexp
+        convert ((hasDerivAt_const s (1 : ℝ)).sub hdexp).congr_of_eventuallyEq
+          (Filter.Eventually.of_forall fun _ ↦ rfl) using 1
+        all_goals first | rfl | ring
       have hval : (-(c2 * Real.exp (c2 * s))) * N s x +
             (1 - Real.exp (c2 * s)) * deriv (fun τ' : ℝ => N τ' x) s =
           (-(Real.exp (c2 * s) * c2)) * N s x +
@@ -556,7 +573,7 @@ theorem hamiltonF_evolution_inequality_of_ricci_lower_bound
       rw [hfun]
       have hsmul := laplacianAt_smul (I := I) Gfam s (1 - Real.exp (c2 * s)) hN_s_mdiff
         (gradientFun_mdiffAt (I := I) (Gfam.metric s) hN_slice_cd x)
-      simpa [smul_eq_mul] using hsmul
+      exact hsmul
     have hsub := laplacianAt_sub (I := I) Gfam s
       (f := fun y : M => liYauQuantity g f s y)
       (h := fun y : M => (1 - Real.exp (c2 * s)) * N s y) (x := x)
@@ -741,7 +758,6 @@ omit [SigmaCompactSpace M] in
 theorem hamilton_quantity_slab_bound_of_ricci_lower_bound
     [CompactSpace M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [NeZero (Module.finrank ℝ E)]
     {D : RealTimeInterval}
     (g : SmoothRiemannianMetric I M) {K : ℝ} (hK : 0 ≤ K)
@@ -910,43 +926,59 @@ theorem hamilton_quantity_slab_bound_of_ricci_lower_bound
           2 * K * Real.exp (2 * K * s) * (n / 2) - eps := by
       have hlin : HasDerivAt (fun τ' : ℝ => τ' * F τ' x₀)
           (F s x₀ + s * deriv (fun τ' : ℝ => F τ' x₀) s) s := by
-        simpa using (hasDerivAt_id s).mul hFsmooth.hasDerivAt
+        convert ((hasDerivAt_id s).mul hFsmooth.hasDerivAt).congr_of_eventuallyEq
+          (Filter.Eventually.of_forall fun _ ↦ rfl) using 1
+        all_goals first | rfl | (simp only [id_eq]; ring)
       have hexp : HasDerivAt (fun τ' : ℝ => Real.exp (2 * K * τ') * (n / 2))
           (2 * K * Real.exp (2 * K * s) * (n / 2)) s := by
         have hdexp : HasDerivAt (fun τ' : ℝ => Real.exp (2 * K * τ')) (Real.exp (2 * K * s) *
           (2 * K)) s := by
           have hinner : HasDerivAt (fun τ' : ℝ => 2 * K * τ') (2 * K) s := by
-            simpa using (hasDerivAt_const s (2 * K)).mul (hasDerivAt_id s)
-          simpa using (Real.hasDerivAt_exp (2 * K * s)).comp s hinner
-        convert (hdexp.mul (hasDerivAt_const s (n / 2))) using 1; ring
+            convert ((hasDerivAt_const s (2 * K)).mul (hasDerivAt_id s)).congr_of_eventuallyEq
+              (Filter.Eventually.of_forall fun _ ↦ rfl) using 1
+            all_goals first | rfl | ring
+          exact ((Real.hasDerivAt_exp (2 * K * s)).comp s hinner).congr_of_eventuallyEq
+            (Filter.Eventually.of_forall fun _ ↦ rfl)
+        convert hdexp.mul (hasDerivAt_const s (n / 2)) using 1
+        all_goals first | rfl | ring
       have hconst : HasDerivAt (fun τ' : ℝ => eps * τ') eps s := by
         simpa using (hasDerivAt_id s).const_mul eps
       have hmain : HasDerivAt (fun τ' : ℝ => τ' * F τ' x₀ - Real.exp (2 * K * τ') *
         (n / 2) - eps * τ')
           (F s x₀ + s * deriv (fun τ' : ℝ => F τ' x₀) s -
             2 * K * Real.exp (2 * K * s) * (n / 2) - eps) s := by
-        simpa using (hlin.sub hexp).sub hconst
+        convert ((hlin.sub hexp).sub hconst).congr_of_eventuallyEq
+          (Filter.Eventually.of_forall fun _ ↦ rfl) using 1
+        all_goals rfl
       simpa [G] using hmain.deriv
     have hder : HasDerivAt (fun τ' : ℝ => G eps τ' x₀)
         (deriv (fun τ' : ℝ => G eps τ' x₀) s) s := by
       have hlin : HasDerivAt (fun τ' : ℝ => τ' * F τ' x₀)
           (F s x₀ + s * deriv (fun τ' : ℝ => F τ' x₀) s) s := by
-        simpa using (hasDerivAt_id s).mul hFsmooth.hasDerivAt
+        convert ((hasDerivAt_id s).mul hFsmooth.hasDerivAt).congr_of_eventuallyEq
+          (Filter.Eventually.of_forall fun _ ↦ rfl) using 1
+        all_goals first | rfl | (simp only [id_eq]; ring)
       have hexp : HasDerivAt (fun τ' : ℝ => Real.exp (2 * K * τ') * (n / 2))
           (2 * K * Real.exp (2 * K * s) * (n / 2)) s := by
         have hdexp : HasDerivAt (fun τ' : ℝ => Real.exp (2 * K * τ')) (Real.exp (2 * K * s) *
           (2 * K)) s := by
           have hinner : HasDerivAt (fun τ' : ℝ => 2 * K * τ') (2 * K) s := by
-            simpa using (hasDerivAt_const s (2 * K)).mul (hasDerivAt_id s)
-          simpa using (Real.hasDerivAt_exp (2 * K * s)).comp s hinner
-        convert (hdexp.mul (hasDerivAt_const s (n / 2))) using 1; ring
+            convert ((hasDerivAt_const s (2 * K)).mul (hasDerivAt_id s)).congr_of_eventuallyEq
+              (Filter.Eventually.of_forall fun _ ↦ rfl) using 1
+            all_goals first | rfl | ring
+          exact ((Real.hasDerivAt_exp (2 * K * s)).comp s hinner).congr_of_eventuallyEq
+            (Filter.Eventually.of_forall fun _ ↦ rfl)
+        convert hdexp.mul (hasDerivAt_const s (n / 2)) using 1
+        all_goals first | rfl | ring
       have hconst : HasDerivAt (fun τ' : ℝ => eps * τ') eps s := by
         simpa using (hasDerivAt_id s).const_mul eps
       have hmain : HasDerivAt (fun τ' : ℝ => τ' * F τ' x₀ - Real.exp (2 * K * τ') *
         (n / 2) - eps * τ')
           (F s x₀ + s * deriv (fun τ' : ℝ => F τ' x₀) s -
             2 * K * Real.exp (2 * K * s) * (n / 2) - eps) s := by
-        simpa using (hlin.sub hexp).sub hconst
+        convert ((hlin.sub hexp).sub hconst).congr_of_eventuallyEq
+          (Filter.Eventually.of_forall fun _ ↦ rfl) using 1
+        all_goals rfl
       simpa [G, hval] using hmain
     have htime : 0 ≤ deriv (fun τ' : ℝ => G eps τ' x₀) s :=
       deriv_nonneg_at_right_endpoint_of_isMaxOn_Icc hspos hzmax hder
@@ -1044,13 +1076,18 @@ theorem hamilton_quantity_slab_bound_of_ricci_lower_bound
           ((-(c2 * Real.exp (c2 * s))) * N s x₀ +
             (1 - Real.exp (c2 * s)) * deriv (fun τ' : ℝ => N τ' x₀) s) s := by
         have hlin : HasDerivAt (fun τ' : ℝ => c2 * τ') c2 s := by
-          simpa using (hasDerivAt_const s c2).mul (hasDerivAt_id s)
+          convert ((hasDerivAt_const s c2).mul (hasDerivAt_id s)).congr_of_eventuallyEq
+            (Filter.Eventually.of_forall fun _ ↦ rfl) using 1
+          all_goals first | rfl | ring
         have hdexp : HasDerivAt (fun τ' : ℝ => Real.exp (c2 * τ'))
             (Real.exp (c2 * s) * c2) s := by
-          simpa using (Real.hasDerivAt_exp (c2 * s)).comp s hlin
+          exact ((Real.hasDerivAt_exp (c2 * s)).comp s hlin).congr_of_eventuallyEq
+            (Filter.Eventually.of_forall fun _ ↦ rfl)
         have hcoefd : HasDerivAt (fun τ' : ℝ => 1 - Real.exp (c2 * τ'))
             (-(Real.exp (c2 * s) * c2)) s := by
-          simpa using (hasDerivAt_const s (1 : ℝ)).sub hdexp
+          convert ((hasDerivAt_const s (1 : ℝ)).sub hdexp).congr_of_eventuallyEq
+            (Filter.Eventually.of_forall fun _ ↦ rfl) using 1
+          all_goals first | rfl | ring
         have hval : (-(c2 * Real.exp (c2 * s))) * N s x₀ +
               (1 - Real.exp (c2 * s)) * deriv (fun τ' : ℝ => N τ' x₀) s =
             (-(Real.exp (c2 * s) * c2)) * N s x₀ +
@@ -1097,7 +1134,7 @@ theorem hamilton_quantity_slab_bound_of_ricci_lower_bound
         have hsmul := laplacianAt_smul (I := I) Gfam s (1 - Real.exp (c2 * s))
           (fun y : M => hN_slice_cd.mdifferentiableAt (x := y) (by norm_num))
           (gradientFun_mdiffAt (I := I) (Gfam.metric s) hN_slice_cd x₀)
-        simpa [smul_eq_mul] using hsmul
+        exact hsmul
       have hsub := laplacianAt_sub (I := I) Gfam s
         (f := fun y : M => liYauQuantity g f s y)
         (h := fun y : M => (1 - Real.exp (c2 * s)) * N s y)
@@ -1133,7 +1170,10 @@ theorem hamilton_quantity_slab_bound_of_ricci_lower_bound
         rw [laplacianAt_eq_delta (I := I) Gfam s contMDiff_const hconn]
         exact Δ_g_const (I := I) g (Real.exp (2 * K * s) * (n / 2) + eps * s) x₀
       have hscd : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => s • F s y) := by
-        simpa [Pi.smul_apply] using contMDiff_const.mul hF_s_cd
+        rw [show (fun y : M ↦ s • F s y) = (fun _ : M ↦ s) * F s by
+          funext y
+          simp only [smul_eq_mul, Pi.mul_apply]]
+        exact contMDiff_const.mul hF_s_cd
       have hsub_cd : ContMDiff I 𝓘(ℝ, ℝ) ∞
           (fun y : M => s • F s y - (Real.exp (2 * K * s) * (n / 2) + eps * s)) :=
         hscd.sub contMDiff_const
@@ -1199,7 +1239,6 @@ omit [SigmaCompactSpace M] in
 theorem heat_solution_hamilton_differential_harnack_of_ricci_lower_bound_on
     [CompactSpace M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [NeZero (Module.finrank ℝ E)]
     {D : RealTimeInterval}
     (g : SmoothRiemannianMetric I M) {K : ℝ} (hK : 0 ≤ K)
@@ -1273,11 +1312,7 @@ theorem heat_solution_hamilton_differential_harnack_of_ricci_lower_bound_on
   let F : ℝ → M → ℝ := fun s y => Real.exp ((-(2 * K)) * s) * N s y - deriv (fun σ : ℝ => f σ y) s
   have hvec : ∀ (τ : ℝ) (y : M), gradientFun (I := I) g (f τ) y = gradFun (I := I) g (f τ) y := by
     intro τ y
-    apply (metricFlatEquiv (I := I) g y).injective
-    ext w
-    change g.inner y (gradientFun (I := I) g (f τ) y) w = g.inner y (gradFun (I := I) g (f τ) y) w
-    rw [inner_gradientFun (I := I) g (f τ) y w]
-    rw [inner_gradFun (I := I) g (f τ) y w]
+    exact gradient_eq_gradFun (I := I) g (f τ) y
   have hN_eq : ∀ (τ : ℝ) (y : M), N τ y = normGradSqFun (I := I) g (f τ) y := by
     intro τ y
     unfold N normGradSqFun
@@ -1449,7 +1484,6 @@ omit [SigmaCompactSpace M] in
 theorem heat_solution_hamilton_differential_harnack_of_ricci_lower_bound
     [CompactSpace M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M → Type _) I]
     [NeZero (Module.finrank ℝ E)]
     (g : SmoothRiemannianMetric I M) {K : ℝ} (hK : 0 ≤ K)
     (hRic : ∀ x v, -K * g.inner x v v ≤ ricciTensor (I := I) g x v v)
@@ -1457,7 +1491,7 @@ theorem heat_solution_hamilton_differential_harnack_of_ricci_lower_bound
     (hu : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞ (fun p : ℝ × M => u p.1 p.2))
     (hpos : ∀ t x, 0 < u t x)
     (hpde : ∀ t x, deriv (fun s => u s x) t =
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x)
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x)
     {t : ℝ} (ht : 0 < t) (x : M) :
     g.inner x (gradientFun (I := I) g (u t) x) (gradientFun (I := I) g (u t) x) / (u t x ^ 2) -
       Real.exp (2 * K * t) * (deriv (fun s => u s x) t / u t x) ≤
@@ -1486,9 +1520,9 @@ theorem heat_solution_hamilton_differential_harnack_of_ricci_lower_bound
       have hder : HasDerivAt (fun s => u s x) (deriv (fun s => u s x) τ) τ :=
         (ContDiff.differentiable hslice_cd (by norm_num) τ).hasDerivAt
       have hlap : laplacianAt (I := I) Gfam τ (u τ) x =
-          Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu τ).toContMDiffMap x := by
+          ΔG (I := I) g (smoothScalarSlice (I := I) g u hu τ).toContMDiffMap x := by
         change laplacianAt (I := I) Gfam τ (smoothScalarSlice (I := I) g u hu τ).toFun x =
-          Δ_g (I := I) g
+          ΔG (I := I) g
             ⟨(smoothScalarSlice (I := I) g u hu τ).toFun,
               (smoothScalarSlice (I := I) g u hu τ).smooth⟩ x
         rw [laplacianAt_eq_delta (I := I) Gfam τ (smoothScalarSlice (I := I) g u hu τ).smooth
@@ -1496,8 +1530,8 @@ theorem heat_solution_hamilton_differential_harnack_of_ricci_lower_bound
         rw [hGmetric τ hτ]
       have hderiv : deriv (fun s => u s x) τ = laplacianAt (I := I) Gfam τ (u τ) x := by
         rw [hpde τ x, ← hlap]
-      convert hder.congr_deriv hderiv using 1
-      simp
+      apply hder.congr_deriv
+      rw [hderiv, zero_mul, add_zero]
   let f : ℝ → M → ℝ := fun s y => Real.log (u s y)
   let hlog : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M => f p.1 p.2) := by
@@ -1539,7 +1573,10 @@ theorem heat_solution_hamilton_differential_harnack_of_ricci_lower_bound
       rfl
     have hexp : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
         (fun p : ℝ × M => Real.exp ((-(2 * K)) * p.1)) := by
-      simpa using ((Real.contDiff_exp.contMDiff : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ Real.exp).comp hlin)
+      rw [show (fun p : ℝ × M ↦ Real.exp ((-(2 * K)) * p.1)) =
+        Real.exp ∘ (fun p : ℝ × M ↦ (-(2 * K)) * p.1) by rfl]
+      exact (Real.contDiff_exp.contMDiff :
+        ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ Real.exp).comp hlin
     have hterm1 : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
         (fun p : ℝ × M => Real.exp ((-(2 * K)) * p.1) * N p.1 p.2) := hexp.mul hN
     change ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞

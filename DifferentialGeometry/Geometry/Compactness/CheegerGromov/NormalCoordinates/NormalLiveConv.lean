@@ -333,7 +333,9 @@ theorem exists_diag_full
     (hpsi0.tendsto_atTop.eventually (hbranch.and hQ))
   let shift : Nat → Nat := fun n ↦ n + N
   have hshift : StrictMono shift := by
-    simpa only [shift] using strictMono_id.add_const N
+    intro a b hab
+    dsimp only [shift]
+    omega
   let psi : Nat → Nat := psi0 ∘ shift
   have hpsi : StrictMono psi := hpsi0.comp hshift
   let Lpsi := L.subseq hpsi
@@ -342,8 +344,10 @@ theorem exists_diag_full
         hcomplete hconn aMin q δ := by
     intro n
     have hn := (hN (shift n) (by simp only [shift]; omega)).1
-    simpa only [Lpsi, psi, HasLiveBrFull, NetLimitData.subseq,
-      Function.comp_apply, seqCenterD_subseq] using hn
+    with_unfolding_all
+      change HasLiveBrFull (I := I) P L inp.pack r (psi n)
+        hcomplete hconn aMin q δ
+    simpa only [psi, Function.comp_apply] using hn
   have hQAll : ∀ n, Q (psi n) := by
     intro n
     exact (hN (shift n) (by simp only [shift]; omega)).2
@@ -413,8 +417,9 @@ theorem exists_diag_full
       exact (hpair0 alpha).2 (shift n)
     have hsel := hcan.congr_stage hcanFence (hδ alpha)
       (hnormal alpha) (hfence alpha)
-    simpa only [index0, X0, c0, psi, Lpsi, PointedRiemannianSeq.subseq,
-      NetLimitData.subseq, Function.comp_apply, seqCenterD_subseq] using hsel
+    convert hsel using 1
+    with_unfolding_all
+      rfl
   refine ⟨psi, hpsi, gInf, deltaInf, e, eInf,
     hcenter, hQAll, hmetric, hbranchAll, ?_⟩
   dsimp only

@@ -92,7 +92,7 @@ private lemma chosenChartFirstWeakPartial_ae_zero_off_support
   have hΩ_open : IsOpen Ω :=
     chartTargetEuclid_isOpen (I := I) (M := M) α
   have hV_open : IsOpen V := hΩ_open.sdiff hK_closed
-  have hV_subset : V ⊆ Ω := Set.diff_subset
+  have hV_subset : V ⊆ Ω := Set.sdiff_subset
   unfold chosenChartFirstWeakPartial
   have h_chart_pushed_vanishes :
       (fun y : EuclN => DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
@@ -621,13 +621,13 @@ theorem chartTensorPairingLocal_memLp_two
                   chartTensorWeakHessianRaw (I := I) (M := M) (u_h := u_h) g α k l y) 2
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
-    refine memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+    refine memLp_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun i _ => ?_)
-    refine memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+    refine memLp_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun j _ => ?_)
-    refine memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+    refine memLp_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun k _ => ?_)
-    refine memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+    refine memLp_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun l _ => ?_)
     exact cutoffTensorSummand_memLp_two (I := I) (M := M) g α φ hu_h i j k l
   exact MemLp.ae_eq h_ae.symm h_cutoff_memLp
@@ -851,10 +851,10 @@ private lemma tensorContribSurrogate_ae_eq
   rw [Filter.EventuallyEq, MeasureTheory.ae_iff]
   refine MeasureTheory.measure_mono_null ?_ hpre_null
   intro x hx
-  simp only [Set.mem_setOf_eq] at hx
+  simp only [Set.mem_ofPred_eq] at hx
   by_cases hx_src : x ∈ (chartAt H α).source
   · refine ⟨hx_src, ?_⟩
-    simp only [Set.mem_setOf_eq]
+    simp only [Set.mem_ofPred_eq]
     have h_y_in_target : (toEuclidean (E := E)) ((extChartAt I α) x) ∈
         chartTargetEuclid (I := I) (M := M) α := by
       refine ⟨(extChartAt I α) x, ?_, rfl⟩
@@ -994,7 +994,7 @@ noncomputable def tensorHessPairingFunc
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (x : M) : ℝ :=
-  ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
     tensorHessPairingMChartContribution (I := I) (M := M) (u_h := u_h) g φ α x
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1003,7 +1003,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     {u_h : H1Compl (I := I) (M := M) g}
     (x : M) :
     tensorHessPairingFunc (I := I) (M := M) (u_h := u_h) g φ x =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         tensorHessPairingMChartContribution (I := I) (M := M) (u_h := u_h) g φ α x := rfl
 
 theorem tensorHessPairingFunc_memLp_two
@@ -1014,7 +1014,7 @@ theorem tensorHessPairingFunc_memLp_two
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   unfold tensorHessPairingFunc
-  refine memLp_finset_sum _ ?_
+  refine memLp_finsetSum _ ?_
   intro α _
   exact tensorHessPairingMChartContribution_memLp_two
     (I := I) (M := M) g φ α hu_h
@@ -1046,7 +1046,7 @@ def tensorPairingSmoothLeibnizDischarge
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
     Prop :=
   ∀ᵐ x ∂(riemannianVolumeMeasure (I := I) (M := M) g),
-    (∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       (chartAtlasPOU I M α : M → ℝ) x *
         chartTensorPairingLocal (I := I) (M := M)
           (u_h := smoothToH1Compl (I := I) (M := M) g v) g α φ
@@ -1059,7 +1059,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
     tensorPairingSmoothLeibnizDischarge (I := I) (M := M) g φ v ↔
       ∀ᵐ x ∂(riemannianVolumeMeasure (I := I) (M := M) g),
-        (∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        (∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           (chartAtlasPOU I M α : M → ℝ) x *
             chartTensorPairingLocal (I := I) (M := M)
               (u_h := smoothToH1Compl (I := I) (M := M) g v) g α φ
@@ -1073,7 +1073,7 @@ theorem tensorHessPairingFunc_aeEq_pou_weighted_chartLocal_smoothCase
     tensorHessPairingFunc (I := I) (M := M)
         (u_h := smoothToH1Compl (I := I) (M := M) g v) g φ
       =ᵐ[riemannianVolumeMeasure (I := I) (M := M) g]
-      (fun x : M => ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (fun x : M => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartAtlasPOU I M α : M → ℝ) x *
           chartTensorPairingLocal (I := I) (M := M)
             (u_h := smoothToH1Compl (I := I) (M := M) g v) g α φ

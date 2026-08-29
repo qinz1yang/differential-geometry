@@ -3,7 +3,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -45,7 +44,8 @@ theorem ccTensorMultilinear_sub (g : SmoothRiemannianMetric I M)
       - (T.toSection x)
           (ContinuousMultilinearMap.constOfIsEmpty ℝ
             (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))
-  rw [ContMDiffSection.coe_sub, Pi.sub_apply, ContinuousLinearMap.sub_apply]
+  rw [ContMDiffSection.coe_sub, Pi.sub_apply]
+  rfl
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -64,7 +64,7 @@ theorem ccTensorBilin_sub (g : SmoothRiemannianMetric I M)
     smoothCcTensorBilinForm (I := I) g (S - T) x v w =
       smoothCcTensorBilinForm (I := I) g S x v w - smoothCcTensorBilinForm (I := I) g T x v w := by
   rw [ccTensorBilin_apply, ccTensorBilin_apply, ccTensorBilin_apply,
-    ccTensorModel_sub, ContinuousMultilinearMap.sub_apply]
+    ccTensorModel_sub, sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in

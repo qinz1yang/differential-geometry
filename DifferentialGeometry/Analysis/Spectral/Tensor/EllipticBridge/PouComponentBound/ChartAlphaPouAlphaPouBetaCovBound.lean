@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open MeasureTheory
@@ -129,9 +128,9 @@ theorem chart_α_pou_α_pou_β_raw_β_sq_le_chart_β_wkpNorm
   have hΩαβ_meas : MeasurableSet Ω_αβ := hΩαβ_open.measurableSet
   have hEα_meas : MeasurableSet EuclTargetα :=
     chartTargetEuclid_measurableSet (I := I) (M := M) α
-  have hjLB_pos : 0 < Φ.jacobian_lower_bound := Φ.jacobian_lower_bound_pos
-  have hjLB_inv_pos : 0 < 1 / Φ.jacobian_lower_bound := by positivity
-  set Kchg : ℝ := (1 / Φ.jacobian_lower_bound) ^ (1 / (2 : ℝ≥0∞).toReal)
+  have hjLB_pos : 0 < Φ.jacobianLowerBound := Φ.jacobian_lower_bound_pos
+  have hjLB_inv_pos : 0 < 1 / Φ.jacobianLowerBound := by positivity
+  set Kchg : ℝ := (1 / Φ.jacobianLowerBound) ^ (1 / (2 : ℝ≥0∞).toReal)
     with hKchg_def
   have hKchg_nn : 0 ≤ Kchg := by
     rw [hKchg_def]

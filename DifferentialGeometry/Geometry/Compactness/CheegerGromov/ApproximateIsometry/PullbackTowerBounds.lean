@@ -68,7 +68,6 @@ end PartialTrans
 
 section TowerZero
 
-set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 theorem covStep_zero (gRef : SmoothRiemannianMetric I M) (s : Nat)
     :
@@ -82,7 +81,6 @@ theorem covStep_zero (gRef : SmoothRiemannianMetric I M) (s : Nat)
       = covStep (I := I) gRef s 0 + 0 := by rw [add_zero]; exact h
   exact add_left_cancel h2
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [SigmaCompactSpace M] in
 theorem iterCov_metric_zero (g : SmoothRiemannianMetric I M) (a : Nat) :
@@ -90,7 +88,12 @@ theorem iterCov_metric_zero (g : SmoothRiemannianMetric I M) (a : Nat) :
   induction a with
   | zero =>
       refine DFunLike.ext _ _ (fun x => ?_)
-      refine ContinuousMultilinearMap.ext (fun slots => ?_)
+      refine Tensor0SBundle.tensor0SSpace_ext (I := I) 3 x (fun slots => ?_)
+      change Tensor0SBundle.Tensor0SSpace.eval
+          (iterCov (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) 1 x) slots =
+        Tensor0SBundle.Tensor0SSpace.eval
+          ((0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
+            (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 3) x) slots
       obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at_gen (I := I) (F := E)
         (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (slots 0)
       have hslots : slots = Fin.cons (X x) (Fin.tail slots) := by
@@ -99,7 +102,7 @@ theorem iterCov_metric_zero (g : SmoothRiemannianMetric I M) (a : Nat) :
       rw [show iterCov (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) 1
           = covStep (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) from rfl]
       rw [covStep_apply, hslots,
-        Tensor0SBundle.totalNabla0SFun_apply_section (𝕜 := Real) (E := E) (H := H)
+        Tensor0SBundle.totalNabla0SFun_eval_section (𝕜 := Real) (E := E) (H := H)
           (I := I) (M := M) 2 _ X (Tensor0SBundle.metricTensorField (I := I) g) x _,
         Tensor0SBundle.nabla_metric_zero (I := I) _ g
           (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -112,7 +115,6 @@ theorem iterCov_metric_zero (g : SmoothRiemannianMetric I M) (a : Nat) :
           from rfl]
       rw [ih, covStep_zero]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 theorem iterCov_sub (gRef : SmoothRiemannianMetric I M) (r : Nat)
     (A0 B0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -125,7 +127,6 @@ theorem iterCov_sub (gRef : SmoothRiemannianMetric I M) (r : Nat)
   rw [h]
   abel
 
-set_option backward.isDefEq.respectTransparency false in
 omit [SigmaCompactSpace M] in
 theorem covDOF_zero (gRef : SmoothRiemannianMetric I M) (a : Nat) :
     covDerivOfField (I := I) gRef
@@ -135,7 +136,6 @@ theorem covDOF_zero (gRef : SmoothRiemannianMetric I M) (a : Nat) :
   have h := covDerivOfField_sub (I := I) gRef 0 0 a
   simpa using h
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [SigmaCompactSpace M] in
 theorem t02Norm_eq_iterCov {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -143,7 +143,7 @@ theorem t02Norm_eq_iterCov {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
     (gRef : SmoothRiemannianMetric I M) (a : ℕ) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gRef x basis
+    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric (Idx := Idx))) :
     tensor02CovDerivNormWith (I := I) a A gRef gRef x
       = Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + a)
@@ -151,8 +151,7 @@ theorem t02Norm_eq_iterCov {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   unfold tensor02CovDerivNormWith
   rw [tensor02_eq_covDOF, covDerivOfField_eq_iterCov]
   change Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (a + 2)
-      (ContinuousMultilinearMap.domDomCongr (acEquiv a)
-        (iterCov (I := I) gRef 2 A a x)))
+      ((iterCov (I := I) gRef 2 A a x).domDomCongr (acEquiv a)))
     = Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + a)
         (iterCov (I := I) gRef 2 A a x))
   rw [Tensor0SBundle.normSq0S_domDomCongr (I := I) gRef x basis hinv (acEquiv a)
@@ -213,7 +212,6 @@ theorem inner_le_of_c0
   · nlinarith [abs_le.mp habs]
   · nlinarith [abs_le.mp habs]
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem sqrt_normSq_two_le

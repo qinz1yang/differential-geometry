@@ -161,33 +161,33 @@ structure DiffChartBilinearH1ComplData
     (g : SmoothRiemannianMetric I M) (α : M) where
   base : ChartBilinearH1ComplData (I := I) (M := M) g α
   direction : Fin (Module.finrank ℝ E)
-  u_chart_deriv : EuclN → ℝ
-  f_chart_deriv : EuclN → ℝ
-  weak_partial_deriv : Fin (Module.finrank ℝ E) → EuclN → ℝ
+  uChartDeriv : EuclN → ℝ
+  fChartDeriv : EuclN → ℝ
+  weakPartialDeriv : Fin (Module.finrank ℝ E) → EuclN → ℝ
   u_chart_deriv_isWeakPartial :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction
-      u_chart_deriv base.u_chart
+      uChartDeriv base.uChart
       (chartTargetEuclid (I := I) (M := M) α)
   f_chart_deriv_isWeakPartial :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction
-      f_chart_deriv base.f_chart
+      fChartDeriv base.fChart
       (chartTargetEuclid (I := I) (M := M) α)
   weak_partial_deriv_isWeakPartial :
     ∀ i, DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction
-      (weak_partial_deriv i) (base.weak_partial i)
+      (weakPartialDeriv i) (base.weakPartial i)
       (chartTargetEuclid (I := I) (M := M) α)
   u_chart_deriv_locally_memLp :
     ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
-      MemLp u_chart_deriv 2 ((volume : Measure EuclN).restrict K)
+      MemLp uChartDeriv 2 ((volume : Measure EuclN).restrict K)
   f_chart_deriv_locally_memLp :
     ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
-      MemLp f_chart_deriv 2 ((volume : Measure EuclN).restrict K)
+      MemLp fChartDeriv 2 ((volume : Measure EuclN).restrict K)
   weak_partial_deriv_locally_memLp :
     ∀ i, ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
-      MemLp (weak_partial_deriv i) 2
+      MemLp (weakPartialDeriv i) 2
         ((volume : Measure EuclN).restrict K)
   differentiated_variational_identity :
     ∀ ψ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
@@ -196,29 +196,29 @@ structure DiffChartBilinearH1ComplData
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             weightedInvGramOnEuclid (I := I) g α i j y *
-              weak_partial_deriv i y *
+              weakPartialDeriv i y *
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
         ∂(volume : Measure EuclN)) +
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
-        densityOnEuclid (I := I) g α y * u_chart_deriv y * ψ y
+        densityOnEuclid (I := I) g α y * uChartDeriv y * ψ y
         ∂(volume : Measure EuclN)) =
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
-        densityOnEuclid (I := I) g α y * f_chart_deriv y * ψ y
+        densityOnEuclid (I := I) g α y * fChartDeriv y * ψ y
         ∂(volume : Measure EuclN)) -
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             weightedInvGramDerivOnEuclid (I := I) g α i j direction y *
-              base.weak_partial i y *
+              base.weakPartial i y *
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
         ∂(volume : Measure EuclN)) -
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
         densityDerivOnEuclid (I := I) g α direction y *
-          base.u_chart y * ψ y
+          base.uChart y * ψ y
         ∂(volume : Measure EuclN)) +
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
         densityDerivOnEuclid (I := I) g α direction y *
-          base.f_chart y * ψ y
+          base.fChart y * ψ y
         ∂(volume : Measure EuclN))
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -233,29 +233,29 @@ theorem differentiated_chart_bilinear_identity
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramOnEuclid (I := I) g α i j y *
-            D.weak_partial_deriv i y *
+            D.weakPartialDeriv i y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN)) +
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
-      densityOnEuclid (I := I) g α y * D.u_chart_deriv y * ψ y
+      densityOnEuclid (I := I) g α y * D.uChartDeriv y * ψ y
       ∂(volume : Measure EuclN)) =
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
-      densityOnEuclid (I := I) g α y * D.f_chart_deriv y * ψ y
+      densityOnEuclid (I := I) g α y * D.fChartDeriv y * ψ y
       ∂(volume : Measure EuclN)) -
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramDerivOnEuclid (I := I) g α i j D.direction y *
-            D.base.weak_partial i y *
+            D.base.weakPartial i y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN)) -
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityDerivOnEuclid (I := I) g α D.direction y *
-        D.base.u_chart y * ψ y
+        D.base.uChart y * ψ y
       ∂(volume : Measure EuclN)) +
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityDerivOnEuclid (I := I) g α D.direction y *
-        D.base.f_chart y * ψ y
+        D.base.fChart y * ψ y
       ∂(volume : Measure EuclN)) :=
   D.differentiated_variational_identity ψ hψ hψ_cs hψ_supp
 
@@ -283,14 +283,14 @@ theorem base_chart_bilinear_identity
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramOnEuclid (I := I) g α i j y *
-            D.base.weak_partial i y *
+            D.base.weakPartial i y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN)) +
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
-      densityOnEuclid (I := I) g α y * D.base.u_chart y * ψ y
+      densityOnEuclid (I := I) g α y * D.base.uChart y * ψ y
       ∂(volume : Measure EuclN)) =
     ∫ y in chartTargetEuclid (I := I) (M := M) α,
-      densityOnEuclid (I := I) g α y * D.base.f_chart y * ψ y
+      densityOnEuclid (I := I) g α y * D.base.fChart y * ψ y
       ∂(volume : Measure EuclN) :=
   D.base.variational_identity ψ hψ hψ_cs hψ_supp
 

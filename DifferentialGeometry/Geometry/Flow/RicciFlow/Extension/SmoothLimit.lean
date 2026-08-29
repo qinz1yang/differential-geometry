@@ -28,7 +28,7 @@ theorem tendsto_nhdsLT_of_bounded_deriv
     (hderiv : ∀ s : ℝ, s ∈ Set.Ioo a b → HasDerivAt f (f' s) s)
     (hbound : ∀ s : ℝ, s ∈ Set.Ioo a b → ‖f' s‖ ≤ C) :
     ∃ L : F, Tendsto f (𝓝[<] b) (𝓝 L) := by
-  haveI hNB : (𝓝[<] b).NeBot := nhdsWithin_Iio_neBot (le_refl b)
+  have hNB : (𝓝[<] b).NeBot := nhdsWithin_Iio_neBot (le_refl b)
   suffices hcauchy : Cauchy (Filter.map f (𝓝[<] b)) by
     exact cauchy_map_iff_exists_tendsto.mp hcauchy
   refine Metric.cauchy_iff.mpr ⟨Filter.map_neBot, ?_⟩

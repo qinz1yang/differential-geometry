@@ -76,7 +76,11 @@ theorem operatorFieldComposition_h1_uniform_bound
       lpNorm (fiberLpFun g r c S.toCcTensor) 6
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤ CΦ * ‖S‖ := by
     intro S
-    simpa only [fiberLpFun] using hΦ6 g hEq hjet1 S
+    change lpNorm (fun x => Real.sqrt
+        (riemannianFiberNormSq (I := I) (M := M) g r c x
+          (S.toCcTensor.toSection x))) 6
+      (riemannianVolumeMeasure (I := I) (M := M) g) ≤ CΦ * ‖S‖
+    exact hΦ6 g hEq hjet1 S
   have hG3 : ∀ S : SmoothCcTensorH1 g p (r + 1),
       lpNorm (fiberLpFun g p (r + 1) S.toCcTensor) 3
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤ CG3 * ‖S‖ := by
@@ -87,7 +91,11 @@ theorem operatorFieldComposition_h1_uniform_bound
         h63 g hEq p (r + 1) S.toCcTensor
       _ ≤ CV * (CG6 * ‖S‖) := by
         apply mul_le_mul_of_nonneg_left _ hCV
-        simpa only [fiberLpFun] using hG6 g hEq hjet1 S
+        change lpNorm (fun x => Real.sqrt
+            (riemannianFiberNormSq (I := I) (M := M) g p (r + 1) x
+              (S.toCcTensor.toSection x))) 6
+          (riemannianVolumeMeasure (I := I) (M := M) g) ≤ CG6 * ‖S‖
+        exact hG6 g hEq hjet1 S
       _ = CG3 * ‖S‖ := by
         dsimp [CG3]
         ring
@@ -140,7 +148,11 @@ theorem operatorFieldComposition_h2_uniform_bound
       lpNorm (fiberLpFun g r (c + 1) S.toCcTensor) 6
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤ CG * ‖S‖ := by
     intro S
-    simpa only [fiberLpFun] using hG6 g hEq hjet1 S
+    change lpNorm (fun x => Real.sqrt
+        (riemannianFiberNormSq (I := I) (M := M) g r (c + 1) x
+          (S.toCcTensor.toSection x))) 6
+      (riemannianVolumeMeasure (I := I) (M := M) g) ≤ CG * ‖S‖
+    exact hG6 g hEq hjet1 S
   have hW3 : ∀ S : SmoothCcTensorH1 g p r,
       lpNorm (fiberLpFun g p r S.toCcTensor) 3
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤ CW3 * ‖S‖ := by
@@ -151,7 +163,11 @@ theorem operatorFieldComposition_h2_uniform_bound
         h63 g hEq p r S.toCcTensor
       _ ≤ CV * (CW * ‖S‖) := by
         apply mul_le_mul_of_nonneg_left _ hCV
-        simpa only [fiberLpFun] using hW6 g hEq hjet1 S
+        change lpNorm (fun x => Real.sqrt
+            (riemannianFiberNormSq (I := I) (M := M) g p r x
+              (S.toCcTensor.toSection x))) 6
+          (riemannianVolumeMeasure (I := I) (M := M) g) ≤ CW * ‖S‖
+        exact hW6 g hEq hjet1 S
       _ = CW3 * ‖S‖ := by
         dsimp only [CW3]
         ring

@@ -17,27 +17,31 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-def cotangentToCLM_gen {x : M} (α : Tensor0SSpace 1 I x) :
+def cotangentToCLMGen {x : M} (α : Tensor0SSpace 1 I x) :
     TangentSpace I x →L[Real] Real :=
   continuousMultilinearCurryFin1 Real (TangentSpace I x) Real
-    (Tensor0SSpace.toModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) α)
+    (tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) 1 x α)
 
-def cotangentToDual_gen {x : M} (α : Tensor0SSpace 1 I x) :
+def cotangentToDualGen {x : M} (α : Tensor0SSpace 1 I x) :
     Module.Dual Real (TangentSpace I x) :=
-  (cotangentToCLM_gen (I := I) α).toLinearMap
+  (cotangentToCLMGen (I := I) α).toLinearMap
 
 omit [FiniteDimensional ℝ E] in
 @[simp] theorem cotangentToDual_apply_gen {x : M}
     (α : Tensor0SSpace 1 I x) (X : TangentSpace I x) :
-    cotangentToDual_gen (I := I) α X = α (fun _ : Fin 1 => X) := by
-  simpa [cotangentToDual_gen, cotangentToCLM_gen, Tensor0SSpace.toModel,
-    tensor0SSpace_continuousLinearEquiv] using
-    congrArg (fun v : Fin 1 -> TangentSpace I x => α v)
-    (funext fun i => by fin_cases i; rfl)
+    cotangentToDualGen (I := I) α X = α (fun _ : Fin 1 => X) := by
+  let hM : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+  change continuousMultilinearCurryFin1 Real (TangentSpace I x) Real
+      (@tensor0SSpaceFiberContinuousLinearEquiv Real _ E _ _ H _ I M _ _ hM 1 x α) X =
+      α (fun _ : Fin 1 => X)
+  rw [continuousMultilinearCurryFin1_apply,
+    @tensor0SSpaceFiberContinuousLinearEquiv_apply Real _ E _ _ H _ I M _ _ hM]
+  congr 1
 
-def cotangentToDualLinear_gen {x : M} :
+def cotangentToDualLinearGen {x : M} :
     Tensor0SSpace 1 I x →ₗ[Real] Module.Dual Real (TangentSpace I x) where
-  toFun := cotangentToDual_gen (I := I)
+  toFun := cotangentToDualGen (I := I)
   map_add' α β := by
     ext X
     rfl
@@ -48,12 +52,12 @@ def cotangentToDualLinear_gen {x : M} :
 omit [FiniteDimensional ℝ E] in
 @[simp] theorem cotangentToDualLinear_apply_gen {x : M}
     (α : Tensor0SSpace 1 I x) :
-    cotangentToDualLinear_gen (I := I) α = cotangentToDual_gen (I := I) α := by
+    cotangentToDualLinearGen (I := I) α = cotangentToDualGen (I := I) α := by
   rfl
 
 omit [FiniteDimensional ℝ E] in
 theorem cotangentToDualLinear_injective_gen {x : M} :
-    Function.Injective (cotangentToDualLinear_gen (I := I) (x := x)) := by
+    Function.Injective (cotangentToDualLinearGen (I := I) (x := x)) := by
   intro α β h
   ext v
   have hv :
@@ -62,9 +66,9 @@ theorem cotangentToDualLinear_injective_gen {x : M} :
     fin_cases i
     rfl
   have h0 := congrArg (fun L : Module.Dual Real (TangentSpace I x) => L (v 0)) h
-  simpa [cotangentToDualLinear_gen, cotangentToDual_apply_gen, hv] using h0
+  simpa [cotangentToDualLinearGen, cotangentToDual_apply_gen, hv] using h0
 
-def dualToCotangent_gen {x : M} (α : Module.Dual Real (TangentSpace I x)) :
+def dualToCotangentGen {x : M} (α : Module.Dual Real (TangentSpace I x)) :
     Tensor0SSpace 1 I x :=
   Tensor0SSpace.ofModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     ((continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).symm
@@ -72,7 +76,7 @@ def dualToCotangent_gen {x : M} (α : Module.Dual Real (TangentSpace I x)) :
 
 def dualToCotangentLinear {x : M} :
     Module.Dual Real (TangentSpace I x) →ₗ[Real] Tensor0SSpace 1 I x where
-  toFun := dualToCotangent_gen (I := I)
+  toFun := dualToCotangentGen (I := I)
   map_add' α β := by
     apply cotangentToDualLinear_injective_gen (I := I) (x := x)
     ext X
@@ -86,12 +90,12 @@ def dualToCotangentLinear {x : M} :
 
 @[simp] theorem dualToCotangentLinear_apply {x : M}
     (α : Module.Dual Real (TangentSpace I x)) :
-    dualToCotangentLinear (I := I) α = dualToCotangent_gen (I := I) α := by
+    dualToCotangentLinear (I := I) α = dualToCotangentGen (I := I) α := by
   rfl
 
 @[simp] theorem dualToCotangent_apply_gen {x : M}
     (α : Module.Dual Real (TangentSpace I x)) (X : TangentSpace I x) :
-    dualToCotangent_gen (I := I) α (fun _ : Fin 1 => X) = α X := by
+    Tensor0SSpace.eval (dualToCotangentGen (I := I) α) (fun _ : Fin 1 => X) = α X := by
   change
     ((continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).symm
         (LinearMap.toContinuousLinearMap α)) (fun _ : Fin 1 => X) = α X
@@ -99,52 +103,53 @@ def dualToCotangentLinear {x : M} :
 
 @[simp] theorem cotangentToDual_dualToCotangent_gen {x : M}
     (α : Module.Dual Real (TangentSpace I x)) :
-    cotangentToDual_gen (I := I) (dualToCotangent_gen (I := I) α) = α := by
+    cotangentToDualGen (I := I) (dualToCotangentGen (I := I) α) = α := by
   ext X
-  simp
+  change Tensor0SSpace.eval (dualToCotangentGen (I := I) α) (fun _ : Fin 1 => X) = α X
+  exact dualToCotangent_apply_gen α X
 
-def cotangentSharpLinear_gen (g : SmoothMetric_gen I M) (x : M) :
+def cotangentSharpLinearGen (g : SmoothMetricGen I M) (x : M) :
     Tensor0SSpace 1 I x →ₗ[Real] TangentSpace I x :=
-  ((tangentMetricData_gen (I := I) g x).metric.sharp).toLinearMap.comp
-    (cotangentToDualLinear_gen (I := I) (x := x))
+  ((tangentMetricDataGen (I := I) g x).metric.sharp).toLinearMap.comp
+    (cotangentToDualLinearGen (I := I) (x := x))
 
-def cotangentSharp_gen (g : SmoothMetric_gen I M) (x : M)
+def cotangentSharpGen (g : SmoothMetricGen I M) (x : M)
     (α : Tensor0SSpace 1 I x) : TangentSpace I x :=
-  cotangentSharpLinear_gen (I := I) g x α
+  cotangentSharpLinearGen (I := I) g x α
 
 @[simp] theorem cotangentSharpLinear_apply_gen
-    (g : SmoothMetric_gen I M) (x : M) (α : Tensor0SSpace 1 I x) :
-    cotangentSharpLinear_gen (I := I) g x α = cotangentSharp_gen (I := I) g x α := by
+    (g : SmoothMetricGen I M) (x : M) (α : Tensor0SSpace 1 I x) :
+    cotangentSharpLinearGen (I := I) g x α = cotangentSharpGen (I := I) g x α := by
   rfl
 
 theorem cotangentSharpLinear_injective_gen
-    (g : SmoothMetric_gen I M) (x : M) :
-    Function.Injective (cotangentSharpLinear_gen (I := I) g x) := by
+    (g : SmoothMetricGen I M) (x : M) :
+    Function.Injective (cotangentSharpLinearGen (I := I) g x) := by
   intro α β h
   apply cotangentToDualLinear_injective_gen (I := I) (x := x)
-  exact ((tangentMetricData_gen (I := I) g x).metric.sharp.injective h)
+  exact ((tangentMetricDataGen (I := I) g x).metric.sharp.injective h)
 
-def cotangentInner_gen (g : SmoothMetric_gen I M) (x : M)
+def cotangentInnerGen (g : SmoothMetricGen I M) (x : M)
     (α β : Tensor0SSpace 1 I x) : Real :=
   g.inner x
-    (cotangentSharpLinear_gen (I := I) g x α)
-    (cotangentSharpLinear_gen (I := I) g x β)
+    (cotangentSharpLinearGen (I := I) g x α)
+    (cotangentSharpLinearGen (I := I) g x β)
 
 @[simp] theorem cotangentInner_eq_sharp_gen
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (α β : Tensor0SSpace 1 I x) :
-    cotangentInner_gen (I := I) g x α β =
-      g.inner x (cotangentSharp_gen (I := I) g x α)
-        (cotangentSharp_gen (I := I) g x β) := by
+    cotangentInnerGen (I := I) g x α β =
+      g.inner x (cotangentSharpGen (I := I) g x α)
+        (cotangentSharpGen (I := I) g x β) := by
   rfl
 
-def cotangentFlatLinear_gen (g : SmoothMetric_gen I M) (x : M) :
+def cotangentFlatLinearGen (g : SmoothMetricGen I M) (x : M) :
     Tensor0SSpace 1 I x →ₗ[Real] Module.Dual Real (Tensor0SSpace 1 I x) where
   toFun α :=
-    { toFun := fun β => cotangentInner_gen (I := I) g x α β
+    { toFun := fun β => cotangentInnerGen (I := I) g x α β
       map_add' := by
         intro β γ
-        let S := cotangentSharpLinear_gen (I := I) g x
+        let S := cotangentSharpLinearGen (I := I) g x
         have hS : S (β + γ) = S β + S γ := map_add S β γ
         change g.inner x (S α) (S (β + γ)) =
           g.inner x (S α) (S β) + g.inner x (S α) (S γ)
@@ -152,14 +157,14 @@ def cotangentFlatLinear_gen (g : SmoothMetric_gen I M) (x : M) :
         simp
       map_smul' := by
         intro c β
-        let S := cotangentSharpLinear_gen (I := I) g x
+        let S := cotangentSharpLinearGen (I := I) g x
         have hS : S (c • β) = c • S β := map_smul S c β
         change g.inner x (S α) (S (c • β)) = c * g.inner x (S α) (S β)
         rw [hS]
         simp }
   map_add' α β := by
     ext γ
-    let S := cotangentSharpLinear_gen (I := I) g x
+    let S := cotangentSharpLinearGen (I := I) g x
     have hS : S (α + β) = S α + S β := map_add S α β
     change g.inner x (S (α + β)) (S γ) =
       g.inner x (S α) (S γ) + g.inner x (S β) (S γ)
@@ -167,99 +172,99 @@ def cotangentFlatLinear_gen (g : SmoothMetric_gen I M) (x : M) :
     simp
   map_smul' c α := by
     ext β
-    let S := cotangentSharpLinear_gen (I := I) g x
+    let S := cotangentSharpLinearGen (I := I) g x
     have hS : S (c • α) = c • S α := map_smul S c α
     change g.inner x (S (c • α)) (S β) = c * g.inner x (S α) (S β)
     rw [hS]
     simp
 
 @[simp] theorem cotangentFlatLinear_apply_gen
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (α β : Tensor0SSpace 1 I x) :
-    cotangentFlatLinear_gen (I := I) g x α β =
-      cotangentInner_gen (I := I) g x α β := by
+    cotangentFlatLinearGen (I := I) g x α β =
+      cotangentInnerGen (I := I) g x α β := by
   rfl
 
 theorem cotangentFlatLinear_injective_gen
-    (g : SmoothMetric_gen I M) (x : M) :
-    Function.Injective (cotangentFlatLinear_gen (I := I) g x) := by
+    (g : SmoothMetricGen I M) (x : M) :
+    Function.Injective (cotangentFlatLinearGen (I := I) g x) := by
   intro α β h
-  have hsub : cotangentSharpLinear_gen (I := I) g x (α - β) = 0 := by
+  have hsub : cotangentSharpLinearGen (I := I) g x (α - β) = 0 := by
     by_contra hsharp
     have hpos :
         0 <
           g.inner x
-            (cotangentSharpLinear_gen (I := I) g x (α - β))
-            (cotangentSharpLinear_gen (I := I) g x (α - β)) :=
-      g.pos x (cotangentSharpLinear_gen (I := I) g x (α - β)) hsharp
+            (cotangentSharpLinearGen (I := I) g x (α - β))
+            (cotangentSharpLinearGen (I := I) g x (α - β)) :=
+      g.pos x (cotangentSharpLinearGen (I := I) g x (α - β)) hsharp
     have h_eval :
-        cotangentFlatLinear_gen (I := I) g x α (α - β) =
-          cotangentFlatLinear_gen (I := I) g x β (α - β) :=
+        cotangentFlatLinearGen (I := I) g x α (α - β) =
+          cotangentFlatLinearGen (I := I) g x β (α - β) :=
       congrArg
         (fun L : Module.Dual Real (Tensor0SSpace 1 I x) => L (α - β)) h
-    have hdiff : cotangentFlatLinear_gen (I := I) g x (α - β) (α - β) = 0 := by
+    have hdiff : cotangentFlatLinearGen (I := I) g x (α - β) (α - β) = 0 := by
       calc
-        cotangentFlatLinear_gen (I := I) g x (α - β) (α - β)
-            = (cotangentFlatLinear_gen (I := I) g x α -
-                cotangentFlatLinear_gen (I := I) g x β) (α - β) := by
+        cotangentFlatLinearGen (I := I) g x (α - β) (α - β)
+            = (cotangentFlatLinearGen (I := I) g x α -
+                cotangentFlatLinearGen (I := I) g x β) (α - β) := by
                 exact congrArg
                   (fun L : Module.Dual Real (Tensor0SSpace 1 I x) => L (α - β))
-                  (map_sub (cotangentFlatLinear_gen (I := I) g x) α β)
-        _ = cotangentFlatLinear_gen (I := I) g x α (α - β) -
-              cotangentFlatLinear_gen (I := I) g x β (α - β) := rfl
+                  (map_sub (cotangentFlatLinearGen (I := I) g x) α β)
+        _ = cotangentFlatLinearGen (I := I) g x α (α - β) -
+              cotangentFlatLinearGen (I := I) g x β (α - β) := rfl
         _ = 0 := sub_eq_zero.mpr h_eval
     have hzero :
         g.inner x
-            (cotangentSharpLinear_gen (I := I) g x (α - β))
-            (cotangentSharpLinear_gen (I := I) g x (α - β)) = 0 := by
-      simpa [cotangentFlatLinear_gen, cotangentInner_gen] using hdiff
+            (cotangentSharpLinearGen (I := I) g x (α - β))
+            (cotangentSharpLinearGen (I := I) g x (α - β)) = 0 := by
+      simpa [cotangentFlatLinearGen, cotangentInnerGen] using hdiff
     exact (lt_irrefl (0 : Real)) (hzero ▸ hpos)
   apply cotangentSharpLinear_injective_gen (I := I) g x
   have hdiff :
-      cotangentSharpLinear_gen (I := I) g x α -
-        cotangentSharpLinear_gen (I := I) g x β = 0 := by
+      cotangentSharpLinearGen (I := I) g x α -
+        cotangentSharpLinearGen (I := I) g x β = 0 := by
     have hmap :
-        cotangentSharpLinear_gen (I := I) g x (α - β) =
-          cotangentSharpLinear_gen (I := I) g x α -
-            cotangentSharpLinear_gen (I := I) g x β :=
-      map_sub (cotangentSharpLinear_gen (I := I) g x) α β
+        cotangentSharpLinearGen (I := I) g x (α - β) =
+          cotangentSharpLinearGen (I := I) g x α -
+            cotangentSharpLinearGen (I := I) g x β :=
+      map_sub (cotangentSharpLinearGen (I := I) g x) α β
     rwa [hmap] at hsub
   exact sub_eq_zero.mp hdiff
 
-def cotangentMetricData_gen (g : SmoothMetric_gen I M) (x : M) :
+def cotangentMetricDataGen (g : SmoothMetricGen I M) (x : M) :
     MetricFiberData (Tensor0SSpace 1 I x) :=
   MetricFiberData.ofFlat
-    (cotangentFlatLinear_gen (I := I) g x)
+    (cotangentFlatLinearGen (I := I) g x)
     (cotangentFlatLinear_injective_gen (I := I) g x)
     (by
       intro α β
       change g.inner x
-          (cotangentSharpLinear_gen (I := I) g x α)
-          (cotangentSharpLinear_gen (I := I) g x β) =
+          (cotangentSharpLinearGen (I := I) g x α)
+          (cotangentSharpLinearGen (I := I) g x β) =
         g.inner x
-          (cotangentSharpLinear_gen (I := I) g x β)
-          (cotangentSharpLinear_gen (I := I) g x α)
+          (cotangentSharpLinearGen (I := I) g x β)
+          (cotangentSharpLinearGen (I := I) g x α)
       exact g.symm x _ _)
     (by
       intro α
-      by_cases hα : cotangentSharpLinear_gen (I := I) g x α = 0
+      by_cases hα : cotangentSharpLinearGen (I := I) g x α = 0
       · change 0 <=
           g.inner x
-            (cotangentSharpLinear_gen (I := I) g x α)
-            (cotangentSharpLinear_gen (I := I) g x α)
+            (cotangentSharpLinearGen (I := I) g x α)
+            (cotangentSharpLinearGen (I := I) g x α)
         rw [hα]
         simp
-      · exact le_of_lt (g.pos x (cotangentSharpLinear_gen (I := I) g x α) hα))
+      · exact le_of_lt (g.pos x (cotangentSharpLinearGen (I := I) g x α) hα))
 
 theorem cotangentMetricData_inner_gen
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (α β : Tensor0SSpace 1 I x) :
-    (cotangentMetricData_gen (I := I) g x).inner α β =
-      cotangentInner_gen (I := I) g x α β := by
+    (cotangentMetricDataGen (I := I) g x).inner α β =
+      cotangentInnerGen (I := I) g x α β := by
   rfl
 
-def MetricInverseOnFiniteFrameGram_gen {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M)
+def MetricInverseOnFiniteFrameGramGen {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetricGen I M) (x : M)
     (frame : Idx -> TangentSpace I x)
     (gInv : Idx -> Idx -> Real) : Prop :=
   forall i j : Idx,
@@ -268,8 +273,8 @@ def MetricInverseOnFiniteFrameGram_gen {Idx : Type*} [Fintype Idx] [DecidableEq 
       (∑ k : Idx, g.inner x (frame i) (frame k) * gInv k j) =
         (if i = j then 1 else 0)
 
-def MetricInverseInBasis_gen {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M)
+def MetricInverseInBasisGen {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real) : Prop :=
   forall i j : Idx,
@@ -279,33 +284,33 @@ def MetricInverseInBasis_gen {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
         (if i = j then 1 else 0)
 
 noncomputable def basisInvMetric {Idx : Type*}
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (i j : Idx) : Real :=
-  basis.coord j ((tangentFlatEquiv_gen (I := I) g x).symm (basis.coord i))
+  basis.coord j ((tangentFlatEquivGen (I := I) g x).symm (basis.coord i))
 
 theorem basisInvMetric_symm {Idx : Type*}
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x)) :
     forall i j : Idx,
       basisInvMetric (I := I) g x basis i j =
         basisInvMetric (I := I) g x basis j i := by
   intro i j
-  let sharp := (tangentFlatEquiv_gen (I := I) g x).symm
+  let sharp := (tangentFlatEquivGen (I := I) g x).symm
   have hleft :
       basis.coord j (sharp (basis.coord i)) =
         g.inner x (sharp (basis.coord j)) (sharp (basis.coord i)) := by
     change basis.coord j (sharp (basis.coord i)) =
-      (tangentFlatEquiv_gen (I := I) g x (sharp (basis.coord j)))
+      (tangentFlatEquivGen (I := I) g x (sharp (basis.coord j)))
         (sharp (basis.coord i))
-    rw [(tangentFlatEquiv_gen (I := I) g x).apply_symm_apply]
+    rw [(tangentFlatEquivGen (I := I) g x).apply_symm_apply]
   have hright :
       basis.coord i (sharp (basis.coord j)) =
         g.inner x (sharp (basis.coord i)) (sharp (basis.coord j)) := by
     change basis.coord i (sharp (basis.coord j)) =
-      (tangentFlatEquiv_gen (I := I) g x (sharp (basis.coord i)))
+      (tangentFlatEquivGen (I := I) g x (sharp (basis.coord i)))
         (sharp (basis.coord j))
-    rw [(tangentFlatEquiv_gen (I := I) g x).apply_symm_apply]
+    rw [(tangentFlatEquivGen (I := I) g x).apply_symm_apply]
   calc
     basisInvMetric (I := I) g x basis i j =
         g.inner x (sharp (basis.coord j)) (sharp (basis.coord i)) := by
@@ -316,12 +321,12 @@ theorem basisInvMetric_symm {Idx : Type*}
           simpa [basisInvMetric, sharp] using hright.symm
 
 theorem basisInvMetric_real {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x)) :
-    MetricInverseInBasis_gen (I := I) g x basis
+    MetricInverseInBasisGen (I := I) g x basis
       (basisInvMetric (I := I) g x basis) := by
   classical
-  let sharp := (tangentFlatEquiv_gen (I := I) g x).symm
+  let sharp := (tangentFlatEquivGen (I := I) g x).symm
   have hleft (i j : Idx) :
       (∑ k : Idx,
           basisInvMetric (I := I) g x basis i k *
@@ -345,10 +350,10 @@ theorem basisInvMetric_real {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
             rw [hsum]
       _ = basis.coord i (basis j) := by
             change
-              (tangentFlatEquiv_gen (I := I) g x (sharp (basis.coord i)))
+              (tangentFlatEquivGen (I := I) g x (sharp (basis.coord i)))
                 (basis j) =
               basis.coord i (basis j)
-            rw [(tangentFlatEquiv_gen (I := I) g x).apply_symm_apply]
+            rw [(tangentFlatEquivGen (I := I) g x).apply_symm_apply]
       _ = (if i = j then 1 else 0) := by
             by_cases hij : i = j
             · subst hij
@@ -381,11 +386,11 @@ theorem basisInvMetric_real {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
 
 omit [FiniteDimensional ℝ E] in
 theorem invBasis_unique {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv₁ gInv₂ : Idx → Idx → Real)
-    (h₁ : MetricInverseInBasis_gen (I := I) g x basis gInv₁)
-    (h₂ : MetricInverseInBasis_gen (I := I) g x basis gInv₂) :
+    (h₁ : MetricInverseInBasisGen (I := I) g x basis gInv₁)
+    (h₂ : MetricInverseInBasisGen (I := I) g x basis gInv₂) :
     gInv₁ = gInv₂ := by
   classical
   let A : Matrix Idx Idx Real := gInv₁
@@ -393,10 +398,14 @@ theorem invBasis_unique {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   let G : Matrix Idx Idx Real := fun i j => g.inner x (basis i) (basis j)
   have hAG : A * G = 1 := by
     ext i j
-    simpa [A, G, Matrix.mul_apply] using (h₁ i j).1
+    change (∑ k, gInv₁ i k * g.inner x (basis k) (basis j)) = (1 : Matrix Idx Idx Real) i j
+    rw [Matrix.one_apply]
+    exact (h₁ i j).1
   have hGB : G * B = 1 := by
     ext i j
-    simpa [B, G, Matrix.mul_apply] using (h₂ i j).2
+    change (∑ k, g.inner x (basis i) (basis k) * gInv₂ k j) = (1 : Matrix Idx Idx Real) i j
+    rw [Matrix.one_apply]
+    exact (h₂ i j).2
   have hAB : A = B := by
     calc
       A = A * 1 := by simp
@@ -404,27 +413,33 @@ theorem invBasis_unique {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       _ = (A * G) * B := by rw [Matrix.mul_assoc]
       _ = 1 * B := by rw [hAG]
       _ = B := by simp
-  simpa [A, B] using hAB
+  funext i j
+  exact congrArg (fun C : Matrix Idx Idx Real => C i j) hAB
 
 omit [FiniteDimensional ℝ E] in
 theorem invMetric_symm {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv) :
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv) :
     forall i j : Idx, gInv i j = gInv j i := by
   classical
   let A : Matrix Idx Idx Real := fun i j => gInv i j
   let G : Matrix Idx Idx Real := fun i j => g.inner x (basis i) (basis j)
   have hAG : A * G = 1 := by
     ext i j
-    simpa [A, G, Matrix.mul_apply] using (hinv i j).1
+    change (∑ k, gInv i k * g.inner x (basis k) (basis j)) = (1 : Matrix Idx Idx Real) i j
+    rw [Matrix.one_apply]
+    exact (hinv i j).1
   have hGA : G * A = 1 := by
     ext i j
-    simpa [A, G, Matrix.mul_apply] using (hinv i j).2
+    change (∑ k, g.inner x (basis i) (basis k) * gInv k j) = (1 : Matrix Idx Idx Real) i j
+    rw [Matrix.one_apply]
+    exact (hinv i j).2
   have hGt : Matrix.transpose G = G := by
     ext i j
-    simpa [G] using g.symm x (basis j) (basis i)
+    rw [Matrix.transpose_apply]
+    exact g.symm x (basis j) (basis i)
   have hAtG : Matrix.transpose A * G = 1 := by
     calc
       Matrix.transpose A * G = Matrix.transpose A * Matrix.transpose G := by rw [hGt]
@@ -439,14 +454,15 @@ theorem invMetric_symm {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       _ = A := by simp
   intro i j
   have hentry := congrArg (fun B : Matrix Idx Idx Real => B j i) hAt
-  simpa [A] using hentry
+  change A i j = A j i
+  exact (Matrix.transpose_apply A j i).symm.trans hentry
 
 omit [FiniteDimensional ℝ E] in
 theorem coord_eq_invInner {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (a : Idx) (V : TangentSpace I x) :
     basis.coord a V =
       ∑ k : Idx, gInv a k * g.inner x (basis k) V := by
@@ -479,42 +495,42 @@ theorem coord_eq_invInner {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
           simp
 
 theorem cotangentSharp_inner_gen
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (α : Tensor0SSpace 1 I x) (X : TangentSpace I x) :
-    g.inner x (cotangentSharp_gen (I := I) g x α) X =
-      cotangentToDual_gen (I := I) α X := by
+    g.inner x (cotangentSharpGen (I := I) g x α) X =
+      cotangentToDualGen (I := I) α X := by
   have h :=
     congrArg
       (fun L : Module.Dual Real (TangentSpace I x) => L X)
-      ((tangentMetricData_gen (I := I) g x).metric.flat.apply_symm_apply
-        (cotangentToDual_gen (I := I) α))
+      ((tangentMetricDataGen (I := I) g x).metric.flat.apply_symm_apply
+        (cotangentToDualGen (I := I) α))
   change
-    (tangentMetricData_gen (I := I) g x).metric.flat
-        ((tangentMetricData_gen (I := I) g x).metric.sharp
-          (cotangentToDual_gen (I := I) α)) X =
-      cotangentToDual_gen (I := I) α X
+    (tangentMetricDataGen (I := I) g x).metric.flat
+        ((tangentMetricDataGen (I := I) g x).metric.sharp
+          (cotangentToDualGen (I := I) α)) X =
+      cotangentToDualGen (I := I) α X
   exact h
 
 theorem cotangentSharp_inner_eval
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (α : Tensor0SSpace 1 I x) (X : TangentSpace I x) :
-    g.inner x (cotangentSharp_gen (I := I) g x α) X =
+    g.inner x (cotangentSharpGen (I := I) g x α) X =
       α (fun _ : Fin 1 => X) := by
   rw [cotangentSharp_inner_gen, cotangentToDual_apply_gen]
 
 theorem cotangentSharp_dualToCotangent_tangentFlat_gen
-    (g : SmoothMetric_gen I M) (x : M) (X : TangentSpace I x) :
-    cotangentSharp_gen (I := I) g x
-      (dualToCotangent_gen (I := I) (tangentFlatLinear_gen (I := I) g x X)) = X := by
+    (g : SmoothMetricGen I M) (x : M) (X : TangentSpace I x) :
+    cotangentSharpGen (I := I) g x
+      (dualToCotangentGen (I := I) (tangentFlatLinearGen (I := I) g x X)) = X := by
   apply tangentFlatLinear_injective_gen (I := I) g x
   ext Y
   simp [tangentFlatLinear_apply_gen, cotangentSharp_inner_gen]
 
 theorem cotangentInner_dualToCotangent_tangentFlat_gen
-    (g : SmoothMetric_gen I M) (x : M) (X Y : TangentSpace I x) :
-    cotangentInner_gen (I := I) g x
-      (dualToCotangent_gen (I := I) (tangentFlatLinear_gen (I := I) g x X))
-      (dualToCotangent_gen (I := I) (tangentFlatLinear_gen (I := I) g x Y)) =
+    (g : SmoothMetricGen I M) (x : M) (X Y : TangentSpace I x) :
+    cotangentInnerGen (I := I) g x
+      (dualToCotangentGen (I := I) (tangentFlatLinearGen (I := I) g x X))
+      (dualToCotangentGen (I := I) (tangentFlatLinearGen (I := I) g x Y)) =
         g.inner x X Y := by
   rw [cotangentInner_eq_sharp_gen,
     cotangentSharp_dualToCotangent_tangentFlat_gen,
@@ -523,12 +539,12 @@ theorem cotangentInner_dualToCotangent_tangentFlat_gen
 omit [FiniteDimensional ℝ E] in
 theorem eq_of_inner_basis_eq_gen
     {Idx : Type*} [Finite Idx]
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     {X Y : TangentSpace I x}
     (h : forall i : Idx, g.inner x X (basis i) = g.inner x Y (basis i)) :
     X = Y := by
-  letI : Fintype Idx := Fintype.ofFinite Idx
+  let : Fintype Idx := Fintype.ofFinite Idx
   apply tangentFlatLinear_injective_gen (I := I) g x
   ext Z
   have hcoord (L : TangentSpace I x →ₗ[Real] Real) :
@@ -539,61 +555,61 @@ theorem eq_of_inner_basis_eq_gen
     intro i _
     rw [map_smul]
   calc
-    tangentFlatLinear_gen (I := I) g x X Z
-        = ∑ i : Idx, basis.repr Z i • tangentFlatLinear_gen (I := I) g x X (basis i) :=
-          hcoord (tangentFlatLinear_gen (I := I) g x X)
-    _ = ∑ i : Idx, basis.repr Z i • tangentFlatLinear_gen (I := I) g x Y (basis i) := by
+    tangentFlatLinearGen (I := I) g x X Z
+        = ∑ i : Idx, basis.repr Z i • tangentFlatLinearGen (I := I) g x X (basis i) :=
+          hcoord (tangentFlatLinearGen (I := I) g x X)
+    _ = ∑ i : Idx, basis.repr Z i • tangentFlatLinearGen (I := I) g x Y (basis i) := by
           apply Finset.sum_congr rfl
           intro i _
           rw [tangentFlatLinear_apply_gen, tangentFlatLinear_apply_gen, h i]
-    _ = tangentFlatLinear_gen (I := I) g x Y Z := by
-          exact (hcoord (tangentFlatLinear_gen (I := I) g x Y)).symm
+    _ = tangentFlatLinearGen (I := I) g x Y Z := by
+          exact (hcoord (tangentFlatLinearGen (I := I) g x Y)).symm
 
 theorem cotangentSharp_eq_sum_inv_gen
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (β : Tensor0SSpace 1 I x) :
-    cotangentSharp_gen (I := I) g x β =
+    cotangentSharpGen (I := I) g x β =
       ∑ i : Idx,
-        (∑ j : Idx, gInv i j * cotangentToDual_gen (I := I) β (basis j)) •
+        (∑ j : Idx, gInv i j * cotangentToDualGen (I := I) β (basis j)) •
           basis i := by
   apply eq_of_inner_basis_eq_gen (I := I) g x basis
   intro l
   calc
-    g.inner x (cotangentSharp_gen (I := I) g x β) (basis l)
-        = cotangentToDual_gen (I := I) β (basis l) := by
+    g.inner x (cotangentSharpGen (I := I) g x β) (basis l)
+        = cotangentToDualGen (I := I) β (basis l) := by
           rw [cotangentSharp_inner_gen]
     _ = ∑ j : Idx, (if l = j then 1 else 0) *
-          cotangentToDual_gen (I := I) β (basis j) := by
+          cotangentToDualGen (I := I) β (basis j) := by
           simp
     _ = ∑ j : Idx,
           (∑ i : Idx, g.inner x (basis l) (basis i) * gInv i j) *
-            cotangentToDual_gen (I := I) β (basis j) := by
+            cotangentToDualGen (I := I) β (basis j) := by
           apply Finset.sum_congr rfl
           intro j _
           rw [(hinv l j).2]
     _ = ∑ i : Idx,
-          (∑ j : Idx, gInv i j * cotangentToDual_gen (I := I) β (basis j)) *
+          (∑ j : Idx, gInv i j * cotangentToDualGen (I := I) β (basis j)) *
             g.inner x (basis i) (basis l) := by
           calc
             (∑ j : Idx,
                 (∑ i : Idx, g.inner x (basis l) (basis i) * gInv i j) *
-                  cotangentToDual_gen (I := I) β (basis j))
+                  cotangentToDualGen (I := I) β (basis j))
                 = ∑ j : Idx, ∑ i : Idx,
                     (g.inner x (basis l) (basis i) * gInv i j) *
-                      cotangentToDual_gen (I := I) β (basis j) := by
+                      cotangentToDualGen (I := I) β (basis j) := by
                     apply Finset.sum_congr rfl
                     intro j _
                     rw [Finset.sum_mul]
             _ = ∑ i : Idx, ∑ j : Idx,
                     (g.inner x (basis l) (basis i) * gInv i j) *
-                      cotangentToDual_gen (I := I) β (basis j) := by
+                      cotangentToDualGen (I := I) β (basis j) := by
                     rw [Finset.sum_comm]
             _ = ∑ i : Idx,
-                  (∑ j : Idx, gInv i j * cotangentToDual_gen (I := I) β (basis j)) *
+                  (∑ j : Idx, gInv i j * cotangentToDualGen (I := I) β (basis j)) *
                     g.inner x (basis i) (basis l) := by
                     apply Finset.sum_congr rfl
                     intro i _
@@ -604,65 +620,65 @@ theorem cotangentSharp_eq_sum_inv_gen
                     ring
     _ = g.inner x
           (∑ i : Idx,
-            (∑ j : Idx, gInv i j * cotangentToDual_gen (I := I) β (basis j)) •
+            (∑ j : Idx, gInv i j * cotangentToDualGen (I := I) β (basis j)) •
               basis i)
           (basis l) := by
           simp [map_sum]
 
 theorem cotangentInner_eq_coord_gen
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (α β : Tensor0SSpace 1 I x) :
-    cotangentInner_gen (I := I) g x α β =
+    cotangentInnerGen (I := I) g x α β =
       ∑ i : Idx, ∑ j : Idx,
-        gInv i j * cotangentToDual_gen (I := I) α (basis i) *
-          cotangentToDual_gen (I := I) β (basis j) := by
+        gInv i j * cotangentToDualGen (I := I) α (basis i) *
+          cotangentToDualGen (I := I) β (basis j) := by
   calc
-    cotangentInner_gen (I := I) g x α β
-        = g.inner x (cotangentSharp_gen (I := I) g x α)
-            (cotangentSharp_gen (I := I) g x β) := rfl
-    _ = cotangentToDual_gen (I := I) α (cotangentSharp_gen (I := I) g x β) := by
+    cotangentInnerGen (I := I) g x α β
+        = g.inner x (cotangentSharpGen (I := I) g x α)
+            (cotangentSharpGen (I := I) g x β) := rfl
+    _ = cotangentToDualGen (I := I) α (cotangentSharpGen (I := I) g x β) := by
           rw [cotangentSharp_inner_gen]
-    _ = cotangentToDual_gen (I := I) α
+    _ = cotangentToDualGen (I := I) α
           (∑ i : Idx,
-            (∑ j : Idx, gInv i j * cotangentToDual_gen (I := I) β (basis j)) •
+            (∑ j : Idx, gInv i j * cotangentToDualGen (I := I) β (basis j)) •
               basis i) := by
           rw [cotangentSharp_eq_sum_inv_gen (I := I) g x basis gInv hinv β]
     _ = ∑ i : Idx, ∑ j : Idx,
-          gInv i j * cotangentToDual_gen (I := I) α (basis i) *
-            cotangentToDual_gen (I := I) β (basis j) := by
+          gInv i j * cotangentToDualGen (I := I) α (basis i) *
+            cotangentToDualGen (I := I) β (basis j) := by
           rw [map_sum]
           apply Finset.sum_congr rfl
           intro i _
           rw [map_smul]
-          change (∑ j : Idx, gInv i j * cotangentToDual_gen (I := I) β (basis j)) *
-              cotangentToDual_gen (I := I) α (basis i) =
+          change (∑ j : Idx, gInv i j * cotangentToDualGen (I := I) β (basis j)) *
+              cotangentToDualGen (I := I) α (basis i) =
             ∑ j : Idx,
-              gInv i j * cotangentToDual_gen (I := I) α (basis i) *
-                cotangentToDual_gen (I := I) β (basis j)
+              gInv i j * cotangentToDualGen (I := I) α (basis i) *
+                cotangentToDualGen (I := I) β (basis j)
           rw [Finset.sum_mul]
           apply Finset.sum_congr rfl
           intro j _
-          change (gInv i j * cotangentToDual_gen (I := I) β (basis j)) *
-              cotangentToDual_gen (I := I) α (basis i) =
-            gInv i j * cotangentToDual_gen (I := I) α (basis i) *
-              cotangentToDual_gen (I := I) β (basis j)
+          change (gInv i j * cotangentToDualGen (I := I) β (basis j)) *
+              cotangentToDualGen (I := I) α (basis i) =
+            gInv i j * cotangentToDualGen (I := I) α (basis i) *
+              cotangentToDualGen (I := I) β (basis j)
           ring
 
 theorem cotangentMetricData_inner_eq_coord_gen
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (α β : Tensor0SSpace 1 I x) :
-    (cotangentMetricData_gen (I := I) g x).inner α β =
+    (cotangentMetricDataGen (I := I) g x).inner α β =
       ∑ i : Idx, ∑ j : Idx,
-        gInv i j * cotangentToDual_gen (I := I) α (basis i) *
-          cotangentToDual_gen (I := I) β (basis j) := by
+        gInv i j * cotangentToDualGen (I := I) α (basis i) *
+          cotangentToDualGen (I := I) β (basis j) := by
   rw [cotangentMetricData_inner_gen, cotangentInner_eq_coord_gen (I := I) g x basis gInv hinv]
 
 end

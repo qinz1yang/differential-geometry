@@ -1,4 +1,5 @@
 import DifferentialGeometry.Tensor.RSTensor.Defs
+import DifferentialGeometry.Tensor.RSTensor.Basis
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0SRiemannian
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0SRiemannianBundle
 import DifferentialGeometry.Tensor.Multilinear.Fiber
@@ -10,7 +11,6 @@ import Mathlib.Topology.VectorBundle.Riemannian
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap Bornology
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -57,7 +57,7 @@ lemma continuousAt_clm_of_basis_continuousAt
     have hdist : ‖u b (v i) - u x₀ (v i)‖ < M_const := by
       rw [← dist_eq_norm]; exact hb
     have heq : (u b - u x₀) (v i) = u b (v i) - u x₀ (v i) :=
-      ContinuousLinearMap.sub_apply _ _ _
+      sub_apply _ _ _
     rw [heq]
     exact hdist
   have h_all : ∀ᶠ b in 𝓝 x₀, ∀ i, ‖(u b - u x₀) (v i)‖ ≤ M_const := by
@@ -103,18 +103,18 @@ lemma chartTensorInnerPointwise_0sCLM_continuousAt_of_baseSet
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α : M)
     {b₀ : M} (hb₀ : b₀ ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     ContinuousAt
-      (fun b : M => chartTensorInnerPointwise_0sCLM g s α b) b₀ := by
+      (fun b : M => chartTensorInnerPointwise0sCLM g s α b) b₀ := by
   classical
   set basis := Module.finBasis ℝ (Tensor0SModel s ℝ E) with hbasis_def
   refine continuousAt_bilin_of_basis_continuousAt
     (F := Tensor0SModel s ℝ E) (N := M) (v := basis)
-    (u := fun b => chartTensorInnerPointwise_0sCLM g s α b)
+    (u := fun b => chartTensorInnerPointwise0sCLM g s α b)
     (x₀ := b₀) ?_
   intro i j
   have heq : (fun b : M =>
-      chartTensorInnerPointwise_0sCLM g s α b (basis i) (basis j))
+      chartTensorInnerPointwise0sCLM g s α b (basis i) (basis j))
       = (fun b : M =>
-        chartTensorInnerPointwise_0s (I := I) (M := M) s g α b (basis i) (basis j)) := by
+        chartTensorInnerPointwise0s (I := I) (M := M) s g α b (basis i) (basis j)) := by
     funext b
     rw [chartTensorInnerPointwise_0sCLM_apply]
   rw [heq]
@@ -122,7 +122,7 @@ lemma chartTensorInnerPointwise_0sCLM_continuousAt_of_baseSet
     (basis i) (basis j)
   have hCont : ContinuousOn
       (fun b : M =>
-        chartTensorInnerPointwise_0s (I := I) (M := M) s g α b (basis i) (basis j))
+        chartTensorInnerPointwise0s (I := I) (M := M) s g α b (basis i) (basis j))
       (trivializationAt E (TangentSpace I) α).baseSet := hSmooth.continuousOn
   have hOpen : IsOpen (trivializationAt E (TangentSpace I) α).baseSet :=
     (trivializationAt E (TangentSpace I) α).open_baseSet
@@ -138,7 +138,7 @@ lemma innerBundleCLM_inCoordinates_apply
         (fun b' : M => Tensor0SSpace s I b' →L[ℝ] ℝ)
         α b α b
         (innerBundleCLM (I := I) (M := M) g s b) v w =
-      chartTensorInnerPointwise_0sCLM g s α b v w := by
+      chartTensorInnerPointwise0sCLM g s α b v w := by
   have hb' : b ∈ (trivializationAt (Tensor0SModel s ℝ E)
       (fun b' : M => Tensor0SSpace s I b') α).baseSet := hb
   have hb_trivR :
@@ -168,8 +168,9 @@ lemma innerBundleCLM_inCoordinates_apply
   have hsymm : ∀ (z : Tensor0SModel s ℝ E),
       (trivializationAt (Tensor0SModel s ℝ E)
         (fun b' : M => Tensor0SSpace s I b') α).symm b z =
-      z.compContinuousLinearMap
-        (fun _ : Fin s => chartTrivializationLinearMap (I := I) (M := M) α b) := by
+      Tensor0SSpace.ofModel (I := I) (x := b)
+        (z.compContinuousLinearMap
+          (fun _ : Fin s => chartTrivializationLinearMap (I := I) (M := M) α b)) := by
     intro z
     have hsymmL_eq :
         ((trivializationAt (Tensor0SModel s ℝ E)
@@ -177,23 +178,44 @@ lemma innerBundleCLM_inCoordinates_apply
               Tensor0SSpace s I b) =
           (trivializationAt (Tensor0SModel s ℝ E)
             (fun b' : M => Tensor0SSpace s I b') α).symm b z := by
-      rw [Bundle.Trivialization.symmL_apply]
+      exact Bundle.Trivialization.symmL_apply
+        (trivializationAt (Tensor0SModel s ℝ E)
+          (fun b' : M => Tensor0SSpace s I b') α) hb' z
     rw [← hsymmL_eq]
-    have :=
-      Bundle.continuousMultilinearMap.triv_symmL_eq_compContinuousLinearMap
-        (𝕜 := ℝ) (B := M) (F := E) (E := (TangentSpace I : M → Type _))
-        (s := s) (x₀ := α) (x := b) hb z
-    convert this using 1
+    apply Tensor0SSpace.toModel_injective
+    apply ContinuousMultilinearMap.ext
+    intro m
+    change Tensor0SSpace.toModel
+        ((trivializationAt (Tensor0SModel s ℝ E)
+          (fun b' : M => Tensor0SSpace s I b') α).symmL ℝ b z) m =
+      Tensor0SSpace.toModel
+        (Tensor0SSpace.ofModel (I := I) (x := b)
+          (z.compContinuousLinearMap
+            (fun _ : Fin s => chartTrivializationLinearMap (I := I) (M := M) α b))) m
+    rw [Tensor0SSpace.toModel_ofModel,
+      Tensor0SSpace.toModel_apply_model_vector,
+      ContinuousMultilinearMap.compContinuousLinearMap_apply]
+    have hround :=
+      (trivializationAt (Tensor0SModel s ℝ E)
+        (fun b' : M => Tensor0SSpace s I b') α).continuousLinearMapAt_symmL
+          (R := ℝ) hb' z
+    have hroundApply := congrArg
+      (fun T : Tensor0SModel s ℝ E =>
+        T (fun i => chartTrivializationLinearMap (I := I) (M := M) α b (m i)))
+      hround
+    rw [Tensor0SSpace.continuousLinearMapAt_apply
+      (I := I) (M := M) (𝕜 := ℝ) (x₀ := α) (x := b) s hb] at hroundApply
+    convert hroundApply using 1
+    congr 1
+    funext i
+    unfold chartTrivializationLinearMap
+    simp only [ContinuousLinearMap.comp_apply]
+    rw [(trivializationAt E (TangentSpace I) α).symmL_continuousLinearMapAt hb]
+    exact (ContinuousLinearEquiv.coe_apply _ _).symm
   rw [hsymm v, hsymm w]
   rw [innerBundleCLM_apply]
   rw [chartTensorInnerPointwise_0sCLM_apply]
-  have h_toM : ∀ (z : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ),
-      Tensor0SBundle.Tensor0SSpace.toModel
-        (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b)
-        (show Tensor0SSpace s I b from z) = z := by
-    intro z
-    exact Tensor0SBundle.tensor0SSpace_continuousLinearEquiv_apply (I := I) (M := M) s b z
-  rw [h_toM, h_toM]
+  rw [Tensor0SSpace.toModel_ofModel, Tensor0SSpace.toModel_ofModel]
   rw [tensorInnerPointwise_0s_bridge_identity (I := I) (M := M) g α s hb]
   have hcomp : ∀ (z : Tensor0SModel s ℝ E),
       (z.compContinuousLinearMap
@@ -268,7 +290,7 @@ noncomputable def tensor0SContinuousRiemannianMetric
     tensor0SRiemannianInner_isVonNBounded (I := I) (M := M) g s b
   continuous := by
     have h := innerBundleCLM_continuous (I := I) (M := M) g s
-    convert h using 0
+    simpa only [tensor0SRiemannianInnerCLM] using h
 
 theorem isContinuousRiemannianBundle_data
     (g : SmoothRiemannianMetric I M) (s : ℕ) :
@@ -282,29 +304,13 @@ theorem isContinuousRiemannianBundle_data
   · exact innerBundleCLM_continuous (I := I) (M := M) g s
   · intros; rfl
 
-instance tensor0SSpace_totalSpace_topologicalSpace (s : ℕ) :
-    TopologicalSpace (Bundle.TotalSpace (Tensor0SModel s ℝ E)
-      (Tensor0SSpace s I (M := M))) :=
-  inferInstanceAs (TopologicalSpace (Bundle.TotalSpace (Tensor0SModel s ℝ E)
-    (Bundle.continuousMultilinearMap ℝ s E (TangentSpace I))))
-
-instance tensor0SSpace_fiberBundle (s : ℕ) :
-    FiberBundle (Tensor0SModel s ℝ E) (Tensor0SSpace s I (M := M)) :=
-  inferInstanceAs (FiberBundle (Tensor0SModel s ℝ E)
-    (Bundle.continuousMultilinearMap ℝ s E (TangentSpace I)))
-
-instance tensor0SSpace_vectorBundle (s : ℕ) :
-    VectorBundle ℝ (Tensor0SModel s ℝ E) (Tensor0SSpace s I (M := M)) :=
-  inferInstanceAs (VectorBundle ℝ (Tensor0SModel s ℝ E)
-    (Bundle.continuousMultilinearMap ℝ s E (TangentSpace I)))
-
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  tensor0SSpace_normedAddCommGroup tensor0SSpace_normedSpace in
+  tensor0SSpaceNormedAddCommGroup tensor0SSpaceNormedSpace in
 instance tensor0S_isContinuousRiemannianBundle
     (g : SmoothRiemannianMetric I M) (s : ℕ) :
     letI rb : Bundle.RiemannianBundle (fun b : M => Tensor0SSpace s I b) :=
-      Tensor0SBundle.tensor0S_riemannianBundle (I := I) (M := M) g s
+      Tensor0SBundle.tensor0SRiemannianBundle (I := I) (M := M) g s
     letI nag : ∀ b : M, NormedAddCommGroup (Tensor0SSpace s I b) :=
       fun b
         => instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal
@@ -314,13 +320,13 @@ instance tensor0S_isContinuousRiemannianBundle
         _ _ _ rb (fun _ => inferInstance) (fun _ => inferInstance) b
     IsContinuousRiemannianBundle (Tensor0SModel s ℝ E)
       (Tensor0SSpace s I (M := M)) := by
-  letI rb : Bundle.RiemannianBundle (fun b : M => Tensor0SSpace s I b) :=
-    Tensor0SBundle.tensor0S_riemannianBundle (I := I) (M := M) g s
-  letI nag : ∀ b : M, NormedAddCommGroup (Tensor0SSpace s I b) :=
+  let rb : Bundle.RiemannianBundle (fun b : M => Tensor0SSpace s I b) :=
+    Tensor0SBundle.tensor0SRiemannianBundle (I := I) (M := M) g s
+  let nag : ∀ b : M, NormedAddCommGroup (Tensor0SSpace s I b) :=
     fun b
       => instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal
       (E := fun b : M => Tensor0SSpace s I b) b
-  letI : ∀ b : M, @InnerProductSpace ℝ (Tensor0SSpace s I b) _ (nag b).toSeminormedAddCommGroup :=
+  let : ∀ b : M, @InnerProductSpace ℝ (Tensor0SSpace s I b) _ (nag b).toSeminormedAddCommGroup :=
     fun b => @Bundle.instInnerProductSpaceReal M (fun b : M => Tensor0SSpace s I b)
       _ _ _ rb (fun _ => inferInstance) (fun _ => inferInstance) b
   exact ⟨isContinuousRiemannianBundle_data (I := I) (M := M) g s⟩

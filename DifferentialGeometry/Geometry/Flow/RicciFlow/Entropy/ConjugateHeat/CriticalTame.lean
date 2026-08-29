@@ -76,11 +76,13 @@ theorem scalar_crit_tame
     simpa only [K] using isCompact_Icc
   have hKR : K ⊆ R := by
     intro s hs
-    simpa only [K, R] using hreg s hs
+    with_unfolding_all
+      exact hreg s hs
   have hzeta : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
       (fun p : M × Real => (zeta p.2 : M → Real) p.1)
       ((Set.univ : Set M) ×ˢ R) := by
-    simpa only [zeta, R, conjCoeffRev] using conjCoeff_rev (I := I) S hS T
+    with_unfolding_all
+      exact conjCoeff_rev (I := I) S hS T
   choose C2 hC2_nn hC2 using hA2
   choose C1 hC1_nn hC1 using fun n : ℕ =>
     cc_a1_unif (I := I) (M := M) (S.family.metric (T : Real)) zeta

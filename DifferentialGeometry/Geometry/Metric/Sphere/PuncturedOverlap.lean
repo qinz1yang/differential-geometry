@@ -63,7 +63,7 @@ theorem punct2_preconn
   have htarget :
       IsPreconnected ({a}ᶜ : Set (EuclideanSpace ℝ (Fin n))) :=
     (isPathConnected_compl_singleton_of_one_lt_rank hrank a).isConnected.isPreconnected
-  letI : PreconnectedSpace ({a}ᶜ : Set (EuclideanSpace ℝ (Fin n))) :=
+  let : PreconnectedSpace ({a}ᶜ : Set (EuclideanSpace ℝ (Fin n))) :=
     Subtype.preconnectedSpace htarget
   have hsource : PreconnectedSpace U :=
     h.symm.surjective.denseRange.preconnectedSpace h.symm.continuous

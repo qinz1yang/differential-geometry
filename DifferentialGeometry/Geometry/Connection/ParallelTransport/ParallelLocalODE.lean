@@ -91,10 +91,10 @@ theorem chart_christoffel_clm_continuous_on_compact [I.Boundaryless]
       chartChristoffelContraction_def]
   suffices hF_cont : ContinuousOn F (Set.Icc a b) from
     hF_cont.congr (fun t ht => (hEq t ht).symm)
-  refine continuousOn_finset_sum _ (fun k _ => ?_)
+  refine continuousOn_finsetSum _ (fun k _ => ?_)
   refine ContinuousOn.smul ?_ continuousOn_const
-  refine continuousOn_finset_sum _ (fun i _ => ?_)
-  refine continuousOn_finset_sum _ (fun j _ => ?_)
+  refine continuousOn_finsetSum _ (fun i _ => ?_)
+  refine continuousOn_finsetSum _ (fun j _ => ?_)
   refine ContinuousOn.mul (ContinuousOn.mul ?_ ?_) ?_
   · exact hΓ i j k
   · exact ((hcoord i).comp_continuousOn hu)
@@ -148,7 +148,7 @@ private theorem parallel_local_existence_step [I.Boundaryless]
             (chartCurve (I := I) α γ t) (Y t)) (Set.Icc c d) t) ∧
       Y t_in = w₀ := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   have hdc_nn : 0 ≤ d - c := sub_nonneg.mpr hcd
   have hK_nn : (0 : ℝ) ≤ (K : ℝ) := K.coe_nonneg
   have hsub_Icc : Set.Icc c d ⊆ Set.Icc aa bb :=
@@ -263,7 +263,7 @@ theorem parallel_local_existence_on_Icc [I.Boundaryless]
             (chartCurve (I := I) α γ t)) (Set.Icc a b) t) ∧
       Y t₀ = v₀ := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   obtain ⟨ht₀_a, ht₀_b⟩ := ht₀
   obtain ⟨K, hK⟩ :=
     parallel_lipschitz_bound_on_compact (I := I) g α γ uPrime hab hu hγ hsource

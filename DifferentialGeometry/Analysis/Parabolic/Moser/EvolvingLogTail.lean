@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Moser.EvolvingLogEnergy
 import DifferentialGeometry.Analysis.Parabolic.Moser.LogTail
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set
@@ -129,7 +130,7 @@ theorem evolvingLocalizedSuperlevelMass_le_evolvingCutoffMass
         (I := I) (M := M) g cutoff u t level ≤
       evolvingCutoffMass (I := I) (M := M) g cutoff t := by
   let μ := riemannianMeasureFamily (I := I) (M := M) g t
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ, riemannianMeasureFamily_def]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)
@@ -151,7 +152,7 @@ theorem evolvingLocalizedSublevelMass_le_evolvingCutoffMass
         (I := I) (M := M) g cutoff u t level ≤
       evolvingCutoffMass (I := I) (M := M) g cutoff t := by
   let μ := riemannianMeasureFamily (I := I) (M := M) g t
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ, riemannianMeasureFamily_def]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)
@@ -174,7 +175,7 @@ theorem evolvingLocalizedSuperlevelMass_antitone
       evolvingLocalizedSuperlevelMass
         (I := I) (M := M) g cutoff u t lower := by
   let μ := riemannianMeasureFamily (I := I) (M := M) g t
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ, riemannianMeasureFamily_def]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)
@@ -195,7 +196,7 @@ theorem evolvingLocalizedSublevelMass_mono
       evolvingLocalizedSublevelMass
         (I := I) (M := M) g cutoff u t upper := by
   let μ := riemannianMeasureFamily (I := I) (M := M) g t
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ, riemannianMeasureFamily_def]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)
@@ -338,7 +339,9 @@ theorem evolving_superlevel_tail_of_poincareAtAverage
       (evolvingLocalizedAverage
         (I := I) (M := M) g averagingCutoff u t) hr hlevel
   exact hchebyshev.trans (by
-    simpa only [u_t, smoothScalarSlice_toFun] using hP t ht u_t)
+    simpa only [u_t, smoothScalarSlice_toFun, evolvingLocalizedL2Deviation,
+      evolvingLocalizedAverage, evolvingLocalizedIntegral, evolvingCutoffMass,
+      evolvingLocalizedDirichletEnergy] using hP t ht u_t)
 
 omit [I.Boundaryless] in
 theorem evolving_sublevel_tail_of_poincareAtAverage
@@ -366,7 +369,9 @@ theorem evolving_sublevel_tail_of_poincareAtAverage
       (evolvingLocalizedAverage
         (I := I) (M := M) g averagingCutoff u t) hr hlevel
   exact hchebyshev.trans (by
-    simpa only [u_t, smoothScalarSlice_toFun] using hP t ht u_t)
+    simpa only [u_t, smoothScalarSlice_toFun, evolvingLocalizedL2Deviation,
+      evolvingLocalizedAverage, evolvingLocalizedIntegral, evolvingCutoffMass,
+      evolvingLocalizedDirichletEnergy] using hP t ht u_t)
 
 theorem early_evolving_log_superlevel_tail_with_center_gap_of_supersolution
     (g : ℝ → SmoothRiemannianMetric I M)
@@ -395,7 +400,7 @@ theorem early_evolving_log_superlevel_tail_with_center_gap_of_supersolution
     (htrace : ∀ t ∈ Icc a τ, ∀ x : M,
       |(1 / 2) * traceTimeDerivMetric (I := I) g t x| ≤ H)
     (hpde : ∀ t ∈ Icc a τ, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     (evolvingShiftedLogCenter
           (I := I) (M := M) g averagingCutoff u Ccenter H base τ -
@@ -466,7 +471,7 @@ theorem late_evolving_log_sublevel_tail_with_center_gap_of_supersolution
     (htrace : ∀ t ∈ Icc τ b, ∀ x : M,
       |(1 / 2) * traceTimeDerivMetric (I := I) g t x| ≤ H)
     (hpde : ∀ t ∈ Icc τ b, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     (evolvingShiftedLogCenter
           (I := I) (M := M) g averagingCutoff u Ccenter H base s -
@@ -539,7 +544,7 @@ theorem integrated_early_evolving_log_superlevel_tail_of_supersolution
     (hmass_le : ∀ t ∈ Icc a τ,
       evolvingCutoffMass (I := I) (M := M) g averagingCutoff t ≤ W)
     (hpde : ∀ t ∈ Icc a τ, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     (∫ s in a..τ,
       evolvingLocalizedSuperlevelMass
@@ -667,7 +672,7 @@ theorem integrated_late_evolving_log_sublevel_tail_of_supersolution
     (hmass_le : ∀ t ∈ Icc τ b,
       evolvingCutoffMass (I := I) (M := M) g averagingCutoff t ≤ W)
     (hpde : ∀ t ∈ Icc τ b, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     (∫ s in τ..b,
       evolvingLocalizedSublevelMass
@@ -797,7 +802,7 @@ theorem integrated_early_centered_evolving_log_superlevel_tail_of_supersolution
     (hdeviationMass_le : ∀ t ∈ Icc a τ,
       evolvingCutoffMass (I := I) (M := M) g deviationCutoff t ≤ Wdeviation)
     (hpde : ∀ t ∈ Icc a τ, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     (∫ s in a..τ,
       evolvingLocalizedSuperlevelMass
@@ -943,7 +948,7 @@ theorem integrated_late_centered_evolving_log_sublevel_tail_of_supersolution
     (hdeviationMass_le : ∀ t ∈ Icc τ b,
       evolvingCutoffMass (I := I) (M := M) g deviationCutoff t ≤ Wdeviation)
     (hpde : ∀ t ∈ Icc τ b, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     (∫ s in τ..b,
       evolvingLocalizedSublevelMass
@@ -1089,7 +1094,7 @@ theorem integrated_early_evolving_log_superlevel_tail_of_exponentialTimeRescale_
       evolvingLogCenterDrift
         (I := I) (M := M) g averagingCutoff Ccenter H t ≤ rate)
     (hpde : ∀ t ∈ Icc a τ, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s ↦ u s x) t) :
     let center := evolvingLocalizedAverage
       (I := I) (M := M) g averagingCutoff
@@ -1201,7 +1206,7 @@ theorem integrated_late_evolving_log_sublevel_tail_of_exponentialTimeRescale_of_
       evolvingLogCenterDrift
         (I := I) (M := M) g averagingCutoff Ccenter H t ≤ rate)
     (hpde : ∀ t ∈ Icc τ b, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s ↦ u s x) t) :
     let center := evolvingLocalizedAverage
       (I := I) (M := M) g averagingCutoff
@@ -1264,7 +1269,7 @@ theorem integrated_late_evolving_log_sublevel_tail_of_exponentialTimeRescale_of_
     intro s hs
     rw [show rescaledMass s = evolvingLocalizedSublevelMass
         (I := I) (M := M) g deviationCutoff logu s (center - rate * s - r) by
-      simpa only [rescaledMass, rescaledLog, logu] using
+      simpa only [rescaledMass, rescaledLog, logu, sub_eq_add_neg] using
         evolvingLocalizedSublevelMass_log_exponentialTimeRescale
           (I := I) (M := M) g deviationCutoff rate center u hpos s (-r)]
     exact evolvingLocalizedSublevelMass_mono

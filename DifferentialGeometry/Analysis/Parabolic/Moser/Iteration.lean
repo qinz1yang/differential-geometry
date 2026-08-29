@@ -146,8 +146,9 @@ theorem parabolicMoserExponent_decay_mul_self (q : ℝ) (m : ℕ) :
 
 theorem parabolicMoserExponent_tendsto_atTop {p₀ : ℝ} (hp₀ : 0 < p₀) :
     Tendsto (parabolicMoserExponent n p₀) atTop atTop := by
-  simpa only [parabolicMoserExponent, mul_comm] using
-    (tendsto_pow_atTop_atTop_of_one_lt (one_lt_parabolicMoserGain n)).atTop_mul_const hp₀
+  change Tendsto (fun k => p₀ * parabolicMoserGain n ^ k) atTop atTop
+  simpa only [mul_comm] using (tendsto_pow_atTop_atTop_of_one_lt
+    (one_lt_parabolicMoserGain n)).atTop_mul_const hp₀
 
 theorem exists_parabolic_moser_iteration_depth
     {p q : ℝ} (hp : 0 < p) (hpq : p < q) :

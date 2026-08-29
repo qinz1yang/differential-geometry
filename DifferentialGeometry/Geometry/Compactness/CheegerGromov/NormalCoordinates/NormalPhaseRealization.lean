@@ -27,6 +27,7 @@ variable [NormedSpace Real E] [FiniteDimensional Real E]
 variable [NeZero (Module.finrank Real E)]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalPhaseVF_eq
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x : Y.M) (a : E) (z : E × E) :
@@ -34,11 +35,25 @@ theorem normalPhaseVF_eq
         (normalTotal (I := I) Y x) a z =
       PhaseFlow.phaseField (normalAccel (I := I) Y x) z := by
   unfold Geodesic.chartPhaseVF PhaseFlow.phaseField normalAccel
-  rw [DifferentialGeometry.Geometry.Connection.const_cov_eq_contr
+  have h := DifferentialGeometry.Geometry.Connection.const_cov_eq_contr
     (g := normalTotal (I := I) Y x) (a := a)
-    (z := z.1) (v := z.2) (w := z.2)]
-  rfl
+    (z := z.1) (v := z.2) (w := z.2)
+  have hc :
+      tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z.1
+          ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
+            (I := 𝓘(Real, E)) (normalTotal (I := I) Y x)
+            (constantModelVectorField z.2) z.1)
+            ((tangentSpaceModelContinuousLinearEquiv
+              (I := 𝓘(Real, E)) z.1).symm z.2)) =
+        Geodesic.chartChristoffelContraction
+          (normalTotal (I := I) Y x) a z.2 z.2 z.1 := by
+    rw [show constantModelVectorField z.2 =
+      (fun p : E => (tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(Real, E)) p).symm z.2) from rfl]
+    exact h
+  rw [hc]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalPhase_contDiff
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     ContDiff Real ∞
@@ -54,6 +69,7 @@ theorem normalPhase_contDiff
       interior_univ, Set.univ_prod_univ] using heq
   exact contDiffOn_univ.mp heq'
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalGeoOn_of_phase
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x : Y.M) {Z : Real → E × E} {s : Set Real} (hs : IsOpen s)
@@ -88,11 +104,14 @@ theorem normalGeoOn_of_phase
       (normalAccel (I := I) Y x (Z t)) t :=
     (hvel t ht).congr_of_eventuallyEq hderiv
   refine ⟨vel t, normalAccel (I := I) Y x (Z t), ?_, ?_, ?_, ?_⟩
-  · simpa only [hchart] using hgamma t ht
+  · change HasDerivAt gamma (vel t) t
+    exact hgamma t ht
   · filter_upwards [hs.mem_nhds ht] with r hr
     rw [hchart]
-    simpa only [(hgamma r hr).deriv] using hgamma r hr
-  · simpa only [hchart] using hacc
+    exact (hgamma r hr).differentiableAt.hasDerivAt
+  · change HasDerivAt (fun r ↦ deriv gamma r)
+      (normalAccel (I := I) Y x (Z t)) t
+    exact hacc
   · have hfield := congrArg Prod.snd
       (normalPhaseVF_eq (I := I) Y x (gamma t) (Z t))
     have hneg : -Geodesic.chartChristoffelContraction (I := 𝓘(Real, E))
@@ -103,6 +122,7 @@ theorem normalGeoOn_of_phase
     rw [← hneg]
     abel
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalGeoOn_of_right
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x : Y.M) {Z : Real → E × E} {a b : Real} (hab : a < b)
@@ -119,6 +139,7 @@ theorem normalGeoOn_of_right
   intro t ht
   exact hasDerivAt_of_right hab hZcont hfield hZright ht
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalFlow_contDiff
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (x : Y.M) {Z : Real → E × E} {a b : Real} (hab : a < b)
@@ -129,6 +150,7 @@ theorem normalFlow_contDiff
     ContDiffOn Real ∞ Z (Set.Ioo a b) :=
   contDiffOn_of_right hab (normalPhase_contDiff (I := I) Y x) hZcont hZright
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalFlow_geoOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (h : NormalCoordMetricBoundInput (I := I) X)
@@ -184,10 +206,23 @@ theorem chartPhaseVF_eq (g : SmoothRiemannianMetric I M) {p : M}
         (c.totalMetric g) a z =
       PhaseFlow.phaseField (c.accel g) z := by
   unfold Geodesic.chartPhaseVF PhaseFlow.phaseField NormalBallChart.accel
-  rw [DifferentialGeometry.Geometry.Connection.const_cov_eq_contr
+  have h := DifferentialGeometry.Geometry.Connection.const_cov_eq_contr
     (g := c.totalMetric g) (a := a)
-    (z := z.1) (v := z.2) (w := z.2)]
-  rfl
+    (z := z.1) (v := z.2) (w := z.2)
+  have hc :
+      tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z.1
+          ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
+            (I := 𝓘(Real, E)) (c.totalMetric g)
+            (constantModelVectorField z.2) z.1)
+            ((tangentSpaceModelContinuousLinearEquiv
+              (I := 𝓘(Real, E)) z.1).symm z.2)) =
+        Geodesic.chartChristoffelContraction
+          (c.totalMetric g) a z.2 z.2 z.1 := by
+    rw [show constantModelVectorField z.2 =
+      (fun p : E => (tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(Real, E)) p).symm z.2) from rfl]
+    exact h
+  rw [hc]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 theorem chartPhase_contDiff (g : SmoothRiemannianMetric I M) {p : M}
@@ -240,11 +275,13 @@ theorem chartGeoOn_of_phase (g : SmoothRiemannianMetric I M) {p : M}
       (c.accel g (Z t)) t :=
     (hvel t ht).congr_of_eventuallyEq hderiv
   refine ⟨vel t, c.accel g (Z t), ?_, ?_, ?_, ?_⟩
-  · simpa only [hchart] using hgamma t ht
+  · change HasDerivAt gamma (vel t) t
+    exact hgamma t ht
   · filter_upwards [hs.mem_nhds ht] with r hr
     rw [hchart]
-    simpa only [(hgamma r hr).deriv] using hgamma r hr
-  · simpa only [hchart] using hacc
+    exact (hgamma r hr).differentiableAt.hasDerivAt
+  · change HasDerivAt (fun r ↦ deriv gamma r) (c.accel g (Z t)) t
+    exact hacc
   · have hfield := congrArg Prod.snd
       (chartPhaseVF_eq (I := I) g c (gamma t) (Z t))
     have hneg : -Geodesic.chartChristoffelContraction (I := 𝓘(Real, E))

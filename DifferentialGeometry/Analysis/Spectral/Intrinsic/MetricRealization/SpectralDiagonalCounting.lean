@@ -98,7 +98,7 @@ theorem finsetCard_eq_integral_diagonalKernel
       ∫ x, diagonalKernel (I := I) (M := M) g r s F x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   simp only [diagonalKernel]
-  rw [MeasureTheory.integral_finset_sum F
+  rw [MeasureTheory.integral_finsetSum F
     (fun i _ => diagonalKernel_summand_integrable (I := I) (M := M) g r s i)]
   rw [Finset.sum_congr rfl
     (fun i _ => eigenvectorSmooth_integral_normSq_eq_one (I := I) (M := M) g r s i)]
@@ -115,7 +115,7 @@ private lemma diagonalKernel_integrable
           ((eigenvectorSmooth (I := I) (M := M) g r s i).toFun x)
           ((eigenvectorSmooth (I := I) (M := M) g r s i).toFun x) := rfl
   rw [h]
-  exact MeasureTheory.integrable_finset_sum F
+  exact MeasureTheory.integrable_finsetSum F
     (fun i _ => diagonalKernel_summand_integrable (I := I) (M := M) g r s i)
 
 theorem eigenvalueCountingBound_of_pointwiseDiagonalKernelBound
@@ -127,7 +127,7 @@ theorem eigenvalueCountingBound_of_pointwiseDiagonalKernelBound
     (hkernel : ∀ (Λ : ℝ) (x : M),
       diagonalKernel (I := I) (M := M) g r s (count Λ) x ≤ B * Λ ^ q) :
     EigenvalueCountingBound (I := I) (M := M) g r s := by
-  haveI hfin : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have hfin : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   set vol : ℝ :=
     (riemannianVolumeMeasure (I := I) (M := M) g).real Set.univ with hvol_def

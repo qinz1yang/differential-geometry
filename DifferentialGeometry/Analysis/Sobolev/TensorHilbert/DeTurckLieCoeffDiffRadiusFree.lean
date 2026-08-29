@@ -61,7 +61,7 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_iteratedCovGr
     fun i => Kc_a i * ∑ k ∈ Finset.range (i + 3), K_rf k,
     fun i => mul_nonneg (hKc_a_nn i) (Finset.sum_nonneg fun k _ => hK_rf_nn k), ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ hsup i
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set S' : ℝ := ∑ j ∈ Finset.range (i + 3),
     ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2 with hS'_def
@@ -109,7 +109,7 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_iteratedCovGr
         Combinatorics.antidiagonalTupleGrid
           (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
             ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) k) from by rfl]
-    exact MeasureTheory.integrable_finset_sum _ (fun k _ => (hAG k).1)
+    exact MeasureTheory.integrable_finsetSum _ (fun k _ => (hAG k).1)
   have htop_int : MeasureTheory.Integrable (fun x =>
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
         ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P).toSection x))
@@ -147,7 +147,7 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_iteratedCovGr
         Combinatorics.antidiagonalTupleGrid
           (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
             ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) k) from by rfl]
-    rw [MeasureTheory.integral_finset_sum _ (fun k _ => (hAG k).1), Finset.sum_mul]
+    rw [MeasureTheory.integral_finsetSum _ (fun k _ => (hAG k).1), Finset.sum_mul]
     refine Finset.sum_le_sum (fun k hk => ?_)
     refine le_trans (hAG k).2 ?_
     have hkS' : ‖iteratedCovGrad (I := I) g₀ 0 2 k P‖ ^ 2 ≤ S' :=
@@ -338,7 +338,7 @@ theorem deTurckLieCoeffField_summed_l2_radiusFree
   · obtain ⟨x₀⟩ := hM
     have hδ0 : 0 ≤ δ := by
       obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-        haveI : Nontrivial (TangentSpace I x₀) := by
+        have : Nontrivial (TangentSpace I x₀) := by
           have hfr : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
             have heq : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
             rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -410,7 +410,7 @@ theorem deTurckLieCoeffField_summed_l2_radiusFree
               _ = (∑ i ∈ Finset.range (a + 1), Alow i) *
                     (1 + ∑ j ∈ Finset.range (a + 2), w j) := by
                   rw [Finset.sum_mul]
-  · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
+  · have hM' : IsEmpty M := not_nonempty_iff.mp hM
     have hL0 : ∑ i ∈ Finset.range (a + 1),
         ‖iteratedCovGrad (I := I) g₀ 2 2 i
           (deTurckLieCoeffField (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2 = 0 := by

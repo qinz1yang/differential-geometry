@@ -124,6 +124,7 @@ section RadialTransportLinear
 
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M]
     [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem radialParallelTransportSection_add [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M)
     {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
@@ -246,8 +247,9 @@ theorem radialParallelTransportSection_add [I.Boundaryless]
       rw [(trivializationAt E (TangentSpace I) p).symmL_continuousLinearMapAt (R := ℝ) hmem (Pu t)]
       rw [(trivializationAt E (TangentSpace I) p).symmL_continuousLinearMapAt (R := ℝ) hmem (Pw t)]
     exact hround_l.symm.trans ((congrArg ((trivializationAt E (TangentSpace I) p).symmL ℝ (γ t)) hchart).trans hround_r)
-  simpa [Puv, Pu, Pw] using hsec
+  simpa [Puv, Pu, Pw, γ] using hsec
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem radialParallelTransportSection_smul [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -379,8 +381,9 @@ theorem radialParallelTransportSection_smul [I.Boundaryless]
         rw [map_smul]
         rw [(trivializationAt E (TangentSpace I) p).symmL_continuousLinearMapAt (R := ℝ) hmem (Pu t)]
       exact hround_l.symm.trans ((congrArg ((trivializationAt E (TangentSpace I) p).symmL ℝ (γ t)) hchart).trans hround_r)
-    simpa [Pcu, Pu] using hsec
+    simpa [Pcu, Pu, γ] using hsec
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem radialTransportSection_linear_add [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -402,6 +405,7 @@ theorem radialTransportSection_linear_add [I.Boundaryless]
     simp_rw [radialTransportSection, dif_neg hnot]
     simp
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem radialTransportSection_linear_smul [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -422,6 +426,7 @@ theorem radialTransportSection_linear_smul [I.Boundaryless]
     simp_rw [radialTransportSection, dif_neg hnot]
     simp
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 private lemma radialParallelTransportSection_chartGram_hasDerivAt_zero
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -541,6 +546,7 @@ private lemma chartGramAlongCurve_eq_inner
   exact hmain.symm
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialParallelTransportSection_inner_eq
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -625,6 +631,7 @@ theorem radialParallelTransportSection_inner_eq
   rw [← hfs, ← hf0]
   exact hconst
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportSection_inner_eq
     (g : SmoothRiemannianMetric I M) (p : M) (u w : TangentSpace I p) (y : M)
@@ -653,8 +660,10 @@ theorem radialTransportSection_inner_eq
     simp
   have hval_u : radialTransportSection g p u y = radialParallelTransportSection (I := I) g p hcond.2 u 1 := by
     simp_rw [radialTransportSection, dif_pos hcond]
+    with_unfolding_all rfl
   have hval_w : radialTransportSection g p w y = radialParallelTransportSection (I := I) g p hcond.2 w 1 := by
     simp_rw [radialTransportSection, dif_pos hcond]
+    with_unfolding_all rfl
   have hmain := radialParallelTransportSection_inner_eq (I := I) g p hcond.2 u w (s := 1)
     ⟨by norm_num, by norm_num⟩
   rw [hval_u, hval_w]
@@ -666,8 +675,9 @@ theorem radialTransportSection_inner_eq
     exact congrArg (fun z : M => g.inner z (radialParallelTransportSection (I := I) g p hcond.2 u 1)
       (radialParallelTransportSection (I := I) g p hcond.2 w 1)) hEq
   rw [hbase]
-  simpa [x] using hmain
+  with_unfolding_all exact hmain
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem radialTransportSection_injective [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (p : M) (y : M)
@@ -695,8 +705,11 @@ theorem radialTransportSection_injective [I.Boundaryless]
 
 section TensorTransport
 
+local instance tangentSpaceFiniteDimensional (x : M) :
+    FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
+
 noncomputable def radialTransportLinearMapAt (g : SmoothRiemannianMetric I M) (p y : M) :
-    E →ₗ[ℝ] E :=
+    TangentSpace I p →ₗ[ℝ] TangentSpace I y :=
   { toFun := fun v => radialTransportSection g p v y
     map_add' := by
       intro a b
@@ -705,22 +718,37 @@ noncomputable def radialTransportLinearMapAt (g : SmoothRiemannianMetric I M) (p
       intro a b
       exact radialTransportSection_linear_smul (I := I) g p a b y }
 
-noncomputable def radialTransportInverseAt [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] in
+omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
+theorem radialTransportLinearMapAt_surjective
     (g : SmoothRiemannianMetric I M) (p y : M)
-    (hy : y ∈ radialTransportSectionDomain (I := I) g p) : E →L[ℝ] E :=
-  let T : E →ₗ[ℝ] E := radialTransportLinearMapAt g p y
+    (hy : y ∈ radialTransportSectionDomain (I := I) g p) :
+    Function.Surjective (radialTransportLinearMapAt g p y) := by
+  have hT := radialTransportSection_injective (I := I) g p y hy
+  with_unfolding_all
+    exact (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+      (K := ℝ) (V := E) (V₂ := E) rfl).mp hT
+
+noncomputable def radialTransportInverseAt
+    (g : SmoothRiemannianMetric I M) (p y : M)
+    (hy : y ∈ radialTransportSectionDomain (I := I) g p) :
+    TangentSpace I y →L[ℝ] TangentSpace I p :=
+  let T : TangentSpace I p →ₗ[ℝ] TangentSpace I y := radialTransportLinearMapAt g p y
   let hT : Function.Injective T := by
     intro a b hab
-    exact radialTransportSection_injective (I := I) g p y hy (by simpa [radialTransportLinearMapAt] using hab)
+    change radialTransportSection (I := I) g p a y =
+      radialTransportSection (I := I) g p b y at hab
+    exact radialTransportSection_injective (I := I) g p y hy hab
   let hsurj : Function.Surjective T :=
-    (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (K := ℝ) (V := E) (V₂ := E) rfl).mp hT
-  let e : E ≃ₗ[ℝ] E := LinearEquiv.ofBijective T ⟨hT, hsurj⟩
+    radialTransportLinearMapAt_surjective (I := I) g p y hy
+  let e : TangentSpace I p ≃ₗ[ℝ] TangentSpace I y := LinearEquiv.ofBijective T ⟨hT, hsurj⟩
   (e.symm.toContinuousLinearEquiv).toContinuousLinearMap
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 @[simp] theorem radialTransportInverseAt_apply
     (g : SmoothRiemannianMetric I M) (p y : M)
-    (hy : y ∈ radialTransportSectionDomain (I := I) g p) (v : E) :
+    (hy : y ∈ radialTransportSectionDomain (I := I) g p) (v : TangentSpace I y) :
     let _ := manifoldOne
     let _ := boundaryless
     radialTransportInverseAt g p y hy v =
@@ -728,37 +756,41 @@ omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
         (by
           have hT : Function.Injective (radialTransportLinearMapAt g p y) := by
             intro a b hab
-            exact radialTransportSection_injective (I := I) g p y hy (by simpa [radialTransportLinearMapAt] using hab)
+            exact radialTransportSection_injective (I := I) g p y hy hab
           have hsurj : Function.Surjective (radialTransportLinearMapAt g p y) :=
-            (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (K := ℝ) (V := E) (V₂ := E) rfl).mp hT
+            radialTransportLinearMapAt_surjective (I := I) g p y hy
           exact ⟨hT, hsurj⟩)).symm v := by
   dsimp only
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportInverseAt_left_inverse
     (g : SmoothRiemannianMetric I M) (p y : M)
-    (hy : y ∈ radialTransportSectionDomain (I := I) g p) (v : E) :
+    (hy : y ∈ radialTransportSectionDomain (I := I) g p) (v : TangentSpace I p) :
     radialTransportInverseAt g p y hy (radialTransportLinearMapAt g p y v) = v := by
   rw [radialTransportInverseAt_apply]
   exact (LinearEquiv.ofBijective (radialTransportLinearMapAt g p y) (by
     have hT : Function.Injective (radialTransportLinearMapAt g p y) := by
       intro a b hab
-      exact radialTransportSection_injective (I := I) g p y hy (by simpa [radialTransportLinearMapAt] using hab)
+      exact radialTransportSection_injective (I := I) g p y hy hab
     have hsurj : Function.Surjective (radialTransportLinearMapAt g p y) :=
-      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (K := ℝ) (V := E) (V₂ := E) rfl).mp hT
+      radialTransportLinearMapAt_surjective (I := I) g p y hy
     exact ⟨hT, hsurj⟩)).symm_apply_apply v
 
-noncomputable def radialTransportSectionTensor [I.Boundaryless]
+noncomputable def radialTransportSectionTensor
     (g : SmoothRiemannianMetric I M) (p : M)
     (η₀ : Tensor04At (I := I) (M := M) p) : ∀ y : M, Tensor04At (I := I) (M := M) y := by
   classical
   exact fun y =>
     if h : y ∈ radialTransportSectionDomain (I := I) g p then
-      η₀.compContinuousLinearMap (fun _ : Fin 4 => (radialTransportInverseAt g p y h : E →L[ℝ] E))
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 4 y).symm
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) 4 p η₀).compContinuousLinearMap
+          (fun _ : Fin 4 => radialTransportInverseAt g p y h))
     else 0
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 lemma mem_radialTransportSectionDomain_expMap
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -788,12 +820,13 @@ lemma mem_radialTransportSectionDomain_expMap
     rw [hv]
     exact hs_rad
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportInverseAt_transport_eq
     (g : SmoothRiemannianMetric I M) (p : M)
     {X : TangentSpace I p} (hX : ‖(X : E)‖ < radialRadius (I := I) g p)
     {s : ℝ} (hs : s ∈ Set.Ioo (-1 : ℝ) 1)
-    (v : E) :
+    (v : TangentSpace I p) :
     radialTransportInverseAt g p (expMap (I := I) g p (s • X))
       (mem_radialTransportSectionDomain_expMap (I := I) g p hX hs)
       (radialParallelTransportSection (I := I) g p hX v s) = v := by
@@ -808,6 +841,7 @@ theorem radialTransportInverseAt_transport_eq
   rw [hval] at h
   exact h
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportSectionTensor_initial
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -818,7 +852,8 @@ theorem radialTransportSectionTensor_initial
     mem_radialTransportSectionDomain_self (I := I) g p
   rw [radialTransportSectionTensor]
   rw [dif_pos hmem]
-  have hid : (radialTransportInverseAt g p p hmem : E →L[ℝ] E) = ContinuousLinearMap.id ℝ E := by
+  have hid : radialTransportInverseAt g p p hmem =
+      ContinuousLinearMap.id ℝ (TangentSpace I p) := by
     ext v
     have hc : radialTransportSection g p v p = v :=
       radialTransportSection_center (I := I) g p v 0 (by
@@ -829,8 +864,11 @@ theorem radialTransportSectionTensor_initial
     have h := radialTransportInverseAt_left_inverse (I := I) g p p hmem v
     simpa [hlin] using h
   rw [hid]
-  apply ContinuousMultilinearMap.ext
+  apply tensor0SSpace_ext 4 p
   intro v
+  change ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) 4 p η₀).compContinuousLinearMap
+      (fun _ : Fin 4 => ContinuousLinearMap.id ℝ (TangentSpace I p))) v =
+    tensor0SSpaceFiberContinuousLinearEquiv (I := I) 4 p η₀ v
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
   rfl
 
@@ -895,10 +933,14 @@ theorem radialTransportTensorExtension_apply
   rw [Tensor0SSpace.smul_apply]
   change η₀ (fun a => basis (slots4 i j k l a)) * Tensor0SSpace.toModel
     (metricFormSection (I := I) (M := M) g 4
-      (fun a => W (slots4 i j k l a)) y) v = _
+      (fun a => W (slots4 i j k l a)) y)
+      (fun a => tangentSpaceModelContinuousLinearEquiv (I := I) y (v a)) = _
   rw [toModel_metricFormSection,
     DifferentialGeometry.Integral.L2.separableFormAt_apply]
+  simp only [DifferentialGeometry.Integral.L2.modelInnerAt_apply,
+    ContinuousLinearEquiv.symm_apply_apply]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 private theorem radialTransportSectionTensor_apply_eq_sum
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -913,14 +955,13 @@ private theorem radialTransportSectionTensor_apply_eq_sum
           ∏ a : Fin 4, g.inner y
             (radialTransportSection (I := I) g p (basis (J a)) y) (v a) := by
   classical
-  let T : E ≃ₗ[ℝ] E := LinearEquiv.ofBijective (radialTransportLinearMapAt g p y) (by
+  let T : TangentSpace I p ≃ₗ[ℝ] TangentSpace I y :=
+    LinearEquiv.ofBijective (radialTransportLinearMapAt g p y) (by
     have hT : Function.Injective (radialTransportLinearMapAt g p y) := by
       intro a b hab
-      exact radialTransportSection_injective (I := I) g p y hy
-        (by simpa [radialTransportLinearMapAt] using hab)
+      exact radialTransportSection_injective (I := I) g p y hy hab
     have hsurj : Function.Surjective (radialTransportLinearMapAt g p y) :=
-      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
-        (K := ℝ) (V := E) (V₂ := E) rfl).mp hT
+      radialTransportLinearMapAt_surjective (I := I) g p y hy
     exact ⟨hT, hsurj⟩)
   let basisY : Module.Basis (Fin 3) ℝ (TangentSpace I y) := basis.map T
   have horthY : OrthonormalBasisAt (I := I) g y basisY := by
@@ -957,7 +998,7 @@ private theorem radialTransportSectionTensor_apply_eq_sum
   have hinv : MetricInverseInBasis (I := I) g y basisY
       (identityInvMetric (Idx := Fin 3)) :=
     Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal (I := I) g basisY
-      (by simpa [delta3] using horthY)
+      (by simpa [OrthonormalBasisAt, delta3] using horthY)
   rw [DifferentialGeometry.Geometry.Curvature.basis_coord_eq_sum_inv_inner
     (I := I) g basisY (identityInvMetric (Idx := Fin 3)) hinv]
   rw [Finset.sum_eq_single (J a)]
@@ -993,6 +1034,7 @@ private lemma sum_fin_four_fun {α : Type*} [AddCommMonoid α]
     funext a
     fin_cases a <;> simp [fin4SlotsEquiv, slots4]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportTensorExtension_eq_smul
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -1018,7 +1060,7 @@ theorem radialTransportTensorExtension_eq_smul
     have hy : y ∈ radialTransportSectionDomain (I := I) g p := hsupport hyTsupport
     rw [radialTransportSectionTensor_apply_eq_sum g p basis horth η₀ y hy v]
     rw [sum_fin_four_fun]
-    simp_rw [hW, map_smul (g.inner y), ContinuousLinearMap.smul_apply, smul_eq_mul,
+    simp_rw [hW, map_smul (g.inner y), smul_apply, smul_eq_mul,
       Fin.prod_univ_four]
     simp only [Finset.mul_sum]
     apply Finset.sum_congr rfl
@@ -1031,6 +1073,7 @@ theorem radialTransportTensorExtension_eq_smul
     intro l _
     ring
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportTensorExtension_eventually_eq
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -1048,6 +1091,7 @@ theorem radialTransportTensorExtension_eventually_eq
   rw [radialTransportTensorExtension_eq_smul g p basis horth η₀ χ W hsupport hW y]
   simp [hy]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportTensorExtension_initial
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -1062,6 +1106,7 @@ theorem radialTransportTensorExtension_initial
   rw [radialTransportTensorExtension_eq_smul g p basis horth η₀ χ W hsupport hW p,
     χ.eq_one, one_pow, one_smul, radialTransportSectionTensor_initial]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportSectionTensor_inner_eq
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -1076,12 +1121,13 @@ theorem radialTransportSectionTensor_inner_eq
     Classical.choose (exists_orthonormalBasisAt (I := I) g p hdim)
   have horth₀ : OrthonormalBasisAt (I := I) g p basis₀ :=
     Classical.choose_spec (exists_orthonormalBasisAt (I := I) g p hdim)
-  let T : E ≃ₗ[ℝ] E := LinearEquiv.ofBijective (radialTransportLinearMapAt g p y) (by
+  let T : TangentSpace I p ≃ₗ[ℝ] TangentSpace I y :=
+    LinearEquiv.ofBijective (radialTransportLinearMapAt g p y) (by
     have hT : Function.Injective (radialTransportLinearMapAt g p y) := by
       intro a b hab
-      exact radialTransportSection_injective (I := I) g p y hy (by simpa [radialTransportLinearMapAt] using hab)
+      exact radialTransportSection_injective (I := I) g p y hy hab
     have hsurj : Function.Surjective (radialTransportLinearMapAt g p y) :=
-      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank (K := ℝ) (V := E) (V₂ := E) rfl).mp hT
+      radialTransportLinearMapAt_surjective (I := I) g p y hy
     exact ⟨hT, hsurj⟩)
   let basisY : Module.Basis (Fin 3) Real (TangentSpace I y) := basis₀.map T
   have horthY : OrthonormalBasisAt (I := I) g y basisY := by
@@ -1106,11 +1152,13 @@ theorem radialTransportSectionTensor_inner_eq
     rw [radialTransportSectionTensor]
     rw [dif_pos hy]
     have hTval : ∀ a : Fin 4,
-        (basisY (J a) : E) = radialTransportLinearMapAt g p y (basis₀ (J a)) := by
+        (basisY (J a) : TangentSpace I y) =
+          radialTransportLinearMapAt g p y (basis₀ (J a)) := by
       intro a
       dsimp [basisY]
-      change (T (basis₀ (J a)) : E) = radialTransportLinearMapAt g p y (basis₀ (J a))
+      change T (basis₀ (J a)) = radialTransportLinearMapAt g p y (basis₀ (J a))
       dsimp [T]
+      with_unfolding_all rfl
     change C (fun a => radialTransportInverseAt g p y hy (basisY (J a))) =
       C (fun a => basis₀ (J a))
     congr 1
@@ -1124,6 +1172,7 @@ theorem radialTransportSectionTensor_inner_eq
   intro J _
   rw [hcomponent A J, hcomponent B J]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportSectionTensor_isometry
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -1137,6 +1186,7 @@ theorem radialTransportSectionTensor_isometry
 
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M]
   [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem algebraicCurvatureTensorProjection_radialTransport_commute
     (g : SmoothRiemannianMetric I M) (p : M)
     [hboundaryless : I.Boundaryless]
@@ -1148,19 +1198,18 @@ theorem algebraicCurvatureTensorProjection_radialTransport_commute
       radialTransportSectionTensor g p
         (algebraicCurvatureTensorProjection (I := I) g p A : Tensor04At (I := I) (M := M) p) y := by
   classical
-  let Tlin : E →ₗ[ℝ] E := radialTransportLinearMapAt g p y
+  let Tlin : TangentSpace I p →ₗ[ℝ] TangentSpace I y := radialTransportLinearMapAt g p y
   have hTbij : Function.Bijective Tlin := by
     have hTinj : Function.Injective Tlin := by
       intro a b hab
-      exact radialTransportSection_injective (I := I) g p y hy
-        (by simpa [Tlin, radialTransportLinearMapAt] using hab)
+      exact radialTransportSection_injective (I := I) g p y hy hab
     have hTsurj : Function.Surjective Tlin :=
-      (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
-        (K := ℝ) (V := E) (V₂ := E) rfl).mp hTinj
+      radialTransportLinearMapAt_surjective (I := I) g p y hy
     exact ⟨hTinj, hTsurj⟩
-  let e : E ≃ₗ[ℝ] E := LinearEquiv.ofBijective Tlin hTbij
-  let T : E →L[ℝ] E := e.toContinuousLinearEquiv.toContinuousLinearMap
-  let Tinv : E →L[ℝ] E := radialTransportInverseAt g p y hy
+  let e : TangentSpace I p ≃ₗ[ℝ] TangentSpace I y := LinearEquiv.ofBijective Tlin hTbij
+  let T : TangentSpace I p →L[ℝ] TangentSpace I y :=
+    e.toContinuousLinearEquiv.toContinuousLinearMap
+  let Tinv : TangentSpace I y →L[ℝ] TangentSpace I p := radialTransportInverseAt g p y hy
   have hTinvT : ∀ v : TangentSpace I p, Tinv (T v) = v := by
     intro v
     change radialTransportInverseAt g p y hy (radialTransportLinearMapAt g p y v) = v
@@ -1244,6 +1293,7 @@ theorem algebraicCurvatureTensorProjection_radialTransport_commute
     exact sub_eq_zero.mp hzero
   exact congrArg Subtype.val hpu
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 theorem radialTransportTensorExtension_inner_self_le
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -1295,6 +1345,7 @@ theorem radialTransportTensorExtension_inner_self_le
 
 omit [IsManifold I 2 M] [IsManifold I 3 M]
   [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem localizedRadialTransportSection_nabla_center_zero
     (g : SmoothRiemannianMetric I M) (p : M) (v : TangentSpace I p)
     (W : ContMDiffSection I E ∞ (TangentSpace I : M → Type _))
@@ -1319,6 +1370,7 @@ private theorem localizedRadialTransportSection_nabla_center_zero
 
 omit [IsManifold I 2 M] [IsManifold I 3 M]
   [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem localizedRadialTransportSection_nabla2_center_zero
     (g : SmoothRiemannianMetric I M) (p : M) (v w : TangentSpace I p)
     (W : ContMDiffSection I E ∞ (TangentSpace I : M → Type _))
@@ -1345,9 +1397,12 @@ private theorem localizedRadialTransportSection_nabla2_center_zero
     exact W.contMDiff
   have hXeq : X =ᶠ[𝓝 p] coordExtensionTangent (I := I) p w := by
     filter_upwards [(linExtBump (I := I) p).eventuallyEq_one] with y hy
-    simp [X, linearExtensionTangent_apply, hy]
+    simp only [Pi.one_apply] at hy
+    change linearExtensionTangent (I := I) p w y = coordExtensionTangent (I := I) p w y
+    rw [linearExtensionTangent_apply, hy, one_smul]
   have hEqSet : {y : M | W y = R y} ∈ 𝓝 p := by
-    simpa only [R] using hW
+    change ∀ᶠ y in 𝓝 p, W y = R y
+    exact hW
   obtain ⟨U, hUsub, hUopen, hpU⟩ := mem_nhds_iff.mp hEqSet
   have hUnhds : U ∈ 𝓝 p := hUopen.mem_nhds hpU
   have hD : D =ᶠ[𝓝 p] D0 := by
@@ -1382,6 +1437,7 @@ private theorem localizedRadialTransportSection_nabla2_center_zero
   rw [heq]
   exact radialTransportSection_nabla2_center_zero (I := I) g p v w hRsm
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 private theorem radialTransportTensorExtension_eval_eventually_eq
     (g : SmoothRiemannianMetric I M) (p : M)
@@ -1412,7 +1468,7 @@ private theorem radialTransportTensorExtension_eval_eventually_eq
       (radialTransportLinearMapAt g p y (basis (J a))) = basis (J a)
   exact radialTransportInverseAt_left_inverse (I := I) g p y hy (basis (J a))
 
-omit [IsManifold I 3 M] [SigmaCompactSpace M] in
+omit [IsManifold I 3 M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem radialTransportTensorExtension_nabla_center_zero
     (g : SmoothRiemannianMetric I M) (p : M)
     (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
@@ -1446,12 +1502,12 @@ theorem radialTransportTensorExtension_nabla_center_zero
   have hfirst := d.first.eval_smooth_slots (I := I) X V p
   have hscalar := radialTransportTensorExtension_eval_eventually_eq
     (I := I) g p basis horth η₀ χ W hsupport hW (fun a => idx a.succ)
-  have hderiv : extDerivFun (I := I)
+  have hderiv : mvfderiv (I := I)
       (fun y : M => radialTransportTensorExtension g p basis η₀ W y
         (fun a : Fin 4 => V a y)) p (X p) = 0 := by
-    rw [DifferentialGeometry.Tensor.Coordinates.extDerivFun_congr_eventually
+    rw [DifferentialGeometry.Tensor.Coordinates.mvfderiv_congr_eventually
       (I := I) (v := X p) (by simpa [V] using hscalar)]
-    simp [extDerivFun]
+    simp [mvfderiv]
   have hconn : ∀ a : Fin 4,
       (LeviCivita (I := I) g).toFun (fun y => V a y) p (X p) = 0 := by
     intro a
@@ -1460,6 +1516,7 @@ theorem radialTransportTensorExtension_nabla_center_zero
       filter_upwards [χ.eventuallyEq_one] with y hy
       simp only [Pi.one_apply] at hy
       simp [V, hW, hy]
+      rfl
     exact localizedRadialTransportSection_nabla_center_zero
       (I := I) g p (basis (idx a.succ)) (V a) hVi (X p)
   rw [hslots, hfirst, hderiv]
@@ -1474,7 +1531,7 @@ theorem radialTransportTensorExtension_nabla_center_zero
       (fun b => V b p) a
   rw [hsum, sub_zero]
 
-omit [IsManifold I 3 M] [SigmaCompactSpace M] in
+omit [IsManifold I 3 M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 private theorem radialTransportTensorExtension_nabla2_diagonal_center_zero
     (g : SmoothRiemannianMetric I M) (p : M)
     (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))
@@ -1511,6 +1568,7 @@ private theorem radialTransportTensorExtension_nabla2_diagonal_center_zero
     filter_upwards [χ.eventuallyEq_one] with y hy
     simp only [Pi.one_apply] at hy
     simp [V, hW, hy]
+    rfl
   let D : Fin 4 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _) := fun j =>
     ⟨covApply (LeviCivita (I := I) g) (fun y => X y) (fun y => V j y), by
       rw [← contMDiffOn_univ]
@@ -1544,7 +1602,7 @@ private theorem radialTransportTensorExtension_nabla2_diagonal_center_zero
     have hsm := DifferentialGeometry.TensorMultilinear.contMDiff_tensor0SField_apply
       (I := I) (M := M) A Vj
     simpa only [q, Vj] using hsm
-  have hqderiv : ∀ j : Fin 4, extDerivFun (I := I) (q j) p (X p) = 0 := by
+  have hqderiv : ∀ j : Fin 4, mvfderiv (I := I) (q j) p (X p) = 0 := by
     intro j
     let Vj : Fin 4 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _) :=
       Function.update V j (D j)
@@ -1572,16 +1630,17 @@ private theorem radialTransportTensorExtension_nabla2_diagonal_center_zero
     simpa [f, A, V] using radialTransportTensorExtension_eval_eventually_eq
       (I := I) g p basis horth η₀ χ W hsupport hW J
   have hEqSet : {y : M | f y = η₀ (fun j => basis (J j))} ∈ 𝓝 p := by
-    simpa only [Filter.EventuallyEq, Pi.one_apply] using hfconst
+    change ∀ᶠ y in 𝓝 p, f y = η₀ (fun j => basis (J j))
+    exact hfconst
   obtain ⟨U, hUsub, hUopen, hpU⟩ := mem_nhds_iff.mp hEqSet
-  have hzeroFirst : (fun y => extDerivFun (I := I) f y (X y)) =ᶠ[𝓝 p] 0 := by
+  have hzeroFirst : (fun y => mvfderiv (I := I) f y (X y)) =ᶠ[𝓝 p] 0 := by
     filter_upwards [hUopen.mem_nhds hpU] with y hy
     have hfy : f =ᶠ[𝓝 y] fun _ => η₀ (fun j => basis (J j)) := by
       filter_upwards [hUopen.mem_nhds hy] with z hz
       exact hUsub hz
-    rw [DifferentialGeometry.Tensor.Coordinates.extDerivFun_congr_eventually
+    rw [DifferentialGeometry.Tensor.Coordinates.mvfderiv_congr_eventually
       (I := I) (v := X y) hfy]
-    simp [extDerivFun]
+    simp [mvfderiv]
   let V5 : Fin 5 → ContMDiffSection I E ∞ (TangentSpace I : M → Type _) := Fin.cons X V
   let G : M → ℝ := fun y => d.nablaA y (fun j => V5 j y)
   have hG : G =ᶠ[𝓝 p] fun y => -(∑ j : Fin 4, q j y) := by
@@ -1610,13 +1669,13 @@ private theorem radialTransportTensorExtension_nabla2_diagonal_center_zero
     apply DifferentialGeometry.Tensor.RicciIdentity.mdiffAt_finset_sum
     intro j _
     exact (hqsm j).contMDiffAt.mdifferentiableAt (by simp)
-  have hGderiv : extDerivFun (I := I) G p (X p) = 0 := by
-    rw [DifferentialGeometry.Tensor.Coordinates.extDerivFun_congr_eventually
+  have hGderiv : mvfderiv (I := I) G p (X p) = 0 := by
+    rw [DifferentialGeometry.Tensor.Coordinates.mvfderiv_congr_eventually
       (I := I) (v := X p) hG]
-    rw [DifferentialGeometry.Tensor.RicciIdentity.extDerivFun_neg_at
+    rw [DifferentialGeometry.Tensor.RicciIdentity.mvfderiv_neg_at
       (I := I) (x := p) (X p) hsumqmd]
-    change -extDerivFun (I := I) (Finset.univ.sum q) p (X p) = 0
-    rw [DifferentialGeometry.Tensor.RicciIdentity.extDerivFun_finset_sum_at
+    change -mvfderiv (I := I) (Finset.univ.sum q) p (X p) = 0
+    rw [DifferentialGeometry.Tensor.RicciIdentity.mvfderiv_finset_sum_at
       (I := I) Finset.univ q (X p) (fun j _ =>
         (hqsm j).contMDiffAt.mdifferentiableAt (by simp))]
     simp [hqderiv]
@@ -1633,7 +1692,8 @@ private theorem radialTransportTensorExtension_nabla2_diagonal_center_zero
     funext j
     refine Fin.cases ?_ (fun k => ?_) j
     · simpa using hXp.symm
-    · simpa using (hV5p k).symm
+    · rw [Fin.cons_succ, Fin.cons_succ, hV5p k]
+      fin_cases k <;> rfl
   have hsecond := d.second.eval_smooth_slots (I := I) X V5 p
   have hsum2 : (∑ k : Fin 5, d.nablaA p
       (Function.update (fun b : Fin 5 => V5 b p) k
@@ -1641,10 +1701,11 @@ private theorem radialTransportTensorExtension_nabla2_diagonal_center_zero
     rw [hnabla]
     simp
   rw [hslots, hsecond]
-  change extDerivFun (I := I) G p (X p) - _ = 0
+  change mvfderiv (I := I) G p (X p) - _ = 0
   rw [hGderiv, hsum2, sub_zero]
 
 omit [IsManifold I 3 M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
 theorem radialTransportTensorExtension_metricTrace_center_zero
     (g : SmoothRiemannianMetric I M) (p : M)
     (basis : Module.Basis (Fin 3) ℝ (TangentSpace I p))

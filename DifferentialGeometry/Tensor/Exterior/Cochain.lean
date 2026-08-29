@@ -44,14 +44,15 @@ noncomputable def deRhamCochainComplex [BoundarylessManifold IM M] :
       intro x
       simp [ModuleCat.ofHom, exteriorDerivativeLinearMap]
       simpa using (exteriorDerivative_sq x))).X n = ModuleCat.of ℝ (DifferentialForm IM M n)
-  exact CochainComplex.of_x (X := fun n : ℕ => ModuleCat.of ℝ (DifferentialForm IM M n))
+  exact congrFun (CochainComplex.of_X
+    (X := fun n : ℕ => ModuleCat.of ℝ (DifferentialForm IM M n))
     (d := fun n : ℕ => ModuleCat.ofHom (exteriorDerivativeLinearMap (IM := IM) (M := M) n))
     (sq := fun n : ℕ => by
       apply ModuleCat.hom_ext
       apply LinearMap.ext
       intro x
       simp [ModuleCat.ofHom, exteriorDerivativeLinearMap]
-      simpa using (exteriorDerivative_sq x)) n
+      simpa using (exteriorDerivative_sq x))) n
 
 @[simp] theorem deRhamCochainComplex_d [BoundarylessManifold IM M] (n : ℕ) :
     (deRhamCochainComplex (IM := IM) (M := M)).d n (n + 1) =
@@ -66,13 +67,7 @@ noncomputable def deRhamCochainComplex [BoundarylessManifold IM M] :
       simpa using (exteriorDerivative_sq x))).d n (n + 1) =
       ModuleCat.ofHom (exteriorDerivativeLinearMap (IM := IM) (M := M) n)
   exact CochainComplex.of_d (X := fun n : ℕ => ModuleCat.of ℝ (DifferentialForm IM M n))
-    (d := fun n : ℕ => ModuleCat.ofHom (exteriorDerivativeLinearMap (IM := IM) (M := M) n))
-    (sq := fun n : ℕ => by
-      apply ModuleCat.hom_ext
-      apply LinearMap.ext
-      intro x
-      simp [ModuleCat.ofHom, exteriorDerivativeLinearMap]
-      simpa using (exteriorDerivative_sq x)) n
+    (d := fun n : ℕ => ModuleCat.ofHom (exteriorDerivativeLinearMap (IM := IM) (M := M) n)) n
 
 noncomputable def deRhamCohomology [BoundarylessManifold IM M] (k : ℕ) : ModuleCat ℝ :=
   (deRhamCochainComplex (IM := IM) (M := M)).homology k
@@ -103,7 +98,7 @@ noncomputable def pullbackCochainMap [BoundarylessManifold IM M] [BoundarylessMa
     apply ModuleCat.hom_ext
     apply LinearMap.ext
     intro η
-    simp only [deRhamCochainComplex_d, ModuleCat.hom_comp, LinearMap.coe_comp, comp_apply]
+    simp only [deRhamCochainComplex_d]
     exact (exteriorDerivative_pullback f hf η).symm
 
 theorem pullbackCochainMap_id [BoundarylessManifold IM M] :
@@ -128,7 +123,7 @@ theorem pullbackCochainMap_comp [BoundarylessManifold IM M] [BoundarylessManifol
   apply LinearMap.ext
   intro α
   simp only [pullbackCochainMap, pullbackLinearMap, HomologicalComplex.comp_f,
-    ModuleCat.hom_comp, LinearMap.coe_comp, comp_apply]
+    ]
   exact pullback_comp f hf g hg α
 
 noncomputable def pullbackMapCochainMap [BoundarylessManifold IM M] [BoundarylessManifold IN N]
@@ -139,13 +134,15 @@ noncomputable def pullbackMapCochainMap [BoundarylessManifold IM M] [Boundaryles
 theorem pullbackMapCochainMap_id [BoundarylessManifold IM M] :
     pullbackMapCochainMap (ContMDiffMap.id (I := IM) (M := M) : C^⊤⟮IM, M; IM, M⟯) =
       CategoryTheory.CategoryStruct.id (deRhamCochainComplex (IM := IM) (M := M)) := by
-  simpa [pullbackMapCochainMap] using pullbackCochainMap_id
+  unfold pullbackMapCochainMap ContMDiffMap.id
+  exact pullbackCochainMap_id
 
 theorem pullbackMapCochainMap_comp [BoundarylessManifold IM M] [BoundarylessManifold IN N]
     [BoundarylessManifold IP P] (f : C^⊤⟮IM, M; IN, N⟯) (g : C^⊤⟮IN, N; IP, P⟯) :
     pullbackMapCochainMap (ContMDiffMap.comp g f) =
       CategoryTheory.CategoryStruct.comp (pullbackMapCochainMap g) (pullbackMapCochainMap f) := by
-  simpa [pullbackMapCochainMap] using pullbackCochainMap_comp f.1 f.2 g.1 g.2
+  unfold pullbackMapCochainMap ContMDiffMap.comp
+  exact pullbackCochainMap_comp f.1 f.2 g.1 g.2
 
 noncomputable def pullbackCohomologyMap [BoundarylessManifold IM M] [BoundarylessManifold IN N]
     (f : M → N) (hf : ContMDiff IM IN ⊤ f) (k : ℕ) :
@@ -188,14 +185,16 @@ noncomputable def pullbackMapCohomologyMap [BoundarylessManifold IM M] [Boundary
 theorem pullbackMapCohomologyMap_id [BoundarylessManifold IM M] (k : ℕ) :
     pullbackMapCohomologyMap (ContMDiffMap.id (I := IM) (M := M) : C^⊤⟮IM, M; IM, M⟯) k =
       CategoryTheory.CategoryStruct.id (deRhamCohomology (IM := IM) (M := M) k) := by
-  simpa [pullbackMapCohomologyMap] using pullbackCohomologyMap_id (k := k)
+  unfold pullbackMapCohomologyMap ContMDiffMap.id
+  exact pullbackCohomologyMap_id (k := k)
 
 theorem pullbackMapCohomologyMap_comp [BoundarylessManifold IM M] [BoundarylessManifold IN N]
     [BoundarylessManifold IP P] (f : C^⊤⟮IM, M; IN, N⟯) (g : C^⊤⟮IN, N; IP, P⟯) (k : ℕ) :
     pullbackMapCohomologyMap (ContMDiffMap.comp g f) k =
       CategoryTheory.CategoryStruct.comp (pullbackMapCohomologyMap g k)
         (pullbackMapCohomologyMap f k) := by
-  simpa [pullbackMapCohomologyMap] using pullbackCohomologyMap_comp f.1 f.2 g.1 g.2 (k := k)
+  unfold pullbackMapCohomologyMap ContMDiffMap.comp
+  exact pullbackCohomologyMap_comp f.1 f.2 g.1 g.2 (k := k)
 
 end DifferentialForm
 end DifferentialGeometry

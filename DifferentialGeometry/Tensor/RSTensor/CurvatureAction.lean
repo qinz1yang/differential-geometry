@@ -23,7 +23,7 @@ def oneFormAtSlot0S {x : M} {s : ℕ}
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)
     (slots : Fin s → TangentSpace I x) (q : Fin s) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=
-  dualToCotangent_gen (I := I)
+  dualToCotangentGen (I := I)
     { toFun := fun W : TangentSpace I x => alpha (Function.update slots q W)
       map_add' := by
         intro A B
@@ -46,7 +46,18 @@ abbrev freezeSlot0SAt {x : M} {s : ℕ}
     (slots : Fin s → TangentSpace I x) (q : Fin s) (W : TangentSpace I x) :
     oneFormAtSlot0S (I := I) alpha slots q (fun _ : Fin 1 => W) =
       alpha (Function.update slots q W) := by
-  simp [oneFormAtSlot0S]
+  change Tensor0SSpace.eval
+      (dualToCotangentGen (I := I)
+        { toFun := fun W : TangentSpace I x => alpha (Function.update slots q W)
+          map_add' := by
+            intro A B
+            exact alpha.map_update_add slots q A B
+          map_smul' := by
+            intro c A
+            rw [alpha.map_update_smul]
+            simp [smul_eq_mul] })
+      (fun _ : Fin 1 => W) = alpha (Function.update slots q W)
+  exact dualToCotangent_apply_gen _ W
 
 def curvatureAction0SAtSlots {x : M} {s : ℕ}
     (alpha :

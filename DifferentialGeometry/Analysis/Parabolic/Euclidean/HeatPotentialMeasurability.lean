@@ -47,7 +47,7 @@ theorem heatSup_timeSource_aestronglyMeasurable_of_parabolic_holder
     {S t : Real} (ht : t ∈ Ioc (0 : Real) S)
     (f : Real → BoundedContinuousFunction V F)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p => f p.time p.space)))
     (z : V) :
     AEStronglyMeasurable (fun s : Real => heatSup (t - s) (f s) z)
@@ -58,7 +58,7 @@ theorem heatSup_timeSource_aestronglyMeasurable_of_parabolic_holder
     heatKernel (t - q.1) q.2 • f q.1 (z - q.2)
   apply integral_time_aestronglyMeasurable_of_continuousOn (G := G)
   rw [show Ioo (0 : Real) t ×ˢ (Set.univ : Set V) = A from rfl,
-    continuousOn_iff_continuous_restrict]
+    continuousOn_iff_continuous_domRestrict]
   let phi : A → parabolicCylinder (Icc (0 : Real) S) Set.univ := fun q =>
     ⟨parabolicPoint q.1.1 (z - q.1.2),
       ⟨⟨q.2.1.1.le, q.2.1.2.le.trans ht.2⟩, Set.mem_univ _⟩⟩
@@ -66,8 +66,7 @@ theorem heatSup_timeSource_aestronglyMeasurable_of_parabolic_holder
     unfold phi parabolicPoint
     fun_prop
   have hf : Continuous (fun q : A => f q.1.1 (z - q.1.2)) := by
-    simpa only [phi, Set.restrict_apply, parabolicPoint_time,
-      parabolicPoint_space] using (hsource.continuous halpha0).comp hphi
+    exact ((hsource.continuous halpha0).comp hphi).congr fun _ => rfl
   have hr : Continuous (fun q : A => heatScale (t - q.1.1)) := by
     unfold heatScale
     fun_prop
@@ -89,7 +88,7 @@ theorem heatSupGradient_timeSource_aestronglyMeasurable_of_parabolic_holder
     {S t : Real} (ht : t ∈ Ioc (0 : Real) S)
     (f : Real → BoundedContinuousFunction V F)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p => f p.time p.space)))
     (z : V) :
     AEStronglyMeasurable
@@ -101,7 +100,7 @@ theorem heatSupGradient_timeSource_aestronglyMeasurable_of_parabolic_holder
     (heatD1Map (t - q.1) (z - q.2)).smulRight (f q.1 q.2)
   apply integral_time_aestronglyMeasurable_of_continuousOn (G := G)
   rw [show Ioo (0 : Real) t ×ˢ (Set.univ : Set V) = A from rfl,
-    continuousOn_iff_continuous_restrict]
+    continuousOn_iff_continuous_domRestrict]
   let phi : A → parabolicCylinder (Icc (0 : Real) S) Set.univ := fun q =>
     ⟨parabolicPoint q.1.1 q.1.2,
       ⟨⟨q.2.1.1.le, q.2.1.2.le.trans ht.2⟩, Set.mem_univ _⟩⟩
@@ -109,8 +108,7 @@ theorem heatSupGradient_timeSource_aestronglyMeasurable_of_parabolic_holder
     unfold phi parabolicPoint
     fun_prop
   have hf : Continuous (fun q : A => f q.1.1 q.1.2) := by
-    simpa only [phi, Set.restrict_apply, parabolicPoint_time,
-      parabolicPoint_space] using (hsource.continuous halpha0).comp hphi
+    exact ((hsource.continuous halpha0).comp hphi).congr fun _ => rfl
   have hr : Continuous (fun q : A => heatScale (t - q.1.1)) := by
     unfold heatScale
     fun_prop
@@ -141,7 +139,7 @@ theorem heatSupHessian_timeSource_aestronglyMeasurable_of_parabolic_holder
     {S t : Real} (ht : t ∈ Ioc (0 : Real) S)
     (f : Real → BoundedContinuousFunction V F)
     (hsource : HolderWith K alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p => f p.time p.space)))
     (z : V) :
     AEStronglyMeasurable
@@ -153,7 +151,7 @@ theorem heatSupHessian_timeSource_aestronglyMeasurable_of_parabolic_holder
     heatD2SmulRightMap (t - q.1) (z - q.2) (f q.1 q.2)
   apply integral_time_aestronglyMeasurable_of_continuousOn (G := G)
   rw [show Ioo (0 : Real) t ×ˢ (Set.univ : Set V) = A from rfl,
-    continuousOn_iff_continuous_restrict]
+    continuousOn_iff_continuous_domRestrict]
   let phi : A → parabolicCylinder (Icc (0 : Real) S) Set.univ := fun q =>
     ⟨parabolicPoint q.1.1 q.1.2,
       ⟨⟨q.2.1.1.le, q.2.1.2.le.trans ht.2⟩, Set.mem_univ _⟩⟩
@@ -161,8 +159,7 @@ theorem heatSupHessian_timeSource_aestronglyMeasurable_of_parabolic_holder
     unfold phi parabolicPoint
     fun_prop
   have hf : Continuous (fun q : A => f q.1.1 q.1.2) := by
-    simpa only [phi, Set.restrict_apply, parabolicPoint_time,
-      parabolicPoint_space] using (hsource.continuous halpha0).comp hphi
+    exact ((hsource.continuous halpha0).comp hphi).congr fun _ => rfl
   have hr : Continuous (fun q : A => heatScale (t - q.1.1)) := by
     unfold heatScale
     fun_prop

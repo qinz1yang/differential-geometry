@@ -175,21 +175,23 @@ theorem galerkinPerMode_eq_perModeConv
       deTurckGalerkinForcing (I := I) (M := M) g₀ g_bg a U N p.1 i) with hfForce_def
   have hfForce_cont : Continuous fForce := by
     refine Continuous.Icc_extend' ?_
-    exact (continuousOn_galerkinForcing (I := I) (M := M) g₀ g_bg a ha_super U N hUcont i).restrict
+    exact (continuousOn_galerkinForcing (I := I) (M := M) g₀ g_bg a ha_super U N hUcont i).domRestrict
   have hfForce_mem : ∀ {x : ℝ}, x ∈ Set.Icc (0 : ℝ) T →
       fForce x = deTurckGalerkinForcing (I := I) (M := M) g₀ g_bg a U N x i := by
     intro x hx
     rw [hfForce_def, Set.IccExtend_of_mem hT.le _ hx]
   set v : ℝ → ℝ → ℝ := fun s y => -lam * y + fForce s with hv_def
-  have hv_lip : ∀ s ∈ Set.Ico (0 : ℝ) T, LipschitzOnWith ⟨|lam|, abs_nonneg lam⟩
+  have hv_lip : ∀ s ∈ Set.Ico (0 : ℝ) T, LipschitzOnWith (⟨|lam|, abs_nonneg lam⟩ : ℝ≥0)
       (v s) (Set.univ : Set ℝ) := by
     intro s _
-    have hlip : LipschitzWith ⟨|lam|, abs_nonneg lam⟩ (fun y : ℝ => -lam * y + fForce s) := by
+    have hlip : LipschitzWith (⟨|lam|, abs_nonneg lam⟩ : ℝ≥0)
+        (fun y : ℝ => -lam * y + fForce s) := by
       refine LipschitzWith.of_dist_le_mul (fun y₁ y₂ => ?_)
       rw [Real.dist_eq, Real.dist_eq]
       have heq : -lam * y₁ + fForce s - (-lam * y₂ + fForce s) = -lam * (y₁ - y₂) := by ring
       rw [heq, abs_mul, abs_neg]
-      simp only [NNReal.coe_mk, le_refl]
+      change |lam| * |y₁ - y₂| ≤ |lam| * |y₁ - y₂|
+      exact le_rfl
     exact hlip.lipschitzOnWith
   set gG : ℝ → ℝ := fun s => U N s i with hgG_def
   set gP : ℝ → ℝ := fun s => perModeConv lam fForce s with hgP_def
@@ -308,10 +310,10 @@ theorem unifIntegrable_of_uniform_norm_bound {α β : Type*} {m : MeasurableSpac
         rw [Real.coe_toNNReal _ (le_max_right _ _)]; exact hxle
       have hlt : (‖f n x‖₊ : ℝ) < ((max C 0).toNNReal : ℝ) + 1 := by linarith
       exact_mod_cast hlt
-    rw [Set.indicator_of_notMem (by simp only [Set.mem_setOf_eq, not_le]; exact hle)]
+    rw [Set.indicator_of_notMem (by simp only [Set.mem_ofPred_eq, not_le]; exact hle)]
     rfl
   rw [eLpNorm_congr_ae hzero, eLpNorm_zero]
-  exact zero_le _
+  exact zero_le
 
 omit [BoundarylessManifold I M] in
 private theorem tensorHs_norm_tendsto_zero_of_coeff_tendsto_of_uniform
@@ -459,7 +461,7 @@ private theorem tensorHs_norm_tendsto_zero_of_coeff_tendsto_of_uniform
   have hfin0 : Tendsto (fun n =>
       ∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i σ' * ((d n).coeff i) ^ 2)
       atTop (𝓝 0) := by
-    have h := tendsto_finset_sum (s := F)
+    have h := tendsto_finsetSum (s := F)
       (f := fun i n => tensorSobolevWeight (I := I) (M := M) i σ' * ((d n).coeff i) ^ 2)
       (a := fun _ : ι => (0 : ℝ))
       (fun i _ => by
@@ -539,7 +541,7 @@ theorem tendsto_finiteEigenComboHs_of_coeff_tendsto_of_succWeighted_bound
         atTop
         (𝓝 (∑ i ∈ t,
           tensorSobolevWeight (I := I) (M := M) i (σ + 1) * (W.coeff i) ^ 2)) := by
-      refine tendsto_finset_sum t (fun i _ => ?_)
+      refine tendsto_finsetSum t (fun i _ => ?_)
       exact ((hconv_coeff i).pow 2).const_mul _
     have hle : ∀ N, ∑ i ∈ t,
         tensorSobolevWeight (I := I) (M := M) i (σ + 1) * ((u N).coeff i) ^ 2 ≤ B := by
@@ -881,7 +883,7 @@ theorem fatou_weighted_sq_mass_le {ι : Type*} (S : ℕ → Finset ι)
     intro K
     have hlim : Tendsto (fun N => ∑ i ∈ K, w i * (v N i) ^ 2) atTop
         (𝓝 (∑ i ∈ K, w i * (vlim i) ^ 2)) := by
-      refine tendsto_finset_sum K (fun i _ => ?_)
+      refine tendsto_finsetSum K (fun i _ => ?_)
       exact ((hconv i).pow 2).const_mul (w i)
     have hev : ∀ᶠ N in atTop, ∑ i ∈ K, w i * (v N i) ^ 2 ≤ B := by
       have hsub : ∀ᶠ N in atTop, K ≤ S N := hS.eventually_ge_atTop K
@@ -961,21 +963,23 @@ private theorem galerkinPerMode_eq_perModeConvSymm
   have hfForce_cont : Continuous fForce := by
     refine Continuous.Icc_extend' ?_
     exact (continuousOn_galerkinForcingSymm (I := I) (M := M) g₀ g_bg a ha_super U N hUcont
-      i).restrict
+      i).domRestrict
   have hfForce_mem : ∀ {x : ℝ}, x ∈ Set.Icc (0 : ℝ) T →
       fForce x = deTurckGalerkinForcingSymm (I := I) (M := M) g₀ g_bg a U N x i := by
     intro x hx
     rw [hfForce_def, Set.IccExtend_of_mem hT.le _ hx]
   set v : ℝ → ℝ → ℝ := fun s y => -lam * y + fForce s with hv_def
-  have hv_lip : ∀ s ∈ Set.Ico (0 : ℝ) T, LipschitzOnWith ⟨|lam|, abs_nonneg lam⟩
+  have hv_lip : ∀ s ∈ Set.Ico (0 : ℝ) T, LipschitzOnWith (⟨|lam|, abs_nonneg lam⟩ : ℝ≥0)
       (v s) (Set.univ : Set ℝ) := by
     intro s _
-    have hlip : LipschitzWith ⟨|lam|, abs_nonneg lam⟩ (fun y : ℝ => -lam * y + fForce s) := by
+    have hlip : LipschitzWith (⟨|lam|, abs_nonneg lam⟩ : ℝ≥0)
+        (fun y : ℝ => -lam * y + fForce s) := by
       refine LipschitzWith.of_dist_le_mul (fun y₁ y₂ => ?_)
       rw [Real.dist_eq, Real.dist_eq]
       have heq : -lam * y₁ + fForce s - (-lam * y₂ + fForce s) = -lam * (y₁ - y₂) := by ring
       rw [heq, abs_mul, abs_neg]
-      simp only [NNReal.coe_mk, le_refl]
+      change |lam| * |y₁ - y₂| ≤ |lam| * |y₁ - y₂|
+      exact le_rfl
     exact hlip.lipschitzOnWith
   set gG : ℝ → ℝ := fun s => U N s i with hgG_def
   set gP : ℝ → ℝ := fun s => perModeConv lam fForce s with hgP_def
@@ -1539,7 +1543,7 @@ private theorem galerkinForcing_norm_le_ballRadiusSymm
       deTurckForceBallRadiusSymm (I := I) (M := M) g₀ g_bg a ha_super := by
   classical
   have h_compact := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2
-  haveI hcount : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
+  have hcount : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) h_compact
   set hLipC := deTurckSobolevNHa2Symm_lipschitzWith_lipConst (I := I) (M := M)
     (g₀ := g₀) (g_bg := g_bg) a ha_super with hLipC_def
@@ -1677,8 +1681,9 @@ private theorem galerkinForcing_norm_le_ballRadiusSymm
         (Set.Icc (0 : ℝ) T) := by
       refine (continuousOn_galerkinForcingSymm (I := I) (M := M) g₀ g_bg a ha_super
         (fun _ => W) N hWcont i).congr (fun s _ => ?_)
+      change _ = deTurckGalerkinForcingSymm (I := I) (M := M) g₀ g_bg a (fun _ => W) N s i
       rw [deTurckGalerkinForcingSymm_apply, if_pos hi]
-    have hfForce_cont : Continuous fForce := Continuous.Icc_extend' hg_cont.restrict
+    have hfForce_cont : Continuous fForce := Continuous.Icc_extend' hg_cont.domRestrict
     have hfForce_mem : ∀ {x : ℝ}, x ∈ Set.Icc (0 : ℝ) T →
         fForce x = (deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a
           (finiteEigenComboHs (I := I) (M := M) g₀
@@ -2574,7 +2579,7 @@ theorem exists_smoothCcPath_realizing_coeff (g₀ : SmoothRiemannianMetric I M)
     intro t ht
     obtain ⟨B0, hB0s, hB0le⟩ := hmass0 0 le_rfl
     set v0 : tensorHs (I := I) (M := M) g₀ 0 2 0 :=
-      tensorHs_of_spectralMass_majorant (I := I) (M := M) (ct t) B0 hB0s
+      tensorHsOfSpectralMassMajorant (I := I) (M := M) (ct t) B0 hB0s
         (fun i => by
           have := hB0le i t ht
           simpa [hct_def] using this) with hv0_def
@@ -2646,7 +2651,7 @@ private theorem deTurckForcing_jetSpectralMass_preservingSymm
         ∀ i, (fun t => (deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a (w t)).coeff i)
             =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d₂)] ψ i := by
   classical
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)
   obtain ⟨hφ_smooth, hφ_mass⟩ := hφ
@@ -2745,7 +2750,7 @@ private theorem deTurckSobolevNHa2Symm_finiteOrder_jetSpectralMass_preserving
       (∀ i, (fun t => (deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a (w t)).coeff i)
           =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d₂)] ψ i) := by
   classical
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)
   have hmass0 : ∀ σ : ℝ, 0 ≤ σ →
@@ -3038,7 +3043,7 @@ theorem maxRegSolField_parabolicInterior_jetSpectralMassSymm
       (deTurckGalerkin_solField_uniformSpatialMass_allOrderSymm (I := I) (M := M)
         g₀ g_bg a ha_super hT hT1 hTT₀ gforce hforce hgforce)
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2 with hhc_def
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hc
   set φ : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ → ℝ :=
     fun i => perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (f i) with hφ_def
@@ -3371,7 +3376,7 @@ theorem deTurckForcing_smoothTimeCoordinateFieldSymm
   obtain ⟨d₂, hd₂_pos, hd₂_le, f, hf_smooth, hf_mass, hf_ae⟩ :=
     deTurckForcing_smoothCoordinate_aeTimeJetSymm (I := I) (M := M) g₀ g_bg a ha_super hT hT1
       hTT₀ gforce hforce hgforce
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
     countable_tensorEigenIdx (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)
   obtain ⟨B, hB_sum, hB_le⟩ := hf_mass 0 (a : ℝ) (Nat.cast_nonneg a)
   have hslab_sum : ∀ t ∈ Set.Icc (0 : ℝ) d₂,
@@ -4102,7 +4107,7 @@ private theorem realizedForcingCoord_eq_smoothNSymm
                 (hδ t)))) i := by
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2 with hhc
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M)
       (g := g₀) (r := 0) (s := 2) hc
   set φ : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ → ℝ :=
@@ -4457,7 +4462,7 @@ theorem maxreg_solution_jointly_smooth_representative_of_nemytskii
           ← MeasureTheory.integral_Icc_eq_integral_Ioc]
         refine MeasureTheory.setIntegral_mono_set hcont_sq.integrableOn_Icc ?_ ?_
         · filter_upwards with x; positivity
-        · exact HasSubset.Subset.eventuallyLE (Set.Icc_subset_Icc le_rfl ht.2)
+        · exact LE.le.eventuallyLE (Set.Icc_subset_Icc le_rfl ht.2)
       have hbig : tensorSobolevWeight (I := I) (M := M) i c *
           ∫ s in (0 : ℝ)..d₂F, (f i s) ^ 2 ≤ d₂F * B i := by
         have hi_lhs : IntervalIntegrable
@@ -4759,7 +4764,7 @@ theorem maxreg_solution_jointly_smooth_representative_of_tame_nemytskii
           ← MeasureTheory.integral_Icc_eq_integral_Ioc]
         refine MeasureTheory.setIntegral_mono_set hcont_sq.integrableOn_Icc ?_ ?_
         · filter_upwards with x; positivity
-        · exact HasSubset.Subset.eventuallyLE (Set.Icc_subset_Icc le_rfl ht.2)
+        · exact LE.le.eventuallyLE (Set.Icc_subset_Icc le_rfl ht.2)
       have hbig : tensorSobolevWeight (I := I) (M := M) i c *
           ∫ s in (0 : ℝ)..T, (f i s) ^ 2 ≤ T * B i := by
         have hi_lhs : IntervalIntegrable

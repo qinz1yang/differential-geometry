@@ -39,6 +39,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s j : ℕ) (c : ℝ)
@@ -368,6 +369,7 @@ theorem exists_corrArm1Field_metricPerturbationPath_jetL2_tameEnvelope
       ‖iteratedCovGrad (I := I) g₀ 3 2 i
         (linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s)‖)]
 
+omit [SigmaCompactSpace M] in
 theorem corrArm0Combination_eq_order0_add_halfRiemann
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -445,6 +447,7 @@ private lemma pJetGridWindow_mono (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) {i i
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma pJetGridWindow_eq_tripleSum (g₀ : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2) (x : M) (i : ℕ) :
     pJetGridWindow (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
@@ -1359,7 +1362,7 @@ theorem linearizedRicciConnectionDifferenceOrder0RiemannHalfCombination_perOrder
   · obtain ⟨x₀⟩ := hM
     have hδ0 : 0 ≤ δ := by
       obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-        haveI : Nontrivial (TangentSpace I x₀) := by
+        have : Nontrivial (TangentSpace I x₀) := by
           have hfr : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
             have heq : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
             rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -1411,7 +1414,7 @@ theorem linearizedRicciConnectionDifferenceOrder0RiemannHalfCombination_perOrder
         (riemannianVolumeMeasure (I := I) (M := M) g₀) := by
       refine MeasureTheory.Integrable.add ?_ ?_
       · exact (hWint.const_mul (CS i)).const_mul 2
-      · exact ((MeasureTheory.integrable_finset_sum _
+      · exact ((MeasureTheory.integrable_finsetSum _
           (fun k hk => (hKt P hPball k).1)).const_mul (CG i)).const_mul 2
     have key := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀ 2 (2 + i)
       (iteratedCovGrad (I := I) g₀ 2 2 i
@@ -1461,11 +1464,11 @@ theorem linearizedRicciConnectionDifferenceOrder0RiemannHalfCombination_perOrder
         linarith)
     refine le_trans key ?_
     rw [MeasureTheory.integral_add ((hWint.const_mul (CS i)).const_mul 2)
-        (((MeasureTheory.integrable_finset_sum _
+        (((MeasureTheory.integrable_finsetSum _
           (fun k hk => (hKt P hPball k).1)).const_mul (CG i)).const_mul 2),
       MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul,
       MeasureTheory.integral_const_mul, MeasureTheory.integral_const_mul,
-      MeasureTheory.integral_finset_sum _ (fun k hk => (hKt P hPball k).1)]
+      MeasureTheory.integral_finsetSum _ (fun k hk => (hKt P hPball k).1)]
     have htopP : ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ≤ R :=
       hPball (i + 2) (by omega)
     have hlayer : ∀ k ∈ Finset.range (i + 3),
@@ -1543,7 +1546,7 @@ theorem linearizedRicciConnectionDifferenceOrder0RiemannHalfCombination_perOrder
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2))) :=
       mul_le_mul_of_nonneg_left hsum_le (hCG_nn i)
     nlinarith only [hS_le, hG_le]
-  · haveI hM' : IsEmpty M := not_nonempty_iff.mp hM
+  · have hM' : IsEmpty M := not_nonempty_iff.mp hM
     have hz : ‖iteratedCovGrad (I := I) g₀ 2 2 i
         (linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g₀ g₁
           + (1 / 2 : ℝ) • ricciArmOrder0RiemannCoeff (I := I) (M := M) g₀ g₁)‖ = 0 := by

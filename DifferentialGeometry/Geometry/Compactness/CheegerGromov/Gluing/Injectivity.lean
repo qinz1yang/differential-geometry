@@ -18,8 +18,8 @@ open scoped ContDiff Manifold Topology
 
 open DifferentialGeometry.Geometry.Riemannian
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -87,18 +87,18 @@ theorem HasStageJetData.inj_tail
   let Lphi := L.subseq hphi
   let Yk := X.obj (Lphi.φ k)
   let Yl := X.obj (Lphi.φ l)
-  letI : TopologicalSpace Yk.M := Yk.topology
-  letI : ChartedSpace H Yk.M := Yk.charted
-  letI : IsManifold I ∞ Yk.M := Yk.smooth
-  letI : T2Space Yk.M := Yk.t2
-  letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-  letI : TopologicalSpace Yl.M := Yl.topology
-  letI : ChartedSpace H Yl.M := Yl.charted
-  letI : IsManifold I ∞ Yl.M := Yl.smooth
-  letI : T2Space Yl.M := Yl.t2
-  letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
-  letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
-  letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
+  let : TopologicalSpace Yk.M := Yk.topology
+  let : ChartedSpace H Yk.M := Yk.charted
+  let : IsManifold I ∞ Yk.M := Yk.smooth
+  let : T2Space Yk.M := Yk.t2
+  let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+  let : TopologicalSpace Yl.M := Yl.topology
+  let : ChartedSpace H Yl.M := Yl.charted
+  let : IsManifold I ∞ Yl.M := Yl.smooth
+  let : T2Space Yl.M := Yl.t2
+  let : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
+  let : MetricSpace Yk.M := (P (Lphi.φ k)).ms
+  let : MetricSpace Yl.M := (P (Lphi.φ l)).ms
   let F := stageComparisonMap inp P Lphi s hs k l
   let Hret := stageComparisonMap inp P Lphi s hs l k
   intro x hx y hy hFxy
@@ -198,7 +198,8 @@ theorem HasStageJetData.inj_tail
         _ < rho := by linarith
     rw [NetLimitData.hatSourceBall, Metric.mem_closedBall]
     have hxR0 : dist x Yk.basepoint ≤ R0 := by
-      simpa only [NetLimitData.hatSourceBall, Yk] using hx
+      change dist x Yk.basepoint ≤ R0 at hx
+      exact hx
     have hlt : dist (chiK.symm w) Yk.basepoint < R1 := by
       calc
         dist (chiK.symm w) Yk.basepoint ≤
@@ -212,8 +213,8 @@ theorem HasStageJetData.inj_tail
     have hwR1 := hsegR1 w hw
     have hout := hjet k hkJet l hlJet alpha w
       (interior_subset hwInt) hwInt hwR1
-    exact (by simpa only [G, F, chiK, chiL, ck, cl, Yk, Yl, Lphi] using
-      hout.2.1.differentiableAt (by simp))
+    with_unfolding_all
+      exact hout.2.1.differentiableAt (by simp)
   have hsegBd : ∀ w ∈ segment Real zx zy,
       ‖ContinuousLinearMap.id Real E - fderiv Real G w‖ ≤ (1 / 2 : Real) := by
     intro w hw
@@ -223,8 +224,8 @@ theorem HasStageJetData.inj_tail
       (interior_subset hwInt) hwInt hwR1
     have hdiff : DifferentiableAt Real G w := hsegDiff w hw
     have hraw : mapDerivNorm 1 G id w ≤ (1 / 2 : Real) := by
-      simpa only [G, F, chiK, chiL, ck, cl, Yk, Yl, Lphi] using
-        hout.2.2 1 le_rfl
+      with_unfolding_all
+        exact hout.2.2 1 le_rfl
     exact neumannOfDerivNorm hdiff hraw
   have hGinj : Set.InjOn G (segment Real zx zy) :=
     Coordinates.injOn_of_fderiv_near_id (convex_segment zx zy)

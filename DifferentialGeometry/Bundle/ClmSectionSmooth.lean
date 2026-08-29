@@ -9,7 +9,7 @@ import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
 import Mathlib.Geometry.Manifold.BumpFunction
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 
 set_option autoImplicit false
 
@@ -60,7 +60,9 @@ theorem cotangentCov_clmSection_smooth_aux
       (fun x => ∑ i, b.repr v i • (e₂ ⟨x, φ x (Y i x)⟩).2) x₀ := by
     apply ContMDiffAt.sum
     intro i _
-    exact (contMDiffAt_const (c := (b.repr v i : ℝ))).smul (hφY_fiber i)
+    have hc : ContMDiffAt I 𝓘(ℝ) ∞ (fun _ : M => (b.repr v i : ℝ)) x₀ :=
+      contMDiffAt_const
+    exact hc.smul (hφY_fiber i)
   refine hsum.congr_of_eventuallyEq ?_
   have h_base₁ : ∀ᶠ x in 𝓝 x₀, x ∈ e₁.baseSet :=
     e₁.open_baseSet.mem_nhds he₁
@@ -88,7 +90,7 @@ theorem cotangentCov_clmSection_smooth_aux
   have h_lf : e₁.symmL ℝ x (b i) = (Y i) x := by
     rw [hYx i]
     rw [Trivialization.localFrame_apply_of_mem_baseSet (hx := hx₁)]
-    simp [Trivialization.basisAt]
+    exact e₁.symmL_apply hx₁ _
   rw [h_lf]
   change (Trivialization.continuousLinearMapAt ℝ e₂ x) ((φ x) ((Y i) x)) = _
   rw [show ⇑(e₂.continuousLinearMapAt ℝ x) = ⇑(e₂.linearMapAt ℝ x) from rfl,

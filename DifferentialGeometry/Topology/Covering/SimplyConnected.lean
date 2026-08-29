@@ -32,11 +32,7 @@ theorem surjective_compact
 theorem covering_compact
     [CompactSpace E] [T2Space E] [T2Space X]
     (hf : IsLocalHomeomorph f) : IsCoveringMap f := by
-  rw [isCoveringMap_iff_isCoveringMapOn_univ]
-  apply IsCoveringMapOn.of_openPartialHomeomorph hf.continuous
-  intro e _he
-  obtain ⟨φ, heφ, hφ⟩ := hf e
-  exact ⟨φ, heφ, hφ.symm⟩
+  exact isLocalHomeomorph_iff_isCoveringMap.mp hf
 
 end IsLocalHomeomorph
 
@@ -46,7 +42,7 @@ variable {E X : Type*} [TopologicalSpace E] [TopologicalSpace X] {f : E → X}
 
 theorem bijective_sc
     [PreconnectedSpace E] [Nonempty E]
-    [SimplyConnectedSpace X] [LocPathConnectedSpace X]
+    [SimplyConnectedSpace X] [LocallyPathConnectedSpace X]
     (hf : IsCoveringMap f) : Function.Bijective f := by
   obtain ⟨e₀⟩ := ‹Nonempty E›
   obtain ⟨s, ⟨hs0, hsp⟩, -⟩ :=
@@ -66,9 +62,9 @@ theorem bijective_sc
   have hli : Function.LeftInverse s f := fun e => congrFun hsf e
   exact hli.injective
 
-noncomputable def homeomorph_sc
+noncomputable def homeomorphSc
     [PreconnectedSpace E] [Nonempty E]
-    [SimplyConnectedSpace X] [LocPathConnectedSpace X]
+    [SimplyConnectedSpace X] [LocallyPathConnectedSpace X]
     (hf : IsCoveringMap f) : E ≃ₜ X :=
   (Equiv.ofBijective f hf.bijective_sc).toHomeomorphOfContinuousOpen
     hf.continuous hf.isOpenMap
@@ -83,9 +79,9 @@ variable {H' : Type*} [TopologicalSpace H'] {I' : ModelWithCorners 𝕜 F' H'}
 variable [ChartedSpace H E] [IsManifold I ∞ E]
 variable [ChartedSpace H' X] [IsManifold I' ∞ X]
 
-noncomputable def diffeomorph_sc
+noncomputable def diffeomorphSc
     [PreconnectedSpace E] [Nonempty E]
-    [SimplyConnectedSpace X] [LocPathConnectedSpace X]
+    [SimplyConnectedSpace X] [LocallyPathConnectedSpace X]
     (hf : IsCoveringMap f) (hloc : IsLocalDiffeomorph I I' ∞ f) :
     Diffeomorph I I' E X ∞ :=
   hloc.diffeomorphOfBijective hf.bijective_sc
@@ -93,9 +89,9 @@ noncomputable def diffeomorph_sc
 omit [IsManifold I ∞ E] [IsManifold I' ∞ X] in
 @[simp] theorem coe_diffeomorph_sc
     [PreconnectedSpace E] [Nonempty E]
-    [SimplyConnectedSpace X] [LocPathConnectedSpace X]
+    [SimplyConnectedSpace X] [LocallyPathConnectedSpace X]
     (hf : IsCoveringMap f) (hloc : IsLocalDiffeomorph I I' ∞ f) :
-    ⇑(hf.diffeomorph_sc hloc) = f := rfl
+    ⇑(hf.diffeomorphSc hloc) = f := rfl
 
 end Smooth
 

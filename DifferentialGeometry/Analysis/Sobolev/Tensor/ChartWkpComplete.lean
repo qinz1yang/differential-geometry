@@ -3,7 +3,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -169,6 +168,7 @@ def secCompErr
     secCompRep (I := I) (M := M) r s k hp u
       h_cauchy β Q.1 Q.2 y
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem secCompErr_mem
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -187,6 +187,7 @@ theorem secCompErr_mem
     (secCompRep_mem (I := I) (M := M) r s k hp hp_top u
       h_cauchy β Q.1 Q.2)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem secCompErr_supp
     (r s k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p)
     (u : ℕ → WkpTensor (I := I) (M := M) r s k p hp)
@@ -212,6 +213,7 @@ theorem secCompErr_supp
         h_cauchy β Q.1 Q.2 hs))
   exact hy (by simp only [secCompErr, hleft, hright, sub_zero])
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem secCompErr_tendsto
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
@@ -226,10 +228,11 @@ theorem secCompErr_tendsto
         (secCompErr (I := I) (M := M) r s k hp u h_cauchy n β Q)
         (chartTargetEuclid (I := I) (M := M) β))
       atTop (nhds 0) := by
-  simpa only [secCompErr] using
-    (secCompRep_tendsto (I := I) (M := M) r s k hp hp_top u
-      h_cauchy β Q.1 Q.2)
+  unfold secCompErr
+  exact secCompRep_tendsto (I := I) (M := M) r s k hp hp_top u
+    h_cauchy β Q.1 Q.2
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorLimit_comp
     (r s k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p)
     (u : ℕ → WkpTensor (I := I) (M := M) r s k p hp)
@@ -243,13 +246,13 @@ theorem tensorLimit_comp
         α P.1 P.2 =ᵐ[
       (volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
-      (fun y => ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (fun y => ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ Q : TensorCompIdx (E := E) r s,
           secTransTerm (I := I) (M := M) r s β α P Q
             (secCompRep (I := I) (M := M) r s k hp u
               h_cauchy β Q.1 Q.2) y) := by
   classical
-  let Sf := chartAtlasPOU_finset (I := I) (M := M)
+  let Sf := chartAtlasPOUFinset (I := I) (M := M)
   let F : M → RSTensorSection I M r s := fun β =>
     secModelPull (I := I) (M := M) r s β
       (secModelLimit (I := I) (M := M) r s k hp u h_cauchy β)
@@ -279,7 +282,7 @@ theorem tensorLimit_mem
       (tensorLimitSec (I := I) (M := M) r s k hp u h_cauchy) := by
   classical
   intro α Idx Jdx
-  let Sf := chartAtlasPOU_finset (I := I) (M := M)
+  let Sf := chartAtlasPOUFinset (I := I) (M := M)
   let P : TensorCompIdx (E := E) r s := ⟨Idx, Jdx⟩
   let q : M → TensorCompIdx (E := E) r s → EuclN → ℝ := fun β Q =>
     secTransTerm (I := I) (M := M) r s β α P Q
@@ -313,6 +316,7 @@ theorem tensorLimit_mem
     (tensorLimit_comp (I := I) (M := M) r s k hp u
       h_cauchy α P)).mpr hsum
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorErr_comp
     (r s k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p)
     (u : ℕ → WkpTensor (I := I) (M := M) r s k p hp)
@@ -327,7 +331,7 @@ theorem tensorErr_comp
         α P.1 P.2 =ᵐ[
       (volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
-      (fun y => ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (fun y => ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ Q : TensorCompIdx (E := E) r s,
           secTransTerm (I := I) (M := M) r s β α P Q
             (secCompErr (I := I) (M := M) r s k hp u
@@ -345,18 +349,18 @@ theorem tensorErr_comp
   rw [← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl ?_
   intro Q _
-  simpa only [secCompErr] using
-    (congrFun (secTerm_sub (I := I) (M := M) r s β α P Q
-      (secChartComp (I := I) (M := M) r s (u n).1 β Q.1 Q.2)
-      (secCompRep (I := I) (M := M) r s k hp u
-        h_cauchy β Q.1 Q.2)) y).symm
+  unfold secCompErr
+  exact (congrFun (secTerm_sub (I := I) (M := M) r s β α P Q
+    (secChartComp (I := I) (M := M) r s (u n).1 β Q.1 Q.2)
+    (secCompRep (I := I) (M := M) r s k hp u
+      h_cauchy β Q.1 Q.2)) y).symm
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorNorm_eq_sum
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (S : RSTensorSection I M r s) :
     wkpTensorNorm (I := I) (M := M) k p S =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
           ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
@@ -364,7 +368,7 @@ theorem tensorNorm_eq_sum
               (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   unfold wkpTensorNorm
-  rw [tsum_eq_sum (s := chartAtlasPOU_finset (I := I) (M := M))]
+  rw [tsum_eq_sum (s := chartAtlasPOUFinset (I := I) (M := M))]
   intro α hα
   refine Finset.sum_eq_zero ?_
   intro Idx _
@@ -392,7 +396,7 @@ theorem targetErr_tendsto
         (chartTargetEuclid (I := I) (M := M) α))
       atTop (nhds 0) := by
   classical
-  let Sf := chartAtlasPOU_finset (I := I) (M := M)
+  let Sf := chartAtlasPOUFinset (I := I) (M := M)
   let C : M → TensorCompIdx (E := E) r s → ℝ := fun β Q =>
     (secTermJointK (I := I) (M := M) r s k hp hp_top β α P Q).choose
   let q : ℕ → M → TensorCompIdx (E := E) r s → EuclN → ℝ :=
@@ -475,7 +479,7 @@ theorem targetErr_tendsto
               (chartTargetEuclid (I := I) (M := M) β))
         atTop (nhds 0) := by
     intro β hβ
-    simpa using tendsto_finset_sum Finset.univ
+    simpa using tendsto_finsetSum Finset.univ
       (fun Q _ => h_pair β hβ Q)
   have h_rhs : Tendsto
       (fun n => ∑ β ∈ Sf, ∑ Q : TensorCompIdx (E := E) r s,
@@ -485,10 +489,10 @@ theorem targetErr_tendsto
               h_cauchy n β Q)
             (chartTargetEuclid (I := I) (M := M) β))
       atTop (nhds 0) := by
-    simpa using tendsto_finset_sum Sf h_inner
+    simpa using tendsto_finsetSum Sf h_inner
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le'
     tendsto_const_nhds h_rhs
-    (Filter.Eventually.of_forall (fun _ => zero_le _))
+    (Filter.Eventually.of_forall (fun _ => zero_le))
     (Filter.Eventually.of_forall h_bound)
 
 theorem tensorLimit_tendsto
@@ -505,7 +509,7 @@ theorem tensorLimit_tendsto
           tensorLimitSec (I := I) (M := M) r s k hp u h_cauchy))
       atTop (nhds 0) := by
   classical
-  let Sf := chartAtlasPOU_finset (I := I) (M := M)
+  let Sf := chartAtlasPOUFinset (I := I) (M := M)
   have hcomp : ∀ α ∈ Sf,
       ∀ Idx : Fin r → Fin (Module.finrank ℝ E),
       ∀ Jdx : Fin s → Fin (Module.finrank ℝ E),
@@ -530,7 +534,7 @@ theorem tensorLimit_tendsto
             (chartTargetEuclid (I := I) (M := M) α))
         atTop (nhds 0) := by
     intro α hα Idx
-    simpa using tendsto_finset_sum Finset.univ
+    simpa using tendsto_finsetSum Finset.univ
       (fun Jdx _ => hcomp α hα Idx Jdx)
   have hIdx : ∀ α ∈ Sf,
       Tendsto
@@ -543,7 +547,7 @@ theorem tensorLimit_tendsto
               (chartTargetEuclid (I := I) (M := M) α))
         atTop (nhds 0) := by
     intro α hα
-    simpa using tendsto_finset_sum Finset.univ
+    simpa using tendsto_finsetSum Finset.univ
       (fun Idx _ => hJ α hα Idx)
   have htotal : Tendsto
       (fun n => ∑ α ∈ Sf,
@@ -555,7 +559,7 @@ theorem tensorLimit_tendsto
                   r s k hp u h_cauchy) α Idx Jdx)
               (chartTargetEuclid (I := I) (M := M) α))
       atTop (nhds 0) := by
-    simpa using tendsto_finset_sum Sf hIdx
+    simpa using tendsto_finsetSum Sf hIdx
   simpa only [tensorNorm_eq_sum (I := I) (M := M) r s k hp] using htotal
 
 theorem wkpTensor_limit

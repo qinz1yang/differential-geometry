@@ -5,7 +5,6 @@ section
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -54,18 +53,18 @@ private theorem ricciQuadraticKernelDerivativeCoefficient_sub_eq_six_terms
     (T U : SmoothCcTensor g 0 2) :
     ricciQuadraticKernelDerivativeCoefficient (I := I) (M := M) g gT T -
         ricciQuadraticKernelDerivativeCoefficient (I := I) (M := M) g gU U =
-      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutation_swapZeroOne ricciQuadraticPermutation_cycleZeroThreeOneTwo -
-        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutation_swapZeroOne ricciQuadraticPermutation_cycleZeroThreeOneTwo) +
-      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutation_swapZeroOne ricciQuadraticPermutation_swapBlocks -
-        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutation_swapZeroOne ricciQuadraticPermutation_swapBlocks) +
-      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutation_rotateInputs ricciQuadraticPermutation_cycleZeroThreeTwo -
-        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutation_rotateInputs ricciQuadraticPermutation_cycleZeroThreeTwo) +
-      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutation_cycleZeroOneThreeTwo -
-        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutation_cycleZeroOneThreeTwo) +
-      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutation_cycleZeroOneTwo -
-        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutation_cycleZeroOneTwo) +
-      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutation_rotateInputs ricciQuadraticPermutation_swapZeroTwo -
-        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutation_rotateInputs ricciQuadraticPermutation_swapZeroTwo) := by
+      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationCycleZeroThreeOneTwo -
+        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationCycleZeroThreeOneTwo) +
+      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationSwapBlocks -
+        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationSwapBlocks) +
+      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationCycleZeroThreeTwo -
+        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationCycleZeroThreeTwo) +
+      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneThreeTwo -
+        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneThreeTwo) +
+      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneTwo -
+        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneTwo) +
+      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationSwapZeroTwo -
+        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationSwapZeroTwo) := by
   simp only [ricciQuadraticKernelDerivativeCoefficient]
   module
 
@@ -222,20 +221,20 @@ theorem exists_ricciQuadraticKernelDerivativeCoefficient_pairing_secondOrder_bou
       houtBdd gU U hU hUtie hδ_le hδ0 hδU hδZ
         R A hR hA hU2 hU3
   have hcap4 : ∀ pm : Equiv.Perm (Fin 4),
-      (pm = ricciQuadraticPermutation_cycleZeroThreeOneTwo ∨ pm = ricciQuadraticPermutation_swapBlocks ∨ pm = ricciQuadraticPermutation_cycleZeroThreeTwo ∨
-        pm = ricciQuadraticPermutation_cycleZeroOneThreeTwo ∨ pm = ricciQuadraticPermutation_cycleZeroOneTwo ∨ pm = ricciQuadraticPermutation_swapZeroTwo) →
+      (pm = ricciQuadraticPermutationCycleZeroThreeOneTwo ∨ pm = ricciQuadraticPermutationSwapBlocks ∨ pm = ricciQuadraticPermutationCycleZeroThreeTwo ∨
+        pm = ricciQuadraticPermutationCycleZeroOneThreeTwo ∨ pm = ricciQuadraticPermutationCycleZeroOneTwo ∨ pm = ricciQuadraticPermutationSwapZeroTwo) →
       covariantJetNormSq (I := I) (M := M) g 2
           (permCoeff (I := I) (M := M) g pm) ≤ P ^ 2 := by
     intro pm hpm
     simpa only [hPsq, J] using covariantJetNormSq_ricciQuadraticPermutation_four_le (I := I) (M := M) g pm hpm
   have hcap3 : ∀ pm : Equiv.Perm (Fin 3),
-      (pm = ricciQuadraticPermutation_swapZeroOne ∨ pm = ricciQuadraticPermutation_rotateInputs) →
+      (pm = ricciQuadraticPermutationSwapZeroOne ∨ pm = ricciQuadraticPermutationRotateInputs) →
       covariantJetNormSq (I := I) (M := M) g 2
           (permCoeff (I := I) (M := M) g pm) ≤ P ^ 2 := by
     intro pm hpm
     simpa only [hPsq, J] using covariantJetNormSq_ricciQuadraticPermutation_three_le (I := I) (M := M) g pm hpm
   have hmidB : ∀ pm : Equiv.Perm (Fin 3),
-      (pm = ricciQuadraticPermutation_swapZeroOne ∨ pm = ricciQuadraticPermutation_rotateInputs) →
+      (pm = ricciQuadraticPermutationSwapZeroOne ∨ pm = ricciQuadraticPermutationRotateInputs) →
       covariantJetNormSq (I := I) (M := M) g 2
           (ccOperatorFieldComp (I := I) (M := M) g 3 3 3
             (permCoeff (I := I) (M := M) g pm) IT) ≤ ZB ^ 2 := by
@@ -251,7 +250,7 @@ theorem exists_ricciQuadraticKernelDerivativeCoefficient_pairing_secondOrder_bou
     exact le_add_of_nonneg_right
       (mul_nonneg (by norm_num) (mul_nonneg hBi hR))
   have hmidD : ∀ pm : Equiv.Perm (Fin 3),
-      (pm = ricciQuadraticPermutation_swapZeroOne ∨ pm = ricciQuadraticPermutation_rotateInputs) →
+      (pm = ricciQuadraticPermutationSwapZeroOne ∨ pm = ricciQuadraticPermutationRotateInputs) →
       covariantJetNormSq (I := I) (M := M) g 2
           (ccOperatorFieldComp (I := I) (M := M) g 3 3 3
               (permCoeff (I := I) (M := M) g pm) IT -
@@ -354,9 +353,9 @@ theorem exists_ricciQuadraticKernelDerivativeCoefficient_pairing_secondOrder_bou
           (mul_nonneg hCb hP)
       _ = L R * S := by simp only [L, c1, c2]; ring
   have hblkFin : ∀ (pm : Equiv.Perm (Fin 4))
-      (hpm : pm = ricciQuadraticPermutation_cycleZeroThreeOneTwo ∨ pm = ricciQuadraticPermutation_swapBlocks ∨
-        pm = ricciQuadraticPermutation_cycleZeroThreeTwo ∨ pm = ricciQuadraticPermutation_cycleZeroOneThreeTwo ∨
-        pm = ricciQuadraticPermutation_cycleZeroOneTwo ∨ pm = ricciQuadraticPermutation_swapZeroTwo)
+      (hpm : pm = ricciQuadraticPermutationCycleZeroThreeOneTwo ∨ pm = ricciQuadraticPermutationSwapBlocks ∨
+        pm = ricciQuadraticPermutationCycleZeroThreeTwo ∨ pm = ricciQuadraticPermutationCycleZeroOneThreeTwo ∨
+        pm = ricciQuadraticPermutationCycleZeroOneTwo ∨ pm = ricciQuadraticPermutationSwapZeroTwo)
       (ZT ZU : SmoothCcTensor g 3 3),
       covariantJetNormSq (I := I) (M := M) g 2 ZT ≤ ZB ^ 2 →
       covariantJetNormSq (I := I) (M := M) g 2 (ZT - ZU) ≤ ZD ^ 2 →
@@ -372,47 +371,47 @@ theorem exists_ricciQuadraticKernelDerivativeCoefficient_pairing_secondOrder_bou
           (add_nonneg (mul_nonneg hOD hZB) (mul_nonneg hOU hZD)))
         hlead 2)
   have hx0 : covariantJetNormSq (I := I) (M := M) g 2
-      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutation_swapZeroOne ricciQuadraticPermutation_cycleZeroThreeOneTwo -
-        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutation_swapZeroOne ricciQuadraticPermutation_cycleZeroThreeOneTwo) ≤ Q := by
+      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationCycleZeroThreeOneTwo -
+        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationCycleZeroThreeOneTwo) ≤ Q := by
     simpa only [ricciQuadraticKernelDerivativeNestedTerm, ricciQuadraticKernelDerivativeBlock, IT, IU] using
-      hblkFin ricciQuadraticPermutation_cycleZeroThreeOneTwo (Or.inl rfl) _ _
-        (hmidB ricciQuadraticPermutation_swapZeroOne (Or.inl rfl))
-        (hmidD ricciQuadraticPermutation_swapZeroOne (Or.inl rfl))
+      hblkFin ricciQuadraticPermutationCycleZeroThreeOneTwo (Or.inl rfl) _ _
+        (hmidB ricciQuadraticPermutationSwapZeroOne (Or.inl rfl))
+        (hmidD ricciQuadraticPermutationSwapZeroOne (Or.inl rfl))
   have hx1 : covariantJetNormSq (I := I) (M := M) g 2
-      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutation_swapZeroOne ricciQuadraticPermutation_swapBlocks -
-        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutation_swapZeroOne ricciQuadraticPermutation_swapBlocks) ≤ Q := by
+      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationSwapBlocks -
+        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationSwapBlocks) ≤ Q := by
     simpa only [ricciQuadraticKernelDerivativeNestedTerm, ricciQuadraticKernelDerivativeBlock, IT, IU] using
-      hblkFin ricciQuadraticPermutation_swapBlocks (Or.inr (Or.inl rfl)) _ _
-        (hmidB ricciQuadraticPermutation_swapZeroOne (Or.inl rfl))
-        (hmidD ricciQuadraticPermutation_swapZeroOne (Or.inl rfl))
+      hblkFin ricciQuadraticPermutationSwapBlocks (Or.inr (Or.inl rfl)) _ _
+        (hmidB ricciQuadraticPermutationSwapZeroOne (Or.inl rfl))
+        (hmidD ricciQuadraticPermutationSwapZeroOne (Or.inl rfl))
   have hx2 : covariantJetNormSq (I := I) (M := M) g 2
-      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutation_rotateInputs ricciQuadraticPermutation_cycleZeroThreeTwo -
-        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutation_rotateInputs ricciQuadraticPermutation_cycleZeroThreeTwo) ≤ Q := by
+      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationCycleZeroThreeTwo -
+        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationCycleZeroThreeTwo) ≤ Q := by
     simpa only [ricciQuadraticKernelDerivativeNestedTerm, ricciQuadraticKernelDerivativeBlock, IT, IU] using
-      hblkFin ricciQuadraticPermutation_cycleZeroThreeTwo (Or.inr (Or.inr (Or.inl rfl))) _ _
-        (hmidB ricciQuadraticPermutation_rotateInputs (Or.inr rfl))
-        (hmidD ricciQuadraticPermutation_rotateInputs (Or.inr rfl))
+      hblkFin ricciQuadraticPermutationCycleZeroThreeTwo (Or.inr (Or.inr (Or.inl rfl))) _ _
+        (hmidB ricciQuadraticPermutationRotateInputs (Or.inr rfl))
+        (hmidD ricciQuadraticPermutationRotateInputs (Or.inr rfl))
   have hx3 : covariantJetNormSq (I := I) (M := M) g 2
-      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutation_cycleZeroOneThreeTwo -
-        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutation_cycleZeroOneThreeTwo) ≤ Q := by
+      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneThreeTwo -
+        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneThreeTwo) ≤ Q := by
     simpa only [ricciQuadraticKernelDerivativeBareTerm, ricciQuadraticKernelDerivativeBlock, IT, IU] using
-      hblkFin ricciQuadraticPermutation_cycleZeroOneThreeTwo
+      hblkFin ricciQuadraticPermutationCycleZeroOneThreeTwo
         (Or.inr (Or.inr (Or.inr (Or.inl rfl)))) IT IU hbareB hbareD
   have hx4 : covariantJetNormSq (I := I) (M := M) g 2
-      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutation_cycleZeroOneTwo -
-        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutation_cycleZeroOneTwo) ≤ Q := by
+      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneTwo -
+        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneTwo) ≤ Q := by
     simpa only [ricciQuadraticKernelDerivativeBareTerm, ricciQuadraticKernelDerivativeBlock, IT, IU] using
-      hblkFin ricciQuadraticPermutation_cycleZeroOneTwo
+      hblkFin ricciQuadraticPermutationCycleZeroOneTwo
         (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))
         IT IU hbareB hbareD
   have hx5 : covariantJetNormSq (I := I) (M := M) g 2
-      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutation_rotateInputs ricciQuadraticPermutation_swapZeroTwo -
-        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutation_rotateInputs ricciQuadraticPermutation_swapZeroTwo) ≤ Q := by
+      (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationSwapZeroTwo -
+        ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationSwapZeroTwo) ≤ Q := by
     simpa only [ricciQuadraticKernelDerivativeNestedTerm, ricciQuadraticKernelDerivativeBlock, IT, IU] using
-      hblkFin ricciQuadraticPermutation_swapZeroTwo
+      hblkFin ricciQuadraticPermutationSwapZeroTwo
         (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl))))) _ _
-        (hmidB ricciQuadraticPermutation_rotateInputs (Or.inr rfl))
-        (hmidD ricciQuadraticPermutation_rotateInputs (Or.inr rfl))
+        (hmidB ricciQuadraticPermutationRotateInputs (Or.inr rfl))
+        (hmidD ricciQuadraticPermutationRotateInputs (Or.inr rfl))
   rw [ricciQuadraticKernelDerivativeCoefficient_sub_eq_six_terms (I := I) (M := M) g gT gU T U]
   refine (covariantJetNormSq_sum_six_le (I := I) (M := M) g 2 _ _ _ _ _ _
     hx0 hx1 hx2 hx3 hx4 hx5).trans ?_
@@ -499,6 +498,7 @@ theorem exists_ricciCometricFourTraceCastG0_pairing_secondOrder_bound
       simp only [L]
       ring
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 private theorem ricciConnectionDifferenceQuadraticDerivativeCoefficient_sub_eq_two_terms
@@ -705,7 +705,6 @@ section
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -1217,7 +1216,6 @@ section
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -1371,7 +1369,6 @@ section
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -1484,7 +1481,7 @@ theorem exists_lowOrderFirstDerivativeCoefficient_pairing_secondOrder_bound
         ccTensorBilin (I := I) g P x v u := by
     intro x u v
     simp only [P, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hT x u v
   have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -1492,7 +1489,7 @@ theorem exists_lowOrderFirstDerivativeCoefficient_pairing_secondOrder_bound
         ccTensorBilin (I := I) g Q x v u := by
     intro x u v
     simp only [Q, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hU x u v
   have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -1766,7 +1763,6 @@ section
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -1841,6 +1837,7 @@ theorem exists_lowOrderFirstDerivativePathIntegral_secondOrder_bound
           R A hR hA hT2 hT3 hTn hs)
   simpa only [lowOrderFirstDerivativePathIntegral, covariantJetNormSq, Nat.reduceAdd] using hpath
 
+omit [SigmaCompactSpace M] in
 theorem lowerScalePathIntegral_apply_decomposition
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -1872,7 +1869,9 @@ theorem lowerScalePathIntegral_apply_decomposition
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hjΨ : JointlySmoothCcTensorFamily (I := I) g 2 2 S Ψ := by
-    simpa only [JointlySmoothCcTensorFamily, S, Ψ] using
+    change linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 Ψ
+      (δ := δ) (δ' := δ)
+    simpa only [S, Ψ] using
       RicciDeTurckLowOrder.selfLow_joint (I := I) (M := M)
         g g T hδ hδZ
   have hjL : JointlySmoothCcTensorFamily (I := I) g 2 2 S L := by
@@ -1948,6 +1947,7 @@ theorem lowerScalePathIntegral_apply_decomposition
   rw [hone, unitModel_add (I := I) (M := M) g,
     iteratedCovGrad_succ, iteratedCovGrad_zero]
 
+omit [SigmaCompactSpace M] in
 theorem lowerScalePathIntegral_apply_affine_decomposition
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -1981,7 +1981,9 @@ theorem lowerScalePathIntegral_apply_affine_decomposition
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hjΨ : JointlySmoothCcTensorFamily (I := I) g 2 2 S Ψ := by
-    simpa only [JointlySmoothCcTensorFamily, S, Ψ] using
+    change linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 Ψ
+      (δ := δ) (δ' := δ)
+    simpa only [S, Ψ] using
       RicciDeTurckLowOrder.selfLow_joint (I := I) (M := M)
         g g T hδ hδZ
   have hjL : JointlySmoothCcTensorFamily (I := I) g 2 2 S L := by

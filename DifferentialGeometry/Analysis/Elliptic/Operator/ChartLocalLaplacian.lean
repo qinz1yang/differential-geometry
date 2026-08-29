@@ -238,7 +238,7 @@ def negDensityLaplacianPullback [I.Boundaryless]
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (α : M) : EuclN → ℝ :=
   fun y => (chartTargetEuclid (I := I) (M := M) α).indicator
     (fun z => -(densityOnEuclid (I := I) g α z) *
-      (Δ_g (I := I) g ⟨_, hf⟩) ((extChartAt I α).symm
+      (ΔG (I := I) g ⟨_, hf⟩) ((extChartAt I α).symm
         ((toEuclidean (E := E)).symm z))) y
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -247,7 +247,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     negDensityLaplacianPullback (I := I) g hf α y =
       -(densityOnEuclid (I := I) g α y) *
-        (Δ_g (I := I) g ⟨_, hf⟩) ((extChartAt I α).symm
+        (ΔG (I := I) g ⟨_, hf⟩) ((extChartAt I α).symm
           ((toEuclidean (E := E)).symm y)) :=
   Set.indicator_of_mem hy _
 

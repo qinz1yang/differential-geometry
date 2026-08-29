@@ -123,7 +123,7 @@ private theorem inner_fiber_le
           fiberLpFun g rC sC C x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   let mu := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure mu := by
+  let _ : IsFiniteMeasure mu := by
     dsimp only [mu]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -177,6 +177,7 @@ private theorem inner_fiber_le
     _ = K * ∫ x, fiberLpFun g rA sA A x * fiberLpFun g r s B x *
           fiberLpFun g rC sC C x ∂mu := by rw [integral_const_mul]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iterated_covgrad_comp_l2_sq
     (g : SmoothRiemannianMetric I M) (r s l m : ℕ)
@@ -194,6 +195,7 @@ private theorem iterated_covgrad_comp_l2_sq
     riemannianFiberNormSq_iteratedCovGrad_comp
       (I := I) (M := M) g r s l m S x
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem covgrad_jet_three_le_four
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -220,6 +222,7 @@ private theorem covgrad_jet_three_le_four
         exact iterated_covgrad_comp_l2_sq (I := I) (M := M) g r s 1 2 S]
   norm_num
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iter_two_h1_le_jet_four
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -296,7 +299,6 @@ private theorem inner_fiber_linf22_le
         rA sA rC sC A C K hQ
     _ ≤ _ := mul_le_mul_of_nonneg_left hholder hK
 
-set_option backward.isDefEq.respectTransparency false in
 theorem mixed_derivative_action_pairing_h4_uniform_bound
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)
@@ -465,12 +467,19 @@ theorem mixed_derivative_action_pairing_h4_uniform_bound
     rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
       ccTensorBilin_zero_weight]
     ring
+  have hTrpure : Tr = pureTrace (I := I) (M := M) g g 2 := by
+    apply SmoothCcTensor.ext
+    apply ContMDiffSection.ext
+    intro x
+    rw [pureTrace_toSection,
+      DifferentialGeometry.Analysis.Spectral.DeTurck.cometricDoubleTraceField_toSection]
   have hTr : ∀ p : M,
       riemannianFiberNormSq (I := I) (M := M) g 4 2 p
         (Tr.toSection p) ≤ Cp ^ 2 := by
     have hp := hpure g hEq hjet (0 : SmoothCcTensor g 0 2) g
       hdelta_le hdelta0 hdeltaZ hzero2 hzeroTie
-    simpa only [Tr] using hp.1
+    rw [hTrpure]
+    exact hp.1
   have hA20H1sq :
       ‖(⟨A20⟩ : SmoothCcTensorH1 g 4 4)‖ ^ 2 ≤ (CB * y) ^ 2 := by
     have hshift := iter_two_h1_le_jet_four
@@ -486,8 +495,11 @@ theorem mixed_derivative_action_pairing_h4_uniform_bound
         C6B * (CB * y) := by
     calc
       _ ≤ C6B * ‖(⟨A20⟩ : SmoothCcTensorH1 g 4 4)‖ := by
-        simpa only [fiberLpFun] using h6B g hEq hjet1
-          (⟨A20⟩ : SmoothCcTensorH1 g 4 4)
+        change lpNorm (fun x => Real.sqrt
+          (riemannianFiberNormSq (I := I) (M := M) g 4 4 x (A20.toSection x))) 6
+            (riemannianVolumeMeasure (I := I) (M := M) g) ≤
+          C6B * ‖(⟨A20⟩ : SmoothCcTensorH1 g 4 4)‖
+        exact h6B g hEq hjet1 (⟨A20⟩ : SmoothCcTensorH1 g 4 4)
       _ ≤ C6B * (CB * y) :=
         mul_le_mul_of_nonneg_left hA20H1 hC6B
   have hHTH1root :
@@ -519,8 +531,11 @@ theorem mixed_derivative_action_pairing_h4_uniform_bound
         C6T * (C3 * y) := by
     calc
       _ ≤ C6T * ‖(⟨HT⟩ : SmoothCcTensorH1 g 0 4)‖ := by
-        simpa only [fiberLpFun] using h6T g hEq hjet1
-          (⟨HT⟩ : SmoothCcTensorH1 g 0 4)
+        change lpNorm (fun x => Real.sqrt
+          (riemannianFiberNormSq (I := I) (M := M) g 0 4 x (HT.toSection x))) 6
+            (riemannianVolumeMeasure (I := I) (M := M) g) ≤
+          C6T * ‖(⟨HT⟩ : SmoothCcTensorH1 g 0 4)‖
+        exact h6T g hEq hjet1 (⟨HT⟩ : SmoothCcTensorH1 g 0 4)
       _ ≤ C6T * (C3 * y) :=
         mul_le_mul_of_nonneg_left hHTH1 hC6T
   have hHTL3 :

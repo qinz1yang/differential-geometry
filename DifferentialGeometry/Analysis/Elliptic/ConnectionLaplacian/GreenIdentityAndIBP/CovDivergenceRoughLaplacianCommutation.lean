@@ -18,7 +18,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -40,6 +39,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M]
 
+omit [SigmaCompactSpace M] in
 theorem covGrad_operatorFieldApplication_cometricDoubleTrace_eq (g₀ : SmoothRiemannianMetric I M) (p : ℕ)
     (W : SmoothCcTensor g₀ 0 (p + 2)) :
     covGrad (I := I) (M := M) g₀ 0 p
@@ -53,6 +53,7 @@ theorem covGrad_operatorFieldApplication_cometricDoubleTrace_eq (g₀ : SmoothRi
   rw [cometricDoubleTraceField_covGrad_eq_zero (I := I) g₀ p]
   exact add_eq_right.mpr (operatorFieldApplication_zero_left (I := I) (M := M) g₀ (p + 2) (p + 1) W)
 
+omit [SigmaCompactSpace M] in
 theorem covGrad_covGrad_operatorFieldApplication_cometricDoubleTrace_eq (g₀ : SmoothRiemannianMetric I M) (p : ℕ)
     (W : SmoothCcTensor g₀ 0 (p + 2)) :
     covGrad (I := I) (M := M) g₀ 0 (p + 1)
@@ -78,7 +79,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 private lemma unitModel_eq_toModel_unitEval_gen
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (W : SmoothCcTensor g₀ 0 s) (x : M)
-    (v : Fin s → TangentSpace I x) :
+    (v : Fin s → E) :
     unitModel (I := I) (M := M) g₀ s W x v =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x)
@@ -88,14 +89,14 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpa
 omit [I.Boundaryless] in
 private lemma unitModel_operatorFieldApplication_cometricDoubleTrace_eq_dualTrace
     (g₀ : SmoothRiemannianMetric I M) (p : ℕ) (W : SmoothCcTensor g₀ 0 (p + 2))
-    (x : M) (v : Fin p → TangentSpace I x) :
+    (x : M) (v : Fin p → E) :
     unitModel (I := I) (M := M) g₀ p
         (operatorFieldApply (I := I) (M := M) g₀ (p + 2) p (cometricDoubleTraceField (I := I) g₀ p)
           W) x v =
       ∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ (p + 2) W x
           (Fin.cons (cometricLmodel (I := I) g₀ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
   rw [unitModel, operatorFieldApplication_toSection]
@@ -111,9 +112,10 @@ private lemma unitModel_operatorFieldApplication_cometricDoubleTrace_eq_dualTrac
     modelDoubleTrace_apply (E := E) p (cometricLmodel (I := I) g₀ x)]
   rfl
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma secondCovDeriv_frame_unitEval_eq_iteratedCovGrad_gen
     (g₀ : SmoothRiemannianMetric I M) (t : ℕ) (W : SmoothCcTensor g₀ 0 t) (x : M)
-    (v : Fin t → TangentSpace I x) (i : Fin (Module.finrank ℝ E)) :
+    (v : Fin t → E) (i : Fin (Module.finrank ℝ E)) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace t I x from
           tensorSecondCovDeriv (I := I) g₀ 0 t
@@ -121,8 +123,12 @@ private lemma secondCovDeriv_frame_unitEval_eq_iteratedCovGrad_gen
             (fun z : M => W.toSection z) x)
           (unitZeroSec (I := I) (M := M) x)) v =
       unitModel (I := I) (M := M) g₀ (t + 2) (iteratedCovGrad (I := I) g₀ 0 t 2 W) x
-        (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x))
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x)) v)) := by
+        (Fin.cons
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x i x))
+          (Fin.cons
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x i x)) v)) := by
   have hbridge := tensorSecondCovDeriv_eq_covGrad_succ_twoSlotEval_genVal
     (I := I) (M := M) g₀ t W
     (X := smoothOrthoFrame (I := I) g₀ x i)
@@ -130,14 +136,19 @@ private lemma secondCovDeriv_frame_unitEval_eq_iteratedCovGrad_gen
     (smoothOrthoFrame_smooth (I := I) g₀ x i) (smoothOrthoFrame_smooth (I := I) g₀ x i) x v
   exact hbridge.symm
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma unitModel_rawConnLap_eq_frame_sum_gen
     (g₀ : SmoothRiemannianMetric I M) (t : ℕ) (W : SmoothCcTensor g₀ 0 t) (x : M)
-    (v : Fin t → TangentSpace I x) :
+    (v : Fin t → E) :
     unitModel (I := I) (M := M) g₀ t (rawTensorConnLapSmooth (I := I) g₀ 0 t W) x v =
       ∑ i : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ (t + 2) (iteratedCovGrad (I := I) g₀ 0 t 2 W) x
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x))
-            (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x)) v)) := by
+          (Fin.cons
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x i x))
+            (Fin.cons
+              (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x i x)) v)) := by
   classical
   rw [unitModel_eq_toModel_unitEval_gen]
   have hsec : (rawTensorConnLapSmooth (I := I) g₀ 0 t W).toSection x =
@@ -159,14 +170,15 @@ lemma unitModel_rawConnLap_eq_frame_sum_gen
             (smoothOrthoFrame (I := I) g₀ x i) (smoothOrthoFrame (I := I) g₀ x i)
             (fun z : M => W.toSection z) x)
           (unitZeroSec (I := I) (M := M) x) from by
-    rw [hsec, ContinuousLinearMap.sum_apply]]
+    rw [hsec, sum_apply]]
   rw [← Tensor0SSpace.toModelL_apply (s := t) (x := x),
     map_sum (Tensor0SSpace.toModelL t x)]
-  simp only [ContinuousMultilinearMap.sum_apply]
+  simp only [sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [Tensor0SSpace.toModelL_apply]
   exact secondCovDeriv_frame_unitEval_eq_iteratedCovGrad_gen (I := I) g₀ t W x v i
 
+omit [SigmaCompactSpace M] in
 theorem rawTensorConnLapSmooth_eq_operatorFieldApplication_cometricDoubleTrace_of_rank
     (g₀ : SmoothRiemannianMetric I M) (t : ℕ) (W : SmoothCcTensor g₀ 0 t) :
     rawTensorConnLapSmooth (I := I) g₀ 0 t W =
@@ -190,16 +202,17 @@ private lemma toModel_contract_covariant_eval (s : ℕ) (b : M) (v : TangentSpac
     (A : TensorRSSpace 0 (s + 1) I b) (D : Tensor0SSpace 0 I b) (m : Fin s → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace s I b from
-          Tensor0SBundle.contract_covariant 0 s b v A) D) m =
+          Tensor0SBundle.contractCovariant 0 s b v A) D) m =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (s + 1) I b from A) D)
-        (Fin.cons ((v : TangentSpace I b) : E) m) := rfl
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b v) m) := rfl
 
 private lemma vecTail_cons_eq {α : Type*} {n : ℕ} (a : α) (w : Fin n → α) :
     Matrix.vecTail (Fin.cons a w) = w := by
   funext j
   simp [Matrix.vecTail, Fin.cons_succ]
 
+omit [SigmaCompactSpace M] in
 theorem covDivergence_eq_cometricDoubleTrace_apply_covGrad
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g₀ 0 (s + 1)) :
     covDivergence (I := I) (M := M) g₀ s V =
@@ -213,13 +226,17 @@ theorem covDivergence_eq_cometricDoubleTrace_apply_covGrad
   rw [show ∑ k : Fin (Module.finrank ℝ E),
       unitModel (I := I) (M := M) g₀ (s + 2) (covGrad (I := I) (M := M) g₀ 0 (s + 1) V) x
         (Fin.cons (cometricLmodel (I := I) g₀ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           (Fin.cons ((Module.finBasis ℝ E) k) v)) =
       ∑ i : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ (s + 2) (covGrad (I := I) (M := M) g₀ 0 (s + 1) V) x
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E)
-            (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E) v)) from
+          (Fin.cons
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x i x))
+            (Fin.cons
+              (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x i x)) v)) from
     cometric_dualTrace_eq_orthoFrame_diag
       (I := I) g₀ (s := s) x
       (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) x)
@@ -240,10 +257,10 @@ theorem covDivergence_eq_cometricDoubleTrace_apply_covGrad
           covDivergenceBilinear (I := I) (M := M) g₀ s V x
             (smoothOrthoFrame (I := I) g₀ x i x) (smoothOrthoFrame (I := I) g₀ x i x))
           (unitZeroSec (I := I) (M := M) x) from by
-    rw [hsec, ContinuousLinearMap.sum_apply]]
+    rw [hsec, sum_apply]]
   rw [← Tensor0SSpace.toModelL_apply (s := s) (x := x),
     map_sum (Tensor0SSpace.toModelL s x)]
-  simp only [ContinuousMultilinearMap.sum_apply]
+  simp only [sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [Tensor0SSpace.toModelL_apply]
   have hSmooth_at : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
@@ -259,19 +276,46 @@ theorem covDivergence_eq_cometricDoubleTrace_apply_covGrad
     (unitZeroSec (I := I) (M := M) x) v]
   rw [show unitModel (I := I) (M := M) g₀ (s + 2)
       (covGrad (I := I) (M := M) g₀ 0 (s + 1) V) x
-      (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E)
-        (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E) v)) =
+      (Fin.cons
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (smoothOrthoFrame (I := I) g₀ x i x))
+        (Fin.cons
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x i x)) v)) =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 2) I x from
           (covGrad (I := I) (M := M) g₀ 0 (s + 1) V).toSection x)
           (unitZeroSec (I := I) (M := M) x))
-        (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E)
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E) v)) from rfl]
-  rw [covGrad_apply_unit_eval_genVal (I := I) (M := M) g₀ (s + 1) V x
-    (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E)
-      (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E) v))]
-  simp only [vecTail_cons_eq, Fin.cons_zero]
-  rfl
+        (Fin.cons
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g₀ x i x))
+          (Fin.cons
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x i x)) v)) from rfl]
+  rw [Tensor0SSpace.toModel_apply_model_vector,
+    Tensor0SSpace.toModel_apply_model_vector]
+  change Tensor0SSpace.eval
+      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+        (TensorRSNabla.tensorRSCovariantDerivative I M 0 (s + 1)
+          (LeviCivita (I := I) g₀)).toFun (fun z : M => V.toSection z) x
+            (smoothOrthoFrame (I := I) g₀ x i x))
+        (unitZeroSec (I := I) (M := M) x))
+      (Fin.cons (smoothOrthoFrame (I := I) g₀ x i x)
+        (fun j => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v j))) =
+    Tensor0SSpace.eval
+      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 2) I x from
+        (covGrad (I := I) (M := M) g₀ 0 (s + 1) V).toSection x)
+        (unitZeroSec (I := I) (M := M) x))
+      (Fin.cons (smoothOrthoFrame (I := I) g₀ x i x)
+        (Fin.cons (smoothOrthoFrame (I := I) g₀ x i x)
+          (fun j => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v j))))
+  have hcov := covGrad_apply_unit_eval_genVal (I := I) (M := M) g₀ (s + 1) V x
+    (Fin.cons (smoothOrthoFrame (I := I) g₀ x i x)
+      (Fin.cons (smoothOrthoFrame (I := I) g₀ x i x)
+        (fun j => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v j))))
+  rw [tensorCovDerivAt_def] at hcov
+  simpa only [ContinuousLinearEquiv.symm_apply_apply, vecTail_cons_eq,
+    Fin.cons_zero] using hcov.symm
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
 private theorem l2Inner_sub_left_cc (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -405,20 +449,20 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpa
 omit [I.Boundaryless] in
 private lemma unitModel_operatorFieldApplication_slotExtend_slotExtend_cometric
     (g₀ : SmoothRiemannianMetric I M) (t : ℕ) (U : SmoothCcTensor g₀ 0 (t + 4))
-    (x : M) (a b : E) (v : Fin t → TangentSpace I x) :
+    (x : M) (a b : E) (v : Fin t → E) :
     unitModel (I := I) (M := M) g₀ (t + 2)
         (operatorFieldApply (I := I) (M := M) g₀ (t + 4) (t + 2)
           (slotExtend (I := I) (M := M) g₀ (t + 2 + 1) (t + 1)
             (slotExtend (I := I) (M := M) g₀ (t + 2) t (cometricDoubleTraceField (I := I) g₀ t)))
           U) x
-        (Fin.cons a (Fin.cons b (fun j => (v j : E)))) =
+        (Fin.cons a (Fin.cons b v)) =
       ∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ (t + 4) U x
           (Fin.cons a (Fin.cons b
-            (Fin.cons ((cometricLmodel (I := I) g₀ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                  ((Module.finBasis ℝ E).cDualBasis k)) : TangentSpace I x) : E)
-              (Fin.cons (((Module.finBasis ℝ E) k : E)) (fun j => (v j : E)))))) := by
+            (Fin.cons (cometricLmodel (I := I) g₀ x
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
+                  ((Module.finBasis ℝ E).cDualBasis k)))
+              (Fin.cons ((Module.finBasis ℝ E) k) v)))) := by
   rw [unitModel, operatorFieldApplication_toSection]
   rw [show ((show Tensor0SSpace (t + 4) I x →L[ℝ] Tensor0SSpace (t + 2) I x from
         (slotExtend (I := I) (M := M) g₀ (t + 2 + 1) (t + 1)
@@ -437,10 +481,11 @@ private lemma unitModel_operatorFieldApplication_slotExtend_slotExtend_cometric
   rw [cometricDoubleTraceField_toSection, cometricDoubleTraceFib_toModel,
     modelDoubleTrace_apply (E := E) t (cometricLmodel (I := I) g₀ x)]
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)]
-  rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)]
+  rw [TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)]
+  rw [TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)]
   rfl
 
+omit [SigmaCompactSpace M] in
 theorem iteratedCovGrad_two_operatorFieldApplication_cometricDoubleTrace_eq
     (g₀ : SmoothRiemannianMetric I M) (p : ℕ) (W : SmoothCcTensor g₀ 0 (p + 2)) :
     iteratedCovGrad (I := I) g₀ 0 p 2
@@ -452,6 +497,7 @@ theorem iteratedCovGrad_two_operatorFieldApplication_cometricDoubleTrace_eq
         (iteratedCovGrad (I := I) g₀ 0 (p + 2) 2 W) :=
   covGrad_covGrad_operatorFieldApplication_cometricDoubleTrace_eq (I := I) (M := M) g₀ p W
 
+omit [SigmaCompactSpace M] in
 theorem rawTensorConnLapSmooth_cometricDoubleTrace_apply_comm
     (g₀ : SmoothRiemannianMetric I M) (t : ℕ) (W : SmoothCcTensor g₀ 0 (t + 2)) :
     rawTensorConnLapSmooth (I := I) g₀ 0 t
@@ -472,49 +518,64 @@ theorem rawTensorConnLapSmooth_cometricDoubleTrace_apply_comm
           (iteratedCovGrad (I := I) g₀ 0 t 2
             (operatorFieldApply (I := I) (M := M) g₀ (t + 2) t
               (cometricDoubleTraceField (I := I) g₀ t) W)) x
-          (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x))
-            (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x)) v)) =
+          (Fin.cons
+            (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              (smoothOrthoFrame (I := I) g₀ x i x))
+            (Fin.cons
+              (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x i x)) v)) =
         ∑ k : Fin (Module.finrank ℝ E),
           unitModel (I := I) (M := M) g₀ (t + 4)
             (iteratedCovGrad (I := I) g₀ 0 (t + 2) 2 W) x
-            (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E)
-              (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E)
-                (Fin.cons ((cometricLmodel (I := I) g₀ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
-                      ((Module.finBasis ℝ E).cDualBasis k)) : TangentSpace I x) : E)
-                  (Fin.cons (((Module.finBasis ℝ E) k : E)) (fun j => (v j : E)))))) := by
+            (Fin.cons
+              (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x i x))
+              (Fin.cons
+                (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (smoothOrthoFrame (I := I) g₀ x i x))
+                (Fin.cons (cometricLmodel (I := I) g₀ x
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
+                      ((Module.finBasis ℝ E).cDualBasis k)))
+                  (Fin.cons ((Module.finBasis ℝ E) k) v)))) := by
     intro i
     rw [iteratedCovGrad_two_operatorFieldApplication_cometricDoubleTrace_eq (I := I) (M := M) g₀ t W]
     exact unitModel_operatorFieldApplication_slotExtend_slotExtend_cometric (I := I) (M := M) g₀ t
       (iteratedCovGrad (I := I) g₀ 0 (t + 2) 2 W) x
-      ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E)
-      ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x) : E) v
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (smoothOrthoFrame (I := I) g₀ x i x))
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x
+        (smoothOrthoFrame (I := I) g₀ x i x)) v
   have hrhs : ∀ k : Fin (Module.finrank ℝ E),
       unitModel (I := I) (M := M) g₀ (t + 2)
           (rawTensorConnLapSmooth (I := I) g₀ 0 (t + 2) W) x
           (Fin.cons (cometricLmodel (I := I) g₀ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) =
         ∑ i : Fin (Module.finrank ℝ E),
           unitModel (I := I) (M := M) g₀ (t + 4)
             (iteratedCovGrad (I := I) g₀ 0 (t + 2) 2 W) x
-            (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x))
-              (Fin.cons ((smoothOrthoFrame (I := I) g₀ x i x : TangentSpace I x))
+            (Fin.cons
+              (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                (smoothOrthoFrame (I := I) g₀ x i x))
+              (Fin.cons
+                (tangentSpaceModelContinuousLinearEquiv (I := I) x
+                  (smoothOrthoFrame (I := I) g₀ x i x))
                 (Fin.cons (cometricLmodel (I := I) g₀ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)))
                   (Fin.cons ((Module.finBasis ℝ E) k) v)))) := by
     intro k
     exact unitModel_rawConnLap_eq_frame_sum_gen (I := I) g₀ (t + 2) W x
       (Fin.cons (cometricLmodel (I := I) g₀ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))
         (Fin.cons ((Module.finBasis ℝ E) k) v))
   rw [Finset.sum_congr rfl (fun i _ => hlhs i), Finset.sum_congr rfl (fun k _ => hrhs k)]
   rw [Finset.sum_comm]
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 private theorem operatorFieldApplication_sub_right_cc (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : SmoothCcTensor g r s) (A B : SmoothCcTensor g 0 r) :
     operatorFieldApply (I := I) (M := M) g r s Φ (A - B) =
@@ -527,6 +588,7 @@ private theorem operatorFieldApplication_sub_right_cc (g : SmoothRiemannianMetri
     operatorFieldApplication_smul_right (I := I) (M := M) g r s (-1 : ℝ) Φ B,
     neg_one_smul, ← sub_eq_add_neg]
 
+omit [SigmaCompactSpace M] in
 theorem rawConnLap_covDivergence_commutator_eq_operatorFieldApplication_pointwiseTensorCurv
     (g₀ : SmoothRiemannianMetric I M) (s : ℕ) (Z : SmoothCcTensor g₀ 0 (s + 1)) :
     rawTensorConnLapSmooth (I := I) g₀ 0 s (covDivergence (I := I) (M := M) g₀ s Z) -
@@ -552,6 +614,7 @@ theorem rawConnLap_covDivergence_commutator_eq_operatorFieldApplication_pointwis
   rw [← operatorFieldApplication_sub_right_cc (I := I) (M := M) g₀ (s + 2) s (cometricDoubleTraceField (I := I) g₀ s)]
   rfl
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem norm_iteratedCovGrad_comp_cc (g : SmoothRiemannianMetric I M) (s j i : ℕ)
@@ -655,7 +718,7 @@ theorem exists_iteratedCovGrad_rawConnLap_covDivergence_commutator_l2_le
 
 end CurvatureCommutatorL2
 
-set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 theorem covDiv_operatorFieldApply (g₀ : SmoothRiemannianMetric I M)
     (Φ : SmoothCcTensor g₀ 1 1) (W : SmoothCcTensor g₀ 0 1) :
     covDivergence (I := I) (M := M) g₀ 0

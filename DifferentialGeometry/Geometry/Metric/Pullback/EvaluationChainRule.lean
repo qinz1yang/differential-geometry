@@ -29,7 +29,7 @@ theorem trilinear_eval_hasDerivWithinAt
       ((B' (a t) (b t) + B t a' (b t)) + B t (a t) b') S t := by
   have step1 := hB.clm_apply ha
   have step2 := step1.clm_apply hb
-  convert step2 using 1
+  simpa only [add_apply] using step2
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
@@ -41,7 +41,7 @@ theorem trilinear_eval_hasDerivAt
       ((B' (a t) (b t) + B t a' (b t)) + B t (a t) b') t := by
   have step1 := hB.clm_apply ha
   have step2 := step1.clm_apply hb
-  convert step2 using 1
+  simpa only [add_apply] using step2
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in

@@ -62,17 +62,10 @@ theorem metricTrace_tensor0S_curry_apply_cons
     (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 1) x)
     (X : TangentSpace I x) (tail : Fin s -> TangentSpace I x) :
-    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A X) tail =
+    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A X) tail =
       A (Fin.cons X tail) := by
-  change
-    (((continuousMultilinearCurryLeftEquiv Real
-        (fun _ : Fin (s + 1) => E) Real)
-        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
-        X)
-        tail) =
-      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
-        (Fin.cons X tail)
-  rw [continuousMultilinearCurryLeftEquiv_apply]
+  exact Tensor0SBundle.tensor0S_curry_apply_cons
+    (I := I) (M := M) s A X tail
 
 omit [FiniteDimensional ℝ E] in
 theorem metricTrace_tensor0S_update_zero {s : ℕ} {x : M}
@@ -143,7 +136,7 @@ private theorem trace04Event
       fun y : M =>
         ∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
-            inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+            inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
                 (extChartAt I x₀ y) *
               A y
                 (fun q : Fin 4 =>
@@ -152,10 +145,10 @@ private theorem trace04Event
   filter_upwards
     [(coordinateFrameSet_open (I := I) x₀).mem_nhds
       (coordinateFrameAt_mem (I := I) x₀)] with y hy
-  let basis := coordinateFrameAt_basis (I := I) x₀ hy
+  let basis := coordinateFrameAtBasis (I := I) x₀ hy
   let gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun i j =>
-      inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+      inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
         (extChartAt I x₀ y)
   have htrace :=
     metricTraceFirstTwo0STensor_apply (I := I) g
@@ -187,7 +180,7 @@ private theorem trace04Event
     _ =
       ∑ i : CoordinateIdx (𝕜 := Real) E,
         ∑ j : CoordinateIdx (𝕜 := Real) E,
-          inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+          inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
               (extChartAt I x₀ y) *
             A y
               (fun q : Fin 4 =>
@@ -195,7 +188,7 @@ private theorem trace04Event
         refine Finset.sum_congr rfl fun i _ => ?_
         refine Finset.sum_congr rfl fun j _ => ?_
         congr 1
-        rw [ContinuousMultilinearMap.domDomCongr_apply]
+        rw [Tensor0SSpace.domDomCongr_apply]
         simpa [basis, coordinateFrameAt_basis_apply] using
           congrArg (fun slots => A y slots)
             (trace04Slots_apply (I := I) (x₀ := x₀) (y := y) i j tail)
@@ -217,14 +210,14 @@ private theorem trace04Coeff
         (fun y : M =>
           ∑ i : CoordinateIdx (𝕜 := Real) E,
             ∑ j : CoordinateIdx (𝕜 := Real) E,
-              inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+              inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
                   (extChartAt I x₀ y) *
                 A y
                   (fun q : Fin 4 =>
                     coordinateFrameAt (I := I) x₀ (trace04Slots i j tail q) y))
         x₀ := by
     refine ContMDiffAt.sum fun i _ => ContMDiffAt.sum fun j _ => ?_
-    haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+    let _ : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
       change IsManifold I ∞ M
       infer_instance
     exact (gInvComp_contMDiffAt (I := I) g x₀ i j).mul
@@ -234,14 +227,13 @@ private theorem trace04Coeff
   exact hRhs.congr_of_eventuallyEq
     (trace04Event (I := I) g A x₀ tail)
 
-set_option backward.isDefEq.respectTransparency false in
 def trace04Field
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 := by
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 2
   let F : (p : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 p :=
@@ -270,7 +262,8 @@ def trace04Field
     metricTraceFirstTwo0STensor (I := I) g
       ((A y).domDomCongr trace04Perm)
       (fun q : Fin 2 => coordinateFrameAt (I := I) x₀ (σ q) y)
-  change (F y).compContinuousLinearMap
+  change (tensor0SSpaceFiberContinuousLinearEquiv
+      (I := I) (M := M) 2 y (F y)).compContinuousLinearMap
       (fun _ : Fin 2 =>
         (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real y)
       (fun a : Fin 2 => b (σ a)) =
@@ -278,6 +271,9 @@ def trace04Field
       ((A y).domDomCongr trace04Perm)
       (fun q : Fin 2 => coordinateFrameAt (I := I) x₀ (σ q) y)
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
+  change F y (fun q : Fin 2 =>
+    (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real y
+      (b (σ q))) = _
   congr
   funext q
   change
@@ -285,9 +281,13 @@ def trace04Field
         (b (σ q)) =
       coordinateFrameAt (I := I) x₀ (σ q) y
   change e.symmL Real y (b (σ q)) = e.localFrame b (σ q) y
+  have hye : y ∈ e.baseSet := by
+    simpa [e, coordinateFrameSet] using hy
   rw [Bundle.Trivialization.localFrame_apply_of_mem_baseSet
-    (e := e) (b := b) (i := σ q) hy]
-  rfl
+    (e := e) (b := b) (i := σ q) hye]
+  change e.symmL Real y (b (σ q)) =
+    (e.linearEquivAt Real y hye).symm (b (σ q))
+  rw [e.symmL_apply hye, e.linearEquivAt_symm_apply]
 
 @[simp] theorem trace04Field_apply
     (g : SmoothRiemannianMetric I M)

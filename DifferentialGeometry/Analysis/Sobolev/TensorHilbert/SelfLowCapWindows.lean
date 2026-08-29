@@ -6,7 +6,6 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RicciConnectionD
 noncomputable section
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -133,7 +132,9 @@ theorem lieCorrectionZeroMixedConnectionCap (g₀ g_bg : SmoothRiemannianMetric 
       (P.toSection y) ≤ Real.sqrt Λ ^ 2 := by
     intro y
     rw [Real.sq_sqrt hΛ0]
-    simpa using hP0 y
+    have hy := hP0 y
+    simpa only [covariantJetFiberNormSqGrid, Nat.zero_add,
+      iteratedCovGrad_zero] using hy
   have htrace : ∀ (p : ℕ) (C : ℕ → ℝ), (∀ i, 0 ≤ C i) →
       (∀ (σ : Equiv.Perm (Fin (p + 2))) (i : ℕ) (x : M),
         riemannianFiberNormSq (I := I) (M := M) g₀ (p + 2) (p + i) x
@@ -253,7 +254,17 @@ theorem aaKerSplit (g₀ g₁ : SmoothRiemannianMetric I M) :
           (aaCore (I := I) (M := M) g₀ g₁ aaP1302) innerCoreInPerm10 +
         aaCore (I := I) (M := M) g₀ g₁ aaP1203 +
         reindexCoeffGen (I := I) (M := M) g₀ 2 4
-          (aaCoreP (I := I) (M := M) g₀ g₁ aaP2103 aaP120) innerCoreInPerm10 := rfl
+          (aaCoreP (I := I) (M := M) g₀ g₁ aaP2103 aaP120) innerCoreInPerm10 := by
+  rw [ricciConnectionDifferenceQuadraticKernel]
+  apply congrArg₂ (· + ·)
+  · apply congrArg₂ (· + ·)
+    · apply congrArg₂ (· + ·)
+      · apply congrArg₂ (· + ·)
+        · apply congrArg₂ (· + ·) <;> rfl
+        · rfl
+      · rfl
+    · rfl
+  · rfl
 
 theorem exists_ricciConnectionDifferenceQuadraticArm_capWindow (g₀ : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) {Λ : ℝ} (hΛ1 : 1 ≤ Λ) :

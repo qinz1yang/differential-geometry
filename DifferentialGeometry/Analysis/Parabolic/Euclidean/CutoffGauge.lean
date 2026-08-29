@@ -158,18 +158,18 @@ theorem parabolicCutoffSpatialJet1_holderWith_restrict
     (dchi : ParabolicPoint (Euc n) → Euc n →L[Real] Real)
     (u : Real → Euc n → F)
     (du : ParabolicPoint (Euc n) → Euc n →L[Real] F)
-    (hchi : HolderWith Kchi alpha (Q.restrict chi))
-    (hdchi : HolderWith Kdchi alpha (Q.restrict dchi))
+    (hchi : HolderWith Kchi alpha (Q.domRestrict chi))
+    (hdchi : HolderWith Kdchi alpha (Q.domRestrict dchi))
     (hu : HolderWith Ku alpha
-      (Q.restrict (fun p ↦ u p.time p.space)))
-    (hdu : HolderWith Kdu alpha (Q.restrict du))
+      (Q.domRestrict (fun p ↦ u p.time p.space)))
+    (hdu : HolderWith Kdu alpha (Q.domRestrict du))
     (hchiNorm : ∀ p, p ∈ Q → ‖chi p‖ ≤ Mchi)
     (hdchiNorm : ∀ p, p ∈ Q → ‖dchi p‖ ≤ Mdchi)
     (huNorm : ∀ p, p ∈ Q → ‖u p.time p.space‖ ≤ Mu)
     (hduNorm : ∀ p, p ∈ Q → ‖du p‖ ≤ Mdu) :
     HolderWith (parabolicCutoffSpatialJet1HolderConst
       Kchi Kdchi Ku Kdu Mchi Mdchi Mu Mdu) alpha
-      (Q.restrict (parabolicCutoffSpatialJet1 chi dchi u du)) := by
+      (Q.domRestrict (parabolicCutoffSpatialJet1 chi dchi u du)) := by
   let L := ContinuousLinearMap.smulRightL Real (Euc n) F
   have hfirst : HolderWith (Mchi * Kdu + Mdu * Kchi) alpha
       (fun p : Q ↦ chi p.1 • du p.1) :=
@@ -181,10 +181,11 @@ theorem parabolicCutoffSpatialJet1_holderWith_restrict
       ContinuousLinearMap.norm_smulRightL_le hdchi hu
     · exact fun p ↦ hdchiNorm p.1 p.2
     · exact fun p ↦ huNorm p.1 p.2
-  have hsum := hfirst.add hsecond
+  have hsum := holderWith_add hfirst hsecond
+  intro p q
   simpa only [parabolicCutoffSpatialJet1HolderConst,
-    parabolicCutoffSpatialJet1, Set.restrict_apply, Pi.add_apply,
-    add_assoc] using hsum
+    parabolicCutoffSpatialJet1, Set.domRestrict_apply, Pi.add_apply,
+    add_assoc, edist_dist, L, ContinuousLinearMap.smulRightL_apply_apply] using hsum p q
 
 theorem parabolicCutoffSpatialJet1_holderWith_restrict_of_eq_zero_outside
     {Q U : Set (ParabolicPoint (Euc n))}
@@ -193,11 +194,11 @@ theorem parabolicCutoffSpatialJet1_holderWith_restrict_of_eq_zero_outside
     (dchi : ParabolicPoint (Euc n) → Euc n →L[Real] Real)
     (u : Real → Euc n → F)
     (du : ParabolicPoint (Euc n) → Euc n →L[Real] F)
-    (hchi : HolderWith Kchi alpha (Q.restrict chi))
-    (hdchi : HolderWith Kdchi alpha (Q.restrict dchi))
+    (hchi : HolderWith Kchi alpha (Q.domRestrict chi))
+    (hdchi : HolderWith Kdchi alpha (Q.domRestrict dchi))
     (hu : HolderWith Ku alpha
-      ((Q ∩ U).restrict (fun p ↦ u p.time p.space)))
-    (hdu : HolderWith Kdu alpha ((Q ∩ U).restrict du))
+      ((Q ∩ U).domRestrict (fun p ↦ u p.time p.space)))
+    (hdu : HolderWith Kdu alpha ((Q ∩ U).domRestrict du))
     (hchiNorm : ∀ p, p ∈ Q → p ∈ U → ‖chi p‖ ≤ Mchi)
     (hdchiNorm : ∀ p, p ∈ Q → p ∈ U → ‖dchi p‖ ≤ Mdchi)
     (huNorm : ∀ p, p ∈ Q → p ∈ U → ‖u p.time p.space‖ ≤ Mu)
@@ -206,24 +207,25 @@ theorem parabolicCutoffSpatialJet1_holderWith_restrict_of_eq_zero_outside
     (hdchiZero : ∀ p, p ∈ Q → p ∉ U → dchi p = 0) :
     HolderWith (parabolicCutoffSpatialJet1HolderConst
       Kchi Kdchi Ku Kdu Mchi Mdchi Mu Mdu) alpha
-      (Q.restrict (parabolicCutoffSpatialJet1 chi dchi u du)) := by
+      (Q.domRestrict (parabolicCutoffSpatialJet1 chi dchi u du)) := by
   let L := ContinuousLinearMap.smulRightL Real (Euc n) F
   have hfirst : HolderWith (Mchi * Kdu + Mdu * Kchi) alpha
-      (Q.restrict (fun p ↦ chi p • du p)) :=
+      (Q.domRestrict (fun p ↦ chi p • du p)) :=
     holderWith_smul_of_eq_zero_outside chi du hchi hdu
       hchiNorm hduNorm hchiZero
   have hsecond : HolderWith (Mdchi * Ku + Mu * Kdchi) alpha
-      (Q.restrict (fun p ↦ L (dchi p) (u p.time p.space))) := by
+      (Q.domRestrict (fun p ↦ L (dchi p) (u p.time p.space))) := by
     apply holderWith_bilinear_of_opNorm_le_one_of_eq_zero_outside
       L ContinuousLinearMap.norm_smulRightL_le dchi
         (fun p ↦ u p.time p.space) hdchi hu
     · exact hdchiNorm
     · exact huNorm
     · exact hdchiZero
-  have hsum := hfirst.add hsecond
+  have hsum := holderWith_add hfirst hsecond
+  intro p q
   simpa only [parabolicCutoffSpatialJet1HolderConst,
-    parabolicCutoffSpatialJet1, Set.restrict_apply, Pi.add_apply,
-    add_assoc] using hsum
+    parabolicCutoffSpatialJet1, Set.domRestrict_apply, Pi.add_apply,
+    add_assoc, edist_dist, L, ContinuousLinearMap.smulRightL_apply_apply] using hsum p q
 
 theorem parabolicCutoffSpatialJet2_holderWith_restrict
     {Q : Set (ParabolicPoint (Euc n))}
@@ -237,13 +239,13 @@ theorem parabolicCutoffSpatialJet2_holderWith_restrict
     (du : ParabolicPoint (Euc n) → Euc n →L[Real] F)
     (d2u : ParabolicPoint (Euc n) →
       Euc n →L[Real] Euc n →L[Real] F)
-    (hchi : HolderWith Kchi alpha (Q.restrict chi))
-    (hdchi : HolderWith Kdchi alpha (Q.restrict dchi))
-    (hd2chi : HolderWith Kd2chi alpha (Q.restrict d2chi))
+    (hchi : HolderWith Kchi alpha (Q.domRestrict chi))
+    (hdchi : HolderWith Kdchi alpha (Q.domRestrict dchi))
+    (hd2chi : HolderWith Kd2chi alpha (Q.domRestrict d2chi))
     (hu : HolderWith Ku alpha
-      (Q.restrict (fun p ↦ u p.time p.space)))
-    (hdu : HolderWith Kdu alpha (Q.restrict du))
-    (hd2u : HolderWith Kd2u alpha (Q.restrict d2u))
+      (Q.domRestrict (fun p ↦ u p.time p.space)))
+    (hdu : HolderWith Kdu alpha (Q.domRestrict du))
+    (hd2u : HolderWith Kd2u alpha (Q.domRestrict d2u))
     (hchiNorm : ∀ p, p ∈ Q → ‖chi p‖ ≤ Mchi)
     (hdchiNorm : ∀ p, p ∈ Q → ‖dchi p‖ ≤ Mdchi)
     (hd2chiNorm : ∀ p, p ∈ Q → ‖d2chi p‖ ≤ Md2chi)
@@ -253,7 +255,7 @@ theorem parabolicCutoffSpatialJet2_holderWith_restrict
     HolderWith (cutoffJet2HolderConst
       Kchi Kdchi Kd2chi Ku Kdu Kd2u
       Mchi Mdchi Md2chi Mu Mdu Md2u) alpha
-      (Q.restrict
+      (Q.domRestrict
         (parabolicCutoffSpatialJet2 chi dchi d2chi u du d2u)) := by
   let L₁ := ContinuousLinearMap.smulRightL Real (Euc n)
     (Euc n →L[Real] F)
@@ -287,16 +289,17 @@ theorem parabolicCutoffSpatialJet2_holderWith_restrict
           ContinuousLinearMap.norm_smulRightL_le) hd2chi hu
     · exact fun p ↦ hd2chiNorm p.1 p.2
     · exact fun p ↦ huNorm p.1 p.2
-  have hall := hfirst.add hsecond |>.add hthird |>.add hfourth
-  rw [show Q.restrict
+  have hall := holderWith_add (holderWith_add (holderWith_add hfirst hsecond) hthird) hfourth
+  rw [show Q.domRestrict
       (parabolicCutoffSpatialJet2 chi dchi d2chi u du d2u) =
       fun p : Q ↦ chi p.1 • d2u p.1 + L₁ (dchi p.1) (du p.1) +
         L₂ (dchi p.1) (du p.1) +
           L₃ (d2chi p.1) (u p.1.time p.1.space) from by
     funext p
     rfl]
+  intro p q
   simpa only [cutoffJet2HolderConst, parabolicCutoffSpatialJet2,
-    Set.restrict_apply, Pi.add_apply, two_mul, add_assoc] using hall
+    Set.domRestrict_apply, Pi.add_apply, two_mul, add_assoc, edist_dist] using hall p q
 
 theorem parabolicCutoffSpatialJet2_holderWith_restrict_of_eq_zero_outside
     {Q U : Set (ParabolicPoint (Euc n))}
@@ -310,13 +313,13 @@ theorem parabolicCutoffSpatialJet2_holderWith_restrict_of_eq_zero_outside
     (du : ParabolicPoint (Euc n) → Euc n →L[Real] F)
     (d2u : ParabolicPoint (Euc n) →
       Euc n →L[Real] Euc n →L[Real] F)
-    (hchi : HolderWith Kchi alpha (Q.restrict chi))
-    (hdchi : HolderWith Kdchi alpha (Q.restrict dchi))
-    (hd2chi : HolderWith Kd2chi alpha (Q.restrict d2chi))
+    (hchi : HolderWith Kchi alpha (Q.domRestrict chi))
+    (hdchi : HolderWith Kdchi alpha (Q.domRestrict dchi))
+    (hd2chi : HolderWith Kd2chi alpha (Q.domRestrict d2chi))
     (hu : HolderWith Ku alpha
-      ((Q ∩ U).restrict (fun p ↦ u p.time p.space)))
-    (hdu : HolderWith Kdu alpha ((Q ∩ U).restrict du))
-    (hd2u : HolderWith Kd2u alpha ((Q ∩ U).restrict d2u))
+      ((Q ∩ U).domRestrict (fun p ↦ u p.time p.space)))
+    (hdu : HolderWith Kdu alpha ((Q ∩ U).domRestrict du))
+    (hd2u : HolderWith Kd2u alpha ((Q ∩ U).domRestrict d2u))
     (hchiNorm : ∀ p, p ∈ Q → p ∈ U → ‖chi p‖ ≤ Mchi)
     (hdchiNorm : ∀ p, p ∈ Q → p ∈ U → ‖dchi p‖ ≤ Mdchi)
     (hd2chiNorm : ∀ p, p ∈ Q → p ∈ U → ‖d2chi p‖ ≤ Md2chi)
@@ -329,7 +332,7 @@ theorem parabolicCutoffSpatialJet2_holderWith_restrict_of_eq_zero_outside
     HolderWith (cutoffJet2HolderConst
       Kchi Kdchi Kd2chi Ku Kdu Kd2u
       Mchi Mdchi Md2chi Mu Mdu Md2u) alpha
-      (Q.restrict
+      (Q.domRestrict
         (parabolicCutoffSpatialJet2 chi dchi d2chi u du d2u)) := by
   let L₁ := ContinuousLinearMap.smulRightL Real (Euc n)
     (Euc n →L[Real] F)
@@ -338,18 +341,18 @@ theorem parabolicCutoffSpatialJet2_holderWith_restrict_of_eq_zero_outside
   let L₃ := ContinuousLinearMap.precompL (Euc n)
     (ContinuousLinearMap.smulRightL Real (Euc n) F)
   have hfirst : HolderWith (Mchi * Kd2u + Md2u * Kchi) alpha
-      (Q.restrict (fun p ↦ chi p • d2u p)) :=
+      (Q.domRestrict (fun p ↦ chi p • d2u p)) :=
     holderWith_smul_of_eq_zero_outside chi d2u hchi hd2u
       hchiNorm hd2uNorm hchiZero
   have hsecond : HolderWith (Mdchi * Kdu + Mdu * Kdchi) alpha
-      (Q.restrict (fun p ↦ L₁ (dchi p) (du p))) := by
+      (Q.domRestrict (fun p ↦ L₁ (dchi p) (du p))) := by
     apply holderWith_bilinear_of_opNorm_le_one_of_eq_zero_outside
       L₁ ContinuousLinearMap.norm_smulRightL_le dchi du hdchi hdu
     · exact hdchiNorm
     · exact hduNorm
     · exact hdchiZero
   have hthird : HolderWith (Mdchi * Kdu + Mdu * Kdchi) alpha
-      (Q.restrict (fun p ↦ L₂ (dchi p) (du p))) := by
+      (Q.domRestrict (fun p ↦ L₂ (dchi p) (du p))) := by
     apply holderWith_bilinear_of_opNorm_le_one_of_eq_zero_outside
       L₂ ((ContinuousLinearMap.norm_precompR_le (Euc n)
         (ContinuousLinearMap.smulRightL Real (Euc n) F)).trans
@@ -358,7 +361,7 @@ theorem parabolicCutoffSpatialJet2_holderWith_restrict_of_eq_zero_outside
     · exact hduNorm
     · exact hdchiZero
   have hfourth : HolderWith (Md2chi * Ku + Mu * Kd2chi) alpha
-      (Q.restrict (fun p ↦ L₃ (d2chi p) (u p.time p.space))) := by
+      (Q.domRestrict (fun p ↦ L₃ (d2chi p) (u p.time p.space))) := by
     apply holderWith_bilinear_of_opNorm_le_one_of_eq_zero_outside
       L₃ ((ContinuousLinearMap.norm_precompL_le (Euc n)
         (ContinuousLinearMap.smulRightL Real (Euc n) F)).trans
@@ -367,16 +370,17 @@ theorem parabolicCutoffSpatialJet2_holderWith_restrict_of_eq_zero_outside
     · exact hd2chiNorm
     · exact huNorm
     · exact hd2chiZero
-  have hall := hfirst.add hsecond |>.add hthird |>.add hfourth
-  rw [show Q.restrict
+  have hall := holderWith_add (holderWith_add (holderWith_add hfirst hsecond) hthird) hfourth
+  rw [show Q.domRestrict
       (parabolicCutoffSpatialJet2 chi dchi d2chi u du d2u) =
       fun p : Q ↦ chi p.1 • d2u p.1 + L₁ (dchi p.1) (du p.1) +
         L₂ (dchi p.1) (du p.1) +
           L₃ (d2chi p.1) (u p.1.time p.1.space) from by
     funext p
     rfl]
+  intro p q
   simpa only [cutoffJet2HolderConst, parabolicCutoffSpatialJet2,
-    Set.restrict_apply, Pi.add_apply, two_mul, add_assoc] using hall
+    Set.domRestrict_apply, Pi.add_apply, two_mul, add_assoc, edist_dist] using hall p q
 
 theorem parabolicCutoffTimeDerivative_holderWith_restrict
     {Q : Set (ParabolicPoint (Euc n))}
@@ -385,18 +389,18 @@ theorem parabolicCutoffTimeDerivative_holderWith_restrict
     (chi dtimeChi : ParabolicPoint (Euc n) → Real)
     (u : Real → Euc n → F)
     (dtimeU : ParabolicPoint (Euc n) → F)
-    (hchi : HolderWith Kchi alpha (Q.restrict chi))
-    (hdtimeChi : HolderWith KdtimeChi alpha (Q.restrict dtimeChi))
+    (hchi : HolderWith Kchi alpha (Q.domRestrict chi))
+    (hdtimeChi : HolderWith KdtimeChi alpha (Q.domRestrict dtimeChi))
     (hu : HolderWith Ku alpha
-      (Q.restrict (fun p ↦ u p.time p.space)))
-    (hdtimeU : HolderWith KdtimeU alpha (Q.restrict dtimeU))
+      (Q.domRestrict (fun p ↦ u p.time p.space)))
+    (hdtimeU : HolderWith KdtimeU alpha (Q.domRestrict dtimeU))
     (hchiNorm : ∀ p, p ∈ Q → ‖chi p‖ ≤ Mchi)
     (hdtimeChiNorm : ∀ p, p ∈ Q → ‖dtimeChi p‖ ≤ MdtimeChi)
     (huNorm : ∀ p, p ∈ Q → ‖u p.time p.space‖ ≤ Mu)
     (hdtimeUNorm : ∀ p, p ∈ Q → ‖dtimeU p‖ ≤ MdtimeU) :
     HolderWith (parabolicCutoffTimeDerivativeHolderConst
       Kchi KdtimeChi Ku KdtimeU Mchi MdtimeChi Mu MdtimeU) alpha
-      (Q.restrict
+      (Q.domRestrict
         (parabolicCutoffTimeDerivative chi dtimeChi u dtimeU)) := by
   have hfirst : HolderWith (Mchi * KdtimeU + MdtimeU * Kchi) alpha
       (fun p : Q ↦ chi p.1 • dtimeU p.1) :=
@@ -406,9 +410,11 @@ theorem parabolicCutoffTimeDerivative_holderWith_restrict
       (fun p : Q ↦ dtimeChi p.1 • u p.1.time p.1.space) :=
     holderWith_smul_of_norm_le hdtimeChi hu
       (fun p ↦ hdtimeChiNorm p.1 p.2) (fun p ↦ huNorm p.1 p.2)
-  have hsum := hfirst.add hsecond
+  have hsum := holderWith_add hfirst hsecond
+  intro p q
   simpa only [parabolicCutoffTimeDerivativeHolderConst,
-    parabolicCutoffTimeDerivative, Set.restrict_apply, add_assoc] using hsum
+    parabolicCutoffTimeDerivative, Set.domRestrict_apply, Pi.add_apply, add_assoc,
+    edist_dist] using hsum p q
 
 theorem parabolicCutoffTimeDerivative_holderWith_restrict_of_eq_zero_outside
     {Q U : Set (ParabolicPoint (Euc n))}
@@ -417,11 +423,11 @@ theorem parabolicCutoffTimeDerivative_holderWith_restrict_of_eq_zero_outside
     (chi dtimeChi : ParabolicPoint (Euc n) → Real)
     (u : Real → Euc n → F)
     (dtimeU : ParabolicPoint (Euc n) → F)
-    (hchi : HolderWith Kchi alpha (Q.restrict chi))
-    (hdtimeChi : HolderWith KdtimeChi alpha (Q.restrict dtimeChi))
+    (hchi : HolderWith Kchi alpha (Q.domRestrict chi))
+    (hdtimeChi : HolderWith KdtimeChi alpha (Q.domRestrict dtimeChi))
     (hu : HolderWith Ku alpha
-      ((Q ∩ U).restrict (fun p ↦ u p.time p.space)))
-    (hdtimeU : HolderWith KdtimeU alpha ((Q ∩ U).restrict dtimeU))
+      ((Q ∩ U).domRestrict (fun p ↦ u p.time p.space)))
+    (hdtimeU : HolderWith KdtimeU alpha ((Q ∩ U).domRestrict dtimeU))
     (hchiNorm : ∀ p, p ∈ Q → p ∈ U → ‖chi p‖ ≤ Mchi)
     (hdtimeChiNorm : ∀ p, p ∈ Q → p ∈ U →
       ‖dtimeChi p‖ ≤ MdtimeChi)
@@ -432,20 +438,22 @@ theorem parabolicCutoffTimeDerivative_holderWith_restrict_of_eq_zero_outside
     (hdtimeChiZero : ∀ p, p ∈ Q → p ∉ U → dtimeChi p = 0) :
     HolderWith (parabolicCutoffTimeDerivativeHolderConst
       Kchi KdtimeChi Ku KdtimeU Mchi MdtimeChi Mu MdtimeU) alpha
-      (Q.restrict
+      (Q.domRestrict
         (parabolicCutoffTimeDerivative chi dtimeChi u dtimeU)) := by
   have hfirst : HolderWith (Mchi * KdtimeU + MdtimeU * Kchi) alpha
-      (Q.restrict (fun p ↦ chi p • dtimeU p)) :=
+      (Q.domRestrict (fun p ↦ chi p • dtimeU p)) :=
     holderWith_smul_of_eq_zero_outside chi dtimeU hchi hdtimeU
       hchiNorm hdtimeUNorm hchiZero
   have hsecond : HolderWith (MdtimeChi * Ku + Mu * KdtimeChi) alpha
-      (Q.restrict (fun p ↦ dtimeChi p • u p.time p.space)) :=
+      (Q.domRestrict (fun p ↦ dtimeChi p • u p.time p.space)) :=
     holderWith_smul_of_eq_zero_outside dtimeChi
       (fun p ↦ u p.time p.space) hdtimeChi hu
         hdtimeChiNorm huNorm hdtimeChiZero
-  have hsum := hfirst.add hsecond
+  have hsum := holderWith_add hfirst hsecond
+  intro p q
   simpa only [parabolicCutoffTimeDerivativeHolderConst,
-    parabolicCutoffTimeDerivative, Set.restrict_apply, add_assoc] using hsum
+    parabolicCutoffTimeDerivative, Set.domRestrict_apply, Pi.add_apply, add_assoc,
+    edist_dist] using hsum p q
 
 theorem eParabolicC2HolderGaugeOn_parabolicCutoffValue_le
     {Q : Set (ParabolicPoint (Euc n))}
@@ -476,15 +484,15 @@ theorem eParabolicC2HolderGaugeOn_parabolicCutoffValue_le
         (dtimeChi p) p.time)
     (huTime : ∀ p ∈ Q,
       HasDerivAt (fun t ↦ u t p.space) (dtimeU p) p.time)
-    (hchi : HolderWith Kchi alpha (Q.restrict chi))
-    (hdtimeChi : HolderWith KdtimeChi alpha (Q.restrict dtimeChi))
-    (hdchi : HolderWith Kdchi alpha (Q.restrict dchi))
-    (hd2chi : HolderWith Kd2chi alpha (Q.restrict d2chi))
+    (hchi : HolderWith Kchi alpha (Q.domRestrict chi))
+    (hdtimeChi : HolderWith KdtimeChi alpha (Q.domRestrict dtimeChi))
+    (hdchi : HolderWith Kdchi alpha (Q.domRestrict dchi))
+    (hd2chi : HolderWith Kd2chi alpha (Q.domRestrict d2chi))
     (hu : HolderWith Ku alpha
-      (Q.restrict (fun p ↦ u p.time p.space)))
-    (hdtimeU : HolderWith KdtimeU alpha (Q.restrict dtimeU))
-    (hdu : HolderWith Kdu alpha (Q.restrict du))
-    (hd2u : HolderWith Kd2u alpha (Q.restrict d2u))
+      (Q.domRestrict (fun p ↦ u p.time p.space)))
+    (hdtimeU : HolderWith KdtimeU alpha (Q.domRestrict dtimeU))
+    (hdu : HolderWith Kdu alpha (Q.domRestrict du))
+    (hd2u : HolderWith Kd2u alpha (Q.domRestrict d2u))
     (hchiNorm : ∀ p, p ∈ Q → ‖chi p‖ ≤ Mchi)
     (hdtimeChiNorm : ∀ p, p ∈ Q → ‖dtimeChi p‖ ≤ MdtimeChi)
     (hdchiNorm : ∀ p, p ∈ Q → ‖dchi p‖ ≤ Mdchi)
@@ -545,11 +553,11 @@ theorem eParabolicC2HolderGaugeOn_parabolicCutoffValue_le
   have hspatialHolder : HolderWith
       (cutoffJet2HolderConst Kchi Kdchi Kd2chi Ku Kdu Kd2u
         Mchi Mdchi Md2chi Mu Mdu Md2u) alpha
-      (Q.restrict (parabolicSpatialJet 2 (parabolicCutoffValue chi u))) := by
+      (Q.domRestrict (parabolicSpatialJet 2 (parabolicCutoffValue chi u))) := by
     have hcomp := e.symm.lipschitz.holderWith.comp hjet2
-    have hfun : e.symm ∘ Q.restrict
+    have hfun : e.symm ∘ Q.domRestrict
         (parabolicCutoffSpatialJet2 chi dchi d2chi u du d2u) =
-        Q.restrict (parabolicSpatialJet 2 (parabolicCutoffValue chi u)) := by
+        Q.domRestrict (parabolicSpatialJet 2 (parabolicCutoffValue chi u)) := by
       funext p
       change e.symm (parabolicCutoffSpatialJet2 chi dchi d2chi u du d2u p.1) =
         parabolicSpatialJet 2 (parabolicCutoffValue chi u) p.1
@@ -569,10 +577,10 @@ theorem eParabolicC2HolderGaugeOn_parabolicCutoffValue_le
   have htimeHolder : HolderWith
       (parabolicCutoffTimeDerivativeHolderConst
         Kchi KdtimeChi Ku KdtimeU Mchi MdtimeChi Mu MdtimeU) alpha
-      (Q.restrict (parabolicTimeDerivative (parabolicCutoffValue chi u))) := by
-    have hfun : Q.restrict
+      (Q.domRestrict (parabolicTimeDerivative (parabolicCutoffValue chi u))) := by
+    have hfun : Q.domRestrict
         (parabolicCutoffTimeDerivative chi dtimeChi u dtimeU) =
-        Q.restrict (parabolicTimeDerivative (parabolicCutoffValue chi u)) := by
+        Q.domRestrict (parabolicTimeDerivative (parabolicCutoffValue chi u)) := by
       funext p
       exact (parabolicTimeDerivative_cutoff chi dtimeChi u dtimeU p.1
         (hchiTime p.1 p.2) (huTime p.1 p.2)).symm
@@ -618,15 +626,15 @@ theorem eParabolicC2HolderGaugeOn_parabolicCutoffValue_le_of_eq_zero_outside
         (dtimeChi p) p.time)
     (huTime : ∀ p ∈ Q,
       HasDerivAt (fun t ↦ u t p.space) (dtimeU p) p.time)
-    (hchi : HolderWith Kchi alpha (Q.restrict chi))
-    (hdtimeChi : HolderWith KdtimeChi alpha (Q.restrict dtimeChi))
-    (hdchi : HolderWith Kdchi alpha (Q.restrict dchi))
-    (hd2chi : HolderWith Kd2chi alpha (Q.restrict d2chi))
+    (hchi : HolderWith Kchi alpha (Q.domRestrict chi))
+    (hdtimeChi : HolderWith KdtimeChi alpha (Q.domRestrict dtimeChi))
+    (hdchi : HolderWith Kdchi alpha (Q.domRestrict dchi))
+    (hd2chi : HolderWith Kd2chi alpha (Q.domRestrict d2chi))
     (hu : HolderWith Ku alpha
-      ((Q ∩ U).restrict (fun p ↦ u p.time p.space)))
-    (hdtimeU : HolderWith KdtimeU alpha ((Q ∩ U).restrict dtimeU))
-    (hdu : HolderWith Kdu alpha ((Q ∩ U).restrict du))
-    (hd2u : HolderWith Kd2u alpha ((Q ∩ U).restrict d2u))
+      ((Q ∩ U).domRestrict (fun p ↦ u p.time p.space)))
+    (hdtimeU : HolderWith KdtimeU alpha ((Q ∩ U).domRestrict dtimeU))
+    (hdu : HolderWith Kdu alpha ((Q ∩ U).domRestrict du))
+    (hd2u : HolderWith Kd2u alpha ((Q ∩ U).domRestrict d2u))
     (hchiNorm : ∀ p, p ∈ Q → p ∈ U → ‖chi p‖ ≤ Mchi)
     (hdtimeChiNorm : ∀ p, p ∈ Q → p ∈ U →
       ‖dtimeChi p‖ ≤ MdtimeChi)
@@ -661,7 +669,7 @@ theorem eParabolicC2HolderGaugeOn_parabolicCutoffValue_le_of_eq_zero_outside
         exact_mod_cast mul_le_mul (hchiNorm p hp hpU) (huNorm p hp hpU)
           (norm_nonneg _) Mchi.coe_nonneg
       · rw [hchiZero p hp hpU, zero_smul, norm_zero]
-        exact zero_le (Cspatial 0)
+        exact (Cspatial 0).coe_nonneg
     · unfold parabolicSpatialJet
       rw [norm_iteratedFDeriv_one,
         (parabolicCutoffValue_hasFDerivAt chi dchi u du p.time p.space
@@ -675,7 +683,7 @@ theorem eParabolicC2HolderGaugeOn_parabolicCutoffValue_le_of_eq_zero_outside
         rw [hchiZero p hp hpU, hdchiZero p hp hpU]
         simp only [zero_smul, ContinuousLinearMap.zero_smulRight,
           zero_add, norm_zero]
-        exact zero_le (Cspatial 1)
+        exact (Cspatial 1).coe_nonneg
     · rw [← e.norm_map]
       rw [show e (parabolicSpatialJet 2 (parabolicCutoffValue chi u) p) =
           parabolicCutoffSpatialJet2 chi dchi d2chi u du d2u p by
@@ -691,9 +699,9 @@ theorem eParabolicC2HolderGaugeOn_parabolicCutoffValue_le_of_eq_zero_outside
           (huNorm p hp hpU) (hduNorm p hp hpU) (hd2uNorm p hp hpU)
       · unfold parabolicCutoffSpatialJet2
         rw [hchiZero p hp hpU, hdchiZero p hp hpU, hd2chiZero p hp hpU]
-        simp only [zero_smul, map_zero, ContinuousLinearMap.zero_apply,
+        simp only [zero_smul, map_zero, zero_apply,
           zero_add, norm_zero]
-        exact zero_le (Cspatial 2)
+        exact (Cspatial 2).coe_nonneg
   have htimeNorm : ∀ p ∈ Q,
       ‖parabolicTimeDerivative (parabolicCutoffValue chi u) p‖ ≤
         parabolicCutoffTimeDerivativeSupConst
@@ -717,11 +725,11 @@ theorem eParabolicC2HolderGaugeOn_parabolicCutoffValue_le_of_eq_zero_outside
   have hspatialHolder : HolderWith
       (cutoffJet2HolderConst Kchi Kdchi Kd2chi Ku Kdu Kd2u
         Mchi Mdchi Md2chi Mu Mdu Md2u) alpha
-      (Q.restrict (parabolicSpatialJet 2 (parabolicCutoffValue chi u))) := by
+      (Q.domRestrict (parabolicSpatialJet 2 (parabolicCutoffValue chi u))) := by
     have hcomp := e.symm.lipschitz.holderWith.comp hjet2
-    have hfun : e.symm ∘ Q.restrict
+    have hfun : e.symm ∘ Q.domRestrict
         (parabolicCutoffSpatialJet2 chi dchi d2chi u du d2u) =
-        Q.restrict (parabolicSpatialJet 2 (parabolicCutoffValue chi u)) := by
+        Q.domRestrict (parabolicSpatialJet 2 (parabolicCutoffValue chi u)) := by
       funext p
       change e.symm (parabolicCutoffSpatialJet2 chi dchi d2chi u du d2u p.1) =
         parabolicSpatialJet 2 (parabolicCutoffValue chi u) p.1
@@ -742,10 +750,10 @@ theorem eParabolicC2HolderGaugeOn_parabolicCutoffValue_le_of_eq_zero_outside
   have htimeHolder : HolderWith
       (parabolicCutoffTimeDerivativeHolderConst
         Kchi KdtimeChi Ku KdtimeU Mchi MdtimeChi Mu MdtimeU) alpha
-      (Q.restrict (parabolicTimeDerivative (parabolicCutoffValue chi u))) := by
-    have hfun : Q.restrict
+      (Q.domRestrict (parabolicTimeDerivative (parabolicCutoffValue chi u))) := by
+    have hfun : Q.domRestrict
         (parabolicCutoffTimeDerivative chi dtimeChi u dtimeU) =
-        Q.restrict (parabolicTimeDerivative (parabolicCutoffValue chi u)) := by
+        Q.domRestrict (parabolicTimeDerivative (parabolicCutoffValue chi u)) := by
       funext p
       exact (parabolicTimeDerivative_cutoff chi dtimeChi u dtimeU p.1
         (hchiTime p.1 p.2) (huTime p.1 p.2)).symm

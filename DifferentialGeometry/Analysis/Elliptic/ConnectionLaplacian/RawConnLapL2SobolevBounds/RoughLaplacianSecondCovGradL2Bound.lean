@@ -70,7 +70,7 @@ private theorem riemannianFiberNormSq_twoSlotUnitEval_le
     (T : Tensor0SBundle.TensorRSSpace 0 (s + 1 + 1) I x)
     (w : TangentSpace I x) (hw : g.inner x w w ≤ 1)
     (U : Tensor0SBundle.TensorRSSpace 0 s I x)
-    (hU : ∀ m : Fin s → TangentSpace I x,
+    (hU : ∀ m : Fin s → E,
       Tensor0SBundle.Tensor0SSpace.toModel
           ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace s I x from U)
             (unitZeroSec (I := I) (M := M) x)) m =
@@ -78,7 +78,8 @@ private theorem riemannianFiberNormSq_twoSlotUnitEval_le
           ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ]
               Tensor0SBundle.Tensor0SSpace (s + 1 + 1) I x from T)
             (unitZeroSec (I := I) (M := M) x))
-          (Fin.cons w (Fin.cons w m))) :
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w)
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m))) :
     riemannianFiberNormSq (I := I) (M := M) g 0 s x U ≤
       riemannianFiberNormSq (I := I) (M := M) g 0 (s + 1 + 1) x T := by
   classical
@@ -88,13 +89,15 @@ private theorem riemannianFiberNormSq_twoSlotUnitEval_le
   have hbnd : Bornology.IsVonNBounded ℝ {v : TangentSpace I x |
       RCLike.re (cd.inner v v) < 1} :=
     g.toRiemannianMetric.isVonNBounded x
-  letI nag : NormedAddCommGroup (TangentSpace I x) :=
+  let nag : NormedAddCommGroup (TangentSpace I x) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+  let ips : InnerProductSpace ℝ (TangentSpace I x) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
   set n : ℕ := Module.finrank ℝ (TangentSpace I x) with hn_def
   set eob : OrthonormalBasis (Fin n) ℝ (TangentSpace I x) := stdOrthonormalBasis ℝ _ with heob_def
   set e : Fin n → TangentSpace I x := fun i => eob i with he_def
+  set em : Fin n → E :=
+    fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (e i) with hem_def
   set K₀ : Fin 0 → Fin n := fun k => k.elim0 with hK₀
   have hinner_eq : ∀ u v : TangentSpace I x, (inner ℝ u v : ℝ) = g.inner x u v :=
     fun u v => rfl
@@ -131,14 +134,14 @@ private theorem riemannianFiberNormSq_twoSlotUnitEval_le
       (unitZeroSec (I := I) (M := M) x) with hTu_def
   set D : Fin n → Fin n → (Fin s → Fin n) → ℝ :=
     fun a b J => Tensor0SSpace.toModel Tu
-      (Fin.cons (e a) (Fin.cons (e b) (fun k : Fin s => e (J k)))) with hD_def
+      (Fin.cons (em a) (Fin.cons (em b) (fun k : Fin s => em (J k)))) with hD_def
   have hcomp : ∀ J : Fin s → Fin n,
       fiberNormSqComponent (I := I) (M := M) g x 0 s U n e K₀ J =
         ∑ a : Fin n, ∑ b : Fin n,
           (g.inner x (e a) w * g.inner x (e b) w) • D a b J := by
     intro J
     have hUcomp : fiberNormSqComponent (I := I) (M := M) g x 0 s U n e K₀ J =
-        Tensor0SSpace.toModel Uu (fun k : Fin s => e (J k)) := by
+        Tensor0SSpace.toModel Uu (fun k : Fin s => em (J k)) := by
       have hco : ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
           (fun k => g.inner x (e (K₀ k))) : Tensor0SSpace 0 I x) =
           unitZeroSec (I := I) (M := M) x := by
@@ -150,42 +153,53 @@ private theorem riemannianFiberNormSq_twoSlotUnitEval_le
       rw [hco, hUu_def]
       rfl
     rw [hUcomp]
-    have hUT : Tensor0SSpace.toModel Uu (fun k : Fin s => e (J k)) =
+    have hUT : Tensor0SSpace.toModel Uu (fun k : Fin s => em (J k)) =
         Tensor0SSpace.toModel Tu
-          (Fin.cons w (Fin.cons w (fun k : Fin s => e (J k)))) := hU _
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w)
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w)
+              (fun k : Fin s => em (J k)))) := hU _
     rw [hUT]
     have hstep1 : Tensor0SSpace.toModel Tu
-          (Fin.cons w (Fin.cons w (fun k : Fin s => e (J k)))) =
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w)
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w)
+              (fun k : Fin s => em (J k)))) =
         ∑ a : Fin n, g.inner x (e a) w • Tensor0SSpace.toModel
-          (tensor0S_curry (I := I) (M := M) (s + 1) x Tu (e a))
-          (Fin.cons w (fun k : Fin s => e (J k))) :=
+          (tensor0SCurry (I := I) (M := M) (s + 1) x Tu (e a))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w)
+            (fun k : Fin s => em (J k))) :=
       tensor0S_uncurry_cons_eval_of_expansion (I := I) (M := M) Tu
         (fun a => g.inner x (e a) w) e w (hexp w)
-        (Fin.cons w (fun k : Fin s => e (J k)))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w)
+          (fun k : Fin s => em (J k)))
     rw [hstep1]
     refine Finset.sum_congr rfl (fun a _ => ?_)
     have hstep2 : Tensor0SSpace.toModel
-          (tensor0S_curry (I := I) (M := M) (s + 1) x Tu (e a))
-          (Fin.cons w (fun k : Fin s => e (J k))) =
+          (tensor0SCurry (I := I) (M := M) (s + 1) x Tu (e a))
+          (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w)
+            (fun k : Fin s => em (J k))) =
         ∑ b : Fin n, g.inner x (e b) w • Tensor0SSpace.toModel
-          (tensor0S_curry (I := I) (M := M) s x
-            (tensor0S_curry (I := I) (M := M) (s + 1) x Tu (e a)) (e b))
-          (fun k : Fin s => e (J k)) :=
+          (tensor0SCurry (I := I) (M := M) s x
+            (tensor0SCurry (I := I) (M := M) (s + 1) x Tu (e a)) (e b))
+          (fun k : Fin s => em (J k)) :=
       tensor0S_uncurry_cons_eval_of_expansion (I := I) (M := M)
-        (tensor0S_curry (I := I) (M := M) (s + 1) x Tu (e a))
-        (fun b => g.inner x (e b) w) e w (hexp w) (fun k : Fin s => e (J k))
+        (tensor0SCurry (I := I) (M := M) (s + 1) x Tu (e a))
+        (fun b => g.inner x (e b) w) e w (hexp w) (fun k : Fin s => em (J k))
     rw [hstep2, Finset.smul_sum]
     refine Finset.sum_congr rfl (fun b _ => ?_)
     have hcurry2 : Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) s x
-          (tensor0S_curry (I := I) (M := M) (s + 1) x Tu (e a)) (e b))
-        (fun k : Fin s => e (J k)) = D a b J := by
+        (tensor0SCurry (I := I) (M := M) s x
+          (tensor0SCurry (I := I) (M := M) (s + 1) x Tu (e a)) (e b))
+        (fun k : Fin s => em (J k)) = D a b J := by
       rw [hD_def]
-      rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-        (tensor0S_curry (I := I) (M := M) (s + 1) x Tu (e a)) (e b)
-        (fun k : Fin s => e (J k))]
-      rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-        Tu (e a) (Fin.cons (e b) (fun k : Fin s => e (J k)))]
+      have hcurry_b := TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
+        (tensor0SCurry (I := I) (M := M) (s + 1) x Tu (e a)) (em b)
+        (fun k : Fin s => em (J k))
+      simp only [hem_def, ContinuousLinearEquiv.symm_apply_apply] at hcurry_b
+      rw [hcurry_b]
+      have hcurry_a := TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
+        Tu (em a) (Fin.cons (em b) (fun k : Fin s => em (J k)))
+      simp only [hem_def, ContinuousLinearEquiv.symm_apply_apply] at hcurry_a
+      rw [hcurry_a]
     rw [hcurry2]
     exact (mul_smul (g.inner x (e a) w) (g.inner x (e b) w) (D a b J)).symm
   have hDcomp : ∀ (a b : Fin n) (J : Fin s → Fin n),
@@ -200,8 +214,8 @@ private theorem riemannianFiberNormSq_twoSlotUnitEval_le
           coframeS (I := I) (M := M) g x 0 e K₀ from rfl]
       exact coframeS_zero_eq_unitZeroSec (I := I) (M := M) g x e K₀
     have htuple : (fun k : Fin (s + 1 + 1) =>
-          e ((Fin.cons a (Fin.cons b J) : Fin (s + 1 + 1) → Fin n) k)) =
-        Fin.cons (e a) (Fin.cons (e b) (fun k : Fin s => e (J k))) := by
+          em ((Fin.cons a (Fin.cons b J) : Fin (s + 1 + 1) → Fin n) k)) =
+        Fin.cons (em a) (Fin.cons (em b) (fun k : Fin s => em (J k))) := by
       funext k
       refine Fin.cases ?_ ?_ k
       · simp
@@ -209,10 +223,15 @@ private theorem riemannianFiberNormSq_twoSlotUnitEval_le
         refine Fin.cases ?_ ?_ j
         · simp
         · intro i; simp
-    rw [hD_def]
-    unfold fiberNormSqComponent
-    rw [hco, htuple]
-    rfl
+    have hTcomp :
+        fiberNormSqComponent (I := I) (M := M) g x 0 (s + 1 + 1) T n e K₀
+            (Fin.cons a (Fin.cons b J)) =
+          Tensor0SSpace.toModel Tu (fun k : Fin (s + 1 + 1) =>
+            em ((Fin.cons a (Fin.cons b J) : Fin (s + 1 + 1) → Fin n) k)) := by
+      unfold fiberNormSqComponent
+      rw [hco, hTu_def]
+      rfl
+    rw [hTcomp, htuple, hD_def]
   have hCS : ∀ J : Fin s → Fin n,
       (fiberNormSqComponent (I := I) (M := M) g x 0 s U n e K₀ J) ^ 2 ≤
         ∑ a : Fin n, ∑ b : Fin n,
@@ -301,6 +320,7 @@ private theorem riemannianFiberNormSq_twoSlotUnitEval_le
         refine Finset.sum_congr rfl (fun a _ => ?_)
         rw [Finset.sum_comm]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private theorem secondCovDeriv_unit_frame_fiberNormSq_le
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : Integral.L2.SmoothCcTensor g 0 s) (x : M)
     (i : Fin (Module.finrank ℝ E)) :
@@ -328,6 +348,7 @@ private theorem secondCovDeriv_unit_frame_fiberNormSq_le
     (Y := smoothOrthoFrame (I := I) g x i)
     (smoothOrthoFrame_smooth (I := I) g x i) (smoothOrthoFrame_smooth (I := I) g x i) x m).symm
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem rawConnLap_fiberNormSq_le_secondCovGrad
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : Integral.L2.SmoothCcTensor g 0 s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g 0 s x
@@ -404,6 +425,7 @@ theorem rawConnLap_fiberNormSq_le_secondCovGrad
     _ ≤ (n : ℝ) * ((n : ℝ) * rhs) := mul_le_mul_of_nonneg_left hsum_le hn_nn
     _ = (n : ℝ) ^ 2 * rhs := by ring
 
+omit [CompactSpace M] in
 theorem exists_rawConnLap_l2Norm_le_secondCovGrad_l2Norm_gen
     (g : SmoothRiemannianMetric I M) :
     ∃ K : ℝ, 1 ≤ K ∧

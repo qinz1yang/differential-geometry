@@ -45,10 +45,10 @@ theorem exists_chart_metric_limit_subsequence
           gInf z v v ≤ 2 * ‖v‖ ^ 2 := by
   apply exists_metricLimit_on hU (fun k => d.chartMetric k (c k))
   · intro k
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c k)).radius := by
@@ -59,10 +59,10 @@ theorem exists_chart_metric_limit_subsequence
   · intro p K hK hKU
     refine ⟨d.metricC p, ?_⟩
     intro k z hz
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c k)).radius := by
@@ -70,10 +70,10 @@ theorem exists_chart_metric_limit_subsequence
     simpa only [BoundedGeometryNormalData.chartMetric] using
       d.metric_deriv k p (c k) z (hrad (hKU hz))
   · intro k z hz v
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c k)).radius := by
@@ -108,10 +108,10 @@ theorem exists_finite_chart_metric_limit_subsequence
   have hsmoothComp : ∀ k i,
       ContDiffOn Real (⊤ : ℕ∞) (fun z ↦ gLoc k z i) U := by
     intro k i
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c i k)).radius := by
@@ -126,10 +126,10 @@ theorem exists_finite_chart_metric_limit_subsequence
     intro i p K hK hKU
     refine ⟨d.metricC p, ?_⟩
     intro k z hz
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hrad :
         U ⊆ Metric.ball (0 : E) (d.chart k (c i k)).radius := by
@@ -158,13 +158,13 @@ theorem exists_finite_chart_metric_limit_subsequence
       (1 / 2 : Real) * ‖v‖ ^ 2 ≤ gLoc (phi n) z i v v ∧
         gLoc (phi n) z i v v ≤ 2 * ‖v‖ ^ 2 := by
     intro n
-    letI : TopologicalSpace (X.obj (phi n)).M :=
+    let : TopologicalSpace (X.obj (phi n)).M :=
       (X.obj (phi n)).topology
-    letI : ChartedSpace H (X.obj (phi n)).M :=
+    let : ChartedSpace H (X.obj (phi n)).M :=
       (X.obj (phi n)).charted
-    letI : IsManifold I ∞ (X.obj (phi n)).M :=
+    let : IsManifold I ∞ (X.obj (phi n)).M :=
       (X.obj (phi n)).smooth
-    letI : T2Space (TangentBundle I (X.obj (phi n)).M) :=
+    let : T2Space (TangentBundle I (X.obj (phi n)).M) :=
       (X.obj (phi n)).t2TangentBundle
     have hrad :
         U ⊆ Metric.ball (0 : E)

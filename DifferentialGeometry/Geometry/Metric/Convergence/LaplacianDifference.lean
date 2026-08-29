@@ -119,7 +119,7 @@ private theorem normSq0S_nonneg'
     0 <= Tensor0SBundle.normSq0S (I := I) g x s A := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j
@@ -139,7 +139,7 @@ private theorem normSqRS_nonneg'
     0 <= Tensor0SBundle.normSqRS (I := I) (g := g) (x := x) r s A := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j
@@ -163,7 +163,7 @@ private theorem trace_sq_le
         Tensor0SBundle.normSq0S (I := I) g x 2 A := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j
@@ -207,7 +207,7 @@ omit [SigmaCompactSpace M] in
 private theorem delta_eq_lap
     (g : SmoothRiemannianMetric I M)
     {f : M -> Real} (hf : ContMDiff I 𝓘(Real, Real) ∞ f) (x : M) :
-    Δ_g (I := I) g ⟨_, hf⟩ x =
+    ΔG (I := I) g ⟨_, hf⟩ x =
       laplacian (I := I) (leviCivitaConnectionOfMetric (I := I) g) g f x := by
   exact (laplacian_levi_eq (E := E) (H := H) (I := I) (M := M)
     (g := g) (f := f) hf x).symm
@@ -224,7 +224,7 @@ private theorem lapDiff_sq_core
         (Tensor0SBundle.normSq0S (I := I) g x 2
           (metricTensor0S (I := I) h x - metricTensor0S (I := I) g x)) <= rho)
     (hone : metricDerivNorm (I := I) 1 h g g x <= rho) :
-    (Δ_g (I := I) h ⟨_, hf⟩ x - Δ_g (I := I) g ⟨_, hf⟩ x) ^ 2 <=
+    (ΔG (I := I) h ⟨_, hf⟩ x - ΔG (I := I) g ⟨_, hf⟩ x) ^ 2 <=
       8 * (Module.finrank Real E : Real) ^ 2 * rho ^ 2 *
           Tensor0SBundle.normSq0S (I := I) g x 2
             (leviHessSec (I := I) g f hf x) +
@@ -402,11 +402,12 @@ private theorem lapDiff_sq_core
     (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) h)
     (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)
     f hf x
-  have hlap : Δ_g (I := I) h ⟨_, hf⟩ x - Δ_g (I := I) g ⟨_, hf⟩ x = a - b := by
+  have hlap : ΔG (I := I) h ⟨_, hf⟩ x - ΔG (I := I) g ⟨_, hf⟩ x = a - b := by
     have hh := delta_eq_lap (I := I) h hf x
     have hg := delta_eq_lap (I := I) g hf x
     rw [hh, hg]
-    simpa only [a, b, Hess, B, du, covH, covG, leviHessSec, LeviCivita] using hlap0
+    simpa only [a, b, Hess, B, du, covH, covG, leviHessSec, LeviCivita,
+      scalarLapTraceAt_eq_pair] using hlap0
   rw [hlap]
   have hsub : (a - b) ^ 2 <= 2 * a ^ 2 + 2 * b ^ 2 := by
     nlinarith [sq_nonneg (a + b)]
@@ -437,7 +438,7 @@ theorem lapDiff_sq_le
     (hsmall :
       (Module.finrank Real E : Real) *
         metricDerivNormSupOn (I := I) Set.univ 1 h g g <= (1 / 2 : Real)) :
-    (Δ_g (I := I) h ⟨_, hf⟩ x - Δ_g (I := I) g ⟨_, hf⟩ x) ^ 2 <=
+    (ΔG (I := I) h ⟨_, hf⟩ x - ΔG (I := I) g ⟨_, hf⟩ x) ^ 2 <=
       8 * (Module.finrank Real E : Real) ^ 2 *
           (metricDerivNormSupOn (I := I) Set.univ 1 h g g) ^ 2 *
           Tensor0SBundle.normSq0S (I := I) g x 2

@@ -16,7 +16,7 @@ import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.RingTheory.Finiteness.Defs
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
 import DifferentialGeometry.Tensor.Multilinear.Basis
@@ -29,7 +29,6 @@ import DifferentialGeometry.Tensor.RSTensor.Field
 import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEvaluation
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -467,18 +466,16 @@ theorem metricQuad_cont
           (TotalSpace.mk' Real (E := Bundle.Trivial M Real)
             p.proj (g.inner p.proj p.2 p.2))) :=
     (Bundle.Trivial.homeomorphProd M Real).continuous.comp htotal
-  simpa [Bundle.Trivial.homeomorphProd, TotalSpace.toProd] using
-    (continuous_snd.comp hprod)
+  exact (continuous_snd.comp hprod).congr fun _ => rfl
 
 omit [FiniteDimensional ℝ E] in
 theorem metricUnit_closed
     (g : SmoothRiemannianMetric I M) :
     IsClosed {p : TangentBundle I M | g.inner p.proj p.2 p.2 = 1} := by
-  simpa [Set.setOf_eq_eq_singleton] using
-    isClosed_singleton.preimage (metricQuad_cont (I := I) (M := M) g)
+  change IsClosed ((fun p : TangentBundle I M => g.inner p.proj p.2 p.2) ⁻¹' {1})
+  exact isClosed_singleton.preimage (metricQuad_cont (I := I) (M := M) g)
 
 private theorem coordMetric_lower
-    [T2Space M]
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     {K : Set M}
     (hK : IsCompact K)
@@ -507,7 +504,9 @@ private theorem coordMetric_lower
       ((metricQuad_cont (I := I) (M := M) g).continuousOn.comp hsymm_cont
         (fun _ _ => Set.mem_univ _)) ?_
     intro z hz
-    simp [e, Trivialization.symmL_apply]
+    change g.inner z.1 (e.symmL Real z.1 z.2) (e.symmL Real z.1 z.2) =
+      g.inner z.1 (e.symm z.1 z.2) (e.symm z.1 z.2)
+    rw [e.symmL_apply (hKsub hz.1)]
   have hq_pos : ∀ z ∈ S,
       0 < g.inner z.1 (e.symmL Real z.1 z.2) (e.symmL Real z.1 z.2) := by
     intro z hz
@@ -540,7 +539,6 @@ private theorem coordMetric_lower
     exact hSne ⟨(x, w), ⟨hxK, by simpa [Metric.sphere, dist_eq_norm] using hw⟩⟩
 
 private theorem coordMetric_bound
-    [T2Space M]
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     {K : Set M}
     (hK : IsCompact K)
@@ -626,7 +624,7 @@ private theorem unitRest_compact
     {z | z.2 ∈ Metric.closedBall (0 : E) R}
   have hKball : IsCompact Kball := by
     have hKc : CompactSpace K := isCompact_iff_compactSpace.mp hK
-    letI : CompactSpace K := hKc
+    let : CompactSpace K := hKc
     have hball : IsCompact (Metric.closedBall (0 : E) R) :=
       isCompact_closedBall (0 : E) R
     convert
@@ -649,7 +647,10 @@ private theorem unitRest_compact
     have hsymm := e.continuousOn_symm.comp hpair.continuousOn hmaps
     refine hsymm.congr ?_
     intro z hz
-    simp [toTan, Bundle.Trivialization.symmL_apply]
+    change (TotalSpace.mk' E (E := fun x : M => TangentSpace I x)
+      z.1.1 (e.symmL Real z.1.1 z.2)) =
+        TotalSpace.mk' E z.1.1 (e.symm z.1.1 z.2)
+    rw [e.symmL_apply (hKe z.1.2)]
   let unitSet : Set (TangentBundle I M) :=
     {p | g.inner p.proj p.2 p.2 = 1}
   let D : Set (K × E) := Kball ∩ toTan ⁻¹' unitSet
@@ -719,20 +720,15 @@ private theorem unitRest_compact
         simpa [w] using
           e.symmL_continuousLinearMapAt (R := Real) hybase
             (MetricUnitTangent.vec (I := I) (M := M) p)
-      cases p with
-      | mk p hpunit =>
-        cases p with
-        | mk x v =>
-          change
-            (TotalSpace.mk' E (E := fun x : M => TangentSpace I x)
-              x (e.symmL Real x w)) =
-            (⟨x, v⟩ : TangentBundle I M)
-          rw [show e.symmL Real x w = v by
-            simpa [MetricUnitTangent.base, MetricUnitTangent.vec] using hsymm]
+      change
+        (TotalSpace.mk' E (E := fun x : M => TangentSpace I x)
+          y.1 (e.symmL Real y.1 w)) = p.1
+      refine TotalSpace.ext rfl ?_
+      exact heq_of_eq hsymm
     · rintro ⟨z, rfl⟩
       exact z.1.1.2
   rw [hlocal]
-  haveI : CompactSpace D := isCompact_iff_compactSpace.mp hDcompact
+  have : CompactSpace D := isCompact_iff_compactSpace.mp hDcompact
   exact isCompact_range hmkCont
 
 theorem metricUnitOn_compact
@@ -807,10 +803,9 @@ theorem metricUnit_quadCont
   have hv : ∀ i : Fin 2, Continuous (fun p : MetricUnitTangent (I := I) (M := M) g =>
       TotalSpace.mk' E (E := fun x : M => TangentSpace I x) (b p) (v i p)) := by
     intro i
-    simpa [b, v, MetricUnitTangent.base, MetricUnitTangent.vec] using
-      (continuous_subtype_val :
-        Continuous (fun p : MetricUnitTangent (I := I) (M := M) g =>
-          (p.1 : TangentBundle I M)))
+    exact (continuous_subtype_val :
+      Continuous (fun p : MetricUnitTangent (I := I) (M := M) g =>
+        (p.1 : TangentBundle I M))).congr fun _ => rfl
   have hAsec : Continuous (fun x : M =>
       TotalSpace.mk' (Tensor0SModel 2 Real E)
         (E := fun y : M => Tensor0SSpace 2 I y) x (A x)) :=
@@ -822,7 +817,7 @@ theorem metricUnit_quadCont
   have hEval := TensorMultilinear.continuous_section_apply_base
     (𝕜 := Real) (I := I) (M := M) (P := MetricUnitTangent (I := I) (M := M) g)
     (n := 2) b hb (fun p => A (b p)) hA v hv
-  simpa [quad02, b, v] using hEval
+  exact hEval.congr fun _ => rfl
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem tensor02_smul2

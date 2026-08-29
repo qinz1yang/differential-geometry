@@ -35,7 +35,7 @@ lemma Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : Continuous f) (hcs : HasCompactSupport f) :
     Integrable f (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   exact hf.integrable_of_hasCompactSupport hcs
 
@@ -61,8 +61,8 @@ theorem tangentSectionAction_mul
   have hmfderiv_eq : fh' = f x • h' + h x • f' := hmul.mfderiv
   change fh' (X x) = f' (X x) * h x + f x * h' (X x)
   rw [hmfderiv_eq]
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-      ContinuousLinearMap.smul_apply]
+  rw [add_apply, smul_apply,
+      smul_apply]
   rw [smul_eq_mul, smul_eq_mul]
   ring
 
@@ -74,7 +74,7 @@ theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence
     (hX : HasCompactSupport X) :
     ∫ x, tangentSectionAction (I := I) X f x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      -∫ x, f x * divergence_g (I := I) g X x
+      -∫ x, f x * divergenceG (I := I) g X x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   set Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := smoothSmul (I := I) f hf X with hY_def
@@ -82,46 +82,46 @@ theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence
       Function.support (X : ∀ x, TangentSpace I x) := by
     intro x hx
     by_contra hneX
-    rw [Function.notMem_support] at hneX
+    have hXx : X x = 0 := Function.notMem_support.mp hneX
     have hYx : (Y : ∀ x, TangentSpace I x) x = (0 : TangentSpace I x) := by
       change f x • X x = (0 : TangentSpace I x)
-      rw [hneX]
+      rw [hXx]
       exact smul_zero _
     exact hx hYx
   have hY_cs : HasCompactSupport Y := by
     refine HasCompactSupport.of_support_subset_isCompact (hX : IsCompact (tsupport X)) ?_
     exact hY_support.trans (subset_tsupport _)
   have hY_div : ∀ x : M,
-      divergence_g (I := I) g Y x =
-        f x * divergence_g (I := I) g X x + tangentSectionAction (I := I) X f x :=
+      divergenceG (I := I) g Y x =
+        f x * divergenceG (I := I) g X x + tangentSectionAction (I := I) X f x :=
     divergence_g_smoothSmul (I := I) g f hf X
   have hf_cont : Continuous f := hf.continuous
-  have hX_div_cont : Continuous (divergence_g (I := I) g X) :=
+  have hX_div_cont : Continuous (divergenceG (I := I) g X) :=
     (divergence_g_contMDiff (I := I) g X).continuous
   have hAct_cont : Continuous (tangentSectionAction (I := I) X f) :=
     (tangentSectionAction_contMDiff (I := I) X hf).continuous
-  have hX_div_cs : HasCompactSupport (divergence_g (I := I) g X) :=
+  have hX_div_cs : HasCompactSupport (divergenceG (I := I) g X) :=
     hasCompactSupport_divergence_g (I := I) g hX
   have hAct_cs : HasCompactSupport (tangentSectionAction (I := I) X f) :=
     hasCompactSupport_tangentSectionAction (I := I) hX f
-  have hMul_cont : Continuous (fun x : M => f x * divergence_g (I := I) g X x) :=
+  have hMul_cont : Continuous (fun x : M => f x * divergenceG (I := I) g X x) :=
     hf_cont.mul hX_div_cont
-  have hMul_cs : HasCompactSupport (fun x : M => f x * divergence_g (I := I) g X x) :=
+  have hMul_cs : HasCompactSupport (fun x : M => f x * divergenceG (I := I) g X x) :=
     hX_div_cs.mul_left
   have h_div_Y_zero :
-      ∫ x, divergence_g (I := I) g Y x ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 :=
+      ∫ x, divergenceG (I := I) g Y x ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 :=
     integral_divergence_eq_zero_of_hasCompactSupport (I := I) g Y hY_cs
-  have h_eq_pointwise : ∀ x : M, divergence_g (I := I) g Y x =
-      f x * divergence_g (I := I) g X x + tangentSectionAction (I := I) X f x :=
+  have h_eq_pointwise : ∀ x : M, divergenceG (I := I) g Y x =
+      f x * divergenceG (I := I) g X x + tangentSectionAction (I := I) X f x :=
     hY_div
   have h_div_Y_split :
-      ∫ x, divergence_g (I := I) g Y x ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-        ∫ x, (f x * divergence_g (I := I) g X x +
+      ∫ x, divergenceG (I := I) g Y x ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
+        ∫ x, (f x * divergenceG (I := I) g X x +
                 tangentSectionAction (I := I) X f x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
     exact h_eq_pointwise x
-  have h_int_mul : Integrable (fun x : M => f x * divergence_g (I := I) g X x)
+  have h_int_mul : Integrable (fun x : M => f x * divergenceG (I := I) g X x)
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
       (I := I) g hMul_cont hMul_cs
@@ -130,16 +130,16 @@ theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence
     Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
       (I := I) g hAct_cont hAct_cs
   have h_int_split :
-      ∫ x, (f x * divergence_g (I := I) g X x +
+      ∫ x, (f x * divergenceG (I := I) g X x +
               tangentSectionAction (I := I) X f x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-        ∫ x, f x * divergence_g (I := I) g X x
+        ∫ x, f x * divergenceG (I := I) g X x
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) +
           ∫ x, tangentSectionAction (I := I) X f x
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
     integral_add h_int_mul h_int_act
   have h_sum_zero :
-      ∫ x, f x * divergence_g (I := I) g X x
+      ∫ x, f x * divergenceG (I := I) g X x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) +
         ∫ x, tangentSectionAction (I := I) X f x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
@@ -155,7 +155,7 @@ theorem integral_tangentSectionAction_mul_add_eq_neg
     ∫ x, (tangentSectionAction (I := I) X f x * h x +
             f x * tangentSectionAction (I := I) X h x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      -∫ x, f x * h x * divergence_g (I := I) g X x
+      -∫ x, f x * h x * divergenceG (I := I) g X x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   have hfh : ContMDiff I 𝓘(ℝ) ∞ (f * h) := hf.mul hh

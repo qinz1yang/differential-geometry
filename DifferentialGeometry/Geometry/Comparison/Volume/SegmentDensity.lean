@@ -55,9 +55,12 @@ theorem mfderiv_chartBasis
       simpa [Function.comp_def] using
         (mfderiv_comp (I := 𝓘(ℝ, E)) (I' := I) (I'' := 𝓘(ℝ, E))
           (g := extChartAt I y₀) (f := f) (x := w) hchartdiff hf)
-    simpa [mfderiv_eq_fderiv] using hchain
+    rw [mfderiv_eq_fderiv] at hchain
+    apply ContinuousLinearMap.ext
+    intro v
+    exact congrArg (fun L ↦ L v) hchain
   set T₀ : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
-    trivializationAt E (TangentSpace I) y₀ with hT₀
+    trivializationAt E (TangentSpace I) y₀
   apply (T₀.continuousLinearEquivAt ℝ (f w) hx).injective
   have hrepr :
       (fderiv ℝ (fun u : E => extChartAt I y₀ (f u)) w) ((chartModelBasis E) i) =
@@ -92,15 +95,17 @@ theorem mfderiv_chartBasis
               chartBasisVecFiber (I := I) y₀ k (f w) =
                 (T₀.continuousLinearEquivAt ℝ (f w) hx).symm
                   ((chartModelBasis E) k) := by
-            change T₀.symm (f w) ((chartModelBasis E) k) =
-              (T₀.continuousLinearEquivAt ℝ (f w) hx).symm ((chartModelBasis E) k)
-            rfl
+            rw [chartBasisVecFiber]
+            exact (congrFun
+              ((trivializationAt E (TangentSpace I) y₀).symm_continuousLinearEquivAt_eq hx)
+              ((chartModelBasis E) k)).symm
           rw [hbasis]
           rw [ContinuousLinearEquiv.apply_symm_apply]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
-omit [NeZero (Module.finrank ℝ E)]
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit riemannianBundle
+  [NeZero (Module.finrank ℝ E)]
   [CompleteSpace E]
   [I.Boundaryless]
   [T2Space M]
@@ -138,10 +143,10 @@ theorem gramDiff_det
         refine Finset.sum_congr rfl ?_
         intro k _
         rw [map_smul]
-      rw [hL, ContinuousLinearMap.sum_apply]
+      rw [hL, sum_apply]
       refine Finset.sum_congr rfl ?_
       intro k _
-      rw [ContinuousLinearMap.smul_apply]
+      rw [smul_apply]
       have hR :
           g.inner (f w) (chartBasisVecFiber (I := I) y₀ k (f w))
               (∑ l, J l j • chartBasisVecFiber (I := I) y₀ l (f w))
@@ -172,8 +177,8 @@ theorem gramDiff_det
   rw [hJdet]
   ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E]
   [T2Space (TangentBundle I M)] in
 theorem exp_density_curve

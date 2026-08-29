@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -46,6 +45,7 @@ theorem secComp_zero_kernel
     hy_target hy_off
   exact hzero
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem secCompLimit_ae_zero
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -128,16 +128,22 @@ theorem secCompLimit_ae_zero
           (𝓝 (secCompLimit (I := I) (M := M) r s k hp u
             h_cauchy α Idx Jdx y)) :=
     h_ae.filter_mono
-      (ae_mono (Measure.restrict_mono_set volume Set.diff_subset))
+      (ae_mono (Measure.restrict_mono_set volume Set.sdiff_subset))
   filter_upwards [h_ae_off, ae_restrict_mem h_off_meas] with y hy_tendsto hy_off
   have hzero : ∀ i, secChartComp (I := I) (M := M)
       r s (u (ns i)).1 α Idx Jdx y = 0 := by
     intro i
     exact secComp_zero_kernel (I := I) (M := M)
       r s (u (ns i)).1 α Idx Jdx hy_off.1 hy_off.2
-  exact tendsto_nhds_unique hy_tendsto
-    (by simpa only [hzero] using tendsto_const_nhds)
+  have hseq :
+      (fun i => secChartComp (I := I) (M := M)
+        r s (u (ns i)).1 α Idx Jdx y) = fun _ : ℕ => (0 : ℝ) := by
+    funext i
+    exact hzero i
+  rw [hseq] at hy_tendsto
+  exact tendsto_nhds_unique hy_tendsto tendsto_const_nhds
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem secCompRep_ae
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -161,6 +167,7 @@ theorem secCompRep_ae
     (secCompLimit_ae_zero (I := I) (M := M)
       r s k hp hp_top u h_cauchy α Idx Jdx)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem secCompRep_mem
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -183,6 +190,7 @@ theorem secCompRep_mem
     (secCompLimit_mem (I := I) (M := M)
       r s k hp u h_cauchy α Idx Jdx)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem secCompRep_tendsto
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (hp_top : p ≠ ⊤)
@@ -225,6 +233,7 @@ theorem secCompRep_tendsto
   exact secCompLimit_tendsto (I := I) (M := M)
     r s k hp u h_cauchy α Idx Jdx
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem secCompRep_support
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p)

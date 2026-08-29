@@ -127,7 +127,7 @@ noncomputable def ricciUpperBoundNab2ModelSec
 
 private def ricciUpperBoundCoordTime
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) (v : TangentSpace I x) : Real :=
   -(ricciCoordQuadRHS (I := I) S t x v) +
@@ -141,7 +141,7 @@ private def ricciUpperBoundCoordTime
 
 private def ricciUpperBoundCoordReact
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) (v : TangentSpace I x) : Real :=
   normSq0S (I := I) (S.family.metric t) x 2 (S.ricci t x) *
@@ -165,7 +165,7 @@ noncomputable def ricciUpperBoundReact : TwoTensorReaction (I := I) (M := M) :=
 
 private theorem ricciUpperBoundReact_eval
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) (v : TangentSpace I x) :
     (ricciUpperBoundReact t (S.base.metric t)
@@ -232,7 +232,6 @@ private theorem ricciUpperBoundReactAt_eq_neg_shift
       ring
     rw [hsc]
     rw [sub_eq_add_neg, add_comm]
-    rfl
   unfold ricciUpperBoundReactAt shiftNAt
   rw [hshift]
   let trA : Real := metricTracePair0SAt (I := I) g A
@@ -261,7 +260,7 @@ private theorem ricciUpperBoundReactAt_eq_neg_shift
 
 private theorem ricciUpperBoundReactAt_of_solution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     {t : Real} {x : M}
     (hdim : Module.finrank Real (TangentSpace I x) = 3)
@@ -316,7 +315,7 @@ private theorem ricciUpperBoundReactAt_of_solution
 
 private theorem ricciUpperBoundNab2ModelSec_neg
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) :
     (ricciUpperBoundNab2ModelSec S t) x = -pinchNab2Model S (1 / 2) t x := by
@@ -324,7 +323,7 @@ private theorem ricciUpperBoundNab2ModelSec_neg
 
 private theorem ricciUpperBoundHeat_coord
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) (v : TangentSpace I x) :
     tensorHeatWithDrift2QuadMetricAt (I := I) (S.base.metric t)
@@ -341,15 +340,15 @@ private theorem ricciUpperBoundHeat_coord
     (pinchNab2Model S (1 / 2) t x) (vec2 (I := I) v v)]
   classical
   let basis :=
-    DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+    DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let gInv :
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
         DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
     fun k l =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
         (I := I) (S.base.metric t) x k l (extChartAt I x x)
   have hinv :
-      MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis gInv := by
+      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv := by
     simpa [basis, gInv] using
       Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) (S.base.metric t) x
@@ -360,9 +359,8 @@ private theorem ricciUpperBoundHeat_coord
   ring
 
 private theorem ricciUpperBoundQuadDeriv_coord
-    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
@@ -407,9 +405,8 @@ private theorem ricciUpperBoundQuadDeriv_coord
   ring
 
 private theorem ricci_upper_bound_parabolic_of_react
-    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T : Real}
@@ -456,9 +453,8 @@ private theorem ricci_upper_bound_parabolic_of_react
             ring
 
 theorem ricci_upper_bound_parabolic
-    [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T : Real}
@@ -826,7 +822,7 @@ private theorem ricciUpperBoundReactAt_shift_invariant
 
 private theorem ricciUpperBoundReact_barrier_eq
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     {x : M}
     (hdim : Module.finrank Real (TangentSpace I x) = 3)
@@ -915,7 +911,7 @@ private theorem ricciUpperBoundReact_barrier_eq
 
 private theorem ricciUpperBoundSpatialModel
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     TensorSpatialDerivs (I := I) (M := M)
       (fun t : Real => S.base.connection t) (ricciUpperBoundSec S)
@@ -933,7 +929,7 @@ private theorem ricciUpperBoundSpatialModel
 
 private theorem ricciUpperBoundSec_neg_pinch_eval
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x : M) (v w : TangentSpace I x) :
     twoTensorSecToFamily (I := I) (M := M) (ricciUpperBoundSec S) t x v w =
@@ -959,7 +955,7 @@ private theorem ricciUpperBoundSec_neg_pinch_eval
 
 private theorem ricciUpperBoundSecFamilyContinuousOnSet
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) {T : Real}
     (hTsub : Set.Icc 0 T ⊆ D.carrier) :
@@ -974,7 +970,7 @@ private theorem ricciUpperBoundSecFamilyContinuousOnSet
 
 private theorem ricciUpperBoundSec_tangentBundle_cont
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval} {K : Set Real}
-    [SigmaCompactSpace M] [T2Space M]
+    [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) {T : Real}
     (hTsub : Set.Icc 0 T ⊆ D.carrier)
@@ -989,7 +985,7 @@ private theorem ricciUpperBoundSec_tangentBundle_cont
 
 private theorem ricciUpperBoundBarrierReg
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) {T : Real}
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
@@ -1003,9 +999,16 @@ private theorem ricciUpperBoundBarrierReg
   tensor_eval_continuous := by
     intro x v w
     have hP := pinchEval_contOn (I := I) (M := M) S hS (delta := 1 / 2) hTsub x v w
-    convert hP.neg using 1
-    ext t
-    rw [ricciUpperBoundSec_neg_pinch_eval (I := I) S]
+    have hneg := hP.neg
+    have hfun :
+        -(fun t : Real => twoTensorSecToFamily (I := I) (M := M)
+          (pinchSec (I := I) S (1 / 2)) t x v w) =
+          fun t => twoTensorSecToFamily (I := I) (M := M)
+            (ricciUpperBoundSec S) t x v w := by
+      funext t
+      rw [Pi.neg_apply, ricciUpperBoundSec_neg_pinch_eval (I := I) S]
+    rw [hfun] at hneg
+    exact hneg
   metric_eval_continuous := by
     intro x v w
     simpa [SolutionOn.family] using
@@ -1017,10 +1020,17 @@ private theorem ricciUpperBoundBarrierReg
           (fun t : Real =>
             twoTensorSecToFamily (I := I) (M := M) (ricciUpperBoundSec S) t x v w)
           (Set.Icc t0 (t0 + d)) := by
-      convert ((pinchEval_contOn (I := I) (M := M) S hS
-        (delta := 1 / 2) hTsub x v w).neg).mono hsub using 1
-      ext t
-      rw [ricciUpperBoundSec_neg_pinch_eval (I := I) S]
+      have hneg := ((pinchEval_contOn (I := I) (M := M) S hS
+        (delta := 1 / 2) hTsub x v w).neg).mono hsub
+      have hfun :
+          -(fun t : Real => twoTensorSecToFamily (I := I) (M := M)
+            (pinchSec (I := I) S (1 / 2)) t x v w) =
+            fun t => twoTensorSecToFamily (I := I) (M := M)
+              (ricciUpperBoundSec S) t x v w := by
+        funext t
+        rw [Pi.neg_apply, ricciUpperBoundSec_neg_pinch_eval (I := I) S]
+      rw [hfun] at hneg
+      exact hneg
     have hGcont :
         ContinuousOn
           (fun t : Real => (S.base.metric t).inner x v w)
@@ -1038,7 +1048,19 @@ private theorem ricciUpperBoundBarrierReg
       have hlin : Continuous (fun t : Real => d + t - t0) :=
         (continuous_const.add continuous_id).sub continuous_const
       exact (continuous_const.mul hlin).continuousOn
-    simpa [tensorBarrierFamily] using hScont.add (hcoef.mul hGcont)
+    have hadd := hScont.add (hcoef.mul hGcont)
+    have hfun :
+        (fun t : Real => twoTensorSecToFamily (I := I) (M := M)
+            (ricciUpperBoundSec S) t x v w) +
+          (fun t : Real => epsilon * (d + t - t0)) *
+            (fun t : Real => (S.base.metric t).inner x v w) =
+          fun t => tensorBarrierFamily (I := I) (M := M) S.base.metric
+            (twoTensorSecToFamily (I := I) (M := M) (ricciUpperBoundSec S))
+            epsilon d t0 t x v w := by
+      funext t
+      rw [Pi.add_apply, Pi.mul_apply, tensorBarrierFamily_apply]
+    rw [hfun] at hadd
+    exact hadd
   metricGainControl :=
     pinchMetricGain (I := I) (M := M) S hS hTsub hTreg
   smallBarrierLip := by
@@ -1052,7 +1074,7 @@ private theorem ricciUpperBoundBarrierReg
 
 private theorem ricciUpperBoundSecCore
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompactSpace M] [SigmaCompactSpace M] [T2Space M]
+    [CompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) {T : Real}
     (hdim : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3)
@@ -1076,10 +1098,9 @@ private theorem ricciUpperBoundSecCore
 theorem ricci_upper_bound_preserved
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M]
+    [CompleteSpace E] [CompactSpace M]
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T : Real}
@@ -1199,10 +1220,9 @@ theorem metric_curvature_operator_nonnegative_of_ricci_upper_bound
 theorem metric_curvature_operator_nonnegative_preserved
     [I.Boundaryless] [T2Space M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [CompactSpace M] [SigmaCompactSpace M]
+    [CompleteSpace E] [CompactSpace M]
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
     {T : Real}

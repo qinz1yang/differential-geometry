@@ -99,7 +99,7 @@ theorem exists_tensorPouSobolevHsNorm_toReal_le_iteratedCovGrad_tensorL2Norm_sum
                 (iteratedCovGrad g r s j T)
         ≤ ENNReal.ofReal CB *
             ENNReal.ofReal (CAmax * ∑ j ∈ Finset.range (2 * k + 1), L j) := by
-          exact mul_le_mul_of_nonneg_left h_sum_le (zero_le _)
+          exact mul_le_mul_of_nonneg_left h_sum_le (zero_le)
       _ = ENNReal.ofReal
             (CB * CAmax * ∑ j ∈ Finset.range (2 * k + 1), L j) := by
           rw [← ENNReal.ofReal_mul hCB_nn, mul_assoc]

@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.PointwiseCurvatureDerivative
 import DifferentialGeometry.Geometry.Comparison.Variation.PerpFrame
 
+
 noncomputable section
 
 set_option autoImplicit false
@@ -147,7 +148,10 @@ private theorem curvDeriv_left_at
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (γ s) (B i (γ s)) : TangentBundle I M)) := by
     intro i
-    simpa only [Function.comp_apply] using (hBsm i).comp hγ
+    change ContMDiff 𝓘(Real, Real) (I.prod 𝓘(Real, E)) ∞
+      ((fun b : M => TotalSpace.mk' E
+        (E := (TangentSpace I : M -> Type _)) b (B i b)) ∘ γ)
+    exact (hBsm i).comp hγ
   have hcEq : ∀ i, c i t = c' i t := by
     intro i
     rw [hcval i, hcval' i, chartSectionCoord_def, chartSectionCoord_def]
@@ -248,7 +252,10 @@ private theorem curvDeriv_mid_at
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (γ s) (B i (γ s)) : TangentBundle I M)) := by
     intro i
-    simpa only [Function.comp_apply] using (hBsm i).comp hγ
+    change ContMDiff 𝓘(Real, Real) (I.prod 𝓘(Real, E)) ∞
+      ((fun b : M => TotalSpace.mk' E
+        (E := (TangentSpace I : M -> Type _)) b (B i b)) ∘ γ)
+    exact (hBsm i).comp hγ
   have hcEq : ∀ i, c i t = c' i t := by
     intro i
     rw [hcval i, hcval' i, chartSectionCoord_def, chartSectionCoord_def]
@@ -349,7 +356,10 @@ private theorem curvDeriv_right_at
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (γ s) (B i (γ s)) : TangentBundle I M)) := by
     intro i
-    simpa only [Function.comp_apply] using (hBsm i).comp hγ
+    change ContMDiff 𝓘(Real, Real) (I.prod 𝓘(Real, E)) ∞
+      ((fun b : M => TotalSpace.mk' E
+        (E := (TangentSpace I : M -> Type _)) b (B i b)) ∘ γ)
+    exact (hBsm i).comp hγ
   have hcEq : ∀ i, c i t = c' i t := by
     intro i
     rw [hcval i, hcval' i, chartSectionCoord_def, chartSectionCoord_def]
@@ -457,7 +467,7 @@ theorem curvDeriv_congr_at
       curvDeriv_right_at (I := I) g γ X' Y' Z Z' t
         hγ hX' hY' hZ hZ' hZt
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem curvDeriv_restrict
     (g : SmoothRiemannianMetric I M) (γ : Real -> M)
     (X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -549,7 +559,7 @@ theorem curvDeriv_restrict
   rw [← hD]
   rfl
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem curvDeriv_eq_nabla
     (g : SmoothRiemannianMetric I M) (γ : Real -> M)
     (X Y Z : ∀ s, TangentSpace I (γ s)) (t : Real)
@@ -590,19 +600,28 @@ theorem curvDeriv_eq_nabla
         (fun s : Real =>
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (γ s) (X₀ (γ s)) : TangentBundle I M)) := by
-    simpa only [Function.comp_apply] using X₀.contMDiff.comp hγ
+    change ContMDiff 𝓘(Real, Real) (I.prod 𝓘(Real, E)) ∞
+      ((fun x : M => TotalSpace.mk' E
+        (E := (TangentSpace I : M -> Type _)) x (X₀ x)) ∘ γ)
+    exact X₀.contMDiff.comp hγ
   have hY₀ :
       ContMDiff 𝓘(Real, Real) I.tangent ∞
         (fun s : Real =>
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (γ s) (Y₀ (γ s)) : TangentBundle I M)) := by
-    simpa only [Function.comp_apply] using Y₀.contMDiff.comp hγ
+    change ContMDiff 𝓘(Real, Real) (I.prod 𝓘(Real, E)) ∞
+      ((fun x : M => TotalSpace.mk' E
+        (E := (TangentSpace I : M -> Type _)) x (Y₀ x)) ∘ γ)
+    exact Y₀.contMDiff.comp hγ
   have hZ₀ :
       ContMDiff 𝓘(Real, Real) I.tangent ∞
         (fun s : Real =>
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (γ s) (Z₀ (γ s)) : TangentBundle I M)) := by
-    simpa only [Function.comp_apply] using Z₀.contMDiff.comp hγ
+    change ContMDiff 𝓘(Real, Real) (I.prod 𝓘(Real, E)) ∞
+      ((fun x : M => TotalSpace.mk' E
+        (E := (TangentSpace I : M -> Type _)) x (Z₀ x)) ∘ γ)
+    exact Z₀.contMDiff.comp hγ
   have hXval : X t = X₀ (γ t) :=
     (smoothExtensionTangent_eq (I := I) (γ t) (X t)).symm
   have hYval : Y t = Y₀ (γ t) :=

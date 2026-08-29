@@ -97,7 +97,7 @@ theorem deTurckRHS_diff_frame_component_apply
           (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)
       - deTurckRicciRHS (I := I) g_bg g₂ x
           (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x) := by
-  rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply]
+  rw [sub_apply, sub_apply]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -125,16 +125,16 @@ theorem deTurckRHS_diff_frame_component_contMDiffOn
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
-  Bundle.continuousMultilinearMap.mixed_instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Bundle.continuousMultilinearMap.mixedInstNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixedInstNormedSpace
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 theorem deTurckRHS_diff_gNorm_le_modelNorm_pointwise
     (g₀ : SmoothRiemannianMetric I M) (x₀ : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 2
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 2
     ∃ D : ℝ, 0 < D ∧ ∀ T : TensorRSSpace 0 2 I x₀,
       ‖T‖ ≤ D * ‖TensorRSSpace.toModel (𝕜 := ℝ) (I := I) T‖ :=
   gNorm_le_modelNorm_pointwise (I := I) (M := M) g₀ 0 2 x₀

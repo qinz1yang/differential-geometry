@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Boundary.DefiningFunction
 import DifferentialGeometry.Geometry.Comparison.Variation.SmoothCurveGerm
+import DifferentialGeometry.Analysis.Calculus.CurveDerivative
 import Mathlib.Analysis.Calculus.DerivativeTest
 import Mathlib.Geometry.Manifold.Instances.Icc
 
@@ -9,6 +10,7 @@ noncomputable section
 
 open Bundle Filter Set SignType
 open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Analysis.Calculus
 open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.Geometry.Boundary
@@ -20,44 +22,25 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 
-omit [FiniteDimensional Real E] [IsManifold I ∞ M] in
-private theorem hasDerivAt_comp_mfderiv
-    (f : M → Real) (gamma : Real → M) (t : Real)
-    (hf : MDifferentiableAt I (modelWithCornersSelf Real Real) f (gamma t))
-    (hgamma : MDifferentiableAt (modelWithCornersSelf Real Real) I gamma t) :
-    HasDerivAt (fun s => f (gamma s))
-      (NormedSpace.fromTangentSpace (f (gamma t))
-        (mfderiv I (modelWithCornersSelf Real Real) f (gamma t)
-          (mfderiv (modelWithCornersSelf Real Real) I gamma t 1))) t := by
-  rw [hasDerivAt_iff_hasFDerivAt]
-  have hcomp := hf.hasMFDerivAt.comp t hgamma.hasMFDerivAt
-  have hcomp' := hcomp.hasFDerivAt
-  convert hcomp' using 1
-  change ContinuousLinearMap.toSpanSingleton Real
-      (((mfderiv I (modelWithCornersSelf Real Real) f (gamma t)).comp
-        (mfderiv (modelWithCornersSelf Real Real) I gamma t)) 1) = _
-  exact ContinuousLinearMap.toSpanSingleton_apply_map_one
-    (R₁ := Real) (M₂ := Real) _
-
 private theorem hasDerivAt_comp_neg_gradient
     (g : SmoothRiemannianMetric I M)
     (f rho : M → Real) (p : M) (gamma : Real → M)
     (hgamma0 : gamma 0 = p)
     (hf : MDifferentiableAt I (modelWithCornersSelf Real Real) f p)
     (hgamma : MDifferentiableAt (modelWithCornersSelf Real Real) I gamma 0)
-    (hvelocity : mfderiv (modelWithCornersSelf Real Real) I gamma 0 1 =
+    (hvelocity : mfderiv (modelWithCornersSelf Real Real) I gamma 0 (realTangentOne 0) =
       -gradientFun (I := I) g rho p) :
     HasDerivAt (fun s => f (gamma s))
       (-g.inner p (gradientFun (I := I) g f p)
         (gradientFun (I := I) g rho p)) 0 := by
-  have hcurve := hasDerivAt_comp_mfderiv (I := I) f gamma 0
+  have hcurve := hasDerivAt_comp_mfderiv_along I f gamma 0
     (by simpa [hgamma0] using hf) hgamma
   rw [hgamma0] at hcurve
   convert hcurve using 1
   change -g.inner p (gradientFun (I := I) g f p)
       (gradientFun (I := I) g rho p) =
     mfderiv I (modelWithCornersSelf Real Real) f p
-      (mfderiv (modelWithCornersSelf Real Real) I gamma 0 1)
+      (mfderiv (modelWithCornersSelf Real Real) I gamma 0 (realTangentOne 0))
   rw [hvelocity, map_neg]
   rw [inner_gradientFun]
   rfl
@@ -73,7 +56,7 @@ theorem exists_levelSet_inward_curve_of_gradient_ne_zero
       gamma 0 = p ∧
       Set.MapsTo gamma (Set.Icc 0 a) {x | r ≤ rho x ∧ rho x ≤ R} ∧
       MDifferentiableAt (modelWithCornersSelf Real Real) I gamma 0 ∧
-      mfderiv (modelWithCornersSelf Real Real) I gamma 0 1 =
+      mfderiv (modelWithCornersSelf Real Real) I gamma 0 (realTangentOne 0) =
         -gradientFun (I := I) g rho p := by
   let v : TangentSpace I p := -gradientFun (I := I) g rho p
   obtain ⟨gamma, hgamma_smooth, hgamma0, hgamma_deriv⟩ :=
@@ -83,10 +66,11 @@ theorem exists_levelSet_inward_curve_of_gradient_ne_zero
       MDifferentiableAt (modelWithCornersSelf Real Real) I gamma 0 :=
     hgamma_deriv.mdifferentiableAt
   have hvelocity :
-      mfderiv (modelWithCornersSelf Real Real) I gamma 0 1 =
+      mfderiv (modelWithCornersSelf Real Real) I gamma 0 (realTangentOne 0) =
         -gradientFun (I := I) g rho p := by
     rw [hgamma_deriv.mfderiv]
-    change (1 : Real) • v = -gradientFun (I := I) g rho p
+    change NormedSpace.fromTangentSpace (𝕜 := Real) 0 (realTangentOne 0) • v =
+      -gradientFun (I := I) g rho p
     simp [v]
   let q : Real := g.inner p (gradientFun (I := I) g rho p)
     (gradientFun (I := I) g rho p)

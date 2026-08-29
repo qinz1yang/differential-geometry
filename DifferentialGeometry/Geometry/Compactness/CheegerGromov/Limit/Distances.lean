@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 
 
 import Mathlib.Geometry.Manifold.Riemannian.Basic
-import Mathlib.Data.Real.Sqrt
+import Mathlib.Analysis.Real.Sqrt
 import Mathlib.Topology.MetricSpace.Lipschitz
 open DifferentialGeometry.Geometry.Curvature
 
@@ -18,8 +18,8 @@ open scoped Manifold ContDiff ENNReal
 
 section RiemannianNorm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 theorem edist_le_of_path_comp
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -109,8 +109,15 @@ theorem dist_le_of_path_comp
         edist_le_of_path_comp (I := I) F
           (K := ENNReal.ofReal (Real.sqrt (1 + eps)))
           (by simp [Real.sqrt_pos.2 heps]) ENNReal.ofReal_ne_top hpath x y
-      simpa [ENNReal.ofReal, Real.toNNReal_of_nonneg (Real.sqrt_nonneg (1 + eps))] using hraw
-  simpa using hF.dist_le_mul x y
+      rw [ENNReal.ofReal_eq_coe_nnreal (Real.sqrt_nonneg (1 + eps))] at hraw
+      exact hraw
+  have hdist := hF.dist_le_mul x y
+  have hcoe : ((⟨Real.sqrt (1 + eps), Real.sqrt_nonneg (1 + eps)⟩ : NNReal) : ℝ) =
+      Real.sqrt (1 + eps) := rfl
+  calc
+    dist (F x) (F y) ≤
+        ((⟨Real.sqrt (1 + eps), Real.sqrt_nonneg (1 + eps)⟩ : NNReal) : ℝ) * dist x y := hdist
+    _ = Real.sqrt (1 + eps) * dist x y := congrArg (fun c : ℝ => c * dist x y) hcoe
 
 theorem dist_le_tangent
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -184,7 +191,8 @@ theorem image_ball_subset_of_path_comp
         edist_le_of_path_comp (I := I) F
           (K := ENNReal.ofReal (Real.sqrt (1 + eps)))
           (by simp [Real.sqrt_pos.2 heps]) ENNReal.ofReal_ne_top hpath x y
-      simpa [ENNReal.ofReal, Real.toNNReal_of_nonneg (Real.sqrt_nonneg (1 + eps))] using hraw
+      rw [ENNReal.ofReal_eq_coe_nnreal (Real.sqrt_nonneg (1 + eps))] at hraw
+      exact hraw
   exact image_ball_subset_of_lipschitz_sqrt F heps hF x0 r
 
 theorem image_ball_tangent

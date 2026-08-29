@@ -58,7 +58,7 @@ theorem chartCoeff_deTurckVF_eq_chartDeTurckVFComp
   rw [deTurckVF_apply_eq_chartDeTurckVFComp_sum (I := I) g g_bg α hx]
   rw [map_sum]
   rw [map_sum]
-  simp only [Finsupp.coe_finset_sum, Finset.sum_apply]
+  simp only [Finsupp.coe_finsetSum, Finset.sum_apply]
   have hbasis : ∀ p : Fin (Module.finrank ℝ E),
       ((chartModelBasis E).repr (trivToE (I := I) α x
           (chartDeTurckVFComp (I := I) g g_bg α p (extChartAt I α x) •

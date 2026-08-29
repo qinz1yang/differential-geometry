@@ -244,7 +244,7 @@ theorem contDiffOn_inf_of_pde
   cases n with
   | zero =>
     exact (contDiffOn_one_of_pde hU hpde hslice hR.continuousOn hW.continuousOn).of_le
-      (by exact_mod_cast Nat.zero_le 1)
+      (by exact_mod_cast Nat.zero_le (n := 1))
   | succ q =>
     have h := contDiffOn_succ_of_pde (q := q) hU hpde hslice
       (hR.of_le (mod_cast le_top)) (hW.of_le (mod_cast le_top))

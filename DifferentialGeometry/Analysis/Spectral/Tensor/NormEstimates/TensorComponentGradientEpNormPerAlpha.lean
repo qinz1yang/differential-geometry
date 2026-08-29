@@ -13,7 +13,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -74,7 +73,7 @@ lemma coe_nnnorm_eq_ofReal_norm {X : Type*} [SeminormedAddCommGroup X]
     (x : X) :
     (‖x‖₊ : ℝ≥0∞) = ENNReal.ofReal ‖x‖ := by
   rw [show ((‖x‖₊ : ℝ≥0∞)) = ‖x‖ₑ from (enorm_eq_nnnorm x).symm,
-    ← ofReal_norm_eq_enorm x]
+    ← ofReal_norm x]
 
 lemma sum_norm_sq_le_card_mul_sum_norm_sq
     {ι : Type*} {X : Type*} [SeminormedAddCommGroup X]
@@ -199,8 +198,8 @@ private lemma norm_sq_map_neg_sum_add_sum_le
     _ = C ^ 2 * (2 * ((r' : ℝ) + (s' : ℝ))) * ((r' : ℝ) + (s' : ℝ)) *
           M ^ 2 * t ^ 2 := by ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
   Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace in
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
@@ -210,7 +209,7 @@ private theorem tchr_model_triv_per_direction_le
     (T : SmoothCcTensor g r s) {b : M}
     (k : Fin (Module.finrank ℝ E)) (Cto M_F : ℝ) :
     letI : Bundle.RiemannianBundle (fun y : M => TensorRSSpace r s I y) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     letI : NormedAddCommGroup (TensorRSSpace r s I b) :=
       tensorRSRiemannianNormedAddCommGroup r s b
     (∀ X : TensorRSSpace r s I b,
@@ -238,9 +237,9 @@ private theorem tchr_model_triv_per_direction_le
         Cto ^ 2 * (2 * ((r : ℝ) + (s : ℝ))) * ((r : ℝ) + (s : ℝ)) *
           M_F ^ 2 * ‖T.toSection b‖ ^ 2 := by
   classical
-  letI : Bundle.RiemannianBundle (fun y : M => TensorRSSpace r s I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
-  letI : NormedAddCommGroup (TensorRSSpace r s I b) :=
+  let : Bundle.RiemannianBundle (fun y : M => TensorRSSpace r s I y) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
+  let : NormedAddCommGroup (TensorRSSpace r s I b) :=
     tensorRSRiemannianNormedAddCommGroup r s b
   intro hCto hinput houtput
   exact norm_sq_map_neg_sum_add_sum_le
@@ -254,8 +253,8 @@ private theorem tchr_model_triv_per_direction_le
       (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α k) b l)
     hinput houtput
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
   Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace in
 omit [CompleteSpace E] in
@@ -278,8 +277,8 @@ private theorem tchr_model_triv_sum_le_const_mul_tensorInnerPointwise_on_pouTsup
                       (chartBasisVecFiber (I := I) α k) b l))‖ ^ 2) ≤
           C * tensorInnerPointwise (I := I) (M := M) g r s b (T.toFun b) (T.toFun b) := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   set n : ℕ := Module.finrank ℝ E with hn_def
   obtain ⟨M_F_in, hM_F_in_nn, hM_F_in_le⟩ :=
     chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport_local
@@ -302,7 +301,7 @@ private theorem tchr_model_triv_sum_le_const_mul_tensorInnerPointwise_on_pouTsup
   refine ⟨Cto ^ 2 * (2 * ((r : ℝ) + (s : ℝ))) * (n : ℝ) *
       ((r : ℝ) + (s : ℝ)) * M_F ^ 2, by positivity, ?_⟩
   intro T b hb
-  letI tensorNorm : NormedAddCommGroup (TensorRSSpace r s I b) :=
+  let tensorNorm : NormedAddCommGroup (TensorRSSpace r s I b) :=
     tensorRSRiemannianNormedAddCommGroup r s b
   have h_sec_iso : ‖T.toSection b‖ ^ 2 =
       tensorInnerPointwise (I := I) (M := M) g r s b (T.toFun b) (T.toFun b) := by
@@ -360,15 +359,15 @@ private theorem tchr_model_triv_sum_le_const_mul_tensorInnerPointwise_on_pouTsup
           tensorInnerPointwise (I := I) (M := M) g r s b (T.toFun b) (T.toFun b) := by
         rw [h_sec_iso]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
   Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace in
 omit [CompleteSpace E] in
 theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_mul_h1Norm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensorH1 g r s)
         (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -384,8 +383,8 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
             (riemannianVolumeMeasure (I := I) (M := M) g) ≤
           ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   obtain ⟨A, B, hA_nn, hB_nn, h_G1⟩ :=
     g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport_h1
       (I := I) (M := M) g r s α
@@ -735,7 +734,7 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
       calc ∫⁻ b, f1 b ∂μ
           = ENNReal.ofReal A * ∫⁻ b, (‖rawInd b‖ₑ : ℝ≥0∞) ^ 2 ∂μ := h_int_eq
         _ ≤ ENNReal.ofReal A * ENNReal.ofReal (C₄ ^ 2 * ‖S‖ ^ 2) :=
-            mul_le_mul_of_nonneg_left h_G4_sq_lint (zero_le _)
+            mul_le_mul_of_nonneg_left h_G4_sq_lint (zero_le)
         _ = ENNReal.ofReal (A * (C₄ ^ 2 * ‖S‖ ^ 2)) :=
             (ENNReal.ofReal_mul hA_nn).symm
         _ = ENNReal.ofReal (A * C₄ ^ 2 * ‖S‖ ^ 2) := by congr 1; ring
@@ -791,7 +790,7 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
       calc ∫⁻ b, f2 b ∂μ
           = ENNReal.ofReal B * ∫⁻ b, (‖h2 b‖ₑ : ℝ≥0∞) ^ 2 ∂μ := h_int_eq
         _ ≤ ENNReal.ofReal B * ENNReal.ofReal (C₂ ^ 2 * ‖S‖ ^ 2) :=
-            mul_le_mul_of_nonneg_left h_G2_sq_lint (zero_le _)
+            mul_le_mul_of_nonneg_left h_G2_sq_lint (zero_le)
         _ = ENNReal.ofReal (B * (C₂ ^ 2 * ‖S‖ ^ 2)) :=
             (ENNReal.ofReal_mul hB_nn).symm
         _ = ENNReal.ofReal (B * C₂ ^ 2 * ‖S‖ ^ 2) := by congr 1; ring

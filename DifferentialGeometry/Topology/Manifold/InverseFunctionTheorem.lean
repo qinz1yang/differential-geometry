@@ -257,7 +257,7 @@ theorem exists_partialDiffeomorph_of_contMDiffOn_infty
       rw [hEqΦ hzsrc]; exact Φ.toPartialEquiv.right_inv hy
     obtain ⟨Ψ, hzΨ, hEqΨ⟩ :=
       isLocalDiffeomorphAt_of_contMDiffOn (n := ((max 1 k : ℕ) : WithTop ℕ∞))
-        (by exact_mod_cast le_max_left 1 k) (by exact_mod_cast ENat.coe_ne_top (max 1 k))
+        (by exact_mod_cast le_max_left 1 k) (by exact_mod_cast ENat.natCast_ne_top (max 1 k))
         hU hzU (hf.of_le (by exact_mod_cast le_top)) (hinv _ hzU)
     have hWopen : IsOpen (Φ.target ∩ (Ψ.target ∩ (Ψ.symm : N → M) ⁻¹' Φ.source)) :=
       Φ.open_target.inter (Ψ.symm.contMDiffOn.continuousOn.isOpen_inter_preimage
@@ -324,8 +324,9 @@ theorem isLocalDiffeomorphAt_of_coordinates
       (fderiv ℝ (writtenInExtChartAt 𝓘(ℝ, E) 𝓘(ℝ, F) z G₀)
         (extChartAt 𝓘(ℝ, E) z z)).IsInvertible := by
     intro z hz
-    simpa only [G₀, writtenInExtChartAt, extChartAt_self_eq, modelWithCornersSelf_coe,
-      modelWithCornersSelf_coe_symm, Function.comp_apply, id_eq] using hinv z hz
+    simpa only [G₀, writtenInExtChartAt, extChartAt_model_space_eq_id,
+      PartialEquiv.refl_symm, PartialEquiv.refl_coe, Function.id_comp,
+      Function.comp_id, id_eq] using hinv z hz
   obtain ⟨Ψ, hcxΨ, hΨV, hEqΨ⟩ :=
     exists_partialDiffeomorph_of_contMDiffOn_infty (I := 𝓘(ℝ, E)) (J := 𝓘(ℝ, F)) hV hcxV hGm hinvm
   let cΨ : PartialDiffeomorph I 𝓘(ℝ, F) M F ∞ :=

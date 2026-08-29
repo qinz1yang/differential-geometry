@@ -26,7 +26,7 @@ theorem contDiffOn_wedge_product {s : Set E} (a : E → E [⋀^Fin k]→L[ℝ] �
     ContDiffOn ℝ ⊤ (fun x => a x ∧[ℝ] b x) s := by
   let B : (E [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ] (E [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ]
       (E [⋀^Fin (k + l)]→L[ℝ] ℝ) :=
-    wedge_productL (ContinuousLinearMap.mul ℝ ℝ)
+    wedgeProductL (ContinuousLinearMap.mul ℝ ℝ)
   have h₁ : ContDiffOn ℝ ⊤ (fun x => B (a x)) s := by
     exact (contDiffOn_const (c := B)).clm_apply ha
   exact h₁.clm_apply hb
@@ -60,7 +60,7 @@ theorem wedge_product_compContinuousLinearMap {E' : Type*} [NormedAddCommGroup E
         (h.compContinuousLinearMap A)) v
   rw [uncurryFinAdd, uncurryFinAdd, ContinuousAlternatingMap.domDomCongr_apply,
     ContinuousAlternatingMap.domDomCongr_apply, uncurrySum_apply, uncurrySum_apply,
-    ContinuousMultilinearMap.sum_apply, ContinuousMultilinearMap.sum_apply]
+    _root_.sum_apply, _root_.sum_apply]
   apply Finset.sum_congr rfl
   intro σ hσ
   refine Quotient.inductionOn' σ ?_

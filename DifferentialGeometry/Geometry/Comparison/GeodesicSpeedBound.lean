@@ -116,7 +116,7 @@ theorem geodesic_speed_constant
           (mfderiv 𝓘(ℝ, ℝ) I γ s 1) =
         (g.inner (γ t)) (mfderiv 𝓘(ℝ, ℝ) I γ t 1)
           (mfderiv 𝓘(ℝ, ℝ) I γ t 1) := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   have hγ_mdiff : MDifferentiable 𝓘(ℝ, ℝ) I γ := hγ_C1.mdifferentiable (by norm_num)
   set F : ℝ → ℝ := fun t =>
       (g.inner (γ t)) (mfderiv 𝓘(ℝ, ℝ) I γ t 1)
@@ -221,7 +221,7 @@ theorem isGeodesicOn_speedSq_hasDerivAt_zero
     HasDerivAt (fun r =>
       (g.inner (γ r)) (mfderiv 𝓘(ℝ, ℝ) I γ r 1)
         (mfderiv 𝓘(ℝ, ℝ) I γ r 1)) 0 t := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   have hγ_mdiff_on : MDifferentiableOn 𝓘(ℝ, ℝ) I γ s :=
     hγ_C1.mdifferentiableOn (by norm_num)
   have hγ_mdiffAt : ∀ r ∈ s, MDifferentiableAt 𝓘(ℝ, ℝ) I γ r :=
@@ -349,8 +349,8 @@ theorem isGeodesicOn_speedSq_const
 
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] [PseudoEMetricSpace M]
   [IsRiemannianManifold I M] in
@@ -367,8 +367,8 @@ theorem maximalGeodesic_edist_le_speed_mul_time
         (maximalGeodesic (I := I) g p v s)
         (maximalGeodesic (I := I) g p v t) ≤
       ENNReal.ofReal (Real.sqrt ((g.inner p) v v) * (t - s)) := by
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   set γ : ℝ → M := maximalGeodesic (I := I) g p v with hγ_def
   set c : ℝ := Real.sqrt ((g.inner p) v v) with hc_def
   have hc_nonneg : (0 : ℝ) ≤ c := Real.sqrt_nonneg _
@@ -405,8 +405,8 @@ theorem maximalGeodesic_edist_le_speed_mul_time
 
 variable [CompleteSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] [CompleteSpace M] in
 theorem maximalGeodesic_cauchySeq_of_tendsto_sup
@@ -497,7 +497,7 @@ theorem maximalGeodesic_limit_exists_tangent_speed_eq
       (g.inner y) w w = (g.inner p) v v := by
   have hfin_pos : 0 < Module.finrank ℝ E :=
     Nat.pos_of_ne_zero (NeZero.ne _)
-  haveI hNT : Nontrivial E := Module.nontrivial_of_finrank_pos hfin_pos
+  have hNT : Nontrivial E := Module.nontrivial_of_finrank_pos hfin_pos
   obtain ⟨u, hu_ne⟩ : ∃ u : TangentSpace I y, u ≠ 0 :=
     ⟨(exists_ne (0 : E)).choose, (exists_ne (0 : E)).choose_spec⟩
   set r : ℝ := (g.inner p) v v with hr_def
@@ -513,15 +513,15 @@ theorem maximalGeodesic_limit_exists_tangent_speed_eq
   refine ⟨s • u, ?_⟩
   have step1 :
       (g.inner y) (s • u) (s • u) = s * s * (g.inner y) u u := by
-    rw [map_smul (g.inner y), ContinuousLinearMap.smul_apply,
+    rw [map_smul (g.inner y), smul_apply,
         map_smul (g.inner y u), smul_eq_mul, smul_eq_mul]
     ring
   have hs_sq : s * s = r / (g.inner y) u u := by
     rw [hs_def]; exact Real.mul_self_sqrt hratio_nn
   rw [step1, hs_sq, div_mul_cancel₀ _ hc_ne]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] in
@@ -560,23 +560,20 @@ theorem curve_edist_le_speed_mul_time
   exact (riemannianEDist_le_pathELength (I := I) (γ := γ) (a := s) (b := t)
     hγ_smooth rfl rfl hst).trans h_pathLen_le
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
- in
-theorem curve_exists_limit_of_bounded_speed
+  [CompleteSpace M] in
+theorem curve_cauchy_speed
     {γ : ℝ → M} {a b c : ℝ} (hab : a < b) (hc_nonneg : 0 ≤ c)
     (hγ_smooth : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Ioo a b))
     (hSpeedBound : ∀ τ ∈ Set.Ioo a b,
       ‖mfderiv 𝓘(ℝ, ℝ) I γ τ (1 : ℝ)‖ₑ ≤ ENNReal.ofReal c) :
-    ∃ y : M, Tendsto γ (nhdsWithin b (Set.Iio b))
-      (@nhds M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace y) := by
-  haveI hNB : (nhdsWithin b (Set.Iio b)).NeBot := nhdsLT_neBot b
-  suffices hcauchy : Cauchy (Filter.map γ (nhdsWithin b (Set.Iio b))) by
-    exact cauchy_map_iff_exists_tendsto.mp hcauchy
+    Cauchy (Filter.map γ (nhdsWithin b (Set.Iio b))) := by
+  have hNB : (nhdsWithin b (Set.Iio b)).NeBot := nhdsLT_neBot b
   refine EMetric.cauchy_iff.mpr ⟨?_, ?_⟩
-  · haveI : (Filter.map γ (nhdsWithin b (Set.Iio b))).NeBot := Filter.map_neBot
+  · have : (Filter.map γ (nhdsWithin b (Set.Iio b))).NeBot := Filter.map_neBot
     exact Filter.NeBot.ne this
   · intro ε hε
     obtain ⟨δ₀, _hδ₀_nn, hδ₀_ofReal_pos, hδ₀_ofReal_lt⟩ :=
@@ -648,8 +645,43 @@ theorem curve_exists_limit_of_bounded_speed
             rw [ENNReal.ofReal_lt_ofReal_iff hδ₀_pos]; exact h_cts_lt
       _ < ε := hδ₀_ofReal_lt
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
+  [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] in
+theorem curve_exists_limit_of_bounded_speed
+    {γ : ℝ → M} {a b c : ℝ} (hab : a < b) (hc_nonneg : 0 ≤ c)
+    (hγ_smooth : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Ioo a b))
+    (hSpeedBound : ∀ τ ∈ Set.Ioo a b,
+      ‖mfderiv 𝓘(ℝ, ℝ) I γ τ (1 : ℝ)‖ₑ ≤ ENNReal.ofReal c) :
+    ∃ y : M, Tendsto γ (nhdsWithin b (Set.Iio b))
+      (@nhds M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace y) := by
+  have : (nhdsWithin b (Set.Iio b)).NeBot := nhdsLT_neBot b
+  exact cauchy_map_iff_exists_tendsto.mp
+    (curve_cauchy_speed (I := I) hab hc_nonneg hγ_smooth hSpeedBound)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
+  [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
+  [CompleteSpace M] in
+theorem curve_lim_of_compact
+    {γ : ℝ → M} {a b c : ℝ} {K : Set M}
+    (hab : a < b) (hc_nonneg : 0 ≤ c)
+    (hγ_smooth : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Ioo a b))
+    (hSpeedBound : ∀ τ ∈ Set.Ioo a b,
+      ‖mfderiv 𝓘(ℝ, ℝ) I γ τ (1 : ℝ)‖ₑ ≤ ENNReal.ofReal c)
+    (hK : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace K)
+    (hγK : ∀ᶠ t in nhdsWithin b (Set.Iio b), γ t ∈ K) :
+    ∃ y ∈ K, Tendsto γ (nhdsWithin b (Set.Iio b))
+      (@nhds M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace y) := by
+  have hcauchy := curve_cauchy_speed (I := I) hab hc_nonneg hγ_smooth hSpeedBound
+  exact hK.isComplete _ hcauchy (by
+    rw [le_principal_iff, mem_map]
+    exact hγK)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
  [PseudoEMetricSpace M] [IsRiemannianManifold I M]
   [CompleteSpace M] in
@@ -658,17 +690,17 @@ theorem eventually_mem_nhds_of_tendsto_riemannianEDist
     {α : Type*} {l : Filter α} {f : α → M} {p : M} {s : Set M} (hs : s ∈ 𝓝 p)
     (h : Tendsto (fun a => riemannianEDist I p (f a)) l (𝓝 (0 : ℝ≥0∞))) :
     ∀ᶠ a in l, f a ∈ s := by
-  haveI : LocallyCompactSpace M :=
+  have : LocallyCompactSpace M :=
     Manifold.locallyCompact_of_finiteDimensional (M := M) I
-  haveI : RegularSpace M := inferInstance
-  obtain ⟨c, c_pos, hc⟩ := setOf_riemannianEDist_lt_subset_nhds' I hs
+  have : RegularSpace M := inferInstance
+  obtain ⟨c, c_pos, hc⟩ := setOfPred_riemannianEDist_lt_subset_nhds' I hs
   have hIio : Set.Iio c ∈ 𝓝 (0 : ℝ≥0∞) := Iio_mem_nhds c_pos
   have hev : ∀ᶠ a in l, riemannianEDist I p (f a) < c := h hIio
   filter_upwards [hev] with a ha
   exact hc ha
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M] [CompleteSpace M] in
 theorem tendsto_riemannianEDist_of_tendsto_metric_nhds
@@ -682,8 +714,8 @@ theorem tendsto_riemannianEDist_of_tendsto_metric_nhds
   rw [IsRiemannianManifold.out (I := I) (f a) p, riemannianEDist_comm] at ha
   exact ha.le
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
  [CompleteSpace M] in
 theorem eventually_mem_nhds_of_tendsto_metric_nhds
@@ -694,8 +726,8 @@ theorem eventually_mem_nhds_of_tendsto_metric_nhds
   exact eventually_mem_nhds_of_tendsto_riemannianEDist (I := I) hs
     (tendsto_riemannianEDist_of_tendsto_metric_nhds (I := I) h)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
  [CompleteSpace M] in
 theorem tendsto_nhds_of_tendsto_metric_nhds

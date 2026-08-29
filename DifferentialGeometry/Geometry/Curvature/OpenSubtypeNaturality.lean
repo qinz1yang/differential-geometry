@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Curvature.Metric
 import DifferentialGeometry.Geometry.Metric.OpenSubtype
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartLieBracket
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection
@@ -30,7 +32,7 @@ theorem SmoothRiemannianMetric.eq_of_inner_eq_gen
   have hpair : ∀ ζ : TangentSpace I x, g.inner x (v - w) ζ = 0 := by
     intro ζ
     have hsub : g.inner x (v - w) ζ = g.inner x v ζ - g.inner x w ζ := by
-      simp [map_sub, ContinuousLinearMap.sub_apply]
+      simp [map_sub, sub_apply]
     rw [hsub, h ζ, sub_self]
   have hself : g.inner x (v - w) (v - w) = 0 := hpair (v - w)
   by_contra hne
@@ -39,17 +41,21 @@ theorem SmoothRiemannianMetric.eq_of_inner_eq_gen
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [T2Space M] [IsManifold I ∞ M]
     [SigmaCompactSpace M] in
-theorem extDerivFun_restrictOpen
+theorem mvfderiv_restrictOpen
     (U : TopologicalSpace.Opens M) (f : M -> Real) (x : U) (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f (x : M)) :
-    extDerivFun (I := I) (fun y : U => f (y : M)) x v =
-      extDerivFun (I := I) f (x : M) v := by
+    mvfderiv (I := I) (fun y : U => f (y : M)) x v =
+      mvfderiv (I := I) f (x : M) v := by
   have hval :
       MDifferentiableAt I I (fun y : U => (y : M)) x := by
     exact ((contMDiff_subtype_val (I := I) (U := U)).contMDiffAt).mdifferentiableAt
       infty_ne_zero
-  rw [extDerivFun_real_eq_mfderiv, extDerivFun_real_eq_mfderiv]
-  simpa [Function.comp_def, mfderiv_subtype_val_apply (I := I) U x v] using
+  let vM : TangentSpace I (x : M) := v
+  change mvfderiv (I := I) (fun y : U => f (y : M)) x v =
+    mvfderiv (I := I) f (x : M) vM
+  rw [mvfderiv_real_eq_mfderiv, mvfderiv_real_eq_mfderiv]
+  simpa only [Function.comp_def, mfderiv_subtype_val,
+    ContinuousLinearMap.id_apply] using!
     mfderiv_comp_apply (I := I) (I' := I) (I'' := 𝓘(Real, Real))
       x hf hval v
 
@@ -65,14 +71,16 @@ theorem restrictOpenTangentField_apply
     (U : TopologicalSpace.Opens M) (Y : (p : M) -> TangentSpace I p) (x : U) :
     restrictOpenTangentField (I := I) U Y x = Y (x : M) := by
   unfold restrictOpenTangentField VectorField.mpullback
+  let y : TangentSpace I x := Y (x : M)
   have hval_inv : (mfderiv% (Subtype.val : U -> M) x).IsInvertible := by
     rw [mfderiv_subtype_val (I := I) U x]
     change (ContinuousLinearMap.id Real E).IsInvertible
     exact (ContinuousLinearMap.isInvertible_equiv
       (f := ContinuousLinearEquiv.refl Real E))
-  rw [ContinuousLinearMap.IsInvertible.inverse_apply_eq hval_inv]
-  rw [mfderiv_subtype_val (I := I) U x]
-  rfl
+  change (mfderiv I I (Subtype.val : U -> M) x).inverse (Y (x : M)) = y
+  refine (ContinuousLinearMap.IsInvertible.inverse_apply_eq hval_inv).2 ?_
+  simpa only [y] using!
+    (mfderiv_subtype_val_apply (I := I) U x y).symm
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 theorem mdiffAt_restrictOpen_section
@@ -89,10 +97,9 @@ theorem mdiffAt_restrictOpen_section
     exact (ContinuousLinearMap.isInvertible_equiv
       (f := ContinuousLinearEquiv.refl Real E))
   have hmn : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by
-    have h1 : (2 : ℕ∞) ≤ ⊤ := le_top
-    have h2 : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) :=
-      WithTop.coe_le_coe.mpr h1
-    convert h2 using 1
+    have h : ((2 : ℕ∞) : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by
+      exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
+    exact h
   exact MDifferentiableAt.mpullback_vectorField
     (I := I) (I' := I) (f := (Subtype.val : U -> M)) (V := fun y : M => Y y)
     (x₀ := x) (n := (∞ : WithTop ℕ∞)) hY hval hval_inv hmn
@@ -125,7 +132,7 @@ theorem restrictOpenTangentSection_apply
     (U : TopologicalSpace.Opens M) (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : U) :
     restrictOpenTangentSection (I := I) U Y x = Y (x : M) := by
-  simp [restrictOpenTangentSection]
+  exact restrictOpenTangentField_apply (I := I) U (fun y : M => Y y) x
 
 omit [FiniteDimensional ℝ E] [T2Space M] [SigmaCompactSpace M] in
 theorem mlieBracket_restrictOpen
@@ -136,12 +143,12 @@ theorem mlieBracket_restrictOpen
       VectorField.mlieBracket I
         (restrictOpenTangentField (I := I) U (fun y : M => X y))
         (restrictOpenTangentField (I := I) U (fun y : M => Y y)) x := by
-  haveI : IsManifold I (minSmoothness Real 2) M := by
+  have : IsManifold I (minSmoothness Real 2) M := by
     exact IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by
         rw [minSmoothness_of_isRCLikeNormedField]
         exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ (⊤ : ℕ∞)))
-  haveI : IsManifold I (minSmoothness Real 2) U := by
+  have : IsManifold I (minSmoothness Real 2) U := by
     exact IsManifold.of_le (I := I) (M := U) (n := ∞)
       (by
         rw [minSmoothness_of_isRCLikeNormedField]
@@ -185,9 +192,18 @@ theorem directionalDeriv_restrictOpen_inner
       (I := I) (M := M) g
       Y.contMDiff.contMDiffAt Z.contMDiff.contMDiffAt
       (by simp)).mdifferentiableAt (by simp)
-  simpa [directionalDerivAlong] using
-    extDerivFun_restrictOpen (I := I) U
-      (fun y : M => g.inner y (Y y) (Z y)) x (X (x : M)) hf
+  have hfun :
+      (fun y : U => (g.restrictOpen (I := I) U).inner y
+        (restrictOpenTangentField (I := I) U (fun z : M => Y z) y)
+        (restrictOpenTangentField (I := I) U (fun z : M => Z z) y)) =
+        (fun y : U => g.inner (y : M) (Y (y : M)) (Z (y : M))) := by
+    funext y
+    rw [SmoothRiemannianMetric.restrictOpen_inner,
+      restrictOpenTangentField_apply, restrictOpenTangentField_apply]
+  unfold directionalDerivAlong
+  rw [restrictOpenTangentField_apply, hfun]
+  exact mvfderiv_restrictOpen (I := I) U
+    (fun y : M => g.inner y (Y y) (Z y)) x (X (x : M)) hf
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem koszulScalar_restrictOpen
@@ -205,6 +221,7 @@ theorem koszulScalar_restrictOpen
   rw [directionalDeriv_restrictOpen_inner (I := I) g U X Y Z x,
     directionalDeriv_restrictOpen_inner (I := I) g U Y Z X x,
     directionalDeriv_restrictOpen_inner (I := I) g U Z X Y x]
+  simp only [SmoothRiemannianMetric.restrictOpen_inner]
   rw [← mlieBracket_restrictOpen (I := I) U Y Z x,
     ← mlieBracket_restrictOpen (I := I) U Z X x,
     ← mlieBracket_restrictOpen (I := I) U X Y x]
@@ -222,12 +239,13 @@ theorem metricCov_restrictOpen_apply_section
       (metricCov (I := I) (M := M) g (fun y : M => Y y) (x : M)) (X (x : M)) := by
   apply SmoothRiemannianMetric.eq_of_inner_eq_gen (g.restrictOpen (I := I) U)
   intro ζ
+  let ζM : TangentSpace I (x : M) := ζ
   obtain ⟨Z, hZx⟩ :=
     ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
-      (n := (⊤ : ℕ∞)) (x : M) ζ
+      (n := (⊤ : ℕ∞)) (x : M) ζM
   have hZrestrict :
       restrictOpenTangentField (I := I) U (fun y : M => Z y) x = ζ := by
-    simp [hZx]
+    simpa only [restrictOpenTangentField_apply, ζM] using! hZx
   have hleft :
       (g.restrictOpen (I := I) U).inner x
           ((metricCov (I := I) (M := U) (g.restrictOpen (I := I) U)
@@ -255,7 +273,10 @@ theorem metricCov_restrictOpen_apply_section
         (1 / 2 : Real) *
           koszulScalar (I := I) g
             (fun y : M => X y) (fun y : M => Y y) (fun y : M => Z y) (x : M) := by
-    rw [SmoothRiemannianMetric.restrictOpen_inner, ← hZx]
+    change g.inner (x : M)
+      ((metricCov (I := I) (M := M) g (fun y : M => Y y) (x : M)) (X (x : M)))
+      ζM = _
+    rw [← hZx]
     exact leviCivitaConnectionOfMetric_inner_eq_koszulScalar
       (I := I) g (fun y : M => X y) (fun y : M => Y y) (fun y : M => Z y) (x : M)
       (X.contMDiff.contMDiffAt.mdifferentiableAt infty_ne_zero)
@@ -272,21 +293,19 @@ theorem metricCov_restrictOpen_globalSection
     (metricCov (I := I) (M := U) (g.restrictOpen (I := I) U)
         (restrictOpenTangentField (I := I) U (fun y : M => Y y)) x) v =
       (metricCov (I := I) (M := M) g (fun y : M => Y y) (x : M)) v := by
+  let vM : TangentSpace I (x : M) := v
   obtain ⟨X, hXx⟩ :=
     ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
-      (n := (⊤ : ℕ∞)) (x : M) v
-  calc
+      (n := (⊤ : ℕ∞)) (x : M) vM
+  have hXrestrict :
+      restrictOpenTangentField (I := I) U (fun y : M => X y) x = v := by
+    simpa only [restrictOpenTangentField_apply, vM] using! hXx
+  change
     (metricCov (I := I) (M := U) (g.restrictOpen (I := I) U)
-        (restrictOpenTangentField (I := I) U (fun y : M => Y y)) x) v
-        =
-      (metricCov (I := I) (M := U) (g.restrictOpen (I := I) U)
-        (restrictOpenTangentField (I := I) U (fun y : M => Y y)) x)
-        (restrictOpenTangentField (I := I) U (fun y : M => X y) x) := by
-          simp [hXx]
-    _ =
-      (metricCov (I := I) (M := M) g (fun y : M => Y y) (x : M)) (X (x : M)) := by
-        exact metricCov_restrictOpen_apply_section (I := I) g U X Y x
-    _ = (metricCov (I := I) (M := M) g (fun y : M => Y y) (x : M)) v := by
-      rw [hXx]
+      (restrictOpenTangentField (I := I) U (fun y : M => Y y)) x) v =
+        (metricCov (I := I) (M := M) g (fun y : M => Y y) (x : M)) vM
+  conv_lhs => rw [← hXrestrict]
+  conv_rhs => rw [← hXx]
+  exact metricCov_restrictOpen_apply_section (I := I) g U X Y x
 
 end DifferentialGeometry.Geometry.Curvature

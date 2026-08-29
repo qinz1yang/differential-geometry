@@ -25,11 +25,11 @@ theorem exists_gOrthonormalBasis (g : SmoothRiemannianMetric I M) (x : M) :
         Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real (TangentSpace I x),
       ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0 := by
   classical
-  let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let D := (tangentMetricDataGen (I := I) g x).metric
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let ob := stdOrthonormalBasis Real (TangentSpace I x)
   refine ⟨ob.toBasis, ?_⟩
@@ -38,7 +38,7 @@ theorem exists_gOrthonormalBasis (g : SmoothRiemannianMetric I M) (x : M) :
     MetricFiberData.toCore_inner D (ob i) (ob j)
   have hob := ob.inner_eq_ite i j
   change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricData_gen.inner_eq_gen (tangentMetricData_gen (I := I) g x)
+  rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)
     (ob.toBasis i) (ob.toBasis j)]
   change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
   rw [← hinner]
@@ -54,7 +54,7 @@ theorem ricci_unitSphere_le_of_componentBound
     (u : TangentSpace I x) (hu : g.inner x u u = 1) :
     |Ric (vec2 (I := I) u u)| ≤ (n : Real) * R := by
   classical
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (fun a k => if a = k then (1 : Real) else 0) :=
     metricInverseInBasis_of_orthonormal (I := I) g basis hON
   have hrepr : ∀ i, basis.repr u i = g.inner x u (basis i) := by
@@ -118,7 +118,7 @@ theorem ricci_unitSphere_le_of_componentBound
 theorem abs_component0S_le_sqrt_normSq0S
     (g : SmoothRiemannianMetric I M) {x : M} {ι : Type*} [Fintype ι] [DecidableEq ι]
     {s : ℕ} (basis : Module.Basis ι Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := ι)))
+    (hinv : MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := ι)))
     (A : Tensor0SBundle.Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)
     (slots₀ : Fin s → ι) :
     |component0S (I := I) basis A slots₀| ≤ Real.sqrt (normSq0S (I := I) g x s A) := by
@@ -132,7 +132,7 @@ theorem ricciComp_le_rmNorm
     (g : SmoothRiemannianMetric I M) {x : M}
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (basis : Module.Basis ι Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis
+    (hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := ι)))
     (Ric : Tensor02At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)
@@ -168,7 +168,7 @@ theorem metricRicciComp_le
       (Fintype.card ι : Real) *
         Real.sqrt (normSq0S (I := I) g x 4 (metricRm04At (I := I) (M := M) g x)) := by
   classical
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := ι)) :=
     metricInverseInBasis_of_orthonormal (I := I) g basis hON
   let D := metricCurvData (I := I) (M := M) g
@@ -201,7 +201,7 @@ theorem ricci_unitQuad_le_of_trace
     (g : SmoothRiemannianMetric I M) {x : M} {n : ℕ}
     (basis : Module.Basis (Fin n) Real (TangentSpace I x))
     (hON : ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Fin n)))
+    (hinv : MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Fin n)))
     (Ric : Tensor02At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (htrace : ∀ i j, Ric (vec2 (I := I) (basis i) (basis j))
@@ -239,7 +239,7 @@ theorem tensor02_quadForm_abs_le_normSq0S
           * Real.sqrt (normSq0S (I := I) g x 2 T) * g.inner x v v := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := metricInverseInBasis_of_orthonormal (I := I) g basis hON
     intro i j
@@ -291,7 +291,7 @@ theorem exists_ricci_bound
     mul_nonneg (sq_nonneg _) (Real.sqrt_nonneg _)
   refine ⟨C, hC_nonneg, fun x v => ?_⟩
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := metricInverseInBasis_of_orthonormal (I := I) g basis hON
     intro i j

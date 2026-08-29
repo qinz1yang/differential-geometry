@@ -15,7 +15,7 @@ namespace Geometry
 namespace Riemannian
 namespace NormalCoordinates
 
-variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
@@ -99,7 +99,7 @@ theorem tangentHome_symm_apply {p : M}
       (c.inv y,
         mfderiv I (modelWithCornersSelf Real E) c.inv y v)
   simp only [tangentMapWithin,
-    tangentBundleModelSpaceHomeomorph_coe, TotalSpace.toProd_apply]
+    tangentBundleModelSpaceHomeomorph_coe]
   rw [mfderivWithin_of_isOpen c.restrictBall.open_target hy]
   rfl
 
@@ -125,12 +125,11 @@ theorem tangentHome_inf {p : M}
       (I := 𝓘(Real, E)) (n := (∞ : WithTop ℕ∞))
     unfold ModelProd at hm0
     rw [← chartedSpaceSelf_prod] at hm0
-    simpa only [m] using hm0
+    convert! hm0 using 1
   have ht : ContMDiffOn 𝓘(Real, E).tangent I.tangent ∞
       (t : TangentBundle 𝓘(Real, E) E → TangentBundle I M) t.source := by
-    simpa only [t, PartialDiffeomorph.tangentHome] using
-      Φ.contMDiffOn_toFun.contMDiffOn_tangentMapWithin
-        (m := (∞ : WithTop ℕ∞)) (by simp) Φ.open_source.uniqueMDiffOn
+    convert! Φ.contMDiffOn_toFun.contMDiffOn_tangentMapWithin
+      (m := (∞ : WithTop ℕ∞)) (by simp) Φ.open_source.uniqueMDiffOn using 1
   have hmOn : ContMDiffOn (𝓘(Real, E).prod 𝓘(Real, E))
       𝓘(Real, E).tangent ∞
       (m : E × E → TangentBundle 𝓘(Real, E) E) m.source :=
@@ -158,12 +157,11 @@ theorem tangentHome_inv_inf {p : M}
       (I := 𝓘(Real, E)) (n := (∞ : WithTop ℕ∞))
     unfold ModelProd at hm0
     rw [← chartedSpaceSelf_prod] at hm0
-    simpa only [m] using hm0
+    convert! hm0 using 1
   have ht : ContMDiffOn I.tangent 𝓘(Real, E).tangent ∞
       (t.symm : TangentBundle I M → TangentBundle 𝓘(Real, E) E) t.target := by
-    simpa only [t, PartialDiffeomorph.tangentHome] using
-      Φ.contMDiffOn_invFun.contMDiffOn_tangentMapWithin
-        (m := (∞ : WithTop ℕ∞)) (by simp) Φ.open_target.uniqueMDiffOn
+    convert! Φ.contMDiffOn_invFun.contMDiffOn_tangentMapWithin
+      (m := (∞ : WithTop ℕ∞)) (by simp) Φ.open_target.uniqueMDiffOn using 1
   have hmOn : ContMDiffOn 𝓘(Real, E).tangent
       (𝓘(Real, E).prod 𝓘(Real, E)) ∞
       (m.symm : TangentBundle 𝓘(Real, E) E → E × E) m.target :=
@@ -183,8 +181,7 @@ theorem pairHome_inf {p : M}
   rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
   have h := c.restrictBall.contMDiffOn_toFun.prodMap
     c.restrictBall.contMDiffOn_toFun
-  simpa only [pairHome, OpenPartialHomeomorph.prod_source,
-    OpenPartialHomeomorph.prod_apply] using h
+  convert! h using 1
 
 omit [IsManifold I ∞ M] in
 theorem pairHome_inv_inf {p : M}
@@ -194,8 +191,7 @@ theorem pairHome_inv_inf {p : M}
   rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod]
   have h := c.restrictBall.contMDiffOn_invFun.prodMap
     c.restrictBall.contMDiffOn_invFun
-  simpa only [pairHome, OpenPartialHomeomorph.prod_target,
-    OpenPartialHomeomorph.prod_symm_apply] using h
+  convert! h using 1
 
 end NormalBallChart
 end NormalCoordinates

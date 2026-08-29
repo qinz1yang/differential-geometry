@@ -122,7 +122,7 @@ private lemma gNorm_triangle
       g.inner x a a + 2 * g.inner x a b + g.inner x b b := by
     have h1 : g.inner x (a + b) (a + b) =
         g.inner x a (a + b) + g.inner x b (a + b) := by
-      rw [map_add (g.inner x), ContinuousLinearMap.add_apply]
+      rw [map_add (g.inner x), add_apply]
     have h2 : g.inner x a (a + b) = g.inner x a a + g.inner x a b :=
       map_add (g.inner x a) a b
     have h3 : g.inner x b (a + b) = g.inner x b a + g.inner x b b :=
@@ -176,8 +176,8 @@ private lemma gNorm_sq_sub_eq_self_le
     _ = (Ka + Cb) ^ 2 * (Real.sqrt p ^ 2) := by ring
     _ = (Ka + Cb) ^ 2 * p := by rw [Real.sq_sqrt hp]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_riemannOp_LeviCivita_perturbed_gQuadratic_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
@@ -191,7 +191,7 @@ theorem exists_riemannOp_LeviCivita_perturbed_gQuadratic_le_of_jetEnvelope
         (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B →
           ∀ v w u : TangentSpace I x,
             g₀.inner x (riemannOp (cov := LeviCivita (I := I) g₁) x v w u)
@@ -233,8 +233,8 @@ theorem exists_riemannOp_LeviCivita_perturbed_gQuadratic_le_of_jetEnvelope
     _ = (Real.sqrt Kbase + CD) ^ 2 * g₀.inner x v v * g₀.inner x w w * g₀.inner x u u := by
         rw [hp_def]; ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_ricEndoRaisedFib_perturbed_gQuadratic_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
@@ -248,7 +248,7 @@ theorem exists_ricEndoRaisedFib_perturbed_gQuadratic_le_of_jetEnvelope
         (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B →
           ∀ v : TangentSpace I x,
             g₀.inner x (ricEndoRaisedFib (I := I) g₁ x v)

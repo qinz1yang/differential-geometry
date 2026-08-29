@@ -3,7 +3,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -50,7 +49,7 @@ private lemma euclidPartial_eq_zero_of_notMem_tsupport
     Filter.eventually_of_mem (hopen_c.mem_nhds hy)
       (fun z hz => image_eq_zero_of_notMem_tsupport hz)
   rw [euclidPartial_def, Filter.EventuallyEq.fderiv_eq hu_evt,
-    fderiv_const_apply, ContinuousLinearMap.zero_apply]
+    fderiv_const_apply, zero_apply]
 
 omit [CompleteSpace E] in
 theorem tensorComponent_chartBilinIdentity_of_dirichlet
@@ -402,7 +401,7 @@ theorem tensorComponent_chartBilinIdentity_of_dirichlet
         densityOnEuclid (I := I) g α y *
           covLowerOrderRotationGradCoeff (I := I) (M := M) g r s T α P₀ l y *
             euclidPartial (E := E) l φ y) (volume : Measure EuclN) := by
-    refine MeasureTheory.integrable_finset_sum _ (fun l _ => ?_)
+    refine MeasureTheory.integrable_finsetSum _ (fun l _ => ?_)
     have heq : (fun y => densityOnEuclid (I := I) g α y *
         covLowerOrderRotationGradCoeff (I := I) (M := M) g r s T α P₀ l y *
           euclidPartial (E := E) l φ y) =
@@ -475,7 +474,7 @@ theorem tensorComponent_chartBilinIdentity_of_dirichlet
       ∑ l : Fin (Module.finrank ℝ E),
         ∫ y, weightedGradCoeff (I := I) (M := M) g r s T α P₀ l y *
           euclidPartial (E := E) l φ y ∂(volume : Measure EuclN) := by
-    rw [MeasureTheory.integral_finset_sum _ (fun l _ => by
+    rw [MeasureTheory.integral_finsetSum _ (fun l _ => by
       have heq : (fun y => densityOnEuclid (I := I) g α y *
           covLowerOrderRotationGradCoeff (I := I) (M := M) g r s T α P₀ l y *
             euclidPartial (E := E) l φ y) =
@@ -546,7 +545,7 @@ theorem tensorComponent_chartBilinIdentity_of_dirichlet
             (weightedGradCoeff (I := I) (M := M) g r s T α P₀ l) y * φ y) := by
       funext y
       rw [Finset.sum_mul]
-    rw [hdist, MeasureTheory.integral_finset_sum _ (fun l _ => hint_ibp l)]
+    rw [hdist, MeasureTheory.integral_finsetSum _ (fun l _ => hint_ibp l)]
   have hgradsum_ibp :
       ∫ y, (∑ l : Fin (Module.finrank ℝ E),
         densityOnEuclid (I := I) g α y *

@@ -11,7 +11,6 @@ open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 noncomputable section
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set Filter MeasureTheory DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators NNReal
 
@@ -186,9 +185,9 @@ theorem smoothPath_strong
     have huAE :
         ⇑(timeH1.toTimeL2 (tensorHs (I := I) (M := M) g 0 2 a) T u)
             =ᵐ[timeMeasure T] u.toFun := by
-      simpa only [timeH1.toTimeL2_apply] using
-        DifferentialGeometry.Analysis.Parabolic.TimeSobolev.coeFn_ofContinuousOn
-          u.continuousOn_toFun
+      rw [timeH1.toTimeL2_apply, timeH1.toFunL2]
+      exact DifferentialGeometry.Analysis.Parabolic.TimeSobolev.coeFn_ofContinuousOn
+        u.continuousOn_toFun
     have hmem : ∀ᵐ t ∂(timeMeasure T), t ∈ Icc (0 : ℝ) T :=
       ae_restrict_mem measurableSet_Icc
     filter_upwards [hinclAE, hfieldRep, huAE, hmem] with t hit hft hut ht
@@ -266,6 +265,7 @@ theorem metricDiff_pde
   rw [hrhs]
   simpa only [metricDiff_unit] using hder
 
+omit [SigmaCompactSpace M] in
 theorem rhsBase_eq_lap_rem (g₀ g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
     (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀

@@ -360,7 +360,7 @@ theorem integral_diffQuot_sq_on_tsupport_le_gradL2sqOn
   have h_sum_int : Integrable (fun x : E =>
       ∑ i : Fin d, ((fderiv ℝ u x) (EuclideanSpace.single i 1))^2)
       ((volume : Measure E).restrict Ω') :=
-    integrable_finset_sum _ (fun i _ => h_Ω'_int i)
+    integrable_finsetSum _ (fun i _ => h_Ω'_int i)
   refine setIntegral_mono_on (h_Ω'_int k) h_sum_int hΩ'.measurableSet ?_
   intro x _
   refine Finset.single_le_sum (f := fun i =>

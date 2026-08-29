@@ -98,7 +98,7 @@ theorem supersolution_integrableOn_ball_one_rpow
     (hsuper : IsSupersolution A.1 u) :
     IntegrableOn (fun x => |u x| ^ p) (Metric.ball (0 : E) 1) volume := by
   let μ : Measure E := volume.restrict (Metric.ball (0 : E) 1)
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ]
     rw [isFiniteMeasure_restrict]
     exact measure_ne_top_of_subset Metric.ball_subset_closedBall

@@ -60,6 +60,7 @@ theorem exists_secondCovGrad_l2NormSq_le_rawConnLap_rankGen
   refine ⟨2 + 2 * Ccross, by positivity, fun S => ?_⟩
   exact secondCovGrad_l2NormSq_le_of_cross_bound (I := I) (M := M) g s S Ccross hCcross (hcross S)
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem norm_iteratedCovGrad_comp
@@ -136,7 +137,14 @@ theorem exists_iteratedCovGrad_pointwiseTensorCurv_l2Norm_le
         ccR p * ∑ i ∈ Finset.range (1 + p), riemannianFiberNormSqS (i + 1) x := by
       have h := hccR S p x
       rw [hriemannianFiberNormSqS_def]
-      simpa only [hAR_def] using h
+      have hcov : iteratedCovGrad g 0 s 1 S = covGrad (I := I) (M := M) g 0 s S := by
+        rfl
+      rw [hcov] at h
+      have hAR_eq :
+          homTensorRSFieldApply (I := I) (M := M) g 0 (s + 1) (s + 1) H_R
+              (covGrad (I := I) (M := M) g 0 s S) = AR := hAR_def.symm
+      rw [hAR_eq] at h
+      exact h
     have hAdR_w : riemannianFiberNormSq (I := I) (M := M) g 0 ((s + 1) + p) x
           ((iteratedCovGrad g 0 (s + 1) p AdR).toSection x) ≤
         ccdR p * ∑ i ∈ Finset.range (1 + p), riemannianFiberNormSqS i x := by
@@ -145,7 +153,13 @@ theorem exists_iteratedCovGrad_pointwiseTensorCurv_l2Norm_le
             ((iteratedCovGrad g 0 s (i + 0) S).toSection x) = riemannianFiberNormSqS i x := by
         intro i; rw [hriemannianFiberNormSqS_def]; simp only [Nat.add_zero]
       rw [Finset.sum_congr rfl (fun i _ => hreidx i)] at h
-      simpa only [hAdR_def] using h
+      rw [iteratedCovGrad_zero] at h
+      have hAdR_eq :
+          homTensorRSFieldApply (I := I) (M := M) g 0 (s + 0) (s + 1) H_dR S = AdR := by
+        change homTensorRSFieldApply (I := I) (M := M) g 0 s (s + 1) H_dR S = AdR
+        exact hAdR_def.symm
+      rw [hAdR_eq] at h
+      exact h
     have hsubR : ∑ i ∈ Finset.range (1 + p), riemannianFiberNormSqS (i + 1) x ≤
         ∑ a ∈ Finset.range (p + 2), riemannianFiberNormSqS a x := by
       have hIco : ∑ i ∈ Finset.range (1 + p), riemannianFiberNormSqS (i + 1) x =
@@ -663,14 +677,14 @@ private theorem exists_secondCovGrad_norm_sq_le_rawConnLap
       tensorL2Norm_toFun_eq_norm (I := I) (M := M) g (rawTensorConnLapSmooth (I := I) g 0 s S),
       tensorL2Norm_toFun_eq_norm (I := I) (M := M) g S] at h
 
-omit [BoundarylessManifold I M] in
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem covGrad_covGrad_eq_iteratedCovGrad_two
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     covGrad (I := I) (M := M) g 0 (s + 1) (covGrad (I := I) (M := M) g 0 s S) =
       iteratedCovGrad g 0 s 2 S := rfl
 
-omit [BoundarylessManifold I M] in
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem iteratedCovGrad_add_two
     (g : SmoothRiemannianMetric I M) (s j : ℕ) (S : SmoothCcTensor g 0 s) :
@@ -678,6 +692,7 @@ private theorem iteratedCovGrad_add_two
       covGrad (I := I) (M := M) g 0 (s + j + 1)
         (covGrad (I := I) (M := M) g 0 (s + j) (iteratedCovGrad g 0 s j S)) := rfl
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private theorem rawConnLap_iteratedCovGrad_eq_iteratedCovGrad_rawConnLap_add_comm
     (g : SmoothRiemannianMetric I M) (s m : ℕ) (S : SmoothCcTensor g 0 s) :
     rawTensorConnLapSmooth (I := I) g 0 (s + m) (iteratedCovGrad g 0 s m S) =

@@ -139,23 +139,16 @@ lemma partialDeriv_gradChartCoeffOnE_expand
       funext y'; rfl
     rw [h_eq_fn]
     rw [fderiv_fun_sum (fun j _ => hprod j)]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     rfl
   rw [hgrad_split]
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  change partialDeriv (E := E) i
-        (fun y' : E => chartInvGramOnE (I := I) g α i j y' *
-          partialDeriv (E := E) j (scalarOnE (I := I) α f) y') y =
-      partialDeriv (E := E) i (chartInvGramOnE (I := I) g α i j) y *
-            partialDeriv (E := E) j (scalarOnE (I := I) α f) y +
-          chartInvGramOnE (I := I) g α i j y *
-            chartIteratedPartialDeriv (I := I) α f i j y
   unfold partialDeriv chartIteratedPartialDeriv
   have hF_unfolded : DifferentiableAt ℝ
       (fun y' : E => fderiv ℝ (scalarOnE (I := I) α f) y' ((chartModelBasis E) j)) y :=
     hF j
   rw [fderiv_fun_mul (𝕜 := ℝ) (hG j) hF_unfolded]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+  simp only [add_apply, smul_apply,
     smul_eq_mul]
   change chartInvGramOnE (I := I) g α i j y *
       ((fderiv ℝ (partialDeriv (E := E) j (scalarOnE (I := I) α f)) y)

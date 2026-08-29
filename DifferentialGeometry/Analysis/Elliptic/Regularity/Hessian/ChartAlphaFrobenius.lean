@@ -48,7 +48,7 @@ private noncomputable def chartAlphaCoBchange
     (α : M) (x : M) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun i k =>
-    (chartModelBasis E).repr
+    (centeredChartTangentBasis (I := I) x).repr
       ((chartBasisVecFiber (I := I) α i x : TangentSpace I x)) k
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -56,7 +56,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
 @[simp] private lemma chartAlphaCoBchange_apply
     (α : M) (x : M) (i k : Fin (Module.finrank ℝ E)) :
     chartAlphaCoBchange (I := I) α x i k =
-      (chartModelBasis E).repr
+      (centeredChartTangentBasis (I := I) x).repr
         ((chartBasisVecFiber (I := I) α i x : TangentSpace I x)) k := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -66,9 +66,9 @@ private lemma chartBasisVecFiber_decompose_in_modelBasis
     (chartBasisVecFiber (I := I) α i x : TangentSpace I x) =
       ∑ k : Fin (Module.finrank ℝ E),
         chartAlphaCoBchange (I := I) α x i k •
-          ((chartModelBasis E) k : TangentSpace I x) := by
+          centeredChartTangentBasis (I := I) x k := by
   classical
-  have h := (chartModelBasis E).sum_repr
+  have h := (centeredChartTangentBasis (I := I) x).sum_repr
     (chartBasisVecFiber (I := I) α i x : TangentSpace I x)
   exact h.symm
 
@@ -90,10 +90,10 @@ private lemma clm_bilinear_expand_two_sums
     intro i _
     rw [Hb.map_smul]
   rw [h_outer]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl ?_
   intro i _
-  rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [smul_apply, smul_eq_mul]
   have h_inner : Hb (u i) (∑ j : Fin n, d j • w j) =
       ∑ j : Fin n, d j * Hb (u i) (w j) := by
     rw [map_sum]
@@ -138,21 +138,22 @@ private lemma chartGramMatrix_alpha_eq_PGPt
       ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         chartAlphaCoBchange (I := I) α x i k *
           chartAlphaCoBchange (I := I) α x j l *
-          g.inner x ((chartModelBasis E) k) ((chartModelBasis E) l) := by
+          g.inner x (centeredChartTangentBasis (I := I) x k)
+            (centeredChartTangentBasis (I := I) x l) := by
     conv_lhs => rw [hi, hj]
     exact clm_bilinear_expand_two_sums (I := I) (g.inner x) (Module.finrank ℝ E)
       (fun k => chartAlphaCoBchange (I := I) α x i k)
       (fun l => chartAlphaCoBchange (I := I) α x j l)
-      (fun k => (chartModelBasis E) k)
-      (fun l => (chartModelBasis E) l)
+      (fun k => centeredChartTangentBasis (I := I) x k)
+      (fun l => centeredChartTangentBasis (I := I) x l)
   rw [chartGramMatrix_apply]
   rw [h_expand]
   refine Finset.sum_congr rfl ?_
   intro k _
   refine Finset.sum_congr rfl ?_
   intro l _
-  have h_inner : g.inner x ((chartModelBasis E) k : TangentSpace I x)
-      ((chartModelBasis E) l : TangentSpace I x) =
+  have h_inner : g.inner x (centeredChartTangentBasis (I := I) x k)
+      (centeredChartTangentBasis (I := I) x l) =
       chartGramMatrix (I := I) g x x k l := by
     rw [chartGramMatrix_apply]
     rw [chartBasisVecFiber_self (I := I) x k]
@@ -385,18 +386,19 @@ private lemma chartHessianTensor_alpha_eq_P_chartHessianTensor_x
         (chartBasisVecFiber (I := I) α i x)
         (chartBasisVecFiber (I := I) α j x) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        chartAlphaCoBchange (I := I) α x i a *
+          chartAlphaCoBchange (I := I) α x i a *
           chartAlphaCoBchange (I := I) α x j b *
           abstractHessian (I := I) g f x
-            ((chartModelBasis E) a) ((chartModelBasis E) b) := by
+            (centeredChartTangentBasis (I := I) x a)
+            (centeredChartTangentBasis (I := I) x b) := by
     conv_lhs => rw [hi, hj]
     exact clm_bilinear_expand_two_sums (I := I)
       (abstractHessian (I := I) g f x)
       (Module.finrank ℝ E)
       (fun a => chartAlphaCoBchange (I := I) α x i a)
       (fun b => chartAlphaCoBchange (I := I) α x j b)
-      (fun a => (chartModelBasis E) a)
-      (fun b => (chartModelBasis E) b)
+      (fun a => centeredChartTangentBasis (I := I) x a)
+      (fun b => centeredChartTangentBasis (I := I) x b)
   rw [h_expand]
   refine Finset.sum_congr rfl ?_
   intro a _

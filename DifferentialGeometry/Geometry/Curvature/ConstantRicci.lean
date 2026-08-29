@@ -51,8 +51,8 @@ theorem ricci_of_op
         c * g.inner x v w -
           c * (g.inner x v (B i) * g.inner x (B i) w) := by
     rw [hOp]
-    simp only [map_smul, map_sub, ContinuousLinearMap.smul_apply,
-      ContinuousLinearMap.sub_apply, smul_eq_mul, hB i i, if_pos]
+    simp only [map_smul, map_sub, smul_apply,
+      sub_apply, smul_eq_mul, hB i i, if_pos]
     rw [g.symm x (B i) w]
     ring
   rw [Finset.sum_congr rfl (fun i _ => hterm i), Finset.sum_sub_distrib]

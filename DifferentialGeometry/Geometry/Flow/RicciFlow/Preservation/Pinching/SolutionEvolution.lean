@@ -46,7 +46,7 @@ noncomputable def ricciCovariantDerivativeSection
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 3 :=
-  (CanonicalSpatialDerivs0S.of_smooth_connection
+  (CanonicalSpatialDerivs0S.ofSmoothConnection
     (E := E) (H := H) (I := I) (M := M)
     (S.base.connection t)
     (by
@@ -122,7 +122,7 @@ theorem pinch_quotient_evolution_of_solution_sections
   let basis :
       forall (_t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M),
         Module.Basis Idx Real (TangentSpace I x) :=
-    fun _t x => DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+    fun _t x => DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let gInv :
       forall (_t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
         (_x : M),
@@ -142,14 +142,14 @@ theorem pinch_quotient_evolution_of_solution_sections
     simpa [basis, gInv, flowG] using coordInvReal (I := I) S x (t : Real)
   · intro t x
     simp [ricciGradSq, ricciCovariantDerivativeSection, flowG,
-      CanonicalSpatialDerivs0S.of_smooth_connection]
+      CanonicalSpatialDerivs0S.ofSmoothConnection]
   · intro t x
     simp [ricciNorm, flowG]
   · intro t
     exact (flowG (I := I) S).metricCompatible (t : Real)
   · intro t
     simpa [ricciCovariantDerivativeSection, flowG] using
-      (CanonicalSpatialDerivs0S.of_smooth_connection
+      (CanonicalSpatialDerivs0S.ofSmoothConnection
         (E := E) (H := H) (I := I) (M := M)
         (S.base.connection (t : Real))
         (by
@@ -194,14 +194,14 @@ theorem ricci_is_symmetric
   classical
   let basis : Module.Basis (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
       Real (TangentSpace I x) :=
-    DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+    DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let gInv :
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
         DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real := fun k l =>
-    DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+    DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
       (I := I) (S.base.metric t) x k l (extChartAt I x x)
   have hinv :
-      MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis gInv := by
+      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv := by
     simpa [basis, gInv] using
       Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) (S.base.metric t) x
@@ -217,21 +217,33 @@ theorem ricci_is_symmetric
   have hRm13 :
       DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
-          (S.base.metric t)) (S.base.rm13 t) := by
-    simpa [SolutionFamily.rm13, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
+        (S.base.metric t)) (S.base.rm13 t) := by
+    change DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
+      (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
+        (S.base.metric t)) (metricRm13 (I := I) (M := M) (S.base.metric t))
+    rw [show metricRm13 (I := I) (M := M) (S.base.metric t) =
+        (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13 by rfl]
+    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
   have hRm04 :
       DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I) (S.base.metric t)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (S.base.rm04 t) := by
-    simpa [SolutionFamily.rm04, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
+    change DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I)
+      (S.base.metric t)
+      (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
+        (S.base.metric t)) (metricRm04 (I := I) (M := M) (S.base.metric t))
+    rw [show metricRm04 (I := I) (M := M) (S.base.metric t) =
+        (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04 by rfl]
+    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have hRic13 :
       S.ricciAt t x =
         DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
           (S.base.rm13 t x) := by
-    simpa [SolutionOn.ricciAt, SolutionFamily.ricciAt, SolutionFamily.rm13]
-      using (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
+    change metricRicciAt (I := I) (M := M) (S.base.metric t) x =
+      DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
+        (metricRm13 (I := I) (M := M) (S.base.metric t) x)
+    rw [metricRm13_apply]
+    exact metricRicciAt_eq_trace (I := I) (M := M) (S.base.metric t) x
   have hLowerAt :
       DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) (S.base.metric t) x
         (S.base.rm13 t x) (S.base.rm04 t x) :=
@@ -284,21 +296,33 @@ theorem riemann_from_ricci_trace_data
   have hRm13 :
       DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
-          (S.base.metric t)) (S.base.rm13 t) := by
-    simpa [SolutionFamily.rm13, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
+        (S.base.metric t)) (S.base.rm13 t) := by
+    change DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
+      (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
+        (S.base.metric t)) (metricRm13 (I := I) (M := M) (S.base.metric t))
+    rw [show metricRm13 (I := I) (M := M) (S.base.metric t) =
+        (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13 by rfl]
+    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
   have hRm04 :
       DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I) (S.base.metric t)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
           (S.base.metric t)) (S.base.rm04 t) := by
-    simpa [SolutionFamily.rm04, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
+    change DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I)
+      (S.base.metric t)
+      (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
+        (S.base.metric t)) (metricRm04 (I := I) (M := M) (S.base.metric t))
+    rw [show metricRm04 (I := I) (M := M) (S.base.metric t) =
+        (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04 by rfl]
+    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have hRic13 :
       S.ricciAt t x =
         DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
           (S.base.rm13 t x) := by
-    simpa [SolutionOn.ricciAt, SolutionFamily.ricciAt, SolutionFamily.rm13]
-      using (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
+    change metricRicciAt (I := I) (M := M) (S.base.metric t) x =
+      DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
+        (metricRm13 (I := I) (M := M) (S.base.metric t) x)
+    rw [metricRm13_apply]
+    exact metricRicciAt_eq_trace (I := I) (M := M) (S.base.metric t) x
   have hLowerAt :
       DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) (S.base.metric t) x
         (S.base.rm13 t x) (S.base.rm04 t x) :=
@@ -371,7 +395,7 @@ theorem trace_free_ricci_reaction_relation_of_smooth_solution
     (Ric := S.ricciAt t x) (Rm04 := S.base.rm04 t x)
     (basis := basis) (riemann_from_ricci_trace_data (I := I) S horth) hdiag hcube hR
   have hinv :
-      MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis
+      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
         DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) (S.base.metric t) basis
       horth
@@ -386,8 +410,9 @@ theorem trace_free_ricci_reaction_relation_of_smooth_solution
         ricciReact (I := I) S t x := by
     simpa [SolutionOn.ricciAt] using
       (reactAt_eq_react (I := I) S horth)
-  simpa [traceFreeRicciNormSq, cubicQ, SolutionOn.scalar_eq_metricTrace,
-    hnorm, hreact] using hrel
+  unfold traceFreeRicciNormSq traceFreeRicciNormSqOf traceFreeRicciNormSqAtOf
+  simpa [traceFreeRicciNormSqAt, traceFreeRicciNormSqAtOf, cubicQ,
+    SolutionOn.scalar_eq_metricTrace, hnorm, hreact] using hrel
 
 omit [Module.Finite ℝ E] in
 theorem ricci_norm_heat_equation_data_of_smooth_solution
@@ -409,8 +434,10 @@ theorem ricci_norm_heat_equation_data_of_smooth_solution
   refine ⟨ricciHeatSmooth (I := I) S _hS, ?_⟩
   intro t x
   have h := trace_free_ricci_norm_sq_laplacian_identity (I := I) S _hS (t : Real) (D.regular_subset t.2) x
-  simpa [traceFreeRicciNormLaplacian, traceFreeRicciNormSqLaplacian, scalarCurvatureSqLaplacian, scalarGradientNormSq, traceFreeRicciNormSq,
-    traceFreeRicciNormSqAt, ricciNormLap, flowG] using h
+  unfold traceFreeRicciNormLaplacian traceFreeRicciNormSqLaplacian
+  unfold traceFreeRicciNormSq traceFreeRicciNormSqOf traceFreeRicciNormSqAtOf
+  simpa [scalarCurvatureSqLaplacian, scalarGradientNormSq, ricciNormLap,
+    flowG] using h
 
 omit [Module.Finite ℝ E] in
 theorem trace_free_ricci_norm_laplacian_eq
@@ -517,7 +544,8 @@ theorem trace_free_ricci_norm_sq_heat_equation_of_smooth_solution
   have hscalar :
       ScalarEvolutionEquationOn (D := D) S.scalar scalarLap
         (ricciNorm (I := I) S) := by
-    simpa [scalarLap, ricciNorm] using
+    unfold ricciNorm
+    simpa [scalarLap, normSq0S, SolutionOn.ricci] using
       (scalar_evolution_of_smooth_solution
         (I := I) (M := M) S hS G hmetric hconnection)
   have hbridge :
@@ -609,7 +637,7 @@ theorem trace_free_ricci_norm_sq_nonneg
       _ = DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3 l1 l2 l3 := by
             exact scalar_eq_diag (I := I) hscalarTrace hdiag
   have hinv :
-      MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis
+      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
         DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) (S.base.metric t)
       basis horth
@@ -641,7 +669,7 @@ omit [Module.Finite ℝ E] in
 theorem trace_free_ricci_norm_sq_mdifferentiable
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) :
@@ -651,15 +679,15 @@ theorem trace_free_ricci_norm_sq_mdifferentiable
   intro t x
   let hSmooth := smoothOfSol (I := I) S hS
   have ht : (t : Real) ∈ D.carrier := D.regular_subset t.2
-  simpa [traceFreeRicciNormSq, traceFreeRicciNormSqOf, traceFreeRicciNormSqAtOf] using
-    (hSmooth.ricciRegular.ricci_norm_space (t : Real) ht x).sub
-      (hSmooth.scalarRegular.scalar_sq_div_space (t : Real) ht x)
+  unfold traceFreeRicciNormSq traceFreeRicciNormSqOf traceFreeRicciNormSqAtOf
+  exact (hSmooth.ricciRegular.ricci_norm_space (t : Real) ht x).sub
+    (hSmooth.scalarRegular.scalar_sq_div_space (t : Real) ht x)
 
 omit [Module.Finite ℝ E] in
 theorem gradient_trace_free_ricci_norm_sq
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) :
@@ -684,12 +712,12 @@ theorem gradient_trace_free_ricci_norm_sq
           DifferentialGeometry.Geometry.Operator.gradientFun (I := I)
             ((flowG (I := I) S).metric (t : Real)) h y := by
     funext y
-    simpa [f, h, flowG, traceFreeRicciNormSq, traceFreeRicciNormSqOf,
-      traceFreeRicciNormSqAtOf] using
-      DifferentialGeometry.Geometry.Operator.gradientFun_sub (I := I)
-        ((flowG (I := I) S).metric (t : Real))
-        (hSmooth.ricciRegular.ricci_norm_space (t : Real) ht y)
-        (hSmooth.scalarRegular.scalar_sq_div_space (t : Real) ht y)
+    unfold traceFreeRicciNormSq traceFreeRicciNormSqOf traceFreeRicciNormSqAtOf
+    dsimp [f, h]
+    exact DifferentialGeometry.Geometry.Operator.gradientFun_sub (I := I)
+      ((flowG (I := I) S).metric (t : Real))
+      (hSmooth.ricciRegular.ricci_norm_space (t : Real) ht y)
+      (hSmooth.scalarRegular.scalar_sq_div_space (t : Real) ht y)
   have hnormGrad : MDiffAt (T% fun y : M =>
       DifferentialGeometry.Geometry.Operator.gradientFun (I := I)
         ((flowG (I := I) S).metric (t : Real)) f y) x := by
@@ -725,7 +753,7 @@ omit [Module.Finite ℝ E] in
 theorem gradient_scalar_rpow
     [FiniteDimensional Real E]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
-    [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
+    [CompleteSpace E] [T2Space M]
     [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -751,7 +779,9 @@ theorem gradient_scalar_rpow
       DifferentialGeometry.Geometry.Operator.mdifferentiableAt_rpow (I := I) (p - 1)
         (hSmooth.scalarRegular.scalar_space (t : Real) ht y)
         (hscalar t y)
-    simpa [coeff] using mdifferentiableAt_const.mul hp
+    dsimp [coeff, p]
+    dsimp [p] at hp
+    exact mdifferentiableAt_const.mul hp
   have hgrad_eq :
       (fun z : M =>
         DifferentialGeometry.Geometry.Operator.gradientFun (I := I)

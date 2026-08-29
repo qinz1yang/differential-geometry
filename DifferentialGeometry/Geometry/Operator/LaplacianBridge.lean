@@ -35,11 +35,11 @@ theorem divergence_levi_eq
     (g : SmoothRiemannianMetric I M)
     (Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     divergence (I := I) (LeviCivita (I := I) g) Z.toFun x =
-      divergence_g (I := I) g Z x := by
+      divergenceG (I := I) g Z x := by
   classical
   by_cases hdim : Module.finrank Real E = 0
   · have htang : Module.finrank Real (TangentSpace I x) = 0 := hdim
-    letI : Subsingleton (TangentSpace I x) :=
+    let : Subsingleton (TangentSpace I x) :=
       Module.finrank_zero_iff.mp htang
     rw [divergence_eq]
     rw [Subsingleton.elim (LeviCivita (I := I) g Z.toFun x).toLinearMap 0]
@@ -53,12 +53,12 @@ theorem divergence_levi_eq
       exact (Nat.not_lt_zero _ hi0).elim
     rw [huniv]
     simp
-  letI : NeZero (Module.finrank Real E) := ⟨hdim⟩
-  let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let : NeZero (Module.finrank Real E) := ⟨hdim⟩
+  let D := (tangentMetricDataGen (I := I) g x).metric
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let ob := stdOrthonormalBasis Real (TangentSpace I x)
   let basis := ob.toBasis
@@ -70,12 +70,12 @@ theorem divergence_levi_eq
     have hob := ob.inner_eq_ite i j
     change g.inner x (ob.toBasis i) (ob.toBasis j) =
       if i = j then (1 : Real) else 0
-    rw [← TangentMetricData_gen.inner_eq_gen (tangentMetricData_gen (I := I) g x)
+    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)
       (ob.toBasis i) (ob.toBasis j)]
     change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
     rw [← hinner]
     exact hob
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (fun i j => if i = j then (1 : Real) else 0) := by
     intro i j
     constructor <;> simp [hON]
@@ -100,9 +100,15 @@ theorem laplacian_levi_eq
     (g : SmoothRiemannianMetric I M) {f : M → Real}
     (hf : ContMDiff I 𝓘(Real, Real) ∞ f) (x : M) :
     laplacian (I := I) (LeviCivita (I := I) g) g f x =
-      Δ_g (I := I) g ⟨_, hf⟩ x := by
-  have hdiv := divergence_levi_eq (I := I) g (grad_g (I := I) g ⟨_, hf⟩) x
-  simpa only [laplacian_eq, grad_g_apply, Δ_g_def] using hdiv
+      ΔG (I := I) g ⟨_, hf⟩ x := by
+  have hdiv := divergence_levi_eq (I := I) g (gradG (I := I) g ⟨_, hf⟩) x
+  unfold laplacian ΔG
+  have hgrad : gradientFun (I := I) g f = (gradG (I := I) g ⟨f, hf⟩).toFun := by
+    funext y
+    unfold gradientFun gradG gradFun mvfderiv
+    rfl
+  rw [hgrad]
+  exact hdiv
 
 omit [NeZero (Module.finrank Real E)] in
 omit [CompactSpace M] in
@@ -112,7 +118,7 @@ theorem Δ_g_congr_of_eventuallyEq
     (hf : ContMDiff I 𝓘(Real, Real) ∞ f)
     (hh : ContMDiff I 𝓘(Real, Real) ∞ h)
     (heq : f =ᶠ[nhds x] h) :
-    Δ_g (I := I) g ⟨f, hf⟩ x = Δ_g (I := I) g ⟨h, hh⟩ x := by
+    ΔG (I := I) g ⟨f, hf⟩ x = ΔG (I := I) g ⟨h, hh⟩ x := by
   rw [← laplacian_levi_eq (I := I) g hf x]
   rw [← laplacian_levi_eq (I := I) g hh x]
   exact laplacian_congr_of_eventuallyEq (I := I)
@@ -125,15 +131,15 @@ omit [T2Space M] in
 theorem Δ_g_neg
     (g : SmoothRiemannianMetric I M) {f : M → Real} {x : M}
     (hf : ContMDiff I 𝓘(Real, Real) ∞ f) :
-    Δ_g (I := I) g ⟨fun y => -f y, hf.neg⟩ x =
-      -Δ_g (I := I) g ⟨f, hf⟩ x := by
+    ΔG (I := I) g ⟨fun y => -f y, hf.neg⟩ x =
+      -ΔG (I := I) g ⟨f, hf⟩ x := by
   classical
   let F : C^∞⟮I, M; ℝ⟯ := ⟨f, hf⟩
   have hadd := Δ_g_add (I := I) g F (-F) x
-  have hcancel : Δ_g (I := I) g (F + -F) x = 0 := by
+  have hcancel : ΔG (I := I) g (F + -F) x = 0 := by
     rw [add_neg_cancel]
     exact Δ_g_const (I := I) g (0 : Real) x
-  change Δ_g (I := I) g (-F) x = -Δ_g (I := I) g F x
+  change ΔG (I := I) g (-F) x = -ΔG (I := I) g F x
   linarith
 
 omit [NeZero (Module.finrank Real E)] in
@@ -143,7 +149,7 @@ theorem laplacianAt_eq_delta
     (G : MetricConnectionFamily (I := I) (M := M) Real) (t : Real)
     {f : M → Real} (hf : ContMDiff I 𝓘(Real, Real) ∞ f)
     (hconn : G.connection t = LeviCivita (I := I) (G.metric t)) (x : M) :
-    laplacianAt (I := I) G t f x = Δ_g (I := I) (G.metric t) ⟨_, hf⟩ x := by
+    laplacianAt (I := I) G t f x = ΔG (I := I) (G.metric t) ⟨_, hf⟩ x := by
   unfold laplacianAt
   rw [hconn]
   exact laplacian_levi_eq (I := I) (G.metric t) hf x

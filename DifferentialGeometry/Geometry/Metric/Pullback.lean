@@ -102,7 +102,7 @@ theorem Diffeomorph.pullbackInner_isVonNBounded
         = ((hΦeq.symm : TangentSpace I (Φ x) →L[ℝ] TangentSpace I x) : _ → _)
             '' {w : TangentSpace I (Φ x) | g.inner (Φ x) w w < 1} := by
     ext v
-    simp only [Set.mem_setOf_eq, Set.mem_image]
+    simp only [Set.mem_ofPred_eq, Set.mem_image]
     refine ⟨fun hv => ⟨hΦeq v, ?_, ?_⟩, ?_⟩
     · have h1 := pullbackInner_eval (g := g) (Φ := Φ) x v v
       rw [h1] at hv
@@ -185,8 +185,7 @@ noncomputable def Diffeomorph.pullbackMetric
       intro x
       have h_at := h_total x
       rw [contMDiffAt_totalSpace] at h_at
-      have := h_at.2
-      convert this using 1
+      simpa using h_at.2
     have h_pullback_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞
         (fun x : M => Diffeomorph.pullbackInner g Φ x (Y x) (W x)) := by
       have h_eq : (fun x : M => Diffeomorph.pullbackInner g Φ x (Y x) (W x))
@@ -309,7 +308,7 @@ theorem bilinear_comp_self_contMDiff :
   have hflipDiff : ContDiff ℝ ∞
       ((ContinuousLinearMap.flipₗᵢ ℝ E E ℝ) :
         (E →L[ℝ] E →L[ℝ] ℝ) → (E →L[ℝ] E →L[ℝ] ℝ)) :=
-    (ContinuousLinearMap.flipₗᵢ ℝ E E ℝ).contDiff
+    by fun_prop
   have h1 : ContMDiff
       (𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ).prod 𝓘(ℝ, E →L[ℝ] E))
       𝓘(ℝ, E →L[ℝ] E →L[ℝ] ℝ) ∞

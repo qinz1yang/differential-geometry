@@ -47,7 +47,7 @@ private lemma wkpNorm_eta_target_le_split
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) 1 p u Ω := by
   classical
-  letI : NeZero (1 : ℕ) := ⟨one_ne_zero⟩
+  let : NeZero (1 : ℕ) := ⟨one_ne_zero⟩
   have hLHS_unfold : DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
       (d := Module.finrank ℝ E) 1 p (fun x => η x * u x) Ω =
         eLpNorm (fun x => η x * u x) p (volume.restrict Ω) +
@@ -60,7 +60,7 @@ private lemma wkpNorm_eta_target_le_split
     rw [show (1 : ℕ) + 1 = 1 + 1 from rfl, Finset.sum_range_succ, Finset.sum_range_one]
     have h0_unique : ∀ α' : Fin 0 → Fin (Module.finrank ℝ E),
         α' = (fun i : Fin 0 => i.elim0) := fun α' => by funext i; exact i.elim0
-    haveI : Unique (Fin 0 → Fin (Module.finrank ℝ E)) :=
+    have : Unique (Fin 0 → Fin (Module.finrank ℝ E)) :=
       { default := fun i : Fin 0 => i.elim0
         uniq := fun α' => (h0_unique α').symm ▸ rfl }
     rw [Fintype.sum_unique
@@ -82,7 +82,7 @@ private lemma wkpNorm_eta_target_le_split
     rw [show (1 : ℕ) + 1 = 1 + 1 from rfl, Finset.sum_range_succ, Finset.sum_range_one]
     have h0_unique : ∀ α' : Fin 0 → Fin (Module.finrank ℝ E),
         α' = (fun i : Fin 0 => i.elim0) := fun α' => by funext i; exact i.elim0
-    haveI : Unique (Fin 0 → Fin (Module.finrank ℝ E)) :=
+    have : Unique (Fin 0 → Fin (Module.finrank ℝ E)) :=
       { default := fun i : Fin 0 => i.elim0
         uniq := fun α' => (h0_unique α').symm ▸ rfl }
     rw [Fintype.sum_unique

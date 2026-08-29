@@ -45,6 +45,7 @@ section GeneralValenceRS
 open Bundle DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor0SNabla
     DifferentialGeometry.TensorRSNabla DifferentialGeometry.TensorMultilinear
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 private theorem covDerivCrossLeft_weight_bound_rs
     (g : SmoothRiemannianMetric I M) (k m r : ℕ) (_hk : 1 ≤ k)
     (w : Integral.L2.SmoothCcTensor g r m) (A : ℝ) (_hA : 0 ≤ A)
@@ -102,7 +103,7 @@ private theorem covDerivCrossLeft_weight_bound_rs
     rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul hb_nn]
     exact Real.sqrt_le_sqrt hsq
   have hrP_eq : rP = (∑ a : Fin n,
-        (extDerivFun (I := I) (ζ : M → ℝ) x
+        (mvfderiv (I := I) (ζ : M → ℝ) x
           (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x a x)) ^ 2) *
         riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x) :=
     prependCovGradSlot_fiberNormSq_frame_sum_rs (I := I) (M := M) g r m ζ w x
@@ -119,8 +120,8 @@ private theorem covDerivCrossLeft_weight_bound_rs
       (M := M) g r (m + 1)
       Q.toSection Q.toSection).mdifferentiableAt (by norm_num)
   have hchain : ∀ v : TangentSpace I x,
-      extDerivFun (I := I) (ζ : M → ℝ) x v =
-        ((k : ℝ) - 1) * b ^ (k - 2) * extDerivFun (I := I) bfun x v := by
+      mvfderiv (I := I) (ζ : M → ℝ) x v =
+        ((k : ℝ) - 1) * b ^ (k - 2) * mvfderiv (I := I) bfun x v := by
     intro v
     have hinner : HasMFDerivAt I 𝓘(ℝ, ℝ) bfun x (mfderiv I 𝓘(ℝ, ℝ) bfun x) :=
       hbfun_mdiff.hasMFDerivAt
@@ -135,15 +136,15 @@ private theorem covDerivCrossLeft_weight_bound_rs
       HasMFDerivAt.comp x houter hinner
     have hζeq : (ζ : M → ℝ) = (fun t : ℝ => t ^ (k - 1)) ∘ bfun := by
       rw [hζ]; rfl
-    have hext : extDerivFun (I := I) (ζ : M → ℝ) x v = mfderiv I 𝓘(ℝ, ℝ) (ζ : M → ℝ) x v := rfl
+    have hext : mvfderiv (I := I) (ζ : M → ℝ) x v = mfderiv I 𝓘(ℝ, ℝ) (ζ : M → ℝ) x v := rfl
     have hCLM : (mfderiv I 𝓘(ℝ, ℝ) ((fun t : ℝ => t ^ (k - 1)) ∘ bfun) x) v =
-        (((k - 1 : ℕ) : ℝ) * (bfun x) ^ (k - 1 - 1)) * extDerivFun (I := I) bfun x v := by
+        (((k - 1 : ℕ) : ℝ) * (bfun x) ^ (k - 1 - 1)) * mvfderiv (I := I) bfun x v := by
       rw [hcomp.mfderiv]
-      change extDerivFun (I := I) bfun x v * (((k - 1 : ℕ) : ℝ) * (bfun x) ^ (k - 1 - 1)) =
-        (((k - 1 : ℕ) : ℝ) * (bfun x) ^ (k - 1 - 1)) * extDerivFun (I := I) bfun x v
+      change mvfderiv (I := I) bfun x v * (((k - 1 : ℕ) : ℝ) * (bfun x) ^ (k - 1 - 1)) =
+        (((k - 1 : ℕ) : ℝ) * (bfun x) ^ (k - 1 - 1)) * mvfderiv (I := I) bfun x v
       ring
-    have hmfζ : extDerivFun (I := I) (ζ : M → ℝ) x v =
-        (((k - 1 : ℕ) : ℝ) * (bfun x) ^ (k - 1 - 1)) * extDerivFun (I := I) bfun x v := by
+    have hmfζ : mvfderiv (I := I) (ζ : M → ℝ) x v =
+        (((k - 1 : ℕ) : ℝ) * (bfun x) ^ (k - 1 - 1)) * mvfderiv (I := I) bfun x v := by
       rw [hext, hζeq]
       exact hCLM
     rw [hmfζ]
@@ -152,20 +153,20 @@ private theorem covDerivCrossLeft_weight_bound_rs
     have hexp : k - 1 - 1 = k - 2 := by omega
     rw [show (bfun x) = b from rfl, hkcast, hexp]
   have hkato : ∑ a : Fin n,
-      (extDerivFun (I := I) bfun x (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame
+      (mvfderiv (I := I) bfun x (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame
         (I := I) g x a x)) ^ 2 ≤
         4 * b * c :=
     kato_mfderiv_riemannianFiberNormSq_frame_sum_le_rs (I := I) (M := M) g r (m + 1) Q x
   have hdζsum : (∑ a : Fin n,
-      (extDerivFun (I := I) (ζ : M → ℝ) x
+      (mvfderiv (I := I) (ζ : M → ℝ) x
         (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x a x)) ^ 2) ≤
         ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c) := by
     have hrw : (∑ a : Fin n,
-        (extDerivFun (I := I) (ζ : M → ℝ) x
+        (mvfderiv (I := I) (ζ : M → ℝ) x
           (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x a x)) ^ 2) =
         ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 *
           ∑ a : Fin n,
-            (extDerivFun (I := I) bfun x
+            (mvfderiv (I := I) bfun x
               (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame
                 (I := I) g x a x)) ^ 2 := by
       rw [Finset.mul_sum]
@@ -182,14 +183,14 @@ private theorem covDerivCrossLeft_weight_bound_rs
     have hriemannianFiberNormSqw_nn : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x) :=
       riemannianFiberNormSq_nonneg (I := I) (M := M) g r m x (w.toSection x)
     have hsum_nn : (0 : ℝ) ≤ ∑ a : Fin n,
-        (extDerivFun (I := I) (ζ : M → ℝ) x
+        (mvfderiv (I := I) (ζ : M → ℝ) x
           (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x a x)) ^ 2 :=
       Finset.sum_nonneg (fun a _ => sq_nonneg _)
     have hbound_nn : (0 : ℝ) ≤ ((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c) := by
       exact mul_nonneg (mul_nonneg (sq_nonneg _) (sq_nonneg _))
         (mul_nonneg (mul_nonneg (by norm_num) hb_nn) hc_nn)
     calc (∑ a : Fin n,
-            (extDerivFun (I := I) (ζ : M → ℝ) x
+            (mvfderiv (I := I) (ζ : M → ℝ) x
               (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x a x)) ^ 2) *
             riemannianFiberNormSq (I := I) (M := M) g r m x (w.toSection x)
         ≤ (((k : ℝ) - 1) ^ 2 * (b ^ (k - 2)) ^ 2 * (4 * b * c)) *
@@ -260,7 +261,7 @@ theorem weightedCovIBP_lpFiberJet_sup_rs
                 (covGrad (I := I) (M := M) g r m w)).toSection x)) ^ (1 / 2 : ℝ)
           ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) := by
   classical
-  haveI : MeasureTheory.IsFiniteMeasure
+  have : MeasureTheory.IsFiniteMeasure
     (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   set μ : MeasureTheory.Measure M :=
@@ -498,7 +499,7 @@ private theorem weightedCovIBP_lpFiberJet_fin_regIneq_rs
                 (covGrad (I := I) (M := M) g r m w)).toSection x)) ^ (1 / 2 : ℝ)
           ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) := by
   classical
-  haveI : MeasureTheory.IsFiniteMeasure
+  have : MeasureTheory.IsFiniteMeasure
     (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   set μ : MeasureTheory.Measure M :=
@@ -695,7 +696,7 @@ private theorem weightedCovIBP_lpFiberJet_fin_regIneq_rs
       rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_mul hbv_nn]
       exact Real.sqrt_le_sqrt hsq
     have hrP_eq : rP = (∑ a : Fin n,
-          (extDerivFun (I := I) (ζ : M → ℝ) x
+          (mvfderiv (I := I) (ζ : M → ℝ) x
             (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame
               (I := I) g x a x)) ^ 2) * av :=
       prependCovGradSlot_fiberNormSq_frame_sum_rs (I := I) (M := M) g r m ζ w x
@@ -713,8 +714,8 @@ private theorem weightedCovIBP_lpFiberJet_fin_regIneq_rs
         Q.toSection Q.toSection).mdifferentiableAt (by norm_num)
     have hbεbfun_ne : bfun x + ε ≠ 0 := ne_of_gt hbεx_pos
     have hchain : ∀ v : TangentSpace I x,
-        extDerivFun (I := I) (ζ : M → ℝ) x v =
-          (pm1 * (bv + ε) ^ (pm1 - 1)) * extDerivFun (I := I) bfun x v := by
+        mvfderiv (I := I) (ζ : M → ℝ) x v =
+          (pm1 * (bv + ε) ^ (pm1 - 1)) * mvfderiv (I := I) bfun x v := by
       intro v
       have hshift : HasDerivAt (fun t : ℝ => t + ε) 1 (bfun x) :=
         (hasDerivAt_id' (bfun x)).add_const ε
@@ -730,29 +731,29 @@ private theorem weightedCovIBP_lpFiberJet_fin_regIneq_rs
               (1 * pm1 * (bfun x + ε) ^ (pm1 - 1))).comp (mfderiv I 𝓘(ℝ, ℝ) bfun x)) :=
         HasMFDerivAt.comp x houter hbfun_mdiff.hasMFDerivAt
       have hζeq : (ζ : M → ℝ) = (fun t : ℝ => (t + ε) ^ pm1) ∘ bfun := rfl
-      have hext : extDerivFun (I := I) (ζ : M → ℝ) x v = mfderiv I 𝓘(ℝ, ℝ) (ζ : M → ℝ) x v := rfl
+      have hext : mvfderiv (I := I) (ζ : M → ℝ) x v = mfderiv I 𝓘(ℝ, ℝ) (ζ : M → ℝ) x v := rfl
       have hCLM : (mfderiv I 𝓘(ℝ, ℝ) ((fun t : ℝ => (t + ε) ^ pm1) ∘ bfun) x) v =
-          (1 * pm1 * (bfun x + ε) ^ (pm1 - 1)) * extDerivFun (I := I) bfun x v := by
+          (1 * pm1 * (bfun x + ε) ^ (pm1 - 1)) * mvfderiv (I := I) bfun x v := by
         rw [hcomp.mfderiv]
-        change extDerivFun (I := I) bfun x v * (1 * pm1 * (bfun x + ε) ^ (pm1 - 1)) =
-          (1 * pm1 * (bfun x + ε) ^ (pm1 - 1)) * extDerivFun (I := I) bfun x v
+        change mvfderiv (I := I) bfun x v * (1 * pm1 * (bfun x + ε) ^ (pm1 - 1)) =
+          (1 * pm1 * (bfun x + ε) ^ (pm1 - 1)) * mvfderiv (I := I) bfun x v
         ring
       rw [hext, hζeq, hCLM, one_mul, hbv_def]
     have hkato : ∑ a : Fin n,
-        (extDerivFun (I := I) bfun x (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame
+        (mvfderiv (I := I) bfun x (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame
           (I := I) g x a x)) ^ 2 ≤
           4 * bv * cv :=
       kato_mfderiv_riemannianFiberNormSq_frame_sum_le_rs (I := I) (M := M) g r (m + 1) Q x
     have hdζsum : (∑ a : Fin n,
-        (extDerivFun (I := I) (ζ : M → ℝ) x
+        (mvfderiv (I := I) (ζ : M → ℝ) x
           (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x a x)) ^ 2) ≤
           pm1 ^ 2 * ((bv + ε) ^ (pm1 - 1)) ^ 2 * (4 * bv * cv) := by
       have hrw : (∑ a : Fin n,
-          (extDerivFun (I := I) (ζ : M → ℝ) x
+          (mvfderiv (I := I) (ζ : M → ℝ) x
             (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame (I := I) g x a x)) ^ 2) =
           (pm1 * (bv + ε) ^ (pm1 - 1)) ^ 2 *
             ∑ a : Fin n,
-              (extDerivFun (I := I) bfun x
+              (mvfderiv (I := I) bfun x
                 (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame
                   (I := I) g x a x)) ^ 2 := by
         rw [Finset.mul_sum]
@@ -765,7 +766,7 @@ private theorem weightedCovIBP_lpFiberJet_fin_regIneq_rs
     have hrP_bound : rP ≤ pm1 ^ 2 * ((bv + ε) ^ (pm1 - 1)) ^ 2 * (4 * bv * cv) * av := by
       rw [hrP_eq]
       calc (∑ a : Fin n,
-              (extDerivFun (I := I) (ζ : M → ℝ) x
+              (mvfderiv (I := I) (ζ : M → ℝ) x
                 (DifferentialGeometry.Geometry.Connection.smoothOrthoFrame
                   (I := I) g x a x)) ^ 2) * av
           ≤ (pm1 ^ 2 * ((bv + ε) ^ (pm1 - 1)) ^ 2 * (4 * bv * cv)) * av :=
@@ -901,7 +902,7 @@ private theorem weightedCovIBP_lpFiberJet_fin_regLimit_rs
                 (covGrad (I := I) (M := M) g r m w)).toSection x)) ^ (1 / 2 : ℝ)
           ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g))) := by
   classical
-  haveI : MeasureTheory.IsFiniteMeasure
+  have : MeasureTheory.IsFiniteMeasure
     (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g) :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   set μ : MeasureTheory.Measure M :=

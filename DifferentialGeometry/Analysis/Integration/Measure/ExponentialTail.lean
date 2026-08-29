@@ -106,6 +106,7 @@ theorem integrable_exp_and_integral_le_of_exponential_tail
   have hmajorant_integrable : IntegrableOn majorant (Ioi 0) := by
     have hexp := integrableOn_exp_mul_Ioi (a := -(decay - moment)) (by linarith) 0
     have hscaled := hexp.const_mul (bound * moment)
+    change Integrable majorant (volume.restrict (Ioi 0))
     simpa only [majorant, neg_mul] using hscaled
   have hmajorant_integral :
       (∫ level in Ioi 0, majorant level) =

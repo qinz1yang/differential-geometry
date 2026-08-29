@@ -52,8 +52,8 @@ private theorem directionalDeriv_const_mul_ne
   change directionalDerivAlong (I := I) X (c • f) x =
     c * directionalDerivAlong (I := I) X f x
   unfold directionalDerivAlong
-  rw [DifferentialGeometry.extDerivFun_real_eq_mfderiv I (c • f) x (X x),
-    DifferentialGeometry.extDerivFun_real_eq_mfderiv I f x (X x)]
+  rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv I (c • f) x (X x),
+    DifferentialGeometry.mvfderiv_real_eq_mfderiv I f x (X x)]
   rw [mfderiv_const_smul_ne (I := I) (f := f) (x := x) hc]
   rfl
 

@@ -57,7 +57,7 @@ private theorem tensor2_eval_contOn {K : Set ℝ}
     (hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K A)
     (x : M) (v w : TangentSpace I x) :
     ContinuousOn (fun s : ℝ => A s x (vec2 v w)) K := by
-  rw [continuousOn_iff_continuous_restrict]
+  rw [continuousOn_iff_continuous_domRestrict]
   exact hA.eval_continuous (P := {s : ℝ // s ∈ K}) (τ := Subtype.val)
     (b := fun _ => x) continuous_subtype_val (fun p => p.2) continuous_const
     (v := fun i _ => vec2 v w i) (fun _ => continuous_const)
@@ -87,6 +87,8 @@ theorem ricciFlowPDE_Ici_of_soln
     refine (tensor2_eval_contOn hS.ricciCont x v w).congr (fun s _ => ?_)
     have e1 : S.ricci s x = metricRicciAt (S.base.metric s) x := by
       simp only [SolutionOn.ricci, SolutionFamily.ricci_apply, SolutionFamily.ricciAt]
+    change ricciTensor (I := I) (S.base.metric s) x v w =
+      S.ricci s x (vec2 v w)
     rw [e1]
     exact (metricRicciAt_apply_eq_ricciTensor (S.base.metric s) x v w).symm
   intro t ht x v w
@@ -136,8 +138,8 @@ private theorem metricInnerSq_le (g : SmoothRiemannianMetric I M) (x : M)
     have hexp : g.inner x (u + t • v) (u + t • v)
         = g.inner x u u + 2 * t * g.inner x u v + t ^ 2 * g.inner x v v := by
       have hsym : g.inner x v u = g.inner x u v := g.symm x v u
-      simp only [map_add, map_smul, ContinuousLinearMap.add_apply,
-        ContinuousLinearMap.smul_apply, smul_eq_mul]
+      simp only [map_add, map_smul, add_apply,
+        smul_apply, smul_eq_mul]
       rw [hsym]; ring
     rwa [hexp] at h
   rcases eq_or_ne v 0 with rfl | hv
@@ -242,7 +244,7 @@ private theorem ric_quad_le_of_rm04
     (g : SmoothRiemannianMetric I M) (x : M) {n : ℕ}
     (basis : Module.Basis (Fin n) ℝ (TangentSpace I x))
     (hON : ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : ℝ) else 0)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Fin n)))
+    (hinv : MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Fin n)))
     (Rm04 : Tensor04At (I := I) (M := M) x) {C : ℝ}
     (htrace : ∀ i j, metricRicciAt g x (vec2 (I := I) (basis i) (basis j))
         = ∑ a, Rm04 (vec4 (I := I) (basis a) (basis i) (basis j) (basis a)))
@@ -270,7 +272,7 @@ theorem ric_quad_le_of_realizes
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
   have hdelta := metricInverseInBasis_of_orthonormal (I := I) g basis hON
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
     have he : (fun a k : Fin (Module.finrank ℝ (TangentSpace I x)) => if a = k then (1 : ℝ) else 0)
         = identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x))) := by
@@ -317,7 +319,9 @@ theorem chartGram_smooth_of_soln
         = Integral.Measure.chartBasisVecFiber (I := I) x₀ k x := by
     intro x hx k
     rw [e.localFrame_apply_of_mem_baseSet (chartModelBasis E) hx]
-    rfl
+    unfold Bundle.Trivialization.basisAt Integral.Measure.chartBasisVecFiber
+    rw [Module.Basis.map_apply]
+    exact congrFun (e.symm_continuousLinearEquivAt_eq hx) ((chartModelBasis E) k)
   have h := hS.smoothMetric.frameCompSmooth (e.localFrame (chartModelBasis E)) hframe i j
   refine h.congr fun p hp => ?_
   have hx : p.2 ∈ e.baseSet := hp.2
@@ -336,7 +340,7 @@ theorem chartGram_cont_of_soln
         Integral.Measure.chartGramMatrix (I := I) (S.base.metric p.1) x₀ p.2 i j)
       (Set.Ico alpha omega ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   classical
-  rw [continuousOn_iff_continuous_restrict]
+  rw [continuousOn_iff_continuous_domRestrict]
   set s : Set (ℝ × M) :=
     Set.Ico alpha omega ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet with hs
   have hτ : Continuous (fun q : ↥s => ((q : ℝ × M)).1) :=

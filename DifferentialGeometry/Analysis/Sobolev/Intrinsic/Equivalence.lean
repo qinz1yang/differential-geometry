@@ -36,7 +36,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
 private abbrev EuclN (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] := EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
+    := EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private def chartPushedExt (α : M) (f : M → ℝ) : EuclN E → ℝ := by
   classical

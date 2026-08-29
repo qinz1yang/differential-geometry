@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 set_option relaxedAutoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -51,16 +50,17 @@ private lemma sum_shift_le (g : ℕ → ℝ) (hg : ∀ j, 0 ≤ g j) (m c : ℕ)
     ∑ i ∈ Finset.range m, g (i + c) ≤ ∑ j ∈ Finset.range (m + c), g j := by
   classical
   have hsub :
-      (Finset.range m).map ⟨fun i => i + c, fun a b h => by simpa using h⟩ ⊆
+      (Finset.range m).map ⟨fun i => i + c, fun _ _ h => Nat.add_right_cancel h⟩ ⊆
         Finset.range (m + c) := by
     intro j hj
     rw [Finset.mem_map] at hj
     obtain ⟨i, hi, rfl⟩ := hj
     rw [Finset.mem_range] at hi ⊢
-    simp only [Function.Embedding.coeFn_mk]
+    change i + c < m + c
     omega
   calc ∑ i ∈ Finset.range m, g (i + c)
-      = ∑ j ∈ (Finset.range m).map ⟨fun i => i + c, fun a b h => by simpa using h⟩, g j := by
+      = ∑ j ∈ (Finset.range m).map
+          ⟨fun i => i + c, fun _ _ h => Nat.add_right_cancel h⟩, g j := by
         rw [Finset.sum_map]; rfl
     _ ≤ ∑ j ∈ Finset.range (m + c), g j :=
         Finset.sum_le_sum_of_subset_of_nonneg hsub (fun j _ _ => hg j)
@@ -101,6 +101,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iteratedCovGrad_smul_real (g : SmoothRiemannianMetric I M) (r s j : ℕ) (c : ℝ)
     (w : SmoothCcTensor g r s) :
@@ -143,7 +144,7 @@ theorem covGradConnectionDifferenceSection_perOrder_l2_topOrderSeparated_generic
   · obtain ⟨x₀⟩ := hMne
     have hδ0 : 0 ≤ δ := by
       obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-        haveI : Nontrivial (TangentSpace I x₀) := by
+        have : Nontrivial (TangentSpace I x₀) := by
           have hfr' : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
             have heq : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
             rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -262,7 +263,7 @@ theorem covGradConnectionDifferenceSection_perOrder_l2_topOrderSeparated_generic
       (fun x => uFun x + vFun x) (hu_int.add hv_int) hpt) ?_
     rw [MeasureTheory.integral_add hu_int hv_int, hu_eval]
     linarith [hv_eval]
-  · haveI hem : IsEmpty M := not_nonempty_iff.mp hMne
+  · have hem : IsEmpty M := not_nonempty_iff.mp hMne
     have hz : ‖iteratedCovGrad (I := I) g₀ 1 (2 + 1) i
         (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀))‖ = 0 := by
       rw [SmoothCcTensor.norm_def, tensorL2Norm_def, tensorL2Inner,

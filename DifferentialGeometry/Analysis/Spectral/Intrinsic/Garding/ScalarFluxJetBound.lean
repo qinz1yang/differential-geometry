@@ -18,7 +18,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators InnerProductSpace
@@ -44,20 +43,20 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 private local instance scalarFluxTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance scalarFluxTensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance scalarFluxTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance scalarFluxTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -97,7 +96,7 @@ private theorem joint0S_sub {d : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SSpace d I z) p.1 (A p - B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let := tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
@@ -126,6 +125,7 @@ private theorem joint0S_sub {d : ℕ} {S : Set ℝ}
       exact mem_baseSet_trivializationAt _ _ x₀)).map_sub
         (A p₀) (B p₀)).symm
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricDiff_small
     {D : RealTimeInterval}
@@ -252,8 +252,8 @@ theorem scalarTrace_rev
       ((Set.univ : Set M) ×ˢ {s : ℝ | T - s ∈ D.regular}) := by
     exact ContMDiffOn.prodMk contMDiffOn_fst
       (ContMDiffOn.sub contMDiffOn_const contMDiffOn_snd)
-  simpa only [Function.comp_apply] using
-    (scalarTrace_joint (I := I) (M := M) g_fam hG q).comp hmove
+  with_unfolding_all
+    exact (scalarTrace_joint (I := I) (M := M) g_fam hG q).comp hmove
       (fun p hp => ⟨Set.mem_univ p.1, hp.2⟩)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -275,8 +275,8 @@ theorem connTrace_rev
       ((Set.univ : Set M) ×ˢ {s : ℝ | T - s ∈ D.regular}) := by
     exact ContMDiffOn.prodMk contMDiffOn_fst
       (ContMDiffOn.sub contMDiffOn_const contMDiffOn_snd)
-  simpa only [Function.comp_apply] using
-    (connTrace_joint (I := I) (M := M) g_fam hG q).comp hmove
+  with_unfolding_all
+    exact (connTrace_joint (I := I) (M := M) g_fam hG q).comp hmove
       (fun p hp => ⟨Set.mem_univ p.1, hp.2⟩)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -314,6 +314,7 @@ theorem connTrace_rev_on
   (connTrace_rev (I := I) (M := M) g_fam hG q T).mono
     (Set.prod_mono (Set.Subset.rfl) hS)
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem scalarTrace_small
     {D : RealTimeInterval}
@@ -349,10 +350,14 @@ private theorem connFib_self (q : SmoothRiemannianMetric I M) (x : M) :
   intro om
   apply ContinuousMultilinearMap.ext
   intro YZ
+  with_unfolding_all
+    change ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
+      connectionDifferenceFib (I := I) q q x) om) YZ = 0
   rw [connectionDifferenceFib_apply_eval, PDE.DeTurck.connectionDifference_self]
   change om (0 : Fin 1 → TangentSpace I x) = 0
   exact ContinuousMultilinearMap.map_zero om
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem connTrace_small
     {D : RealTimeInterval}
@@ -407,6 +412,7 @@ theorem scalarFlux_eq_slot (q h : SmoothRiemannianMetric I M) :
     cotangent_slot_apply (I := I) (M := M)]
   rfl
 
+omit [SigmaCompactSpace M] in
 theorem scalarFlux_jet_grid
     (q : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
@@ -432,6 +438,7 @@ theorem scalarFlux_jet_grid
   simpa only [DifferentialGeometry.Combinatorics.antidiagonalTupleGrid] using
     hjet h T htie hδ_le hδ0 hbound i x
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricDiff_slab
     {D : RealTimeInterval}
@@ -479,18 +486,20 @@ theorem metricDiff_slab
   refine ⟨tau, htau, htau_one, B, hB, ?_⟩
   intro s hs
   have htK : (T : ℝ) - s ∈ K := by
-    constructor <;> dsimp only [K] <;> linarith [hs.1, hs.2]
+    change (T : ℝ) - tau ≤ (T : ℝ) - s ∧ (T : ℝ) - s ≤ T
+    constructor <;> linarith [hs.1, hs.2]
   have hbound : metricCauchySchwarzBound (I := I) q
       (ccTensorBilinSymm (I := I) q (P ((T : ℝ) - s))) (1 / 4 : ℝ) := by
     intro y v w
     rw [metricDiff_bilin (I := I) (M := M)]
-    simpa only [q, ContinuousLinearMap.sub_apply] using
+    simpa only [q, sub_apply] using
       (hshort s hs).2 y v w
   refine ⟨(hshort s hs).1, ?_, ?_⟩
   · simpa only [q, P] using hbound
   · intro i x
     simpa only [q, P] using hjet i ((T : ℝ) - s) htK x
 
+omit [SigmaCompactSpace M] in
 theorem scalarFlux_slab
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)

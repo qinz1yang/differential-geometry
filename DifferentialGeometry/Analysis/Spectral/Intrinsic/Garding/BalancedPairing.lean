@@ -29,20 +29,20 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance balancedTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance balancedTensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance balancedTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance balancedTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 theorem iterL_jet_le (g : SmoothRiemannianMetric I M) (s a : ℕ) :
     ∃ C : ℕ → ℝ, (∀ p, 0 ≤ C p) ∧ ∀ (p : ℕ) (v : SmoothCcTensor g 0 s),
@@ -117,6 +117,7 @@ theorem iterL_jet_le (g : SmoothRiemannianMetric I M) (s a : ℕ) :
               add_le_add hleft hright
         _ = (C p + D p * ∑ b ∈ Finset.range (p + 3), C b) * J := by ring
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem jetSum_mono (g : SmoothRiemannianMetric I M) (s : ℕ)
@@ -257,6 +258,7 @@ theorem iterL_window_pair (g : SmoothRiemannianMetric I M)
             ‖iteratedCovGrad (I := I) g 0 s₀ j u‖)) := by
       ring
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem covJet_norm_comp (g : SmoothRiemannianMetric I M) (s j i : ℕ)
@@ -292,6 +294,7 @@ private theorem covJet_norm_comp (g : SmoothRiemannianMetric I M) (s j i : ℕ)
   have hright_nn : 0 ≤ ‖iteratedCovGrad (I := I) g 0 s (j + i) S‖ := norm_nonneg _
   rw [← Real.sqrt_sq hleft_nn, ← Real.sqrt_sq hright_nn, hsq]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem covJet_norm_order (g : SmoothRiemannianMetric I M) (s : ℕ)
@@ -301,6 +304,7 @@ private theorem covJet_norm_order (g : SmoothRiemannianMetric I M) (s : ℕ)
   subst j
   rfl
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem grad_jet_sum_le (g : SmoothRiemannianMetric I M) (s m : ℕ)
@@ -325,6 +329,7 @@ private theorem grad_jet_sum_le (g : SmoothRiemannianMetric I M) (s m : ℕ)
   have hzero : 0 ≤ ‖iteratedCovGrad (I := I) g 0 s 0 S‖ := norm_nonneg _
   linarith
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem jetProduct_le (g : SmoothRiemannianMetric I M) (s n p q : ℕ)

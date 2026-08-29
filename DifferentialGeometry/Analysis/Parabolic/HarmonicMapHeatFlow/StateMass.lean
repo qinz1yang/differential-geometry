@@ -13,6 +13,26 @@ namespace DifferentialGeometry.PDE.RicciFlow.Pullback
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Integral.Measure
 
+private noncomputable local instance hmfRealDualNormedAddCommGroup
+    {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] :
+    NormedAddCommGroup (V →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedAddCommGroup
+
+private noncomputable local instance hmfRealDualNormedSpace
+    {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] :
+    NormedSpace ℝ (V →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedSpace
+
+private noncomputable local instance hmfRealBilinearNormedAddCommGroup
+    {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] :
+    NormedAddCommGroup (V →L[ℝ] V →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedAddCommGroup
+
+private noncomputable local instance hmfRealBilinearNormedSpace
+    {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] :
+    NormedSpace ℝ (V →L[ℝ] V →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedSpace
+
 theorem bilin_coer_near
     {V : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]
     (B : V → V →L[ℝ] V →L[ℝ] ℝ) {c : ℝ} (hc : 0 < c)
@@ -20,6 +40,14 @@ theorem bilin_coer_near
     (hB : ∀ v : V, c * ‖v‖ * ‖v‖ ≤ B 0 v v) :
     ∃ R : ℝ, 0 < R ∧ ∀ u : V, ‖u‖ < R → ∀ v : V,
       (c / 2) * ‖v‖ * ‖v‖ ≤ B u v v := by
+  let : NormedAddCommGroup (V →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ (V →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
+  let : NormedAddCommGroup (V →L[ℝ] V →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ (V →L[ℝ] V →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
   have hc2 : 0 < c / 2 := half_pos hc
   have hev : {u : V | ‖B u - B 0‖ < c / 2} ∈ 𝓝 (0 : V) := by
     have hball := hcont.eventually (Metric.ball_mem_nhds (B 0) hc2)
@@ -48,7 +76,7 @@ theorem bilin_coer_near
   have hDlow : -((c / 2) * ‖v‖ * ‖v‖) ≤ D v v :=
     neg_le_of_abs_le habs
   have heval : B u v v = B 0 v v + D v v := by
-    simp only [D, ContinuousLinearMap.sub_apply]
+    simp only [D, sub_apply]
     ring
   rw [heval]
   calc
@@ -89,8 +117,10 @@ private theorem mfderiv_affine_line_apply
     rw [mfderiv_eq_fderiv]
     have h : HasFDerivAt line
         (ContinuousLinearMap.smulRight (1 : ℝ →L[ℝ] ℝ) v) 0 := by
-      simpa only [line] using
-        ((hasFDerivAt_id (0 : ℝ)).smul_const v).const_add u
+      have hderiv : HasDerivAt line v 0 := by
+        simpa only [line, id_eq, one_smul] using
+          ((hasDerivAt_id (𝕜 := ℝ) (0 : ℝ)).smul_const v).const_add u
+      exact hderiv.hasFDerivAt
     rw [h.fderiv]
     change (1 : ℝ) • v = v
     exact one_smul ℝ v
@@ -114,8 +144,12 @@ private theorem mfderiv_euclidean_affine_line_apply
     (f : EuclideanSpace ℝ J → M) (u v : EuclideanSpace ℝ J)
     (hmd : MDifferentiableAt 𝓘(ℝ, EuclideanSpace ℝ J) I f u) :
     mfderiv 𝓘(ℝ) I (fun a : ℝ ↦ f (u + a • v)) 0 1 =
-      mfderiv 𝓘(ℝ, EuclideanSpace ℝ J) I f u v :=
-  mfderiv_affine_line_apply (E := E) (I := I) (M := M) f u v hmd
+      mfderiv 𝓘(ℝ, EuclideanSpace ℝ J) I f u
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(ℝ, EuclideanSpace ℝ J))
+          u).symm.toContinuousLinearMap v) := by
+  with_unfolding_all
+    exact mfderiv_affine_line_apply (E := E) (I := I) (M := M) f u v hmd
 
 noncomputable irreducible_def hmfSpecVar
     (q : SmoothRiemannianMetric I M)
@@ -123,8 +157,10 @@ noncomputable irreducible_def hmfSpecVar
     (u : EuclideanSpace ℝ {i // i ∈ S}) (x : M) :
     EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
       TangentSpace I (hmfSpecMap (I := I) (M := M) q S x u) :=
-  mfderiv 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
-    (hmfSpecMap (I := I) (M := M) q S x) u
+  (mfderiv 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S}) I
+    (hmfSpecMap (I := I) (M := M) q S x) u).comp
+      (tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(ℝ, EuclideanSpace ℝ {i // i ∈ S})) u).symm.toContinuousLinearMap
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
 theorem hmfSpecVar_line
@@ -137,7 +173,7 @@ theorem hmfSpecVar_line
         (fun a : ℝ =>
           hmfSpecMap (I := I) (M := M) q S x (u + a • v)) 0 1 =
       hmfSpecVar (I := I) (M := M) q S u x v := by
-  rw [hmfSpecVar_def]
+  rw [hmfSpecVar_def, ContinuousLinearMap.comp_apply]
   exact mfderiv_euclidean_affine_line_apply (E := E) (I := I) (M := M)
     (hmfSpecMap (I := I) (M := M) q S x) u v hmd
 
@@ -223,14 +259,33 @@ theorem hmfSpecMass_cont
     ContinuousOn
       (hmfSpecMassOp (I := I) (M := M) q h S)
       (Metric.closedBall (0 : EuclideanSpace ℝ {i // i ∈ S}) R) := by
-  letI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) h) :=
+  let : NormedAddCommGroup
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
+  let : NormedAddCommGroup
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
+        EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
+        EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
+  let : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) h) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace h
-  simpa only [hmfSpecMassOp] using
-    (integral_contOn_cpt
-      (riemannianVolumeMeasure (I := I) (M := M) h)
-      (fun u x => hmfSpecMassPt (I := I) (M := M) q S u x)
-      (isCompact_closedBall
-        (0 : EuclideanSpace ℝ {i // i ∈ S}) R) hmass)
+  have hfun : hmfSpecMassOp (I := I) (M := M) q h S =
+      fun u => ∫ x, hmfSpecMassPt (I := I) (M := M) q S u x
+        ∂(riemannianVolumeMeasure (I := I) (M := M) h) := by
+    funext u
+    rfl
+  rw [hfun]
+  exact integral_contOn_cpt
+    (riemannianVolumeMeasure (I := I) (M := M) h)
+    (fun u x => hmfSpecMassPt (I := I) (M := M) q S u x)
+    (isCompact_closedBall
+      (0 : EuclideanSpace ℝ {i // i ∈ S}) R) hmass
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
 theorem hmfSpecMass_apply
@@ -246,6 +301,20 @@ theorem hmfSpecMass_apply
           (hmfSpecVar (I := I) (M := M) q S u x v)
           (hmfSpecVar (I := I) (M := M) q S u x w)
         ∂(riemannianVolumeMeasure (I := I) (M := M) h) := by
+  let : NormedAddCommGroup
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
+  let : NormedAddCommGroup
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
+        EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
+        EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
   have hintv : Integrable
       (fun x => hmfSpecMassPt (I := I) (M := M) q S u x v)
       (riemannianVolumeMeasure (I := I) (M := M) h) :=

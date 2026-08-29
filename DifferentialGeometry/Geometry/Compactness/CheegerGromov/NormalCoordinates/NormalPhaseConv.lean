@@ -68,10 +68,10 @@ theorem diag_end_conv
       (normalCoordMetric (I := I) (X.obj n) (c n))
       (Metric.ball 0 (h.phaseRadius R)) := by
     intro n
-    letI : TopologicalSpace (X.obj n).M := (X.obj n).topology
-    letI : ChartedSpace H (X.obj n).M := (X.obj n).charted
-    letI : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
-    letI : T2Space (TangentBundle I (X.obj n).M) :=
+    let : TopologicalSpace (X.obj n).M := (X.obj n).topology
+    let : ChartedSpace H (X.obj n).M := (X.obj n).charted
+    let : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
+    let : T2Space (TangentBundle I (X.obj n).M) :=
       (X.obj n).t2TangentBundle
     apply (normalCoordMetric_contDiffOn_expBall (I := I) (X.obj n) (c n)).mono
     exact (h.phaseRadius_exp (hc n)).trans (Metric.ball_subset_ball (by

@@ -33,7 +33,7 @@ theorem exists_source_univ
       letI : TopologicalSpace P.M := P.topology
       IsCompact (Set.univ : Set P.M)) :
     exists k0 : Nat, forall k : Nat, k0 <= k -> Phi.source k = Set.univ := by
-  letI : TopologicalSpace P.M := P.topology
+  let : TopologicalSpace P.M := P.topology
   obtain ⟨k0, hk0⟩ := Phi.source_subset (K := Set.univ) hcompact
   refine ⟨k0, fun k hk => ?_⟩
   exact Set.eq_univ_of_univ_subset (hk0 k hk)
@@ -52,15 +52,15 @@ theorem target_univ
       ConnectedSpace (X.term (subseq k)).M)
     (hsource : Phi.source k = Set.univ) :
     Phi.target k = Set.univ := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : TopologicalSpace (X.term (subseq k)).M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : TopologicalSpace (X.term (subseq k)).M :=
     (X.term (subseq k)).topology
-  letI : ChartedSpace H (X.term (subseq k)).M :=
+  let : ChartedSpace H (X.term (subseq k)).M :=
     (X.term (subseq k)).charted
-  letI : T2Space (X.term (subseq k)).M :=
+  let : T2Space (X.term (subseq k)).M :=
     (X.term (subseq k)).t2
-  letI : ConnectedSpace (X.term (subseq k)).M := hconn
+  let : ConnectedSpace (X.term (subseq k)).M := hconn
   let phi := Phi.partialDiffeomorph k
   have hsource' : phi.source = Set.univ := by
     simpa [phi, PointedCGHMaps.source] using hsource

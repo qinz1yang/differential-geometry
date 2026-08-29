@@ -29,7 +29,7 @@ def IsTorsionFreeAt
 def IsLeviCivitaAt
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M) (x : M) : Prop :=
-  IsMetricCompatibleAt_gen (I := I) cov g x /\ IsTorsionFreeAt (I := I) cov x
+  IsMetricCompatibleAtGen (I := I) cov g x /\ IsTorsionFreeAt (I := I) cov x
 
 def IsTorsionFree
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _)) : Prop :=
@@ -39,14 +39,14 @@ def IsTorsionFree
 def IsLeviCivita
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M) : Prop :=
-  IsMetricCompatible_gen (I := I) cov g /\ IsTorsionFree (I := I) cov
+  IsMetricCompatibleGen (I := I) cov g /\ IsTorsionFree (I := I) cov
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem metricCompatible_of_isLeviCivita
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {g : SmoothRiemannianMetric I M}
     (h : IsLeviCivita (I := I) cov g) :
-    IsMetricCompatible_gen (I := I) cov g :=
+    IsMetricCompatibleGen (I := I) cov g :=
   h.1
 
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -61,7 +61,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
 theorem isLeviCivita_of_parts
     {cov : CovariantDerivative I E (TangentSpace I : M -> Type _)}
     {g : SmoothRiemannianMetric I M}
-    (hmc : IsMetricCompatible_gen (I := I) cov g)
+    (hmc : IsMetricCompatibleGen (I := I) cov g)
     (htf : IsTorsionFree (I := I) cov) :
     IsLeviCivita (I := I) cov g :=
   ⟨hmc, htf⟩

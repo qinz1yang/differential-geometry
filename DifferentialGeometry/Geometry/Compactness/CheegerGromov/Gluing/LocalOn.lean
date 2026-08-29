@@ -16,8 +16,8 @@ open scoped ContDiff Manifold Topology
 
 open DifferentialGeometry.Geometry.Riemannian
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -80,20 +80,20 @@ theorem HasStageJetDataOn.hloc_tail
   let Lphi := L.subseq hphi
   let Yk := X.obj (Lphi.φ k)
   let Yl := X.obj (Lphi.φ l)
-  letI : TopologicalSpace Yk.M := Yk.topology
-  letI : ChartedSpace H Yk.M := Yk.charted
-  letI : IsManifold I ∞ Yk.M := Yk.smooth
-  letI : T2Space Yk.M := Yk.t2
-  letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-  letI : TopologicalSpace Yl.M := Yl.topology
-  letI : ChartedSpace H Yl.M := Yl.charted
-  letI : IsManifold I ∞ Yl.M := Yl.smooth
-  letI : T2Space Yl.M := Yl.t2
-  letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
+  let : TopologicalSpace Yk.M := Yk.topology
+  let : ChartedSpace H Yk.M := Yk.charted
+  let : IsManifold I ∞ Yk.M := Yk.smooth
+  let : T2Space Yk.M := Yk.t2
+  let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+  let : TopologicalSpace Yl.M := Yl.topology
+  let : ChartedSpace H Yl.M := Yl.charted
+  let : IsManifold I ∞ Yl.M := Yl.smooth
+  let : T2Space Yl.M := Yl.t2
+  let : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
   let F := stageComparisonMap inp P Lphi r hr k l (chart := chart)
   rintro ⟨x, hx⟩
   have hxLarge : x ∈ Lphi.hatSourceBall inp.decay P r k := by
-    letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
+    let : MetricSpace Yk.M := (P (Lphi.φ k)).ms
     exact cball_subset_of_le hRr.le
       (by simpa only [NetLimitData.hatSourceBall, Yk] using hx)
   have hcover := hsource k
@@ -104,7 +104,8 @@ theorem HasStageJetDataOn.hloc_tail
   let chiK := chart (Lphi.φ k) xk0
   let chiL := chart (Lphi.φ l) xl0
   have hxEq : chiK.hom z = x := by
-    simpa only [chiK, xk0, Yk, Lphi] using hzx
+    with_unfolding_all
+      exact hzx
   obtain ⟨_hUopen, _hC0, _hC1, hC01, hC1U⟩ :=
     hdata.core_on inp P L r hr chart U C0 C1 aInf Jinf Jbarinf alpha
   obtain ⟨hRad, _hMaps⟩ :=
@@ -114,9 +115,8 @@ theorem HasStageJetDataOn.hloc_tail
     hC1U (interior_subset (hC01 hzC0))
   have hzBall := hRad hzU
   have hzSource : z ∈ chiK.restrictBall.source := by
-    simpa only [
-      NormalCoordinates.NormalBallChart.restrictBall_source,
-      chiK, xk0, Yk, Lphi] using hzBall
+    with_unfolding_all
+      exact hzBall
   let c := chiK.restrictBall.symm
   let d := chiL.restrictBall.symm
   have hc_symm (w : E) : c.symm w = chiK.hom w := by
@@ -128,11 +128,13 @@ theorem HasStageJetDataOn.hloc_tail
   have hxc : x ∈ c.source := by
     have hout := chiK.restrictBall.map_source hzSource
     rw [NormalCoordinates.NormalBallChart.restrictBall_apply, hxEq] at hout
-    simpa only [c] using hout
+    with_unfolding_all
+      exact hout
   have hcx : c x = z := by
     have hout := chiK.restrictBall.left_inv hzSource
     rw [NormalCoordinates.NormalBallChart.restrictBall_apply, hxEq] at hout
-    simpa only [c] using hout
+    with_unfolding_all
+      exact hout
   let Bmid : Set Yk.M :=
     letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
     Metric.ball Yk.basepoint Rmid
@@ -141,7 +143,7 @@ theorem HasStageJetDataOn.hloc_tail
         @IsOpen Yk.M
           (P (Lphi.φ k)).ms.toPseudoMetricSpace.toUniformSpace.toTopologicalSpace
           Bmid := by
-      letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
+      let : MetricSpace Yk.M := (P (Lphi.φ k)).ms
       exact Metric.isOpen_ball
     rw [ProperMetricOn.top_eq Yk (P (Lphi.φ k))] at hb
     exact hb
@@ -154,7 +156,7 @@ theorem HasStageJetDataOn.hloc_tail
       (chiK.restrictBall.contMDiffOn_toFun.continuousOn.isOpen_inter_preimage
         chiK.restrictBall.open_source hBopen)
   have hxBmid : x ∈ Bmid := by
-    letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
+    let : MetricSpace Yk.M := (P (Lphi.φ k)).ms
     exact Metric.closedBall_subset_ball hRmid
       (by simpa only [Bmid, NetLimitData.hatSourceBall, Yk] using hx)
   have hcxV : c x ∈ Vloc := by
@@ -178,7 +180,7 @@ theorem HasStageJetDataOn.hloc_tail
             id w ≤ (1 / 2 : Real) := by
     have hwMid : chiK.hom w ∈
         Lphi.hatSourceBall inp.decay P Rmid k := by
-      letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
+      let : MetricSpace Yk.M := (P (Lphi.φ k)).ms
       have hwBmid : chiK.hom w ∈ Bmid := by
         have hwRestr : chiK.restrictBall w ∈ Bmid := by
           exact hw.2.2

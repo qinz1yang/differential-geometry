@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -38,13 +37,22 @@ lemma scalarFn_eq_toModel_elim0
   change tensor0Iso I M x (T x) = (Tensor0SSpace.toModel (T x)) (fun i => Fin.elim0 i)
   rw [tensor0Iso]
   change (continuousMultilinearCurryFin0 ℝ E ℝ)
-      ((tensor0SSpace_continuousLinearEquiv (I := I) 0 x) (T x)) =
+      ((tensor0SSpaceContinuousLinearEquiv (I := I) 0 x) (T x)) =
     (Tensor0SSpace.toModel (T x)) (fun i => Fin.elim0 i)
   rw [continuousMultilinearCurryFin0_apply]
-  change (tensor0SSpace_continuousLinearEquiv (I := I) 0 x) (T x) (0 : Fin 0 → E) =
-    (tensor0SSpace_continuousLinearEquiv (I := I) 0 x) (T x) (fun i => Fin.elim0 i)
+  change (tensor0SSpaceContinuousLinearEquiv (I := I) 0 x) (T x) (0 : Fin 0 → E) =
+    (tensor0SSpaceContinuousLinearEquiv (I := I) 0 x) (T x) (fun i => Fin.elim0 i)
   congr 1
   exact Subsingleton.elim _ _
+
+omit [Module.Finite ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
+    [BoundarylessManifold I M] in
+lemma scalarFn_eq_eval_elim0
+    (T : Π x : M, Tensor0SSpace 0 I x) (x : M) :
+    scalarFn I M T x = Tensor0SSpace.eval (T x) (fun i => Fin.elim0 i) := by
+  rw [scalarFn_eq_toModel_elim0 (I := I) (M := M)]
+  rw [← Tensor0SSpace.toModel_apply_tangent]
+  congr 1
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -59,18 +67,32 @@ lemma tensor0SCovariantDerivative_zero_toModel_apply
     (LeviCivita (I := I) g) T x v]
   have hcoe : (Tensor0SSpace.toModel
         ((tensor0Iso I M x).symm
-          (extDerivFun (I := I) (scalarFn I M T) x v)))
+          (mvfderiv (I := I) (scalarFn I M T) x v)))
         (fun i => Fin.elim0 i) =
       tensor0Iso I M x
-        ((tensor0Iso I M x).symm (extDerivFun (I := I) (scalarFn I M T) x v)) :=
+        ((tensor0Iso I M x).symm (mvfderiv (I := I) (scalarFn I M T) x v)) :=
     (scalarFn_eq_toModel_elim0 (I := I) (M := M)
       (fun _ : M => (tensor0Iso I M x).symm
-        (extDerivFun (I := I) (scalarFn I M T) x v)) x).symm
+        (mvfderiv (I := I) (scalarFn I M T) x v)) x).symm
   rw [hcoe, ContinuousLinearEquiv.apply_symm_apply]
   change (NormedSpace.fromTangentSpace ((scalarFn I M T) x)).toContinuousLinearMap
       ((mfderiv I 𝓘(ℝ, ℝ) (scalarFn I M T) x) v) =
     mfderiv I 𝓘(ℝ, ℝ) (scalarFn I M T) x v
   rfl
+
+omit [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] in
+lemma tensor0SCovariantDerivative_zero_eval_apply
+    (g : SmoothRiemannianMetric I M)
+    (T : Π x : M, Tensor0SSpace 0 I x) (x : M) (v : TangentSpace I x) :
+    Tensor0SSpace.eval
+        (tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g) T x v)
+        (fun i => Fin.elim0 i) =
+      mfderiv I 𝓘(ℝ, ℝ) (scalarFn I M T) x v := by
+  rw [← Tensor0SSpace.toModel_apply_tangent]
+  rw [show (fun i : Fin 0 => tangentSpaceModelContinuousLinearEquiv (I := I) x i.elim0) =
+      (fun i : Fin 0 => i.elim0) from Subsingleton.elim _ _]
+  exact tensor0SCovariantDerivative_zero_toModel_apply (I := I) (M := M) g T x v
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
@@ -111,7 +133,7 @@ theorem tensorInnerPointwise_0s_hasMFDerivAt_metricCompatible_zero
     funext y
     rw [tensorInnerPointwise_0s_zero_eq_scalarFn_mul (I := I) (M := M) g W T y]
   rw [hintegrand]
-  change extDerivFun (I := I) (fun y : M => f y * h y) x v =
+  change mvfderiv (I := I) (fun y : M => f y * h y) x v =
     covariantTensorInnerPointwise (I := I) (M := M) 0 g x
         (Tensor0SSpace.toModel
           (tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g) W x v))
@@ -120,14 +142,14 @@ theorem tensorInnerPointwise_0s_hasMFDerivAt_metricCompatible_zero
         (Tensor0SSpace.toModel (W x))
         (Tensor0SSpace.toModel
           (tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g) T x v))
-  rw [extDerivFun_mul_apply (I := I) (p := f) (q := h) hW hT v]
+  rw [mvfderiv_mul_apply (I := I) (p := f) (q := h) hW hT v]
   rw [tensorInnerPointwise_0s_zero_eq_scalarFn_mul (I := I) (M := M) g
     (fun _ : M => tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g) W x v) T x,
     tensorInnerPointwise_0s_zero_eq_scalarFn_mul (I := I) (M := M) g
     W (fun _ : M => tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g) T x v) x]
   have hWcov : scalarFn I M
         (fun _ : M => tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g) W x v) x =
-      extDerivFun (I := I) f x v := by
+      mvfderiv (I := I) f x v := by
     rw [hf_def,
       scalarFn_eq_toModel_elim0 (I := I) (M := M)
         (fun _ : M => tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g) W x v) x,
@@ -135,15 +157,15 @@ theorem tensorInnerPointwise_0s_hasMFDerivAt_metricCompatible_zero
     rfl
   have hTcov : scalarFn I M
         (fun _ : M => tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g) T x v) x =
-      extDerivFun (I := I) h x v := by
+      mvfderiv (I := I) h x v := by
     rw [hh_def,
       scalarFn_eq_toModel_elim0 (I := I) (M := M)
         (fun _ : M => tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g) T x v) x,
       tensor0SCovariantDerivative_zero_toModel_apply (I := I) (M := M) g T x v]
     rfl
   rw [hWcov, hTcov]
-  change f x * extDerivFun (I := I) h x v + h x * extDerivFun (I := I) f x v =
-    extDerivFun (I := I) f x v * h x + f x * extDerivFun (I := I) h x v
+  change f x * mvfderiv (I := I) h x v + h x * mvfderiv (I := I) f x v =
+    mvfderiv (I := I) f x v * h x + f x * mvfderiv (I := I) h x v
   ring
 
 open DifferentialGeometry.Tensor0SBundle in
@@ -151,10 +173,13 @@ omit [Module.Finite ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2
     [BoundarylessManifold I M] in
 lemma toModel_tensor0S_curry_eq_curryLeft {s : ℕ} {x : M}
     (A : Tensor0SSpace (s + 1) I x) (v : TangentSpace I x) :
-    Tensor0SSpace.toModel (tensor0S_curry (I := I) (M := M) s x A v) =
-      (Tensor0SSpace.toModel A).curryLeft v := by
+    Tensor0SSpace.toModel (tensor0SCurry (I := I) (M := M) s x A v) =
+      (Tensor0SSpace.toModel A).curryLeft
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x v) := by
   refine ContinuousMultilinearMap.ext (fun m => ?_)
-  rw [ContinuousMultilinearMap.curryLeft_apply]
+  rw [Tensor0SSpace.toModel_apply_model_vector,
+    ContinuousMultilinearMap.curryLeft_apply,
+    Tensor0SSpace.toModel_apply_model_vector]
   exact TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
     (T := A) (v0 := v) (vs := m)
 
@@ -162,7 +187,8 @@ private noncomputable def mixedGramMatrix
     (g : SmoothRiemannianMetric I M) (x : M)
     (frame : Fin (Module.finrank ℝ E) → TangentSpace I x) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
-  Matrix.of fun i a => g.inner x ((chartModelBasis E) i) (frame a)
+  Matrix.of fun i a =>
+    g.inner x (centeredChartTangentBasis (I := I) x i) (frame a)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
@@ -171,7 +197,7 @@ private lemma mixedGramMatrix_apply
     (frame : Fin (Module.finrank ℝ E) → TangentSpace I x)
     (i a : Fin (Module.finrank ℝ E)) :
     mixedGramMatrix (I := I) (M := M) g x frame i a =
-      g.inner x ((chartModelBasis E) i) (frame a) := rfl
+      g.inner x (centeredChartTangentBasis (I := I) x i) (frame a) := rfl
 
 omit [Module.Finite ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
@@ -190,9 +216,9 @@ private lemma orthonormal_expansion
         frame.repr v b * g.inner x (frame b) (frame a) := by
     conv_lhs => rw [show v = ∑ b : Fin (Module.finrank ℝ E),
       frame.repr v b • frame b from (frame.sum_repr v).symm]
-    rw [map_sum, ContinuousLinearMap.sum_apply]
+    rw [map_sum, sum_apply]
     refine Finset.sum_congr rfl (fun b _ => ?_)
-    rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [ContinuousLinearMap.map_smul, smul_apply, smul_eq_mul]
   rw [hv]
   rw [Finset.sum_eq_single a]
   · rw [horth a a, if_pos rfl, mul_one]
@@ -212,15 +238,19 @@ private lemma gramMatrixAt_eq_mixed_mul_transpose
         (mixedGramMatrix (I := I) (M := M) g x frame)ᵀ := by
   classical
   ext i j
-  rw [gramMatrixAt_apply, Matrix.mul_apply]
-  have hexp : (chartModelBasis E) j =
+  rw [gramMatrixAt_apply, modelInnerAt_apply,
+    tangent_model_equiv_symm_chart_basis,
+    tangent_model_equiv_symm_chart_basis, Matrix.mul_apply]
+  have hexp : centeredChartTangentBasis (I := I) x j =
       ∑ a : Fin (Module.finrank ℝ E),
-        g.inner x ((chartModelBasis E) j) (frame a) • frame a :=
-    orthonormal_expansion (I := I) (M := M) g x frame horth ((chartModelBasis E) j)
-  calc g.inner x ((chartModelBasis E) i) ((chartModelBasis E) j)
-      = g.inner x ((chartModelBasis E) i)
+        g.inner x (centeredChartTangentBasis (I := I) x j) (frame a) • frame a :=
+    orthonormal_expansion (I := I) (M := M) g x frame horth
+      (centeredChartTangentBasis (I := I) x j)
+  calc g.inner x (centeredChartTangentBasis (I := I) x i)
+        (centeredChartTangentBasis (I := I) x j)
+      = g.inner x (centeredChartTangentBasis (I := I) x i)
           (∑ a : Fin (Module.finrank ℝ E),
-            g.inner x ((chartModelBasis E) j) (frame a) • frame a) := by
+            g.inner x (centeredChartTangentBasis (I := I) x j) (frame a) • frame a) := by
         rw [← hexp]
     _ = ∑ a : Fin (Module.finrank ℝ E),
           mixedGramMatrix (I := I) (M := M) g x frame i a *
@@ -349,24 +379,28 @@ private lemma tensorInnerPointwise_0s_succ_orthoFrame
     covariantTensorInnerPointwise (I := I) (M := M) (s + 1) g x S T =
       ∑ a : Fin (Module.finrank ℝ E),
         covariantTensorInnerPointwise (I := I) (M := M) s g x
-          (S.curryLeft (frame a)) (T.curryLeft (frame a)) := by
+          (S.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)))
+          (T.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a))) := by
   classical
   rw [tensorInnerPointwise_0s_succ]
   have hmodel_exp : ∀ i : Fin (Module.finrank ℝ E),
       (chartModelBasis E) i =
         ∑ a : Fin (Module.finrank ℝ E),
-          mixedGramMatrix (I := I) (M := M) g x frame i a • frame a := by
+          mixedGramMatrix (I := I) (M := M) g x frame i a •
+            tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a) := by
     intro i
     have hexp := orthonormal_expansion (I := I) (M := M) g x frame horth
-      ((chartModelBasis E) i)
-    rw [hexp]
-    refine Finset.sum_congr rfl (fun a _ => ?_)
-    rw [mixedGramMatrix_apply]
+      (centeredChartTangentBasis (I := I) x i)
+    have hmapped := congrArg
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x) hexp
+    simpa only [map_sum, map_smul,
+      tangent_model_equiv_centered_chart_basis, mixedGramMatrix_apply] using hmapped
   have hcurry_exp : ∀ (P : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ)
       (i : Fin (Module.finrank ℝ E)),
       P.curryLeft ((chartModelBasis E) i) =
         ∑ a : Fin (Module.finrank ℝ E),
-          mixedGramMatrix (I := I) (M := M) g x frame i a • P.curryLeft (frame a) := by
+          mixedGramMatrix (I := I) (M := M) g x frame i a •
+            P.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)) := by
     intro P i
     rw [hmodel_exp i]
     exact curryLeft_sum_smul (E := E) P Finset.univ _ _
@@ -378,9 +412,10 @@ private lemma tensorInnerPointwise_0s_succ_orthoFrame
         ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           (mixedGramMatrix (I := I) (M := M) g x frame i a *
               (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
-              mixedGramMatrix (I := I) (M := M) g x frame j b) *
+            mixedGramMatrix (I := I) (M := M) g x frame j b) *
             covariantTensorInnerPointwise (I := I) (M := M) s g x
-              (S.curryLeft (frame a)) (T.curryLeft (frame b)) := by
+              (S.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)))
+              (T.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame b))) := by
     intro i j
     rw [hcurry_exp S i, hcurry_exp T j]
     rw [tensorInnerPointwise_0s_bisum (I := I) (M := M) g x s
@@ -402,7 +437,8 @@ private lemma tensorInnerPointwise_0s_succ_orthoFrame
             (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
             mixedGramMatrix (I := I) (M := M) g x frame j b) *
           covariantTensorInnerPointwise (I := I) (M := M) s g x
-            (S.curryLeft (frame a)) (T.curryLeft (frame b))
+            (S.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)))
+            (T.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame b)))
     from by
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -415,7 +451,8 @@ private lemma tensorInnerPointwise_0s_succ_orthoFrame
         (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
         mixedGramMatrix (I := I) (M := M) g x frame j b) *
       covariantTensorInnerPointwise (I := I) (M := M) s g x
-        (S.curryLeft (frame a)) (T.curryLeft (frame b)) with hF_def
+        (S.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)))
+        (T.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame b))) with hF_def
   have hreindex :
       ∑ i, ∑ j, ∑ a, ∑ b, F i j a b =
         ∑ a, ∑ b, ∑ i, ∑ j, F i j a b := by
@@ -433,19 +470,22 @@ private lemma tensorInnerPointwise_0s_succ_orthoFrame
             ((gramMatrixAt (I := I) (M := M) g x)⁻¹ *
               mixedGramMatrix (I := I) (M := M) g x frame)) a b *
           covariantTensorInnerPointwise (I := I) (M := M) s g x
-            (S.curryLeft (frame a)) (T.curryLeft (frame b)) := by
+            (S.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)))
+            (T.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame b))) := by
     intro a b
     rw [Matrix.mul_apply]
     rw [show (∑ i, (mixedGramMatrix (I := I) (M := M) g x frame)ᵀ a i *
           ((gramMatrixAt (I := I) (M := M) g x)⁻¹ *
             mixedGramMatrix (I := I) (M := M) g x frame) i b) *
         covariantTensorInnerPointwise (I := I) (M := M) s g x
-          (S.curryLeft (frame a)) (T.curryLeft (frame b))
+          (S.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)))
+          (T.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame b)))
       = ∑ i, ((mixedGramMatrix (I := I) (M := M) g x frame)ᵀ a i *
           ((gramMatrixAt (I := I) (M := M) g x)⁻¹ *
             mixedGramMatrix (I := I) (M := M) g x frame) i b) *
         covariantTensorInnerPointwise (I := I) (M := M) s g x
-          (S.curryLeft (frame a)) (T.curryLeft (frame b))
+          (S.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)))
+          (T.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame b)))
       from by rw [Finset.sum_mul]]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [Matrix.mul_apply]
@@ -453,12 +493,14 @@ private lemma tensorInnerPointwise_0s_succ_orthoFrame
           ∑ j, (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
             mixedGramMatrix (I := I) (M := M) g x frame j b) *
         covariantTensorInnerPointwise (I := I) (M := M) s g x
-          (S.curryLeft (frame a)) (T.curryLeft (frame b))
+          (S.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)))
+          (T.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame b)))
       = ∑ j, ((mixedGramMatrix (I := I) (M := M) g x frame)ᵀ a i *
           ((gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
             mixedGramMatrix (I := I) (M := M) g x frame j b)) *
         covariantTensorInnerPointwise (I := I) (M := M) s g x
-          (S.curryLeft (frame a)) (T.curryLeft (frame b))
+          (S.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)))
+          (T.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame b)))
       from by rw [Finset.mul_sum, Finset.sum_mul]]
     refine Finset.sum_congr rfl (fun j _ => ?_)
     rw [Matrix.transpose_apply, hF_def]
@@ -485,13 +527,13 @@ private lemma linearIndependent_of_orthonormal
   intro c hc b
   have hpair : g.inner y (∑ a, c a • frame a) (frame b) = 0 := by
     rw [hc]; simp
-  rw [map_sum, ContinuousLinearMap.sum_apply] at hpair
+  rw [map_sum, sum_apply] at hpair
   rw [Finset.sum_eq_single b] at hpair
-  · rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply, horth b b,
+  · rw [ContinuousLinearMap.map_smul, smul_apply, horth b b,
       if_pos rfl, smul_eq_mul, mul_one] at hpair
     exact hpair
   · intro a _ hab
-    rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply, horth a b,
+    rw [ContinuousLinearMap.map_smul, smul_apply, horth a b,
       if_neg (by simpa using hab), smul_zero]
   · intro hb
     exact absurd (Finset.mem_univ b) hb
@@ -562,7 +604,7 @@ lemma tensor0SCovariantDerivative_curriedSection_hom_leibniz
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (v : TangentSpace I x) :
     tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)
         (fun y : M => curriedSection I M W y (Y y)) x v =
-      tensor0S_curry (I := I) (M := M) s x
+      tensor0SCurry (I := I) (M := M) s x
           (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v)
           (Y x) +
         curriedSection I M W x
@@ -584,7 +626,7 @@ lemma tensor0SCovariantDerivative_curriedSection_hom_leibniz
     (cov_V := tensor0SCovariantDerivative I M s (LeviCivita (I := I) g))
     (τ := curriedSection I M W) (x := x) hC
     (V_field := fun y => Vfield y) (Y := fun y => Y y) hVfield hYfield
-  have hsucc : tensor0S_curry (I := I) (M := M) s x
+  have hsucc : tensor0SCurry (I := I) (M := M) s x
       (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v) =
       HomConnection.homBundleCovariantDerivativeFun (I := I) (M := M)
         (F := Tensor0SModel s ℝ E)
@@ -593,7 +635,7 @@ lemma tensor0SCovariantDerivative_curriedSection_hom_leibniz
         (cov_V := tensor0SCovariantDerivative I M s (LeviCivita (I := I) g))
         (τ := curriedSection I M W) x v := by
     rw [tensor0SCovariantDerivative_succ_eq, tensor0SCovariantDerivative_succ_apply]
-    exact (tensor0S_curry (I := I) (M := M) s x).apply_symm_apply _
+    exact (tensor0SCurry (I := I) (M := M) s x).apply_symm_apply _
   rw [hsucc]
   rw [show v = Vfield x from hVx.symm]
   rw [hHom]
@@ -610,33 +652,74 @@ lemma tensor0SCovariantDerivative_succ_consEval_peel
     (m : Fin s → E) :
     Tensor0SSpace.toModel
         (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v)
-        (Fin.cons (Y x) m) =
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x)) m) =
       Tensor0SSpace.toModel
           (tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)
             (fun y : M => curriedSection I M W y (Y y)) x v) m
         - Tensor0SSpace.toModel (W x)
-            (Fin.cons ((LeviCivita (I := I) g).toFun (fun y => Y y) x v) m) := by
+            (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+              ((LeviCivita (I := I) g).toFun (fun y => Y y) x v)) m) := by
   classical
   have hleib := tensor0SCovariantDerivative_curriedSection_hom_leibniz
     (I := I) (M := M) g s W hW Y v
   have hterm1 : Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) s x
+        (tensor0SCurry (I := I) (M := M) s x
           (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v) (Y x)) m =
       Tensor0SSpace.toModel
         (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v)
-        (Fin.cons (Y x) m) :=
-    TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-      (T := tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v)
-      (v0 := Y x) (vs := m)
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x)) m) := by
+    simpa only [ContinuousLinearEquiv.symm_apply_apply] using
+      TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
+        (T := tensor0SCovariantDerivative I M (s + 1)
+          (LeviCivita (I := I) g) W x v)
+        (v0 := tangentSpaceModelContinuousLinearEquiv (I := I) x (Y x)) (vs := m)
   have hterm2 : Tensor0SSpace.toModel
         (curriedSection I M W x ((LeviCivita (I := I) g).toFun (fun y => Y y) x v)) m =
       Tensor0SSpace.toModel (W x)
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((LeviCivita (I := I) g).toFun (fun y => Y y) x v)) m) := by
+    rw [curriedSection_apply]
+    simpa only [ContinuousLinearEquiv.symm_apply_apply] using
+      TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
+        (T := W x) (v0 := tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((LeviCivita (I := I) g).toFun (fun y => Y y) x v)) (vs := m)
+  rw [← hterm1, hleib, Tensor0SBundle.Tensor0SSpace.toModel_add,
+    add_apply, hterm2]
+  ring
+
+open DifferentialGeometry.Tensor0SNabla DifferentialGeometry.HomConnection in
+omit [CompleteSpace E] in
+omit [NeZero (Module.finrank ℝ E)] in
+lemma tensor0SCovariantDerivative_succ_consEval_peel_natural
+    (g : SmoothRiemannianMetric I M) (s : ℕ)
+    (W : Π x : M, Tensor0SSpace (s + 1) I x) {x : M}
+    (hW : TensorSectionMDiffAt (I := I) (s + 1) W x)
+    (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (v : TangentSpace I x)
+    (m : Fin s → TangentSpace I x) :
+    Tensor0SSpace.eval
+        (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v)
+        (Fin.cons (Y x) m) =
+      Tensor0SSpace.eval
+          (tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)
+            (fun y : M => curriedSection I M W y (Y y)) x v) m
+        - Tensor0SSpace.eval (W x)
+            (Fin.cons ((LeviCivita (I := I) g).toFun (fun y => Y y) x v) m) := by
+  classical
+  have hleib := tensor0SCovariantDerivative_curriedSection_hom_leibniz
+    (I := I) (M := M) g s W hW Y v
+  have hterm1 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+    (T := tensor0SCovariantDerivative I M (s + 1)
+      (LeviCivita (I := I) g) W x v) (v0 := Y x) (vs := m)
+  have hterm2 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+    (T := W x)
+    (v0 := (LeviCivita (I := I) g).toFun (fun y => Y y) x v) (vs := m)
+  have hterm2' : Tensor0SSpace.eval
+        (curriedSection I M W x ((LeviCivita (I := I) g).toFun (fun y => Y y) x v)) m =
+      Tensor0SSpace.eval (W x)
         (Fin.cons ((LeviCivita (I := I) g).toFun (fun y => Y y) x v) m) := by
     rw [curriedSection_apply]
-    exact TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-      (T := W x) (v0 := (LeviCivita (I := I) g).toFun (fun y => Y y) x v) (vs := m)
-  rw [← hterm1, hleib, Tensor0SBundle.Tensor0SSpace.toModel_add,
-    ContinuousMultilinearMap.add_apply, hterm2]
+    exact hterm2
+  rw [← hterm1, hleib, Tensor0SSpace.eval_add, hterm2']
   ring
 
 open DifferentialGeometry.TensorRSNabla in
@@ -746,7 +829,7 @@ private lemma tensorMetricCompatDiff_succ_eq_sum
       tensorMetricCompatDiff (I := I) (M := M) g (s + 1) W T x := by
   classical
   refine ContinuousLinearMap.ext (fun v => ?_)
-  rw [ContinuousLinearMap.sum_apply, tensorMetricCompatDiff_apply]
+  rw [sum_apply, tensorMetricCompatDiff_apply]
   set n := Module.finrank ℝ E with hn_def
   set E_ := fun a : Fin n => smoothOrthoFrameSection (I := I) (M := M) g x a with hE_def
   set WC := fun a : Fin n => fun y : M => curriedSection I M W y (E_ a y) with hWC_def
@@ -770,46 +853,52 @@ private lemma tensorMetricCompatDiff_succ_eq_sum
     (LeviCivita (I := I) g).toFun (fun y => E_ a y) x v with homgW_def
   have hWleib : ∀ a : Fin n,
       tensor0SCovariantDerivative I M s (LeviCivita (I := I) g) (WC a) x v =
-        tensor0S_curry (I := I) (M := M) s x Pw (E_ a x) +
+        tensor0SCurry (I := I) (M := M) s x Pw (E_ a x) +
           curriedSection I M W x (omgW a) := by
     intro a
     exact tensor0SCovariantDerivative_curriedSection_hom_leibniz
       (I := I) (M := M) g s W hW (E_ a) v
   have hTleib : ∀ a : Fin n,
       tensor0SCovariantDerivative I M s (LeviCivita (I := I) g) (TC a) x v =
-        tensor0S_curry (I := I) (M := M) s x Pt (E_ a x) +
+        tensor0SCurry (I := I) (M := M) s x Pt (E_ a x) +
           curriedSection I M T x (omgW a) := by
     intro a
     exact tensor0SCovariantDerivative_curriedSection_hom_leibniz
       (I := I) (M := M) g s T hT (E_ a) v
   have hcurryW : ∀ a : Fin n, Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) s x Pw (E_ a x)) =
-      (Tensor0SSpace.toModel Pw).curryLeft (E_ a x) := fun a =>
+        (tensor0SCurry (I := I) (M := M) s x Pw (E_ a x)) =
+      (Tensor0SSpace.toModel Pw).curryLeft
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x (E_ a x)) := fun a =>
     toModel_tensor0S_curry_eq_curryLeft (I := I) (M := M) Pw (E_ a x)
   have hcurryT : ∀ a : Fin n, Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) s x Pt (E_ a x)) =
-      (Tensor0SSpace.toModel Pt).curryLeft (E_ a x) := fun a =>
+        (tensor0SCurry (I := I) (M := M) s x Pt (E_ a x)) =
+      (Tensor0SSpace.toModel Pt).curryLeft
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x (E_ a x)) := fun a =>
     toModel_tensor0S_curry_eq_curryLeft (I := I) (M := M) Pt (E_ a x)
   have hWCmodel : ∀ a : Fin n,
       Tensor0SSpace.toModel (WC a x) =
-        (Tensor0SSpace.toModel (W x)).curryLeft (E_ a x) := by
+        (Tensor0SSpace.toModel (W x)).curryLeft
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x (E_ a x)) := by
     intro a
     rw [hWC_def]
     exact toModel_tensor0S_curry_eq_curryLeft (I := I) (M := M) (W x) (E_ a x)
   have hTCmodel : ∀ a : Fin n,
       Tensor0SSpace.toModel (TC a x) =
-        (Tensor0SSpace.toModel (T x)).curryLeft (E_ a x) := by
+        (Tensor0SSpace.toModel (T x)).curryLeft
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x (E_ a x)) := by
     intro a
     rw [hTC_def]
     exact toModel_tensor0S_curry_eq_curryLeft (I := I) (M := M) (T x) (E_ a x)
   have hsummand : ∀ a : Fin n,
       tensorMetricCompatDiff (I := I) (M := M) g s (WC a) (TC a) x v =
         (covariantTensorInnerPointwise (I := I) (M := M) s g x
-            ((Tensor0SSpace.toModel Pw).curryLeft (E_ a x))
+            ((Tensor0SSpace.toModel Pw).curryLeft
+              (tangentSpaceModelContinuousLinearEquiv (I := I) x (E_ a x)))
             (Tensor0SSpace.toModel (TC a x)) +
           covariantTensorInnerPointwise (I := I) (M := M) s g x
             (Tensor0SSpace.toModel (WC a x))
-            ((Tensor0SSpace.toModel Pt).curryLeft (E_ a x))) +
+            ((Tensor0SSpace.toModel Pt).curryLeft
+              (tangentSpaceModelContinuousLinearEquiv (I := I) x (E_ a x)))) +
         (covariantTensorInnerPointwise (I := I) (M := M) s g x
             (Tensor0SSpace.toModel (curriedSection I M W x (omgW a)))
             (Tensor0SSpace.toModel (TC a x)) +
@@ -829,11 +918,13 @@ private lemma tensorMetricCompatDiff_succ_eq_sum
   have hmain :
       ∑ a : Fin n,
           (covariantTensorInnerPointwise (I := I) (M := M) s g x
-              ((Tensor0SSpace.toModel Pw).curryLeft (E_ a x))
+              ((Tensor0SSpace.toModel Pw).curryLeft
+                (tangentSpaceModelContinuousLinearEquiv (I := I) x (E_ a x)))
               (Tensor0SSpace.toModel (TC a x)) +
             covariantTensorInnerPointwise (I := I) (M := M) s g x
               (Tensor0SSpace.toModel (WC a x))
-              ((Tensor0SSpace.toModel Pt).curryLeft (E_ a x))) =
+              ((Tensor0SSpace.toModel Pt).curryLeft
+                (tangentSpaceModelContinuousLinearEquiv (I := I) x (E_ a x)))) =
         covariantTensorInnerPointwise (I := I) (M := M) (s + 1) g x
             (Tensor0SSpace.toModel Pw) (Tensor0SSpace.toModel (T x)) +
           covariantTensorInnerPointwise (I := I) (M := M) (s + 1) g x

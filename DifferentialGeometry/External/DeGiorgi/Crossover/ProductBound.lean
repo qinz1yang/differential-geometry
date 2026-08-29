@@ -1,4 +1,5 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
+-- Modified 2026-08-23: migrated the Fatou lemma call to the Mathlib 4.33 API
 import DifferentialGeometry.External.DeGiorgi.Crossover.ExponentialIntegrability
 
 /-!
@@ -18,7 +19,7 @@ variable {d : ℕ} [NeZero d]
 
 local notation "E" => EuclideanSpace ℝ (Fin d)
 local notation "Cmo" =>
-  ((volume.real (Metric.ball (0 : E) 1)) ^ (-(1 / 2 : ℝ)) * C_poinc_val d)
+  ((volume.real (Metric.ball (0 : E) 1)) ^ (-(1 / 2 : ℝ)) * CPoincVal d)
 
 private theorem regularized_crossover_product_bound
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
@@ -26,7 +27,7 @@ private theorem regularized_crossover_product_bound
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
     (hsuper : IsSupersolution A.1 u)
     {ε : ℝ} (hε : 0 < ε) :
-    let p := c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)
+    let p := cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)
     (⨍ x in Metric.ball (0 : E) (1 / 2 : ℝ), (u x + ε) ^ p ∂volume) *
       (⨍ x in Metric.ball (0 : E) (1 / 2 : ℝ), (u x + ε) ^ (-p) ∂volume) ≤
         (crossoverJNKhalf d) ^ 2 := by
@@ -35,8 +36,8 @@ private theorem regularized_crossover_product_bound
   let v : E → ℝ := regularizedLogMeasurable (A := A) hu_pos hsuper hε
   let a : ℝ := ⨍ z in Metric.ball (0 : E) (1 / 48 : ℝ), v z ∂volume
   let δ : ℝ := 24 * (2 : ℝ) ^ (d + 1) *
-    (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2))
-  let Kloc : ℝ := Real.exp (p * δ) * (1 + C_JN d)
+    (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2))
+  let Kloc : ℝ := Real.exp (p * δ) * (1 + CJN d)
   let Khalf : ℝ := (Nat.ceil ((97 : ℝ) ^ d) : ℝ) * Kloc
   let Fabs : E → ℝ := fun x => Real.exp (p * |v x - a|)
   let Fplus : E → ℝ := fun x => Real.exp (-p * (v x - a))
@@ -203,22 +204,22 @@ theorem crossover_product_bound_exists :
         (_hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
         (_hsuper : IsSupersolution A.1 u),
         (⨍ x in Metric.ball (0 : E) (1 / 2 : ℝ),
-            |u x| ^ (c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) ∂volume) *
+            |u x| ^ (cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) ∂volume) *
           (⨍ x in Metric.ball (0 : E) (1 / 2 : ℝ),
-            |u x| ^ (-(c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2))) ∂volume) ≤ C := by
+            |u x| ^ (-(cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2))) ∂volume) ≤ C := by
   let C : ℝ := max 1 ((crossoverJNKhalf d) ^ 2)
   refine ⟨C, le_max_left _ _, ?_⟩
   intro hd A u hu_pos hsuper
   let Bhalf : Set E := Metric.ball (0 : E) (1 / 2 : ℝ)
   let μ : Measure E := volume.restrict Bhalf
-  let p : ℝ := c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)
+  let p : ℝ := cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)
   let Aavg : ℝ := ⨍ x in Bhalf, |u x| ^ p ∂volume
   let K : ℝ := (crossoverJNKhalf d) ^ 2
   let M : ℝ := K / Aavg
   let εn : ℕ → ℝ := fun n => 1 / ((n : ℝ) + 1)
   let g : ℕ → E → ℝ := fun n x => |(u x + εn n)⁻¹| ^ p
   let g0 : E → ℝ := fun x => |(u x)⁻¹| ^ p
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     refine ⟨by
       simpa [μ, Bhalf] using
         (measure_ball_lt_top (μ := volume) (x := (0 : E)) (r := (1 / 2 : ℝ)))⟩
@@ -252,15 +253,15 @@ theorem crossover_product_bound_exists :
     have hinv_le_one : (A.1.Λ ^ ((1 : ℝ) / 2))⁻¹ ≤ 1 := by
       exact inv_le_one_of_one_le₀ hΛsqrt_ge_one
     have hp_le_cc :
-        p ≤ c_crossover' d := by
+        p ≤ cCrossover' d := by
       dsimp [p]
       rw [div_eq_mul_inv]
-      have hcc_nonneg : 0 ≤ c_crossover' d := (crossoverC'_pos (d := d)).le
+      have hcc_nonneg : 0 ≤ cCrossover' d := (crossoverC'_pos (d := d)).le
       calc
-        c_crossover' d * (A.1.Λ ^ ((1 : ℝ) / 2))⁻¹
-            ≤ c_crossover' d * 1 := by
+        cCrossover' d * (A.1.Λ ^ ((1 : ℝ) / 2))⁻¹
+            ≤ cCrossover' d * 1 := by
               exact mul_le_mul_of_nonneg_left hinv_le_one hcc_nonneg
-        _ = c_crossover' d := by ring
+        _ = cCrossover' d := by ring
     exact hp_le_cc.trans (c_crossover'_le_one (d := d))
   have hp_le_two : p ≤ 2 := by linarith
   let hw_u : MemW1pWitness 2 u (Metric.ball (0 : E) 1) :=
@@ -519,7 +520,8 @@ theorem crossover_product_bound_exists :
         ∀ n, AEMeasurable (fun x => ENNReal.ofReal (g n x)) μ := by
       intro n
       exact (hg_meas n).aemeasurable.ennreal_ofReal
-    have hleft := MeasureTheory.lintegral_liminf_le' (μ := μ) hmeas
+    have hleft := MeasureTheory.lintegral_liminf_le'
+      (μ := μ) (u := atTop) (f := fun n x => ENNReal.ofReal (g n x)) hmeas
     have hlim :
         (fun x => Filter.liminf (fun n => ENNReal.ofReal (g n x)) atTop) =ᵐ[μ]
           fun x => ENNReal.ofReal (g0 x) := by
@@ -617,23 +619,23 @@ theorem crossover_product_bound_exists :
 
 /-- The constant `C(d)` bounding the crossover product `⨍ u^c · ⨍ u^{-c} ≤ C`.
 Defined via `Classical.choose` from the crossover existence proof. -/
-noncomputable def C_crossover' (d : ℕ) [NeZero d] : ℝ :=
+noncomputable def CCrossover' (d : ℕ) [NeZero d] : ℝ :=
   Classical.choose (crossover_product_bound_exists (d := d))
 
 theorem C_crossover'_spec :
-    1 ≤ C_crossover' (d := d) ∧
+    1 ≤ CCrossover' (d := d) ∧
     ∀ (_hd : 2 < (d : ℝ))
       (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
       {u : E → ℝ}
       (_hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
       (_hsuper : IsSupersolution A.1 u),
       (⨍ x in Metric.ball (0 : E) (1 / 2 : ℝ),
-          |u x| ^ (c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) ∂volume) *
+          |u x| ^ (cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) ∂volume) *
         (⨍ x in Metric.ball (0 : E) (1 / 2 : ℝ),
-          |u x| ^ (-(c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2))) ∂volume) ≤ C_crossover' d :=
+          |u x| ^ (-(cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2))) ∂volume) ≤ CCrossover' d :=
   Classical.choose_spec (crossover_product_bound_exists (d := d))
 
-theorem one_le_C_crossover' : 1 ≤ C_crossover' (d := d) :=
+theorem one_le_C_crossover' : 1 ≤ CCrossover' (d := d) :=
   (Classical.choose_spec (crossover_product_bound_exists (d := d))).1
 
 end DeGiorgi

@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.InjectivityRadius
 
-
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.EMetric
 
 set_option autoImplicit false
@@ -53,7 +52,10 @@ def subseq {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
   C_nonneg := hd.C_nonneg
   decay := by
     intro k x
-    simpa [PointedRiemannianSeq.subseq] using hd.decay (f k) x
+    change HasInjRadiusAt (I := I) (X.obj (f k)) x
+      (hd.a * (min hd.baseInj.ρ 1) ^ Module.finrank Real E *
+        Real.exp (-hd.C * hd.dist (f k) x (X.obj (f k)).basepoint))
+    exact hd.decay (f k) x
 
 noncomputable def mu {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hd : InjRadiusDecayInput (I := I) X) (r : Real) : Real :=
@@ -97,8 +99,7 @@ theorem subseq {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
   · intro k x y
     exact hre.dist_nonneg (f k) x y
   · intro k x y
-    simpa [InjRadiusDecayInput.subseq, PointedRiemannianSeq.subseq] using
-      hre.edist_eq (f k) x y
+    with_unfolding_all exact hre.edist_eq (f k) x y
 
 end RealizesEdist
 

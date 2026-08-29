@@ -244,7 +244,10 @@ theorem radialFirstOrderActionSecondToFirstOrder_pairing_bound
   have hTU₃ :
       covariantJetNormSq (I := I) (M := M) g 3 (T₀ - U₀) ≤ D₃ ^ 2 := by
     refine (hjet₃ (T₀ - U₀)).trans ?_
-    simpa only [D₃, mul_assoc] using pow_le_pow_left₀
+    dsimp only [D₃]
+    have hthree : ((3 : ℕ) : ℝ) = (3 : ℝ) := by norm_num
+    rw [hthree]
+    simpa only [mul_assoc] using pow_le_pow_left₀
       (mul_nonneg hC₃ (norm_nonneg _))
       (mul_le_mul_of_nonneg_left hrad₃ hC₃) 2
   have hout := hpair T₀ U₀

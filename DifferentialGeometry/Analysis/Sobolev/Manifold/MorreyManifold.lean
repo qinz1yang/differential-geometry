@@ -990,7 +990,7 @@ private lemma eLpNorm_norm_fderiv_le_d_mul_wkpNorm
           (d := Module.finrank ℝ E) 1 q f Ω := by
     rw [hWkpEq, Finset.sum_range_succ, Finset.sum_range_one, ← h_j1_term]
     refine le_add_of_nonneg_left ?_
-    exact zero_le _
+    exact zero_le
   refine h_le_wkp.trans ?_
   have hd_pos : 0 < Module.finrank ℝ E := NeZero.pos _
   have hd_one_le : (1 : ℝ≥0∞) ≤ ((Module.finrank ℝ E : ℕ) : ℝ≥0∞) := by
@@ -1273,12 +1273,12 @@ theorem smooth_manifold_morrey_sup_bound_uniform
         ∀ x : M, ‖u x‖ ≤ C *
           (wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) u).toReal := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M)
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M)
     with hS_def
   refine ⟨∑ α ∈ S, perChartMorreyConst (I := I) (M := M) g hp α, ?_, ?_⟩
   · exact Finset.sum_nonneg (fun α _ =>
@@ -1318,7 +1318,7 @@ private lemma eLpNorm_riemannianMeasure_le_const_mul_wkpNormChart
           ENNReal.ofReal C * wkpNormChart (I := I) (M := M) 1 p u := by
   classical
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M)
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M)
     with hS_def
   set ρ := DifferentialGeometry.Integral.Measure.chartAtlasPOU I M with hρ_def
   have h_bridge_α : ∀ α : M, ∃ C_α : ℝ, 0 < C_α ∧
@@ -1425,10 +1425,10 @@ theorem morrey_C0_embedding_of_compact
       (∀ x : M, ‖ũ x‖ ≤ C *
         (wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) u).toReal) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   have hp_pos : 0 < p := lt_of_le_of_lt (Nat.cast_nonneg _) hp
   have hp_one : 1 ≤ p := by
     have hd_one_le : (1 : ℝ) ≤ (Module.finrank ℝ E : ℝ) := by
@@ -1598,7 +1598,7 @@ theorem morrey_C0_embedding_of_compact
   set μ_g : Measure M :=
     DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) with hμ_g_def
-  haveI hμ_g_finite : IsFiniteMeasure μ_g := by
+  have hμ_g_finite : IsFiniteMeasure μ_g := by
     rw [hμ_g_def]
     exact DifferentialGeometry.Integral.Measure.riemannianMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g _
@@ -1625,7 +1625,7 @@ theorem morrey_C0_embedding_of_compact
       gcongr
       exact hv_close n
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_C_decay
-      (Filter.Eventually.of_forall (fun _ => zero_le _))
+      (Filter.Eventually.of_forall (fun _ => zero_le))
       (Filter.Eventually.of_forall h_total_le)
   have hu_aesm : AEStronglyMeasurable u μ_g := hu_meas.aestronglyMeasurable
   have hv_aesm : ∀ n, AEStronglyMeasurable (v n) μ_g :=
@@ -1903,10 +1903,10 @@ theorem smooth_manifold_morrey_holder_modulus_per_chart
                 (1 - (Module.finrank ℝ E : ℝ) / p) *
               (wkpNormChart (I := I) (M := M) 1 (ENNReal.ofReal p) u).toReal := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   set Tα : Set M := tsupport
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
       : C^∞⟮I, M; ℝ⟯) : M → ℝ) with hTα_def
@@ -1923,14 +1923,14 @@ theorem norm_sub_le_sum_pou_diff
     [CompactSpace M] [T2Space M]
     (u : M → ℝ) (x y : M) :
     ‖u x - u y‖ ≤
-      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M),
         ‖(DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) x * u x -
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) y * u y‖ := by
   classical
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M)
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M)
     with hS_def
   have hsum_x : ∑ α ∈ S,
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ) x = 1 :=

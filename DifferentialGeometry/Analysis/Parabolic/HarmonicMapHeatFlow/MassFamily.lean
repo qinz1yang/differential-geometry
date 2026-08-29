@@ -53,7 +53,7 @@ theorem hmfVolumeReal
   intro t ht
   let μq := riemannianVolumeMeasure (I := I) (M := M) q
   let μt := riemannianVolumeMeasure (I := I) (M := M) (g t)
-  haveI : IsFiniteMeasure μq :=
+  have : IsFiniteMeasure μq :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) q
   have hle : μt Set.univ ≤ C * μq Set.univ := by
@@ -77,6 +77,20 @@ theorem hmfSpecTime_cont
       ∀ u : EuclideanSpace ℝ {i // i ∈ S}, u ∈ Metric.ball 0 R →
         ContinuousOn
           (fun t ↦ hmfSpecMassOp (I := I) (M := M) q (g t) S u) K := by
+  let : NormedAddCommGroup
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
+  let : NormedAddCommGroup
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
+        EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedAddCommGroup
+  let : NormedSpace ℝ
+      (EuclideanSpace ℝ {i // i ∈ S} →L[ℝ]
+        EuclideanSpace ℝ {i // i ∈ S} →L[ℝ] ℝ) :=
+    ContinuousLinearMap.toNormedSpace
   obtain ⟨Rt, hRt, htime⟩ :=
     hmfStateTime_cont (I := I) (M := M) q S
   obtain ⟨Rm, hRm, hmass⟩ :=
@@ -114,7 +128,7 @@ theorem hmfSpecTime_cont
   intro w
   refine (htime g hK hgram u hu_t v w).congr (fun t ht ↦ ?_)
   let μt := riemannianVolumeMeasure (I := I) (M := M) (g t)
-  haveI : IsFiniteMeasure μt :=
+  have : IsFiniteMeasure μt :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) (g t)
   have hint : Integrable
@@ -166,7 +180,9 @@ theorem hmfMassFamily
   have hB : ∀ t ∈ Icc a c,
       (riemannianVolumeMeasure (I := I) (M := M) (g t)).real Set.univ ≤ B := by
     intro t ht
-    simpa only [B, NNReal.coe_mk] using hvolReal t ht
+    change (riemannianVolumeMeasure (I := I) (M := M) (g t)).real Set.univ ≤
+      C.toReal * (riemannianVolumeMeasure (I := I) (M := M) q).real Set.univ
+    exact hvolReal t ht
   obtain ⟨Rl, hRl, L, hlip⟩ :=
     hmfMassFam_lip (I := I) (M := M) q S g B hB
   obtain ⟨Rt, hRt, htime⟩ :=

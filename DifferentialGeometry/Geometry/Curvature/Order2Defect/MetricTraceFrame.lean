@@ -13,7 +13,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
     CovariantDerivative
@@ -98,7 +97,7 @@ omit [NeZero (Module.finrank ℝ E)] in
       (tensorCov (I := I) g r s).toFun (covApply (tensorCov (I := I) g r s) Y T) x v -
         (tensorCov (I := I) g r s).toFun T x ((LeviCivita (I := I) g).toFun Y x v) := by
   rw [firstSlotHessMap]
-  simp [ContinuousLinearMap.sub_apply, ContinuousLinearMap.comp_apply]
+  simp [sub_apply, ContinuousLinearMap.comp_apply]
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -143,7 +142,7 @@ theorem metricTraceHessian_eq_gWeighted_firstSlot
       (smoothOrthoFrame (I := I) g x j x))]
   rw [if_pos (Finset.mem_univ i)]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem thirdOrder_ricci_identity_firstSlot
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     {X Y : Π b : M, TangentSpace I b} {x : M}
@@ -253,9 +252,9 @@ private lemma bilin_expand_chartBasisα {A : Type*} [AddCommGroup A] [Module ℝ
     rw [map_sum]
     refine Finset.sum_congr rfl (fun k _ => ?_)
     exact Hb.map_smul _ _]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  rw [ContinuousLinearMap.smul_apply]
+  rw [smul_apply]
   rw [show Hb (chartBasisVecFiber (I := I) α k b) (B j) =
         ∑ l : Fin (Module.finrank ℝ E),
           coBchangeChartα (I := I) α B j l •

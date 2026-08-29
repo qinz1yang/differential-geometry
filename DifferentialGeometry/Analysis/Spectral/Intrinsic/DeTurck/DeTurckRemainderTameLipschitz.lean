@@ -114,9 +114,7 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem)
 
-set_option backward.isDefEq.respectTransparency false
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma slotInsertEndoCc_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
@@ -135,12 +133,20 @@ private lemma slotInsertEndoCc_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
       (endoSlotZeroCcTensor (I := I) (M := M) g₀ s A).toSection x -
         (endoSlotZeroCcTensor (I := I) (M := M) g₀ s B).toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
-  rw [ContinuousLinearMap.sub_apply]
+  rw [sub_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A - B) x) = A x - B x from by rw [ContMDiffSection.coe_sub]; rfl]
-  rw [slotInsertEndoFib_sub_left, ContinuousLinearMap.sub_apply]
+  rw [slotInsertEndoFib_sub_left, sub_apply]
 
-set_option backward.isDefEq.respectTransparency false in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+private lemma unitModel_add_model_apply (g₀ : SmoothRiemannianMetric I M)
+    (S S' : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → E) :
+    unitModel (I := I) (M := M) g₀ 2 (S + S') x v =
+      unitModel (I := I) (M := M) g₀ 2 S x v +
+        unitModel (I := I) (M := M) g₀ 2 S' x v := by
+  rw [unitModel_add_local, add_apply]
+
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma rsDomDomCongrSection_sub (g₀ : SmoothRiemannianMetric I M)
@@ -164,33 +170,28 @@ private lemma rsDomDomCongrSection_sub (g₀ : SmoothRiemannianMetric I M)
     rw [SmoothCcTensor.toSection_sub]; rfl
   rw [rsDomDomCongrSection_toSection, hsub, hsub2]
   rw [rsDomDomCongrSection_toSection, rsDomDomCongrSection_toSection]
-  have hfib : ∀ (y : Tensor0SSpace 2 I x) (w : Fin 2 → TangentSpace I x),
-      Tensor0SSpace.toModel y w = (y : Tensor0SSpace 2 I x) w := fun _ _ => rfl
-  rw [hfib, hfib]
-  rw [rsDomDomCongr_apply_eval (I := I) (M := M) σ (X.toSection x - Y.toSection x) D m]
-  rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      tensorRS_domDomCongr σ (X.toSection x) - tensorRS_domDomCongr σ (Y.toSection x)) D) =
-      (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (X.toSection x)) D -
-      (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (Y.toSection x)) D from rfl]
-  rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+  change Tensor0SSpace.toModel
+      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+        tensorRSDomDomCongr σ (X.toSection x - Y.toSection x)) D) m =
+    Tensor0SSpace.toModel
+      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+        tensorRSDomDomCongr σ (X.toSection x) - tensorRSDomDomCongr σ (Y.toSection x)) D) m
+  rw [toModel_rsDomDomCongr_apply,
+    show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
       (X.toSection x - Y.toSection x : TensorRSSpace 2 2 I x)) D) =
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from X.toSection x) D -
-      (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from Y.toSection x) D from rfl]
-  rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (X.toSection x)) D -
+      (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from Y.toSection x) D from rfl,
+    Tensor0SSpace.toModel_sub,
+    show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+      tensorRSDomDomCongr σ (X.toSection x) - tensorRSDomDomCongr σ (Y.toSection x)) D) =
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (Y.toSection x)) D : Tensor0SSpace 2 I x) m =
-      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (X.toSection x)) D : Tensor0SSpace 2 I x) m -
-      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (Y.toSection x)) D : Tensor0SSpace 2 I x) m from rfl]
-  rw [rsDomDomCongr_apply_eval (I := I) (M := M) σ (X.toSection x) D m]
-  rw [rsDomDomCongr_apply_eval (I := I) (M := M) σ (Y.toSection x) D m]
-  rfl
+        tensorRSDomDomCongr σ (X.toSection x)) D -
+      (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
+        tensorRSDomDomCongr σ (Y.toSection x)) D from rfl,
+    Tensor0SSpace.toModel_sub,
+    toModel_rsDomDomCongr_apply, toModel_rsDomDomCongr_apply]
+  simp only [ContinuousMultilinearMap.domDomCongr_apply, sub_apply]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private lemma reindexCoeffGen_sub (g₀ : SmoothRiemannianMetric I M)
@@ -206,11 +207,10 @@ private lemma reindexCoeffGen_sub (g₀ : SmoothRiemannianMetric I M)
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
   apply ContinuousLinearMap.ext
   intro D
-  rw [ContinuousLinearMap.sub_apply, reindexCoeffFibGen_apply, reindexCoeffFibGen_apply,
-    reindexCoeffFibGen_apply, ContinuousLinearMap.sub_apply]
+  rw [sub_apply, reindexCoeffFibGen_apply, reindexCoeffFibGen_apply,
+    reindexCoeffFibGen_apply, sub_apply]
 
-set_option backward.isDefEq.respectTransparency false in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private lemma lieCorrectionZerow_NEndoIns_diff_decomp (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     endoSlotZeroCcTensor (I := I) (M := M) g₀ 0
         (lieCorrectionZeroNEndoSec (I := I) (M := M) g₀ g₁ g_bg -
@@ -221,8 +221,7 @@ private lemma lieCorrectionZerow_NEndoIns_diff_decomp (g₀ g₁ g_bg : SmoothRi
     lieCorrectionZerob_NEndoIns_decomp (I := I) (M := M) g₀ g₁ g₀]
   abel
 
-set_option backward.isDefEq.respectTransparency false in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieCorrectionZerow_insertField_sub (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g_bg -
@@ -255,7 +254,6 @@ private lemma lieCorrectionZerow_insertField_sub (g₀ g₁ g_bg : SmoothRiemann
             (Equiv.swap (0 : Fin 2) 1) from rfl]
   abel
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoArmField
   deTurckLieCovariantDerivativeInsertionFib deTurckLieCovariantDerivativeInsertionFib_toModel deTurckVectorFieldCovariantDerivativeEndomorphism) in
 omit [I.Boundaryless] in
@@ -290,7 +288,7 @@ private theorem lieCorrectionZerow_insertField_add_endoArmBase (g₀ g₁ g_bg :
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (lieCorrectionZeroInsertionField (I := I) (M := M) g₀ g₁ g₀).toSection x) D) := rfl
   rw [hL, hR, Tensor0SSpace.toModel_add, Tensor0SSpace.toModel_sub,
-    ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.sub_apply]
+    add_apply, sub_apply]
   rw [lieCorrectionZerob_insert_fiber (I := I) (M := M) g₀ g₁ g_bg x D m,
     lieCorrectionZerob_insert_fiber (I := I) (M := M) g₀ g₁ g₀ x D m]
   rw [lieCorrectionZeroInsertionFib_toModel (I := I) g₀ g₁ g_bg x D m,
@@ -308,29 +306,48 @@ private theorem lieCorrectionZerow_insertField_add_endoArmBase (g₀ g₁ g_bg :
           - PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
             ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x)
           - deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x from rfl]
-    rw [ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply, sub_self, zero_sub]
+    rw [sub_apply, sub_apply, sub_self, zero_sub]
+  have hN0m : ∀ u : E,
+      tangentLinearMapToModel (lieCorrectionZeroNEndo (I := I) g₀ g₁ g₀ x) u =
+        -(tangentLinearMapToModel
+          (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x) u) := by
+    intro u
+    rw [tangentLinearMapToModel_apply, hN0, map_neg]
+    rfl
   have e0 : Tensor0SSpace.toModel D
-      (Function.update m 0 (lieCorrectionZeroNEndo (I := I) g₀ g₁ g₀ x (m 0))) =
+      (Function.update m 0
+        (tangentLinearMapToModel (lieCorrectionZeroNEndo (I := I) g₀ g₁ g₀ x) (m 0))) =
       -(Tensor0SSpace.toModel D
-        (Function.update m 0 (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x (m 0)))) := by
-    rw [hN0 (m 0), show (-(deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x (m 0))) =
-        ((-1 : ℝ) • (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x (m 0))) from (neg_one_smul ℝ _).symm]
+        (Function.update m 0
+          (tangentLinearMapToModel
+            (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x) (m 0)))) := by
+    rw [hN0m (m 0), show (-(tangentLinearMapToModel
+        (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x) (m 0))) =
+        ((-1 : ℝ) • (tangentLinearMapToModel
+          (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x) (m 0))) from
+      (neg_one_smul ℝ _).symm]
     rw [ContinuousMultilinearMap.map_update_smul]
     rw [neg_one_smul]
   have e1 : Tensor0SSpace.toModel D
-      (Function.update m 1 (lieCorrectionZeroNEndo (I := I) g₀ g₁ g₀ x (m 1))) =
+      (Function.update m 1
+        (tangentLinearMapToModel (lieCorrectionZeroNEndo (I := I) g₀ g₁ g₀ x) (m 1))) =
       -(Tensor0SSpace.toModel D
-        (Function.update m 1 (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x (m 1)))) := by
-    rw [hN0 (m 1), show (-(deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x (m 1))) =
-        ((-1 : ℝ) • (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x (m 1))) from (neg_one_smul ℝ _).symm]
+        (Function.update m 1
+          (tangentLinearMapToModel
+            (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x) (m 1)))) := by
+    rw [hN0m (m 1), show (-(tangentLinearMapToModel
+        (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x) (m 1))) =
+        ((-1 : ℝ) • (tangentLinearMapToModel
+          (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g₀ x) (m 1))) from
+      (neg_one_smul ℝ _).symm]
     rw [ContinuousMultilinearMap.map_update_smul]
     rw [neg_one_smul]
   rw [e0, e1]
   ring
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoArmField) in
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem lieCorrectionZerow_lieCorrectionZero_add_endoArmBase_decomp (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     lieCorrectionZeroField (I := I) (M := M) g₀ g₁ g_bg +
         deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀ =
@@ -356,7 +373,7 @@ private theorem lieCorrectionZerow_lieCorrectionZero_add_endoArmBase_decomp (g�
         deTurckLieEndoArmField (I := I) (M := M) g₀ g₁ g₀ from h6.symm]
   abel
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma one_le_l2JetWindow (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (i : ℕ) :
@@ -367,7 +384,7 @@ private lemma one_le_l2JetWindow (g₀ : SmoothRiemannianMetric I M) (P : Smooth
     Finset.sum_nonneg fun _ _ => sq_nonneg _
   linarith
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma l2JetWindow_mono (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {q i : ℕ} (h : q ≤ i) :
@@ -378,7 +395,6 @@ private lemma l2JetWindow_mono (g₀ : SmoothRiemannianMetric I M) (P : SmoothCc
     (fun (j : ℕ) _ _ => sq_nonneg ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖)
   linarith
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem operatorFieldComposition_l2JetWindow_le (g₀ : SmoothRiemannianMetric I M)
     (p a b : ℕ) (i : ℕ) (WinVal : ℝ) (_hWin1 : 1 ≤ WinVal)
     (Φ : SmoothCcTensor g₀ a b) (W : SmoothCcTensor g₀ p a)
@@ -494,7 +510,6 @@ private theorem exists_perturbedMetricLoweredConnectionDifference_coeffJetEnvelo
   exact ⟨(hfeed g₁ P htie hδ_le hδ0 hδ hPball).1,
     fun i => hFw g₁ P htie hδ_le hδ0 hδ hPball i⟩
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (sharpFlatEndoCc) in
 open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricDoubleTraceField) in
 private theorem exists_pureDoubleTraceCoeff_coeffJetEnvelope (g₀ : SmoothRiemannianMetric I M)
@@ -556,7 +571,8 @@ private theorem exists_pureDoubleTraceCoeff_coeffJetEnvelope (g₀ : SmoothRiema
       ((cometricDoubleTraceField (I := I) g₀ s).toSection x) ≤ c0 0 := by
     intro x
     have h := hc0 0 x
-    simpa only [iteratedCovGrad_zero] using h
+    simp only [iteratedCovGrad_zero] at h
+    simpa only [Nat.add_zero] using h
   have hFΦ : ∀ q : ℕ, q ≤ i →
       ∑ q' ∈ Finset.range (q + 1),
         ‖iteratedCovGrad (I := I) g₀ (s + 2) s q'
@@ -613,7 +629,6 @@ private theorem exists_pureDoubleTraceCoeff_coeffJetEnvelope (g₀ : SmoothRiema
     (c0 0) (fr ^ (s + 1) * Λsf) FcDT (fun q => fr ^ (s + 1) * Fsfw q)
     (hc0_nn 0) (mul_nonneg hfrpow_nn hΛsf_nn) hΦ0 hWpt0 hFΦ hKW
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem exists_deTurckVectorFieldFlat_coeffJetEnvelope (g₀ gB : SmoothRiemannianMetric I M)
     (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -672,7 +687,6 @@ private theorem exists_deTurckVectorFieldFlat_coeffJetEnvelope (g₀ gB : Smooth
     C2 hC2_nn hC2 Λdt Λκ Kdt Kκ hΛdt_nn hΛκ_nn
     (hdt0) (hκ0) hKΦ hKW
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem exists_deTurckVectorFieldInteriorProduct_coeffJetEnvelope
     (g₀ gB : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -756,7 +770,6 @@ private theorem exists_deTurckVectorFieldInteriorProduct_coeffJetEnvelope
     C2 hC2_nn hC2 Λdt (fr2 * Λvf) Kdt (fun q => fr2 * Kvf q)
     hΛdt_nn (mul_nonneg hfr2_nn hΛvf_nn) hre0 hse0' hreL2 hseWin
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem exists_connectionDifferenceAppliedToDeTurckVectorField_coeffJetEnvelope
     (g₀ gB : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -815,7 +828,6 @@ private theorem exists_connectionDifferenceAppliedToDeTurckVectorField_coeffJetE
     (lieCorrectionZeroIVField (I := I) (M := M) g₀ g₁ gB) (connectionDifferenceSection (I := I) g₁ g₀)
     C2 hC2_nn hC2 Λiv Λcd Kiv Kcd hΛiv_nn hΛcd_nn hiv0 hcd0 hivWin hcdWin
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private theorem lieCorrectionZerow_comp_sup (g₀ : SmoothRiemannianMetric I M)
@@ -833,7 +845,6 @@ private theorem lieCorrectionZerow_comp_sup (g₀ : SmoothRiemannianMetric I M)
   exact mul_le_mul (hΦ0 x) (hW0 x)
     (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ p a x _) hΛΦ
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem lieCorrectionZerow_vb_feed (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -989,7 +1000,6 @@ private theorem lieCorrectionZerow_vb_feed (g₀ : SmoothRiemannianMetric I M) (
     (Λdt2 * Λin) (fun q => Kout q * Win) i hout0 houtWin
   exact le_trans (hsL2 i le_rfl) (le_of_eq (by ring))
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem lieCorrectionZerow_amixHalf_feed (g₀ g_bg : SmoothRiemannianMetric I M)
     (σlast : Equiv.Perm (Fin 4)) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -1278,7 +1288,6 @@ private theorem lieCorrectionZerow_amixHalf_feed (g₀ g_bg : SmoothRiemannianMe
             (lieCorrectionZeroKappa (I := I) (M := M) g₀ g₁ g₀)))))
     C2d hC2d_nn hC2d Λdt2 Λ3 Kdt2 K3 hΛdt2_nn hΛ3_nn htr20 h30 htr2Win h3Win
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem lieCorrectionZerow_amix_feed (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1337,7 +1346,6 @@ private theorem lieCorrectionZerow_amix_feed (g₀ g_bg : SmoothRiemannianMetric
     (2 * ΛhA + 2 * ΛhB) (fun q => 2 * (KhA q * Win) + 2 * (KhB q * Win)) i hadd0 haddL2
   exact le_trans (hsL2 i le_rfl) (le_of_eq (by ring))
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem exists_lieDerivativeRiemannCoeff_coeffJetEnvelope (g₀ : SmoothRiemannianMetric I M)
     (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -1445,7 +1453,6 @@ private theorem exists_lieDerivativeRiemannCoeff_coeffJetEnvelope (g₀ : Smooth
     i hcomp0 hcompWin'
   exact le_trans (hsL2 i le_rfl) (le_of_eq (by ring))
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoArmField) in
 private theorem lieDerivativeCorrectionPlusEndoArm_l2JetWindow
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
@@ -1663,7 +1670,6 @@ private theorem lieDerivativeCorrectionPlusEndoArm_l2JetWindow
   nlinarith only [k1, k2, k3, k4, hswap, hIΔ_tot, hvbi, hami, hrii,
     mul_nonneg hfrK hWinT_nn]
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoArmField) in
 private theorem exists_lieDerivativeCorrectionPlusEndoArm_order0_data
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
@@ -1783,7 +1789,6 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoArmFi
   deTurckLieCovariantDerivativeArmField deTurckLieCoeffField_eq_covDerivArm_add_endoArm
   exists_deTurckLieCovariantDerivativeArm_curvatureDecomposition_data
   exists_deTurckLieEndoArm_backgroundDifference_order0_data) in
-set_option backward.isDefEq.respectTransparency false in
 private theorem exists_lieDerivativeCorrection_curvatureDecomposition_armSplit_data
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -1990,7 +1995,6 @@ private theorem exists_lieDerivativeCorrection_curvatureDecomposition_armSplit_d
     nlinarith [mul_nonneg (hKda_nn i) hW, mul_nonneg (hKdf_nn i) hW,
       mul_nonneg (hKrs_nn i) hW]
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem exists_lieDerivativeCorrection_curvatureDecomposition_data
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -2036,7 +2040,6 @@ private theorem exists_lieDerivativeCorrection_curvatureDecomposition_data
     hR hδ₀
     hδ₀_half
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem exists_riemannLieDerivativeCorrection_curvatureDecomposition_data
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -2222,8 +2225,7 @@ private theorem exists_riemannLieDerivativeCorrection_curvatureDecomposition_dat
     rw [hexp]
     linarith
 
-set_option backward.isDefEq.respectTransparency false in
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem sum_range_shift_two_sq_le (g₀ : SmoothRiemannianMetric I M) (i : ℕ)
     (T₀ : SmoothCcTensor g₀ 0 2) :
@@ -2285,7 +2287,6 @@ private lemma lieCorrectionZero_jet_sum_bound (i : ℕ) (f Kc Kr X : ℕ → ℝ
     (by positivity : (0 : ℝ) ≤ 8 * ε ^ 2)
   exact lieCorrectionZero_path_sum_arithmetic (le_trans hsum (le_of_eq hsum_eq)) hmul hX
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_jetEnvelope
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
@@ -2462,7 +2463,9 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
       (hδ_fibre (0 : SmoothCcTensor g₀ 0 2)
         (smoothCcToTensorHs_zero_norm_le_fw (I := I) (M := M) g₀ ((a : ℝ) + 2) hR₀)) =
       pathIntegralCoeffField (I := I) (M := M) g₀ 2 2 Ψ₀
-        (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hj0 := rfl
+        (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hj0 := by
+    unfold deTurckPhiZeroPathIntegral
+    congr 1
   have halg : ∀ s : ℝ, Ψ₀ s =
       (-2 : ℝ) • (linearizedRicciArm0CorrField (I := I) g₀ T₀ (0 : SmoothCcTensor g₀ 0 2)
             hδT hδZ s
@@ -2507,7 +2510,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
     rw [pathIntegralCoeffField_operatorFieldApplication_eq (I := I) (M := M) g₀ 2 2 Ψ₀
       (iteratedCovGrad (I := I) g₀ 0 2 0 T₀)
       (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hj0 hc0 x v]
-    rw [unitModel_add2_apply_tame]
+    rw [unitModel_add_model_apply]
     rw [pathIntegralCoeffField_operatorFieldApplication_eq (I := I) (M := M) g₀ 2 2 Φ₀
       (iteratedCovGrad (I := I) g₀ 0 2 0 T₀)
       (metricPerturbationPathDomain (δ := δ) (δ' := δ)) hSopen hSI hjΦ₀ hcΦ x v]
@@ -2533,7 +2536,7 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
       simp only [hΦ₀def]
       rw [operatorFieldApplication_add_left]
       abel
-    rw [h1, unitModel_add2_apply_tame]
+    rw [h1, unitModel_add_model_apply]
   · intro x
     have hsup : ∀ t ∈ Set.Icc (0 : ℝ) 1,
         Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
@@ -2937,7 +2940,6 @@ private theorem deTurckPhiZeroPathIntegral_zero_curvatureDecomposition_coeffSup_
     rw [Real.sq_sqrt hprod_nn] at hfin
     exact hfin
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
@@ -3230,7 +3232,6 @@ private theorem deTurckPhiOnePathIntegral_zero_coeffSup_jetEnvelope
     rw [Real.sq_sqrt hprod_nn] at hfin
     exact hfin
 
-set_option backward.isDefEq.respectTransparency false in
 theorem exists_deTurckRHSArmDiff_zero_canonicalTop_curvatureDecomposition_coeffSup_jetEnvelope_of_symm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)

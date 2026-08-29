@@ -39,7 +39,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-set_option backward.isDefEq.respectTransparency false in
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem covDerivConnectionDifference_tens (g₂ g₁ : SmoothRiemannianMetric I M) (x : M)
@@ -225,10 +224,10 @@ private theorem rhsTermBound (gBase g₀ : SmoothRiemannianMetric I M) {Λ C₀ 
       _ = C₀ ^ 2 * Λ ^ 3 * Real.sqrt (g₀.inner x v v) := by ring
   have hadd1 : ∀ p q : TangentSpace I x,
       g₀.inner x (p + q) w = g₀.inner x p w + g₀.inner x q w := by
-    intro p q; rw [map_add, ContinuousLinearMap.add_apply]
+    intro p q; rw [map_add, add_apply]
   have hsub1 : ∀ p q : TangentSpace I x,
       g₀.inner x (p - q) w = g₀.inner x p w - g₀.inner x q w := by
-    intro p q; rw [map_sub, ContinuousLinearMap.sub_apply]
+    intro p q; rw [map_sub, sub_apply]
   rw [hadd1, hsub1, hsub1]
   rcases abs_le.mp (hpair _ _ hCbound) with ⟨h1l, h1r⟩
   rcases abs_le.mp (hpair _ _ hQ1) with ⟨h2l, h2r⟩
@@ -276,7 +275,7 @@ theorem uniformCovDerivVF_of
     exact mul_nonneg h1 h2
   intro x v w
   rw [DifferentialGeometry.PDE.DeTurck.deTurckVF_covDeriv_eq (I := I) g₀ gBase x v,
-    map_sum, ContinuousLinearMap.sum_apply]
+    map_sum, sum_apply]
   refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
   have hterm : ∀ i ∈ (Finset.univ : Finset (Fin (Module.finrank ℝ E))),
       |g₀.inner x
@@ -492,7 +491,7 @@ theorem uniformRHSFib_of
         (ccUnitField (I := I) g₀ 2 (deTurckRHSSection (I := I) gBase g₀) x) slots =
         deTurckRicciRHS (I := I) gBase g₀ x (basis (slots 0)) (basis (slots 1)) := by
       rw [Tensor0SBundle.component0S_apply,
-        ← deTurckRHSSection_toModel_apply (I := I) gBase g₀ x (fun a => basis (slots a))]
+        ← deTurckRHSSection_eval (I := I) gBase g₀ x (fun a => basis (slots a))]
       rfl
     rw [hval]
     have h := hK₀ x (basis (slots 0)) (basis (slots 1))
@@ -538,6 +537,7 @@ theorem uniformRHSFib
       hKb0 hKb hcomp hjet1 hjet2⟩
 
 
+omit [SigmaCompactSpace M] in
 theorem uniformKsupZero_of
     (gBase g₀ : SmoothRiemannianMetric I M) {Λ Kb : ℝ} (hΛ : 1 ≤ Λ)
     (hKb0 : 0 ≤ Kb)

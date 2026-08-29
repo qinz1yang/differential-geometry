@@ -33,7 +33,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
-  [LocPathConnectedSpace M]
+  [LocallyPathConnectedSpace M]
   [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M]
   [Inhabited M]
 
@@ -76,23 +76,13 @@ theorem chartBasisVecFiber_lifted
         = (trivializationAt E (TangentSpace I :
             DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M
               → Type _) α').symmL ℝ x' (chartModelBasis E i) := by
-    change (trivializationAt E (TangentSpace I :
-        DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M
-          → Type _) α').symm x' (chartModelBasis E i)
-      = (trivializationAt E (TangentSpace I :
-          DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M
-            → Type _) α').symmL ℝ x' (chartModelBasis E i)
-    rw [Bundle.Trivialization.symmL_apply]
+    rfl
   have hRHS_symm :
       chartBasisVecFiber (I := I) (M := M)
           (proj (X := M) α') i (proj (X := M) x')
         = (trivializationAt E (TangentSpace I : M → Type _)
             (proj α')).symmL ℝ (proj x') (chartModelBasis E i) := by
-    change (trivializationAt E (TangentSpace I : M → Type _) (proj α')).symm
-        (proj x') (chartModelBasis E i)
-      = (trivializationAt E (TangentSpace I : M → Type _)
-          (proj α')).symmL ℝ (proj x') (chartModelBasis E i)
-    rw [Bundle.Trivialization.symmL_apply]
+    rfl
   rw [hLHS_symm, hRHS_symm]
   have hSymmL :
       ((trivializationAt E (TangentSpace I :

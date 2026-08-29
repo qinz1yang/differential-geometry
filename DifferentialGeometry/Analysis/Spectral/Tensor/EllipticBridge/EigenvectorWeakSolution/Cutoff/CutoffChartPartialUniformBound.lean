@@ -14,7 +14,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -140,8 +139,8 @@ private lemma euclidPartial_cutoffComponentEuclid_eq_leibniz
     rw [h_eqf.fderiv_eq]
     exact fderiv_mul hχ_diff hw_diff
   rw [euclidPartial_def, h_fderiv,
-    ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.smul_apply, smul_eq_mul, smul_eq_mul,
+    add_apply, smul_apply,
+    smul_apply, smul_eq_mul, smul_eq_mul,
     euclidPartial_def, euclidPartial_def]
   ring
 
@@ -777,10 +776,10 @@ private theorem exists_const_eLpNorm_cutoffLeibnizCrossTerm_le_uniform
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤
         ENNReal.ofReal C_cut * (‖S‖₊ : ℝ≥0∞) := by
     have hb := hC_cut S.toCcTensor Idx Jdx
-    refine hb.trans (mul_le_mul_of_nonneg_left ?_ (zero_le _))
+    refine hb.trans (mul_le_mul_of_nonneg_left ?_ (zero_le))
     rw [show ((‖S‖₊ : ℝ≥0∞)) = ENNReal.ofReal ‖S‖ from by
       rw [show ((‖S‖₊ : ℝ≥0∞)) = ‖S‖ₑ from (enorm_eq_nnnorm S).symm,
-        ← ofReal_norm_eq_enorm S]]
+        ← ofReal_norm S]]
     exact ENNReal.ofReal_le_ofReal
       (SmoothCcTensorH1.l2Norm_le_h1Norm (I := I) (M := M) S)
   calc eLpNorm (cutoffLeibnizCrossTerm (I := I) (M := M) g r s S.toCcTensor α
@@ -821,7 +820,8 @@ private lemma cutoffCovNormSumFun_tsupport_subset
               ‖chartRSTwistInv (I := I) (M := M) α b r s
                   (TensorRSSpace.toModel
                     (tensorCovDerivAt (I := I) (M := M) g r s S b
-                      (chartBasisVecFiber (I := I) α i b)))‖ ^ 2) := by
+                      (tangentSpaceModelContinuousLinearEquiv (I := I) b
+                        (chartBasisVecFiber (I := I) α i b))))‖ ^ 2) := by
     funext b
     rw [cutoffCovNormSumFun]
     rfl
@@ -835,7 +835,8 @@ private lemma cutoffCovNormSumFun_tsupport_subset
           ‖chartRSTwistInv (I := I) (M := M) α b r s
               (TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S b
-                  (chartBasisVecFiber (I := I) α i b)))‖ ^ 2))
+                  (tangentSpaceModelContinuousLinearEquiv (I := I) b
+                    (chartBasisVecFiber (I := I) α i b))))‖ ^ 2))
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -924,7 +925,8 @@ private lemma exists_const_eLpNorm_cutoffCovDerivComponent_le_uniform
                 (TensorRSSpace.toModel
                   (tensorCovDerivAt (I := I) (M := M) g r s
                     S.toCcTensor b
-                    (chartBasisVecFiber (I := I) α i b)))‖ ^ 2) := by
+                    (tangentSpaceModelContinuousLinearEquiv (I := I) b
+                      (chartBasisVecFiber (I := I) α i b))))‖ ^ 2) := by
     rw [hv_def]
     funext b
     rw [cutoffCovNormSumFun]
@@ -1251,10 +1253,10 @@ private theorem exists_const_sum_eLpNorm_cutoffLowerOrderTerm_le_uniform
       rw [hμ_def]
       have hb := hCcomp S.toCcTensor p.1 p.2
       rw [chartL2Measure] at hb
-      refine hb.trans (mul_le_mul_of_nonneg_left ?_ (zero_le _))
+      refine hb.trans (mul_le_mul_of_nonneg_left ?_ (zero_le))
       rw [show ((‖S‖₊ : ℝ≥0∞)) = ENNReal.ofReal ‖S‖ from by
         rw [show ((‖S‖₊ : ℝ≥0∞)) = ‖S‖ₑ from (enorm_eq_nnnorm S).symm,
-          ← ofReal_norm_eq_enorm S]]
+          ← ofReal_norm S]]
       exact ENNReal.ofReal_le_ofReal
         (SmoothCcTensorH1.l2Norm_le_h1Norm (I := I) (M := M) S)
     have hsummand : ∀ p : (Fin r → Fin n) × (Fin s → Fin n),
@@ -1281,7 +1283,7 @@ private theorem exists_const_sum_eLpNorm_cutoffLowerOrderTerm_le_uniform
           S.toCcTensor α m Idx p.1 Jdx p.2 hCcoeff_nn
           (fun {y} hy hb => hCcoeff m Idx p.1 Jdx p.2 hy hb)
       refine (h1.trans
-        (mul_le_mul_of_nonneg_left (hcomp_h1 p) (zero_le _))).trans_eq ?_
+        (mul_le_mul_of_nonneg_left (hcomp_h1 p) (zero_le))).trans_eq ?_
       rw [ENNReal.ofReal_mul hCcoeff_nn, mul_assoc]
     refine (eLpNorm_sum_le (fun p _ => hmeas p) (by norm_num)).trans ?_
     refine (Finset.sum_le_sum (fun p _ => hsummand p)).trans ?_
@@ -1430,7 +1432,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_cutoffComponentEuclid_le_uni
       exact (h_cross_const k).choose_spec.2 S Idx Jdx
     refine (Finset.sum_le_sum (fun k _ => h_each k)).trans ?_
     rw [← Finset.sum_mul]
-    refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_right ?_ (zero_le)
     rw [hC_cross_def]
     rw [ENNReal.ofReal_sum_of_nonneg (fun k _ => (h_cross_const k).choose_spec.1)]
   calc (∑ k : Fin n,

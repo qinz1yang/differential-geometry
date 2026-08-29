@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
@@ -98,10 +97,10 @@ theorem mlieBracket_contMDiff
     (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y)) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (VectorField.mlieBracket I X Y)) := by
-  haveI : IsManifold I 2 M := by
+  have : IsManifold I 2 M := by
     have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
     exact IsManifold.of_le h_le
-  haveI : IsManifold I (minSmoothness ℝ 2) M := by
+  have : IsManifold I (minSmoothness ℝ 2) M := by
     have h_eq : (minSmoothness ℝ 2 : WithTop ℕ∞) = (2 : WithTop ℕ∞) := by
       rw [minSmoothness_of_isRCLikeNormedField]
     rw [h_eq]; infer_instance
@@ -113,7 +112,7 @@ theorem mlieBracket_contMDiff
     rw [h_eq]
   have hX_inf : ContMDiffAt I (I.prod 𝓘(ℝ, E)) ((⊤ : ℕ∞) : WithTop ℕ∞) (T% X) b := hX b
   have hY_inf : ContMDiffAt I (I.prod 𝓘(ℝ, E)) ((⊤ : ℕ∞) : WithTop ℕ∞) (T% Y) b := hY b
-  haveI : IsManifold I (((⊤ : ℕ∞) : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I (((⊤ : ℕ∞) : WithTop ℕ∞) + 1) M := by
     have h_eq : (((⊤ : ℕ∞) : WithTop ℕ∞) + 1) = (((⊤ : ℕ∞) : WithTop ℕ∞)) := by
       rw [ENat.coe_top_add_one]
     rw [h_eq]; infer_instance
@@ -198,7 +197,7 @@ theorem secondCovDeriv_swap_outer
     rw [cov.isCovariantDerivativeOnUniv.add hsum12 hRsec]
     rw [cov.isCovariantDerivativeOnUniv.add hWBT hbrT]
   have hat := congrFun (congrArg DFunLike.coe hadd_full) (B x)
-  simp only [ContinuousLinearMap.add_apply] at hat
+  simp only [add_apply] at hat
   have hWBatom :
       cov.toFun (covApply cov W (covApply cov B T)) x (B x) =
         cov.toFun (covApply cov B (covApply cov B T)) x (W x)

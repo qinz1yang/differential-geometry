@@ -15,8 +15,8 @@ import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 open DifferentialGeometry.Geometry.Curvature
 
+
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Analysis
 namespace DifferentialGeometry.Geometry.Curvature
@@ -34,14 +34,14 @@ structure MetricConnectionFamily (Time : Type*) where
   metric : Time -> SmoothRiemannianMetric I M
   connection : Time -> CovariantDerivative I E (TangentSpace I : M -> Type _)
   metricCompatible : forall t : Time,
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (connection t)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (connection t)
       (metric t)
 
 structure MetricConnectionFamilyOn (D : RealTimeInterval) where
   metric : Real -> SmoothRiemannianMetric I M
   connection : Real -> CovariantDerivative I E (TangentSpace I : M -> Type _)
   metricCompatible : forall t : RealTimeInterval.FlowTime D,
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
       (connection (t : Real)) (metric (t : Real))
 
 namespace MetricConnectionFamily
@@ -123,7 +123,7 @@ theorem metricCompatibleAt
     {D : RealTimeInterval}
     (G : MetricConnectionFamilyOn (I := I) (M := M) D)
     (t : RealTimeInterval.FlowTime D) :
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (G.connectionAt t)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (G.connectionAt t)
       (G.metricAt t) := by
   exact G.metricCompatible t
 
@@ -132,7 +132,7 @@ theorem metricCompatibleAt_regular
     {D : RealTimeInterval}
     (G : MetricConnectionFamilyOn (I := I) (M := M) D)
     (t : RealTimeInterval.RegularTime D) :
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
       (G.connection (t : Real)) (G.metric (t : Real)) := by
   exact G.metricCompatible (RealTimeInterval.regularToFlow t)
 
@@ -162,14 +162,14 @@ noncomputable def metricTimeDerivative
     (td : TimeDerivativeData Real A Time)
     (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (x : M) (X Y : TangentSpace I x) : Real :=
-  td.dt_apply (fun s : Time => (G.metric s).inner x X Y) t
+  td.dtApply (fun s : Time => (G.metric s).inner x X Y) t
 
 @[simp] theorem metricTimeDerivative_eq
     (td : TimeDerivativeData Real A Time)
     (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (x : M) (X Y : TangentSpace I x) :
     metricTimeDerivative td G t x X Y =
-      td.dt_apply (fun s : Time => (G.metric s).inner x X Y) t := by
+      td.dtApply (fun s : Time => (G.metric s).inner x X Y) t := by
   rfl
 
 end TimeSmoothness
@@ -260,7 +260,7 @@ theorem of_union_closedOpen
           TotalSpace.mk' (Tensor0SModel s Real E)
             (E := fun x : M => Tensor0SSpace s I x) q'.2 (A q'.1.1 q'.2))
         {q' : {t : Real // t ∈ Set.Ico a b} × M | (q'.1.1 : Real) < c} := by
-      rw [continuousOn_iff_continuous_restrict]
+      rw [continuousOn_iff_continuous_domRestrict]
       refine h1.comp (f := fun w : {q' : {t : Real // t ∈ Set.Ico a b} × M //
           (q'.1.1 : Real) < c} =>
           (⟨w.1.1.1, Set.mem_Ico.mpr ⟨(Set.mem_Ico.mp w.1.1.2).1, w.2⟩⟩, w.1.2)) ?_
@@ -275,7 +275,7 @@ theorem of_union_closedOpen
           TotalSpace.mk' (Tensor0SModel s Real E)
             (E := fun x : M => Tensor0SSpace s I x) q'.2 (A q'.1.1 q'.2))
         {q' : {t : Real // t ∈ Set.Ico a b} × M | a < (q'.1.1 : Real)} := by
-      rw [continuousOn_iff_continuous_restrict]
+      rw [continuousOn_iff_continuous_domRestrict]
       refine h2.comp (f := fun w : {q' : {t : Real // t ∈ Set.Ico a b} × M //
           a < (q'.1.1 : Real)} =>
           (⟨w.1.1.1, Set.mem_Ioo.mpr ⟨w.2, (Set.mem_Ico.mp w.1.1.2).2⟩⟩, w.1.2)) ?_
@@ -304,13 +304,23 @@ theorem const_smul
     (hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A) :
     tensor0SFamilyContinuousOnSet (I := I) (M := M) s K
       (fun t x => c • A t x) := by
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
+    (M := M) s
   unfold tensor0SFamilyContinuousOnSet at hA ⊢
   rw [continuous_iff_continuousAt] at hA ⊢
   intro q
   have hAq := hA q
   rw [FiberBundle.continuousAt_totalSpace] at hAq ⊢
   refine ⟨hAq.1, ?_⟩
-  simpa [map_smul] using (hAq.2.const_smul c)
+  set e := trivializationAt (Tensor0SModel s Real E)
+    (fun x => Tensor0SSpace s I x) q.2 with he
+  have hbase : ∀ᶠ x in nhds q, x.2 ∈ e.baseSet :=
+    continuousAt_snd (e.open_baseSet.mem_nhds (by
+      rw [he]
+      exact mem_baseSet_trivializationAt _ _ q.2))
+  refine (hAq.2.const_smul c).congr_of_eventuallyEq ?_
+  filter_upwards [hbase] with x hx
+  exact (e.linear Real hx).map_smul c (A x.1.1 x.2)
 
 
 theorem add
@@ -321,6 +331,8 @@ theorem add
     (hB : tensor0SFamilyContinuousOnSet (I := I) (M := M) s K B) :
     tensor0SFamilyContinuousOnSet (I := I) (M := M) s K
       (fun t x => A t x + B t x) := by
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
+    (M := M) s
   unfold tensor0SFamilyContinuousOnSet at hA hB ⊢
   rw [continuous_iff_continuousAt] at hA hB ⊢
   intro q
@@ -328,7 +340,15 @@ theorem add
   have hBq := hB q
   rw [FiberBundle.continuousAt_totalSpace] at hAq hBq ⊢
   refine ⟨hAq.1, ?_⟩
-  simpa [map_add] using hAq.2.add hBq.2
+  set e := trivializationAt (Tensor0SModel s Real E)
+    (fun x => Tensor0SSpace s I x) q.2 with he
+  have hbase : ∀ᶠ x in nhds q, x.2 ∈ e.baseSet :=
+    continuousAt_snd (e.open_baseSet.mem_nhds (by
+      rw [he]
+      exact mem_baseSet_trivializationAt _ _ q.2))
+  refine (hAq.2.add hBq.2).congr_of_eventuallyEq ?_
+  filter_upwards [hbase] with x hx
+  exact (e.linear Real hx).map_add (A x.1.1 x.2) (B x.1.1 x.2)
 
 theorem smul
     {s : Nat} {K : Set Real}
@@ -339,6 +359,8 @@ theorem smul
     (hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A) :
     tensor0SFamilyContinuousOnSet (I := I) (M := M) s K
       (fun t x => f t x • A t x) := by
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
+    (M := M) s
   unfold tensor0SFamilyContinuousOnSet at hA ⊢
   rw [continuous_iff_continuousAt] at hA ⊢
   intro q
@@ -347,7 +369,15 @@ theorem smul
     hf.continuousAt
   rw [FiberBundle.continuousAt_totalSpace] at hAq ⊢
   refine ⟨hAq.1, ?_⟩
-  simpa [map_smul] using hfq.smul hAq.2
+  set e := trivializationAt (Tensor0SModel s Real E)
+    (fun x => Tensor0SSpace s I x) q.2 with he
+  have hbase : ∀ᶠ x in nhds q, x.2 ∈ e.baseSet :=
+    continuousAt_snd (e.open_baseSet.mem_nhds (by
+      rw [he]
+      exact mem_baseSet_trivializationAt _ _ q.2))
+  refine (hfq.smul hAq.2).congr_of_eventuallyEq ?_
+  filter_upwards [hbase] with x hx
+  exact (e.linear Real hx).map_smul (f x.1.1 x.2) (A x.1.1 x.2)
 
 theorem tangentBundle
     {s : Nat} {K : Set Real}
@@ -392,12 +422,15 @@ theorem eval_continuous
     have hpull : Continuous pull := by
       dsimp [pull]
       exact ((hτ.subtype_mk _).prodMk hb)
-    simpa [T, pull] using hA.comp hpull
+    let h : Continuous (fun p : P =>
+        TotalSpace.mk' (Tensor0SModel s Real E)
+          (E := fun x : M => Tensor0SSpace s I x) (b p) (T p)) := hA.comp hpull
+    exact h
   have hEval := TensorMultilinear.continuous_section_apply_base
     (𝕜 := Real) (I := I) (M := M) (P := P) (n := s)
     b hb T hT v hv
-  simpa [Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply,
-    T] using hEval
+  let h : Continuous (fun p : P => A (τ p) (b p) (fun i : Fin s => v i p)) := hEval
+  exact h
 
 end tensor0SFamilyContinuousOnSet
 
@@ -431,7 +464,9 @@ theorem tensor0SFamily_quadCont
   have hEval := TensorMultilinear.continuous_section_apply_base
     (𝕜 := Real) (I := I) (M := M) (P := P) (n := 2)
     b hb T hT v hv
-  simpa [quad02, P, b, T, v] using hEval
+  let h : Continuous (fun q : {t : Real // t ∈ K} × TangentBundle I M =>
+      quad02 (I := I) (M := M) (A q.1.1 q.2.proj) q.2.2) := hEval
+  exact h
 
 structure MetricFamilySmoothOn
     (D : RealTimeInterval)
@@ -518,7 +553,9 @@ theorem metricTimeBundleQuad_cont_of_metricFamilySmoothOn
     tensor0SFamily_quadCont (I := I) (M := M)
       (metricTensor_cont_restrict_of_metricFamilySmoothOn (I := I) (M := M)
         g_fam hG hK)
-  simpa [metricTimeBundleQuad, quad02, metricTensorField_apply] using hquad
+  let h : Continuous
+      (metricTimeBundleQuad (I := I) (M := M) g_fam K) := hquad
+  exact h
 
 
 noncomputable def metricCoeff

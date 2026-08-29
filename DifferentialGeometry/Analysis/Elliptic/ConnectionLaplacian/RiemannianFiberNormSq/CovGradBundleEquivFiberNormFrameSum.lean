@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
@@ -42,7 +41,7 @@ lemma riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame
         fiberNormSqSummand (I := I) (M := M) g x 0 s S n e K J := by
   classical
   subst hn
-  haveI : Nonempty (Fin (Module.finrank ℝ (TangentSpace I x))) :=
+  have : Nonempty (Fin (Module.finrank ℝ (TangentSpace I x))) :=
     ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   have he_li : LinearIndependent ℝ e := by
     rw [linearIndependent_iff']
@@ -154,6 +153,43 @@ lemma riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+private lemma curry_covGradBundleEquiv_unit
+    (s : ℕ) (x : M) (Φ : TangentSpace I x →L[ℝ] TensorRSSpace 0 s I x)
+    (v : TangentSpace I x) :
+    tensor0SCurry (I := I) (M := M) s x
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+          covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
+          (unitZeroSec (I := I) (M := M) x)) v =
+      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from Φ v)
+        (unitZeroSec (I := I) (M := M) x) := by
+  classical
+  apply Tensor0SSpace.toModel_injective
+  refine ContinuousMultilinearMap.ext (fun m => ?_)
+  rw [show Tensor0SSpace.toModel
+      (tensor0SCurry (I := I) (M := M) s x
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+          covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
+          (unitZeroSec (I := I) (M := M) x)) v) m =
+      Tensor0SSpace.toModel
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+          covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
+          (unitZeroSec (I := I) (M := M) x))
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m) by
+    simpa only [ContinuousLinearEquiv.symm_apply_apply] using
+      TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+          covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
+          (unitZeroSec (I := I) (M := M) x))
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m]
+  rw [covGradBundleEquiv_apply_toModel (I := I) (M := M) 0 s x Φ
+    (unitZeroSec (I := I) (M := M) x)
+    (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m)]
+  simp only [Fin.cons_zero, Matrix.vecTail, ContinuousLinearEquiv.symm_apply_apply]
+  rw [show (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m ∘
+      Fin.succ) = m from funext (fun j => by simp [Fin.cons_succ])]
+
+omit [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma riemannianFiberNormSq_slot0Curry_covGradBundleEquiv_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (Φ : TangentSpace I x →L[ℝ] TensorRSSpace 0 s I x)
@@ -173,43 +209,25 @@ lemma riemannianFiberNormSq_slot0Curry_covGradBundleEquiv_eq
   refine Finset.sum_congr rfl (fun J _ => ?_)
   congr 1
   unfold fiberNormSqComponent
-  set ωK : Tensor0SSpace 0 I x :=
-    (ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-      (fun k => g.inner x (e (K₀ k))) with hωK
-  have hslot : (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-          slot0Curry (I := I) (M := M) g x s e K₀
-            (covGradBundleEquiv (I := I) (M := M) 0 s x Φ) a) ωK =
-        tensor0S_curry (I := I) (M := M) s x
-          ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-            covGradBundleEquiv (I := I) (M := M) 0 s x Φ) ωK) (e a) := by
-    rw [slot0Curry_apply (I := I) (M := M) g x s e K₀
-      (covGradBundleEquiv (I := I) (M := M) 0 s x Φ) a ωK]
-    have hscalar : tensor00Scalar (I := I) (M := M) x ωK = 1 := by
-      rw [hωK,
-        show ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-            (fun k => g.inner x (e (K₀ k))) : Tensor0SSpace 0 I x) =
-          coframeS (I := I) (M := M) g x 0 e K₀ from rfl,
-        tensor00Scalar_apply (I := I) (M := M) x _ (fun k : Fin 0 => k.elim0),
-        coframeS_apply (I := I) (M := M) g x 0 e K₀]
-      simp
-    rw [hscalar, one_smul]
-  rw [hslot]
-  rw [show (tensor0S_curry (I := I) (M := M) s x
-        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-          covGradBundleEquiv (I := I) (M := M) 0 s x Φ) ωK) (e a)
-        (fun k => e (J k)) : ℝ) =
-      Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) s x
-          ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-            covGradBundleEquiv (I := I) (M := M) 0 s x Φ) ωK) (e a))
-        (fun k => e (J k)) from rfl]
-  rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-    (T := (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
-      covGradBundleEquiv (I := I) (M := M) 0 s x Φ) ωK) (v0 := e a) (vs := fun k => e (J k))]
-  rw [covGradBundleEquiv_apply_eval (I := I) (M := M) 0 s x Φ ωK
-    (Fin.cons (e a) (fun k => e (J k)))]
-  rw [Fin.cons_zero]
-  congr 1
+  change Tensor0SSpace.eval
+      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
+        slot0Curry (I := I) (M := M) g x s e K₀
+          (covGradBundleEquiv (I := I) (M := M) 0 s x Φ) a)
+        (coframeS (I := I) (M := M) g x 0 e K₀))
+      (fun k => e (J k)) =
+    Tensor0SSpace.eval
+      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from Φ (e a))
+        (coframeS (I := I) (M := M) g x 0 e K₀))
+      (fun k => e (J k))
+  rw [slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec (I := I) (M := M),
+    tensor0SAsRS_apply (I := I) (M := M)]
+  have hscalar : tensor00Scalar (I := I) (M := M) x
+      (coframeS (I := I) (M := M) g x 0 e K₀) = 1 := by
+    rw [tensor00Scalar_apply (I := I) (M := M) x _ (fun k : Fin 0 => k.elim0),
+      coframeS_apply (I := I) (M := M) g x 0 e K₀]
+    simp
+  rw [hscalar, one_smul, coframeS_zero_eq_unitZeroSec (I := I) (M := M),
+    curry_covGradBundleEquiv_unit (I := I) (M := M)]
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -252,9 +270,9 @@ lemma riemannianFiberNormSq_covGradBundleEquiv_le_card_mul
   have hbnd : Bornology.IsVonNBounded ℝ {v : TangentSpace I x |
       RCLike.re (cd.inner v v) < 1} :=
     g.toRiemannianMetric.isVonNBounded x
-  letI nag : NormedAddCommGroup (TangentSpace I x) :=
+  let nag : NormedAddCommGroup (TangentSpace I x) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+  let ips : InnerProductSpace ℝ (TangentSpace I x) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
   set n : ℕ := Module.finrank ℝ (TangentSpace I x) with hn_def
   set eob : OrthonormalBasis (Fin n) ℝ (TangentSpace I x) := stdOrthonormalBasis ℝ _
@@ -312,41 +330,29 @@ lemma riemannianFiberNormSq_covGradBundleEquiv_symm_reading_eq_slot0Curry
   refine Finset.sum_congr rfl (fun J _ => ?_)
   congr 1
   unfold fiberNormSqComponent
-  set ωK : Tensor0SSpace 0 I x :=
-    (ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-      (fun k => g.inner x (e (K₀ k))) with hωK
-  have hslot : (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-          slot0Curry (I := I) (M := M) g x s e K₀ T a) ωK =
-        tensor0S_curry (I := I) (M := M) s x
-          ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from T) ωK) (e a) := by
-    rw [slot0Curry_apply (I := I) (M := M) g x s e K₀ T a ωK]
-    have hscalar : tensor00Scalar (I := I) (M := M) x ωK = 1 := by
-      rw [hωK,
-        show ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-            (fun k => g.inner x (e (K₀ k))) : Tensor0SSpace 0 I x) =
-          coframeS (I := I) (M := M) g x 0 e K₀ from rfl,
-        tensor00Scalar_apply (I := I) (M := M) x _ (fun k : Fin 0 => k.elim0),
-        coframeS_apply (I := I) (M := M) g x 0 e K₀]
-      simp
-    rw [hscalar, one_smul]
-  rw [show ((((covGradBundleEquiv (I := I) (M := M) 0 s x).symm T (e a)) ωK)
-        (fun k => e (J k)) : ℝ) =
-      Tensor0SSpace.toModel
-        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-          (covGradBundleEquiv (I := I) (M := M) 0 s x).symm T (e a)) ωK)
-        (fun k => e (J k)) from rfl]
-  rw [covGradBundleEquiv_symm_apply_eval (I := I) (M := M) 0 s x T (e a) ωK (fun k => e (J k))]
-  rw [hslot]
-  rw [show ((tensor0S_curry (I := I) (M := M) s x
-        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from T) ωK) (e a))
-        (fun k => e (J k)) : ℝ) =
-      Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) s x
-          ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from T) ωK) (e a))
-        (fun k => e (J k)) from rfl]
-  rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-    (T := (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from T) ωK)
-    (v0 := e a) (vs := fun k => e (J k))]
+  change Tensor0SSpace.eval
+      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
+        (covGradBundleEquiv (I := I) (M := M) 0 s x).symm T (e a))
+        (coframeS (I := I) (M := M) g x 0 e K₀))
+      (fun k => e (J k)) =
+    Tensor0SSpace.eval
+      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
+        slot0Curry (I := I) (M := M) g x s e K₀ T a)
+        (coframeS (I := I) (M := M) g x 0 e K₀))
+      (fun k => e (J k))
+  rw [slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec (I := I) (M := M),
+    tensor0SAsRS_apply (I := I) (M := M)]
+  have hscalar : tensor00Scalar (I := I) (M := M) x
+      (coframeS (I := I) (M := M) g x 0 e K₀) = 1 := by
+    rw [tensor00Scalar_apply (I := I) (M := M) x _ (fun k : Fin 0 => k.elim0),
+      coframeS_apply (I := I) (M := M) g x 0 e K₀]
+    simp
+  rw [hscalar, one_smul, coframeS_zero_eq_unitZeroSec (I := I) (M := M)]
+  have h := curry_covGradBundleEquiv_unit (I := I) (M := M) s x
+    ((covGradBundleEquiv (I := I) (M := M) 0 s x).symm T) (e a)
+  rw [ContinuousLinearEquiv.apply_symm_apply] at h
+  exact congrArg (fun Q : Tensor0SSpace s I x =>
+    Tensor0SSpace.eval Q (fun k => e (J k))) h.symm
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -394,7 +400,7 @@ lemma riemannianFiberNormSq_succ_eq_sum_bareSlot0Curry_of_orthoFrame
       ∑ a : Fin n,
         riemannianFiberNormSq (I := I) (M := M) g 0 s x
           (tensor0SToTensorRS (I := I) (M := M) x
-            (tensor0S_curry (I := I) (M := M) s x
+            (tensor0SCurry (I := I) (M := M) s x
               ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
                 (unitZeroSec (I := I) (M := M) x)) (e a))) := by
   classical

@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -50,7 +49,7 @@ theorem wkpNorm_secComp_le
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
           (secChartComp (I := I) (M := M) r s S α Idx Jdx')
           (chartTargetEuclid (I := I) (M := M) α))
-      (fun _ _ => zero_le _) (Finset.mem_univ Jdx)
+      (fun _ _ => zero_le) (Finset.mem_univ Jdx)
   have hI :
       (∑ Jdx' : Fin s → Fin (Module.finrank ℝ E),
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
@@ -67,7 +66,7 @@ theorem wkpNorm_secComp_le
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
             (secChartComp (I := I) (M := M) r s S α Idx' Jdx')
             (chartTargetEuclid (I := I) (M := M) α))
-      (fun _ _ => Finset.sum_nonneg (fun _ _ => zero_le _))
+      (fun _ _ => Finset.sum_nonneg (fun _ _ => zero_le))
       (Finset.mem_univ Idx)
   exact hJ.trans (hI.trans (ENNReal.le_tsum α))
 
@@ -100,6 +99,7 @@ theorem secComp_cauchy
   rw [secChartComp_sub (I := I) (M := M)] at hle
   exact hle
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] in
 theorem exists_secComp_lim
     (r s k : ℕ)
@@ -142,6 +142,7 @@ noncomputable def secCompLimit
   (exists_secComp_lim (I := I) (M := M) r s k hp u
     h_cauchy α Idx Jdx).choose
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] in
 theorem secCompLimit_mem
     (r s k : ℕ)
@@ -161,6 +162,7 @@ theorem secCompLimit_mem
   (exists_secComp_lim (I := I) (M := M) r s k hp u
     h_cauchy α Idx Jdx).choose_spec.1
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] in
 theorem secCompLimit_tendsto
     (r s k : ℕ)
@@ -216,6 +218,7 @@ noncomputable def secModelLimit
           h_cauchy α Idx Jdx y •
         tensorChartBasisElement (E := E) r s Idx Jdx
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] in
 theorem secModelLimit_proj
     (r s k : ℕ)
@@ -278,7 +281,7 @@ noncomputable def tensorLimitSec
         ((u m).1 - (u n).1) ≤ ENNReal.ofReal ε) :
     RSTensorSection I M r s :=
   fun x =>
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       secModelPull (I := I) (M := M) r s α
         (secModelLimit (I := I) (M := M) r s k hp u
           h_cauchy α) x

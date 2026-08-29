@@ -398,7 +398,7 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le
     _ ≤ ENNReal.ofReal (c_max ^ (1 / (2 : ℝ))) *
           ENNReal.ofReal (Cop * ‖u‖) := by
         gcongr
-        rw [← ofReal_norm_eq_enorm w]
+        rw [← ofReal_norm w]
         exact ENNReal.ofReal_le_ofReal hw_op
     _ = ENNReal.ofReal (c_max ^ (1 / (2 : ℝ)) * Cop) * ENNReal.ofReal ‖u‖ := by
         rw [ENNReal.ofReal_mul hCop_nn,
@@ -503,7 +503,7 @@ theorem eLpNorm_tensorL2ChartComponentCutoff_le_uniform
     _ ≤ ENNReal.ofReal (c_max ^ (1 / (2 : ℝ))) *
           ENNReal.ofReal (Cop * ‖u‖) := by
         gcongr
-        rw [← ofReal_norm_eq_enorm w]
+        rw [← ofReal_norm w]
         exact ENNReal.ofReal_le_ofReal hw_op
     _ = ENNReal.ofReal (c_max ^ (1 / (2 : ℝ)) * Cop) * ENNReal.ofReal ‖u‖ := by
         rw [ENNReal.ofReal_mul hCop_nn,

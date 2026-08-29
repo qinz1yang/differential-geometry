@@ -322,8 +322,8 @@ private lemma rhsTerm2_memLp_unconditional :
         (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
   unfold rhsTerm2
-  exact memLp_finset_sum _
-    (fun P _ => memLp_finset_sum _
+  exact memLp_finsetSum _
+    (fun P _ => memLp_finsetSum _
       (fun Q _ => rhsTerm2_summand_memLp_unconditional (I := I) (M := M)
         g r s i α P₀ P Q))
 
@@ -367,8 +367,8 @@ private lemma rhsTerm3_memLp_unconditional :
         (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
   unfold rhsTerm3
-  exact memLp_finset_sum _
-    (fun P _ => memLp_finset_sum _
+  exact memLp_finsetSum _
+    (fun P _ => memLp_finsetSum _
       (fun Q _ => rhsTerm3_summand_memLp_unconditional (I := I) (M := M)
         g r s i α P₀ P Q))
 
@@ -399,7 +399,7 @@ private lemma weightedGradCoeffDivLimit_sum_memLp_unconditional :
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)) := by
   classical
-  exact memLp_finset_sum _
+  exact memLp_finsetSum _
     (fun l _ => weightedGradCoeffDivLimit_memLp_weighted
       (I := I) (M := M) g r s i α P₀ l)
 
@@ -708,7 +708,7 @@ private lemma rhsTerm2_eLpNorm_le_uniform_unconditional :
             Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
           ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α)))
-        (fun P _ => zero_le _) (Finset.mem_univ x.1)
+        (fun P _ => zero_le) (Finset.mem_univ x.1)
     rw [hμw_def, hF_def]
     refine le_trans (hC_bd _
       (crossLeftLimitComponent_memLp_weighted (I := I) (M := M)
@@ -801,7 +801,7 @@ private lemma rhsTerm3_eLpNorm_le_uniform_unconditional :
             Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) 2
           ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α)))
-        (fun P _ => zero_le _) (Finset.mem_univ x.1)
+        (fun P _ => zero_le) (Finset.mem_univ x.1)
     rw [hμw_def, hF_def]
     refine le_trans (hC_bd _
       (crossRightLimitComponent_memLp_weighted (I := I) (M := M)

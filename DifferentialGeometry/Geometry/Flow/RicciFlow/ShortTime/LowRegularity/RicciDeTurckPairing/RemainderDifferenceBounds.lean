@@ -26,6 +26,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
       [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
+omit [SigmaCompactSpace M] in
 private theorem deTurckSmoothRemainder_self_low_order_decomposition
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -93,6 +94,7 @@ private theorem deTurckSmoothRemainder_self_low_order_decomposition
       simp only [sub_self, zero_add, add_zero]
       abel
 
+omit [SigmaCompactSpace M] in
 private theorem deTurckSmoothRemainder_self_low_order_sub_decomposition
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -144,6 +146,7 @@ private theorem deTurckSmoothRemainder_self_low_order_sub_decomposition
   dsimp only
   module
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem covariantJetNormSq_weighted_five_term_sum_le
     (g : SmoothRiemannianMetric I M)
@@ -650,26 +653,26 @@ private theorem exists_pathIntegrand_covariantJetNormSq_difference_bound
     exact mul_le_mul_of_nonneg_left hfull hC
   rw [deTurckSmoothRemainder_self_low_order_sub_decomposition (I := I) (M := M) g T U hT hU
     hδ_lt hδT hδU hδZ hs]
-  let gmT : SmoothRiemannianMetric I M :=
-    metricPerturbationPath (I := I) g T 0 hδT hδZ s
-  let gmU : SmoothRiemannianMetric I M :=
-    metricPerturbationPath (I := I) g U 0 hδU hδZ s
-  let Y1 : SmoothCcTensor g 2 2 :=
+  set gmT : SmoothRiemannianMetric I M :=
+    metricPerturbationPath (I := I) g T 0 hδT hδZ s with hgmT_def
+  set gmU : SmoothRiemannianMetric I M :=
+    metricPerturbationPath (I := I) g U 0 hδU hδZ s with hgmU_def
+  set Y1 : SmoothCcTensor g 2 2 :=
     RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmT (s • T) -
-      RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmU (s • U)
-  let Y2 : SmoothCcTensor g 2 2 :=
+      RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmU (s • U) with hY1_def
+  set Y2 : SmoothCcTensor g 2 2 :=
     (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gmT g -
         deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hδT hδZ
           lieDecompositionQ lieDecompositionEps s) -
       (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g gmU g -
         deTurckLieTopOrderPairingFamily (I := I) (M := M) g U hδU hδZ
-          lieDecompositionQ lieDecompositionEps s)
-  let Y3 : SmoothCcTensor g 2 2 :=
-    lieCorrectionZeroVectorBundle (I := I) (M := M) g gmT - lieCorrectionZeroVectorBundle (I := I) (M := M) g gmU
-  let Y4 : SmoothCcTensor g 2 2 :=
-    lieCorrectionZeroMixedConnection (I := I) (M := M) g gmT g - lieCorrectionZeroMixedConnection (I := I) (M := M) g gmU g
-  let Y5 : SmoothCcTensor g 2 2 :=
-    lieCorrectionZeroRiemann (I := I) (M := M) g gmT - lieCorrectionZeroRiemann (I := I) (M := M) g gmU
+          lieDecompositionQ lieDecompositionEps s) with hY2_def
+  set Y3 : SmoothCcTensor g 2 2 :=
+    lieCorrectionZeroVectorBundle (I := I) (M := M) g gmT - lieCorrectionZeroVectorBundle (I := I) (M := M) g gmU with hY3_def
+  set Y4 : SmoothCcTensor g 2 2 :=
+    lieCorrectionZeroMixedConnection (I := I) (M := M) g gmT g - lieCorrectionZeroMixedConnection (I := I) (M := M) g gmU g with hY4_def
+  set Y5 : SmoothCcTensor g 2 2 :=
+    lieCorrectionZeroRiemann (I := I) (M := M) g gmT - lieCorrectionZeroRiemann (I := I) (M := M) g gmU with hY5_def
   have hY1 : covariantJetNormSq (I := I) (M := M) g 2 Y1 ≤ Zg ^ 2 := by
     have hY1raw : covariantJetNormSq (I := I) (M := M) g 2 Y1 ≤
         (G R * (1 + A ^ 2) * S) ^ 2 := by

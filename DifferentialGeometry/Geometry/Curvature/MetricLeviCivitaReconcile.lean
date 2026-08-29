@@ -6,6 +6,8 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundli
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import DifferentialGeometry.Geometry.Curvature.Metric
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection
@@ -116,14 +118,13 @@ theorem ricciCurvatureAt_leviCivita_apply_eq_ricciTensor
   classical
   have hcov₂ := leviCivita_contMDiffCovariantDerivativeLocally (I := I) g
   rw [ricciCurvatureAt_eq_trace,
-    ricciFromRm13At_apply_basis_trace (chartModelBasis E)
+    ricciFromRm13At_apply_basis_trace (centeredChartTangentBasis (I := I) x)
       (riemannCurvatureAt (LeviCivita (I := I) g) hcov₂ x) v w,
     ricciTensor_apply_basisSum]
   refine Finset.sum_congr rfl (fun a _ => ?_)
   rw [riemannCurvatureAt_apply_const,
     riemannCurvatureAux_tangentConst_eq_riemannOp (cov := LeviCivita (I := I) g) (hcov := hcov₂),
     cotangentToDual_dualToCotangent_gen, Module.Basis.coord_apply]
-  rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in

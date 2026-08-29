@@ -2,7 +2,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalPathDecomposition
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -127,8 +126,13 @@ theorem top_path_dev_uniform
           (deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g).toSection x from by
       rw [SmoothCcTensor.toSection_sub]; rfl]
     rw [TensorRSSpace.toModel_sub, hPeq]
-    dsimp [Pdev]
-    rw [pathIntegralFib_toModel, pathIntegralFib_toModel]
+    dsimp only [Pdev]
+    rw [pathIntegralCoeffField_toModel (I := I) (M := M) g 4 2
+        (fun s => deTurckMetricPrincipalDefectTotal (I := I) (M := M) g
+          (metricPerturbationPath (I := I) g T T' hδ hδ' s))
+        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjpath x,
+      pathIntegralCoeffField_toModel (I := I) (M := M) g 4 2 Φ
+        (metricPerturbationPathDomain (δ := δ) (δ' := δ')) hSopen hSI hjdev x]
     have hint : IntervalIntegrable (fun t : ℝ =>
         TensorRSSpace.toModel
           ((deTurckMetricPrincipalDefectTotal (I := I) (M := M) g

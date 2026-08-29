@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Comparison.ExponentialBallPartialDiffeomorp
 import DifferentialGeometry.Geometry.Exponential.FramedNormalCoordinates
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Defs
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Covering.GoodCoveringSeq
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -25,11 +26,12 @@ section
 
 variable {E : Type uE} [NormedAddCommGroup E]
 variable [InnerProductSpace Real E] [FiniteDimensional Real E]
-variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
+variable [neZeroFinrank : NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
+omit [NeZero (Module.finrank Real E)] in
 theorem PointedRiemannianManifold.exists_exponential_ball_partial_diffeomorph
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (c : Y.M) {ρ : Real} :
     letI := Y.topology
@@ -48,12 +50,12 @@ theorem PointedRiemannianManifold.exists_exponential_ball_partial_diffeomorph
         Set.EqOn Φ (fun v : E =>
           (expMap (I := I) Y.metric c (show TangentSpace I c from v) : Y.M))
           (Metric.ball (0 : E) ρ) := by
-  letI := Y.topology
-  letI := Y.charted
-  letI := Y.smooth
-  letI := Y.sigmaCompact
-  letI := Y.t2
-  letI := Y.t2TangentBundle
+  let := Y.topology
+  let := Y.charted
+  let := Y.smooth
+  let := Y.sigmaCompact
+  let := Y.t2
+  let := Y.t2TangentBundle
   intro hinj hC2
   exact exists_exponential_ball_partial_diffeomorph_of_lt (I := I) Y.metric c hinj hC2
 
@@ -119,8 +121,11 @@ theorem subseq (hd : InjRadiusDecayInput (I := I) X) (D : Real)
       (fun k α => ρ (f k) α) := by
   intro k α c hc
   have hc' : c ∈ seqCenter hd D P (f k) α := by
-    simpa [seqCenter, InjRadiusDecayInput.subseq, InjRadiusDecayInput.lambda,
-      InjRadiusDecayInput.mu, PointedRiemannianSeq.subseq] using hc
+    have hcenter :
+        seqCenter (hd.subseq f) D (fun j ↦ P (f j)) k α =
+          seqCenter hd D P (f k) α := rfl
+    rw [hcenter] at hc
+    exact hc
   simpa [InjRadiusDecayInput.subseq, PointedRiemannianSeq.subseq] using
     hrad (f k) α c hc'
 
@@ -172,8 +177,9 @@ theorem exists_exponential_ball_partial_diffeomorph
       Set.EqOn Φ (fun v : E =>
         (expMap (I := I) (X.obj (L.φ n)).metric c
           (show TangentSpace I c from v) : (X.obj (L.φ n)).M))
-        (Metric.ball (0 : E) (a * L.lamInf (γ : Nat))) :=
-  fun hinj => (X.obj (L.φ n)).exists_exponential_ball_partial_diffeomorph c
+        (Metric.ball (0 : E) (a * L.lamInf (γ : Nat))) := by
+  let _ := neZeroFinrank
+  exact fun hinj => (X.obj (L.φ n)).exists_exponential_ball_partial_diffeomorph c
     hinj (hrad γ c hc).2
 
 def ExponentialRadiusScaleInput (hd : InjRadiusDecayInput (I := I) X) (D : Real)
@@ -270,12 +276,12 @@ theorem PointedRiemannianManifold.exists_framed_exponential_ball_partial_diffeom
         Φ.target = framedExpMap (I := I) Y.metric c '' Metric.ball (0 : E) ρ ∧
         Set.EqOn Φ (framedExpMap (I := I) Y.metric c)
           (Metric.ball (0 : E) ρ) := by
-  letI := Y.topology
-  letI := Y.charted
-  letI := Y.smooth
-  letI := Y.sigmaCompact
-  letI := Y.t2
-  letI := Y.t2TangentBundle
+  let := Y.topology
+  let := Y.charted
+  let := Y.smooth
+  let := Y.sigmaCompact
+  let := Y.t2
+  let := Y.t2TangentBundle
   intro hinj hC2
   exact exists_framed_exponential_ball_partial_diffeomorph_of_lt (I := I) Y.metric c hinj hC2
 
@@ -335,8 +341,11 @@ theorem subseq (hd : InjRadiusDecayInput (I := I) X) (D : Real)
       (fun k α => ρ (f k) α) := by
   intro k α c hc
   have hc' : c ∈ seqCenter hd D P (f k) α := by
-    simpa [seqCenter, InjRadiusDecayInput.subseq, InjRadiusDecayInput.lambda,
-      InjRadiusDecayInput.mu, PointedRiemannianSeq.subseq] using hc
+    have hcenter :
+        seqCenter (hd.subseq f) D (fun j ↦ P (f j)) k α =
+          seqCenter hd D P (f k) α := rfl
+    rw [hcenter] at hc
+    exact hc
   simpa [InjRadiusDecayInput.subseq, PointedRiemannianSeq.subseq] using
     hrad (f k) α c hc'
 

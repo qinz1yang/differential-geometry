@@ -103,7 +103,11 @@ theorem scalarQuasilinearMildSolution_eq_mildSolution
   have hcont : ContinuousOn
       (fun τ : ℝ => heatSemigroupHsExt (I := I) (M := M) g 0 (t - τ) (N (u τ)))
       (Set.Icc 0 t) := by
-    simpa [scalarHsBoundedC0Semigroup_apply] using (hS.comp hφ hφdom)
+    have h := hS.comp hφ hφdom
+    change ContinuousOn
+      (fun τ : ℝ => heatSemigroupHsExt (I := I) (M := M) g 0
+        (t - τ) (N (u τ))) (Set.Icc 0 t) at h
+    exact h
   have hf : IntervalIntegrable
       (fun τ : ℝ => heatSemigroupHsExt (I := I) (M := M) g 0 (t - τ) (N (u τ)))
       MeasureTheory.volume 0 t :=

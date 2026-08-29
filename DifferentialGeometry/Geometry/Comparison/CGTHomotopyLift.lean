@@ -23,8 +23,8 @@ variable {H : Type*} [TopologicalSpace H]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -96,7 +96,7 @@ theorem exists_lift_family
       continuous_toFun := by
         have hcont :
             Continuous (fun s : unitInterval => (lift t).toFun s) := by
-          exact continuousOn_iff_continuous_restrict.mp
+          exact continuousOn_iff_continuous_domRestrict.mp
             (lift t).contDiff.continuousOn
         exact hcont.subtype_mk _ }
   have hlifts (t s : unitInterval) :

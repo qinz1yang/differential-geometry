@@ -22,8 +22,8 @@ variable {H : Type*} [TopologicalSpace H]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -85,23 +85,23 @@ theorem intrCore_minimizingVec_regular_unique
             (I := 𝓘(Real, E)) gExt (pt : E) (q : E)).toReal →
         v = u := by
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
-  letI (z : E) : NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
+  let (z : E) : NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
     inferInstance
-  letI (z : E) : NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
+  let (z : E) : NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
     inferInstance
-  letI : ∀ z : E, ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
+  let : ∀ z : E, ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
     fun _ => inferInstance
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : EMetricSpace E :=
+  let : EMetricSpace E :=
     EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
-  letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
-  letI : CompleteSpace E :=
+  let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let : CompleteSpace E :=
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
@@ -146,13 +146,17 @@ theorem intrCore_minimizingVec_regular_unique
     have huEnd :
         intrExtLaunch (I := I) g hEnorm p hR hloc
             (pt : E) u 1 = (q : E) := by
-      simpa only [gExt, hExt, intrExtLaunch, expMapIntrinsic_def] using
-        minimizingVec_exp
-          (I := 𝓘(Real, E)) gExt hExt (pt : E) (q : E)
+      with_unfolding_all
+        exact (expMapIntrinsic_def
+          (I := 𝓘(Real, E)) gExt hExt (pt : E) u).symm.trans
+            (minimizingVec_exp
+              (I := 𝓘(Real, E)) gExt hExt (pt : E) (q : E))
     have hvEnd' :
         intrExtLaunch (I := I) g hEnorm p hR hloc
             (pt : E) v 1 = (q : E) := by
-      simpa only [gExt, hExt, intrExtLaunch, expMapIntrinsic_def] using hvEnd
+      with_unfolding_all
+        exact (expMapIntrinsic_def
+          (I := 𝓘(Real, E)) gExt hExt (pt : E) v).symm.trans hvEnd
     exact (intrCore_short_inj
       (I := I) g hEnorm p hR hloc hK hRm hsmallL h2aL hbudget
         (x := (pt : E)) (y := (q : E)) (u := u) (v := v)
@@ -219,23 +223,23 @@ theorem intrCore_dist_germ
     (hq : q ∈ intrCore (E := E) R a) :
     intrCoreDistGermProp (I := I) g hEnorm p hR hloc (pt := pt) (q := q) := by
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
-  letI (z : E) : NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
+  let (z : E) : NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
     inferInstance
-  letI (z : E) : NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
+  let (z : E) : NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
     inferInstance
-  letI : ∀ z : E, ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
+  let : ∀ z : E, ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
     fun _ => inferInstance
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : EMetricSpace E :=
+  let : EMetricSpace E :=
     EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
-  letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
-  letI : CompleteSpace E :=
+  let : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let : CompleteSpace E :=
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=

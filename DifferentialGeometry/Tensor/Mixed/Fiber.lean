@@ -5,7 +5,6 @@ import DifferentialGeometry.Tensor.Multilinear.Fiber
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set ContinuousLinearMap
 
@@ -39,13 +38,13 @@ private def mixed_normedInstances (r s : ℕ) (x : B) :
         _ ng.toSeminormedAddCommGroup :=
   (mixed_type_eq (𝕜 := 𝕜) (F := F) (E := E) r s x) ▸ ⟨inferInstance, inferInstance⟩
 
-instance mixed_instNormedAddCommGroup (r s : ℕ) (x : B) :
+instance mixedInstNormedAddCommGroup (r s : ℕ) (x : B) :
     NormedAddCommGroup
       (Bundle.continuousMultilinearMap 𝕜 r F E x →L[𝕜]
        Bundle.continuousMultilinearMap 𝕜 s F E x) :=
   (mixed_normedInstances (𝕜 := 𝕜) (F := F) (E := E) r s x).1
 
-instance mixed_instNormedSpace (r s : ℕ) (x : B) :
+instance mixedInstNormedSpace (r s : ℕ) (x : B) :
     NormedSpace 𝕜
       (Bundle.continuousMultilinearMap 𝕜 r F E x →L[𝕜]
        Bundle.continuousMultilinearMap 𝕜 s F E x) :=
@@ -123,7 +122,7 @@ theorem mixedToModel_neg {r s : ℕ} {x : B}
     (T : Bundle.continuousMultilinearMap 𝕜 r F E x →L[𝕜]
          Bundle.continuousMultilinearMap 𝕜 s F E x) :
     mixedToModel (𝕜 := 𝕜) (F := F) (E := E) (-T) = -mixedToModel T := by
-  ext m; simp only [mixedToModel, ContinuousLinearMap.neg_apply]; rfl
+  ext m; simp only [mixedToModel, neg_apply]; rfl
 
 @[simp]
 theorem mixedToModel_sub {r s : ℕ} {x : B}
@@ -131,7 +130,7 @@ theorem mixedToModel_sub {r s : ℕ} {x : B}
              Bundle.continuousMultilinearMap 𝕜 s F E x) :
     mixedToModel (𝕜 := 𝕜) (F := F) (E := E) (T₁ - T₂) =
       mixedToModel T₁ - mixedToModel T₂ := by
-  ext m; simp only [mixedToModel, ContinuousLinearMap.sub_apply]; rfl
+  ext m; simp only [mixedToModel, sub_apply]; rfl
 
 @[simp]
 theorem mixedOfModel_mixedToModel {r s : ℕ} {x : B}

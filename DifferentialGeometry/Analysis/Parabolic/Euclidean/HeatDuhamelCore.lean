@@ -39,7 +39,10 @@ private theorem heat_sub_fderiv {t : ℝ} (v x y : V) :
   have h' : HasFDerivAt (fun z : V ↦ heatKernel t (x - z))
       ((heatD1Map t (x - y)).comp
         ((0 : V →L[ℝ] V) - ContinuousLinearMap.id ℝ V)) y := by
-    simpa only [Function.comp_apply] using h
+    change HasFDerivAt (fun z : V ↦ heatKernel t (x - z))
+      ((heatD1Map t (x - y)).comp
+        ((0 : V →L[ℝ] V) - ContinuousLinearMap.id ℝ V)) y at h
+    exact h
   rw [h'.fderiv]
   simp
 
@@ -55,7 +58,10 @@ private theorem d1_sub_fderiv {t : ℝ} (v w x y : V) :
   have h' : HasFDerivAt (fun z : V ↦ heatD1 t v (x - z))
       ((heatD2Map t v (x - y)).comp
         ((0 : V →L[ℝ] V) - ContinuousLinearMap.id ℝ V)) y := by
-    simpa only [Function.comp_apply] using h
+    change HasFDerivAt (fun z : V ↦ heatD1 t v (x - z))
+      ((heatD2Map t v (x - y)).comp
+        ((0 : V →L[ℝ] V) - ContinuousLinearMap.id ℝ V)) y at h
+    exact h
   rw [h'.fderiv]
   simp
 
@@ -78,9 +84,15 @@ theorem heatD1_ibp {t : ℝ} (v x : V) (g : V → ℝ)
       ((hgc.fderiv_apply (𝕜 := ℝ) v).mul_right)
   have hraw : Integrable (fun y : V ↦ g y * heatD1 t v (x - y)) :=
     (hg.continuous.mul hD1).integrable_of_hasCompactSupport hgc.mul_right
+  have hneg := hraw.neg
+  have hfun : (-(fun y : V ↦ g y * heatD1 t v (x - y))) =
+      fun y : V ↦ -(g y * heatD1 t v (x - y)) := by
+    funext y
+    rfl
+  rw [hfun] at hneg
   have hfg' : Integrable (fun y : V ↦
       g y * fderiv ℝ (fun z : V ↦ heatKernel t (x - z)) y v) := by
-    simpa only [heat_sub_fderiv (t := t) v x, mul_neg] using hraw.neg
+    simpa only [heat_sub_fderiv (t := t) v x, mul_neg] using hneg
   have hfg : Integrable (fun y : V ↦ g y * heatKernel t (x - y)) :=
     (hg.continuous.mul hK).integrable_of_hasCompactSupport hgc.mul_right
   have hparts :=
@@ -114,9 +126,15 @@ theorem heatD2_ibp {t : ℝ} (v w x : V) (g : V → ℝ)
       ((hgc.fderiv_apply (𝕜 := ℝ) w).mul_right)
   have hraw : Integrable (fun y : V ↦ g y * heatD2 t v w (x - y)) :=
     (hg.continuous.mul hD2).integrable_of_hasCompactSupport hgc.mul_right
+  have hneg := hraw.neg
+  have hfun : (-(fun y : V ↦ g y * heatD2 t v w (x - y))) =
+      fun y : V ↦ -(g y * heatD2 t v w (x - y)) := by
+    funext y
+    rfl
+  rw [hfun] at hneg
   have hfg' : Integrable (fun y : V ↦
       g y * fderiv ℝ (fun z : V ↦ heatD1 t v (x - z)) y w) := by
-    simpa only [d1_sub_fderiv (t := t) v w x, mul_neg] using hraw.neg
+    simpa only [d1_sub_fderiv (t := t) v w x, mul_neg] using hneg
   have hfg : Integrable (fun y : V ↦ g y * heatD1 t v (x - y)) :=
     (hg.continuous.mul hD1).integrable_of_hasCompactSupport hgc.mul_right
   have hparts :=

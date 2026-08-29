@@ -78,13 +78,14 @@ private theorem map_diff {u v : X}
   exact D.nonlin_lip u v hu hv
 
 private theorem map_contracting :
-    ContractingWith ⟨rate, D.rate0⟩ D.mapBall := by
+    ContractingWith (Real.toNNReal rate) D.mapBall := by
   refine ⟨?_, ?_⟩
   · rw [← NNReal.coe_lt_coe]
-    simpa using D.rate_lt_one
+    simpa [Real.coe_toNNReal rate D.rate0] using D.rate_lt_one
   · refine LipschitzWith.of_dist_le_mul ?_
     intro u v
-    simpa only [Subtype.dist_eq, dist_eq_norm] using D.map_diff u.property v.property
+    simpa [Subtype.dist_eq, dist_eq_norm, Real.coe_toNNReal rate D.rate0] using!
+      D.map_diff u.property v.property
 
 theorem core_fixed [CompleteSpace X] :
     ∃! u : X,
@@ -92,11 +93,11 @@ theorem core_fixed [CompleteSpace X] :
       tr u = 0 ∧
       hmfCoreMap D u = u := by
   let zeroBall : HmfCoreBall R X := ⟨0, D.zero_mem⟩
-  letI : Nonempty (HmfCoreBall R X) := ⟨zeroBall⟩
-  letI : CompleteSpace (HmfCoreBall R X) :=
+  let : Nonempty (HmfCoreBall R X) := ⟨zeroBall⟩
+  let : CompleteSpace (HmfCoreBall R X) :=
     Metric.isClosed_closedBall.completeSpace_coe
   let Φ : HmfCoreBall R X → HmfCoreBall R X := D.mapBall
-  have hcontr : ContractingWith ⟨rate, D.rate0⟩ Φ := D.map_contracting
+  have hcontr : ContractingWith (Real.toNNReal rate) Φ := D.map_contracting
   let uStar : HmfCoreBall R X := ContractingWith.fixedPoint Φ hcontr
   have hfixBall : Φ uStar = uStar := ContractingWith.fixedPoint_isFixedPt hcontr
   have hfix : hmfCoreMap D (uStar : X) = (uStar : X) :=

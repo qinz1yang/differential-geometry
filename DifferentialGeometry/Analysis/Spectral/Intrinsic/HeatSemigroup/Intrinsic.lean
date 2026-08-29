@@ -134,10 +134,8 @@ theorem tensorHeatSemigroup_intrinsic_inner_eigenbasis
       else 0)
       ((innerSL ℝ (b i))
         (∑' j, heatCoeff (TensorEigenIdx.lambda (I := I) (M := M)) t j •
-          ⟪b j, u₀⟫_ℝ • b j)) := by
-    convert h_inner_hsum using 1
-    funext j
-    exact (h_summand_eq j).symm
+          ⟪b j, u₀⟫_ℝ • b j)) :=
+    HasSum.congr_fun h_inner_hsum fun j => (h_summand_eq j).symm
   have h_tsum_ite :
       ∑' j : TensorEigenIdx (I := I) (M := M) g r s,
         (if j = i then

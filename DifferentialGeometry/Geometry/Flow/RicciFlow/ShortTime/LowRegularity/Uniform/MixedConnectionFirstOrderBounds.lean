@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.CoefficientSecondOrderBounds
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -36,6 +35,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem amix_jet_two
     (g : SmoothRiemannianMetric I M) (r s n : ℕ)
@@ -52,6 +52,7 @@ private theorem amix_jet_two
   norm_num
   ring
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem amix_jet_sum2
     (g : SmoothRiemannianMetric I M) (r s n : ℕ)
@@ -376,8 +377,23 @@ theorem lieCorrectionZeroMixedConnection_h1_uniform_bound
       (Ob R A) (Ob R A) hOa hOb'
   have htwo :=
     amix_jet_two (I := I) (M := M) g₀ 2 2 2 (Oa + Ob')
+  have hOa :
+      lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g₀ g₁ gBase
+          lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne = Oa := by
+    rfl
+  have hOb :
+      lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g₀ g₁ gBase
+          (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation *
+            lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) = Ob' := by
+    rfl
   rw [show lieCorrectionZeroMixedConnectionExpansion (I := I) (M := M) g₀ g₁ gBase =
-      (2 : ℝ) • (Oa + Ob') by rfl, htwo]
+      (2 : ℝ) •
+        (lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g₀ g₁ gBase
+            lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne +
+          lieCorrectionZeroMixedConnectionHalfExpansion (I := I) (M := M) g₀ g₁ gBase
+            (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation *
+              lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne)) by rfl,
+    hOa, hOb, htwo]
   change 4 * (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g₀ 2 2 i (Oa + Ob')‖ ^ 2) ≤
     (B0 R + B1 R * A) ^ 2

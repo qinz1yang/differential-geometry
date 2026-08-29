@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Connection.Realization.Embedding
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul
 import DifferentialGeometry.Geometry.Curvature.Metric
 import Mathlib.Analysis.InnerProductSpace.Calculus
+
+
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -25,7 +27,7 @@ noncomputable def innerCoordFun (w : E) : C^∞⟮𝓡 n, sphere (0 : E) 1; ℝ�
 omit [FiniteDimensional ℝ E] in
 theorem mfderiv_innerCoordFun (w : E) (p : sphere (0 : E) 1) (v : TangentSpace (𝓡 n) p) :
     mfderiv (𝓡 n) 𝓘(ℝ, ℝ) (innerCoordFun (E := E) (n := n) w) p v = ⟪w, dIncl (n := n) p v⟫ := by
-  haveI : InnerProductSpace ℝ (TangentSpace 𝓘(ℝ, E) (↑p : E)) :=
+  have : InnerProductSpace ℝ (TangentSpace 𝓘(ℝ, E) (↑p : E)) :=
     inferInstanceAs (InnerProductSpace ℝ E)
   have hιC : ContMDiffAt (𝓡 n) 𝓘(ℝ, E) ∞ ((↑) : sphere (0 : E) 1 → E) p :=
     contMDiff_coe_sphere.contMDiffAt
@@ -35,7 +37,8 @@ theorem mfderiv_innerCoordFun (w : E) (p : sphere (0 : E) 1) (v : TangentSpace (
     (innerSL ℝ w).hasFDerivAt.hasMFDerivAt
   have hfun : (⇑(innerCoordFun (E := E) (n := n) w)) = (innerSL ℝ w) ∘
     ((↑) : sphere (0 : E) 1 → E) := by
-    funext q; simp [innerCoordFun]
+    funext q
+    rfl
   have hcomp : HasMFDerivAt (𝓡 n) 𝓘(ℝ, ℝ) ((innerSL ℝ w) ∘ ((↑) : sphere (0 : E) 1 → E)) p
       ((innerSL ℝ w).comp (dIncl (n := n) p)) := hL.comp p hι
   rw [hfun, hcomp.mfderiv]
@@ -46,7 +49,7 @@ theorem mfderiv_inner_left (w : E) {F : sphere (0 : E) 1 → E} {x : sphere (0 :
     (hF : MDifferentiableAt (𝓡 n) 𝓘(ℝ, E) F x) (v : TangentSpace (𝓡 n) x) :
     mfderiv (𝓡 n) 𝓘(ℝ, ℝ) (fun p => ⟪w, F p⟫) x v
       = ⟪w, mfderiv (𝓡 n) 𝓘(ℝ, E) F x v⟫ := by
-  haveI : InnerProductSpace ℝ (TangentSpace 𝓘(ℝ, E) (F x)) :=
+  have : InnerProductSpace ℝ (TangentSpace 𝓘(ℝ, E) (F x)) :=
     inferInstanceAs (InnerProductSpace ℝ E)
   have hL : HasMFDerivAt 𝓘(ℝ, E) 𝓘(ℝ, ℝ) (innerSL ℝ w) (F x) (innerSL ℝ w) :=
     (innerSL ℝ w).hasFDerivAt.hasMFDerivAt
@@ -55,6 +58,16 @@ theorem mfderiv_inner_left (w : E) {F : sphere (0 : E) 1 → E} {x : sphere (0 :
   have hfun : (fun p => ⟪w, F p⟫) = (innerSL ℝ w) ∘ F := by
     funext q; simp
   rw [hfun, hcomp.mfderiv]
+  rfl
+
+omit [FiniteDimensional ℝ E] in
+theorem mvfderiv_inner_left (w : E) {F : sphere (0 : E) 1 → E} {x : sphere (0 : E) 1}
+    (hF : MDifferentiableAt (𝓡 n) 𝓘(ℝ, E) F x) (v : TangentSpace (𝓡 n) x) :
+    mvfderiv (𝓡 n) (fun p => ⟪w, F p⟫) x v
+      = ⟪w, mvfderiv (𝓡 n) F x v⟫ := by
+  rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv]
+  rw [mfderiv_inner_left w hF v]
+  simp [mvfderiv, NormedSpace.fromTangentSpace]
   rfl
 
 omit [FiniteDimensional ℝ E] in
@@ -92,7 +105,7 @@ theorem dIncl_mlieBracket
     intro Z p
     change vectorFieldAction (𝓡 n) (sphere (0 : E) 1) Z (innerCoordFun w) p = _
     simp only [vectorFieldAction]
-    rw [show extDerivFun (I := 𝓡 n) (innerCoordFun w) p (Z p)
+    rw [show mvfderiv (I := 𝓡 n) (innerCoordFun w) p (Z p)
           = mfderiv (𝓡 n) 𝓘(ℝ, ℝ) (innerCoordFun (E := E) (n := n) w) p (Z p) from rfl,
       mfderiv_innerCoordFun]
   have hsecond : ∀ (Z W : Cₛ^∞⟮𝓡 n; EuclideanSpace ℝ (Fin n),
@@ -110,11 +123,13 @@ theorem dIncl_mlieBracket
     change vectorFieldAction (𝓡 n) (sphere (0 : E) 1) W
       (embedDeriv (𝓡 n) (sphere (0 : E) 1) Z (innerCoordFun w)) x = _
     simp only [vectorFieldAction]
-    rw [show extDerivFun (I := 𝓡 n) (embedDeriv (𝓡 n) (sphere (0 : E) 1) Z (innerCoordFun w)) x
+    rw [show mvfderiv (I := 𝓡 n) (embedDeriv (𝓡 n) (sphere (0 : E) 1) Z (innerCoordFun w)) x
       (W x)
           = mfderiv (𝓡 n) 𝓘(ℝ, ℝ)
               (⇑(embedDeriv (𝓡 n) (sphere (0 : E) 1) Z (innerCoordFun w))) x (W x) from rfl,
       hg, mfderiv_inner_left w (dInclField_mdifferentiableAt (n := n) hZdiff) (W x), ambDeriv_apply]
+    simp [mvfderiv, NormedSpace.fromTangentSpace]
+    rfl
   have hbrx : (embedDeriv (𝓡 n) (sphere (0 : E) 1)
         (mlieBracketSection (𝓡 n) (sphere (0 : E) 1) X Y) (innerCoordFun w) : sphere (0 : E) 1 → ℝ)
           x
@@ -133,7 +148,7 @@ theorem dIncl_mlieBracket
 omit [FiniteDimensional ℝ E] in
 theorem projConn_torsion :
     (projConnCD (E := E) (n := n)).torsion = 0 := by
-  haveI : IsManifold (𝓡 n) ∞ (sphere (0 : E) 1) :=
+  have : IsManifold (𝓡 n) ∞ (sphere (0 : E) 1) :=
     EuclideanSpace.instIsManifoldSphere.of_le le_top
   funext x
   ext u v
@@ -149,14 +164,14 @@ theorem projConn_torsion :
   have hYd : MDifferentiableAt (𝓡 n) (𝓡 n).tangent
       (fun y => (TotalSpace.mk' (EuclideanSpace ℝ (Fin n)) y (Y y))) x :=
     Y.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
-  simp only [Pi.zero_apply, ContinuousLinearMap.zero_apply]
+  simp only [Pi.zero_apply, zero_apply]
   rw [← hX, ← hY, (projConnCD (E := E) (n := n)).torsion_apply hXd hYd, sub_eq_zero]
-  refine mfderiv_coe_sphere_injective x ?_
+  refine injective_mvfderiv_subtypeVal_sphere x ?_
   change dIncl (n := n) x (projConn (n := n) (⇑Y) x (X x) - projConn (n := n) (⇑X) x (Y x))
     = dIncl (n := n) x (mlieBracket (𝓡 n) (⇑X) (⇑Y) x)
   rw [map_sub, dIncl_projConn, dIncl_projConn]
   have hmem : dIncl (n := n) x (mlieBracket (𝓡 n) (⇑X) (⇑Y) x) ∈ (ℝ ∙ (↑x : E))ᗮ := by
-    rw [← range_mfderiv_coe_sphere (n := n) x]; exact ⟨_, rfl⟩
+    rw [← range_mvfderiv_subtypeVal (n := n) x]; exact ⟨_, rfl⟩
   rw [← Submodule.coe_sub, ← map_sub, ← dIncl_mlieBracket X Y x,
     ← Submodule.starProjection_apply, Submodule.starProjection_eq_self_iff.mpr hmem]
 
@@ -168,18 +183,18 @@ theorem projConn_metricCompat :
   have hYd := dInclField_mdifferentiableAt (n := n) hY
   have hZd := dInclField_mdifferentiableAt (n := n) hZ
   have hmemZ : dIncl (n := n) x (Z x) ∈ (ℝ ∙ (↑x : E))ᗮ := by
-    rw [← range_mfderiv_coe_sphere (n := n) x]; exact ⟨Z x, rfl⟩
+    rw [← range_mvfderiv_subtypeVal (n := n) x]; exact ⟨Z x, rfl⟩
   have hmemY : dIncl (n := n) x (Y x) ∈ (ℝ ∙ (↑x : E))ᗮ := by
-    rw [← range_mfderiv_coe_sphere (n := n) x]; exact ⟨Y x, rfl⟩
+    rw [← range_mvfderiv_subtypeVal (n := n) x]; exact ⟨Y x, rfl⟩
   have horth : ∀ (w u : E), u ∈ (ℝ ∙ (↑x : E))ᗮ →
-      ⟪w, u⟫ = ⟪(↑(((ℝ ∙ (↑x : E))ᗮ).orthogonalProjection w) : E), u⟫ := by
+      ⟪w, u⟫ = ⟪(↑(((ℝ ∙ (↑x : E))ᗮ).orthogonalProjectionOnto w) : E), u⟫ := by
     intro w u hu
     rw [← Submodule.starProjection_apply]
     have h0 := Submodule.starProjection_inner_eq_zero (K := (ℝ ∙ (↑x : E))ᗮ) w u hu
     rw [inner_sub_left, sub_eq_zero] at h0
     exact h0
   have horth_right : ∀ (w u : E), u ∈ (ℝ ∙ (↑x : E))ᗮ →
-      ⟪u, w⟫ = ⟪u, (↑(((ℝ ∙ (↑x : E))ᗮ).orthogonalProjection w) : E)⟫ := by
+      ⟪u, w⟫ = ⟪u, (↑(((ℝ ∙ (↑x : E))ᗮ).orthogonalProjectionOnto w) : E)⟫ := by
     intro w u hu
     rw [← Submodule.starProjection_apply]
     have h0 := Submodule.starProjection_inner_eq_zero (K := (ℝ ∙ (↑x : E))ᗮ) w u hu
@@ -208,7 +223,7 @@ theorem projConn_eq_metricCov
     projConn (n := n) Y x v
       = DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E)
         (n := n)) Y x v := by
-  haveI : IsManifold (𝓡 n) ∞ (sphere (0 : E) 1) :=
+  have : IsManifold (𝓡 n) ∞ (sphere (0 : E) 1) :=
     EuclideanSpace.instIsManifoldSphere.of_le le_top
   have htor₂ : (DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E)
     (n := n))).torsion = 0 :=

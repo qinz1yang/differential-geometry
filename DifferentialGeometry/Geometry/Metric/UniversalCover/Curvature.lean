@@ -16,6 +16,7 @@ import Mathlib.Topology.EMetricSpace.Lipschitz
 import Mathlib.LinearAlgebra.Trace
 import Mathlib.Logic.Equiv.Basic
 import Mathlib.Data.Finite.Defs
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -41,7 +42,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
-  [LocPathConnectedSpace M]
+  [LocallyPathConnectedSpace M]
   [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M]
   [Inhabited M] [PseudoEMetricSpace M] [SecondCountableTopology M]
 
@@ -60,13 +61,28 @@ theorem metricRm_lifted
         (liftedMetric (I := I) g) x' X Y Z W =
       metricRm04StdAt (I := I) (M := M) g (proj (X := M) x') X Y Z W := by
   classical
-  have hR :
-      chartRiemannCLM
+  have hRModel :
+      DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv (I := I) x'
+        (chartRiemannCLM
           (I := I)
           (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
-          (liftedMetric (I := I) g) x' X Y Z =
-        chartRiemannCLM (I := I) (M := M) g (proj (X := M) x') X Y Z := by
-    rw [chartRiemannCLM_apply, chartRiemannCLM_apply]
+          (liftedMetric (I := I) g) x'
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm X)
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm Y)
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm Z)) =
+        DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+          (I := I) (proj (X := M) x')
+          (chartRiemannCLM (I := I) (M := M) g (proj (X := M) x')
+            ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+              (I := I) (proj (X := M) x')).symm X)
+            ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+              (I := I) (proj (X := M) x')).symm Y)
+            ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+              (I := I) (proj (X := M) x')).symm Z)) := by
+    rw [chart_riemann_clm_model_apply, chart_riemann_clm_model_apply]
     refine Finset.sum_congr rfl ?_
     intro i _
     refine Finset.sum_congr rfl ?_
@@ -77,9 +93,73 @@ theorem metricRm_lifted
     intro l _
     rw [chartRiemannTensor_lifted (I := I) (M := M) g x' x'
       (mem_chart_source H x') i j k l]
-  rw [metricRm04StdAt_eq_chartRiemannCLM,
-    metricRm04StdAt_eq_chartRiemannCLM, hR]
-  rfl
+  have hR :
+      chartRiemannCLM
+          (I := I)
+          (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+          (liftedMetric (I := I) g) x'
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm X)
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm Y)
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm Z) =
+        chartRiemannCLM (I := I) (M := M) g (proj (X := M) x')
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) (proj (X := M) x')).symm X)
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) (proj (X := M) x')).symm Y)
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) (proj (X := M) x')).symm Z) := by
+    apply (DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+      (I := I) x').injective
+    rw [hRModel]
+    simp only [DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv_apply,
+      tangentSpaceModelContinuousLinearEquiv_apply]
+    let R : TangentSpace I x' :=
+      chartRiemannCLM (I := I) (M := M) g (proj (X := M) x')
+        ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+          (I := I) (proj (X := M) x')).symm X)
+        ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+          (I := I) (proj (X := M) x')).symm Y)
+        ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+          (I := I) (proj (X := M) x')).symm Z)
+    change R = DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+      (I := I) x' R
+    rw [DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv_apply,
+      tangentSpaceModelContinuousLinearEquiv_apply]
+  have hMetric :
+      metricRm04StdAt
+          (I := I)
+          (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+          (liftedMetric (I := I) g) x'
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm X)
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm Y)
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm Z)
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm W) =
+        metricRm04StdAt (I := I) (M := M) g (proj (X := M) x')
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) (proj (X := M) x')).symm X)
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) (proj (X := M) x')).symm Y)
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) (proj (X := M) x')).symm Z)
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) (proj (X := M) x')).symm W) := by
+    rw [metricRm04StdAt_eq_chartRiemannCLM,
+      metricRm04StdAt_eq_chartRiemannCLM, hR]
+    simp only [DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv_symm_apply]
+    let R : TangentSpace I (proj (X := M) x') :=
+      chartRiemannCLM (I := I) (M := M) g (proj (X := M) x') X Y Z
+    change (g.inner (proj (X := M) x')) W R =
+      (g.inner (proj (X := M) x')) W R
+    rfl
+  simpa only [DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv_symm_apply]
+    using hMetric
 
 omit [PseudoEMetricSpace M]
   [NeZero (Module.finrank ℝ E)]
@@ -141,6 +221,15 @@ theorem riemannOp_lift_one
     intro A B C D
     simpa only [one_mul] using
       metricRm_lift_one (I := I) (M := M) g c hc hsec x' A B C D
+  let XT : TangentSpace I x' := X
+  let YT : TangentSpace I x' := Y
+  let ZT : TangentSpace I x' := Z
+  change riemannOp
+      (LeviCivita (I := I)
+        (liftedMetric (I := I) (scaleMetric (I := I) c hc g)))
+      x' XT YT ZT =
+    (liftedMetric (I := I) (scaleMetric (I := I) c hc g)).inner x' YT ZT • XT -
+      (liftedMetric (I := I) (scaleMetric (I := I) c hc g)).inner x' XT ZT • YT
   simpa only [one_smul] using
     riemannOp_of_rm
       (I := I)
@@ -161,34 +250,97 @@ theorem riemannOp_lifted_natural (g : SmoothRiemannianMetric I M)
     riemannOp (LeviCivita (I := I) (liftedMetric (I := I) g)) x' v' w' u' =
       riemannOp (LeviCivita (I := I) g) (proj x') v' w' u' := by
   classical
-  rw [riemannOp_eq_chartRiemannCLM_apply_of_basis_identity
-        (I := I)
-        (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
-        (liftedMetric (I := I) g) x' h_lifted v' w' u',
-      riemannOp_eq_chartRiemannCLM_apply_of_basis_identity
-        (I := I) (M := M) g (proj (X := M) x') h_base v' w' u']
-  rw [chartRiemannCLM_apply
-        (I := I)
-        (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
-        (liftedMetric (I := I) g) x' v' w' u',
-      chartRiemannCLM_apply (I := I) (M := M) g (proj (X := M) x') v' w' u']
-  refine Finset.sum_congr rfl ?_
-  intro i _
-  refine Finset.sum_congr rfl ?_
-  intro j _
-  refine Finset.sum_congr rfl ?_
-  intro k _
-  refine Finset.sum_congr rfl ?_
-  intro l _
-  have hT :
-      chartRiemannTensor
+  have hRModel :
+      DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv (I := I) x'
+        (chartRiemannCLM
+          (I := I)
           (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
-          (liftedMetric (I := I) g) x' i j k l (extChartAt I x' x') =
-        chartRiemannTensor (M := M) g (proj (X := M) x') i j k l
-          (extChartAt I (proj (X := M) x') (proj (X := M) x')) :=
-    chartRiemannTensor_lifted (I := I) (M := M) g x' x'
-      (mem_chart_source H x') i j k l
-  rw [hT]
+          (liftedMetric (I := I) g) x'
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm v')
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm w')
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm u')) =
+        DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+          (I := I) (proj (X := M) x')
+          (chartRiemannCLM (I := I) (M := M) g (proj (X := M) x')
+            ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+              (I := I) (proj (X := M) x')).symm v')
+            ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+              (I := I) (proj (X := M) x')).symm w')
+            ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+              (I := I) (proj (X := M) x')).symm u')) := by
+    rw [chart_riemann_clm_model_apply, chart_riemann_clm_model_apply]
+    refine Finset.sum_congr rfl ?_
+    intro i _
+    refine Finset.sum_congr rfl ?_
+    intro j _
+    refine Finset.sum_congr rfl ?_
+    intro k _
+    refine Finset.sum_congr rfl ?_
+    intro l _
+    rw [chartRiemannTensor_lifted (I := I) (M := M) g x' x'
+      (mem_chart_source H x') i j k l]
+  have hModel :
+      DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv (I := I) x'
+        (riemannOp (LeviCivita (I := I) (liftedMetric (I := I) g)) x'
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm v')
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm w')
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm u')) =
+        DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+          (I := I) (proj (X := M) x')
+          (riemannOp (LeviCivita (I := I) g) (proj (X := M) x')
+            ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+              (I := I) (proj (X := M) x')).symm v')
+            ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+              (I := I) (proj (X := M) x')).symm w')
+            ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+              (I := I) (proj (X := M) x')).symm u')) := by
+    rw [riemannOp_eq_chartRiemannCLM_apply_of_basis_identity
+          (I := I)
+          (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
+          (liftedMetric (I := I) g) x' h_lifted,
+        riemannOp_eq_chartRiemannCLM_apply_of_basis_identity
+          (I := I) (M := M) g (proj (X := M) x') h_base]
+    exact hRModel
+  have hR :
+      riemannOp (LeviCivita (I := I) (liftedMetric (I := I) g)) x'
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm v')
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm w')
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) x').symm u') =
+        riemannOp (LeviCivita (I := I) g) (proj (X := M) x')
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) (proj (X := M) x')).symm v')
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) (proj (X := M) x')).symm w')
+          ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+            (I := I) (proj (X := M) x')).symm u') := by
+    apply (DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+      (I := I) x').injective
+    rw [hModel]
+    simp only [DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv_apply,
+      tangentSpaceModelContinuousLinearEquiv_apply]
+    let R : TangentSpace I x' :=
+      riemannOp (LeviCivita (I := I) g) (proj (X := M) x')
+        ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+          (I := I) (proj (X := M) x')).symm v')
+        ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+          (I := I) (proj (X := M) x')).symm w')
+        ((DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+          (I := I) (proj (X := M) x')).symm u')
+    change R = DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv
+      (I := I) x' R
+    rw [DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv_apply,
+      tangentSpaceModelContinuousLinearEquiv_apply]
+  simpa only [DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv_symm_apply]
+    using hR
 
 omit [PseudoEMetricSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -218,6 +370,11 @@ theorem ricciTensor_lifted_natural (g : SmoothRiemannianMetric I M)
           (DifferentialGeometry.Integral.Measure.chartModelBasis E i) v' w' :=
     riemannOp_lifted_natural (I := I) (M := M) g x'
       (DifferentialGeometry.Integral.Measure.chartModelBasis E i) v' w' h_lifted h_base
+  simp only [DifferentialGeometry.Integral.Measure.centeredChartTangentBasis_repr,
+    DifferentialGeometry.Integral.Measure.centeredChartTangentBasis_apply,
+    DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv_apply,
+    DifferentialGeometry.Integral.Measure.centeredChartTangentEquiv_symm_apply,
+    tangentSpaceModelContinuousLinearEquiv_apply]
   rw [hRiem]
 
 omit [PseudoEMetricSpace M] in

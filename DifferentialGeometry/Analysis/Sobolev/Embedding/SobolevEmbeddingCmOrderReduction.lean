@@ -3,7 +3,6 @@ import DifferentialGeometry.Analysis.Sobolev.Embedding.SobolevEmbeddingCm
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter Topology Metric DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -69,8 +68,8 @@ theorem iteratedCovGradSobolevNorm_le_topOrder
   exact toHs_norm_mono_order (I := I) (M := M) g
     (by omega : 2 * (k - j) ≤ 2 * k) (iteratedCovGrad g r s j T)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem iteratedCovGrad_toSobolev_embedding_Cm_of_rankBound
     (g : SmoothRiemannianMetric I M) (r s k m : ℕ)
@@ -84,7 +83,7 @@ theorem iteratedCovGrad_toSobolev_embedding_Cm_of_rankBound
       ∀ (T : SmoothCcTensor g r s) (x : M),
         (∑ j ∈ Finset.range (m + 1),
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + j)
             ‖(iteratedCovGrad g r s j T).toSection x‖)) ≤
           C * ((m + 1 : ℝ) * Cred) *
             ‖SmoothCcTensor.toHs (g := g) (r := r) (s := s) (2 * k) T‖ := by
@@ -116,8 +115,8 @@ theorem iteratedCovGrad_toSobolev_embedding_Cm_of_rankBound
         mul_le_mul_of_nonneg_left h_sum_le (le_of_lt hC_pos)
     _ = C * ((m + 1 : ℝ) * Cred) * N := by ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem iteratedCovGrad_toSobolev_embedding_C2_of_rankBound
     (g : SmoothRiemannianMetric I M) (k : ℕ)
@@ -131,7 +130,7 @@ theorem iteratedCovGrad_toSobolev_embedding_C2_of_rankBound
       ∀ (T : SmoothCcTensor g 0 2) (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 (2 + j)
             ‖(iteratedCovGrad g 0 2 j T).toSection x‖)) ≤
           C * ((2 + 1 : ℝ) * Cred) *
             ‖SmoothCcTensor.toHs (g := g) (r := 0) (s := 2) (2 * k) T‖ := by

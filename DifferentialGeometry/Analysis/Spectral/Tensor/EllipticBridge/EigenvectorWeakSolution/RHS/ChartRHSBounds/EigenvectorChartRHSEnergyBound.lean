@@ -383,7 +383,7 @@ private lemma partialLpLimit_eLpNorm_le_energy
             (volume : Measure EuclN).restrict
               (chartTargetEuclid (I := I) (M := M) α) from rfl]
         exact Measure.absolutelyContinuous_of_le
-          (Measure.restrict_mono Set.diff_subset le_rfl)
+          (Measure.restrict_mono Set.sdiff_subset le_rfl)
       refine h_ac.ae_eq ?_
       rw [partialLpLimit, eigenvectorChartWeakPartial]
       exact Lp.coeFn_smul i.fst.val _

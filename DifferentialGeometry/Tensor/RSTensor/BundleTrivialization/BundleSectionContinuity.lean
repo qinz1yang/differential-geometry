@@ -11,7 +11,6 @@ import Mathlib.Topology.VectorBundle.Riemannian
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff
@@ -97,7 +96,7 @@ private lemma triv_alpha_clmAt_at_symmL_beta_eq_coordChangeL
   rw [Trivialization.coordChangeL_apply _ _ ⟨hbβ', hbα'⟩]
   have hsymm : (trivializationAt E (TangentSpace I) β).symmL ℝ b v =
       (trivializationAt E (TangentSpace I) β).symm b v := by
-    rw [Bundle.Trivialization.symmL_apply]
+    exact Bundle.Trivialization.symmL_apply _ hbβ' _
   rw [hsymm,
     Bundle.Trivialization.continuousLinearMapAt_apply,
     Bundle.Trivialization.coe_linearMapAt_of_mem _ hbα']

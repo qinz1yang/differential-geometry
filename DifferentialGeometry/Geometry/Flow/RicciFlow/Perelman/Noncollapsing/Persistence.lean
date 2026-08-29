@@ -81,7 +81,8 @@ theorem noncollapse_after
     dsimp only [tauMax]
     linarith [hB'sq, htomega]
   have hwsq : ContMDiff I 𝓘(Real) ∞ (fun x : M => w x * w x) := by
-    simpa only [Pi.mul_apply] using hw.mul hw
+    change ContMDiff I 𝓘(Real) ∞ (w * w)
+    exact hw.mul hw
   have hwsq_pos : ∀ x : M, 0 < w x * w x := by
     intro x
     exact mul_pos (hwpos x) (hwpos x)
@@ -100,8 +101,12 @@ theorem noncollapse_after
         collapseWConst (Module.finrank Real E) +
           Real.log (B.volume.toReal /
             B.radius ^ Module.finrank Real E) + 1 := by
-    simpa only [flowW, SolutionOn.family_metric, SolutionOn.scalar,
-      SolutionFamily.scalar, SolutionOn.scalar_eq_metricTrace] using hwupper
+    have hscalar : S.base.scalar (t : Real) =
+        fun x => metricScalarAt (I := I) (M := M) (S.base.metric (t : Real)) x := by
+      funext x
+      rfl
+    rw [flowW, SolutionOn.family_metric, SolutionOn.scalar, hscalar]
+    exact hwupper
   have hlog :
       L - collapseWConst (Module.finrank Real E) - 1 ≤
         Real.log (B.volume.toReal / B.radius ^ Module.finrank Real E) := by

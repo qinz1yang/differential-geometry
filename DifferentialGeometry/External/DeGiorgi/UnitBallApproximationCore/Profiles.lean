@@ -64,9 +64,8 @@ private lemma smoothTransition_nnnorm_deriv_bounded :
         exact norm_nonneg _
       · push Not at hx0 hx1
         exact Filter.eventually_principal.mp hM_max x (Set.mem_Icc.2 ⟨hx0, hx1⟩)
-  refine ⟨⟨‖deriv smoothTransition M‖, norm_nonneg _⟩, fun x => ?_⟩
-  rw [← NNReal.coe_le_coe, NNReal.coe_mk, coe_nnnorm]
-  exact hbound x
+  refine ⟨‖deriv smoothTransition M‖₊, fun x => ?_⟩
+  exact NNReal.coe_le_coe.mp (by simpa using hbound x)
 
 /-- Universal derivative bound for smooth cutoff profiles. -/
 noncomputable def Mst : ℝ≥0 := smoothTransition_nnnorm_deriv_bounded.choose
@@ -149,8 +148,8 @@ lemma myCutoff_contDiff {x₀ : E} {r R : ℝ} (hr : 0 < r) (hrR : r < R) :
   · have hnorm : ContDiffAt ℝ (⊤ : ℕ∞) (fun y : E => ‖y - x₀‖) x :=
       (contDiffAt_norm ℝ hx).comp x (contDiffAt_id.sub contDiffAt_const)
     have harg : ContDiffAt ℝ (⊤ : ℕ∞) (fun y : E => (R - ‖y - x₀‖) / (R - r)) x := by
-      simpa only [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using
-        ((contDiffAt_const.sub hnorm).div contDiffAt_const hRr.ne')
+      exact ((contDiffAt_const.sub hnorm).div contDiffAt_const hRr.ne').congr_of_eventuallyEq <|
+        Filter.Eventually.of_forall fun _ => rfl
     have hsmooth : ContDiffAt ℝ (⊤ : ℕ∞) Real.smoothTransition
         ((R - ‖x - x₀‖) / (R - r)) := Real.smoothTransition.contDiffAt
     exact ContDiffAt.comp
@@ -162,7 +161,7 @@ private lemma radial_lipschitz (x₀ : E) {r R : ℝ} (hrR : r < R) :
     LipschitzWith ⟨(R - r)⁻¹, inv_nonneg.mpr (sub_pos.2 hrR).le⟩
       (fun x : E => (R - ‖x - x₀‖) / (R - r)) :=
   LipschitzWith.of_dist_le_mul fun x y => by
-    simp only [NNReal.coe_mk, dist_eq_norm, Real.norm_eq_abs]
+    simp only [dist_eq_norm, Real.norm_eq_abs]
     have hpos : (0 : ℝ) < R - r := sub_pos.2 hrR
     have key : abs (‖y - x₀‖ - ‖x - x₀‖) ≤ ‖x - y‖ := calc
       abs (‖y - x₀‖ - ‖x - x₀‖) ≤ ‖(y - x₀) - (x - x₀)‖ := by
@@ -171,7 +170,9 @@ private lemma radial_lipschitz (x₀ : E) {r R : ℝ} (hrR : r < R) :
       _ = ‖x - y‖ := by exact norm_sub_rev y x
     have hsub : (R - ‖x - x₀‖) / (R - r) - (R - ‖y - x₀‖) / (R - r) =
         (‖y - x₀‖ - ‖x - x₀‖) / (R - r) := by ring
-    rw [hsub, abs_div, abs_of_pos hpos, inv_mul_eq_div]
+    rw [hsub, abs_div, abs_of_pos hpos]
+    change |‖y - x₀‖ - ‖x - x₀‖| / (R - r) ≤ (R - r)⁻¹ * ‖x - y‖
+    rw [inv_mul_eq_div]
     exact div_le_div_of_nonneg_right key hpos.le
 
 omit [NeZero d] in
@@ -186,7 +187,8 @@ lemma myCutoff_fderiv_bound (x₀ : E) {r R : ℝ} (hrR : r < R) (x : E) :
   have h : ‖fderiv ℝ (myCutoff x₀ r R) x‖ ≤
       ↑(Mst * ⟨(R - r)⁻¹, inv_nonneg.mpr (sub_nonneg.mpr hrR.le)⟩) :=
     norm_fderiv_le_of_lipschitz (𝕜 := ℝ) (x₀ := x) (myCutoff_lipschitz x₀ hrR)
-  rwa [NNReal.coe_mul, NNReal.coe_mk] at h
+  change ‖fderiv ℝ (myCutoff x₀ r R) x‖ ≤ (Mst : ℝ) * (R - r)⁻¹ at h
+  exact h
 
 structure Cutoff (x₀ : E) (r R : ℝ) where
   toFun : E → ℝ

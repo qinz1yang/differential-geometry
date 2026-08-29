@@ -4,7 +4,7 @@ Modified by: Ziyang Qin
 -/
 import DifferentialGeometry.Tensor.Alternating.Comp
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
 
@@ -146,7 +146,10 @@ theorem continuousMultilinearMapCoordChange_apply (b : B)
     continuousMultilinearMap_apply, continuousMultilinearMap_symm_apply' _ _ _ hb.1]
   congr 1; funext i
   erw [Trivialization.coordChangeL_apply (R := 𝕜) e' e ⟨hb.2, hb.1⟩]
-  exact (congr_fun (e.coe_linearMapAt_of_mem (R := 𝕜) hb.1) _).symm
+  have hs : e'.symmL 𝕜 b (v i) = e'.symm b (v i) := by
+    simp [Trivialization.symmL, hb.2]
+  rw [hs]
+  exact (e.continuousLinearMapAt_apply_of_mem (R := 𝕜) hb.1 _).symm
 
 end Pretrivialization
 
@@ -167,7 +170,7 @@ def _root_.Bundle.continuousMultilinearMap.vectorPrebundle :
       e' = Pretrivialization.continuousMultilinearMap 𝕜 s e}
   pretrivialization_linear' := by
     rintro _ ⟨e, he, rfl⟩
-    haveI := he
+    have := he
     exact Pretrivialization.continuousMultilinearMap.isLinear 𝕜 s e
   pretrivializationAt x := Pretrivialization.continuousMultilinearMap 𝕜 s
     (trivializationAt F E x)
@@ -176,13 +179,13 @@ def _root_.Bundle.continuousMultilinearMap.vectorPrebundle :
     ⟨trivializationAt F E x, inferInstance, rfl⟩
   exists_coordChange := by
     rintro _ ⟨e, he, rfl⟩ _ ⟨e', he', rfl⟩
-    haveI := he; haveI := he'
+    have := he; have := he'
     exact ⟨continuousMultilinearMapCoordChange 𝕜 s e e',
       continuousOn_continuousMultilinearMapCoordChange 𝕜 s e e',
       continuousMultilinearMapCoordChange_apply 𝕜 s e e'⟩
   totalSpaceMk_isInducing x := ⟨rfl⟩
 
-instance Bundle.continuousMultilinearMap.topologicalSpace_totalSpace :
+instance Bundle.continuousMultilinearMap.topologicalSpaceTotalSpace :
     TopologicalSpace (TotalSpace MLF (Bundle.continuousMultilinearMap 𝕜 s F E)) :=
   (Bundle.continuousMultilinearMap.vectorPrebundle 𝕜 s F E).totalSpaceTopology
 
@@ -263,7 +266,7 @@ instance Bundle.continuousMultilinearMap.vectorPrebundle.isSmooth :
     (Bundle.continuousMultilinearMap.vectorPrebundle 𝕜 s F E).IsContMDiff IB n where
   exists_contMDiffCoordChange := by
     rintro _ ⟨e, he, rfl⟩ _ ⟨e', he', rfl⟩
-    haveI := he; haveI := he'
+    have := he; have := he'
     refine ⟨continuousMultilinearMapCoordChange 𝕜 s e e',
       contMDiffOn_continuousMultilinearMapCoordChange s IB n, ?_⟩
     rintro b hb v

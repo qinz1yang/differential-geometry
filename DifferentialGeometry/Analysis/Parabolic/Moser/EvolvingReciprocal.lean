@@ -57,7 +57,7 @@ theorem localizedSpacetimeRpowNorm_inv_le_evolvingReciprocalReverseCost_of_volum
     (hSobolev : ∀ t ∈ Icc a t₁,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,

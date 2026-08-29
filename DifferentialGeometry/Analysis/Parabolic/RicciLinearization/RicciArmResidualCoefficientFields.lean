@@ -22,7 +22,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -50,7 +49,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma foldMetricCcTensor_unitModel_apply (g₀ g : SmoothRiemannianMetric I M) (x : M)
@@ -71,7 +69,6 @@ private lemma foldMetricCcTensor_unitModel_apply (g₀ g : SmoothRiemannianMetri
   rw [hbase]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -93,7 +90,7 @@ private theorem foldPerturbation_eq_metricDifference (g₀ g₁ : SmoothRiemanni
         from rfl]
     rw [unitModel_sub_loc (I := I) (M := M) g₀ 2
       (metricCcTensor (I := I) (M := M) g₀ g₁) (metricCcTensor (I := I) (M := M) g₀ g₀) x]
-    rw [ContinuousMultilinearMap.sub_apply]
+    rw [sub_apply]
     rw [foldMetricCcTensor_unitModel_apply (I := I) (M := M) g₀ g₁ x m,
       foldMetricCcTensor_unitModel_apply (I := I) (M := M) g₀ g₀ x m]
     rw [show unitModel (I := I) (M := M) g₀ 2 (ccTensor02Symm (I := I) (M := M) g₀ P) x m =
@@ -155,6 +152,7 @@ private theorem foldCcTensor22_ext_of_operatorFieldApply (g₀ : SmoothRiemannia
   exact h2
 
 
+omit [SigmaCompactSpace M] in
 private theorem foldHalfRiemannBackgroundDifference_eq_residualFieldSum_add_kernelContraction
     (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -210,6 +208,7 @@ private theorem foldHalfRiemannBackgroundDifference_eq_residualFieldSum_add_kern
     (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1 W]
 
 
+omit [SigmaCompactSpace M] in
 theorem linearizedRicciConnectionDifferenceOrder0RiemannHalfBackgroundDiffCombInputSymm_eq_residualFieldSum
     (g₀ g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (htie : ∀ (y : M) (v w : TangentSpace I y),
@@ -244,11 +243,21 @@ theorem metricCcTensor_apply (g₀ g : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     smoothCcTensorBilinForm (I := I) g₀ (metricCcTensor (I := I) (M := M) g₀ g) x v w =
       g.inner x v w := by
+  let _ := Tensor0SBundle.tensor0SBundleTopology
+    (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   have hround : ccTensorMultilinear (I := I) g₀ (metricCcTensor (I := I) (M := M) g₀ g) x =
       metricCcTensorFib (I := I) g x := by
     unfold ccTensorMultilinear metricCcTensor
-    rw [MixedSection.toMultilinearSection_fromMultilinearSection]
-    rfl
+    unfold MixedSection.toMultilinearSection MixedSection.fromMultilinearSection
+    change
+      (MixedSection.eval₀ (𝕜 := ℝ) (F := E)
+        (E := (TangentSpace I : M → Type _)) x).smulRight
+          (metricCcTensorFib (I := I) g x)
+          (ContinuousMultilinearMap.constOfIsEmpty ℝ
+            (fun _ : Fin 0 => TangentSpace I x) 1) =
+        metricCcTensorFib (I := I) g x
+    rw [ContinuousLinearMap.smulRight_apply, MixedSection.eval₀_apply,
+      ContinuousMultilinearMap.constOfIsEmpty_apply, one_smul]
   rw [ccTensorBilin_apply]
   unfold ccTensorModel
   rw [hround]

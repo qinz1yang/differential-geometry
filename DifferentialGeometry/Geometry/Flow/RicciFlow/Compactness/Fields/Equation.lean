@@ -47,12 +47,11 @@ variable (Φ : PointedCGHMaps (I := I) X P subseq)
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem ricNorm_restrict
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-    [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
-    [BoundarylessManifold I M] [IsManifold I 1 M] [IsManifold I 2 M]
-    [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
+    [IsManifold I ∞ M] [T2Space M]
+    [BoundarylessManifold I M] [IsManifold I 1 M]
     (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
-    [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
+    [IsManifold I 1 U]
     (x : U) :
     normSq0S (I := I) (g.restrictOpen (I := I) U) x 2
         (metricRicci (I := I) (g.restrictOpen (I := I) U) x) =
@@ -61,7 +60,17 @@ private theorem ricNorm_restrict
       metricRicci (I := I) (g.restrictOpen (I := I) U) x =
         metricRicci (I := I) g (x : M) := by
     ext slots
-    exact metricRicci_restrictOpen_eval (I := I) g U x slots
+    have h := metricRicci_restrictOpen_eval (I := I) g U x slots
+    have hslots :
+        (fun q => mfderiv I I (Subtype.val : U → M) x (slots q)) =
+          (fun q => (show TangentSpace I (x : M) from slots q)) := by
+      funext q
+      rw [mfderiv_subtype_val_apply]
+    rw [hslots] at h
+    change metricRicci (I := I) (g.restrictOpen (I := I) U) x slots =
+      metricRicci (I := I) g (x : M)
+        (fun q => (show TangentSpace I (x : M) from slots q))
+    exact h
   rw [normSq0S_restrictOpen_apply (I := I) g U 2 x, hsec]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -91,41 +100,41 @@ theorem gSeqExt_ricci
       ricciTensor (I := I) (srcMetric (I := I) Φ hsrc htgt k t)
         ⟨x, bf.grow_subset k hx⟩ v w := by
   classical
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
-  letI : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
-  letI : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
-  letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
-  letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
+  let : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
+  let : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
+  let : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
+  let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
     sourceDomSigmaOf (I := I) Φ k (hsrc k)
-  letI : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
+  let : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
+  let : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (SourceDomain (I := I) Φ k) := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) (SourceDomain (I := I) Φ k) := by
     change IsManifold I ∞ (SourceDomain (I := I) Φ k)
     infer_instance
   obtain ⟨W, hWopen, hgrowW, hW1⟩ := bf.chi_one k
   let O : TopologicalSpace.Opens (SourceDomain (I := I) Φ k) :=
     ⟨Subtype.val ⁻¹' W, hWopen.preimage continuous_subtype_val⟩
-  letI : ChartedSpace H ↥O :=
+  let : ChartedSpace H ↥O :=
     TopologicalSpace.Opens.instChartedSpace
       (H := H) (M := SourceDomain (I := I) Φ k) (s := O)
-  letI : IsManifold I ∞ ↥O := { O.instHasGroupoid (contDiffGroupoid ∞ I) with }
-  letI : SigmaCompactSpace ↥O := isSigmaCompact_iff_sigmaCompactSpace.mp
+  let : IsManifold I ∞ ↥O := { O.instHasGroupoid (contDiffGroupoid ∞ I) with }
+  let : SigmaCompactSpace ↥O := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen I O.isOpen)
-  letI : T2Space ↥O := inferInstance
-  letI : IsManifold I 1 ↥O :=
+  let : T2Space ↥O := inferInstance
+  let : IsManifold I 1 ↥O :=
     IsManifold.of_le (I := I) (M := ↥O) (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I 2 ↥O :=
+  let : IsManifold I 2 ↥O :=
     IsManifold.of_le (I := I) (M := ↥O) (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) ↥O := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) ↥O := by
     change IsManifold I ∞ ↥O
     infer_instance
   let xsrc : SourceDomain (I := I) Φ k := ⟨x, bf.grow_subset k hx⟩
@@ -139,28 +148,66 @@ theorem gSeqExt_ricci
     ext a b
     rw [SmoothRiemannianMetric.restrictOpen_inner,
       SmoothRiemannianMetric.restrictOpen_inner]
+    change (srcMetric (I := I) Φ hsrc htgt k t).inner
+        (y : SourceDomain (I := I) Φ k)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b) =
+      (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t)).inner
+        (y : SourceDomain (I := I) Φ k)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b)
     rw [resSrc_inner (I := I) Φ k]
+    change (srcMetric (I := I) Φ hsrc htgt k t).inner
+        (y : SourceDomain (I := I) Φ k)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b) =
+      (gSeqExt (I := I) Φ R bf hsrc htgt k t).inner
+        (((y : SourceDomain (I := I) Φ k) : P.M))
+        (show TangentSpace I (((y : SourceDomain (I := I) Φ k) : P.M)) from a)
+        (show TangentSpace I (((y : SourceDomain (I := I) Φ k) : P.M)) from b)
     rw [gSeqExt_inner_of_mem (I := I) Φ R bf hsrc htgt k t
       ((y : SourceDomain (I := I) Φ k) : P.M)
-      (y : SourceDomain (I := I) Φ k).2 a b]
+      (y : SourceDomain (I := I) Φ k).2
+      (show TangentSpace I (((y : SourceDomain (I := I) Φ k) : P.M)) from a)
+      (show TangentSpace I (((y : SourceDomain (I := I) Φ k) : P.M)) from b)]
     rw [hW1 _ y.2]
     simp
   have hricSource :
-      ricciTensor (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc v w =
+      ricciTensor (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc
+          (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w) =
         ricciTensor (I := I)
           (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
-          xsrc v w := by
-    rw [← ricciTensor_restrictOpen (I := I)
-        (srcMetric (I := I) Φ hsrc htgt k t) O ⟨xsrc, hxO⟩ v w,
-      ← ricciTensor_restrictOpen (I := I)
-        (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
-        O ⟨xsrc, hxO⟩ v w,
-      hres]
-  letI sourceTopInst : TopologicalSpace ↥(sourceOpen (I := I) Φ k) :=
+          xsrc (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w) := by
+    let xO : O := ⟨xsrc, hxO⟩
+    let vO : TangentSpace I xO := show E from v
+    let wO : TangentSpace I xO := show E from w
+    have hvO : mfderiv I I (Subtype.val : O → SourceDomain (I := I) Φ k) xO vO =
+        (show TangentSpace I xsrc from v) := by
+      rw [mfderiv_subtype_val_apply]
+    have hwO : mfderiv I I (Subtype.val : O → SourceDomain (I := I) Φ k) xO wO =
+        (show TangentSpace I xsrc from w) := by
+      rw [mfderiv_subtype_val_apply]
+    change ricciTensor (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc
+        (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w) =
+      ricciTensor (I := I)
+        (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t)) xsrc
+        (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w)
+    calc
+      _ = ricciTensor (I := I)
+          ((srcMetric (I := I) Φ hsrc htgt k t).restrictOpen (I := I) O)
+          xO vO wO := by
+        rw [ricciTensor_restrictOpen, hvO, hwO]
+      _ = ricciTensor (I := I)
+          ((resSrc (I := I) Φ k
+            (gSeqExt (I := I) Φ R bf hsrc htgt k t)).restrictOpen (I := I) O)
+          xO vO wO := by rw [hres]
+      _ = _ := by
+        rw [ricciTensor_restrictOpen, hvO, hwO]
+  let sourceTopInst : TopologicalSpace ↥(sourceOpen (I := I) Φ k) :=
     sourceDomTop (I := I) Φ k
-  letI sourceChartedInst : ChartedSpace H ↥(sourceOpen (I := I) Φ k) :=
+  let sourceChartedInst : ChartedSpace H ↥(sourceOpen (I := I) Φ k) :=
     sourceDomCharted (I := I) Φ k
-  letI sourceSmoothInst : IsManifold I ∞ ↥(sourceOpen (I := I) Φ k) :=
+  let sourceSmoothInst : IsManifold I ∞ ↥(sourceOpen (I := I) Φ k) :=
     sourceDomSmooth (I := I) Φ k
   let sourceSigma : SigmaCompactSpace ↥(sourceOpen (I := I) Φ k) := by
     change SigmaCompactSpace (SourceDomain (I := I) Φ k)
@@ -168,14 +215,25 @@ theorem gSeqExt_ricci
   let sourceT2 : T2Space ↥(sourceOpen (I := I) Φ k) := by
     change T2Space (SourceDomain (I := I) Φ k)
     exact sourceDomT2 (I := I) Φ k
-  haveI sourceSigmaInst : SigmaCompactSpace ↥(sourceOpen (I := I) Φ k) := sourceSigma
-  haveI sourceT2Inst : T2Space ↥(sourceOpen (I := I) Φ k) := sourceT2
-  have hricAmbient :=
-    @ricciTensor_restrictOpen E _ _ _ _ H _ I P.M
-      P.topology P.charted P.smooth P.t2
-      (by infer_instance) (by infer_instance)
-      (gSeqExt (I := I) Φ R bf hsrc htgt k t) (sourceOpen (I := I) Φ k)
-      sourceSigma sourceT2 (by infer_instance) (by infer_instance) xsrc v w
+  have sourceSigmaInst : SigmaCompactSpace ↥(sourceOpen (I := I) Φ k) := sourceSigma
+  have sourceT2Inst : T2Space ↥(sourceOpen (I := I) Φ k) := sourceT2
+  have hricAmbient :
+      ricciTensor (I := I)
+          (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t)) xsrc
+          (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w) =
+        ricciTensor (I := I) (gSeqExt (I := I) Φ R bf hsrc htgt k t) x v w := by
+    have h :=
+      @ricciTensor_restrictOpen E _ _ _ _ H _ I P.M
+        P.topology P.charted P.smooth P.t2
+        (by infer_instance) (by infer_instance)
+        (gSeqExt (I := I) Φ R bf hsrc htgt k t) (sourceOpen (I := I) Φ k)
+        sourceSigma sourceT2 (by infer_instance) (by infer_instance) xsrc
+        (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w)
+    rw [mfderiv_subtype_val_apply, mfderiv_subtype_val_apply] at h
+    exact h
+  change ricciTensor (I := I) (gSeqExt (I := I) Φ R bf hsrc htgt k t) x v w =
+    ricciTensor (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc
+      (show TangentSpace I xsrc from v) (show TangentSpace I xsrc from w)
   exact hricAmbient.symm.trans hricSource.symm
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -200,79 +258,79 @@ theorem gSeqExt_scalar
     metricScalarAt (I := I) (gSeqExt (I := I) Φ R bf hsrc htgt k t) x =
       (X.term (subseq k)).S.scalar t (Φ.map k x) := by
   classical
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : TopologicalSpace (X.term (subseq k)).M := (X.term (subseq k)).topology
-  letI : ChartedSpace H (X.term (subseq k)).M := (X.term (subseq k)).charted
-  letI : T2Space (X.term (subseq k)).M := (X.term (subseq k)).t2
-  letI : IsManifold I ∞ (X.term (subseq k)).M := (X.term (subseq k)).smooth
-  letI : SigmaCompactSpace (X.term (subseq k)).M := (X.term (subseq k)).sigmaCompact
-  letI : IsManifold I 1 (X.term (subseq k)).M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace (X.term (subseq k)).M := (X.term (subseq k)).topology
+  let : ChartedSpace H (X.term (subseq k)).M := (X.term (subseq k)).charted
+  let : T2Space (X.term (subseq k)).M := (X.term (subseq k)).t2
+  let : IsManifold I ∞ (X.term (subseq k)).M := (X.term (subseq k)).smooth
+  let : SigmaCompactSpace (X.term (subseq k)).M := (X.term (subseq k)).sigmaCompact
+  let : IsManifold I 1 (X.term (subseq k)).M :=
     IsManifold.of_le (I := I) (M := (X.term (subseq k)).M)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I 2 (X.term (subseq k)).M :=
+  let : IsManifold I 2 (X.term (subseq k)).M :=
     IsManifold.of_le (I := I) (M := (X.term (subseq k)).M)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term (subseq k)).M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term (subseq k)).M := by
     change IsManifold I ∞ (X.term (subseq k)).M
     infer_instance
-  letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
-  letI : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
-  letI : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
-  letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
-  letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+  let : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
+  let : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
+  let : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
+  let : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
+  let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
     sourceDomSigmaOf (I := I) Φ k (hsrc k)
-  letI : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
+  let : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
+  let : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (SourceDomain (I := I) Φ k) := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) (SourceDomain (I := I) Φ k) := by
     change IsManifold I ∞ (SourceDomain (I := I) Φ k)
     infer_instance
-  letI : SigmaCompactSpace ↑(targetOpen (I := I) Φ k) :=
+  let : SigmaCompactSpace ↑(targetOpen (I := I) Φ k) :=
     targetDomSigmaOf (I := I) Φ k (htgt k)
-  letI : T2Space ↑(targetOpen (I := I) Φ k) := targetDomT2 (I := I) Φ k
-  letI : IsManifold I 1 ↑(targetOpen (I := I) Φ k) :=
+  let : T2Space ↑(targetOpen (I := I) Φ k) := targetDomT2 (I := I) Φ k
+  let : IsManifold I 1 ↑(targetOpen (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := ↑(targetOpen (I := I) Φ k))
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) ↑(targetOpen (I := I) Φ k) := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) ↑(targetOpen (I := I) Φ k) := by
     change IsManifold I ∞ ↑(targetOpen (I := I) Φ k)
     infer_instance
-  letI : TopologicalSpace (TargetDomain (I := I) Φ k) := targetDomTop (I := I) Φ k
-  letI : ChartedSpace H (TargetDomain (I := I) Φ k) := targetDomCharted (I := I) Φ k
-  letI : T2Space (TargetDomain (I := I) Φ k) := targetDomT2 (I := I) Φ k
-  letI : IsManifold I ∞ (TargetDomain (I := I) Φ k) := targetDomSmooth (I := I) Φ k
-  letI : SigmaCompactSpace (TargetDomain (I := I) Φ k) :=
+  let : TopologicalSpace (TargetDomain (I := I) Φ k) := targetDomTop (I := I) Φ k
+  let : ChartedSpace H (TargetDomain (I := I) Φ k) := targetDomCharted (I := I) Φ k
+  let : T2Space (TargetDomain (I := I) Φ k) := targetDomT2 (I := I) Φ k
+  let : IsManifold I ∞ (TargetDomain (I := I) Φ k) := targetDomSmooth (I := I) Φ k
+  let : SigmaCompactSpace (TargetDomain (I := I) Φ k) :=
     targetDomSigmaOf (I := I) Φ k (htgt k)
-  letI : IsManifold I 1 (TargetDomain (I := I) Φ k) :=
+  let : IsManifold I 1 (TargetDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := TargetDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I 2 (TargetDomain (I := I) Φ k) :=
+  let : IsManifold I 2 (TargetDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := TargetDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (TargetDomain (I := I) Φ k) := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) (TargetDomain (I := I) Φ k) := by
     change IsManifold I ∞ (TargetDomain (I := I) Φ k)
     infer_instance
   obtain ⟨W, hWopen, hgrowW, hW1⟩ := bf.chi_one k
   let O : TopologicalSpace.Opens (SourceDomain (I := I) Φ k) :=
     ⟨Subtype.val ⁻¹' W, hWopen.preimage continuous_subtype_val⟩
-  letI : ChartedSpace H ↑O :=
+  let : ChartedSpace H ↑O :=
     TopologicalSpace.Opens.instChartedSpace
       (H := H) (M := SourceDomain (I := I) Φ k) (s := O)
-  letI : IsManifold I ∞ ↑O := { O.instHasGroupoid (contDiffGroupoid ∞ I) with }
-  letI : SigmaCompactSpace ↑O := isSigmaCompact_iff_sigmaCompactSpace.mp
+  let : IsManifold I ∞ ↑O := { O.instHasGroupoid (contDiffGroupoid ∞ I) with }
+  let : SigmaCompactSpace ↑O := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen I O.isOpen)
-  letI : T2Space ↑O := inferInstance
-  letI : IsManifold I 1 ↑O :=
+  let : T2Space ↑O := inferInstance
+  let : IsManifold I 1 ↑O :=
     IsManifold.of_le (I := I) (M := ↑O) (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I 2 ↑O :=
+  let : IsManifold I 2 ↑O :=
     IsManifold.of_le (I := I) (M := ↑O) (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) ↑O := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) ↑O := by
     change IsManifold I ∞ ↑O
     infer_instance
   let xsrc : SourceDomain (I := I) Φ k := ⟨x, bf.grow_subset k hx⟩
@@ -286,10 +344,28 @@ theorem gSeqExt_scalar
     ext a b
     rw [SmoothRiemannianMetric.restrictOpen_inner,
       SmoothRiemannianMetric.restrictOpen_inner]
+    change (srcMetric (I := I) Φ hsrc htgt k t).inner
+        (y : SourceDomain (I := I) Φ k)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b) =
+      (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t)).inner
+        (y : SourceDomain (I := I) Φ k)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b)
     rw [resSrc_inner (I := I) Φ k]
+    change (srcMetric (I := I) Φ hsrc htgt k t).inner
+        (y : SourceDomain (I := I) Φ k)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b) =
+      (gSeqExt (I := I) Φ R bf hsrc htgt k t).inner
+        (((y : SourceDomain (I := I) Φ k) : P.M))
+        (show TangentSpace I (((y : SourceDomain (I := I) Φ k) : P.M)) from a)
+        (show TangentSpace I (((y : SourceDomain (I := I) Φ k) : P.M)) from b)
     rw [gSeqExt_inner_of_mem (I := I) Φ R bf hsrc htgt k t
       ((y : SourceDomain (I := I) Φ k) : P.M)
-      (y : SourceDomain (I := I) Φ k).2 a b]
+      (y : SourceDomain (I := I) Φ k).2
+      (show TangentSpace I (((y : SourceDomain (I := I) Φ k) : P.M)) from a)
+      (show TangentSpace I (((y : SourceDomain (I := I) Φ k) : P.M)) from b)]
     rw [hW1 _ y.2]
     simp
   have hscalarSource :
@@ -302,11 +378,11 @@ theorem gSeqExt_scalar
         (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t))
         O ⟨xsrc, hxO⟩,
       hres]
-  letI sourceTopInst : TopologicalSpace ↑(sourceOpen (I := I) Φ k) :=
+  let sourceTopInst : TopologicalSpace ↑(sourceOpen (I := I) Φ k) :=
     sourceDomTop (I := I) Φ k
-  letI sourceChartedInst : ChartedSpace H ↑(sourceOpen (I := I) Φ k) :=
+  let sourceChartedInst : ChartedSpace H ↑(sourceOpen (I := I) Φ k) :=
     sourceDomCharted (I := I) Φ k
-  letI sourceSmoothInst : IsManifold I ∞ ↑(sourceOpen (I := I) Φ k) :=
+  let sourceSmoothInst : IsManifold I ∞ ↑(sourceOpen (I := I) Φ k) :=
     sourceDomSmooth (I := I) Φ k
   let sourceSigma : SigmaCompactSpace ↑(sourceOpen (I := I) Φ k) := by
     change SigmaCompactSpace (SourceDomain (I := I) Φ k)
@@ -314,8 +390,8 @@ theorem gSeqExt_scalar
   let sourceT2 : T2Space ↑(sourceOpen (I := I) Φ k) := by
     change T2Space (SourceDomain (I := I) Φ k)
     exact sourceDomT2 (I := I) Φ k
-  haveI sourceSigmaInst : SigmaCompactSpace ↑(sourceOpen (I := I) Φ k) := sourceSigma
-  haveI sourceT2Inst : T2Space ↑(sourceOpen (I := I) Φ k) := sourceT2
+  have sourceSigmaInst : SigmaCompactSpace ↑(sourceOpen (I := I) Φ k) := sourceSigma
+  have sourceT2Inst : T2Space ↑(sourceOpen (I := I) Φ k) := sourceT2
   have hscalarAmbient :=
     @metricScalarAt_restrictOpen E _ _ _ _ H _ I P.M
       P.topology P.charted P.smooth P.t2
@@ -327,12 +403,12 @@ theorem gSeqExt_scalar
         metricScalarAt (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc :=
       hscalarAmbient.symm.trans hscalarSource.symm
     _ = (sourceFlow (I := I) Φ k (hsrc k) (htgt k)).scalar t xsrc := rfl
-    _ = (solutionOn_restrictOpen (I := I) (X.term (subseq k)).S
+    _ = (solutionOnRestrictOpen (I := I) (X.term (subseq k)).S
           (targetOpen (I := I) Φ k)).scalar t
           (sourceTargetDiff (I := I) Φ k xsrc) := by
       simpa only [sourceFlow] using
         DifferentialGeometry.PDE.RicciFlow.scalar_pullback (I := I)
-          (solutionOn_restrictOpen (I := I) (X.term (subseq k)).S
+          (solutionOnRestrictOpen (I := I) (X.term (subseq k)).S
             (targetOpen (I := I) Φ k))
           (sourceTargetDiff (I := I) Φ k) t xsrc
     _ = (X.term (subseq k)).S.scalar t
@@ -367,89 +443,89 @@ theorem gSeqExt_ricNorm
       DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
         (X.term (subseq k)).S t (Φ.map k x) := by
   classical
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : IsManifold I 1 P.M :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : IsManifold I 1 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I 2 P.M :=
+  let : IsManifold I 2 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) P.M := by
     change IsManifold I ∞ P.M
     infer_instance
-  letI : TopologicalSpace (X.term (subseq k)).M := (X.term (subseq k)).topology
-  letI : ChartedSpace H (X.term (subseq k)).M := (X.term (subseq k)).charted
-  letI : T2Space (X.term (subseq k)).M := (X.term (subseq k)).t2
-  letI : IsManifold I ∞ (X.term (subseq k)).M := (X.term (subseq k)).smooth
-  letI : SigmaCompactSpace (X.term (subseq k)).M := (X.term (subseq k)).sigmaCompact
-  letI : IsManifold I 1 (X.term (subseq k)).M :=
+  let : TopologicalSpace (X.term (subseq k)).M := (X.term (subseq k)).topology
+  let : ChartedSpace H (X.term (subseq k)).M := (X.term (subseq k)).charted
+  let : T2Space (X.term (subseq k)).M := (X.term (subseq k)).t2
+  let : IsManifold I ∞ (X.term (subseq k)).M := (X.term (subseq k)).smooth
+  let : SigmaCompactSpace (X.term (subseq k)).M := (X.term (subseq k)).sigmaCompact
+  let : IsManifold I 1 (X.term (subseq k)).M :=
     IsManifold.of_le (I := I) (M := (X.term (subseq k)).M)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I 2 (X.term (subseq k)).M :=
+  let : IsManifold I 2 (X.term (subseq k)).M :=
     IsManifold.of_le (I := I) (M := (X.term (subseq k)).M)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term (subseq k)).M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term (subseq k)).M := by
     change IsManifold I ∞ (X.term (subseq k)).M
     infer_instance
-  letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
-  letI : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
-  letI : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
-  letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
-  letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+  let : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
+  let : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
+  let : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
+  let : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
+  let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
     sourceDomSigmaOf (I := I) Φ k (hsrc k)
-  letI : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
+  let : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
+  let : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (SourceDomain (I := I) Φ k) := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) (SourceDomain (I := I) Φ k) := by
     change IsManifold I ∞ (SourceDomain (I := I) Φ k)
     infer_instance
-  letI : SigmaCompactSpace ↑(targetOpen (I := I) Φ k) :=
+  let : SigmaCompactSpace ↑(targetOpen (I := I) Φ k) :=
     targetDomSigmaOf (I := I) Φ k (htgt k)
-  letI : T2Space ↑(targetOpen (I := I) Φ k) := targetDomT2 (I := I) Φ k
-  letI : IsManifold I 1 ↑(targetOpen (I := I) Φ k) :=
+  let : T2Space ↑(targetOpen (I := I) Φ k) := targetDomT2 (I := I) Φ k
+  let : IsManifold I 1 ↑(targetOpen (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := ↑(targetOpen (I := I) Φ k))
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I 2 ↑(targetOpen (I := I) Φ k) :=
+  let : IsManifold I 2 ↑(targetOpen (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := ↑(targetOpen (I := I) Φ k))
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) ↑(targetOpen (I := I) Φ k) := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) ↑(targetOpen (I := I) Φ k) := by
     change IsManifold I ∞ ↑(targetOpen (I := I) Φ k)
     infer_instance
-  letI : TopologicalSpace (TargetDomain (I := I) Φ k) := targetDomTop (I := I) Φ k
-  letI : ChartedSpace H (TargetDomain (I := I) Φ k) := targetDomCharted (I := I) Φ k
-  letI : T2Space (TargetDomain (I := I) Φ k) := targetDomT2 (I := I) Φ k
-  letI : IsManifold I ∞ (TargetDomain (I := I) Φ k) := targetDomSmooth (I := I) Φ k
-  letI : SigmaCompactSpace (TargetDomain (I := I) Φ k) :=
+  let : TopologicalSpace (TargetDomain (I := I) Φ k) := targetDomTop (I := I) Φ k
+  let : ChartedSpace H (TargetDomain (I := I) Φ k) := targetDomCharted (I := I) Φ k
+  let : T2Space (TargetDomain (I := I) Φ k) := targetDomT2 (I := I) Φ k
+  let : IsManifold I ∞ (TargetDomain (I := I) Φ k) := targetDomSmooth (I := I) Φ k
+  let : SigmaCompactSpace (TargetDomain (I := I) Φ k) :=
     targetDomSigmaOf (I := I) Φ k (htgt k)
-  letI : IsManifold I 1 (TargetDomain (I := I) Φ k) :=
+  let : IsManifold I 1 (TargetDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := TargetDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I 2 (TargetDomain (I := I) Φ k) :=
+  let : IsManifold I 2 (TargetDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := TargetDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (TargetDomain (I := I) Φ k) := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) (TargetDomain (I := I) Φ k) := by
     change IsManifold I ∞ (TargetDomain (I := I) Φ k)
     infer_instance
   obtain ⟨W, hWopen, hgrowW, hW1⟩ := bf.chi_one k
   let O : TopologicalSpace.Opens (SourceDomain (I := I) Φ k) :=
     ⟨Subtype.val ⁻¹' W, hWopen.preimage continuous_subtype_val⟩
-  letI : ChartedSpace H ↑O :=
+  let : ChartedSpace H ↑O :=
     TopologicalSpace.Opens.instChartedSpace
       (H := H) (M := SourceDomain (I := I) Φ k) (s := O)
-  letI : IsManifold I ∞ ↑O := { O.instHasGroupoid (contDiffGroupoid ∞ I) with }
-  letI : SigmaCompactSpace ↑O := isSigmaCompact_iff_sigmaCompactSpace.mp
+  let : IsManifold I ∞ ↑O := { O.instHasGroupoid (contDiffGroupoid ∞ I) with }
+  let : SigmaCompactSpace ↑O := isSigmaCompact_iff_sigmaCompactSpace.mp
     (Geometry.isSigmaCompact_of_isOpen I O.isOpen)
-  letI : T2Space ↑O := inferInstance
-  letI : IsManifold I 1 ↑O :=
+  let : T2Space ↑O := inferInstance
+  let : IsManifold I 1 ↑O :=
     IsManifold.of_le (I := I) (M := ↑O) (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I 2 ↑O :=
+  let : IsManifold I 2 ↑O :=
     IsManifold.of_le (I := I) (M := ↑O) (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) ↑O := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) ↑O := by
     change IsManifold I ∞ ↑O
     infer_instance
   let xsrc : SourceDomain (I := I) Φ k := ⟨x, bf.grow_subset k hx⟩
@@ -463,10 +539,28 @@ theorem gSeqExt_ricNorm
     ext a b
     rw [SmoothRiemannianMetric.restrictOpen_inner,
       SmoothRiemannianMetric.restrictOpen_inner]
+    change (srcMetric (I := I) Φ hsrc htgt k t).inner
+        (y : SourceDomain (I := I) Φ k)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b) =
+      (resSrc (I := I) Φ k (gSeqExt (I := I) Φ R bf hsrc htgt k t)).inner
+        (y : SourceDomain (I := I) Φ k)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b)
     rw [resSrc_inner (I := I) Φ k]
+    change (srcMetric (I := I) Φ hsrc htgt k t).inner
+        (y : SourceDomain (I := I) Φ k)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from a)
+        (show TangentSpace I (y : SourceDomain (I := I) Φ k) from b) =
+      (gSeqExt (I := I) Φ R bf hsrc htgt k t).inner
+        (((y : SourceDomain (I := I) Φ k) : P.M))
+        (show TangentSpace I (((y : SourceDomain (I := I) Φ k) : P.M)) from a)
+        (show TangentSpace I (((y : SourceDomain (I := I) Φ k) : P.M)) from b)
     rw [gSeqExt_inner_of_mem (I := I) Φ R bf hsrc htgt k t
       ((y : SourceDomain (I := I) Φ k) : P.M)
-      (y : SourceDomain (I := I) Φ k).2 a b]
+      (y : SourceDomain (I := I) Φ k).2
+      (show TangentSpace I (((y : SourceDomain (I := I) Φ k) : P.M)) from a)
+      (show TangentSpace I (((y : SourceDomain (I := I) Φ k) : P.M)) from b)]
     rw [hW1 _ y.2]
     simp
   have hnormSource :
@@ -484,11 +578,11 @@ theorem gSeqExt_ricNorm
         (resSrc (I := I) Φ k
           (gSeqExt (I := I) Φ R bf hsrc htgt k t)) O ⟨xsrc, hxO⟩,
       hres]
-  letI sourceTopInst : TopologicalSpace ↑(sourceOpen (I := I) Φ k) :=
+  let sourceTopInst : TopologicalSpace ↑(sourceOpen (I := I) Φ k) :=
     sourceDomTop (I := I) Φ k
-  letI sourceChartedInst : ChartedSpace H ↑(sourceOpen (I := I) Φ k) :=
+  let sourceChartedInst : ChartedSpace H ↑(sourceOpen (I := I) Φ k) :=
     sourceDomCharted (I := I) Φ k
-  letI sourceSmoothInst : IsManifold I ∞ ↑(sourceOpen (I := I) Φ k) :=
+  let sourceSmoothInst : IsManifold I ∞ ↑(sourceOpen (I := I) Φ k) :=
     sourceDomSmooth (I := I) Φ k
   let sourceSigma : SigmaCompactSpace ↑(sourceOpen (I := I) Φ k) := by
     change SigmaCompactSpace (SourceDomain (I := I) Φ k)
@@ -496,14 +590,11 @@ theorem gSeqExt_ricNorm
   let sourceT2 : T2Space ↑(sourceOpen (I := I) Φ k) := by
     change T2Space (SourceDomain (I := I) Φ k)
     exact sourceDomT2 (I := I) Φ k
-  haveI sourceSigmaInst : SigmaCompactSpace ↑(sourceOpen (I := I) Φ k) := sourceSigma
-  haveI sourceT2Inst : T2Space ↑(sourceOpen (I := I) Φ k) := sourceT2
+  have sourceSigmaInst : SigmaCompactSpace ↑(sourceOpen (I := I) Φ k) := sourceSigma
+  have sourceT2Inst : T2Space ↑(sourceOpen (I := I) Φ k) := sourceT2
   have hnormAmbient :=
-    @ricNorm_restrict E _ _ _ H _ I P.M
-      P.topology P.charted P.smooth P.t2 P.sigmaCompact
-      (by infer_instance) (by infer_instance) (by infer_instance) (by infer_instance)
+    ricNorm_restrict (E := E) (H := H) (I := I)
       (gSeqExt (I := I) Φ R bf hsrc htgt k t) (sourceOpen (I := I) Φ k)
-      sourceSigma sourceT2 (by infer_instance) (by infer_instance) (by infer_instance)
       xsrc
   calc
     normSq0S (I := I) (gSeqExt (I := I) Φ R bf hsrc htgt k t) x 2
@@ -515,12 +606,12 @@ theorem gSeqExt_ricNorm
           (sourceFlow (I := I) Φ k (hsrc k) (htgt k)) t xsrc := by
       rfl
     _ = DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
-          (solutionOn_restrictOpen (I := I) (X.term (subseq k)).S
+          (solutionOnRestrictOpen (I := I) (X.term (subseq k)).S
             (targetOpen (I := I) Φ k)) t
           (sourceTargetDiff (I := I) Φ k xsrc) := by
       simpa only [sourceFlow] using
         DifferentialGeometry.PDE.RicciFlow.ricciNorm_pullback (I := I)
-          (solutionOn_restrictOpen (I := I) (X.term (subseq k)).S
+          (solutionOnRestrictOpen (I := I) (X.term (subseq k)).S
             (targetOpen (I := I) Φ k))
           (sourceTargetDiff (I := I) Φ k) t xsrc
     _ = DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
@@ -557,54 +648,60 @@ theorem gSeqExt_pde
         (gSeqExt (I := I) Φ R bf hsrc htgt k t) x v w)
       (Set.Icc β ψ) t := by
   classical
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
-  letI : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
-  letI : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
-  letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
-  letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
+  let : ChartedSpace H (SourceDomain (I := I) Φ k) := sourceDomCharted (I := I) Φ k
+  let : T2Space (SourceDomain (I := I) Φ k) := sourceDomT2 (I := I) Φ k
+  let : IsManifold I ∞ (SourceDomain (I := I) Φ k) := sourceDomSmooth (I := I) Φ k
+  let : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
     sourceDomSigmaOf (I := I) Φ k (hsrc k)
-  letI : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
+  let : IsManifold I 1 (SourceDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
+  let : IsManifold I 2 (SourceDomain (I := I) Φ k) :=
     IsManifold.of_le (I := I) (M := SourceDomain (I := I) Φ k)
       (n := (∞ : WithTop ℕ∞)) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (SourceDomain (I := I) Φ k) := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) (SourceDomain (I := I) Φ k) := by
     change IsManifold I ∞ (SourceDomain (I := I) Φ k)
     infer_instance
   let xsrc : SourceDomain (I := I) Φ k := ⟨x, bf.grow_subset k hx⟩
+  let vsrc : TangentSpace I xsrc := show E from v
+  let wsrc : TangentSpace I xsrc := show E from w
   let τ : RealTimeInterval.RegularTime X.D := ⟨t, hwin ht⟩
   have hflow := metric_derivWithin_eq_neg_two_ricci (I := I)
     (sourceFlow (I := I) Φ k (hsrc k) (htgt k))
-    (isSolutionOn_sourceFlow (I := I) Φ k (hsrc k) (htgt k)) τ xsrc v w
+    (isSolutionOn_sourceFlow (I := I) Φ k (hsrc k) (htgt k)) τ xsrc vsrc wsrc
   have hflow' : HasDerivWithinAt
-      (fun s : Real => (srcMetric (I := I) Φ hsrc htgt k s).inner xsrc v w)
+      (fun s : Real => (srcMetric (I := I) Φ hsrc htgt k s).inner xsrc vsrc wsrc)
       ((-2 : Real) * ricciTensor (I := I)
-        (srcMetric (I := I) Φ hsrc htgt k t) xsrc v w)
+        (srcMetric (I := I) Φ hsrc htgt k t) xsrc vsrc wsrc)
       X.D.carrier t := by
-    simpa only [srcMetric, DifferentialGeometry.PDE.RicciFlow.SolutionOn.ricciAt,
-      DifferentialGeometry.PDE.RicciFlow.SolutionFamily.ricciAt,
-      metricRicciAt_apply_eq_ricciTensor] using hflow
+    change HasDerivWithinAt
+      (fun s : Real => (srcMetric (I := I) Φ hsrc htgt k s).inner xsrc vsrc wsrc)
+      ((-2 : Real) * metricRicciAt (I := I)
+        (srcMetric (I := I) Φ hsrc htgt k t) xsrc (vec2 (I := I) vsrc wsrc))
+      X.D.carrier t at hflow
+    exact hflow.congr_deriv (by rw [metricRicciAt_apply_eq_ricciTensor])
   have hcoeff : ∀ s : Real,
       (gSeqExt (I := I) Φ R bf hsrc htgt k s).inner x v w =
-        (srcMetric (I := I) Φ hsrc htgt k s).inner xsrc v w := by
+        (srcMetric (I := I) Φ hsrc htgt k s).inner xsrc vsrc wsrc := by
     intro s
     rw [gSeqExt_inner_of_mem (I := I) Φ R bf hsrc htgt k s x xsrc.2 v w]
     obtain ⟨W, _hWopen, hgrowW, hW1⟩ := bf.chi_one k
     rw [hW1 x (hgrowW hx)]
-    simp
-    simp only [xsrc]
+    simp only [one_smul, sub_self, zero_smul, add_zero]
+    have hxsrc' : (⟨x, xsrc.2⟩ : SourceDomain (I := I) Φ k) = xsrc := Subtype.ext rfl
+    rw [hxsrc']
   have hwindow : Set.Icc β ψ ⊆ X.D.carrier :=
     hwin.trans X.D.regular_subset
   have hder : HasDerivWithinAt
       (fun s : Real => (gSeqExt (I := I) Φ R bf hsrc htgt k s).inner x v w)
       ((-2 : Real) * ricciTensor (I := I)
-        (srcMetric (I := I) Φ hsrc htgt k t) xsrc v w)
+        (srcMetric (I := I) Φ hsrc htgt k t) xsrc vsrc wsrc)
       (Set.Icc β ψ) t :=
     hflow'.congr_mono (fun s _hs => hcoeff s) (hcoeff t) hwindow
   have hric := gSeqExt_ricci (I := I) Φ R bf hsrc htgt k t x hx v w
@@ -660,11 +757,11 @@ theorem ConvOut.gInf_pde
       ((-2 : Real) * ricciTensor (I := I) (co.gInf t) x v w)
       (Set.Icc β ψ) t := by
   classical
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   obtain ⟨kgrow, hkgrow⟩ := bf.grow_cover {x} isCompact_singleton
   let gTail : Nat → Real → SmoothRiemannianMetric I P.M := fun k s ↦
     gSeqExt (I := I) Φ R bf hsrc htgt (co.φ (k + kgrow)) s
@@ -807,11 +904,11 @@ theorem ConvOut.scalar_conv_at
         (X.term ((subseq ∘ co.φ) k)).S.scalar t (Φ.map (co.φ k) x))
       Filter.atTop (nhds (metricScalarAt (I := I) (co.gInf t) x)) := by
   classical
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   obtain ⟨kgrow, hkgrow⟩ := bf.grow_cover {x} isCompact_singleton
   let gTail : Nat → Real → SmoothRiemannianMetric I P.M := fun k s ↦
     gSeqExt (I := I) Φ R bf hsrc htgt (co.φ (k + kgrow)) s
@@ -964,11 +1061,11 @@ theorem ConvOut.ricNorm_conv_at
       (nhds (normSq0S (I := I) (co.gInf t) x 2
         (metricRicci (I := I) (co.gInf t) x))) := by
   classical
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : T2Space P.M := P.t2
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
+  let : TopologicalSpace P.M := P.topology
+  let : ChartedSpace H P.M := P.charted
+  let : T2Space P.M := P.t2
+  let : IsManifold I ∞ P.M := P.smooth
+  let : SigmaCompactSpace P.M := P.sigmaCompact
   obtain ⟨kgrow, hkgrow⟩ := bf.grow_cover {x} isCompact_singleton
   let gTail : Nat → Real → SmoothRiemannianMetric I P.M := fun k s ↦
     gSeqExt (I := I) Φ R bf hsrc htgt (co.φ (k + kgrow)) s

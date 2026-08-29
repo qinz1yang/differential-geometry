@@ -34,14 +34,14 @@ def metricTransportResidual
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M) (t : ℝ) (x : M) (v w : TangentSpace I x) : ℝ :=
   g.inner (Φ_fam t x)
       (christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-        (chartE_section_repr (I := I) (Φ_fam t x)
+        (chartESectionRepr (I := I) (Φ_fam t x)
           (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
         (mfderiv I I (Φ_fam t : M → M) x v))
       (mfderiv I I (Φ_fam t : M → M) x w)
     + g.inner (Φ_fam t x)
         (mfderiv I I (Φ_fam t : M → M) x v)
         (christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-          (chartE_section_repr (I := I) (Φ_fam t x)
+          (chartESectionRepr (I := I) (Φ_fam t x)
             (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
           (mfderiv I I (Φ_fam t : M → M) x w))
 
@@ -59,14 +59,14 @@ theorem variational_flow_flat_pairing_hasDerivAt
       T'v (mfderiv I I (Φ_fam t : M → M) x v) + P'v v
         = negCovariantSlotValue (I := I) g X Φ_fam t x v
           + christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x v))
     (hcorr_w :
       T'w (mfderiv I I (Φ_fam t : M → M) x w) + P'w w
         = negCovariantSlotValue (I := I) g X Φ_fam t x w
           + christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x w)) :
     HasDerivAt
@@ -83,7 +83,7 @@ theorem variational_flow_flat_pairing_hasDerivAt
   set dΦw : TangentSpace I α := mfderiv I I (Φ_fam t : M → M) x w with hdΦw
   set Vflat : TangentSpace I α := T'v dΦv + P'v v with hVflat
   set Wflat : TangentSpace I α := T'w dΦw + P'w w with hWflat
-  set Xα : E := chartE_section_repr (I := I) α (X : ∀ y : M, TangentSpace I y) α with hXα
+  set Xα : E := chartESectionRepr (I := I) α (X : ∀ y : M, TangentSpace I y) α with hXα
   set nablaV : TangentSpace I α :=
     (LeviCivita (I := I) g) (X : ∀ y : M, TangentSpace I y) α dΦv with hnablaV
   set nablaW : TangentSpace I α :=
@@ -106,8 +106,8 @@ theorem variational_flow_flat_pairing_hasDerivAt
         ContinuousLinearMap.map_neg (g.inner α) _]
     have hslot1 : g.inner α Vflat dΦw
         = -g.inner α nablaV dΦw + g.inner α Cv dΦw := by
-      rw [hcorr_v', hbil1, ContinuousLinearMap.add_apply,
-        ContinuousLinearMap.neg_apply]
+      rw [hcorr_v', hbil1, add_apply,
+        neg_apply]
     have hslot2 : g.inner α dΦv Wflat
         = -g.inner α dΦv nablaW + g.inner α dΦv Cw := by
       rw [hcorr_w', ContinuousLinearMap.map_add (g.inner α dΦv) _ _,
@@ -138,14 +138,14 @@ theorem variational_flow_flat_pairing_hasDerivWithinAt
       T'v (mfderiv I I (Φ_fam t : M → M) x v) + P'v v
         = negCovariantSlotValue (I := I) g X Φ_fam t x v
           + christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x v))
     (hcorr_w :
       T'w (mfderiv I I (Φ_fam t : M → M) x w) + P'w w
         = negCovariantSlotValue (I := I) g X Φ_fam t x w
           + christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x w)) :
     HasDerivWithinAt

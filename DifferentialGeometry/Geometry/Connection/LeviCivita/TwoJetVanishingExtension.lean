@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter
 open scoped Manifold Topology ContDiff
@@ -23,7 +22,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -31,14 +30,22 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [FiniteDimensional ℝ E] [CompactSpace M] [I.Boundaryless]
+    [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
+    [SigmaCompactSpace M] in
+private lemma tangentCoord_eq_centeredChartTangentEquiv (x : M) (v : TangentSpace I x) :
+    tangentCoord (I := I) x v = centeredChartTangentEquiv (I := I) x v := by
+  change trivToE (I := I) x x v = centeredChartTangentEquiv (I := I) x v
+  exact trivToE_self_apply (I := I) x v
+
 omit [CompactSpace M] [I.Boundaryless] in
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 private lemma chartE_section_repr_linExt_eventuallyEq_const_at
     (x₀ : M) (w : TangentSpace I x₀) {b : M}
     (hb1 : (linExtBump (I := I) x₀ : M → ℝ) =ᶠ[𝓝 b] (fun _ => (1 : ℝ)))
     (hbbase : (trivializationAt E (TangentSpace I) x₀).baseSet ∈ 𝓝 b) :
-    chartE_section_repr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w)
+    chartESectionRepr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w)
       =ᶠ[𝓝 b] (fun _ : M => tangentCoord (I := I) x₀ w) := by
   classical
   filter_upwards [hb1, hbbase] with c hc1 hcbase
@@ -49,7 +56,7 @@ private lemma chartE_section_repr_linExt_eventuallyEq_const_at
   exact chartE_section_repr_coordExtensionTangent_eq (I := I) x₀ w hcbase
 
 omit [CompactSpace M] in
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [SigmaCompactSpace M] in
 private lemma LeviCivita_covApply_linExt_firstLayer_pointwise
     (g : SmoothRiemannianMetric I M) (x₀ : M) (w v : TangentSpace I x₀)
@@ -72,12 +79,12 @@ private lemma LeviCivita_covApply_linExt_firstLayer_pointwise
   rw [chartLeviCivita_apply (I := I) g x₀ (linearExtensionTangent (I := I) x₀ w) hb
     (linearExtensionTangent (I := I) x₀ v b)]
   have hfd0 :
-      fderiv ℝ (chartE_section_repr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w)
+      fderiv ℝ (chartESectionRepr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w)
           ∘ (extChartAt I x₀).symm) (extChartAt I x₀ b) = 0 := by
     have hb_src : b ∈ (extChartAt I x₀).source :=
       chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
     have hev :
-        (chartE_section_repr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w)
+        (chartESectionRepr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w)
             ∘ (extChartAt I x₀).symm)
           =ᶠ[𝓝 (extChartAt I x₀ b)] (fun _ : E => tangentCoord (I := I) x₀ w) := by
       have hsymm_cont : ContinuousAt (extChartAt I x₀).symm (extChartAt I x₀ b) := by
@@ -88,22 +95,22 @@ private lemma LeviCivita_covApply_linExt_firstLayer_pointwise
       have hsymm_pt : (extChartAt I x₀).symm (extChartAt I x₀ b) = b :=
         (extChartAt I x₀).left_inv hb_src
       have hmem :
-          {c : M | chartE_section_repr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w) c
+          {c : M | chartESectionRepr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w) c
             = tangentCoord (I := I) x₀ w} ∈ 𝓝 ((extChartAt I x₀).symm (extChartAt I x₀ b)) := by
         rw [hsymm_pt]; exact hconst
       filter_upwards [hsymm_cont.preimage_mem_nhds hmem] with y hy using hy
     rw [hev.fderiv_eq, fderiv_const_apply]
-  rw [hfd0, ContinuousLinearMap.zero_apply, zero_add]
-  have hreprb : chartE_section_repr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w) b =
+  rw [hfd0, zero_apply, zero_add]
+  have hreprb : chartESectionRepr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w) b =
       tangentCoord (I := I) x₀ w := hconst.self_of_nhds
   rw [hreprb]
 
 omit [CompactSpace M] in
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private lemma chartE_section_repr_covApply_linExt_eventuallyEq
     (g : SmoothRiemannianMetric I M) (x₀ : M) (v w : TangentSpace I x₀) :
-    (chartE_section_repr (I := I) x₀
+    (chartESectionRepr (I := I) x₀
         (DifferentialGeometry.Geometry.Curvature.covApply (LeviCivita (I := I) g)
           (linearExtensionTangent (I := I) x₀ v) (linearExtensionTangent (I := I) x₀ w))
         ∘ (extChartAt I x₀).symm)
@@ -163,7 +170,7 @@ private lemma chartE_section_repr_covApply_linExt_eventuallyEq
       (chartModelBasis E).repr
           (trivToE (I := I) x₀ b (linearExtensionTangent (I := I) x₀ v b)) =
         (chartModelBasis E).repr (tangentCoord (I := I) x₀ v) := by
-    have hVb : chartE_section_repr (I := I) x₀ (linearExtensionTangent (I := I) x₀ v) b =
+    have hVb : chartESectionRepr (I := I) x₀ (linearExtensionTangent (I := I) x₀ v) b =
         tangentCoord (I := I) x₀ v :=
       (chartE_section_repr_linExt_eventuallyEq_const_at (I := I) x₀ v hb1
         ((trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hbbase)).self_of_nhds
@@ -174,7 +181,7 @@ private lemma chartE_section_repr_covApply_linExt_eventuallyEq
   rw [hreprVb, hφb]
 
 omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartChristoffel_differentiableAt_basepoint
     (g : SmoothRiemannianMetric I M) (x₀ : M) (i j m : Fin (Module.finrank ℝ E)) :
     DifferentiableAt ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
@@ -193,7 +200,7 @@ private lemma chartChristoffel_differentiableAt_basepoint
     (isOpen_interior.mem_nhds hx₀int)
 
 omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma fderiv_christoffelVWSum_apply
     (g : SmoothRiemannianMetric I M) (x₀ : M) (V W : E) (d : E) :
     fderiv ℝ
@@ -220,13 +227,13 @@ private lemma fderiv_christoffelVWSum_apply
       ((chartModelBasis E) m))
   rw [fderiv_fun_sum (fun i _ => DifferentiableAt.fun_sum
     (fun j _ => DifferentiableAt.fun_sum (fun m _ => hdiff_inner i j m)))]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [fderiv_fun_sum (fun j _ => DifferentiableAt.fun_sum (fun m _ => hdiff_inner i j m))]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun j _ => ?_)
   rw [fderiv_fun_sum (fun m _ => hdiff_inner i j m)]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl (fun m _ => ?_)
   rw [fderiv_smul_const (((chartChristoffel_differentiableAt_basepoint (I := I) g x₀ i j
     m).const_mul
@@ -235,9 +242,9 @@ private lemma fderiv_christoffelVWSum_apply
   rw [ContinuousLinearMap.smulRight_apply]
   rw [fderiv_const_mul (chartChristoffel_differentiableAt_basepoint (I := I) g x₀ i j m)
     (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j)]
-  rw [ContinuousLinearMap.smul_apply, smul_eq_mul, mul_assoc]
+  rw [smul_apply, smul_eq_mul, mul_assoc]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma sum3_collect_basis_inner
     (F : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ) :
     (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
@@ -259,7 +266,7 @@ private lemma sum3_collect_basis_inner
   refine Finset.sum_congr rfl (fun a _ => ?_)
   rw [Finset.sum_smul]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma sum5_collect_basis_inner
     (F : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) →
       Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ) :
@@ -291,7 +298,7 @@ private lemma sum5_collect_basis_inner
   refine Finset.sum_congr rfl (fun c _ => ?_)
   rw [Finset.sum_smul]
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma sum4_scalar_swap_pairs
     (F : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) →
       Fin (Module.finrank ℝ E) → ℝ) :
@@ -306,7 +313,7 @@ private lemma sum4_scalar_swap_pairs
     (fun x _ => Finset.mem_univ _) (fun x _ => by ext <;> simp) (fun x _ => by ext <;> simp)
     (fun x _ => rfl)
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma chartModelBasis_repr_christoffelVWSum
     (g : SmoothRiemannianMetric I M) (x₀ : M) (V W : E) (y : E)
@@ -321,13 +328,13 @@ private lemma chartModelBasis_repr_christoffelVWSum
           chartChristoffel (I := I) g x₀ i j q y := by
   classical
   rw [map_sum]
-  simp only [Finsupp.coe_finset_sum, Finset.sum_apply]
+  simp only [Finsupp.coe_finsetSum, Finset.sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [map_sum]
-  simp only [Finsupp.coe_finset_sum, Finset.sum_apply]
+  simp only [Finsupp.coe_finsetSum, Finset.sum_apply]
   refine Finset.sum_congr rfl (fun j _ => ?_)
   rw [map_sum]
-  simp only [map_smul, Finsupp.coe_finset_sum, Finset.sum_apply, Finsupp.coe_smul,
+  simp only [map_smul, Finsupp.coe_finsetSum, Finset.sum_apply, Finsupp.coe_smul,
     Pi.smul_apply, smul_eq_mul]
   rw [Finset.sum_eq_single q
     (fun m _ hm => by rw [Module.Basis.repr_self_apply, if_neg hm, mul_zero])
@@ -335,7 +342,7 @@ private lemma chartModelBasis_repr_christoffelVWSum
   rw [Module.Basis.repr_self_apply, if_pos rfl, mul_one]
 
 omit [CompactSpace M] in
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem covApply_covApply_linearExtensionTangent_basepoint_eq
     (g : SmoothRiemannianMetric I M) (x₀ : M) (w : TangentSpace I x₀)
@@ -388,9 +395,11 @@ theorem covApply_covApply_linearExtensionTangent_basepoint_eq
   rw [LeviCivita_chart_apply (I := I) g x₀ hx₀_good hS_at v]
   rw [chartLeviCivita_apply (I := I) g x₀ S hx₀_good v]
   rw [trivToE_self_apply (I := I) x₀ v]
-  rw [hev.fderiv_eq, fderiv_christoffelVWSum_apply (I := I) g x₀ V W v]
+  rw [← tangentCoord_eq_centeredChartTangentEquiv (I := I) x₀ v]
+  rw [hev.fderiv_eq,
+    fderiv_christoffelVWSum_apply (I := I) g x₀ V W (tangentCoord (I := I) x₀ v)]
   have hSx₀_repr :
-      chartE_section_repr (I := I) x₀ S x₀ =
+      chartESectionRepr (I := I) x₀ S x₀ =
         ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           ∑ m : Fin (Module.finrank ℝ E),
             (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
@@ -408,11 +417,10 @@ theorem covApply_covApply_linearExtensionTangent_basepoint_eq
             chartChristoffel (I := I) g x₀ i j m (extChartAt I x₀ x₀)) •
           (chartModelBasis E) m) v]
   rw [trivToE_self_apply (I := I) x₀ v]
+  rw [← tangentCoord_eq_centeredChartTangentEquiv (I := I) x₀ v]
   rw [map_add]
-  have hv_basis : (v : E) =
+  have hv_basis : V =
       ∑ k : Fin (Module.finrank ℝ E), ((chartModelBasis E).repr V) k • (chartModelBasis E) k := by
-    have : (V : E) = v := by rw [hV_def]; exact trivToE_self_apply (I := I) x₀ v
-    rw [← this]
     exact ((chartModelBasis E).sum_repr V).symm
   congr 1
   · have hLHS1 :
@@ -420,7 +428,8 @@ theorem covApply_covApply_linearExtensionTangent_basepoint_eq
           ∑ m : Fin (Module.finrank ℝ E),
             (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
                 (fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
-                  (extChartAt I x₀ x₀)) v) • (chartModelBasis E) m) =
+                  (extChartAt I x₀ x₀)) (tangentCoord (I := I) x₀ v)) •
+                (chartModelBasis E) m) =
           ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
             ∑ k : Fin (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
               (((chartModelBasis E).repr V) k * ((chartModelBasis E).repr V) i *
@@ -430,20 +439,21 @@ theorem covApply_covApply_linearExtensionTangent_basepoint_eq
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
       have hfd : ∀ m : Fin (Module.finrank ℝ E),
           (fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
-              (extChartAt I x₀ x₀)) v =
+              (extChartAt I x₀ x₀)) (tangentCoord (I := I) x₀ v) =
             ∑ k : Fin (Module.finrank ℝ E),
               ((chartModelBasis E).repr V) k *
                 (fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
                   (extChartAt I x₀ x₀)) ((chartModelBasis E) k) := by
         intro m
-        conv_lhs => rw [hv_basis]
+        conv_lhs => rw [← hV_def, hv_basis]
         rw [map_sum]
         refine Finset.sum_congr rfl (fun k _ => ?_)
         rw [map_smul, smul_eq_mul]
       rw [show (∑ m : Fin (Module.finrank ℝ E),
             (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
                 (fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
-                  (extChartAt I x₀ x₀)) v) • (chartModelBasis E) m) =
+                  (extChartAt I x₀ x₀)) (tangentCoord (I := I) x₀ v)) •
+                (chartModelBasis E) m) =
           ∑ m : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
             (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
                 (((chartModelBasis E).repr V) k *
@@ -458,9 +468,8 @@ theorem covApply_covApply_linearExtensionTangent_basepoint_eq
       ring
     rw [hLHS1]
   · refine congrArg (trivFromE (I := I) x₀ x₀) ?_
-    have hVeqv : (V : E) = v := by rw [hV_def]; exact trivToE_self_apply (I := I) x₀ v
     rw [sum3_collect_basis_inner (fun p q r =>
-      ((chartModelBasis E).repr v) p *
+      ((chartModelBasis E).repr V) p *
         ((chartModelBasis E).repr
           (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
             ∑ m : Fin (Module.finrank ℝ E),
@@ -477,7 +486,7 @@ theorem covApply_covApply_linearExtensionTangent_basepoint_eq
     refine congrArg (fun t : ℝ => t • (chartModelBasis E) z) ?_
     have hLHScoeff :
         (∑ p : Fin (Module.finrank ℝ E), ∑ q : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr v) p *
+          ((chartModelBasis E).repr V) p *
             ((chartModelBasis E).repr
               (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
                 ∑ m : Fin (Module.finrank ℝ E),
@@ -492,7 +501,7 @@ theorem covApply_covApply_linearExtensionTangent_basepoint_eq
                 chartChristoffel (I := I) g x₀ i j q (extChartAt I x₀ x₀) *
                 chartChristoffel (I := I) g x₀ p q z (extChartAt I x₀ x₀) := by
       refine Finset.sum_congr rfl (fun p _ => Finset.sum_congr rfl (fun q _ => ?_))
-      rw [chartModelBasis_repr_christoffelVWSum (I := I) g x₀ V W (extChartAt I x₀ x₀) q, ← hVeqv]
+      rw [chartModelBasis_repr_christoffelVWSum (I := I) g x₀ V W (extChartAt I x₀ x₀) q]
       simp only [Finset.sum_mul, Finset.mul_sum]
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
       ring
@@ -511,26 +520,27 @@ def polyCoordExtensionTangent (x₀ : M) (P : E → E) :
   fun b => (linExtBump (I := I) x₀ : M → ℝ) b •
     trivFromE (I := I) x₀ b (P (extChartAt I x₀ b - extChartAt I x₀ x₀))
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 @[simp] lemma polyCoordExtensionTangent_apply (x₀ : M) (P : E → E) (b : M) :
     polyCoordExtensionTangent (I := I) x₀ P b =
       (linExtBump (I := I) x₀ : M → ℝ) b •
         trivFromE (I := I) x₀ b (P (extChartAt I x₀ b - extChartAt I x₀ x₀)) := rfl
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma polyCoordExtensionTangent_basepoint (x₀ : M) (P : E → E) :
-    polyCoordExtensionTangent (I := I) x₀ P x₀ = P 0 := by
+    polyCoordExtensionTangent (I := I) x₀ P x₀ =
+      (centeredChartTangentEquiv (I := I) x₀).symm (P 0) := by
   classical
   rw [polyCoordExtensionTangent_apply, linExtBump_eq_one, one_smul, sub_self,
     trivFromE_self_apply]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma chartE_section_repr_polyCoordExtensionTangent_eventuallyEq
     (x₀ : M) (P : E → E) :
-    (chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P))
+    (chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P))
         ∘ (extChartAt I x₀).symm
       =ᶠ[𝓝 (extChartAt I x₀ x₀)]
         (fun y : E => P (y - extChartAt I x₀ x₀)) := by
@@ -541,19 +551,19 @@ lemma chartE_section_repr_polyCoordExtensionTangent_eventuallyEq
   have hbase : (trivializationAt E (TangentSpace I) x₀).baseSet ∈ 𝓝 x₀ := by
     rw [show (trivializationAt E (TangentSpace I) x₀).baseSet = (chartAt H x₀).source from rfl]
     exact (chartAt H x₀).open_source.mem_nhds (mem_chart_source H x₀)
-  have hmem : {b : M | chartE_section_repr (I := I) x₀
+  have hmem : {b : M | chartESectionRepr (I := I) x₀
         (polyCoordExtensionTangent (I := I) x₀ P) b = P (φ b - φ x₀)} ∈ 𝓝 x₀ := by
     filter_upwards [hbump1, hbase] with b hb1 hbbase
     have hWb : polyCoordExtensionTangent (I := I) x₀ P b =
         trivFromE (I := I) x₀ b (P (φ b - φ x₀)) := by
       rw [polyCoordExtensionTangent_apply, hb1, one_smul]
-    change chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) b = P
+    change chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) b = P
       (φ b - φ x₀)
     rw [chartE_section_repr_eq_trivToE, hWb]
     exact trivToE_trivFromE (I := I) x₀ hbbase _
   have hsymm_cont : ContinuousAt φ.symm (φ x₀) := continuousAt_extChartAt_symm x₀
   have hsymm_pt : φ.symm (φ x₀) = x₀ := extChartAt_to_inv x₀
-  have hpre : φ.symm ⁻¹' {b : M | chartE_section_repr (I := I) x₀
+  have hpre : φ.symm ⁻¹' {b : M | chartESectionRepr (I := I) x₀
         (polyCoordExtensionTangent (I := I) x₀ P) b = P (φ b - φ x₀)} ∈ 𝓝 (φ x₀) := by
     apply hsymm_cont.preimage_mem_nhds
     rw [hsymm_pt]; exact hmem
@@ -564,25 +574,25 @@ lemma chartE_section_repr_polyCoordExtensionTangent_eventuallyEq
       extChartAt_target_subset_interior_of_boundaryless (I := I) x₀ (φ.map_source hx₀src)
     exact Filter.mem_of_superset (isOpen_interior.mem_nhds hx₀int) interior_subset
   filter_upwards [hpre, htgt] with y hy hy_tgt
-  have hy' : chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) (φ.symm y)
+  have hy' : chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) (φ.symm y)
       = P (φ (φ.symm y) - φ x₀) := hy
-  change chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) (φ.symm y)
+  change chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) (φ.symm y)
       = P (y - φ x₀)
   rw [hy', φ.right_inv hy_tgt]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma chartE_section_repr_polyCoordExtensionTangent_eq
     (x₀ : M) (P : E → E) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) :
-    chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) b =
+    chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) b =
       (linExtBump (I := I) x₀ : M → ℝ) b •
         P (extChartAt I x₀ b - extChartAt I x₀ x₀) := by
   classical
   rw [chartE_section_repr_eq_trivToE, polyCoordExtensionTangent_apply, map_smul]
   rw [trivToE_trivFromE (I := I) x₀ hb]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem polyCoordExtensionTangent_smooth (x₀ : M) {P : E → E}
     (hP : ContDiff ℝ ∞ P) :
@@ -628,7 +638,8 @@ theorem polyCoordExtensionTangent_smooth (x₀ : M) {P : E → E}
       have h := (trivializationAt E (TangentSpace I) x₀).apply_mk_symm hb_base
         (P (extChartAt I x₀ b - extChartAt I x₀ x₀))
       simpa using congrArg Prod.snd h
-    simpa [hF_def, trivFromE, Trivialization.symmL_apply] using happ
+    simpa [hF_def, trivFromE,
+      Trivialization.symmL_apply _ hb_base] using happ
   have h := ContMDiffOn.smul_section_of_tsupport (𝕜 := ℝ) (n := ∞)
     (V := TangentSpace I) hψ_smooth hu_open hψ_tsupport hF_smooth
   have h_eq : (fun b : M => TotalSpace.mk' E (E := TangentSpace I) b
@@ -642,7 +653,7 @@ theorem polyCoordExtensionTangent_smooth (x₀ : M) {P : E → E}
   rw [h_eq]
   exact h
 
-omit [InnerProductSpace ℝ E] [CompactSpace M] in
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem covApply_polyCoordExtensionTangent_basepoint_eq
@@ -650,7 +661,8 @@ theorem covApply_polyCoordExtensionTangent_basepoint_eq
     (u : TangentSpace I x₀) :
     (LeviCivita (I := I) g).toFun (polyCoordExtensionTangent (I := I) x₀ P) x₀ u =
       trivFromE (I := I) x₀ x₀
-        (fderiv ℝ (fun y : E => P (y - extChartAt I x₀ x₀)) (extChartAt I x₀ x₀) u +
+        (fderiv ℝ (fun y : E => P (y - extChartAt I x₀ x₀)) (extChartAt I x₀ x₀)
+            (tangentCoord (I := I) x₀ u) +
           christoffelCorrection (I := I) g x₀ x₀ (P 0) u) := by
   classical
   have hself : x₀ ∈ chartLeviCivitaGoodSet (I := I) x₀ :=
@@ -660,19 +672,20 @@ theorem covApply_polyCoordExtensionTangent_basepoint_eq
   rw [LeviCivita_chart_apply (I := I) g x₀ hself hMDiff u]
   rw [chartLeviCivita_apply (I := I) g x₀ (polyCoordExtensionTangent (I := I) x₀ P) hself u]
   have hfd :
-      fderiv ℝ (chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P)
+      fderiv ℝ (chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P)
           ∘ (extChartAt I x₀).symm) (extChartAt I x₀ x₀) =
         fderiv ℝ (fun y : E => P (y - extChartAt I x₀ x₀)) (extChartAt I x₀ x₀) :=
     (chartE_section_repr_polyCoordExtensionTangent_eventuallyEq (I := I) x₀ P).fderiv_eq
   rw [hfd, trivToE_self_apply (I := I) x₀ u]
+  rw [← tangentCoord_eq_centeredChartTangentEquiv (I := I) x₀ u]
   have hrepr0 :
-      chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) x₀ = P 0 := by
-    rw [chartE_section_repr_eq_trivToE, polyCoordExtensionTangent_basepoint,
-      trivToE_self_apply]
+      chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) x₀ = P 0 := by
+    rw [chartE_section_repr_eq_trivToE, polyCoordExtensionTangent_basepoint]
+    rw [trivToE_self_apply, ContinuousLinearEquiv.apply_symm_apply]
   rw [hrepr0]
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [InnerProductSpace ℝ E] [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private lemma LeviCivita_covApply_polyCoordExt_firstLayer_pointwise
@@ -702,17 +715,17 @@ private lemma LeviCivita_covApply_polyCoordExt_firstLayer_pointwise
   rw [chartLeviCivita_apply (I := I) g x₀ (polyCoordExtensionTangent (I := I) x₀ P) hb
     (linearExtensionTangent (I := I) x₀ u b)]
   have hev :
-      (chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) ∘ φ.symm)
+      (chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) ∘ φ.symm)
         =ᶠ[𝓝 (φ b)] (fun y : E => P (y - c)) := by
     have hsymm_cont : ContinuousAt φ.symm (φ b) := continuousAt_extChartAt_symm' hb_src
     have hsymm_pt : φ.symm (φ b) = b := φ.left_inv hb_src
-    have hmem : {c' : M | chartE_section_repr (I := I) x₀
+    have hmem : {c' : M | chartESectionRepr (I := I) x₀
           (polyCoordExtensionTangent (I := I) x₀ P) c' = P (φ c' - c)} ∈ 𝓝 b := by
       filter_upwards [hb1, hbbase] with d hd1 hdbase
       have hWd : polyCoordExtensionTangent (I := I) x₀ P d =
           trivFromE (I := I) x₀ d (P (φ d - c)) := by
         rw [polyCoordExtensionTangent_apply, hd1, one_smul]
-      change chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) d = P
+      change chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) d = P
         (φ d - c)
       rw [chartE_section_repr_eq_trivToE, hWd]
       exact trivToE_trivFromE (I := I) x₀ hdbase _
@@ -721,14 +734,14 @@ private lemma LeviCivita_covApply_polyCoordExt_firstLayer_pointwise
         (chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hb)) interior_subset
     filter_upwards [hsymm_cont.preimage_mem_nhds (by rw [hsymm_pt]; exact hmem), htgt]
       with y hy hy_tgt
-    have hy' : chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) (φ.symm y)
+    have hy' : chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) (φ.symm y)
         = P (φ (φ.symm y) - c) := hy
-    change (chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) ∘ φ.symm) y
+    change (chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) ∘ φ.symm) y
         = P (y - c)
     simp only [Function.comp_apply]
     rw [hy', φ.right_inv hy_tgt]
   have hfd :
-      fderiv ℝ (chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) ∘ φ.symm)
+      fderiv ℝ (chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) ∘ φ.symm)
         (φ b) = fderiv ℝ P (φ b - c) := by
     rw [hev.fderiv_eq]
     have hshift : HasFDerivAt (fun y : E => y - c) (ContinuousLinearMap.id ℝ E) (φ b) :=
@@ -748,7 +761,7 @@ private lemma LeviCivita_covApply_polyCoordExt_firstLayer_pointwise
     have := chartE_section_repr_coordExtensionTangent_eq (I := I) x₀ u hb_base
     rwa [chartE_section_repr_eq_trivToE] at this
   rw [hread]
-  have hreprb : chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) b =
+  have hreprb : chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) b =
       P (φ b - c) := by
     have hWb : polyCoordExtensionTangent (I := I) x₀ P b =
         trivFromE (I := I) x₀ b (P (φ b - c)) := by
@@ -758,13 +771,12 @@ private lemma LeviCivita_covApply_polyCoordExt_firstLayer_pointwise
   rw [hreprb]
 
 omit [CompactSpace M] in
-omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private lemma chartE_section_repr_covApply_polyCoordExt_eventuallyEq
     (g : SmoothRiemannianMetric I M) (x₀ : M) {P : E → E} (hP : ContDiff ℝ ∞ P)
     (u : TangentSpace I x₀) :
-    (chartE_section_repr (I := I) x₀
+    (chartESectionRepr (I := I) x₀
         (DifferentialGeometry.Geometry.Curvature.covApply (LeviCivita (I := I) g)
           (linearExtensionTangent (I := I) x₀ u)
           (polyCoordExtensionTangent (I := I) x₀ P)) ∘ (extChartAt I x₀).symm)
@@ -844,7 +856,6 @@ private def innerReprPoly (g : SmoothRiemannianMetric I M) (x₀ : M) (P : E →
           (chartModelBasis E) m
 
 omit [CompactSpace M] in
-omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private lemma covApply_covApply_polyCoordExt_basepoint_reduce
@@ -854,7 +865,8 @@ private lemma covApply_covApply_polyCoordExt_basepoint_reduce
         (covApply (LeviCivita (I := I) g) (linearExtensionTangent (I := I) x₀ u)
           (polyCoordExtensionTangent (I := I) x₀ P)) x₀ u =
       trivFromE (I := I) x₀ x₀
-        (fderiv ℝ (innerReprPoly (I := I) g x₀ P u) (extChartAt I x₀ x₀) u +
+        (fderiv ℝ (innerReprPoly (I := I) g x₀ P u) (extChartAt I x₀ x₀)
+            (tangentCoord (I := I) x₀ u) +
           christoffelCorrection (I := I) g x₀ x₀
             (innerReprPoly (I := I) g x₀ P u (extChartAt I x₀ x₀)) u) := by
   classical
@@ -880,12 +892,13 @@ private lemma covApply_covApply_polyCoordExt_basepoint_reduce
   rw [LeviCivita_chart_apply (I := I) g x₀ hx₀_good hS_at u]
   rw [chartLeviCivita_apply (I := I) g x₀ S hx₀_good u]
   rw [trivToE_self_apply (I := I) x₀ u]
-  have hev' : (chartE_section_repr (I := I) x₀ S ∘ φ.symm)
+  rw [← tangentCoord_eq_centeredChartTangentEquiv (I := I) x₀ u]
+  have hev' : (chartESectionRepr (I := I) x₀ S ∘ φ.symm)
       =ᶠ[𝓝 c] innerReprPoly (I := I) g x₀ P u := hev
-  have hfd_eq : fderiv ℝ (chartE_section_repr (I := I) x₀ S ∘ φ.symm) c =
+  have hfd_eq : fderiv ℝ (chartESectionRepr (I := I) x₀ S ∘ φ.symm) c =
       fderiv ℝ (innerReprPoly (I := I) g x₀ P u) c := hev'.fderiv_eq
   rw [hfd_eq]
-  have hSx₀_repr : chartE_section_repr (I := I) x₀ S x₀ = innerReprPoly (I := I) g x₀ P u c := by
+  have hSx₀_repr : chartESectionRepr (I := I) x₀ S x₀ = innerReprPoly (I := I) g x₀ P u c := by
     have h0 := hev'.self_of_nhds
     simp only [Function.comp_apply] at h0
     rw [φ.left_inv hx₀src_ext] at h0
@@ -894,17 +907,19 @@ private lemma covApply_covApply_polyCoordExt_basepoint_reduce
 
 private def jetCancelPoly (g : SmoothRiemannianMetric I M) (x₀ : M) (v : TangentSpace I x₀)
     (Qbil : E →L[ℝ] E →L[ℝ] E) : E → E :=
-  fun h => -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v) h) +
+  fun h => -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)
+      ((centeredChartTangentEquiv (I := I) x₀).symm h)) +
     (1 / 2 : ℝ) • Qbil h h
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma jetCancelPoly_zero (g : SmoothRiemannianMetric I M) (x₀ : M) (v : TangentSpace I x₀)
     (Qbil : E →L[ℝ] E →L[ℝ] E) :
     jetCancelPoly (I := I) g x₀ v Qbil 0 = 0 := by
-  simp [jetCancelPoly]
+  simp only [jetCancelPoly, tangentCoord_apply, Trivialization.continuousLinearMapAt_apply,
+    one_div, map_zero, smul_zero, add_zero, neg_eq_zero]
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma hasFDerivAt_centredQuad_at_centre
     (Qbil : E →L[ℝ] E →L[ℝ] E) (c : E) :
     HasFDerivAt (fun y : E => (1 / 2 : ℝ) • Qbil (y - c) (y - c)) (0 : E →L[ℝ] E) c := by
@@ -923,33 +938,37 @@ private lemma hasFDerivAt_centredQuad_at_centre
   rw [smul_zero] at this
   exact this
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma jetCancelPoly_contDiff (g : SmoothRiemannianMetric I M) (x₀ : M)
     (v : TangentSpace I x₀) (Qbil : E →L[ℝ] E →L[ℝ] E) :
     ContDiff ℝ ∞ (jetCancelPoly (I := I) g x₀ v Qbil) := by
   unfold jetCancelPoly
   have h1 : ContDiff ℝ ∞ (fun h : E =>
-      -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v) h)) :=
-    ((christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v) :
-      E →L[ℝ] E).contDiff).neg
+      -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)
+        ((centeredChartTangentEquiv (I := I) x₀).symm h))) :=
+    (((christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)).comp
+      (centeredChartTangentEquiv (I := I) x₀).symm.toContinuousLinearMap).contDiff).neg
   have h2 : ContDiff ℝ ∞ (fun h : E => (1 / 2 : ℝ) • Qbil h h) := by
     have hb : ContDiff ℝ ∞ (fun h : E => (Qbil h) h) :=
       (Qbil.contDiff.clm_apply contDiff_id)
     exact hb.const_smul _
   exact h1.add h2
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma fderiv_jetCancelPoly_centred
     (g : SmoothRiemannianMetric I M) (x₀ : M) (v : TangentSpace I x₀)
     (Qbil : E →L[ℝ] E →L[ℝ] E) (u : E) :
     fderiv ℝ (fun y : E => jetCancelPoly (I := I) g x₀ v Qbil (y - extChartAt I x₀ x₀))
         (extChartAt I x₀ x₀) u =
-      -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v) u) := by
+      -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)
+        ((centeredChartTangentEquiv (I := I) x₀).symm u)) := by
   classical
   set c := extChartAt I x₀ x₀ with hc
-  set L : E →L[ℝ] E := christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v) with hL
+  set L : E →L[ℝ] E :=
+    (christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)).comp
+      (centeredChartTangentEquiv (I := I) x₀).symm.toContinuousLinearMap with hL
   have hlinFD : HasFDerivAt (fun y : E => -(L (y - c))) (-L) c := by
     have h0 : HasFDerivAt (fun y : E => L (y - c)) L c := by
       have hshift : HasFDerivAt (fun y : E => y - c) (ContinuousLinearMap.id ℝ E) c :=
@@ -969,46 +988,43 @@ private lemma fderiv_jetCancelPoly_centred
       -(L (y - c)) + (1 / 2 : ℝ) • Qbil (y - c) (y - c)
     rw [hL]; rfl
   rw [hsum.fderiv]
-  rw [ContinuousLinearMap.neg_apply, hL]
+  rw [neg_apply, hL]
   rfl
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
-    [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma tangentCoord_self (x₀ : M) (u : TangentSpace I x₀) :
-    tangentCoord (I := I) x₀ u = u := trivToE_self_apply (I := I) x₀ u
-
 private def christoffelCorrectionBilin (g : SmoothRiemannianMetric I M) (x₀ : M) :
-    E →L[ℝ] (TangentSpace I x₀ →L[ℝ] E) :=
+    E →L[ℝ] E →L[ℝ] E :=
   ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
     ∑ k : Fin (Module.finrank ℝ E),
       (((chartModelBasis E).coord j).toContinuousLinearMap).smulRight
-        ((((chartModelBasis E).coord i).toContinuousLinearMap.comp
-            (trivToE (I := I) x₀ x₀)).smulRight
+        ((((chartModelBasis E).coord i).toContinuousLinearMap).smulRight
           (chartChristoffel (I := I) g x₀ i j k (extChartAt I x₀ x₀) • (chartModelBasis E) k))
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma christoffelCorrectionBilin_apply (g : SmoothRiemannianMetric I M) (x₀ : M)
-    (Y : E) (v : TangentSpace I x₀) :
-    christoffelCorrectionBilin (I := I) g x₀ Y v =
-      christoffelCorrection (I := I) g x₀ x₀ Y v := by
+    (Y U : E) :
+    christoffelCorrectionBilin (I := I) g x₀ Y U =
+      christoffelCorrection (I := I) g x₀ x₀ Y
+        ((centeredChartTangentEquiv (I := I) x₀).symm U) := by
   classical
   rw [christoffelCorrection_apply]
   unfold christoffelCorrectionBilin
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  rw [ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.comp_apply, smul_smul, smul_smul]
+  rw [ContinuousLinearMap.smulRight_apply, smul_apply,
+    ContinuousLinearMap.smulRight_apply, smul_smul, smul_smul]
   congr 1
-  change ((chartModelBasis E).coord j) Y * ((chartModelBasis E).coord i) (trivToE (I := I) x₀ x₀ v)
-    *
+  change ((chartModelBasis E).coord j) Y * ((chartModelBasis E).coord i) U *
       chartChristoffel (I := I) g x₀ i j k (extChartAt I x₀ x₀) =
-    ((chartModelBasis E).coord i) (trivToE (I := I) x₀ x₀ v) * ((chartModelBasis E).coord j) Y *
+    ((chartModelBasis E).coord i)
+        (trivToE (I := I) x₀ x₀ ((centeredChartTangentEquiv (I := I) x₀).symm U)) *
+      ((chartModelBasis E).coord j) Y *
       chartChristoffel (I := I) g x₀ i j k (extChartAt I x₀ x₀)
+  rw [trivToE_self_apply, ContinuousLinearEquiv.apply_symm_apply]
   ring
 
 private def christoffelDerivQuadraticCorrection (g : SmoothRiemannianMetric I M) (x₀ : M) (V : E) :
@@ -1018,11 +1034,10 @@ private def christoffelDerivQuadraticCorrection (g : SmoothRiemannianMetric I M)
       (((chartModelBasis E).coord k).toContinuousLinearMap).smulRight
         ((((chartModelBasis E).coord i).toContinuousLinearMap).smulRight
           (((chartModelBasis E).repr V) j •
-            trivFromE (I := I) x₀ x₀
-              ((fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
-                  (extChartAt I x₀ x₀)) ((chartModelBasis E) k) • (chartModelBasis E) m)))
+            ((fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
+                (extChartAt I x₀ x₀)) ((chartModelBasis E) k) • (chartModelBasis E) m)))
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma psiDGamma_apply (g : SmoothRiemannianMetric I M) (x₀ : M) (V : E) (a b : E) :
     christoffelDerivQuadraticCorrection (I := I) g x₀ V a b =
@@ -1030,20 +1045,19 @@ private lemma psiDGamma_apply (g : SmoothRiemannianMetric I M) (x₀ : M) (V : E
         ∑ k : Fin (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
           (((chartModelBasis E).repr a) k * ((chartModelBasis E).repr b) i *
               ((chartModelBasis E).repr V) j) •
-            trivFromE (I := I) x₀ x₀
-              ((fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
-                  (extChartAt I x₀ x₀)) ((chartModelBasis E) k) • (chartModelBasis E) m) := by
+            ((fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
+                (extChartAt I x₀ x₀)) ((chartModelBasis E) k) • (chartModelBasis E) m) := by
   classical
   unfold christoffelDerivQuadraticCorrection
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl (fun m _ => ?_)
-  rw [ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.smul_apply,
+  rw [ContinuousLinearMap.smulRight_apply, smul_apply,
     ContinuousLinearMap.smulRight_apply]
   conv_rhs =>
     rw [show ((chartModelBasis E).repr a) k * ((chartModelBasis E).repr b) i *
@@ -1064,9 +1078,9 @@ private def christoffelSquaredQuadraticCorrection (g : SmoothRiemannianMetric I 
             ((((chartModelBasis E).repr V) j *
                 chartChristoffel (I := I) g x₀ k l m (extChartAt I x₀ x₀) *
                 chartChristoffel (I := I) g x₀ i j l (extChartAt I x₀ x₀)) •
-              trivFromE (I := I) x₀ x₀ ((chartModelBasis E) m)))
+              (chartModelBasis E) m))
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma psiGG_apply (g : SmoothRiemannianMetric I M) (x₀ : M) (V : E) (a b : E) :
     christoffelSquaredQuadraticCorrection (I := I) g x₀ V a b =
@@ -1077,20 +1091,20 @@ private lemma psiGG_apply (g : SmoothRiemannianMetric I M) (x₀ : M) (V : E) (a
                 ((chartModelBasis E).repr V) j *
                 chartChristoffel (I := I) g x₀ k l m (extChartAt I x₀ x₀) *
                 chartChristoffel (I := I) g x₀ i j l (extChartAt I x₀ x₀)) •
-              trivFromE (I := I) x₀ x₀ ((chartModelBasis E) m) := by
+              (chartModelBasis E) m := by
   classical
   unfold christoffelSquaredQuadraticCorrection
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl (fun l _ => ?_)
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl (fun m _ => ?_)
-  rw [ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.smul_apply,
+  rw [ContinuousLinearMap.smulRight_apply, smul_apply,
     ContinuousLinearMap.smulRight_apply]
   conv_rhs =>
     rw [show ((chartModelBasis E).repr a) i * ((chartModelBasis E).repr b) k *
@@ -1105,15 +1119,18 @@ private lemma psiGG_apply (g : SmoothRiemannianMetric I M) (x₀ : M) (V : E) (a
       mul_smul, mul_smul]
   rfl
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma fderiv_jetCancelPoly_apply (g : SmoothRiemannianMetric I M) (x₀ : M)
     (v : TangentSpace I x₀) (Qbil : E →L[ℝ] E →L[ℝ] E) (z w : E) :
     fderiv ℝ (jetCancelPoly (I := I) g x₀ v Qbil) z w =
-      -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v) w) +
+      -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)
+          ((centeredChartTangentEquiv (I := I) x₀).symm w)) +
         (1 / 2 : ℝ) • (Qbil z w + Qbil w z) := by
   classical
-  set L : E →L[ℝ] E := christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v) with hL
+  set L : E →L[ℝ] E :=
+    (christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)).comp
+      (centeredChartTangentEquiv (I := I) x₀).symm.toContinuousLinearMap with hL
   have hlin : HasFDerivAt (fun y : E => -(L y)) (-L) z := (L.hasFDerivAt).neg
   have hid : HasFDerivAt (fun y : E => y) (ContinuousLinearMap.id ℝ E) z := hasFDerivAt_id z
   have hc : HasFDerivAt (fun y : E => Qbil y) (Qbil.comp (ContinuousLinearMap.id ℝ E)) z :=
@@ -1128,24 +1145,27 @@ private lemma fderiv_jetCancelPoly_apply (g : SmoothRiemannianMetric I M) (x₀ 
     refine (hlin.add hquad).congr_of_eventuallyEq ?_
     filter_upwards with y
     change jetCancelPoly (I := I) g x₀ v Qbil y = -(L y) + (1 / 2 : ℝ) • Qbil y y
-    rw [hL]; rfl
+    rw [hL, ContinuousLinearMap.comp_apply]
+    rfl
   rw [hsum.fderiv]
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.neg_apply,
-    ContinuousLinearMap.smul_apply, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.comp_apply, ContinuousLinearMap.id_apply,
+  simp only [add_apply, neg_apply,
+    smul_apply, add_apply,
+    ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.flip_apply, ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.id_apply, hL]
-  congr 1
+    ContinuousLinearMap.id_apply]
+  rw [hL, ContinuousLinearMap.comp_apply]
+  rfl
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma fderiv_jetCancelPoly_zero_apply (g : SmoothRiemannianMetric I M) (x₀ : M)
     (v : TangentSpace I x₀) (Qbil : E →L[ℝ] E →L[ℝ] E) (w : E) :
     fderiv ℝ (jetCancelPoly (I := I) g x₀ v Qbil) 0 w =
-      -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v) w) := by
+      -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v)
+        ((centeredChartTangentEquiv (I := I) x₀).symm w)) := by
   rw [fderiv_jetCancelPoly_apply]; simp
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma fderiv_jetCancel_Aterm (g : SmoothRiemannianMetric I M) (x₀ : M)
     (v : TangentSpace I x₀) (Qbil : E →L[ℝ] E →L[ℝ] E) (U u : E) :
@@ -1155,7 +1175,9 @@ private lemma fderiv_jetCancel_Aterm (g : SmoothRiemannianMetric I M) (x₀ : M)
   classical
   set c := extChartAt I x₀ x₀ with hc
   have hfun : (fun y : E => fderiv ℝ (jetCancelPoly (I := I) g x₀ v Qbil) (y - c) U) =
-      (fun y : E => -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v) U) +
+      (fun y : E => -(christoffelCorrection (I := I) g x₀ x₀
+          (tangentCoord (I := I) x₀ v)
+          ((centeredChartTangentEquiv (I := I) x₀).symm U)) +
         (1 / 2 : ℝ) • (Qbil (y - c) U + Qbil U (y - c))) := by
     funext y; rw [fderiv_jetCancelPoly_apply]
   rw [hfun]
@@ -1179,19 +1201,23 @@ private lemma fderiv_jetCancel_Aterm (g : SmoothRiemannianMetric I M) (x₀ : M)
       exact ((Qbil U).hasFDerivAt).comp z hshiftz
     have h := hgen c; rwa [ContinuousLinearMap.comp_id] at h
   have hAfull : HasFDerivAt
-      (fun y : E => -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v) U) +
+      (fun y : E => -(christoffelCorrection (I := I) g x₀ x₀
+          (tangentCoord (I := I) x₀ v)
+          ((centeredChartTangentEquiv (I := I) x₀).symm U)) +
         (1 / 2 : ℝ) • (Qbil (y - c) U + Qbil U (y - c)))
       ((1 / 2 : ℝ) • (Qbil.flip U + Qbil U)) c := by
     have hconst : HasFDerivAt
-        (fun _ : E => -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v) U))
+        (fun _ : E => -(christoffelCorrection (I := I) g x₀ x₀
+          (tangentCoord (I := I) x₀ v)
+          ((centeredChartTangentEquiv (I := I) x₀).symm U)))
         (0 : E →L[ℝ] E) c := hasFDerivAt_const _ c
     have := hconst.add ((hA1.add hA2).const_smul (1 / 2 : ℝ))
     rwa [zero_add] at this
-  rw [hAfull.fderiv, ContinuousLinearMap.smul_apply, ContinuousLinearMap.add_apply,
+  rw [hAfull.fderiv, smul_apply, add_apply,
     ContinuousLinearMap.flip_apply]
 
 omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartChristoffel_differentiableAt_basepoint'
     (g : SmoothRiemannianMetric I M) (x₀ : M) (i j m : Fin (Module.finrank ℝ E)) :
     DifferentiableAt ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
@@ -1199,7 +1225,7 @@ private lemma chartChristoffel_differentiableAt_basepoint'
   chartChristoffel_differentiableAt_basepoint (I := I) g x₀ i j m
 
 omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma diffAt_jetCancel_Bsummand (g : SmoothRiemannianMetric I M) (x₀ : M)
     {P : E → E} (hP : ContDiff ℝ ∞ P) (U : E) (i j m : Fin (Module.finrank ℝ E)) :
     DifferentiableAt ℝ (fun y : E =>
@@ -1219,7 +1245,7 @@ private lemma diffAt_jetCancel_Bsummand (g : SmoothRiemannianMetric I M) (x₀ :
   exact (((hcoordj.const_mul _).mul hγ)).smul_const ((chartModelBasis E) m)
 
 omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma fderiv_jetCancel_Bsummand (g : SmoothRiemannianMetric I M) (x₀ : M)
     {P : E → E} (hP : ContDiff ℝ ∞ P) (hP0 : P 0 = 0) (U u : E)
     (i j m : Fin (Module.finrank ℝ E)) :
@@ -1271,12 +1297,12 @@ private lemma fderiv_jetCancel_Bsummand (g : SmoothRiemannianMetric I M) (x₀ :
         γ c • ((cst : ℝ) • ((((chartModelBasis E).coord j).toContinuousLinearMap).comp
           (fderiv ℝ P 0)))) u) =
         cst * (((chartModelBasis E).repr (fderiv ℝ P 0 u)) j) * γ c := by
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       ContinuousLinearMap.comp_apply, hcoordeq, hP0c, smul_eq_mul]
     ring
   rw [hcoeff]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma innerReprPoly_centre (g : SmoothRiemannianMetric I M) (x₀ : M)
     {P : E → E} (hP0 : P 0 = 0) (u : TangentSpace I x₀) :
@@ -1296,17 +1322,20 @@ private lemma innerReprPoly_centre (g : SmoothRiemannianMetric I M) (x₀ : M)
   simp
 
 omit [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 private lemma fderiv_innerReprPoly_jetCancel (g : SmoothRiemannianMetric I M) (x₀ : M)
     (v : TangentSpace I x₀) (Qbil : E →L[ℝ] E →L[ℝ] E) (u : TangentSpace I x₀) :
-    fderiv ℝ (innerReprPoly (I := I) g x₀ (jetCancelPoly (I := I) g x₀ v Qbil) u)
-        (extChartAt I x₀ x₀) u =
-      (1 / 2 : ℝ) • (Qbil u (tangentCoord (I := I) x₀ u) + Qbil (tangentCoord (I := I) x₀ u) u) +
+  fderiv ℝ (innerReprPoly (I := I) g x₀ (jetCancelPoly (I := I) g x₀ v Qbil) u)
+        (extChartAt I x₀ x₀) (tangentCoord (I := I) x₀ u) =
+      (1 / 2 : ℝ) •
+          (Qbil (tangentCoord (I := I) x₀ u) (tangentCoord (I := I) x₀ u) +
+            Qbil (tangentCoord (I := I) x₀ u) (tangentCoord (I := I) x₀ u)) +
         ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           ∑ m : Fin (Module.finrank ℝ E),
             (((chartModelBasis E).repr (tangentCoord (I := I) x₀ u)) i *
                 (((chartModelBasis E).repr
-                  (fderiv ℝ (jetCancelPoly (I := I) g x₀ v Qbil) 0 u)) j) *
+                  (fderiv ℝ (jetCancelPoly (I := I) g x₀ v Qbil) 0
+                    (tangentCoord (I := I) x₀ u))) j) *
                 chartChristoffel (I := I) g x₀ i j m (extChartAt I x₀ x₀)) •
               (chartModelBasis E) m := by
   classical
@@ -1326,7 +1355,9 @@ private lemma fderiv_innerReprPoly_jetCancel (g : SmoothRiemannianMetric I M) (x
   have hAdiff : DifferentiableAt ℝ Afun c := by
     rw [hAfun]
     have hfun : (fun y : E => fderiv ℝ P (y - c) U) =
-        (fun y : E => -(christoffelCorrection (I := I) g x₀ x₀ (tangentCoord (I := I) x₀ v) U) +
+        (fun y : E => -(christoffelCorrection (I := I) g x₀ x₀
+            (tangentCoord (I := I) x₀ v)
+            ((centeredChartTangentEquiv (I := I) x₀).symm U)) +
           (1 / 2 : ℝ) • (Qbil (y - c) U + Qbil U (y - c))) := by
       funext y; rw [hP, fderiv_jetCancelPoly_apply]
     rw [hfun]
@@ -1339,63 +1370,59 @@ private lemma fderiv_innerReprPoly_jetCancel (g : SmoothRiemannianMetric I M) (x
     rw [hBfun]
     exact DifferentiableAt.fun_sum (fun i _ => DifferentiableAt.fun_sum (fun j _ =>
       DifferentiableAt.fun_sum (fun m _ => diffAt_jetCancel_Bsummand (I := I) g x₀ hPcd U i j m)))
-  rw [fderiv_fun_add hAdiff hBdiff, ContinuousLinearMap.add_apply]
+  rw [fderiv_fun_add hAdiff hBdiff, add_apply]
   congr 1
   · rw [hAfun, hP]
-    exact fderiv_jetCancel_Aterm (I := I) g x₀ v Qbil U u
+    exact fderiv_jetCancel_Aterm (I := I) g x₀ v Qbil U U
   · rw [hBfun]
     rw [fderiv_fun_sum (fun i _ => DifferentiableAt.fun_sum
       (fun j _ => DifferentiableAt.fun_sum
         (fun m _ => diffAt_jetCancel_Bsummand (I := I) g x₀ hPcd U i j m)))]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [fderiv_fun_sum (fun j _ => DifferentiableAt.fun_sum
       (fun m _ => diffAt_jetCancel_Bsummand (I := I) g x₀ hPcd U i j m))]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl (fun j _ => ?_)
     rw [fderiv_fun_sum (fun m _ => diffAt_jetCancel_Bsummand (I := I) g x₀ hPcd U i j m)]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl (fun m _ => ?_)
-    exact fderiv_jetCancel_Bsummand (I := I) g x₀ hPcd hP0 U u i j m
+    exact fderiv_jetCancel_Bsummand (I := I) g x₀ hPcd hP0 U U i j m
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma psiDGamma_diag (g : SmoothRiemannianMetric I M) (x₀ : M) (V : E)
-    (u : TangentSpace I x₀) :
-    christoffelDerivQuadraticCorrection (I := I) g x₀ V u u =
-      trivFromE (I := I) x₀ x₀
-        (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+    (U : E) :
+    christoffelDerivQuadraticCorrection (I := I) g x₀ V U U =
+      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E), ∑ m : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr (tangentCoord (I := I) x₀ u)) k *
-                ((chartModelBasis E).repr (tangentCoord (I := I) x₀ u)) i *
+            (((chartModelBasis E).repr U) k *
+                ((chartModelBasis E).repr U) i *
                 ((chartModelBasis E).repr V) j) •
               ((fderiv ℝ (fun y : E => chartChristoffel (I := I) g x₀ i j m y)
-                  (extChartAt I x₀ x₀)) ((chartModelBasis E) k) • (chartModelBasis E) m)) := by
+                  (extChartAt I x₀ x₀)) ((chartModelBasis E) k) • (chartModelBasis E) m) := by
   classical
-  rw [psiDGamma_apply, tangentCoord_self]
-  simp only [map_sum, ContinuousLinearMap.map_smul]
+  rw [psiDGamma_apply]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma psiGG_diag (g : SmoothRiemannianMetric I M) (x₀ : M) (V : E)
-    (u : TangentSpace I x₀) :
-    christoffelSquaredQuadraticCorrection (I := I) g x₀ V u u =
-      trivFromE (I := I) x₀ x₀
-        (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
+    (U : E) :
+    christoffelSquaredQuadraticCorrection (I := I) g x₀ V U U =
+      ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
             ∑ m : Fin (Module.finrank ℝ E),
-            (((chartModelBasis E).repr (tangentCoord (I := I) x₀ u)) i *
-                ((chartModelBasis E).repr (tangentCoord (I := I) x₀ u)) k *
+            (((chartModelBasis E).repr U) i *
+                ((chartModelBasis E).repr U) k *
                 ((chartModelBasis E).repr V) j *
                 chartChristoffel (I := I) g x₀ k l m (extChartAt I x₀ x₀) *
                 chartChristoffel (I := I) g x₀ i j l (extChartAt I x₀ x₀)) •
-              (chartModelBasis E) m) := by
+              (chartModelBasis E) m := by
   classical
-  rw [psiGG_apply, tangentCoord_self]
-  simp only [map_sum, ContinuousLinearMap.map_smul]
+  rw [psiGG_apply]
 
 omit [CompactSpace M] in
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private lemma exists_jetCancelQuadraticCoeff
     (g : SmoothRiemannianMetric I M) (x₀ : M) (v : TangentSpace I x₀) :
@@ -1409,9 +1436,11 @@ private lemma exists_jetCancelQuadraticCoeff
               (linearExtensionTangent (I := I) x₀ v)) x₀ u) := by
   classical
   set V : E := tangentCoord (I := I) x₀ v with hV
+  set ΓV : E →L[ℝ] E :=
+    (christoffelCorrection (I := I) g x₀ x₀ V).comp
+      (centeredChartTangentEquiv (I := I) x₀).symm.toContinuousLinearMap with hΓV
   set Φ₁ : E →L[ℝ] E →L[ℝ] E :=
-    (christoffelCorrectionBilin (I := I) g x₀).comp
-      (-(christoffelCorrection (I := I) g x₀ x₀ V)) with hΦ₁
+    (christoffelCorrectionBilin (I := I) g x₀).comp (-ΓV) with hΦ₁
   refine ⟨-(christoffelDerivQuadraticCorrection (I := I) g x₀ V) -
     christoffelSquaredQuadraticCorrection (I := I) g x₀ V - (2 : ℝ) • Φ₁, fun u => ?_⟩
   set Qbil : E →L[ℝ] E →L[ℝ] E :=
@@ -1419,41 +1448,42 @@ private lemma exists_jetCancelQuadraticCoeff
       (I := I) g x₀ V - (2 : ℝ) • Φ₁ with hQbil
   set P : E → E := jetCancelPoly (I := I) g x₀ v Qbil with hP
   set c := extChartAt I x₀ x₀ with hc
-  have hU : tangentCoord (I := I) x₀ u = u := tangentCoord_self (I := I) x₀ u
-  have hfP0 : fderiv ℝ P 0 u = -(christoffelCorrection (I := I) g x₀ x₀ V u) := by
-    rw [hP]; exact fderiv_jetCancelPoly_zero_apply (I := I) g x₀ v Qbil u
+  set U : E := tangentCoord (I := I) x₀ u with hU
+  have hU_symm : (centeredChartTangentEquiv (I := I) x₀).symm U = u := by
+    rw [hU, tangentCoord_eq_centeredChartTangentEquiv,
+      ContinuousLinearEquiv.symm_apply_apply]
+  have hfP0 : fderiv ℝ P 0 U =
+      -(christoffelCorrection (I := I) g x₀ x₀ V u) := by
+    rw [hP, fderiv_jetCancelPoly_zero_apply, ← hV, hU_symm]
   rw [covApply_covApply_polyCoordExt_basepoint_reduce (I := I) g x₀
     (jetCancelPoly_contDiff (I := I) g x₀ v Qbil) u]
   rw [show jetCancelPoly (I := I) g x₀ v Qbil = P from rfl]
   rw [innerReprPoly_centre (I := I) g x₀ (jetCancelPoly_zero (I := I) g x₀ v Qbil) u]
-  rw [show fderiv ℝ (innerReprPoly (I := I) g x₀ P u) c u =
-        (1 / 2 : ℝ) • (Qbil u (tangentCoord (I := I) x₀ u) + Qbil (tangentCoord (I := I) x₀ u) u) +
+  rw [show fderiv ℝ (innerReprPoly (I := I) g x₀ P u) c U =
+        (1 / 2 : ℝ) • (Qbil U U + Qbil U U) +
           ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
             ∑ m : Fin (Module.finrank ℝ E),
-              (((chartModelBasis E).repr (tangentCoord (I := I) x₀ u)) i *
-                  (((chartModelBasis E).repr (fderiv ℝ P 0 u)) j) *
+              (((chartModelBasis E).repr U) i *
+                  (((chartModelBasis E).repr (fderiv ℝ P 0 U)) j) *
                   chartChristoffel (I := I) g x₀ i j m c) • (chartModelBasis E) m from
-      fderiv_innerReprPoly_jetCancel (I := I) g x₀ v Qbil u]
+      by simpa [hP, hc, hU] using
+        fderiv_innerReprPoly_jetCancel (I := I) g x₀ v Qbil u]
   rw [show (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         ∑ m : Fin (Module.finrank ℝ E),
-          (((chartModelBasis E).repr (tangentCoord (I := I) x₀ u)) i *
-              (((chartModelBasis E).repr (fderiv ℝ P 0 u)) j) *
+          (((chartModelBasis E).repr U) i *
+              (((chartModelBasis E).repr (fderiv ℝ P 0 U)) j) *
               chartChristoffel (I := I) g x₀ i j m c) • (chartModelBasis E) m) =
-      christoffelCorrection (I := I) g x₀ x₀ (fderiv ℝ P 0 u) u from by
+      christoffelCorrection (I := I) g x₀ x₀ (fderiv ℝ P 0 U) u from by
     rw [christoffelCorrection_apply]
     refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ =>
       Finset.sum_congr rfl (fun m _ => ?_)))
-    rw [show trivToE (I := I) x₀ x₀ u = u from trivToE_self_apply (I := I) x₀ u, hU]]
-  rw [hU]
-  set Cterm : E := christoffelCorrection (I := I) g x₀ x₀ (fderiv ℝ P 0 u) u with hCterm
-  rw [show (1 / 2 : ℝ) • (Qbil u u + Qbil u u) = Qbil u u from by
-    rw [← two_smul ℝ (Qbil u u), smul_smul]; norm_num]
-  rw [show Qbil u u + Cterm + Cterm = Qbil u u + (2 : ℝ) • Cterm from by
+    rw [hc, trivToE_self_apply, ← tangentCoord_eq_centeredChartTangentEquiv, ← hU]]
+  set Cterm : E := christoffelCorrection (I := I) g x₀ x₀ (fderiv ℝ P 0 U) u with hCterm
+  rw [show (1 / 2 : ℝ) • (Qbil U U + Qbil U U) = Qbil U U from by
+    rw [← two_smul ℝ (Qbil U U), smul_smul]; norm_num]
+  rw [show Qbil U U + Cterm + Cterm = Qbil U U + (2 : ℝ) • Cterm from by
     rw [add_assoc, ← two_smul ℝ Cterm]]
-  rw [map_add, map_smul,
-    show trivFromE (I := I) x₀ x₀ (Qbil u u) = Qbil u u from
-      trivFromE_self_apply (I := I) x₀ (Qbil u u),
-    show trivFromE (I := I) x₀ x₀ Cterm = Cterm from trivFromE_self_apply (I := I) x₀ Cterm]
+  rw [map_add, map_smul]
   rw [show (LeviCivita (I := I) g).toFun
         (covApply (LeviCivita (I := I) g) (linearExtensionTangent (I := I) x₀ u)
           (linearExtensionTangent (I := I) x₀ v)) x₀ u =
@@ -1465,19 +1495,24 @@ private lemma exists_jetCancelQuadraticCoeff
   rw [covApply_covApply_linearExtensionTangent_basepoint_eq (I := I) g x₀ v u]
   rw [← hV]
   rw [hQbil]
-  simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.neg_apply,
-    ContinuousLinearMap.smul_apply]
-  rw [psiDGamma_diag (I := I) g x₀ V u, psiGG_diag (I := I) g x₀ V u]
-  rw [show Φ₁ u u = Cterm from by
-    rw [hCterm, hfP0, hΦ₁]
-    change christoffelCorrectionBilin (I := I) g x₀
-        ((-(christoffelCorrection (I := I) g x₀ x₀ V)) u) u =
-      christoffelCorrection (I := I) g x₀ x₀ (-(christoffelCorrection (I := I) g x₀ x₀ V u)) u
-    rw [christoffelCorrectionBilin_apply, ContinuousLinearMap.neg_apply]]
+  simp only [sub_apply, neg_apply,
+    smul_apply]
+  rw [psiDGamma_diag (I := I) g x₀ V U, psiGG_diag (I := I) g x₀ V U]
+  rw [show Φ₁ U U = Cterm from by
+    rw [hCterm, hfP0, hΦ₁, ContinuousLinearMap.comp_apply, neg_apply,
+      hΓV, ContinuousLinearMap.comp_apply, christoffelCorrectionBilin_apply]
+    change christoffelCorrection (I := I) g x₀ x₀
+        (-(christoffelCorrection (I := I) g x₀ x₀ V
+          ((centeredChartTangentEquiv (I := I) x₀).symm U)))
+          ((centeredChartTangentEquiv (I := I) x₀).symm U) =
+      christoffelCorrection (I := I) g x₀ x₀
+        (-(christoffelCorrection (I := I) g x₀ x₀ V u)) u
+    rw [hU_symm]]
+  simp only [map_sub, map_neg, map_smul]
   module
 
 omit [CompactSpace M] in
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem exists_linExtJetCancellingCorrection
     (g : SmoothRiemannianMetric I M) (x₀ : M) (v : TangentSpace I x₀) :
@@ -1498,10 +1533,16 @@ theorem exists_linExtJetCancellingCorrection
   have hP_cd : ContDiff ℝ ∞ P := jetCancelPoly_contDiff (I := I) g x₀ v Qbil
   refine ⟨polyCoordExtensionTangent (I := I) x₀ P, ?_, ?_, ?_, ?_⟩
   · exact polyCoordExtensionTangent_smooth (I := I) x₀ hP_cd
-  · rw [polyCoordExtensionTangent_basepoint, hP_def, jetCancelPoly_zero]
+  · rw [polyCoordExtensionTangent_basepoint, hP_def, jetCancelPoly_zero, map_zero]
   · intro u
     rw [covApply_polyCoordExtensionTangent_basepoint_eq (I := I) g x₀ hP_cd u]
-    rw [hP_def, jetCancelPoly_zero, fderiv_jetCancelPoly_centred (I := I) g x₀ v Qbil u]
+    rw [hP_def, jetCancelPoly_zero,
+      fderiv_jetCancelPoly_centred (I := I) g x₀ v Qbil (tangentCoord (I := I) x₀ u)]
+    have hU_symm : (centeredChartTangentEquiv (I := I) x₀).symm
+        (tangentCoord (I := I) x₀ u) = u := by
+      rw [tangentCoord_eq_centeredChartTangentEquiv,
+        ContinuousLinearEquiv.symm_apply_apply]
+    rw [hU_symm]
     have hcc0 : christoffelCorrection (I := I) g x₀ x₀ (0 : E) u = 0 := by
       rw [christoffelCorrection_apply]
       simp
@@ -1512,7 +1553,7 @@ theorem exists_linExtJetCancellingCorrection
     exact hQbil u
 
 omit [CompactSpace M] in
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem exists_linExtTwoJetVanishing_tangentExtension
     (g : SmoothRiemannianMetric I M) (x₀ : M) (v : TangentSpace I x₀) :
@@ -1539,7 +1580,7 @@ theorem exists_linExtTwoJetVanishing_tangentExtension
       (Set.mem_univ x₀)
     rw [show (fun b => linearExtensionTangent (I := I) x₀ v b + C b) =
         linearExtensionTangent (I := I) x₀ v + C from rfl, hadd]
-    rw [ContinuousLinearMap.add_apply]
+    rw [add_apply]
     rw [hC_grad u, add_neg_cancel]
   · intro u
     have hsplit : covApply (LeviCivita (I := I) g) (linearExtensionTangent (I := I) x₀ u)
@@ -1577,11 +1618,10 @@ theorem exists_linExtTwoJetVanishing_tangentExtension
         (linearExtensionTangent_smooth (I := I) x₀ u) hC1
     have hadd := (LeviCivita (I := I) g).isCovariantDerivativeOnUniv.add hBLv hBC
       (Set.mem_univ x₀)
-    rw [hadd, ContinuousLinearMap.add_apply]
+    rw [hadd, add_apply]
     rw [hC_hess u, add_neg_cancel]
 
 omit [CompactSpace M] [I.Boundaryless] in
-omit [InnerProductSpace ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem covApply_covApply_eq_linExt_of_covApply_zero
@@ -1621,7 +1661,7 @@ theorem covApply_covApply_eq_linExt_of_covApply_zero
   have hadd := (LeviCivita (I := I) g).isCovariantDerivativeOnUniv.add hBZ hBD (Set.mem_univ x₀)
   rw [hsplit]
   rw [hadd]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   have hDvanish : (LeviCivita (I := I) g).toFun
       (covApply (LeviCivita (I := I) g) D W) x₀ (Y x₀) = 0 := by
     have hτ_sm : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] E)) ∞
@@ -1654,7 +1694,7 @@ theorem covApply_covApply_eq_linExt_of_covApply_zero
   rw [hDvanish, add_zero]
 
 omit [CompactSpace M] in
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 theorem exists_twoJetVanishing_tangentExtension
     (g : SmoothRiemannianMetric I M) (x₀ : M) (v : TangentSpace I x₀) :

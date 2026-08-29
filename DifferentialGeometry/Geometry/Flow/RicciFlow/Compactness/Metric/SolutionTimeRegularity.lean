@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -202,14 +201,14 @@ theorem solnMetricJointAt
       (t, x) := fun i j =>
     (hcompOn i j).contMDiffAt hmemProd
   have hcoeff : ∀ (a : Fin 2) i, ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
-      (fun y : M => e.localFrame_coeff I b i y ((V a) y)) x := fun a i =>
-    _root_.contMDiffAt_localFrame_coeff (I := I) b hxe
+      (fun y : M => e.localFrameCoeff I b i y ((V a) y)) x := fun a i =>
+    _root_.contMDiffAt_localFrameCoeff (I := I) b hxe
       ((V a).contMDiff.contMDiffAt) i
   have hsum : ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) (∞ : WithTop ℕ∞)
       (fun q : Real × M =>
         ∑ i, ∑ j,
-          (e.localFrame_coeff I b i q.2 ((V 0) q.2)) *
-            (e.localFrame_coeff I b j q.2 ((V 1) q.2)) *
+          (e.localFrameCoeff I b i q.2 ((V 0) q.2)) *
+            (e.localFrameCoeff I b j q.2 ((V 1) q.2)) *
             (S.family.metric q.1).inner q.2 (e.localFrame b i q.2)
               (e.localFrame b j q.2)) (t, x) := by
     refine ContMDiffAt.sum fun i _ => ContMDiffAt.sum fun j _ => ?_
@@ -221,8 +220,8 @@ theorem solnMetricJointAt
   have hev1 := Bundle.Trivialization.eventually_eq_localFrame_sum_coeff_smul
     (I := I) e b (s := fun y => (V 1) y) hxe
   have hev : ∀ᶠ q : Real × M in 𝓝 (t, x),
-      ((V 0) q.2 = ∑ i, e.localFrame_coeff I b i q.2 ((V 0) q.2) • e.localFrame b i q.2) ∧
-      ((V 1) q.2 = ∑ i, e.localFrame_coeff I b i q.2 ((V 1) q.2) • e.localFrame b i q.2) :=
+      ((V 0) q.2 = ∑ i, e.localFrameCoeff I b i q.2 ((V 0) q.2) • e.localFrame b i q.2) ∧
+      ((V 1) q.2 = ∑ i, e.localFrameCoeff I b i q.2 ((V 1) q.2) • e.localFrame b i q.2) :=
     (continuous_snd.tendsto (t, x)).eventually (hev0.and hev1)
   filter_upwards [hev] with q hq
   have h0 := hq.1
@@ -232,14 +231,14 @@ theorem solnMetricJointAt
     Tensor0SBundle.metricTensorField_apply (I := I) (S.family.metric q.1) q.2 _
   have hexp : (S.family.metric q.1).inner q.2 ((V 0) q.2) ((V 1) q.2)
       = (S.family.metric q.1).inner q.2
-          (∑ i, (Trivialization.localFrame_coeff I e b i q.2) ((V 0) q.2)
+          (∑ i, (Trivialization.localFrameCoeff I e b i q.2) ((V 0) q.2)
             • e.localFrame b i q.2)
-          (∑ j, (Trivialization.localFrame_coeff I e b j q.2) ((V 1) q.2)
+          (∑ j, (Trivialization.localFrameCoeff I e b j q.2) ((V 1) q.2)
             • e.localFrame b j q.2) := by
     rw [← h0, ← h1]
   rw [happ, hexp]
-  simp only [map_sum, map_smul, ContinuousLinearMap.coe_sum', Finset.sum_apply,
-    ContinuousLinearMap.smul_apply, smul_eq_mul, Finset.mul_sum]
+  simp only [map_sum, map_smul, FunLike.coe_sum, Finset.sum_apply,
+    smul_apply, smul_eq_mul, Finset.mul_sum]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
 

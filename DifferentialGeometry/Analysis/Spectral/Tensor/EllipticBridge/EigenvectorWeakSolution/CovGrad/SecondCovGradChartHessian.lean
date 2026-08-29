@@ -26,6 +26,7 @@ open DifferentialGeometry.Analysis.Sobolev
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartCovariantSecondGrad_eq
     (g : SmoothRiemannianMetric I M) (h : SmoothCcTensor g 0 2) (α : M)
@@ -48,6 +49,7 @@ theorem chartCovariantSecondGrad_eq
   exact tensorChartComponentRaw_covGrad (I := I) (M := M) g 0 3
     (covGrad (I := I) (M := M) g 0 2 h) α Idx Jdx hy
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartCovariantSecondGrad_inner
     (g : SmoothRiemannianMetric I M) (h : SmoothCcTensor g 0 2) (α : M)
@@ -64,6 +66,7 @@ theorem chartCovariantSecondGrad_inner
             (Matrix.vecTail Kdx) y :=
   tensorChartComponentRaw_covGrad (I := I) (M := M) g 0 2 h α Idx Kdx hy
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartCovariantSecondGrad_chartHessian_sub_correction
     (g : SmoothRiemannianMetric I M) (h : SmoothCcTensor g 0 2) (α : M)

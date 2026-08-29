@@ -3,7 +3,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff
@@ -66,6 +65,7 @@ private theorem lieTrace_reindex (g₀ g₁ : SmoothRiemannianMetric I M)
     rw [hcomp j]
   rw [harg]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
 theorem metricPrincipalDefect_reindex (g₀ g : SmoothRiemannianMetric I M) :
@@ -94,6 +94,7 @@ theorem metricPrincipalDefect_reindex (g₀ g : SmoothRiemannianMetric I M) :
       (trace_perm_comp deTurckLieArm2DivSlotPermAT)]
   abel
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem phi_realized_eq

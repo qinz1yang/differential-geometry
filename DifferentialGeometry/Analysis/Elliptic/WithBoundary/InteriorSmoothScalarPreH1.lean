@@ -194,17 +194,17 @@ omit [T2Space M] in
 lemma InteriorSmoothScalar.continuous_inner_grad
     {g : SmoothRiemannianMetric (I_half n) M} (f h : InteriorSmoothScalar g) :
     Continuous (fun x : M =>
-      g.inner x ((grad_g_with_boundary_section
+      g.inner x ((gradGWithBoundarySection
             (I := I_half n) g f.smooth f.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x)
-        ((grad_g_with_boundary_section
+        ((gradGWithBoundarySection
             (I := I_half n) g h.smooth h.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x)) :=
   TangentBundle.continuous_g_inner_of_smooth_sections (I := I_half n) g
-    (grad_g_with_boundary_section (I := I_half n) g f.smooth f.interior_support)
-    (grad_g_with_boundary_section (I := I_half n) g h.smooth h.interior_support)
+    (gradGWithBoundarySection (I := I_half n) g f.smooth f.interior_support)
+    (gradGWithBoundarySection (I := I_half n) g h.smooth h.interior_support)
 
 omit [T2Space M] [CompactSpace M] in
 lemma InteriorSmoothScalar.continuous_mul
@@ -216,7 +216,7 @@ lemma InteriorSmoothScalar.integrable_mul
     {g : SmoothRiemannianMetric (I_half n) M} (f h : InteriorSmoothScalar g) :
     Integrable (fun x : M => f.toFun x * h.toFun x)
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I_half n) (M := M) g
   exact (f.continuous_mul h).integrable_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
@@ -224,16 +224,16 @@ lemma InteriorSmoothScalar.integrable_mul
 lemma InteriorSmoothScalar.integrable_inner_grad
     {g : SmoothRiemannianMetric (I_half n) M} (f h : InteriorSmoothScalar g) :
     Integrable (fun x : M =>
-        g.inner x ((grad_g_with_boundary_section
+        g.inner x ((gradGWithBoundarySection
               (I := I_half n) g f.smooth f.interior_support :
             Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
               (TangentSpace (I_half n) : M → Type _)⟯) x)
-          ((grad_g_with_boundary_section
+          ((gradGWithBoundarySection
               (I := I_half n) g h.smooth h.interior_support :
             Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
               (TangentSpace (I_half n) : M → Type _)⟯) x))
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I_half n) (M := M) g
   exact (f.continuous_inner_grad h).integrable_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
@@ -243,11 +243,11 @@ def interiorSmoothScalarH1Inner
     (f h : InteriorSmoothScalar g) : ℝ :=
   (∫ x, f.toFun x * h.toFun x
       ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g)) +
-  (∫ x, g.inner x ((grad_g_with_boundary_section
+  (∫ x, g.inner x ((gradGWithBoundarySection
             (I := I_half n) g f.smooth f.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x)
-        ((grad_g_with_boundary_section
+        ((gradGWithBoundarySection
             (I := I_half n) g h.smooth h.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x)
@@ -259,11 +259,11 @@ lemma interiorSmoothScalarH1Inner_def
     interiorSmoothScalarH1Inner f h =
       (∫ x, f.toFun x * h.toFun x
           ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g)) +
-      (∫ x, g.inner x ((grad_g_with_boundary_section
+      (∫ x, g.inner x ((gradGWithBoundarySection
                 (I := I_half n) g f.smooth f.interior_support :
               Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
                 (TangentSpace (I_half n) : M → Type _)⟯) x)
-            ((grad_g_with_boundary_section
+            ((gradGWithBoundarySection
                 (I := I_half n) g h.smooth h.interior_support :
               Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
                 (TangentSpace (I_half n) : M → Type _)⟯) x)
@@ -302,11 +302,11 @@ lemma SmoothRiemannianMetric_inner_self_nonneg
 
 lemma InteriorSmoothScalar.integral_inner_grad_self_nonneg
     {g : SmoothRiemannianMetric (I_half n) M} (f : InteriorSmoothScalar g) :
-    0 ≤ ∫ x, g.inner x ((grad_g_with_boundary_section
+    0 ≤ ∫ x, g.inner x ((gradGWithBoundarySection
             (I := I_half n) g f.smooth f.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x)
-          ((grad_g_with_boundary_section
+          ((gradGWithBoundarySection
             (I := I_half n) g f.smooth f.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x)
@@ -327,7 +327,7 @@ omit [T2Space M] in
 @[simp] lemma grad_g_with_boundary_section_apply'
     {g : SmoothRiemannianMetric (I_half n) M}
     (f : InteriorSmoothScalar g) (x : M) :
-    (grad_g_with_boundary_section
+    (gradGWithBoundarySection
         (I := I_half n) g f.smooth f.interior_support :
       Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
         (TangentSpace (I_half n) : M → Type _)⟯) x =
@@ -338,15 +338,15 @@ omit [T2Space M] in
 lemma InteriorSmoothScalar.grad_g_with_boundary_section_add_apply
     {g : SmoothRiemannianMetric (I_half n) M}
     (f₁ f₂ : InteriorSmoothScalar g) (x : M) :
-    (grad_g_with_boundary_section
+    (gradGWithBoundarySection
         (I := I_half n) g (f₁ + f₂).smooth (f₁ + f₂).interior_support :
       Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
         (TangentSpace (I_half n) : M → Type _)⟯) x =
-      ((grad_g_with_boundary_section
+      ((gradGWithBoundarySection
             (I := I_half n) g f₁.smooth f₁.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x) +
-      ((grad_g_with_boundary_section
+      ((gradGWithBoundarySection
             (I := I_half n) g f₂.smooth f₂.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x) := by
@@ -380,87 +380,87 @@ lemma interiorSmoothScalar_integral_mul_add_left
 lemma interiorSmoothScalar_integral_inner_grad_add_left
     {g : SmoothRiemannianMetric (I_half n) M}
     (f₁ f₂ h : InteriorSmoothScalar g) :
-    (∫ x, g.inner x ((grad_g_with_boundary_section
+    (∫ x, g.inner x ((gradGWithBoundarySection
               (I := I_half n) g (f₁ + f₂).smooth (f₁ + f₂).interior_support :
             Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
               (TangentSpace (I_half n) : M → Type _)⟯) x)
-          ((grad_g_with_boundary_section
+          ((gradGWithBoundarySection
               (I := I_half n) g h.smooth h.interior_support :
             Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
               (TangentSpace (I_half n) : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g)) =
-      (∫ x, g.inner x ((grad_g_with_boundary_section
+      (∫ x, g.inner x ((gradGWithBoundarySection
                 (I := I_half n) g f₁.smooth f₁.interior_support :
               Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
                 (TangentSpace (I_half n) : M → Type _)⟯) x)
-            ((grad_g_with_boundary_section
+            ((gradGWithBoundarySection
                 (I := I_half n) g h.smooth h.interior_support :
               Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
                 (TangentSpace (I_half n) : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g)) +
-      (∫ x, g.inner x ((grad_g_with_boundary_section
+      (∫ x, g.inner x ((gradGWithBoundarySection
                 (I := I_half n) g f₂.smooth f₂.interior_support :
               Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
                 (TangentSpace (I_half n) : M → Type _)⟯) x)
-            ((grad_g_with_boundary_section
+            ((gradGWithBoundarySection
                 (I := I_half n) g h.smooth h.interior_support :
               Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
                 (TangentSpace (I_half n) : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g)) := by
   have hpt : ∀ x : M, g.inner x
-      ((grad_g_with_boundary_section
+      ((gradGWithBoundarySection
           (I := I_half n) g (f₁ + f₂).smooth (f₁ + f₂).interior_support :
         Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
           (TangentSpace (I_half n) : M → Type _)⟯) x)
-      ((grad_g_with_boundary_section
+      ((gradGWithBoundarySection
           (I := I_half n) g h.smooth h.interior_support :
         Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
           (TangentSpace (I_half n) : M → Type _)⟯) x) =
       g.inner x
-        ((grad_g_with_boundary_section
+        ((gradGWithBoundarySection
             (I := I_half n) g f₁.smooth f₁.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x)
-        ((grad_g_with_boundary_section
+        ((gradGWithBoundarySection
             (I := I_half n) g h.smooth h.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x) +
       g.inner x
-        ((grad_g_with_boundary_section
+        ((gradGWithBoundarySection
             (I := I_half n) g f₂.smooth f₂.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x)
-        ((grad_g_with_boundary_section
+        ((gradGWithBoundarySection
             (I := I_half n) g h.smooth h.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x) := by
     intro x
     rw [InteriorSmoothScalar.grad_g_with_boundary_section_add_apply f₁ f₂ x]
-    rw [map_add, ContinuousLinearMap.add_apply]
+    rw [map_add, add_apply]
   rw [show (fun x : M => g.inner x
-      ((grad_g_with_boundary_section
+      ((gradGWithBoundarySection
           (I := I_half n) g (f₁ + f₂).smooth (f₁ + f₂).interior_support :
         Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
           (TangentSpace (I_half n) : M → Type _)⟯) x)
-      ((grad_g_with_boundary_section
+      ((gradGWithBoundarySection
           (I := I_half n) g h.smooth h.interior_support :
         Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
           (TangentSpace (I_half n) : M → Type _)⟯) x)) =
       (fun x : M => g.inner x
-        ((grad_g_with_boundary_section
+        ((gradGWithBoundarySection
             (I := I_half n) g f₁.smooth f₁.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x)
-        ((grad_g_with_boundary_section
+        ((gradGWithBoundarySection
             (I := I_half n) g h.smooth h.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x) +
       g.inner x
-        ((grad_g_with_boundary_section
+        ((gradGWithBoundarySection
             (I := I_half n) g f₂.smooth f₂.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x)
-        ((grad_g_with_boundary_section
+        ((gradGWithBoundarySection
             (I := I_half n) g h.smooth h.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x)) from funext hpt]
@@ -481,11 +481,11 @@ omit [T2Space M] in
 lemma InteriorSmoothScalar.grad_g_with_boundary_section_smul_apply
     {g : SmoothRiemannianMetric (I_half n) M}
     (c : ℝ) (f : InteriorSmoothScalar g) (x : M) :
-    (grad_g_with_boundary_section
+    (gradGWithBoundarySection
         (I := I_half n) g (c • f).smooth (c • f).interior_support :
       Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
         (TangentSpace (I_half n) : M → Type _)⟯) x =
-      c • ((grad_g_with_boundary_section
+      c • ((gradGWithBoundarySection
         (I := I_half n) g f.smooth f.interior_support :
       Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
         (TangentSpace (I_half n) : M → Type _)⟯) x) := by
@@ -498,7 +498,7 @@ lemma InteriorSmoothScalar.grad_g_with_boundary_section_smul_apply
   rw [show g.inner x (c • gradFun (I := I_half n) g f.toFun x) v =
       c * g.inner x (gradFun (I := I_half n) g f.toFun x) v from ?_]
   swap
-  · rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  · rw [map_smul, smul_apply, smul_eq_mul]
   rw [inner_gradFun (I := I_half n) g f.toFun x v]
   set d_f : TangentSpace (I_half n) x →L[ℝ] ℝ := mfderiv (I_half n) 𝓘(ℝ, ℝ) f.toFun x
     with hd_f_def
@@ -511,7 +511,7 @@ lemma InteriorSmoothScalar.grad_g_with_boundary_section_smul_apply
     hHa_smul.mfderiv
   rw [hd_smul]
   change (c • d_f) v = c * d_f v
-  rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [smul_apply, smul_eq_mul]
 
 
 lemma interiorSmoothScalar_integral_mul_smul_left
@@ -531,45 +531,45 @@ lemma interiorSmoothScalar_integral_mul_smul_left
 lemma interiorSmoothScalar_integral_inner_grad_smul_left
     {g : SmoothRiemannianMetric (I_half n) M}
     (c : ℝ) (f h : InteriorSmoothScalar g) :
-    (∫ x, g.inner x ((grad_g_with_boundary_section
+    (∫ x, g.inner x ((gradGWithBoundarySection
               (I := I_half n) g (c • f).smooth (c • f).interior_support :
             Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
               (TangentSpace (I_half n) : M → Type _)⟯) x)
-          ((grad_g_with_boundary_section
+          ((gradGWithBoundarySection
               (I := I_half n) g h.smooth h.interior_support :
             Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
               (TangentSpace (I_half n) : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g)) =
-      c * (∫ x, g.inner x ((grad_g_with_boundary_section
+      c * (∫ x, g.inner x ((gradGWithBoundarySection
                 (I := I_half n) g f.smooth f.interior_support :
               Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
                 (TangentSpace (I_half n) : M → Type _)⟯) x)
-            ((grad_g_with_boundary_section
+            ((gradGWithBoundarySection
                 (I := I_half n) g h.smooth h.interior_support :
               Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
                 (TangentSpace (I_half n) : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g)) := by
   have hpt : (fun x : M => g.inner x
-      ((grad_g_with_boundary_section
+      ((gradGWithBoundarySection
           (I := I_half n) g (c • f).smooth (c • f).interior_support :
         Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
           (TangentSpace (I_half n) : M → Type _)⟯) x)
-      ((grad_g_with_boundary_section
+      ((gradGWithBoundarySection
           (I := I_half n) g h.smooth h.interior_support :
         Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
           (TangentSpace (I_half n) : M → Type _)⟯) x)) =
       (fun x : M => c * g.inner x
-        ((grad_g_with_boundary_section
+        ((gradGWithBoundarySection
             (I := I_half n) g f.smooth f.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x)
-        ((grad_g_with_boundary_section
+        ((gradGWithBoundarySection
             (I := I_half n) g h.smooth h.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x)) := by
     funext x
     rw [InteriorSmoothScalar.grad_g_with_boundary_section_smul_apply c f x]
-    rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [map_smul, smul_apply, smul_eq_mul]
   rw [hpt, integral_const_mul]
 
 

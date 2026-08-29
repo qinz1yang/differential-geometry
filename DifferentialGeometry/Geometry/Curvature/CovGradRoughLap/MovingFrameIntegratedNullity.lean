@@ -50,7 +50,7 @@ theorem integral_frameSummed_covDeriv_combined_eq_zero
               (Tensor0SSpace.toModel
                 (loweredCovDerivAlongVF (I := I) (M := M) g r s Z.toSection (V i) x))
             + tensorInnerScalar (I := I) (M := M) g r s (W i).toSection Z.toSection x
-              * divergence_g (I := I) g (V i) x)
+              * divergenceG (I := I) g (V i) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
   classical
   refine Finset.sum_eq_zero (fun i _ => ?_)

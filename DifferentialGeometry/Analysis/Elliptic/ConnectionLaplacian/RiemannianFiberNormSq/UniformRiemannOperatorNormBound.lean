@@ -103,8 +103,8 @@ theorem exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
   have hQ_cont : ContinuousOn Q
       ((trivializationAt E (TangentSpace I) α).baseSet ×ˢ
         (Set.univ : Set (Fin (Module.finrank ℝ E) → ℝ))) := by
-    refine continuousOn_finset_sum _ (fun i _ => ?_)
-    refine continuousOn_finset_sum _ (fun j _ => ?_)
+    refine continuousOn_finsetSum _ (fun i _ => ?_)
+    refine continuousOn_finsetSum _ (fun j _ => ?_)
     refine ContinuousOn.mul ?_ ?_
     · refine ContinuousOn.mul ?_ ?_
       · have hentry := (chartGramMatrix_entry_contMDiffOn
@@ -118,7 +118,7 @@ theorem exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
     have hcont : Continuous
         (fun ξ : Fin (Module.finrank ℝ E) → ℝ =>
           ∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) :=
-      continuous_finset_sum _ (fun i _ => (continuous_apply i).pow 2)
+      continuous_finsetSum _ (fun i _ => (continuous_apply i).pow 2)
     have hclosed : IsClosed Sph := isClosed_eq hcont continuous_const
     have hbdd : Bornology.IsBounded Sph := by
       refine (Metric.isBounded_iff_subset_closedBall (0 : _)).mpr ⟨1, ?_⟩
@@ -320,8 +320,8 @@ private lemma riemannOp_LeviCivita_chartAlpha_frame_expand
       ∑ i, ∑ k, ∑ j, (c i * (b k * a j)) •
         riemannOp (cov := LeviCivita (I := I) g) x (eα j) (eα k) (eα i) := by
     conv_lhs => rw [hv, hw, hu]
-    simp only [map_sum, map_smul, ContinuousLinearMap.coe_sum', Finset.sum_apply,
-      ContinuousLinearMap.smul_apply, Finset.smul_sum, smul_smul]
+    simp only [map_sum, map_smul, FunLike.coe_sum, Finset.sum_apply,
+      smul_apply, Finset.smul_sum, smul_smul]
   rw [htri]
   have hexpand : (∑ i, ∑ k, ∑ j, (c i * (b k * a j)) •
         riemannOp (cov := LeviCivita (I := I) g) x (eα j) (eα k) (eα i)) =
@@ -614,20 +614,20 @@ theorem exists_uniform_riemannOp_LeviCivita_gNorm_bound
     have hCRα : 0 ≤ CR α := hCR0 α
     have hCGα : 0 ≤ CG α := hCG0 α
     positivity
-  refine ⟨∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), Kα α, ?_, ?_⟩
+  refine ⟨∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Kα α, ?_, ?_⟩
   · exact Finset.sum_nonneg (fun α _ => hKα_nonneg α)
   intro x v w u
   have hsum := DifferentialGeometry.Analysis.Sobolev.Chart.chartAtlasPOU_finset_sum_eq_one
     (I := I) (M := M) x
-  have hex_pos : ∃ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hex_pos : ∃ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ((chartAtlasPOU I M) α) x ≠ 0 := by
     by_contra hno
-    have hno' : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    have hno' : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ((chartAtlasPOU I M) α) x = 0 := by
       intro α hα
       by_contra hne
       exact hno ⟨α, hα, hne⟩
-    have hzero : ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    have hzero : ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ((chartAtlasPOU I M) α) x = 0 :=
       Finset.sum_eq_zero (fun α hα => hno' α hα)
     rw [hzero] at hsum
@@ -646,7 +646,7 @@ theorem exists_uniform_riemannOp_LeviCivita_gNorm_bound
     (fun i j k l => hCRbound α x hx_tsupport i j k l)
     (fun ξ => hCGbound α x hx_tsupport ξ)
     (fun ξ => hcgbound α x hx_tsupport ξ) v w u
-  have hKα_le : Kα α ≤ ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M), Kα β :=
+  have hKα_le : Kα α ≤ ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M), Kα β :=
     Finset.single_le_sum (fun β _ => hKα_nonneg β) hα_mem
   have hgvv_nonneg : 0 ≤ g.inner x v v := metric_inner_self_nonneg (I := I) g x v
   have hgww_nonneg : 0 ≤ g.inner x w w := metric_inner_self_nonneg (I := I) g x w
@@ -655,7 +655,7 @@ theorem exists_uniform_riemannOp_LeviCivita_gNorm_bound
         (riemannOp (cov := LeviCivita (I := I) g) x v w u)
       ≤ Kα α * g.inner x v v * g.inner x w w * g.inner x u u := by
         rw [hKα_def]; exact hpt
-    _ ≤ (∑ β ∈ chartAtlasPOU_finset (I := I) (M := M), Kα β) *
+    _ ≤ (∑ β ∈ chartAtlasPOUFinset (I := I) (M := M), Kα β) *
           g.inner x v v * g.inner x w w * g.inner x u u := by
         gcongr
 

@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.IntrinsicDerivation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.NormEvolution
+
+
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
@@ -29,8 +31,9 @@ theorem scalarSmoothOfSol
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) :
     ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) (S.scalar t) := by
-  simpa [SolutionOn.scalar, SolutionFamily.scalar] using
-    metricScalar_smooth (I := I) (M := M) (S.family.metric t)
+  change ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+    (fun x => metricScalarAt (I := I) (M := M) (S.family.metric t) x)
+  exact metricScalar_smooth (I := I) (M := M) (S.family.metric t)
 
 omit [SigmaCompactSpace M] in
 theorem scalarContOfSol
@@ -124,7 +127,9 @@ theorem scalarRegOfSol
       simpa [pow_two] using hmul
     have hsqDiv : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun y : M => S.scalar t y ^ 2 / 3) := by
-      simpa [div_eq_mul_inv] using hsq.mul contMDiff_const
+      have hconst : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+          (fun _ : M => (3 : Real)⁻¹) := contMDiff_const
+      exact (hsq.mul hconst).congr (fun _ => by simp [div_eq_mul_inv])
     exact hsqDiv.contMDiffAt.mdifferentiableAt (by simp)
   · intro t ht x
     have hsmooth := scalarSmoothOfSol (I := I) S t
@@ -136,7 +141,9 @@ theorem scalarRegOfSol
       simpa [pow_two] using hmul
     have hsqDiv : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun y : M => S.scalar t y ^ 2 / 3) := by
-      simpa [div_eq_mul_inv] using hsq.mul contMDiff_const
+      have hconst : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+          (fun _ : M => (3 : Real)⁻¹) := contMDiff_const
+      exact (hsq.mul hconst).congr (fun _ => by simp [div_eq_mul_inv])
     exact DifferentialGeometry.Geometry.Operator.gradientFun_mdiffAt (I := I) (S.family.metric t)
       hsqDiv x
   · intro t ht c x
@@ -190,6 +197,7 @@ theorem invEvolOfSol
       (DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0) := by
   exact coordInvEvol (I := I) S hS x0
 
+omit [SigmaCompactSpace M] in
 theorem ricciEvolOfSol
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -237,7 +245,7 @@ theorem ricciSymmOfSol
   have hinv := coordInvReal (I := I) S x0 t
   have hsym :=
     DifferentialGeometry.Geometry.Curvature.metricRicciSymm (I := I) (M := M) (S.family.metric t)
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x0)
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x0)
       (fun a b => coordInv (I := I) S x0 t x0 a b) hinv i j
   simpa [ricciCompInFrame, SolutionOn.ricciAt, SolutionFamily.ricciAt] using hsym
 
@@ -505,7 +513,7 @@ theorem coordinate_second_ricci_covariant_derivative_of_realization
         (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) (frame d x0) (frame a x0)
           (frame i x0)
           (frame j x0)) =
-        extDerivFun (I := I)
+        mvfderiv (I := I)
           (fun y : M =>
             nablaRicComp (I := I) S (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt
               (I := I) x0)
@@ -544,7 +552,7 @@ theorem rough_laplacian_ricci_component_of_coordinate_realization
           (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x j x)) =
       coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x) t x i j := by
   classical
-  let basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+  let basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let gInv : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
     fun a b => coordInv (I := I) S x t x a b
@@ -581,8 +589,8 @@ theorem rough_laplacian_ricci_component_of_coordinate_realization
           refine Finset.sum_congr rfl fun b _ => ?_
           have hinput :
               DifferentialGeometry.Geometry.Operator.metricTraceInput (I := I)
-                  ((DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x) a)
-                  ((DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x) b)
+                  ((DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x) a)
+                  ((DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x) b)
                   (DifferentialGeometry.Geometry.Curvature.vec2 (I := I)
                     (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x i x)
                     (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x j x)) =
@@ -615,7 +623,7 @@ theorem ricciLapOfSol
   let G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real :=
     flowG (I := I) S
   let basis : (x : M) -> Module.Basis Idx Real (TangentSpace I x) :=
-    fun x => DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+    fun x => DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let frame : Idx -> (x : M) -> TangentSpace I x :=
     fun i x => DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x i x
   let gInv : Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M Idx :=
@@ -630,7 +638,7 @@ theorem ricciLapOfSol
       CanonicalSpatialDerivs0S (𝕜 := Real) (E := E) (H := H) (I := I)
         (M := M) (S.base.connection t) (S.ricci t) :=
     fun t =>
-      CanonicalSpatialDerivs0S.of_smooth_connection
+      CanonicalSpatialDerivs0S.ofSmoothConnection
         (E := E) (H := H) (I := I) (M := M)
         (S.base.connection t) (hcov t) (S.ricci t)
   let A : Real -> Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -672,7 +680,7 @@ theorem ricciLapOfSol
     intro x i
     exact DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis_apply (I := I) x i
   have hinv : ∀ t x,
-      Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) (G.metric t) x
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) (G.metric t) x
         (basis x) (gInv t x) := by
     intro t x
     simpa [G, basis, gInv, flowG] using coordInvReal (I := I) S x t
@@ -697,11 +705,12 @@ theorem ricciLapOfSol
       DifferentialGeometry.Geometry.Operator.ScalarLaplacianRealizesTraceAt.toInBasis
         (I := I) (S.base.connection t) (S.base.metric t) (basis x)
         (gInv t x) (hinv t x) (f t) (normSecond t x) hlap
-    simpa [ricciNormLap, flowG, G, DifferentialGeometry.Geometry.Curvature.laplacianAt, ricciNorm,
-      f, A,
-      DifferentialGeometry.Geometry.Curvature.normSq02,
-        DifferentialGeometry.Geometry.Curvature.inner02, Tensor0SBundle.normSq0S,
-      normSecond] using hbasis
+    have hfricci : f t = ricciNorm (I := I) S t := by
+      funext y
+      rfl
+    unfold DifferentialGeometry.Geometry.Operator.ScalarLaplacianRealizesTraceAtInBasis at hbasis
+    rw [ricciNormLap, DifferentialGeometry.Geometry.Curvature.laplacianAt, ← hfricci]
+    simpa only [flowG, G, normSecond] using hbasis
   have hA : ∀ t,
       TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I)
         (M := M) 2 (G.connection t) (A t) (nablaA t) := by
@@ -747,7 +756,7 @@ theorem ricciLapOfSol
         nablaRicComp (I := I) S frame t x a i j := by
     intro t x a i j
     simp [nablaA, derivs, nablaRicComp, frame,
-      CanonicalSpatialDerivs0S.of_smooth_connection]
+      CanonicalSpatialDerivs0S.ofSmoothConnection]
   let roughLapRic : Real -> M -> Idx -> Idx -> Real :=
     fun t x => coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x) t x
   have hroughComp : ∀ t x i j,
@@ -764,7 +773,7 @@ theorem ricciLapOfSol
             (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x) t y a b c := by
       intro y a b c
       simp [nablaA, derivs, nablaRicComp,
-        CanonicalSpatialDerivs0S.of_smooth_connection]
+        CanonicalSpatialDerivs0S.ofSmoothConnection]
     have hnab2 :=
       coordinate_second_ricci_covariant_derivative_of_realization
         (I := I) S t x (nablaA t) (nabla2A t)
@@ -796,6 +805,7 @@ theorem ricciLapOfSol
   rw [hnabla] at hval
   simpa [roughLapRic, gInv, frame] using hval
 
+omit [SigmaCompactSpace M] in
 theorem smoothOfSol
     [I.Boundaryless]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}

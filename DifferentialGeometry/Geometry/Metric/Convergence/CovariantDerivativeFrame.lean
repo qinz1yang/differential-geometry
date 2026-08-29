@@ -30,7 +30,7 @@ def metricCovDerivForMetricCompInFrame
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (x : M) (d a b : Idx) : Real :=
-  extDerivFun (I := I)
+  mvfderiv (I := I)
       (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
       x (frame d x) -
     (∑ p : Idx,
@@ -46,7 +46,7 @@ def metricCovDeriv2ForMetricCompInFrame
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (x : M) (d a b c : Idx) : Real :=
-  extDerivFun (I := I)
+  mvfderiv (I := I)
       (fun y : M =>
         metricCovDerivForMetricCompInFrame
           (I := I) g cov frame hframe y a b c)
@@ -70,7 +70,7 @@ def metricCovDeriv3ForMetricCompInFrame
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (x : M) (m d a b c : Idx) : Real :=
-  extDerivFun (I := I)
+  mvfderiv (I := I)
       (fun y : M =>
         metricCovDeriv2ForMetricCompInFrame
           (I := I) g cov frame hframe y d a b c)

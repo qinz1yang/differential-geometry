@@ -33,7 +33,7 @@ theorem preimage_gBall
         gBall (I := I) g x R =
       ball (0 : E) R := by
   ext w
-  simp only [mem_preimage, gBall, mem_setOf_eq, mem_ball, dist_zero_right]
+  simp only [mem_preimage, gBall, mem_ofPred_eq, mem_ball, dist_zero_right]
   rw [normalFrame_sqrt]
 
 section Measure
@@ -47,8 +47,8 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem expJac_normal_int
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -87,8 +87,11 @@ theorem expJac_normal_int
         ENNReal.ofReal (Dn v) := by
     rw [← ENNReal.ofReal_mul (abs_nonneg (b.det b'))]
     congr 1
-    simpa only [b, b', Dn, expJacDensity] using
-      (jacDens_basis (I := I) g hEnorm x v b b').symm
+    change |b.det b'| * expJacDensity (I := I) g hEnorm x v =
+      curveDensity (I := I) g
+        (intrinsicGeodesic (I := I) g hEnorm x v)
+        (fun i t => intrinsicJacobi (I := I) g hEnorm x v (b' i) t) 1
+    exact (jacDens_basis (I := I) g hEnorm x v b b').symm
   have hbasis :
       (∫⁻ v in K,
           ENNReal.ofReal (expJacDensity (I := I) g hEnorm x v)
@@ -128,16 +131,17 @@ theorem expJac_normal_int
   have hmp : MeasurePreserving L (volume : Measure E) b'.addHaar :=
     ⟨L.continuous.measurable, hmap⟩
   rw [hbasis]
-  simpa only [Dn, L, b'] using
-    (hmp.setLIntegral_comp_preimage_emb
-      L.toHomeomorph.toMeasurableEquiv.measurableEmbedding
-      (fun v => ENNReal.ofReal (Dn v)) K).symm
+  change (∫⁻ v in K, ENNReal.ofReal (Dn v) ∂b'.addHaar) =
+    ∫⁻ w in L ⁻¹' K, ENNReal.ofReal (Dn (L w)) ∂(volume : Measure E)
+  exact (hmp.setLIntegral_comp_preimage_emb
+    L.toHomeomorph.toMeasurableEquiv.measurableEmbedding
+    (fun v => ENNReal.ofReal (Dn v)) K).symm
 
 omit [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem framed_mul_le_area
-    [ConnectedSpace M] [PseudoEMetricSpace M]
+    [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
     (g : SmoothRiemannianMetric I M)
@@ -164,8 +168,16 @@ theorem framed_mul_le_area
               1)
         ∂(volume : Measure E) := by
   classical
-  let L : E ≃L[Real] TangentSpace I x :=
-    normalFrame (I := I) (E := E) g x
+  let L : E ≃L[Real] E :=
+    (normalFrame (I := I) (E := E) g x).trans
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x)
+  have hL (w : E) :
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (L w) =
+        normalFrame (I := I) g x w := by
+    change (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (normalFrame (I := I) g x w)) = normalFrame (I := I) g x w
+    exact ContinuousLinearEquiv.symm_apply_apply _ _
   let K : Set E := L '' U
   have hK : MeasurableSet K := by
     exact
@@ -180,7 +192,21 @@ theorem framed_mul_le_area
           expMapIntrinsic (I := I) g hEnorm x
             (show TangentSpace I x from v)) ∘
           fun w : E => L w) U := by
-    simpa only [Function.comp_apply, L, intrFrame_apply] using hloc
+    rw [show ((fun v : E =>
+        expMapIntrinsic (I := I) g hEnorm x
+          (show TangentSpace I x from v)) ∘ fun w : E => L w) =
+      intrinsicFramedExp (I := I) g hEnorm x by
+        funext w
+        change expMapIntrinsic (I := I) g hEnorm x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (L w)) =
+          intrinsicFramedExp (I := I) g hEnorm x w
+        calc
+          _ = expMapIntrinsic (I := I) g hEnorm x
+              (normalFrame (I := I) g x w) :=
+            congrArg (expMapIntrinsic (I := I) g hEnorm x) (hL w)
+          _ = intrinsicFramedExp (I := I) g hEnorm x w :=
+            (intrFrame_apply (I := I) g hEnorm x w).symm]
+    exact hloc
   have hraw :
       IsLocalHomeomorphOn
         (fun v : E =>
@@ -201,7 +227,13 @@ theorem framed_mul_le_area
     let emb : A ↪ B :=
       { toFun := fun w =>
           ⟨L w.1, ⟨⟨w.1, w.2.1, rfl⟩, by
-            simpa only [L, intrFrame_apply] using w.2.2⟩⟩
+            change expMapIntrinsic (I := I) g hEnorm x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (L w.1)) = y
+            calc
+              _ = expMapIntrinsic (I := I) g hEnorm x
+                  (normalFrame (I := I) g x w.1) :=
+                congrArg (expMapIntrinsic (I := I) g hEnorm x) (hL w.1)
+              _ = y := by simpa only [intrFrame_apply] using w.2.2⟩⟩
         inj' := by
           intro w z hwz
           apply Subtype.ext
@@ -215,7 +247,10 @@ theorem framed_mul_le_area
       hraw hcountRaw
   have hpre : L ⁻¹' K = U := by
     exact Set.preimage_image_eq U L.injective
-  rw [expJac_normal_int (I := I) g hEnorm x K, hpre] at harea
+  have hpreRaw : (normalFrame (I := I) (E := E) g x) ⁻¹' K = U := by
+    change L ⁻¹' K = U
+    exact hpre
+  rw [expJac_normal_int (I := I) g hEnorm x K, hpreRaw] at harea
   simpa only [L] using harea
 
 end Measure

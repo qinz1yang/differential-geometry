@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RemainderShortTimeExistence
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.DeTurckGeometricNonlinearity
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 namespace DifferentialGeometry.PDE.RicciFlow
@@ -27,8 +29,8 @@ theorem deTurckRicciRHS_symm
     (g_bg g : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x) :
     deTurckRicciRHS (I := I) g_bg g x v w =
       deTurckRicciRHS (I := I) g_bg g x w v := by
-  simp only [deTurckRicciRHS, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.smul_apply, smul_eq_mul, lieDerivMetricClm_apply]
+  simp only [deTurckRicciRHS, add_apply,
+    smul_apply, smul_eq_mul, lieDerivMetricClm_apply]
   rw [ricciTensor_symm (I := I) (smoothRiemannianMetricToInfty (I := I) g) x v w,
     DeTurck.lieDerivMetric_isPointwiseSymm (I := I)
       (smoothRiemannianMetricToInfty (I := I) g)
@@ -50,14 +52,14 @@ omit [SigmaCompactSpace M] in
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem deTurckRHSSectionBackground_toModel_apply
+theorem deTurckRHSSectionBackground_eval
     (g_bg g : SmoothRiemannianMetric I M) (x : M) (v : Fin 2 → TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((deTurckRHSSectionBackground (I := I) g_bg g).toSection x
           (ContinuousMultilinearMap.constOfIsEmpty ℝ
             (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))) v =
       deTurckRicciRHS (I := I) g_bg g x (v 0) (v 1) :=
-  deTurckRHSSection_toModel_apply (I := I) g_bg g x v
+  deTurckRHSSection_eval (I := I) g_bg g x v
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -69,7 +71,16 @@ theorem deTurckRHSSection_ccTensorBilinSymm_eq_deTurckRicciRHS
   rw [ccTensorBilin_apply, ccTensorBilin_apply]
   unfold ccTensorModel
   rw [ccTensorMultilinear_apply]
-  rw [deTurckRHSSectionBackground_toModel_apply, deTurckRHSSectionBackground_toModel_apply]
+  change (1 / 2 : ℝ) *
+    (Tensor0SSpace.eval
+        ((deTurckRHSSectionBackground (I := I) g_bg g).toSection x
+          (ContinuousMultilinearMap.constOfIsEmpty ℝ
+            (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))) ![v, w] +
+      Tensor0SSpace.eval
+        ((deTurckRHSSectionBackground (I := I) g_bg g).toSection x
+          (ContinuousMultilinearMap.constOfIsEmpty ℝ
+            (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))) ![w, v]) = _
+  rw [deTurckRHSSectionBackground_eval, deTurckRHSSectionBackground_eval]
   simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
   rw [deTurckRicciRHS_symm (I := I) g_bg g x w v]
   ring

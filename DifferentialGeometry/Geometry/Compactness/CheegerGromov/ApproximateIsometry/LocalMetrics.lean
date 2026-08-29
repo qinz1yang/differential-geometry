@@ -51,6 +51,7 @@ variable [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_metricLimit_normalCoord
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (input : NormalCoordMetricBoundInput (I := I) X)
@@ -75,6 +76,7 @@ theorem exists_metricLimit_normalCoord
       ⟨input.metricC r, fun k z hz => input.metric_deriv k r (c k) z (hdom k (hKU hz))⟩)
     (fun k z hz v => input.metric_equiv k (c k) z (hdom k hz) v)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_metric_lim_pi
     {ι : Type*} [Fintype ι]
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

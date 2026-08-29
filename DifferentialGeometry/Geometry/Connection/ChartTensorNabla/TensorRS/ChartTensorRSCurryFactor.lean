@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.Tensor
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle Set DifferentialGeometry.Tensor0SBundle
@@ -52,7 +51,7 @@ theorem tensorRSChartE_section_repr_apply_model (r s : ℕ) (α : M)
     (T : Π b : M, TensorRSSpace r s I b) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (D : Tensor0SModel r ℝ E) :
-    (tensorRSChartE_section_repr (I := I) r s α T b) D =
+    (tensorRSChartESectionRepr (I := I) r s α T b) D =
       (trivializationAt (Tensor0SModel s ℝ E)
           (fun y : M => Tensor0SSpace s I y) α).continuousLinearMapAt ℝ b
         ((show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from T b)
@@ -73,7 +72,7 @@ theorem tensorRSChartE_section_repr_apply_model (r s : ℕ) (α : M)
     · change b ∈ (trivializationAt E (TangentSpace I) α).baseSet
       exact hb
   have hcoeRS := eRS.coe_linearMapAt_of_mem (R := ℝ) hbase_RS
-  unfold tensorRSChartE_section_repr
+  unfold tensorRSChartESectionRepr
   change (eRS.linearMapAt ℝ b (T b)) D = _
   rw [show (eRS.linearMapAt ℝ b (T b)) = (eRS ⟨b, T b⟩).2 from
         congrFun hcoeRS (T b)]
@@ -124,6 +123,7 @@ theorem tensorRSChartFiberFromModel_apply_at (r s : ℕ) (α : M) {b : M}
       (F₂ := Tensor0SModel s ℝ E)
       (E₂ := fun y : M => Tensor0SSpace s I y)
       (e₁ := er) (e₂ := es) (b := b) hbase_RS D
+    rw [eRS.symmL_apply hbase_RS]
     change (eRS.symm b D : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b) = _
     rw [show (eRS.symm b D : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b) =
           ((_root_.Bundle.Pretrivialization.continuousLinearMap (𝕜₁ := ℝ) (𝕜₂ := ℝ)
@@ -144,10 +144,10 @@ theorem tensor0SChartE_section_repr_tensorPartialEval_eq_tensorRS_repr_apply
     {b : M}
     (α_input : Tensor0SSpace r I b)
     {b' : M} (hb' : b' ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    tensor0SChartE_section_repr (I := I) s α
+    tensor0SChartESectionRepr (I := I) s α
         (tensorPartialEval (I := I) (M := M) r s T
           (chartTensor0SParallelExtend (I := I) r α b α_input)) b' =
-      (tensorRSChartE_section_repr (I := I) r s α T b')
+      (tensorRSChartESectionRepr (I := I) r s α T b')
         ((trivializationAt (Tensor0SModel r ℝ E)
           (fun y : M => Tensor0SSpace r I y) α).continuousLinearMapAt ℝ b α_input) := by
   classical
@@ -160,13 +160,13 @@ theorem tensor0SChartE_section_repr_tensorPartialEval_eq_tensorRS_repr_apply
       chartTensor0SParallelExtend (I := I) r α b α_input b' =
         er.symmL ℝ b' D_α := rfl
   have hLHS_unfold :
-      tensor0SChartE_section_repr (I := I) s α
+      tensor0SChartESectionRepr (I := I) s α
           (tensorPartialEval (I := I) (M := M) r s T
             (chartTensor0SParallelExtend (I := I) r α b α_input)) b' =
         es.continuousLinearMapAt ℝ b'
           ((show Tensor0SSpace r I b' →L[ℝ] Tensor0SSpace s I b' from T b')
             (chartTensor0SParallelExtend (I := I) r α b α_input b')) := by
-    unfold tensor0SChartE_section_repr
+    unfold tensor0SChartESectionRepr
     rw [tensorPartialEval_apply]
   rw [hLHS_unfold]
   rw [hPE_at_b']
@@ -179,7 +179,7 @@ theorem tensorPartialEval_chartPullback_eventually_eq_evalAt_chartPullback
     (hb_src : b ∈ (extChartAt I α).source)
     (hb_tgt : extChartAt I α b ∈ interior ((extChartAt I α).target : Set E))
     (hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    (tensor0SChartE_section_repr (I := I) s α
+    (tensor0SChartESectionRepr (I := I) s α
         (tensorPartialEval (I := I) (M := M) r s T
           (chartTensor0SParallelExtend (I := I) r α b α_input)) ∘
         (extChartAt I α).symm) =ᶠ[𝓝 (extChartAt I α b)]
@@ -187,7 +187,7 @@ theorem tensorPartialEval_chartPullback_eventually_eq_evalAt_chartPullback
         tensorRSEvalAtCLM (E := E) r s
             ((trivializationAt (Tensor0SModel r ℝ E)
               (fun z : M => Tensor0SSpace r I z) α).continuousLinearMapAt ℝ b α_input)
-          ((tensorRSChartE_section_repr (I := I) r s α T ∘ (extChartAt I α).symm) y)) := by
+          ((tensorRSChartESectionRepr (I := I) r s α T ∘ (extChartAt I α).symm) y)) := by
   classical
   set φ := extChartAt I α
   have hU_int : interior (φ.target : Set E) ∈ 𝓝 (φ b) :=
@@ -216,10 +216,10 @@ theorem fderiv_tensorPartialEval_chartPullback_eq_comp_evalAt
     (hb_tgt : extChartAt I α b ∈ interior ((extChartAt I α).target : Set E))
     (hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (hT : DifferentiableAt ℝ
-      (tensorRSChartE_section_repr (I := I) r s α T ∘ (extChartAt I α).symm)
+      (tensorRSChartESectionRepr (I := I) r s α T ∘ (extChartAt I α).symm)
       (extChartAt I α b)) :
     fderiv ℝ
-        (tensor0SChartE_section_repr (I := I) s α
+        (tensor0SChartESectionRepr (I := I) s α
             (tensorPartialEval (I := I) (M := M) r s T
               (chartTensor0SParallelExtend (I := I) r α b α_input)) ∘
           (extChartAt I α).symm)
@@ -228,7 +228,7 @@ theorem fderiv_tensorPartialEval_chartPullback_eq_comp_evalAt
             ((trivializationAt (Tensor0SModel r ℝ E)
               (fun z : M => Tensor0SSpace r I z) α).continuousLinearMapAt ℝ b α_input)).comp
         (fderiv ℝ
-          (tensorRSChartE_section_repr (I := I) r s α T ∘
+          (tensorRSChartESectionRepr (I := I) r s α T ∘
             (extChartAt I α).symm)
           (extChartAt I α b)) := by
   classical
@@ -238,7 +238,7 @@ theorem fderiv_tensorPartialEval_chartPullback_eq_comp_evalAt
   exact (((tensorRSEvalAtCLM (E := E) r s
       ((trivializationAt (Tensor0SModel r ℝ E)
         (fun z : M => Tensor0SSpace r I z) α).continuousLinearMapAt ℝ b α_input)).hasFDerivAt
-      (x := (tensorRSChartE_section_repr (I := I) r s α T ∘
+      (x := (tensorRSChartESectionRepr (I := I) r s α T ∘
         (extChartAt I α).symm) (extChartAt I α b))).comp
     (extChartAt I α b) hT.hasFDerivAt).fderiv
 
@@ -249,7 +249,7 @@ theorem tensorRSIntrinsicChartCLM_factor_via_tensorPartialEval
     {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α)
     (α_input : Tensor0SSpace r I b)
     (hT : DifferentiableAt ℝ
-      (tensorRSChartE_section_repr (I := I) r s α T ∘ (extChartAt I α).symm)
+      (tensorRSChartESectionRepr (I := I) r s α T ∘ (extChartAt I α).symm)
       (extChartAt I α b))
     (X : Π b' : M, TangentSpace I b') :
     (show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from
@@ -259,16 +259,16 @@ theorem tensorRSIntrinsicChartCLM_factor_via_tensorPartialEval
             (chartTensor0SParallelExtend (I := I) r α b α_input))
           b (X b) := by
   classical
-  letI _h_top_rs : TopologicalSpace
+  let _h_top_rs : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun y : M => TensorRSSpace r s I y)) :=
-    tensorRSBundle_topology r s
-  letI _h_top_s : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
+    tensorRSBundleTopology r s
+  let _h_top_s : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
       (fun y : M => Tensor0SSpace s I y)) :=
-    tensor0SBundle_topology s
-  letI _h_top_r : TopologicalSpace (TotalSpace (Tensor0SModel r ℝ E)
+    tensor0SBundleTopology s
+  let _h_top_r : TopologicalSpace (TotalSpace (Tensor0SModel r ℝ E)
       (fun y : M => Tensor0SSpace r I y)) :=
-    tensor0SBundle_topology r
+    tensor0SBundleTopology r
   have hb_src : b ∈ (extChartAt I α).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
   have hb_tgt : extChartAt I α b ∈ interior ((extChartAt I α).target : Set E) :=
@@ -286,12 +286,12 @@ theorem tensorRSIntrinsicChartCLM_factor_via_tensorPartialEval
         tensorRSIntrinsicChartCLM (I := I) r s α T b (X b)) α_input =
         es.symmL ℝ b
           (fderiv ℝ
-            (tensorRSChartE_section_repr (I := I) r s α T ∘ (extChartAt I α).symm)
+            (tensorRSChartESectionRepr (I := I) r s α T ∘ (extChartAt I α).symm)
             (extChartAt I α b) w_E D_α) := by
     rw [tensorRSIntrinsicChartCLM_apply (I := I) r s α T b (X b)]
     rw [tensorRSChartFiberFromModel_apply_at (I := I) r s α hb_base
       (fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α T ∘ (extChartAt I α).symm)
+        (tensorRSChartESectionRepr (I := I) r s α T ∘ (extChartAt I α).symm)
         (extChartAt I α b) (trivToE (I := I) α b (X b))) α_input]
   rw [hLHS_unfold]
   have hRHS_unfold :
@@ -301,7 +301,7 @@ theorem tensorRSIntrinsicChartCLM_factor_via_tensorPartialEval
           b (X b) =
         es.symmL ℝ b
           (fderiv ℝ
-            (tensor0SChartE_section_repr (I := I) s α
+            (tensor0SChartESectionRepr (I := I) s α
                 (tensorPartialEval (I := I) (M := M) r s T
                   (chartTensor0SParallelExtend (I := I) r α b α_input)) ∘
               (extChartAt I α).symm)
@@ -313,18 +313,19 @@ theorem tensorRSIntrinsicChartCLM_factor_via_tensorPartialEval
     (I := I) (M := M) r s α T (b := b) α_input hb_src hb_tgt hb_base hT
   have hfderiv_at_wE :
       fderiv ℝ
-          (tensor0SChartE_section_repr (I := I) s α
+          (tensor0SChartESectionRepr (I := I) s α
               (tensorPartialEval (I := I) (M := M) r s T
                 (chartTensor0SParallelExtend (I := I) r α b α_input)) ∘
             (extChartAt I α).symm)
           (extChartAt I α b) w_E =
         tensorRSEvalAtCLM (E := E) r s D_α
           (fderiv ℝ
-            (tensorRSChartE_section_repr (I := I) r s α T ∘
+            (tensorRSChartESectionRepr (I := I) r s α T ∘
               (extChartAt I α).symm)
             (extChartAt I α b) w_E) := by
     have := congrArg (fun L : E →L[ℝ] Tensor0SModel s ℝ E => L w_E) hfderivEq
-    simpa [ContinuousLinearMap.comp_apply] using this
+    rw [hDα_def]
+    simpa only [ContinuousLinearMap.comp_apply] using this
   rw [hfderiv_at_wE]
   rw [tensorRSEvalAtCLM_apply]
 

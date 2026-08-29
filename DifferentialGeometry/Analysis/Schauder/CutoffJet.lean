@@ -39,13 +39,13 @@ theorem norm_cutoffJet2_le
     (x : V) :
     ‖cutoffJet2 chi dchi d2chi u du d2u x‖ ≤
       cutoffJet2SupConst Mchi Mdchi Md2chi Mu Mdu Md2u := by
-  letI : SeminormedAddCommGroup (V →L[Real] F) :=
+  let : SeminormedAddCommGroup (V →L[Real] F) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
-  letI : NormedSpace Real (V →L[Real] F) :=
+  let : NormedSpace Real (V →L[Real] F) :=
     ContinuousLinearMap.toNormedSpace
-  letI : SeminormedAddCommGroup (V →L[Real] V →L[Real] F) :=
+  let : SeminormedAddCommGroup (V →L[Real] V →L[Real] F) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
-  letI : NormedSpace Real (V →L[Real] V →L[Real] F) :=
+  let : NormedSpace Real (V →L[Real] V →L[Real] F) :=
     ContinuousLinearMap.toNormedSpace
   let L₁ := ContinuousLinearMap.smulRightL Real V (V →L[Real] F)
   let L₂ := ContinuousLinearMap.precompR V

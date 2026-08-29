@@ -83,7 +83,7 @@ theorem deTurckForcing_solCoeff_continuous_smallTimeBase
               (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u))) := by
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2 with hhc_def
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hc
   set R₀ : ℝ := deTurckRealizabilityRadius (I := I) (M := M) g₀ a ha_super with hR₀_def
   have hR₀_pos : 0 < R₀ := deTurckRealizabilityRadius_pos (I := I) (M := M) g₀ a ha_super
@@ -150,7 +150,7 @@ theorem deTurckForcing_solCoeff_continuous_smallTimeBase
         * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
             (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) t) ^ 2)
       (Set.Icc (0 : ℝ) T) :=
-    continuousOn_finset_sum s₀ (fun i _ =>
+    continuousOn_finsetSum s₀ (fun i _ =>
       ContinuousOn.mul continuousOn_const ((hpmc_contOn i).pow 2))
   have hg0 : (∑ i ∈ s₀, tensorSobolevWeight (I := I) (M := M) i ((a : ℝ) + 2)
         * (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
@@ -211,7 +211,7 @@ theorem deTurckForcing_solCoeff_continuous_smallTimeBase
     refine ⟨Set.IccExtend hT.le (fun p : ↑(Set.Icc (0 : ℝ) T) =>
         perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
           (fun u => (timeModeCoeff (I := I) (M := M) gforce i) u) p.1), ?_, ?_⟩
-    · exact Continuous.Icc_extend' ((hpmc_contOn i).restrict)
+    · exact Continuous.Icc_extend' ((hpmc_contOn i).domRestrict)
     · filter_upwards [MeasureTheory.ae_restrict_mem (μ := MeasureTheory.volume)
         (measurableSet_Icc (a := (0 : ℝ)) (b := T))] with t ht
       exact Set.IccExtend_of_mem hT.le _ ht
@@ -291,7 +291,7 @@ private theorem exists_smoothCcTensor_of_allOrder_spectralMass_local
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2
   obtain ⟨B0, hB0s, hB0le⟩ := hmass 0 le_rfl
   set v0 : tensorHs (I := I) (M := M) g₀ 0 2 0 :=
-    tensorHs_of_spectralMass_majorant (I := I) (M := M) d B0 hB0s hB0le with hv0_def
+    tensorHsOfSpectralMassMajorant (I := I) (M := M) d B0 hB0s hB0le with hv0_def
   set u : TensorL2 0 2 g₀ :=
     tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hc le_rfl v0 with hu_def
   have hu_coeff : ∀ i, tensorL2Coeff (I := I) (M := M) hc u i = d i := by
@@ -331,11 +331,11 @@ private def deTurckRHSReconSectionFiniteOrder (g₀ g_bg : SmoothRiemannianMetri
 
 private local instance tensorRSModelNormedAddCommGroup_local :
     NormedAddCommGroup (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup 0 2
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup 0 2
 
 private local instance tensorRSModelNormedSpace_local :
     NormedSpace ℝ (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace 0 2
+  Tensor0SBundle.tensorRSModelNormedSpace 0 2
 
 
 section FiniteOrderReconJetEnergy
@@ -469,12 +469,12 @@ private theorem pdIter_rawCompOnE_eigenSeries_tsum_eq_local
     have hAd_norm : ‖Ad‖ ≤ |d i| := by
       refine ContinuousLinearMap.opNorm_le_bound _ (abs_nonneg (d i)) (fun x => ?_)
       rw [hAd_def]
-      simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.id_apply,
+      simp only [smul_apply, ContinuousLinearMap.id_apply,
         smul_eq_mul, Real.norm_eq_abs, abs_mul, le_refl]
     have hcomp : Set.EqOn (fm i) (Ad ∘ (ψ i)) Bo := by
       intro z' _
       simp only [hfm_def, hAd_def, Function.comp_apply,
-        ContinuousLinearMap.smul_apply, ContinuousLinearMap.id_apply, smul_eq_mul]
+        smul_apply, ContinuousLinearMap.id_apply, smul_eq_mul]
     have hψi_cw : ContDiffWithinAt ℝ ((n : ℕ) : ℕ∞) (ψ i) Bo z :=
       (((hψ_smooth i).mono hBo_sub) z hz).of_le (by exact_mod_cast le_top)
     have h1 : ‖iteratedFDerivWithin ℝ n (fm i) Bo z‖
@@ -1128,7 +1128,6 @@ open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 private lemma tensorChartComponentRaw_congr_toSection
     {g₁ g₂ : SmoothRiemannianMetric I M}
     (S₁ : SmoothCcTensor g₁ 0 2) (S₂ : SmoothCcTensor g₂ 0 2)
@@ -1137,7 +1136,7 @@ private lemma tensorChartComponentRaw_congr_toSection
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) (x : M) :
     tensorChartComponentRaw (I := I) (M := M) g₁ 0 2 S₁ α Idx Jdx x =
       tensorChartComponentRaw (I := I) (M := M) g₂ 0 2 S₂ α Idx Jdx x := by
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let _ := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) 0 2
   change tensorChartComponentProjection (E := E) 0 2 Idx Jdx
       ((trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
@@ -1149,8 +1148,8 @@ private lemma tensorChartComponentRaw_congr_toSection
         ℝ x (S₂.toSection x))
   rw [h x]
 
-set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
+    [SigmaCompactSpace M] in
 private lemma tensorChartComponentRaw_sub_eq
     (g : SmoothRiemannianMetric I M) (S₁ S₂ : SmoothCcTensor g 0 2) (α : M)
     (Idx : Fin 0 → Fin (Module.finrank ℝ E))
@@ -1169,7 +1168,6 @@ private lemma tensorChartComponentRaw_sub_eq
   simp only [smul_eq_mul, neg_one_mul]
   ring
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private lemma reconFO_raw_eq_chartRHS
@@ -1558,7 +1556,6 @@ private theorem reconFOIter_rawChartComponent_jointContMDiffOn_pou
     hG.contDiffWithinAt (hmaps hq)
   exact hGf.comp_contMDiffWithinAt (hf_smooth q hq) hmaps
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private theorem sectionPath_jointContMDiffOn_of_rawChartComponent_pou
     (g : SmoothRiemannianMetric I M) {T : ℝ} (k : ℕ)
@@ -1576,7 +1573,7 @@ private theorem sectionPath_jointContMDiffOn_of_rawChartComponent_pou
         ((T_rep p.2).toSection p.1))
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) := by
   classical
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let _ := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) 0 2
   refine contMDiffOn_of_locally_contMDiffOn ?_
   rintro ⟨x₀, s₀⟩ ⟨-, -⟩
@@ -1608,7 +1605,7 @@ private theorem sectionPath_jointContMDiffOn_of_rawChartComponent_pou
           tensorChartBasisElement (E := E) 0 2 Q.1 Q.2)
       ({x : M | 0 < ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x} ×ˢ
         Set.Icc (0 : ℝ) T) := by
-    refine contMDiffOn_finset_sum (fun Q _ => ?_)
+    refine contMDiffOn_finsetSum (fun Q _ => ?_)
     have hQ1 : Q.1 = (![] : Fin 0 → Fin (Module.finrank ℝ E)) := funext fun i0 => i0.elim0
     have hrawQ := hraw α Q.2
     rw [hQ1]
@@ -1711,7 +1708,6 @@ end IterLaplacianInduction
 
 end FiniteOrderAnisotropicReconstruction
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem deTurckRHSReconSectionFO_oneMinusConnLapIter_path_jointContMDiffOn
     (g₀ g_bg : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (k : ℕ)
     (F : ℝ → SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
@@ -1747,7 +1743,6 @@ private theorem deTurckRHSReconSectionFO_oneMinusConnLapIter_path_jointContMDiff
 
 end FiniteOrderReconJetEnergy
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem deTurckRHSReconSectionFO_pathCoeff_timeContDiff_spectralJetMass
     (g₀ g_bg : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (k : ℕ)
     (F : ℝ → SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
@@ -1783,7 +1778,7 @@ private theorem deTurckRHSReconSectionFO_pathCoeff_timeContDiff_spectralJetMass
                 (Set.Icc (0 : ℝ) T) t) ^ 2 ≤ B i) := by
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2 with hhc
-  haveI : IsFiniteMeasure
+  have : IsFiniteMeasure
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       g₀
@@ -1943,7 +1938,6 @@ private theorem deTurckRHSReconSectionFO_pathCoeff_timeContDiff_spectralJetMass
         mul_le_mul_of_nonneg_left hsq hwneg_nn
     _ = C ^ 2 * tensorSobolevWeight (I := I) (M := M) i (-sW) := by ring
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem deTurckRHSReconSectionFO_path_timeJet_mixed_regularity
     (g₀ g_bg : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (k : ℕ)
     (F : ℝ → SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
@@ -2101,7 +2095,6 @@ private theorem deTurckRHSReconSectionFO_path_timeJet_mixed_regularity
         iteratedDeriv j (chat i) t)
       hφκ_smooth hκcoeff hκmass
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem deTurckRHSReconSectionFO_eigenPairing_jointCk_timeJet_realization
     (g₀ g_bg : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (k : ℕ)
     (F : ℝ → SmoothCcTensor g₀ 0 2) {δ : ℝ} (hδ_lt : δ < 1)
@@ -2170,7 +2163,7 @@ private theorem deTurckRHSReconSectionFO_eigenPairing_jointCk_timeJet_realizatio
         (I := I) (M := M) g₀ 0 2 i)
       (fun s : ℝ => deTurckRHSReconSectionFiniteOrder (I := I) g₀ g_bg (F s) hδ_lt (hδ s))
       ((heigP.contMDiffOn).of_le hkinf) hjointP
-  haveI : IsFiniteMeasure
+  have : IsFiniteMeasure
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       g₀
@@ -2294,7 +2287,7 @@ private theorem deTurckRHSRecon_pathCoeff_finiteOrder_timeContDiff_withinMass
   obtain ⟨hjoint, hjet⟩ :=
     deTurckRHSReconSectionFO_eigenPairing_jointCk_timeJet_realization (I := I) (M := M)
       g₀ g_bg hT k F hδ_lt hδ φ hφ_smooth hcoeff hmodemass
-  haveI : IsFiniteMeasure
+  have : IsFiniteMeasure
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       g₀
@@ -2499,7 +2492,12 @@ private theorem deTurckRemainder_pathCoeff_finiteOrder_timeContDiff_withinMass
       rw [hcongr]
       have hsub := iteratedDerivWithin_sub (f := reconRaw i) (g := rawRaw i)
         (n := j) ht hUDO hcds hcdr
-      simpa only [Pi.sub_apply] using hsub
+      rw [show (fun s : ℝ => reconRaw i s - rawRaw i s) =
+          (reconRaw i - rawRaw i : ℝ → ℝ) by
+        ext s
+        change reconRaw i s - rawRaw i s = reconRaw i s - rawRaw i s
+        rfl]
+      exact hsub
     have hrawDerivEq : iteratedDerivWithin j (rawRaw i) (Set.Icc (0 : ℝ) T) t =
         -i.lambda * iteratedDeriv j (φ i) t := by
       have hcongr : iteratedDerivWithin j (rawRaw i) (Set.Icc (0 : ℝ) T) t =
@@ -2812,7 +2810,7 @@ theorem deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving
       (∀ i, (fun t => (deTurckSobolevNonlinearity (I := I) (M := M) g₀ g_bg a (w t)).coeff i)
           =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) d₂)] ψ i) := by
   classical
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g₀ 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M)
       (g := g₀) (r := 0) (s := 2)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)
@@ -2844,7 +2842,7 @@ theorem deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving
     intro t ht
     obtain ⟨B0, hB0s, hB0le⟩ := hmass0 0 le_rfl
     set v0 : tensorHs (I := I) (M := M) g₀ 0 2 0 :=
-      tensorHs_of_spectralMass_majorant (I := I) (M := M) (ct t) B0 hB0s
+      tensorHsOfSpectralMassMajorant (I := I) (M := M) (ct t) B0 hB0s
         (fun i => by
           have := hB0le i t ht
           simpa [hct_def] using this) with hv0_def

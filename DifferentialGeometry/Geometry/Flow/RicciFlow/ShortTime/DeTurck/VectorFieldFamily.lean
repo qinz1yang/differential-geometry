@@ -53,11 +53,11 @@ theorem deturck_vf_time_family_smoothness
         ∑ p : Fin (Module.finrank ℝ E),
           DeTurckLinearization.chartDeTurckVFComp (I := I) (g_DT t) g_bg x p
               (extChartAt I x x) •
-            ((chartModelBasis E) p : TangentSpace I x) := by
+            centeredChartTangentBasis (I := I) x p := by
     funext t
     exact deTurckVF_apply_eq_chartDeTurckVFComp_sum_self (I := I) (g_DT t) g_bg x
   rw [hrewrite]
-  refine continuousOn_finset_sum _ ?_
+  refine continuousOn_finsetSum _ ?_
   intro p _
   refine ContinuousOn.smul ?_ continuousOn_const
   have h_entry : ∀ i j : Fin (Module.finrank ℝ E),
@@ -71,8 +71,8 @@ theorem deturck_vf_time_family_smoothness
             chartGramOnE (I := I) (g_DT t) x i j (extChartAt I x x))
           = fun t : ℝ =>
               (g_DT t).inner x
-                ((chartModelBasis E) i : TangentSpace I x)
-                ((chartModelBasis E) j : TangentSpace I x) := by
+                (centeredChartTangentBasis (I := I) x i)
+                (centeredChartTangentBasis (I := I) x j) := by
       funext t
       rw [chartGramOnE_def]
       rw [extChartAt_to_inv (I := I) x]
@@ -80,7 +80,8 @@ theorem deturck_vf_time_family_smoothness
       rw [chartBasisVecFiber_self (I := I) x i,
           chartBasisVecFiber_self (I := I) x j]
     rw [hreduce]
-    exact h_metric_cont x ((chartModelBasis E) i) ((chartModelBasis E) j)
+    exact h_metric_cont x (centeredChartTangentBasis (I := I) x i)
+      (centeredChartTangentBasis (I := I) x j)
   have h_partial : ∀ l i j : Fin (Module.finrank ℝ E),
       ContinuousOn
         (fun t : ℝ =>

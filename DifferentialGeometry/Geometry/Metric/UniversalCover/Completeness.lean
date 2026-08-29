@@ -39,7 +39,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
-  [LocPathConnectedSpace M]
+  [LocallyPathConnectedSpace M]
   [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace M]
   [Inhabited M] [PseudoEMetricSpace M] [SecondCountableTopology M]
 
@@ -91,8 +91,8 @@ open Manifold MeasureTheory
 
 variable [Nonempty M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Nonempty M] in
 omit [PseudoEMetricSpace M] [SecondCountableTopology M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -138,8 +138,8 @@ private theorem proj_pathELength_eq
   rw [hval]
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Nonempty M] in
 omit [SecondCountableTopology M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -162,18 +162,18 @@ theorem proj_lipschitzWith_one [RegularSpace
           ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((liftedMetric (I := I) g).inner x' v v))) :
     letI : PseudoEMetricSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-      uc_pseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
+      ucPseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
     LipschitzWith 1
       (proj :
         DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M → M) := by
-  letI hRB : RiemannianBundle
+  let hRB : RiemannianBundle
       (fun (x : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) ↦
         TangentSpace I x) :=
     ⟨(liftedMetric (I := I) g).toRiemannianMetric⟩
-  letI hUCem : PseudoEMetricSpace
+  let hUCem : PseudoEMetricSpace
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-    uc_pseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
-  haveI hUCRiem :
+    ucPseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
+  have hUCRiem :
       IsRiemannianManifold I
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
     ⟨fun _ _ ↦ rfl⟩
@@ -206,8 +206,8 @@ theorem proj_lipschitzWith_one [RegularSpace
 end ProjLipschitz
 
 open Manifold MeasureTheory in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [InnerProductSpace ℝ E] [I.Boundaryless] [PseudoEMetricSpace M] in
 theorem tail_in_single_sheet
@@ -229,7 +229,7 @@ theorem tail_in_single_sheet
     (hCauchy :
       letI : PseudoEMetricSpace
           (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-        uc_pseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
+        ucPseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
       CauchySeq x')
     {y : M}
     (hlim : Filter.Tendsto (fun n => proj (x' n)) Filter.atTop (𝓝 y)) :
@@ -240,14 +240,14 @@ theorem tail_in_single_sheet
         (∀ z ∈ e.source, proj (X := M) z = e z) ∧
         (∀ᶠ n in Filter.atTop, x' n ∈ e.source) := by
   classical
-  letI hRB : RiemannianBundle
+  let hRB : RiemannianBundle
       (fun (x : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) ↦
         TangentSpace I x) :=
     ⟨(liftedMetric (I := I) g).toRiemannianMetric⟩
-  letI hUCem : PseudoEMetricSpace
+  let hUCem : PseudoEMetricSpace
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-    uc_pseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
-  haveI hUCRiem :
+    ucPseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
+  have hUCRiem :
       IsRiemannianManifold I
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
     ⟨fun _ _ ↦ rfl⟩
@@ -264,7 +264,7 @@ theorem tail_in_single_sheet
       have h1 : ‖z‖ = Real.sqrt (g.inner x z z) := by
         have hz := hEnormBase x z
         have hnn : 0 ≤ Real.sqrt (g.inner x z z) := Real.sqrt_nonneg _
-        rw [← ofReal_norm_eq_enorm] at hz
+        rw [← ofReal_norm] at hz
         exact (ENNReal.ofReal_eq_ofReal_iff (norm_nonneg z) hnn).mp hz
       rw [real_inner_self_eq_norm_sq, h1, Real.sq_sqrt (hpos0 z)]
     have hsymm_g : g.inner x v w = g.inner x w v := g.symm x v w
@@ -275,19 +275,19 @@ theorem tail_in_single_sheet
         (g.inner x (v + w) (v + w) - g.inner x v v - g.inner x w w) / 2 := by
       have e1 : g.inner x (v + w) (v + w) =
           g.inner x v v + g.inner x v w + g.inner x w v + g.inner x w w := by
-        simp [map_add, ContinuousLinearMap.add_apply]; ring
+        simp [map_add, add_apply]; ring
       rw [e1, hsymm_g]; ring
     rw [hpolar, hpolar_g, hdiag (v + w), hdiag v, hdiag w]
-  haveI hCRB : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x) :=
+  have hCRB : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun x v w => hbundle_inner x v w⟩
-  haveI hRegM : RegularSpace M := by
-    haveI : LocallyCompactSpace M :=
+  have hRegM : RegularSpace M := by
+    have : LocallyCompactSpace M :=
       Manifold.locallyCompact_of_finiteDimensional (M := M) I
     infer_instance
   set p : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M → M :=
     proj (X := M) with hp_def
-  haveI : Nonempty (p ⁻¹' {y}) := by
-    haveI hpc : PathConnectedSpace M :=
+  have : Nonempty (p ⁻¹' {y}) := by
+    have hpc : PathConnectedSpace M :=
       (pathConnectedSpace_iff_connectedSpace).mpr inferInstance
     obtain ⟨γ0⟩ := PathConnectedSpace.joined (default : M) y
     exact ⟨⟨⟨y, Path.Homotopic.Quotient.mk γ0⟩, rfl⟩⟩
@@ -300,7 +300,7 @@ theorem tail_in_single_sheet
   have hUopen : IsOpen U := t.open_baseSet
   have hUnhds : U ∈ 𝓝 y := hUopen.mem_nhds hyU
   obtain ⟨c, hc_pos, hc_sub⟩ :=
-    setOf_riemannianEDist_lt_subset_nhds' (I := I) (M := M) hUnhds
+    setOfPred_riemannianEDist_lt_subset_nhds' (I := I) (M := M) hUnhds
   set ε : ENNReal := c / 2 with hε_def
   have hε_pos : 0 < ε := ENNReal.half_pos (by exact_mod_cast hc_pos.ne')
   have htwoε : ε + ε ≤ c := by
@@ -372,7 +372,7 @@ theorem tail_in_single_sheet
           t.continuousOn_toFun
         exact (continuous_snd.comp_continuousOn (htcont.comp hγcont hmaps))
       have hpre : IsPreconnected (Set.Icc (0:ℝ) 1) := isPreconnected_Icc
-      haveI : DiscreteTopology (p ⁻¹' {y}) := hEC.discreteTopology_fiber
+      have : DiscreteTopology (p ⁻¹' {y}) := hEC.discreteTopology_fiber
       have h0 : (0:ℝ) ∈ Set.Icc (0:ℝ) 1 := ⟨le_rfl, zero_le_one⟩
       have h1 : (1:ℝ) ∈ Set.Icc (0:ℝ) 1 := ⟨zero_le_one, le_rfl⟩
       exact hpre.constant hcont_g2 h0 h1
@@ -404,7 +404,7 @@ theorem tail_in_single_sheet
         exact Prod.ext rfl hq2.symm
       right_inv' := fun b _ => rfl
       open_source := hUopen.prod (by
-        haveI : DiscreteTopology (p ⁻¹' {y}) := hEC.discreteTopology_fiber
+        have : DiscreteTopology (p ⁻¹' {y}) := hEC.discreteTopology_fiber
         exact isOpen_discrete ({pt} : Set (p ⁻¹' {y})))
       open_target := hUopen
       continuousOn_toFun := continuousOn_fst
@@ -455,7 +455,7 @@ theorem sheet_homeomorph (y : M) :
       (U' : Set (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M))
       (_hU' : IsOpen U') (_hy'U : y' ∈ U') (_hproj : proj (X := M) y' = y),
       ∃ _h : (U' ≃ₜ U), True := by
-  haveI hpc : PathConnectedSpace M :=
+  have hpc : PathConnectedSpace M :=
     (pathConnectedSpace_iff_connectedSpace).mpr inferInstance
   obtain ⟨γ⟩ := PathConnectedSpace.joined (default : M) y
   set y' :
@@ -475,8 +475,8 @@ theorem sheet_homeomorph (y : M) :
   refine ⟨e.target, e.open_target, hyU, y', e.source, e.open_source, hy'e,
     hproj_y', e.toHomeomorphSourceTarget, trivial⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [InnerProductSpace ℝ E] [I.Boundaryless] [PseudoEMetricSpace M] in
 theorem lift_the_limit
@@ -498,7 +498,7 @@ theorem lift_the_limit
     (hCauchy :
       letI : PseudoEMetricSpace
           (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-        uc_pseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
+        ucPseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
       CauchySeq x')
     {y : M}
     (hlim : Filter.Tendsto (fun n => proj (x' n)) Filter.atTop (𝓝 y)) :
@@ -525,8 +525,8 @@ theorem lift_the_limit
   rw [hy'_symm] at hcomp
   exact hcomp.congr' htail_eq
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [InnerProductSpace ℝ E] [I.Boundaryless] in
 theorem completeSpace_of_complete [CompleteSpace M]
@@ -546,12 +546,12 @@ theorem completeSpace_of_complete [CompleteSpace M]
           ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((liftedMetric (I := I) g).inner x' v v))) :
     letI : PseudoEMetricSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-      uc_pseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
+      ucPseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
     CompleteSpace
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) := by
-  letI hUCem : PseudoEMetricSpace
+  let hUCem : PseudoEMetricSpace
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-    uc_pseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
+    ucPseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
   have hLip :
       LipschitzWith 1
         (proj :
@@ -566,8 +566,8 @@ theorem completeSpace_of_complete [CompleteSpace M]
   have huM : CauchySeq (fun n => proj (X := M) (u n)) :=
     hUC.comp_cauchySeq hu
   obtain ⟨y, hy⟩ := cauchySeq_tendsto_of_complete huM
-  haveI hRegM : RegularSpace M := by
-    haveI : LocallyCompactSpace M :=
+  have hRegM : RegularSpace M := by
+    have : LocallyCompactSpace M :=
       Manifold.locallyCompact_of_finiteDimensional (M := M) I
     infer_instance
   have hbundle_inner : ∀ (x : M) (v w : TangentSpace I x),
@@ -583,7 +583,7 @@ theorem completeSpace_of_complete [CompleteSpace M]
       have h1 : ‖z‖ = Real.sqrt (g.inner x z z) := by
         have hz := hEnormBase x z
         have hnn : 0 ≤ Real.sqrt (g.inner x z z) := Real.sqrt_nonneg _
-        rw [← ofReal_norm_eq_enorm] at hz
+        rw [← ofReal_norm] at hz
         exact (ENNReal.ofReal_eq_ofReal_iff (norm_nonneg z) hnn).mp hz
       rw [real_inner_self_eq_norm_sq, h1, Real.sq_sqrt (hpos0 z)]
     have hsymm_g : g.inner x v w = g.inner x w v := g.symm x v w
@@ -594,17 +594,17 @@ theorem completeSpace_of_complete [CompleteSpace M]
         (g.inner x (v + w) (v + w) - g.inner x v v - g.inner x w w) / 2 := by
       have e1 : g.inner x (v + w) (v + w) =
           g.inner x v v + g.inner x v w + g.inner x w v + g.inner x w w := by
-        simp [map_add, ContinuousLinearMap.add_apply]; ring
+        simp [map_add, add_apply]; ring
       rw [e1, hsymm_g]; ring
     rw [hpolar, hpolar_g, hdiag (v + w), hdiag v, hdiag w]
-  haveI hCRB : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x) :=
+  have hCRB : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun x v w => hbundle_inner x v w⟩
   have hy_eps := EMetric.tendsto_nhds.mp hy
   have hyM : Filter.Tendsto (fun n => proj (X := M) (u n)) Filter.atTop (𝓝 y) := by
     rw [Filter.tendsto_iff_forall_eventually_mem]
     intro s hs
     obtain ⟨c, hc_pos, hc_sub⟩ :=
-      setOf_riemannianEDist_lt_subset_nhds' (I := I) (M := M) hs
+      setOfPred_riemannianEDist_lt_subset_nhds' (I := I) (M := M) hs
     have hev := hy_eps c hc_pos
     filter_upwards [hev] with n hn
     have hrd : Manifold.riemannianEDist I y (proj (X := M) (u n)) < c := by

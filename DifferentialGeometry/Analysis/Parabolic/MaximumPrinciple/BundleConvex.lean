@@ -298,7 +298,12 @@ theorem bundle_closed_convex_time_dependent_heat_reaction_mem_of_support_tangent
           (fun y : M => gradientFun (I := I) (G.metric q₀.1) z' y) := by
         filter_upwards [heq_z.eventuallyEq_nhds] with y hy
         unfold gradientFun metricSharp
-        rw [hy.mfderiv_eq]
+        congr 1
+        apply LinearMap.ext
+        intro v
+        change (mfderiv I 𝓘(Real, Real) (z q₀.1) y) v =
+          (mfderiv I 𝓘(Real, Real) z' y) v
+        exact DFunLike.congr_fun hy.mfderiv_eq v
       have htotal :
           (T% fun y : M => gradientFun (I := I) (G.metric q₀.1) (z q₀.1) y) =ᶠ[nhds q₀.2]
             (T% fun y : M => gradientFun (I := I) (G.metric q₀.1) z' y) := by
@@ -321,14 +326,15 @@ theorem bundle_closed_convex_time_dependent_heat_reaction_mem_of_support_tangent
         (Real.exp (-KK * q₀.1) * (-KK)) q₀.1 := by
       have hinner : HasDerivAt (fun s : Real ↦ -KK * s) (-KK) q₀.1 := by
         simpa using (hasDerivAt_id q₀.1).const_mul (-KK)
-      simpa only [Function.comp_apply] using
-        (Real.hasDerivAt_exp (-KK * q₀.1)).comp q₀.1 hinner
+      exact ((Real.hasDerivAt_exp (-KK * q₀.1)).comp q₀.1 hinner).congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl)
     have hinnerDiff : HasDerivAt
         (fun s : Real => inner ℝ (u s q₀.2) (ν₀ q₀.2) - support s q₀.2 (ν₀ q₀.2))
         (laplacianAt (I := I) G q₀.1 (bundleInnerScalarization u ν₀ q₀.1) q₀.2 +
           source q₀.1 q₀.2 (u q₀.1 q₀.2) (ν₀ q₀.2) -
           support' q₀.1 q₀.2 (ν₀ q₀.2)) q₀.1 := by
-      simpa [bundleInnerScalarization, real_inner_comm] using hscalarEq.sub hsupport_time_s
+      exact (hscalarEq.sub hsupport_time_s).congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl)
     have hzderiv : HasDerivAt (fun s ↦ z s q₀.2)
         (Real.exp (-KK * q₀.1) *
             (laplacianAt (I := I) G q₀.1 (bundleInnerScalarization u ν₀ q₀.1) q₀.2 +
@@ -336,8 +342,9 @@ theorem bundle_closed_convex_time_dependent_heat_reaction_mem_of_support_tangent
               support' q₀.1 q₀.2 (ν₀ q₀.2)) -
           KK * Real.exp (-KK * q₀.1) *
             (inner ℝ (u q₀.1 q₀.2) (ν₀ q₀.2) - support q₀.1 q₀.2 (ν₀ q₀.2))) q₀.1 := by
-      convert hexpDeriv.mul hinnerDiff using 1
-      · ring
+      refine ((hexpDeriv.mul hinnerDiff).congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl)).congr_deriv ?_
+      ring
     have hztime : 0 ≤
         Real.exp (-KK * q₀.1) *
             (laplacianAt (I := I) G q₀.1 (bundleInnerScalarization u ν₀ q₀.1) q₀.2 +

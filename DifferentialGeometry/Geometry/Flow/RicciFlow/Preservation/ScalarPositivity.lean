@@ -42,7 +42,9 @@ private theorem exists_positive_scalar_time
         (spacetimeSlab (M := M) T) := by
       intro t ht
       exact ⟨ht, Set.mem_univ x⟩
-    simpa using hu.comp (by fun_prop) hmap
+    have h := hu.comp (by fun_prop) hmap
+    change ContinuousOn (fun t : Real => u t x) (Set.Icc 0 T) at h
+    exact h
   have htarget : Set.Ioi η ∈ nhds (u 0 x) :=
     Ioi_mem_nhds (by dsimp [η]; linarith)
   have hpre : (fun t : Real ↦ u t x) ⁻¹' Set.Ioi η ∈
@@ -60,7 +62,7 @@ private theorem exists_positive_scalar_time
   exact ⟨t, ⟨ht, htT⟩, hη.trans hpos⟩
 
 theorem scalar_curvature_positive_of_nonnegative_initial
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     {D : RealTimeInterval}
@@ -181,22 +183,42 @@ theorem scalar_curvature_positive_of_nonnegative_initial
           (gradientFun (I := I) (G'.metric p.1) ρ p.2))
         (spacetimeSlab (M := M) T') := by
     intro ρ hρ
-    simpa [G'] using
-      (hgradOriginal ρ hρ).comp hmapContinuous.continuousOn hmap
+    have h := (hgradOriginal ρ hρ).comp hmapContinuous.continuousOn hmap
+    change ContinuousOn (fun p : Real × M =>
+      (G.metric (p.1 + a)).inner p.2
+        (gradientFun (I := I) (G.metric (p.1 + a)) ρ p.2)
+        (gradientFun (I := I) (G.metric (p.1 + a)) ρ p.2))
+      (spacetimeSlab (M := M) T') at h
+    change ContinuousOn (fun p : Real × M =>
+      (G.metric (p.1 + a)).inner p.2
+        (gradientFun (I := I) (G.metric (p.1 + a)) ρ p.2)
+        (gradientFun (I := I) (G.metric (p.1 + a)) ρ p.2))
+      (spacetimeSlab (M := M) T')
+    exact h
   have hlaplacianContinuous : ∀ (ρ : M → Real),
       ContMDiff I (modelWithCornersSelf Real Real) ∞ ρ →
       ContinuousOn (fun p : Real × M ↦
         laplacianAt (I := I) G' p.1 ρ p.2)
         (spacetimeSlab (M := M) T') := by
     intro ρ hρ
-    simpa [G'] using
-      (hlaplacianOriginal ρ hρ).comp hmapContinuous.continuousOn hmap
+    have h := (hlaplacianOriginal ρ hρ).comp hmapContinuous.continuousOn hmap
+    change ContinuousOn (fun p : Real × M =>
+      laplacianAt (I := I) G (p.1 + a) ρ p.2)
+      (spacetimeSlab (M := M) T') at h
+    change ContinuousOn (fun p : Real × M =>
+      laplacianAt (I := I) G (p.1 + a) ρ p.2)
+      (spacetimeSlab (M := M) T')
+    exact h
   have huContinuous : ContinuousOn (fun p : Real × M ↦ u' p.1 p.2)
       (spacetimeSlab (M := M) T') := by
-    simpa [u'] using
-      (hS.scalarReg.scalar_continuousOn.mono
-        (Set.prod_mono (hwindow.trans D.regular_subset) Set.Subset.rfl)).comp
-          hmapContinuous.continuousOn hmap
+    have h := (hS.scalarReg.scalar_continuousOn.mono
+      (Set.prod_mono (hwindow.trans D.regular_subset) Set.Subset.rfl)).comp
+        hmapContinuous.continuousOn hmap
+    change ContinuousOn (fun p : Real × M => S.scalar (p.1 + a) p.2)
+      (spacetimeSlab (M := M) T') at h
+    change ContinuousOn (fun p : Real × M => S.scalar (p.1 + a) p.2)
+      (spacetimeSlab (M := M) T')
+    exact h
   have huNonnegative : ∀ s ∈ Set.Icc 0 T', ∀ x : M, 0 ≤ u' s x := by
     intro s hs x
     exact hnonnegative (s + a)

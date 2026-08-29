@@ -17,7 +17,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -59,8 +58,8 @@ lemma ccTensorBilin_zero_weight (g : SmoothRiemannianMetric I M) (x : M)
         (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ)) from rfl]
   rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
       (0 : SmoothCcTensor g 0 2).toSection x) = 0 from rfl]
-  rw [ContinuousLinearMap.zero_apply, Tensor0SSpace.toModel_zero]
-  rfl
+  with_unfolding_all
+    rfl
 
 def ricciFoldKernelBilin (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
     (x : M) (p q : TangentSpace I x) :
@@ -78,7 +77,7 @@ def ricciFoldKernelBilin (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor
             riemannOp (LeviCivita (I := I) g₀) x v0 +
               riemannOp (LeviCivita (I := I) g₀) x v0' from
           (riemannOp (LeviCivita (I := I) g₀) x).map_add v0 v0']
-        simp only [ContinuousLinearMap.add_apply, map_add, ContinuousLinearMap.comp_add,
+        simp only [add_apply, map_add, ContinuousLinearMap.comp_add,
           smul_add]
         abel
       map_smul' := fun c v0 => by
@@ -86,7 +85,7 @@ def ricciFoldKernelBilin (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor
           show riemannOp (LeviCivita (I := I) g₀) x (c • v0) =
             c • riemannOp (LeviCivita (I := I) g₀) x v0 from
           (riemannOp (LeviCivita (I := I) g₀) x).map_smul c v0]
-        simp only [ContinuousLinearMap.smul_apply, map_smul, ContinuousLinearMap.comp_smul]
+        simp only [smul_apply, map_smul, ContinuousLinearMap.comp_smul]
         rw [← smul_add, smul_comm] }
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -101,7 +100,7 @@ omit [SigmaCompactSpace M] in
           + smoothCcTensorBilinForm (I := I) g₀ S x q
               (riemannOp (LeviCivita (I := I) g₀) x v0 p v1)) := by
   rw [ricciFoldKernelBilin, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
-    AddHom.coe_mk, ContinuousLinearMap.smul_apply, ContinuousLinearMap.add_apply,
+    AddHom.coe_mk, smul_apply, add_apply,
     ContinuousLinearMap.comp_apply, smul_eq_mul]
 
 def frameRicciFoldKernel (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2)
@@ -122,7 +121,7 @@ omit [SigmaCompactSpace M] in
     frameRicciFoldKernel (I := I) g₀ S x v0 v1 p q =
       ricciFoldKernelBilin (I := I) g₀ S x p q v0 v1 := by
   rw [ricciFoldKernelBilin_apply, frameRicciFoldKernel]
-  simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.add_apply,
+  simp only [smul_apply, add_apply,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.compL_apply,
     ContinuousLinearMap.flip_apply, smul_eq_mul]
 
@@ -136,9 +135,9 @@ def ricciFoldSummandFib (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor 
           Tensor0SSpace.ofModel (I := I) (x := x)
             (bilinFormToModel E (ricciFoldKernelBilin (I := I) g₀ S x p q))
       map_add' := fun D D' => by
-        rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply, add_smul]
+        rw [Tensor0SSpace.toModel_add, add_apply, add_smul]
       map_smul' := fun c D => by
-        rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul,
+        rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul,
           RingHom.id_apply, mul_smul] }
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -150,10 +149,11 @@ omit [SigmaCompactSpace M] in
     Tensor0SSpace.toModel (ricciFoldSummandFib (I := I) g₀ S x p q D) v =
       (Tensor0SSpace.toModel D ![(p : E), (q : E)]) *
         ricciFoldKernelBilin (I := I) g₀ S x p q (v 0) (v 1) := by
-  rw [ricciFoldSummandFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
-    AddHom.coe_mk, Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply,
-    Tensor0SSpace.toModel_ofModel, bilinFormToModel_apply, smul_eq_mul]
-  rfl
+  with_unfolding_all
+    rw [ricciFoldSummandFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
+      AddHom.coe_mk, Tensor0SSpace.toModel_smul, smul_apply,
+      Tensor0SSpace.toModel_ofModel, smul_eq_mul]
+    rfl
 
 def ricciFoldBiContrFibFixedFrame (g₀ : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2)
@@ -174,11 +174,11 @@ lemma ricciFoldBiContrFibFixedFrame_toModel (g₀ : SmoothRiemannianMetric I M)
         (Tensor0SSpace.toModel D ![(B a x : E), (B b x : E)]) *
           ricciFoldKernelBilin (I := I) g₀ S x (B a x) (B b x) (v 0) (v 1) := by
   classical
-  rw [ricciFoldBiContrFibFixedFrame, ContinuousLinearMap.sum_apply,
-    ← Tensor0SSpace.toModelL_apply, map_sum, ContinuousMultilinearMap.sum_apply]
+  rw [ricciFoldBiContrFibFixedFrame, sum_apply,
+    ← Tensor0SSpace.toModelL_apply, map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [ContinuousLinearMap.sum_apply, Tensor0SSpace.toModelL_apply,
-    ← Tensor0SSpace.toModelL_apply, map_sum, ContinuousMultilinearMap.sum_apply]
+  rw [sum_apply, Tensor0SSpace.toModelL_apply,
+    ← Tensor0SSpace.toModelL_apply, map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun b _ => ?_)
   rw [Tensor0SSpace.toModelL_apply, ricciFoldSummandFib_toModel]
 
@@ -318,12 +318,12 @@ theorem ricciFoldBiContrFibFixedFrame_apply_section_contMDiff
     refine Finset.sum_congr rfl (fun a _ => ?_)
     rw [hcoe2 a, Finset.sum_apply]
     rfl
-  rw [ricciFoldBiContrFibFixedFrame, ContinuousLinearMap.sum_apply]
+  rw [ricciFoldBiContrFibFixedFrame, sum_apply]
   rw [show ∑ a : Fin (Module.finrank ℝ E), (∑ b : Fin (Module.finrank ℝ E),
       ricciFoldSummandFib (I := I) g₀ S x (B a x) (B b x)) (Y x) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
         ricciFoldSummandFib (I := I) g₀ S x (B a x) (B b x) (Y x) from
-    Finset.sum_congr rfl (fun a _ => ContinuousLinearMap.sum_apply _ _ _)]
+    Finset.sum_congr rfl (fun a _ => sum_apply _ _ _)]
   rw [← hval]
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -364,25 +364,57 @@ theorem ricciFoldBiContrFib_eq_fixedFrame_on_nbhd (g₀ g₁ : SmoothRiemannianM
   intro v
   rw [ricciFoldBiContrFib, ricciFoldBiContrFibFixedFrame_toModel,
     ricciFoldBiContrFibFixedFrame_toModel]
+  let _ : IsManifold I 1 M :=
+    IsManifold.of_le (I := I) (M := M) (n := ∞) (by decide)
+  let e := (tangentSpaceModelContinuousLinearEquiv (I := I) y).toContinuousLinearMap
+  let vt : Fin 2 → TangentSpace I y := fun i =>
+    (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v i)
+  let Dmodel : E →L[ℝ] E →L[ℝ] ℝ :=
+    (bilinFormToModel E).symm (Tensor0SSpace.toModel D)
+  let Dd : TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ :=
+    (((Dmodel.comp e).flip.comp e).flip)
+  with_unfolding_all
+    change (∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
+        (Tensor0SSpace.toModel D
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (smoothOrthoFrame (I := I) g₁ y a y),
+            tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (smoothOrthoFrame (I := I) g₁ y b y)]) *
+          ricciFoldKernelBilin (I := I) g₀ S y
+            (smoothOrthoFrame (I := I) g₁ y a y) (smoothOrthoFrame (I := I) g₁ y b y)
+            (vt 0) (vt 1)) =
+      ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
+        (Tensor0SSpace.toModel D
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (smoothOrthoFrame (I := I) g₁ x₀ a y),
+            tangentSpaceModelContinuousLinearEquiv (I := I) y
+              (smoothOrthoFrame (I := I) g₁ x₀ b y)]) *
+          ricciFoldKernelBilin (I := I) g₀ S y
+            (smoothOrthoFrame (I := I) g₁ x₀ a y) (smoothOrthoFrame (I := I) g₁ x₀ b y)
+            (vt 0) (vt 1)
   have hrewrite : ∀ (Bf : Fin (Module.finrank ℝ E) → TangentSpace I y),
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        (Tensor0SSpace.toModel D ![(Bf a : E), (Bf b : E)]) *
-          ricciFoldKernelBilin (I := I) g₀ S y (Bf a) (Bf b) (v 0) (v 1) =
+        (Tensor0SSpace.toModel D
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) y (Bf a),
+            tangentSpaceModelContinuousLinearEquiv (I := I) y (Bf b)]) *
+          ricciFoldKernelBilin (I := I) g₀ S y (Bf a) (Bf b) (vt 0) (vt 1) =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        frameRicciFoldKernel (I := I) g₀ S y (v 0) (v 1) (Bf a) (Bf b) *
-          (bilinFormToModel (TangentSpace I y)).symm (Tensor0SSpace.toModel D) (Bf a) (Bf b) := by
+        frameRicciFoldKernel (I := I) g₀ S y (vt 0) (vt 1) (Bf a) (Bf b) *
+          Dd (Bf a) (Bf b) := by
     intro Bf
     refine Finset.sum_congr rfl (fun a _ => ?_)
     refine Finset.sum_congr rfl (fun b _ => ?_)
-    rw [frameRicciFoldKernel_apply,
-      bilinFormToModel_symm_apply (TangentSpace I y) (Tensor0SSpace.toModel D) (Bf a) (Bf b)]
+    rw [frameRicciFoldKernel_apply]
+    dsimp only [Dd, Dmodel, e]
+    rw [ContinuousLinearMap.flip_apply, ContinuousLinearMap.comp_apply,
+      ContinuousLinearMap.flip_apply, ContinuousLinearMap.comp_apply,
+      bilinFormToModel_symm_apply]
     rw [mul_comm]
     rfl
   rw [hrewrite (fun a => smoothOrthoFrame (I := I) g₁ y a y),
     hrewrite (fun a => smoothOrthoFrame (I := I) g₁ x₀ a y)]
   exact double_frame_bilin_trace_indep (I := I) g₁ y
-    (frameRicciFoldKernel (I := I) g₀ S y (v 0) (v 1))
-    ((bilinFormToModel (TangentSpace I y)).symm (Tensor0SSpace.toModel D))
+    (frameRicciFoldKernel (I := I) g₀ S y (vt 0) (vt 1)) Dd
     (fun a => smoothOrthoFrame (I := I) g₁ y a y)
     (fun a => smoothOrthoFrame (I := I) g₁ x₀ a y)
     (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g₁ y i j)
@@ -454,10 +486,25 @@ theorem ricciArmRicciFoldRemainderField_zero_weight (g₀ g₁ : SmoothRiemannia
             (smoothOrthoFrame (I := I) g₁ x a x) (smoothOrthoFrame (I := I) g₁ x b x)
             (v 0) (v 1)) = 0 from
       Finset.sum_eq_zero (fun a _ => Finset.sum_eq_zero (fun b _ => by
-        rw [ricciFoldKernelBilin_apply, ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
-        ring))]
-    simp only [ContinuousLinearMap.zero_apply, Tensor0SSpace.toModel_zero,
-      ContinuousMultilinearMap.zero_apply]
+        let p : TangentSpace I x := smoothOrthoFrame (I := I) g₁ x a x
+        let q : TangentSpace I x := smoothOrthoFrame (I := I) g₁ x b x
+        let v0 : TangentSpace I x :=
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)
+        let v1 : TangentSpace I x :=
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)
+        have hk : ricciFoldKernelBilin (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) x
+            p q v0 v1 = 0 := by
+          rw [ricciFoldKernelBilin_apply,
+            ccTensorBilin_zero_weight, ccTensorBilin_zero_weight,
+            zero_add, mul_zero]
+        with_unfolding_all
+          change (Tensor0SSpace.toModel D
+              ![(tangentSpaceModelContinuousLinearEquiv (I := I) x) p,
+                (tangentSpaceModelContinuousLinearEquiv (I := I) x) q]) *
+              ricciFoldKernelBilin (I := I) g₀ (0 : SmoothCcTensor g₀ 0 2) x
+                p q v0 v1 = 0
+        rw [hk, mul_zero]))]
+    simp only [zero_apply, Tensor0SSpace.toModel_zero]
   rw [hzero]
   rfl
 

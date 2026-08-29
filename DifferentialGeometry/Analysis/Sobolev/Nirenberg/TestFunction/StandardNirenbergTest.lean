@@ -284,7 +284,7 @@ theorem hasWeakPartialDeriv_standardNirenbergTest
             diffQuot k h u y) := by
     funext y
     rw [fderiv_fun_pow 2 (hη_diff y)]
-    rw [ContinuousLinearMap.smul_apply]
+    rw [smul_apply]
     have h1 : (η y) ^ ((2 : ℕ) - 1) = η y := by norm_num
     rw [h1]
     have h_two : ((2 : ℕ) • η y) = 2 * η y := by

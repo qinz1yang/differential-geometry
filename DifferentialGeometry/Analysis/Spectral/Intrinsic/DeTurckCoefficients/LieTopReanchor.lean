@@ -34,7 +34,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
   [SigmaCompactSpace M]
 
-set_option backward.isDefEq.respectTransparency false
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -61,33 +60,32 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
   refine (deTurckLieArm2PrincipalCoeff_apply_eq (I := I) g₀ g₁ D x
     ![(chartModelBasis E) i, (chartModelBasis E) j]).trans ?_
   have hv0 : (![(chartModelBasis E) i, (chartModelBasis E) j] :
-      Fin 2 → TangentSpace I x) 0 = (chartModelBasis E) i := rfl
+      Fin 2 → E) 0 = (chartModelBasis E) i := rfl
   have hv1 : (![(chartModelBasis E) i, (chartModelBasis E) j] :
-      Fin 2 → TangentSpace I x) 1 = (chartModelBasis E) j := rfl
-  simp only [hv0, hv1]
-  have hpack13 : ∀ (u w : TangentSpace I x) (c v : E),
+      Fin 2 → E) 1 = (chartModelBasis E) j := rfl
+  have hpack13 : ∀ (u w c v : E),
       quadrilinearMapSlotBilinearAt (E := E) (unitModel (I := I) (M := M) g₀ 4 D x)
-        1 3 (by decide) ![(show E from u), 0, (show E from w), 0] c v =
+        1 3 (by decide) ![u, 0, w, 0] c v =
       unitModel (I := I) (M := M) g₀ 4 D x ![u, c, w, v] := by
     intro u w c v
     rw [unitModel4SlotBilin_apply]
     refine congrArg (fun t : Fin 4 → E => unitModel (I := I) (M := M) g₀ 4 D x t) ?_
     funext m
     fin_cases m <;> simp [Function.update]
-  have hpack23 : ∀ (u w : TangentSpace I x) (c v : E),
+  have hpack23 : ∀ (u w c v : E),
       quadrilinearMapSlotBilinearAt (E := E) (unitModel (I := I) (M := M) g₀ 4 D x)
-        2 3 (by decide) ![(show E from u), (show E from w), 0, 0] c v =
+        2 3 (by decide) ![u, w, 0, 0] c v =
       unitModel (I := I) (M := M) g₀ 4 D x ![u, w, c, v] := by
     intro u w c v
     rw [unitModel4SlotBilin_apply]
     refine congrArg (fun t : Fin 4 → E => unitModel (I := I) (M := M) g₀ 4 D x t) ?_
     funext m
     fin_cases m <;> simp [Function.update]
-  have hpat : ∀ (u w : TangentSpace I x),
+  have hpat : ∀ (u w : E),
       (∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 D x
           ![u, cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             w, (Module.finBasis ℝ E) k]) =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
@@ -98,14 +96,14 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
     rw [show (∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 D x
           ![u, cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             w, (Module.finBasis ℝ E) k]) =
       ∑ k : Fin (Module.finrank ℝ E),
         quadrilinearMapSlotBilinearAt (E := E) (unitModel (I := I) (M := M) g₀ 4 D x)
-          1 3 (by decide) ![(show E from u), 0, (show E from w), 0]
+          1 3 (by decide) ![u, 0, w, 0]
           (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           ((Module.finBasis ℝ E) k) from
       Finset.sum_congr rfl (fun k _ => (hpack13 u w _ _).symm)]
@@ -116,7 +114,7 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
       unitModel (I := I) (M := M) g₀ 4 D x
         ![(chartModelBasis E) i, (chartModelBasis E) j,
           cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)),
           (Module.finBasis ℝ E) k]) =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
@@ -128,7 +126,7 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
         unitModel (I := I) (M := M) g₀ 4 D x
           ![(chartModelBasis E) i, (chartModelBasis E) j,
             cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             (Module.finBasis ℝ E) k]) =
       ∑ k : Fin (Module.finrank ℝ E),
@@ -136,7 +134,7 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
           2 3 (by decide)
           ![(chartModelBasis E) i, (chartModelBasis E) j, 0, 0]
           (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           ((Module.finBasis ℝ E) k) from
       Finset.sum_congr rfl (fun k _ =>
@@ -144,6 +142,7 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
     rw [cometricFinBasisTrace_eq_chartInvGram_bilin (I := I) g₁ x _]
     refine Finset.sum_congr rfl (fun k₁ _ => Finset.sum_congr rfl (fun l _ => ?_))
     rw [smul_eq_mul, hpack23 ((chartModelBasis E) i) ((chartModelBasis E) j)]
+  rw [hv0, hv1]
   rw [hpat ((chartModelBasis E) i) ((chartModelBasis E) j),
     hpat ((chartModelBasis E) j) ((chartModelBasis E) i), hpatH]
   rw [← Finset.sum_add_distrib, ← Finset.sum_sub_distrib]
@@ -206,7 +205,7 @@ private lemma lieArm_euclidPartial_add_local
     euclidPartial (E := E) l (fun z => f z + h z) y =
       euclidPartial (E := E) l f y + euclidPartial (E := E) l h y := by
   rw [euclidPartial_def, euclidPartial_def, euclidPartial_def, fderiv_fun_add hf hh,
-    ContinuousLinearMap.add_apply]
+    add_apply]
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
@@ -256,6 +255,7 @@ private lemma lieArm_euclidPartial_chartPushedRaw_differentiableAt_center
     ((DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
       (I := I) (M := M) x).mem_nhds hmem)).differentiableAt (by simp)
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieArm_unitModel4_basisChart_readout_split
@@ -275,7 +275,7 @@ private lemma lieArm_unitModel4_basisChart_readout_split
       ((toEuclidean (E := E)).symm ((toEuclidean (E := E)) (extChartAt I x x))) = x :=
     symm_toEuclidean_symm_toEuclidean_extChartAt (I := I) (M := M) x hmemsrc
   rw [show (![chartModelBasis E a, chartModelBasis E b, chartModelBasis E c,
-        chartModelBasis E d] : Fin 4 → TangentSpace I x) =
+        chartModelBasis E d] : Fin 4 → E) =
       (fun j => chartModelBasis E ((![a, b, c, d] : Fin 4 → Fin (Module.finrank ℝ E)) j)) from by
     funext j; fin_cases j <;> rfl]
   rw [unitModel_basisChart_eq_tensorChartComponentRaw (I := I) (M := M) g₀ (2 + 2)
@@ -307,6 +307,7 @@ private lemma lieArm_unitModel4_basisChart_readout_split
   rw [lieArm_euclidPartial_add_local a hPdiff hQdiff]
   ring
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieArm_unitModel3_basisChart_readout_split
@@ -325,7 +326,7 @@ private lemma lieArm_unitModel3_basisChart_readout_split
       ((toEuclidean (E := E)).symm ((toEuclidean (E := E)) (extChartAt I x x))) = x :=
     symm_toEuclidean_symm_toEuclidean_extChartAt (I := I) (M := M) x hmemsrc
   rw [show (![chartModelBasis E a, chartModelBasis E b, chartModelBasis E c] :
-        Fin 3 → TangentSpace I x) =
+        Fin 3 → E) =
       (fun j => chartModelBasis E ((![a, b, c] : Fin 3 → Fin (Module.finrank ℝ E)) j)) from by
     funext j; fin_cases j <;> rfl]
   rw [unitModel_basisChart_eq_tensorChartComponentRaw (I := I) (M := M) g₀ (2 + 1)
@@ -425,6 +426,7 @@ private lemma lieArm_partialDeriv_symmS_scalar_eventuallyEq
   unfold DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
   rw [hy.fderiv_eq]
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieArm_U4_readout
@@ -466,6 +468,7 @@ private lemma lieArm_U4_readout
       (extChartAt I x x) ((chartModelBasis E) a)
   rw [hev1.fderiv_eq]
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieArm_U3_readout
@@ -766,6 +769,7 @@ def lieTopTail
         - arm2ReadoutCovDerivPair (I := I) (M := M) g₀
           (ccTensor02Symm (I := I) (M := M) g₀ (T - T')) x ![i, j, l, k₁])
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem lieTop_cov_eq_raw
     (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)

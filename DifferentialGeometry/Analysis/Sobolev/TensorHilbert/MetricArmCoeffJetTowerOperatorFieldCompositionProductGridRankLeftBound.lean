@@ -85,6 +85,7 @@ private lemma diagonalGrid_leftFactor_step_le (n : ℝ) (hn : 0 ≤ n) (j : ℕ)
         exact mul_le_mul_of_nonneg_left hB hn
     _ = (n + 1) * D := by ring
 
+omit [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_ccTensorCompose_diagonalProductGrid_leftFactor_le
     (g : SmoothRiemannianMetric I M) :
     ∀ (j p a b : ℕ) (Φ : SmoothCcTensor g a b) (W : SmoothCcTensor g p a) (x : M),

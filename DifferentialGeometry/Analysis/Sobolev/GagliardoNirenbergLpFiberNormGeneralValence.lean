@@ -157,7 +157,7 @@ private theorem lpFiberJet_logConvex_iteratedCovGrad_rs
   rcases eq_or_lt_of_le hVnn with hV0 | hVpos
   · have hmuzero : (Integral.Measure.riemannianVolumeMeasure I M g) = 0 := by
       have hfin : (Integral.Measure.riemannianVolumeMeasure I M g) Set.univ ≠ ⊤ := by
-        haveI := Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
+        have := Integral.Measure.riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
           (I := I) (M := M) g
         exact (MeasureTheory.measure_ne_top _ _)
       have htoReal0 : ((Integral.Measure.riemannianVolumeMeasure I M g) Set.univ).toReal = 0 := by

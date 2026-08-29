@@ -3,6 +3,7 @@
 import DifferentialGeometry.External.DeGiorgi.MoserIteration.CutoffPrep.PreEstimate
 import Mathlib.Topology.MetricSpace.Thickening
 
+
 /-!
 # Moser Iteration Layer
 
@@ -22,18 +23,18 @@ local notation "E" => AmbientSpace d
 
 /-- Dimension-only constant for the stage-one weak Harnack estimates.
 
-Compared to `C_Moser`, this absorbs the extra `χ^(2i)` growth that appears in
+Compared to `CMoser`, this absorbs the extra `χ^(2i)` growth that appears in
 the supersolution geometric product. -/
-noncomputable def C_weakHarnack0 (d : ℕ) [NeZero d] : ℝ :=
+noncomputable def CWeakHarnack0 (d : ℕ) [NeZero d] : ℝ :=
   if _hd : 2 < (d : ℝ) then
-    C_Moser d * (moserChi d ^ 2) ^ (∑' n : ℕ, (n : ℝ) * moserDecayRatio d ^ n)
+    CMoser d * (moserChi d ^ 2) ^ (∑' n : ℕ, (n : ℝ) * moserDecayRatio d ^ n)
   else
-    C_Moser d
+    CMoser d
 
 theorem C_Moser_le_C_weakHarnack0 :
-    C_Moser d ≤ C_weakHarnack0 d := by
+    CMoser d ≤ CWeakHarnack0 d := by
   by_cases hd : 2 < (d : ℝ)
-  · simp only [C_weakHarnack0, hd, dif_pos]
+  · simp only [CWeakHarnack0, hd, dif_pos]
     have hq_nonneg : 0 ≤ moserDecayRatio d :=
       moserDecayRatio_nonneg (d := d) hd
     have hq_lt_one : moserDecayRatio d < 1 :=
@@ -42,33 +43,33 @@ theorem C_Moser_le_C_weakHarnack0 :
       simpa [Real.norm_of_nonneg hq_nonneg] using hq_lt_one
     have hexp_nonneg :
         0 ≤ ∑' n : ℕ, (n : ℝ) * moserDecayRatio d ^ n := by
-      exact tsum_nonneg fun n => mul_nonneg (by exact_mod_cast Nat.zero_le n)
+      exact tsum_nonneg fun n => mul_nonneg (Nat.cast_nonneg n)
                                    (pow_nonneg hq_nonneg n)
     have hbase_ge_one : 1 ≤ moserChi d ^ 2 := by
       exact one_le_pow₀ (one_le_moserChi (d := d) hd)
     have hfactor_ge_one :
         1 ≤ (moserChi d ^ 2) ^ (∑' n : ℕ, (n : ℝ) * moserDecayRatio d ^ n) := by
       exact Real.one_le_rpow hbase_ge_one hexp_nonneg
-    have hCMoser_nonneg : 0 ≤ C_Moser d := by
+    have hCMoser_nonneg : 0 ≤ CMoser d := by
       exact le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_Moser (d := d))
     calc
-      C_Moser d = C_Moser d * 1 := by ring
-      _ ≤ C_Moser d * (moserChi d ^ 2) ^ (∑' n : ℕ, (n : ℝ) * moserDecayRatio d ^ n) := by
+      CMoser d = CMoser d * 1 := by ring
+      _ ≤ CMoser d * (moserChi d ^ 2) ^ (∑' n : ℕ, (n : ℝ) * moserDecayRatio d ^ n) := by
           exact mul_le_mul_of_nonneg_left hfactor_ge_one hCMoser_nonneg
-  · simp only [C_weakHarnack0, hd, dif_neg, not_false_eq_true]
+  · simp only [CWeakHarnack0, hd, dif_neg, not_false_eq_true]
     exact le_refl _
 
 theorem one_le_C_weakHarnack0 :
-    1 ≤ C_weakHarnack0 d := by
+    1 ≤ CWeakHarnack0 d := by
   exact (one_le_C_Moser (d := d)).trans (C_Moser_le_C_weakHarnack0 (d := d))
 
 /-- Auxiliary exponent `c(d)` used in the crossover estimate. -/
-noncomputable def c_crossover (d : ℕ) [NeZero d] : ℝ :=
-  1 / (C_Moser d + 1)
+noncomputable def cCrossover (d : ℕ) [NeZero d] : ℝ :=
+  1 / (CMoser d + 1)
 
 /-- Auxiliary constant `C(d)` used in the crossover estimate. -/
-noncomputable def C_crossover (d : ℕ) [NeZero d] : ℝ :=
-  C_Moser d
+noncomputable def CCrossover (d : ℕ) [NeZero d] : ℝ :=
+  CMoser d
 
 
 /-- Auxiliary powered integral along the standard Moser radius/exponent sequence. -/
@@ -89,7 +90,7 @@ noncomputable def moserBaseIntegral
 /-- Auxiliary step constant in the normalized-coefficient pre-Moser estimate. -/
 noncomputable def moserStepConst
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1)) (p₀ : ℝ) : ℝ :=
-  (32 : ℝ) * C_MoserAnchor d * A.1.Λ * (p₀ / (p₀ - 1)) ^ 2
+  (32 : ℝ) * CMoserAnchor d * A.1.Λ * (p₀ / (p₀ - 1)) ^ 2
 
 /-- Auxiliary product majorant produced by iterating the pre-Moser estimate. -/
 noncomputable def moserIterMajorant
@@ -105,7 +106,7 @@ noncomputable def moserIterMajorant
 noncomputable def moserLinftyBoundPow
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u : E → ℝ} (p₀ : ℝ) : ℝ :=
-  C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+  CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
     (p₀ / (p₀ - 1)) ^ (d : ℝ) *
     ∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ p₀ ∂volume
 
@@ -119,7 +120,7 @@ theorem moser_step_majorant_le
     (hd : 2 < (d : ℝ))
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     {u : E → ℝ} {p₀ : ℝ} (hp₀ : 1 < p₀) (n : ℕ) :
-    (((C_MoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
+    (((CMoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
         (A.1.Λ *
             (moserExponentSeq d p₀ n / (moserExponentSeq d p₀ n - 1)) ^ 2 + 1)) ^
         (1 / moserExponentSeq d p₀ n)) *
@@ -156,8 +157,8 @@ theorem moser_step_majorant_le
         2 * A.1.Λ * (p₀ / (p₀ - 1)) ^ 2 := by
     nlinarith [mul_le_mul_of_nonneg_left hratio_sq_le A.1.Λ_nonneg]
   have hgap_eq :
-      C_MoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2 =
-        C_MoserAnchor d * (4 : ℝ) ^ (n + 2) := by
+      CMoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2 =
+        CMoserAnchor d * (4 : ℝ) ^ (n + 2) := by
     rw [moserRadius_gap]
     have hsq : (((1 / 2 : ℝ) ^ (n + 2)) ^ 2) = (1 / 4 : ℝ) ^ (n + 2) := by
       rw [← pow_mul]
@@ -173,26 +174,26 @@ theorem moser_step_majorant_le
     norm_num
   have harg_nonneg :
       0 ≤
-        (C_MoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
+        (CMoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
           (A.1.Λ * (p_n / (p_n - 1)) ^ 2 + 1) := by
-    have hanchor_nonneg : 0 ≤ C_MoserAnchor d := by
+    have hanchor_nonneg : 0 ≤ CMoserAnchor d := by
       exact le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_MoserAnchor (d := d))
     refine mul_nonneg ?_ ?_
     · exact div_nonneg hanchor_nonneg (sq_nonneg _)
     · nlinarith [A.1.Λ_nonneg, sq_nonneg (p_n / (p_n - 1))]
-  have hgap_nonneg : 0 ≤ C_MoserAnchor d * (4 : ℝ) ^ (n + 2) := by
-    have hanchor_nonneg : 0 ≤ C_MoserAnchor d := by
+  have hgap_nonneg : 0 ≤ CMoserAnchor d * (4 : ℝ) ^ (n + 2) := by
+    have hanchor_nonneg : 0 ≤ CMoserAnchor d := by
       exact le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_MoserAnchor (d := d))
     exact mul_nonneg hanchor_nonneg (by positivity)
   have harg_le :
-      (C_MoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
+      (CMoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
           (A.1.Λ * (p_n / (p_n - 1)) ^ 2 + 1) ≤
         moserStepConst (d := d) A p₀ * (4 : ℝ) ^ n := by
     rw [hgap_eq]
     calc
-      C_MoserAnchor d * (4 : ℝ) ^ (n + 2) *
+      CMoserAnchor d * (4 : ℝ) ^ (n + 2) *
           (A.1.Λ * (p_n / (p_n - 1)) ^ 2 + 1)
-          ≤ C_MoserAnchor d * (4 : ℝ) ^ (n + 2) *
+          ≤ CMoserAnchor d * (4 : ℝ) ^ (n + 2) *
               (2 * A.1.Λ * (p₀ / (p₀ - 1)) ^ 2) := by
               gcongr
       _ = moserStepConst (d := d) A p₀ * (4 : ℝ) ^ n := by
@@ -200,18 +201,18 @@ theorem moser_step_majorant_le
             dsimp [moserStepConst]
             ring
   have hprefactor_le :
-      ((C_MoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
+      ((CMoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
           (A.1.Λ * (p_n / (p_n - 1)) ^ 2 + 1)) ^ (1 / p_n) ≤
         (moserStepConst (d := d) A p₀ * (4 : ℝ) ^ n) ^ (1 / p_n) := by
     refine Real.rpow_le_rpow harg_nonneg harg_le ?_
     · positivity
   have hprefactor_nonneg :
       0 ≤
-        ((C_MoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
+        ((CMoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
           (A.1.Λ * (p_n / (p_n - 1)) ^ 2 + 1)) ^ (1 / p_n) := by
     exact Real.rpow_nonneg harg_nonneg _
   have hstep_pos : 0 < moserStepConst (d := d) A p₀ := by
-    have hanchor_pos : 0 < C_MoserAnchor d := by
+    have hanchor_pos : 0 < CMoserAnchor d := by
       exact lt_of_lt_of_le zero_lt_one (one_le_C_MoserAnchor (d := d))
     have hratio₀_pos : 0 < p₀ / (p₀ - 1) := by positivity
     dsimp [moserStepConst]
@@ -301,7 +302,7 @@ theorem moser_step_majorant_le
       (Real.rpow_nonneg hinner_nonneg (1 / p₀))
   simpa [p_n] using
     (calc
-    (((C_MoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
+    (((CMoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
         (A.1.Λ * (p_n / (p_n - 1)) ^ 2 + 1)) ^ (1 / p_n)) *
         moserIterMajorant (d := d) A (u := u) p₀ n
         ≤ ((moserStepConst (d := d) A p₀ * (4 : ℝ) ^ n) ^ (1 / p_n)) *
@@ -346,13 +347,13 @@ theorem moser_iteration_bound
           mul_assoc] using hInt_succ
       · have hfactor_nonneg :
             0 ≤
-              ((C_MoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
+              ((CMoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
                   (A.1.Λ * (p_n / (p_n - 1)) ^ 2 + 1)) ^ (1 / p_n) := by
             have harg_nonneg :
                 0 ≤
-                  (C_MoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
+                  (CMoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
                     (A.1.Λ * (p_n / (p_n - 1)) ^ 2 + 1) := by
-              have hanchor_nonneg : 0 ≤ C_MoserAnchor d := by
+              have hanchor_nonneg : 0 ≤ CMoserAnchor d := by
                 exact le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_MoserAnchor (d := d))
               refine mul_nonneg ?_ ?_
               · exact div_nonneg hanchor_nonneg (sq_nonneg _)
@@ -360,12 +361,12 @@ theorem moser_iteration_bound
             exact Real.rpow_nonneg harg_nonneg _
         calc
           moserIterNorm (d := d) (u := u) p₀ (n + 1)
-              ≤ ((C_MoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
+              ≤ ((CMoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
                     (A.1.Λ * (p_n / (p_n - 1)) ^ 2 + 1)) ^ (1 / p_n) *
                   moserIterNorm (d := d) (u := u) p₀ n := by
                     simpa [moserIterNorm, moserIterIntegral, p_n, moserExponentSeq_succ,
                       mul_comm, mul_left_comm, mul_assoc] using hbound_succ
-          _ ≤ ((C_MoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
+          _ ≤ ((CMoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
                     (A.1.Λ * (p_n / (p_n - 1)) ^ 2 + 1)) ^ (1 / p_n) *
                   moserIterMajorant (d := d) A (u := u) p₀ n := by
                     exact mul_le_mul_of_nonneg_left hbound_n hfactor_nonneg
@@ -426,7 +427,7 @@ theorem moser_geometric_majorant
   let S : ℝ := Finset.sum (Finset.range n) (fun i => q ^ i)
   let T : ℝ := Finset.sum (Finset.range n) (fun i => (i : ℝ) * q ^ i)
   let I : ℝ := ∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ p₀ ∂volume
-  let B : ℝ := (32 : ℝ) * C_MoserAnchor d
+  let B : ℝ := (32 : ℝ) * CMoserAnchor d
   let r : ℝ := p₀ / (p₀ - 1)
   have hp₀_pos : 0 < p₀ := by
     linarith
@@ -452,7 +453,7 @@ theorem moser_geometric_majorant
     positivity
   have h2S_le : 2 * S ≤ (d : ℝ) := by
     linarith
-  have hanchor_nonneg : 0 ≤ C_MoserAnchor d := by
+  have hanchor_nonneg : 0 ≤ CMoserAnchor d := by
     exact le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_MoserAnchor (d := d))
   have hB_ge_one : 1 ≤ B := by
     dsimp [B]
@@ -489,7 +490,7 @@ theorem moser_geometric_majorant
       moserStepConst (d := d) A p₀ = ((B * A.1.Λ) * r ^ (2 : ℝ)) := by
     calc
       moserStepConst (d := d) A p₀
-          = (32 : ℝ) * C_MoserAnchor d * A.1.Λ * (p₀ / (p₀ - 1)) ^ 2 := by
+          = (32 : ℝ) * CMoserAnchor d * A.1.Λ * (p₀ / (p₀ - 1)) ^ 2 := by
               rfl
       _ = ((B * A.1.Λ) * r ^ (2 : ℕ)) := by
             dsimp [B, r]
@@ -543,14 +544,14 @@ theorem moser_geometric_majorant
   have hC_le :
       (B ^ ((d : ℝ) / 2) * 4 ^ (∑' i : ℕ, (i : ℝ) * q ^ i)) *
           A.1.Λ ^ ((d : ℝ) / 2) * r ^ (d : ℝ) ≤
-        C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) * r ^ (d : ℝ) := by
+        CMoser d * A.1.Λ ^ ((d : ℝ) / 2) * r ^ (d : ℝ) := by
     have hC_base :
-        B ^ ((d : ℝ) / 2) * 4 ^ (∑' i : ℕ, (i : ℝ) * q ^ i) ≤ C_Moser d := by
+        B ^ ((d : ℝ) / 2) * 4 ^ (∑' i : ℕ, (i : ℝ) * q ^ i) ≤ CMoser d := by
       dsimp [B, q]
-      rw [C_Moser, dif_pos hd]
+      rw [CMoser, dif_pos hd]
       exact
-        le_max_right (C_MoserAnchor d)
-          (((32 : ℝ) * C_MoserAnchor d) ^ ((d : ℝ) / 2) *
+        le_max_right (CMoserAnchor d)
+          (((32 : ℝ) * CMoserAnchor d) ^ ((d : ℝ) / 2) *
             4 ^ (∑' n : ℕ, (n : ℝ) * moserDecayRatio d ^ n))
     have hfactor_nonneg : 0 ≤ A.1.Λ ^ ((d : ℝ) / 2) * r ^ (d : ℝ) := by
       exact mul_nonneg (Real.rpow_nonneg A.1.Λ_nonneg _) (Real.rpow_nonneg hr_nonneg _)
@@ -558,7 +559,7 @@ theorem moser_geometric_majorant
       (mul_le_mul_of_nonneg_right hC_base hfactor_nonneg)
   have hinside_le :
       moserStepConst (d := d) A p₀ ^ S * 4 ^ T * I ≤
-        C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) * r ^ (d : ℝ) * I := by
+        CMoser d * A.1.Λ ^ ((d : ℝ) / 2) * r ^ (d : ℝ) * I := by
     exact mul_le_mul_of_nonneg_right (hgeom_le.trans hC_le) hI_nonneg
   have hinside_nonneg :
       0 ≤ moserStepConst (d := d) A p₀ ^ S * 4 ^ T * I := by
@@ -569,7 +570,7 @@ theorem moser_geometric_majorant
       hI_nonneg
   have hroot_le :
       (moserStepConst (d := d) A p₀ ^ S * 4 ^ T * I) ^ (1 / p₀) ≤
-        (C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) * r ^ (d : ℝ) * I) ^ (1 / p₀) := by
+        (CMoser d * A.1.Λ ^ ((d : ℝ) / 2) * r ^ (d : ℝ) * I) ^ (1 / p₀) := by
     refine Real.rpow_le_rpow hinside_nonneg hinside_le ?_
     positivity
   simpa [moserIterMajorant, moserLinftyMajorant, moserLinftyBoundPow, S, T, I, r] using hroot_le

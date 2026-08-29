@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.ClassicalSchauder
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.CutoffEstimate
 import DifferentialGeometry.Analysis.Schauder.VariableCoefficient
 
+
 noncomputable section
 
 open Matrix Real Set
@@ -95,17 +96,17 @@ theorem parabolicVariableMatrixOperator_cutoff_eqOn_of_bcf_jets
   intro p hp
   have hchiTimePoint : HasDerivAt (fun t ↦ chi t p.space)
       (dtimeChi p.time p.space) p.time := by
-    simpa only [BoundedContinuousFunction.evalCLM_apply] using
-      (BoundedContinuousFunction.evalCLM Real p.space).hasFDerivAt
-        |>.comp_hasDerivAt p.time (hchiTime p hp)
+    exact ((BoundedContinuousFunction.evalCLM Real p.space).hasFDerivAt
+      |>.comp_hasDerivAt p.time (hchiTime p hp)).congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl)
   have huTimePoint : HasDerivAt (fun t ↦ u t p.space)
       (dtimeU p.time p.space) p.time := by
-    simpa only [BoundedContinuousFunction.evalCLM_apply] using
-      (BoundedContinuousFunction.evalCLM Real p.space).hasFDerivAt
-        |>.comp_hasDerivAt p.time (huTime p hp)
-  simpa only [parabolicCutoffValue_apply, parabolicPoint_time,
-    parabolicPoint_space, parabolicPoint_time_space] using
-    parabolicVariableMatrixOperator_cutoff a
+    exact ((BoundedContinuousFunction.evalCLM Real p.space).hasFDerivAt
+      |>.comp_hasDerivAt p.time (huTime p hp)).congr_of_eventuallyEq
+        (Filter.Eventually.of_forall fun _ => rfl)
+  change parabolicVariableMatrixOperator a
+      (parabolicCutoffValue (fun q => chi q.time q.space) (fun t x => u t x)) p = _
+  exact parabolicVariableMatrixOperator_cutoff a
       (fun q ↦ chi q.time q.space) (fun q ↦ dtimeChi q.time q.space)
       (fun q ↦ dchi q.time q.space) (fun q ↦ d2chi q.time q.space)
       (fun t x ↦ u t x) (fun q ↦ du q.time q.space)
@@ -150,12 +151,12 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_cutoff_classical_sol
       (parabolicVariableMatrixOperator a
         (fun t x ↦ cutoffValue (chi t) (u t) x)) ≤ Bf)
     (hsourceHolder : HolderWith Kf alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (parabolicVariableMatrixOperator a
           (fun t x ↦ cutoffValue (chi t) (u t) x))))
     (Ka omega : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict (a i j)))
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict (a i j)))
     (homega : ∀ i j p,
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
         ‖a i j p0 - a i j p‖ ≤ omega i j)
@@ -194,7 +195,10 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_cutoff_classical_sol
       (u s) (du s) (d2u s) (hchi s hs) (hdchi s hs)
         (hu s hs) (hdu s hs) x
   · intro s x
-    simp only [g, dtimeW, d2w, parabolicCutoffFrozenSource_apply]
+    change (parabolicCutoffFrozenSource (fun i j => a i j p0)
+      chi dtimeChi dchi d2chi u dtimeU du d2u s) x = _
+    exact parabolicCutoffFrozenSource_apply
+      (fun i j => a i j p0) chi dtimeChi dchi d2chi u dtimeU du d2u s x
   · exact hchiCont.smul huCont
   · ext x
     change chi 0 x • u 0 x = 0
@@ -240,13 +244,13 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_cutoff_source_estima
     (hchiCont : Continuous chi) (huCont : Continuous u)
     (hchi0 : chi 0 = 0)
     (hchiHolder : HolderWith Kchi alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ chi p.time p.space)))
     (hsourceHolder : HolderWith Ksource alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (parabolicVariableMatrixOperator a (fun t x ↦ u t x))))
     (hcommHolder : HolderWith Kcomm alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (parabolicCutoffOperatorCommutator a
           (fun p ↦ dtimeChi p.time p.space)
           (fun p ↦ dchi p.time p.space)
@@ -267,7 +271,7 @@ theorem parabolic_variable_coefficient_schauder_estimate_of_cutoff_source_estima
           (fun t x ↦ u t x) (fun q ↦ du q.time q.space) p‖ ≤ Bcomm)
     (Ka omega : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict (a i j)))
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict (a i j)))
     (homega : ∀ i j p,
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
         ‖a i j p0 - a i j p‖ ≤ omega i j)

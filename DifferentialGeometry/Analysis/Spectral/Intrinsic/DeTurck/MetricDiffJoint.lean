@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff RealInnerProductSpace InnerProductSpace
 namespace DifferentialGeometry.Analysis.Spectral
@@ -35,7 +34,7 @@ private lemma metricDiff_apply (q h : SmoothRiemannianMetric I M)
     (x : M) (c : Tensor0SSpace 0 I x) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
       (metricDifferenceCcTensor (I := I) (M := M) q h).toSection x) c =
-      tensor0SSpace_evalScalar x c •
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x) c •
         (metricCcTensorFib (I := I) h x - metricCcTensorFib (I := I) q x) := by
   unfold metricDifferenceCcTensor
   change
@@ -43,10 +42,15 @@ private lemma metricDiff_apply (q h : SmoothRiemannianMetric I M)
           metricCcTensorFib (I := I) h x -
         (MixedSection.eval₀ (F := E) (E := TangentSpace I) x c) •
           metricCcTensorFib (I := I) q x =
-      tensor0SSpace_evalScalar x c •
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x) c •
         (metricCcTensorFib (I := I) h x - metricCcTensorFib (I := I) q x)
-  rw [Tensor0SSpace.evalScalar_apply, MixedSection.eval₀_apply]
-  rw [← smul_sub]
+  rw [Tensor0SSpace.evalScalar_apply]
+  have heval :
+      (MixedSection.eval₀ (F := E) (E := TangentSpace I) x c) =
+        c Fin.elim0 := by
+    with_unfolding_all
+      exact MixedSection.eval₀_apply (F := E) (E := TangentSpace I) x c
+  rw [heval, ← smul_sub]
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem metricDiff_raw (q h : SmoothRiemannianMetric I M)
@@ -66,8 +70,23 @@ theorem metricDiff_unit (q h : SmoothRiemannianMetric I M)
   have hslots : slots = ![slots 0, slots 1] := by
     funext i
     fin_cases i <;> rfl
-  rw [hslots, unitModel_eq_ccTensorBilin_local, metricDiff_raw]
-  simp
+  rw [hslots]
+  calc
+    unitModel (I := I) (M := M) q 2
+        (metricDifferenceCcTensor (I := I) (M := M) q h) x
+          ![slots 0, slots 1] =
+      smoothCcTensorBilinForm (I := I) q
+        (metricDifferenceCcTensor (I := I) (M := M) q h) x
+          (show TangentSpace I x from slots 0)
+          (show TangentSpace I x from slots 1) := by
+        convert unitModel_eq_ccTensorBilin_local (I := I) (M := M) q
+          (metricDifferenceCcTensor (I := I) (M := M) q h) x
+          (show TangentSpace I x from slots 0)
+          (show TangentSpace I x from slots 1) using 1
+    _ = h.inner x (slots 0) (slots 1) - q.inner x (slots 0) (slots 1) := by
+      convert metricDiff_raw (I := I) (M := M) q h x
+        (show TangentSpace I x from slots 0)
+        (show TangentSpace I x from slots 1) using 1
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem metricDiff_symm (q h : SmoothRiemannianMetric I M)
@@ -212,10 +231,17 @@ theorem metricDiff_joint
     intro W p hp
     rw [Bundle.contMDiffWithinAt_totalSpace]
     refine ⟨contMDiffWithinAt_fst, ?_⟩
-    simpa only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.sub_apply,
-      smul_eq_mul] using
-        (hscalar' p hp).mul
-          (metricDiff_eval (I := I) (M := M) (D := D) g_fam hG q Z W p hp)
+    have hprod :=
+      (hscalar' p hp).mul
+        (metricDiff_eval (I := I) (M := M) (D := D) g_fam hG q Z W p hp)
+    simpa only [Bundle.Trivial.fiberBundle_trivializationAt',
+      Bundle.Trivial.trivialization_apply, smul_apply, sub_apply, smul_eq_mul] using
+        hprod.congr_of_eventuallyEq
+          (f₁ := fun x : M × ℝ =>
+            Tensor0SNabla.scalarFn I M (fun y : M => Y y) x.1 *
+              (((g_fam x.2).inner x.1) (Z x.1) (W x.1) -
+                (q.inner x.1) (Z x.1) (W x.1)))
+          (Filter.Eventually.of_forall fun _ => rfl) rfl
   have hscaled : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
       (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel 2 ℝ E)

@@ -204,18 +204,13 @@ theorem ricciPair04_apply {x : M}
       Ric (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (v 0) (v 2)) *
         Ric (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (v 1) (v 3)) := by
   unfold ricciPair04
-  have hdom :
-      (ContinuousMultilinearMap.domDomCongr (Equiv.swap (1 : Fin 4) (2 : Fin 4))
-        (Bundle.continuousMultilinearMap.product_fun
-          (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I)
-          (s := 2) (q := 2) (x := x) Ric Ric)) v =
-        (Bundle.continuousMultilinearMap.product_fun
-          (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I)
-          (s := 2) (q := 2) (x := x) Ric Ric)
-          (fun i => v ((Equiv.swap (1 : Fin 4) (2 : Fin 4)) i)) := by
-    with_unfolding_all rfl
-  refine hdom.trans ?_
+  change (ContinuousMultilinearMap.domDomCongr (Equiv.swap (1 : Fin 4) (2 : Fin 4))
+      (Bundle.continuousMultilinearMap.productFun
+        (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric)
+        (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x Ric))) v = _
+  rw [ContinuousMultilinearMap.domDomCongr_apply]
   rw [Bundle.continuousMultilinearMap.product_fun_apply]
+  simp only [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply]
   have hswap0 : (Equiv.swap (1 : Fin 4) (2 : Fin 4)) 0 = 0 := by decide
   have hswap1 : (Equiv.swap (1 : Fin 4) (2 : Fin 4)) 1 = 2 := by decide
   have hswap2 : (Equiv.swap (1 : Fin 4) (2 : Fin 4)) 2 = 1 := by decide
@@ -455,7 +450,7 @@ theorem coordReact
   congr 1
   rw [inner0S_eq_coord
     (I := I) (S.base.metric t) x0 4
-    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x0)
+    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x0)
     (fun i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E =>
       coordInv (I := I) S x0 t x0 i j)
     (coordInvReal (I := I) S x0 t)]
@@ -544,13 +539,13 @@ def ricciDataAtCoord
       intro s
       have hbasis :
           forall i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
-            DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x i = frame i
+            DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x i = frame i
               x := by
         intro i
         simp [frame, DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis_apply]
       simpa [ricciNorm] using
         ricciNormSq_basis (I := I) S (coordInv (I := I) S x) frame
-          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x)
+          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x)
           (coordInvReal (I := I) S x s) hbasis
     change
       HasDerivWithinAt

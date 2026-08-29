@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -139,10 +138,10 @@ private lemma gram_expand_coordBasis
     intro k _
     rw [map_smul]
   rw [hL]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_congr rfl ?_
   intro k _
-  rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [smul_apply, smul_eq_mul]
   have hR :
       g.inner b (v k) (∑ l, c l • v l) =
         ∑ l, c l * g.inner b (v k) (v l) := by

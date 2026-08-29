@@ -364,7 +364,6 @@ theorem force_hi_id
   have hcongr := congrArg
     (fun z => tensorHsCongr (I := I) (M := M) g₀ 0 2
       (show ((1 : ℕ) : ℝ) = (1 : ℝ) by norm_num) z) ht
-  simp only at hcongr
   rw [tensorHsCongr_incl (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       (show ((1 : ℕ) : ℝ) = (1 : ℝ) by norm_num)
       (show (2 : ℝ) = (2 : ℝ) from rfl)

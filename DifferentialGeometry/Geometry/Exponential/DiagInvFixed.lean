@@ -23,8 +23,8 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -112,7 +112,10 @@ theorem fixedPD_symm_center
       expMapIntrinsic (I := I) g hEnorm p
         (show TangentSpace I p from (0 : E)) = p :=
     expMapIntrinsic_zero (I := I) g hEnorm p
-  simpa only [fixedPD_apply, hzero] using hleft
+  change B.fixedPD.symm.toPartialEquiv p = (0 : E)
+  change B.fixedPD.symm.toPartialEquiv (B.fixedPD (0 : E)) = (0 : E) at hleft
+  rw [show B.fixedPD (0 : E) = p by simpa only [fixedPD_apply] using hzero] at hleft
+  exact hleft
 
 end DiagInvBranch
 end Exponential

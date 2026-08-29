@@ -79,7 +79,7 @@ private lemma eLpNorm_tendsto_zero_of_wkpNorm_one_two_tendsto_zero
         (d := Module.finrank ℝ E) 1 2
         (fun y => u n y - F_lim y) Ω)
     tendsto_const_nhds h_tendsto
-    (fun _ => zero_le _)
+    (fun _ => zero_le)
     (fun n => eLpNorm_le_wkpNorm_one_two (fun y => u n y - F_lim y) Ω)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in

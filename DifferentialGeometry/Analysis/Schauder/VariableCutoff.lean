@@ -119,8 +119,8 @@ theorem variableMatrixLap_cutoffJet2
   ext x
   simp only [variableMatrixLap_apply, matrixLap, cutoffJet2_apply,
     cutoffValue_apply, matrixCutoffCommutator_apply,
-    BoundedContinuousFunction.add_apply, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.smul_apply, ContinuousLinearMap.smulRight_apply,
+    BoundedContinuousFunction.add_apply, add_apply,
+    smul_apply, ContinuousLinearMap.smulRight_apply,
     ContinuousLinearMap.precompR, ContinuousLinearMap.precompL,
     ContinuousLinearMap.compL_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.flip_apply,
@@ -206,6 +206,7 @@ theorem norm_matrixCutoffCommutator_apply_le
       exact_mod_cast mul_le_mul
         (mul_le_mul hai hdchij (abs_nonneg _) (A i j).coe_nonneg)
         hdui (norm_nonneg _) (A i j * Mdchi).coe_nonneg
+    push_cast at hi hj
     simpa only [two_mul] using add_le_add hi hj
   · refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun i hi ↦ ?_)
     refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun j hj ↦ ?_)
@@ -270,7 +271,7 @@ theorem norm_matrixCutoffCommutator_le_of_support
       A Mdchi Mdu Md2chi Mu x (fun i j ↦ haNorm i j x hx)
       (hdchiNorm x) (hduNorm x) (hd2chiNorm x) (huNorm x)
   · rw [matrixCutoffCommutator_apply, hdchiSupport x hx, hd2chiSupport x hx]
-    simp only [ContinuousLinearMap.zero_apply, mul_zero, zero_smul,
+    simp only [zero_apply, mul_zero, zero_smul,
       Finset.sum_const_zero, zero_add, norm_zero]
     exact (matrixCutoffCommutatorSupConst A Mdchi Mdu Md2chi Mu).coe_nonneg
 
@@ -286,7 +287,7 @@ theorem matrixCutoffCommutator_holderWith_of_support
     (du : BoundedContinuousFunction (Euc n) (Euc n →L[Real] F))
     (A Ka : n → n → NNReal) (Mdchi Mdu Md2chi Mu : NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      (s.restrict (a i j : Euc n → Real)))
+      (s.domRestrict (a i j : Euc n → Real)))
     (hdchi : HolderWith Kdchi alpha
       (dchi : Euc n → Euc n →L[Real] Real))
     (hdu : HolderWith Kdu alpha
@@ -346,35 +347,42 @@ theorem matrixCutoffCommutator_holderWith_of_support
     have hd2chiij : HolderWith Kd2chi alpha
         (fun x ↦ d2chi x (EuclideanSpace.basisFun n Real i)
           (EuclideanSpace.basisFun n Real j)) := by
-      simpa only [hessianComponentBcf_apply] using
-        hessianComponentBcf_holderWith d2chi hd2chi i j
+      intro x y
+      simpa only [hessianComponentBcf_apply, edist_dist] using
+        hessianComponentBcf_holderWith d2chi hd2chi i j x y
     have hadchii : HolderWith (A i j * Kdchi + Mdchi * Ka i j) alpha
         (fun x ↦ a i j x * dchi x (EuclideanSpace.basisFun n Real i)) := by
-      simpa only [smul_eq_mul] using holderWith_smul_of_restrict_of_support
+      have hraw := holderWith_smul_of_restrict_of_support
         (ha i j) hdchii (haNorm i j) (fun x ↦ by
           exact (dchi x).le_opNorm _ |>.trans (by
             rw [(EuclideanSpace.basisFun n Real).orthonormal.norm_eq_one i]
             simpa using hdchiNorm x)) (fun x hx ↦ by
           rw [hdchiSupport x hx]
           simp)
+      intro x y
+      simpa only [Pi.smul_apply, Pi.mul_apply, smul_eq_mul, edist_dist] using hraw x y
     have hadchij : HolderWith (A i j * Kdchi + Mdchi * Ka i j) alpha
         (fun x ↦ a i j x * dchi x (EuclideanSpace.basisFun n Real j)) := by
-      simpa only [smul_eq_mul] using holderWith_smul_of_restrict_of_support
+      have hraw := holderWith_smul_of_restrict_of_support
         (ha i j) hdchij (haNorm i j) (fun x ↦ by
           exact (dchi x).le_opNorm _ |>.trans (by
             rw [(EuclideanSpace.basisFun n Real).orthonormal.norm_eq_one j]
             simpa using hdchiNorm x)) (fun x hx ↦ by
           rw [hdchiSupport x hx]
           simp)
+      intro x y
+      simpa only [Pi.smul_apply, Pi.mul_apply, smul_eq_mul, edist_dist] using hraw x y
     have had2chi : HolderWith (A i j * Kd2chi + Md2chi * Ka i j) alpha
         (fun x ↦ a i j x * d2chi x (EuclideanSpace.basisFun n Real i)
           (EuclideanSpace.basisFun n Real j)) := by
-      simpa only [smul_eq_mul] using holderWith_smul_of_restrict_of_support
+      have hraw := holderWith_smul_of_restrict_of_support
         (ha i j) hd2chiij (haNorm i j) (fun x ↦ by
           exact (norm_hessianComponentBcf_apply_le d2chi i j x).trans
             (hd2chiNorm x)) (fun x hx ↦ by
           rw [hd2chiSupport x hx]
           simp)
+      intro x y
+      simpa only [Pi.smul_apply, Pi.mul_apply, smul_eq_mul, edist_dist] using hraw x y
     have hadchiNorm : ∀ k x,
         ‖a i j x * dchi x (EuclideanSpace.basisFun n Real k)‖ ≤
           A i j * Mdchi := by
@@ -388,7 +396,7 @@ theorem matrixCutoffCommutator_holderWith_of_support
             rw [(EuclideanSpace.basisFun n Real).orthonormal.norm_eq_one k]
             simpa using hdchiNorm x)) (abs_nonneg _) (A i j).coe_nonneg
       · rw [hdchiSupport x hx]
-        simp only [ContinuousLinearMap.zero_apply, mul_zero, norm_zero]
+        simp only [zero_apply, mul_zero, norm_zero]
         exact (A i j * Mdchi).coe_nonneg
     have had2chiNorm : ∀ x,
         ‖a i j x * d2chi x (EuclideanSpace.basisFun n Real i)
@@ -402,7 +410,7 @@ theorem matrixCutoffCommutator_holderWith_of_support
           exact (norm_hessianComponentBcf_apply_le d2chi i j x).trans
             (hd2chiNorm x)) (abs_nonneg _) (A i j).coe_nonneg
       · rw [hd2chiSupport x hx]
-        simp only [ContinuousLinearMap.zero_apply, mul_zero, norm_zero]
+        simp only [zero_apply, mul_zero, norm_zero]
         exact (A i j * Md2chi).coe_nonneg
     have hcrossi : HolderWith (Q i j) alpha
         (fun x ↦ (a i j x * dchi x (EuclideanSpace.basisFun n Real i)) •

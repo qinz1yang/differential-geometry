@@ -27,7 +27,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 variable [CompleteSpace E]
 
-set_option backward.isDefEq.respectTransparency false in
 def ricBackgroundSlotCoeff (g₀ : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 2 2 where
   toSection :=
     { toFun := fun x : M =>
@@ -39,14 +38,12 @@ def ricBackgroundSlotCoeff (g₀ : SmoothRiemannianMetric I M) : SmoothCcTensor 
           (ricEndoRaisedFib_contMDiff (I := I) g₀) }
   hasCompactSupport := HasCompactSupport.of_compactSpace _
 
-set_option backward.isDefEq.respectTransparency false in
 def ricBackgroundArmCoeffField (g₀ : SmoothRiemannianMetric I M) :
     ∀ r : ℕ, SmoothCcTensor g₀ (r + 0) (r + 0) :=
   fun r => match r with
     | 2 => ricBackgroundSlotCoeff (I := I) g₀
     | _ => 0
 
-set_option backward.isDefEq.respectTransparency false in
 omit [CompleteSpace E] in
 theorem ricBackgroundArm_iteratedCovGrad_singleSum_le
     (g₀ : SmoothRiemannianMetric I M) (x₀ : M) (W : SmoothCcTensor g₀ 0 2) (a : ℕ) :

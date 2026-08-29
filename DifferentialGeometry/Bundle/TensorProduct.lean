@@ -1,7 +1,7 @@
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Geometry.Manifold.VectorBundle.MDifferentiable
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.Instances.Sphere
 import Mathlib.Topology.FiberBundle.Basic
 import Mathlib.LinearAlgebra.Dual.Defs
@@ -16,7 +16,11 @@ import Mathlib.LinearAlgebra.Multilinear.FiniteDimensional
 import Mathlib.RingTheory.TensorProduct.Finite
 import Mathlib.Analysis.Normed.Operator.Banach
 import Mathlib.Topology.Algebra.Module.Equiv
-import Mathlib.Topology.Algebra.Module.LinearMap
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Idempotent
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Restrict
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.RestrictScalars
 import Mathlib.Geometry.Manifold.VectorField.LieBracket
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Analysis.Calculus.VectorField
@@ -127,7 +131,7 @@ section
 universe u𝕜 uB uF₁ uF₂ uE₁ uE₂
 namespace Bundle.TensorProduct
 
-open Pretrivialization
+open _root_.Bundle.Pretrivialization
 open scoped Manifold
 
 attribute [instance] TensorFiberTopologies.fiberTop

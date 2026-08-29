@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldCovariantCalculus
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.GreenIdentityAndIBP.TensorDirichletCurrentGreenIdentityRS
+
+
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 
@@ -51,7 +53,6 @@ theorem tensorL2Inner_covGrad_operatorFieldApplication_eq_add (g : SmoothRiemann
   have hstep := congrArg
     (fun Z : SmoothCcTensor g 0 (s + 1) =>
       tensorL2Inner (I := I) (M := M) g 0 (s + 1) Z.toFun T.toFun) hB
-  simp only at hstep
   rw [hstep, SmoothCcTensor.toFun_add]
   exact tensorL2Inner_add_left (I := I) (M := M) g 0 (s + 1)
     A1.toFun A2.toFun T.toFun

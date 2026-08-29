@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelTransport
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Existence
 
 noncomputable section
 
@@ -25,6 +25,7 @@ noncomputable def parallelTransportSectionOnIcc [I.Boundaryless]
     ∀ t, TangentSpace I (γ t) :=
   Classical.choose (exists_parallel_transport_on_Icc (I := I) g γ le_rfl hγ hL v₀)
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp]
 theorem parallelTransportSectionOnIcc_initial [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -34,6 +35,7 @@ theorem parallelTransportSectionOnIcc_initial [I.Boundaryless]
   (Classical.choose_spec
     (exists_parallel_transport_on_Icc (I := I) g γ le_rfl hγ hL v₀)).1
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportSectionOnIcc_differentiableAt [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -44,6 +46,7 @@ theorem parallelTransportSectionOnIcc_differentiableAt [I.Boundaryless]
   (Classical.choose_spec
     (exists_parallel_transport_on_Icc (I := I) g γ le_rfl hγ hL v₀)).2.1 t ht
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportSectionOnIcc_covDerivAlong [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -54,6 +57,7 @@ theorem parallelTransportSectionOnIcc_covDerivAlong [I.Boundaryless]
   (Classical.choose_spec
     (exists_parallel_transport_on_Icc (I := I) g γ le_rfl hγ hL v₀)).2.2 t ht
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportSectionOnIcc_add [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -91,6 +95,7 @@ theorem parallelTransportSectionOnIcc_add [I.Boundaryless]
   · exact ⟨le_rfl, le_of_lt hL⟩
   · simp [V, W, Vv, Vw]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportSectionOnIcc_smul [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -134,6 +139,7 @@ noncomputable def parallelTransportLinearMapOnIcc [I.Boundaryless]
   map_smul' c v := parallelTransportSectionOnIcc_smul (I := I) g γ hγ hL c v
     ⟨le_of_lt hL, le_rfl⟩
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp]
 theorem parallelTransportLinearMapOnIcc_apply [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -143,6 +149,7 @@ theorem parallelTransportLinearMapOnIcc_apply [I.Boundaryless]
       parallelTransportSectionOnIcc (I := I) g γ hγ hL v L :=
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportLinearMapOnIcc_inner [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -163,6 +170,7 @@ theorem parallelTransportLinearMapOnIcc_inner [I.Boundaryless]
       (I := I) g γ hγ hL w ht) L ⟨le_of_lt hL, le_rfl⟩
   simpa [V, W] using h
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportLinearMapOnIcc_injective [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -184,6 +192,7 @@ theorem parallelTransportLinearMapOnIcc_injective [I.Boundaryless]
     0 ⟨le_rfl, le_of_lt hL⟩
   simpa [V, W] using h
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportLinearMapOnIcc_surjective [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -201,6 +210,7 @@ noncomputable def parallelTransportLinearEquivOnIcc [I.Boundaryless]
     ⟨parallelTransportLinearMapOnIcc_injective (I := I) g γ hγ hL,
       parallelTransportLinearMapOnIcc_surjective (I := I) g γ hγ hL⟩
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp]
 theorem parallelTransportLinearEquivOnIcc_apply [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -210,6 +220,7 @@ theorem parallelTransportLinearEquivOnIcc_apply [I.Boundaryless]
       parallelTransportSectionOnIcc (I := I) g γ hγ hL v L :=
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportLinearEquivOnIcc_inner [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -229,6 +240,7 @@ noncomputable def parallelTransportLinearEquivBetween [I.Boundaryless]
   exact parallelTransportLinearEquivOnIcc (I := I) g (fun s ↦ γ (s + a))
     hshift (sub_pos.mpr hab)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportLinearEquivBetween_inner [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)

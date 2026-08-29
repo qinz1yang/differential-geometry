@@ -47,7 +47,7 @@ theorem contractUpper_components_eq_component_applyInput
     contractUpper
         (fun L : Fin r -> Idx => component0S (I := I) basis theta L)
         (fun L : Fin r -> Idx => fun K : Fin s -> Idx =>
-          componentRS_gen (I := I) basis T L K) K =
+          componentRSGen (I := I) basis T L K) K =
       component0S (I := I) basis (T theta) K := by
   classical
   rw [Tensor0SBundle.componentRS_apply_input_eq_sum (I := I) basis T theta K]
@@ -122,7 +122,7 @@ private lemma update_update_same_apply {Idx : Type*}
     simp
   · simp [Function.update, hpq]
 
-private def updateSwapEquiv {Idx : Type*} [DecidableEq Idx] {r : ℕ}
+private def updateSwapEquiv {Idx : Type*} {r : ℕ}
     (p : Fin r) : ((Fin r -> Idx) × Idx) ≃ ((Fin r -> Idx) × Idx) where
   toFun Am := (Function.update Am.1 p Am.2, Am.1 p)
   invFun Am := (Function.update Am.1 p Am.2, Am.1 p)
@@ -396,7 +396,7 @@ theorem coordDeriv_applyInput_eq_contractUpper
     (x₀ : M) (K : Fin s -> DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :
     DifferentialGeometry.Tensor.Coordinates.coordDeriv0SAt (I := I) (fun x => X x) x₀
         (fun y : M =>
-          tensorRSField_applyInput (𝕜 := Real) (E := E) (H := H) (I := I)
+          tensorRSFieldApplyInput (𝕜 := Real) (E := E) (H := H) (I := I)
             (M := M) (∞ : WithTop ℕ∞) T theta y)
         K =
       contractUpper

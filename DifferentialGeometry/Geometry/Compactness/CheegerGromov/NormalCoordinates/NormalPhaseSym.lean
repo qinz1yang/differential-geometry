@@ -28,6 +28,7 @@ variable [NormedSpace Real E] [FiniteDimensional Real E] [CompleteSpace E]
 variable [NeZero (Module.finrank Real E)]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_normal_biflow
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (h : NormalCoordMetricBoundInput (I := I) X)
@@ -83,16 +84,19 @@ theorem exists_normal_biflow
     intro z hz
     refine ⟨?_, hz.2⟩
     rw [mem_ball_zero_iff]
-    exact hz.1.trans_lt
-      (by simpa only [P, NNReal.coe_mul, NNReal.coe_natCast] using hqPos)
+    have hP_lt : (P : Real) < r := by
+      change 6 * (q : Real) < r
+      exact hqPos
+    exact hz.1.trans_lt hP_lt
   have haLip : LipschitzOnWith (normalPhaseK h V)
       (normalAccel (I := I) (X.obj k) x) (PhaseFlow.phaseBox P V) :=
     (normalAccel_lip (I := I) h k x hrMetric hrQuarter V).mono hbox
   have haNorm : ∀ z ∈ PhaseFlow.phaseBox (E := E) P V,
       ‖normalAccel (I := I) (X.obj k) x z‖ ≤ (A : Real) := by
     intro z hz
-    simpa only [A, NNReal.coe_mk] using
-      normalAccel_norm (I := I) h k x hrMetric hrQuarter V z (hbox hz)
+    change ‖normalAccel (I := I) (X.obj k) x z‖ ≤
+      3 * h.metricC 1 * (V : Real) ^ 2
+    exact normalAccel_norm (I := I) h k x hrMetric hrQuarter V z (hbox hz)
   have hVP : V ≤ speed * P := by
     rw [← NNReal.coe_le_coe]
     change (2 : Real) * (q : Real) ≤ (1 / 3 : Real) * (6 * (q : Real))
@@ -179,8 +183,11 @@ theorem exists_normal_biflow
       HasDerivAt (fun _ : Real ↦ (0 : E × E))
         (PhaseFlow.phaseField (normalAccel (I := I) (X.obj k) x) 0) t := by
     intro t _ht
-    simpa [PhaseFlow.phaseField] using
-      (hasDerivAt_const (x := t) (c := (0 : E × E)))
+    have hfield : PhaseFlow.phaseField
+        (normalAccel (I := I) (X.obj k) x) 0 = (0 : E × E) := by
+      ext <;> simp [PhaseFlow.phaseField]
+    rw [hfield]
+    exact hasDerivAt_const t (0 : E × E)
   have hzeroEq : EqOn (Φ 0) (fun _ : Real ↦ (0 : E × E)) (Ioo (-T) T) :=
     Analysis.ODE.Flow.orbit_unique_smooth
       (v := PhaseFlow.phaseField (normalAccel (I := I) (X.obj k) x))
@@ -279,16 +286,18 @@ theorem exists_chartBiflow
     intro z hz
     refine ⟨?_, hz.2⟩
     rw [mem_ball_zero_iff]
-    exact hz.1.trans_lt
-      (by simpa only [P, NNReal.coe_mul, NNReal.coe_natCast] using hqPos)
+    have hP_lt : (P : Real) < r := by
+      change 6 * (q : Real) < r
+      exact hqPos
+    exact hz.1.trans_lt hP_lt
   have haLip : LipschitzOnWith (chartPhaseK g b V)
       (c.accel g) (PhaseFlow.phaseBox P V) :=
     (chartAccel_lip (I := I) g c b hrMetric hrQuarter V).mono hbox
   have haNorm : ∀ z ∈ PhaseFlow.phaseBox (E := E) P V,
       ‖c.accel g z‖ ≤ (A : Real) := by
     intro z hz
-    simpa only [A, NNReal.coe_mk] using
-      chartAccel_norm (I := I) g c b hrMetric hrQuarter V z (hbox hz)
+    change ‖c.accel g z‖ ≤ 3 * b.C 1 * (V : Real) ^ 2
+    exact chartAccel_norm (I := I) g c b hrMetric hrQuarter V z (hbox hz)
   have hVP : V ≤ speed * P := by
     rw [← NNReal.coe_le_coe]
     change (2 : Real) * (q : Real) ≤ (1 / 3 : Real) * (6 * (q : Real))
@@ -375,8 +384,10 @@ theorem exists_chartBiflow
       HasDerivAt (fun _ : Real ↦ (0 : E × E))
         (PhaseFlow.phaseField (c.accel g) 0) t := by
     intro t _ht
-    simpa [PhaseFlow.phaseField] using
-      (hasDerivAt_const (x := t) (c := (0 : E × E)))
+    have hfield : PhaseFlow.phaseField (c.accel g) 0 = (0 : E × E) := by
+      ext <;> simp [PhaseFlow.phaseField]
+    rw [hfield]
+    exact hasDerivAt_const t (0 : E × E)
   have hzeroEq : EqOn (Φ 0) (fun _ : Real ↦ (0 : E × E)) (Ioo (-T) T) :=
     Analysis.ODE.Flow.orbit_unique_smooth
       (v := PhaseFlow.phaseField (c.accel g))

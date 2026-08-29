@@ -8,6 +8,7 @@ noncomputable section
 
 namespace DifferentialGeometry
 
+
 open Bundle
 open scoped Manifold ContDiff
 
@@ -44,7 +45,7 @@ theorem SmoothRiemannianMetric.restrictOpenInner_isVonNBounded
     ∀ x : U, Bornology.IsVonNBounded Real
       {v : TangentSpace I x | g.restrictOpenInner (I := I) U x v v < 1} := by
   intro x
-  simpa [SmoothRiemannianMetric.restrictOpenInner] using g.isVonNBounded (x : M)
+  exact g.isVonNBounded (x : M)
 
 
 variable [FiniteDimensional Real E]
@@ -60,10 +61,10 @@ theorem SmoothRiemannianMetric.restrictOpenInner_contMDiff
     ContMDiff I (I.prod 𝓘(Real, E →L[Real] E →L[Real] Real)) ∞
       (fun x : U => TotalSpace.mk' (E →L[Real] E →L[Real] Real) x
         (g.restrictOpenInner (I := I) U x)) := by
-  letI : TopologicalSpace U := inferInstance
-  letI : ChartedSpace H U := TopologicalSpace.Opens.instChartedSpace
+  let : TopologicalSpace U := inferInstance
+  let : ChartedSpace H U := TopologicalSpace.Opens.instChartedSpace
     (H := H) (M := M) (s := U)
-  letI : IsManifold I ∞ U :=
+  let : IsManifold I ∞ U :=
     { U.instHasGroupoid (contDiffGroupoid ∞ I) with }
   apply cotangentCov_clmSection_smooth_aux
     (V₂ := fun x : U => TangentSpace I x →L[Real] Real)
@@ -79,11 +80,13 @@ theorem SmoothRiemannianMetric.restrictOpenInner_contMDiff
   have hY :
       ContMDiff I (I.prod 𝓘(Real, E)) ∞
         (fun x : U => TotalSpace.mk' E (x : M) ((mfderiv I I incl x) (Y x))) := by
-    simpa [incl, tangentMap] using hinclTan.comp Y.contMDiff
+    change ContMDiff I I.tangent ∞ (tangentMap I I incl ∘ fun x => ⟨x, Y x⟩)
+    exact hinclTan.comp Y.contMDiff
   have hW :
       ContMDiff I (I.prod 𝓘(Real, E)) ∞
         (fun x : U => TotalSpace.mk' E (x : M) ((mfderiv I I incl x) (W x))) := by
-    simpa [incl, tangentMap] using hinclTan.comp W.contMDiff
+    change ContMDiff I I.tangent ∞ (tangentMap I I incl ∘ fun x => ⟨x, W x⟩)
+    exact hinclTan.comp W.contMDiff
   have hg :
       ContMDiff I (I.prod 𝓘(Real, E →L[Real] E →L[Real] Real)) ∞
         (fun x : U => TotalSpace.mk' (E →L[Real] E →L[Real] Real)
@@ -115,7 +118,7 @@ theorem SmoothRiemannianMetric.restrictOpenInner_contMDiff
       intro x
       have h_at := h_total x
       rw [contMDiffAt_totalSpace] at h_at
-      convert h_at.2 using 1
+      simpa using h_at.2
     simpa [incl, mfderiv_subtype_val_apply] using h_scalar'
   intro x
   rw [contMDiffAt_section]
@@ -159,7 +162,7 @@ noncomputable def SmoothRiemannianMetric.restrictOpenOfSubset
   symm x v w := g.symm (TopologicalSpace.Opens.inclusion hVU x) v w
   pos x v hv := g.pos (TopologicalSpace.Opens.inclusion hVU x) v hv
   isVonNBounded x := by
-    simpa using g.isVonNBounded (TopologicalSpace.Opens.inclusion hVU x)
+    exact g.isVonNBounded (TopologicalSpace.Opens.inclusion hVU x)
   contMDiff := by
     let incl : V → U := TopologicalSpace.Opens.inclusion hVU
     apply cotangentCov_clmSection_smooth_aux
@@ -175,11 +178,13 @@ noncomputable def SmoothRiemannianMetric.restrictOpenOfSubset
     have hY :
         ContMDiff I (I.prod 𝓘(Real, E)) ∞
           (fun x : V => TotalSpace.mk' E (incl x) ((mfderiv I I incl x) (Y x))) := by
-      simpa only [Function.comp_apply, tangentMap] using hinclTan.comp Y.contMDiff
+      change ContMDiff I I.tangent ∞ (tangentMap I I incl ∘ fun x => ⟨x, Y x⟩)
+      exact hinclTan.comp Y.contMDiff
     have hW :
         ContMDiff I (I.prod 𝓘(Real, E)) ∞
           (fun x : V => TotalSpace.mk' E (incl x) ((mfderiv I I incl x) (W x))) := by
-      simpa only [Function.comp_apply, tangentMap] using hinclTan.comp W.contMDiff
+      change ContMDiff I I.tangent ∞ (tangentMap I I incl ∘ fun x => ⟨x, W x⟩)
+      exact hinclTan.comp W.contMDiff
     have hg :
         ContMDiff I (I.prod 𝓘(Real, E →L[Real] E →L[Real] Real)) ∞
           (fun x : V => TotalSpace.mk' (E →L[Real] E →L[Real] Real)
@@ -207,8 +212,16 @@ noncomputable def SmoothRiemannianMetric.restrictOpenOfSubset
         intro x
         have hat := htotal x
         rw [contMDiffAt_totalSpace] at hat
-        convert hat.2 using 1
-      simpa [incl] using hscalar'
+        simpa using hat.2
+      have hYeq : ∀ x : V, (mfderiv I I incl x) (Y x) = Y x := by
+        intro x
+        rw [mfderiv_opens_incl]
+        rfl
+      have hWeq : ∀ x : V, (mfderiv I I incl x) (W x) = W x := by
+        intro x
+        rw [mfderiv_opens_incl]
+        rfl
+      simpa only [hYeq, hWeq] using hscalar'
     intro x
     rw [contMDiffAt_section]
     refine hscalar.contMDiffAt.congr_of_eventuallyEq ?_

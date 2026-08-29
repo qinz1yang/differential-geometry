@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Metric.ChartGram
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0SChartLocalInner
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Topology.VectorBundle.Riemannian
 import Mathlib.Analysis.LocallyConvex.Bounded
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
@@ -45,12 +45,12 @@ open DifferentialGeometry.Integral.Measure (chartGramMatrix
 
 variable {n : ℕ}
 
-def chartTensorInnerPointwise_0sBilin
+def chartTensorInnerPointwise0sBilin
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α b : M) :
     Tensor0SModel s ℝ E →ₗ[ℝ]
       Tensor0SModel s ℝ E →ₗ[ℝ] ℝ :=
   LinearMap.mk₂ ℝ
-    (fun S T => chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T)
+    (fun S T => chartTensorInnerPointwise0s (I := I) (M := M) s g α b S T)
     (fun S₁ S₂ T =>
       chartTensorInnerPointwise_0s_add_left (I := I) (M := M) g α b s S₁ S₂ T)
     (fun c S T =>
@@ -63,37 +63,37 @@ def chartTensorInnerPointwise_0sBilin
 @[simp] lemma chartTensorInnerPointwise_0sBilin_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α b : M)
     (S T : Tensor0SModel s ℝ E) :
-    chartTensorInnerPointwise_0sBilin (I := I) (M := M) g s α b S T =
-      chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T := rfl
+    chartTensorInnerPointwise0sBilin (I := I) (M := M) g s α b S T =
+      chartTensorInnerPointwise0s (I := I) (M := M) s g α b S T := rfl
 
-noncomputable def chartTensorInnerPointwise_0sCLM
+noncomputable def chartTensorInnerPointwise0sCLM
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α b : M) :
     Tensor0SModel s ℝ E →L[ℝ]
       Tensor0SModel s ℝ E →L[ℝ] ℝ :=
-  let bilin := chartTensorInnerPointwise_0sBilin (I := I) (M := M) g s α b
+  let bilin := chartTensorInnerPointwise0sBilin (I := I) (M := M) g s α b
   LinearMap.toContinuousLinearMap
     { toFun := fun S => LinearMap.toContinuousLinearMap (bilin S)
       map_add' := fun S₁ S₂ => by
         refine ContinuousLinearMap.ext ?_
         intro T
-        change chartTensorInnerPointwise_0s (I := I) (M := M) s g α b (S₁ + S₂) T =
-          chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S₁ T +
-            chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S₂ T
+        change chartTensorInnerPointwise0s (I := I) (M := M) s g α b (S₁ + S₂) T =
+          chartTensorInnerPointwise0s (I := I) (M := M) s g α b S₁ T +
+            chartTensorInnerPointwise0s (I := I) (M := M) s g α b S₂ T
         exact chartTensorInnerPointwise_0s_add_left
           (I := I) (M := M) g α b s S₁ S₂ T
       map_smul' := fun c S => by
         refine ContinuousLinearMap.ext ?_
         intro T
-        change chartTensorInnerPointwise_0s (I := I) (M := M) s g α b (c • S) T =
-          c • chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T
+        change chartTensorInnerPointwise0s (I := I) (M := M) s g α b (c • S) T =
+          c • chartTensorInnerPointwise0s (I := I) (M := M) s g α b S T
         rw [chartTensorInnerPointwise_0s_smul_left]
         rfl }
 
 @[simp] lemma chartTensorInnerPointwise_0sCLM_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α b : M)
     (S T : Tensor0SModel s ℝ E) :
-    chartTensorInnerPointwise_0sCLM (I := I) (M := M) g s α b S T =
-      chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T := rfl
+    chartTensorInnerPointwise0sCLM (I := I) (M := M) g s α b S T =
+      chartTensorInnerPointwise0s (I := I) (M := M) s g α b S T := rfl
 
 noncomputable def curryLeftAtCLM (s : ℕ) (v : E) :
     ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ →L[ℝ]
@@ -103,11 +103,11 @@ noncomputable def curryLeftAtCLM (s : ℕ) (v : E) :
       map_add' := fun S₁ S₂ => by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.add_apply]
+              add_apply]
       map_smul' := fun c S => by
         ext m
         simp [ContinuousMultilinearMap.curryLeft_apply,
-              ContinuousMultilinearMap.smul_apply] }
+              smul_apply] }
     ‖v‖
     (fun S => by
       change ‖S.curryLeft v‖ ≤ _
@@ -155,25 +155,25 @@ private noncomputable def composeCurryAtIJ (s : ℕ)
 
 private lemma chartTensorInnerPointwise_0sCLM_succ_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α b : M) :
-    chartTensorInnerPointwise_0sCLM (I := I) (M := M) g (s + 1) α b
+    chartTensorInnerPointwise0sCLM (I := I) (M := M) g (s + 1) α b
       = ∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             (chartGramMatrix g α b)⁻¹ i j •
               composeCurryAtIJ (E := E) s i j
-                (chartTensorInnerPointwise_0sCLM (I := I) (M := M) g s α b) := by
+                (chartTensorInnerPointwise0sCLM (I := I) (M := M) g s α b) := by
   dsimp only [Tensor0SModel]
   refine ContinuousLinearMap.ext ?_
   intro S
   refine ContinuousLinearMap.ext ?_
   intro T
   rw [chartTensorInnerPointwise_0sCLM_apply, chartTensorInnerPointwise_0s_succ]
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl ?_
   intro i _
-  rw [ContinuousLinearMap.sum_apply, ContinuousLinearMap.sum_apply]
+  rw [sum_apply, sum_apply]
   refine Finset.sum_congr rfl ?_
   intro j _
-  rw [ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply,
+  rw [smul_apply, smul_apply,
     composeCurryAtIJ_apply, smul_eq_mul,
     chartTensorInnerPointwise_0sCLM_apply]
 

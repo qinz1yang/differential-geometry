@@ -47,14 +47,15 @@ theorem t02Norm_metricDiff
   obtain ⟨basis, hON⟩ :=
     DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
       (I := I) g x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h :=
       DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
         (I := I) g basis hON
-    simpa [Tensor0SBundle.identityInvMetric,
-      Tensor0SBundle.diagonalInvMetric] using h
+    change Tensor0SBundle.MetricInverseInBasisGen (I := I) g x basis
+      (fun a k => if a = k then (1 : Real) else 0)
+    exact h
   rw [t02Norm_eq_iterCov (I := I)
       (Tensor0SBundle.metricTensorField (I := I) G) g a basis hinv,
     metricDerivNorm_eq_iterCov (I := I) G g g a basis hinv]
@@ -72,7 +73,7 @@ variable [T2Space M] [SigmaCompactSpace M]
 variable {N : Type u} [TopologicalSpace N] [ChartedSpace H N]
 variable [IsManifold I ∞ N]
 
-noncomputable def MapMetricApproximationOn.of_metric
+noncomputable def MapMetricApproximationOn.ofMetric
     {K : Set M} {eps : Real} {p : Nat} {F : M → N}
     (G g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric I N)
     (heps : 0 < eps) (heps1 : eps < 1)
@@ -102,9 +103,9 @@ end Carrier
 
 theorem sqrt_norm_le_comp
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g0 g : SmoothMetric_gen I M) (x : M) (s : Nat)
+    (g0 g : SmoothMetricGen I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv0 : MetricInverseInBasis_gen (I := I) g0 x basis
+    (hinv0 : MetricInverseInBasisGen (I := I) g0 x basis
       (identityInvMetric (Idx := Idx)))
     {C B : Real} (hC : 1 ≤ C)
     (hequiv : ∀ v : TangentSpace I x,
@@ -135,7 +136,7 @@ theorem sqrt_norm_le_comp
 
 theorem sqrt_norm_le_basis_comp_of_coercive
     {Idx : Type*} [Fintype Idx]
-    (g : SmoothMetric_gen I M) (x : M) (s : Nat)
+    (g : SmoothMetricGen I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     {c B : Real} (hc : 0 < c)
     (hlow : ∀ v : TangentSpace I x,
@@ -166,10 +167,10 @@ theorem sqrt_norm_le_basis_comp_of_coercive
       (Finset.mem_univ i)
   have hco : IsCoercive (g.inner x) := ⟨c, hc, hlow⟩
   have hsharp_eq (i : Idx) :
-      (tangentFlatEquiv_gen (I := I) g x).symm (basis.coord i) =
+      (tangentFlatEquivGen (I := I) g x).symm (basis.coord i) =
         IsCoercive.sharp hco (basis.coord i).toContinuousLinearMap := by
-    apply (tangentFlatEquiv_gen (I := I) g x).injective
-    rw [(tangentFlatEquiv_gen (I := I) g x).apply_symm_apply]
+    apply (tangentFlatEquivGen (I := I) g x).injective
+    rw [(tangentFlatEquivGen (I := I) g x).apply_symm_apply]
     ext v
     change basis.coord i v =
       g.inner x
@@ -218,7 +219,7 @@ theorem sqrt_norm_le_basis_comp_of_coercive
         apply add_le_add (hgInv_bound i j)
         split_ifs <;> simp
       _ = epsBasis := rfl
-  have hginv : MetricInverseInBasis_gen (I := I) g x basis gInv :=
+  have hginv : MetricInverseInBasisGen (I := I) g x basis gInv :=
     basisInvMetric_real (I := I) g x basis
   have hnorm := normSq0S_le_pow_sum_comp_sq
     (I := I) g x s basis gInv epsBasis heps_nonneg hginv hnear T
@@ -235,7 +236,8 @@ theorem sqrt_norm_le_basis_comp_of_coercive
         have habs :
             |tensor0SComponent (I := I) T (fun i => basis i) slots| ≤
               |B| := by
-          simpa only [component0S_apply, abs_of_nonneg hBnn] using hB slots
+          simpa only [tensor0SComponent_apply, component0S_apply,
+            abs_of_nonneg hBnn] using hB slots
         simpa only [sq_abs] using sq_le_sq.mpr habs
       _ = (Fintype.card (Fin s → Idx) : Real) * B ^ 2 := by
         rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]

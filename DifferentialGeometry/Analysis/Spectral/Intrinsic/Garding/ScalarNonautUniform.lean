@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -36,6 +35,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [SigmaCompactSpace M] in
 private theorem appRS_jet_bdd
     (q : SmoothRiemannianMetric I M) {alpha : Type*} {p a b : ℕ}
     (Phi : alpha → SmoothCcTensor q a b) (W : alpha → SmoothCcTensor q p a)
@@ -76,6 +76,7 @@ private theorem appRS_jet_bdd
       riemannianFiberNormSq_nonneg (I := I) (M := M) q p (a + l) x _)
     (hBPhi i)
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem fixed_jet_bdd
     (q : SmoothRiemannianMetric I M) {r s : ℕ} (Phi : SmoothCcTensor q r s) :
@@ -89,7 +90,7 @@ private theorem fixed_jet_bdd
         (E := fun z : M => TensorRSSpace r s I z) p.1
         ((P p.2).toSection p.1))
       ((Set.univ : Set M) ×ˢ (Set.univ : Set ℝ)) := by
-    simpa only [P] using
+    with_unfolding_all exact
       Phi.toSection.contMDiff.comp_contMDiffOn contMDiffOn_fst
   obtain ⟨B, hB, hjet⟩ :=
     joint_jet_bdd (I := I) (M := M) q r s P
@@ -108,6 +109,7 @@ private lemma grid_mono {a b : ℕ → ℝ}
   refine Finset.sum_le_sum (fun n _ => Finset.sum_le_sum (fun e _ => ?_))
   exact Finset.prod_le_prod (fun m _ => ha (e m)) (fun m _ => hab (e m))
 
+omit [SigmaCompactSpace M] in
 private theorem flux_jet_of_bdd
     (q : SmoothRiemannianMetric I M) {alpha : Type*}
     (h : alpha → SmoothRiemannianMetric I M)
@@ -146,6 +148,7 @@ private theorem flux_jet_of_bdd
       (fun j => hP j t ht x) i
   exact hlocal.trans (mul_le_mul_of_nonneg_left hgrid (hC_nn i))
 
+omit [SigmaCompactSpace M] in
 theorem fluxDiv_jet_bdd
     (q : SmoothRiemannianMetric I M) {α : Type*}
     (C : α → SmoothCcTensor q 1 1) (A : Set α)
@@ -183,6 +186,7 @@ theorem fluxDiv_jet_bdd
   refine ⟨D, hD_nn, fun i t ht x => ?_⟩
   simpa only [Q, W] using hD i t ht x
 
+omit [SigmaCompactSpace M] in
 private theorem traceCast_jet_bdd
     (q : SmoothRiemannianMetric I M) {alpha : Type*}
     (h : alpha → SmoothRiemannianMetric I M) (A : Set alpha)
@@ -342,7 +346,7 @@ theorem cc_comm_unif
     (∑ j ∈ Finset.range (n + 2),
       ‖iteratedCovGrad (I := I) q 0 0 j U‖)
   have htrans : |G₀ - Htop| ≤ Ct * J := by
-    simpa only [G₀, Htop, J] using hCt s hs U
+    with_unfolding_all exact hCt s hs U
   have hder : |R| ≤ Cd * J := by
     simpa only [R, J] using hCd s hs U
   have hgrad : iteratedCovGrad (I := I) q 0 0 1 U =
@@ -363,6 +367,7 @@ theorem cc_comm_unif
     _ ≤ Ct * J + Cd * J := add_le_add htrans hder
     _ = (Ct + Cd) * J := by ring
 
+omit [SigmaCompactSpace M] in
 theorem lapCoeff_slab
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -513,7 +518,7 @@ theorem cc_conn_unif
       iterL_pair_jet_of (I := I) (M := M) q 0 n Phi A CG hCG_nn hCG
     refine ⟨C, hC_nn, ?_⟩
     intro s hs U
-    simpa only [q, A, Phi, gm] using hC s hs U
+    with_unfolding_all exact hC s hs U
 
 theorem cc_lap_unif
     {D : RealTimeInterval}

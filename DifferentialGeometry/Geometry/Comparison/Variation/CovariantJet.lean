@@ -16,14 +16,14 @@ namespace Variation
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-  [InnerProductSpace Real E] [FiniteDimensional Real E]
+  [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 private theorem covFst_shift
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (V : forall s t : Real, TangentSpace I (f s t))
@@ -35,7 +35,7 @@ private theorem covFst_shift
     (covDerivAlong_const_add_shift
       (I := I) g (fun s : Real => f s t) (fun s : Real => V s t) c)
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     [IsManifold I ∞ M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 theorem varFst_shift
     (f : Real -> Real -> M) (hf : IsSmoothVariation (I := I) f)
@@ -75,7 +75,10 @@ theorem varFst_shift
   have hshift_mf :
       (mfderiv (modelWithCornersSelf Real Real)
           (modelWithCornersSelf Real Real) (fun a : Real => c + a) 0)
-          (1 : Real) = (1 : Real) := by
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real Real) 0).symm 1) =
+        (tangentSpaceModelContinuousLinearEquiv
+          (I := modelWithCornersSelf Real Real) (c + 0)).symm 1 := by
     have heq :
         mfderiv (modelWithCornersSelf Real Real)
             (modelWithCornersSelf Real Real) (fun a : Real => c + a) 0 =
@@ -84,18 +87,22 @@ theorem varFst_shift
     rw [heq]
     change deriv (fun a : Real => c + a) 0 = (1 : Real)
     exact hderiv.deriv
+  change
+    ((mfderiv (modelWithCornersSelf Real Real) I
+        (fun s : Real => f s t) (c + 0)).comp
+      (mfderiv (modelWithCornersSelf Real Real)
+        (modelWithCornersSelf Real Real) (fun a : Real => c + a) 0))
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := modelWithCornersSelf Real Real) 0).symm 1) =
+      mfderiv (modelWithCornersSelf Real Real) I
+        (fun s : Real => f s t) c
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real Real) c).symm 1)
   rw [ContinuousLinearMap.comp_apply]
-  rw [show
-    (mfderiv (modelWithCornersSelf Real Real)
-        (modelWithCornersSelf Real Real) (fun a : Real => c + a) 0)
-        (1 : Real) = (1 : Real) from hshift_mf]
-  change mfderiv (modelWithCornersSelf Real Real) I
-      (fun s : Real => f s t) (c + 0) (1 : Real) =
-    mfderiv (modelWithCornersSelf Real Real) I
-      (fun s : Real => f s t) c (1 : Real)
+  rw [hshift_mf]
   rw [add_zero]
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 private theorem covSnd_shift
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (V : forall s t : Real, TangentSpace I (f s t))
@@ -105,7 +112,7 @@ private theorem covSnd_shift
       covSnd (I := I) g f V (c + a) t :=
   rfl
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 private theorem covSnd2_shift
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (V : forall s t : Real, TangentSpace I (f s t))
@@ -115,7 +122,7 @@ private theorem covSnd2_shift
       covSnd2 (I := I) g f V (c + a) t :=
   rfl
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] in
 private theorem varSnd_shift
     (f : Real -> Real -> M) (c t : Real) :
     varSnd (I := I) (fun r v => f (c + r) v) 0 t =
@@ -127,7 +134,7 @@ private theorem varSnd_shift
   rw [varSnd, varSnd, hcurve]
   rfl
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 lemma chartRep_fst_diff
     (f : Real -> Real -> M)
     (V : forall s t : Real, TangentSpace I (f s t))
@@ -159,12 +166,16 @@ lemma chartRep_fst_diff
         (fun q : Real × Real =>
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (f q.2 q.1) (V q.2 q.1) : TangentBundle I M)) := by
-    simpa only [swap, Function.comp_apply] using hV.comp hswap
+    change ContMDiff _ _ ∞
+      ((fun q : Real × Real =>
+          (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
+            (f q.1 q.2) (V q.1 q.2) : TangentBundle I M)) ∘ swap)
+    exact hV.comp hswap
   simpa only using
     chartRep_snd_diff (I := I) (fun a b => f b a)
       (fun a b => V b a) hVswap t s
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 theorem covFst_add
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (V W : forall s t : Real, TangentSpace I (f s t))
@@ -191,8 +202,8 @@ theorem covFst_add
       (chartRep_fst_diff (I := I) f V hV s t)
       (chartRep_fst_diff (I := I) f W hW s t)
 
-omit [InnerProductSpace ℝ E] [SigmaCompactSpace M] in
-theorem cov_commute_at
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+theorem cov_commute_global
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (hf : IsSmoothVariation (I := I) f)
     (V : forall s t : Real, TangentSpace I (f s t))
@@ -238,7 +249,12 @@ theorem cov_commute_at
         (fun q : Real × Real =>
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (fs q.1 q.2) (Vs q.1 q.2) : TangentBundle I M)) := by
-    simpa only [fs, Vs, Function.comp_apply] using hV.comp hshift
+    change ContMDiff _ _ ∞
+      ((fun q : Real × Real =>
+          (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
+            (f q.1 q.2) (V q.1 q.2) : TangentBundle I M)) ∘
+        fun q : Real × Real => (s + q.1, q.2))
+    exact hV.comp hshift
   have hraw :
       covFst (I := I) g fs
             (fun a v => covSnd (I := I) g fs Vs a v) 0 t -
@@ -276,7 +292,8 @@ theorem cov_commute_at
   rw [hleft, hright, hcurv] at hraw
   exact hraw
 
-omit [InnerProductSpace ℝ E] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem cov_snd2_expand_at
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (hf : IsSmoothVariation (I := I) f)
@@ -340,7 +357,12 @@ theorem cov_snd2_expand_at
         (fun q : Real × Real =>
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (fs q.1 q.2) (Vs q.1 q.2) : TangentBundle I M)) := by
-    simpa only [fs, Vs, Function.comp_apply] using hV.comp hshift
+    change ContMDiff _ _ ∞
+      ((fun q : Real × Real =>
+          (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
+            (f q.1 q.2) (V q.1 q.2) : TangentBundle I M)) ∘
+        fun q : Real × Real => (s + q.1, q.2))
+    exact hV.comp hshift
   have hraw := cov_snd2_expand (I := I) g fs hfs Vs hVs t
   dsimp only [fs, Vs] at hraw
   have hleft :
@@ -482,7 +504,8 @@ noncomputable def jacStepCorr
         covFst (I := I) g f
           (fun a v => varSnd (I := I) f a v) r t) s
 
-omit [InnerProductSpace ℝ E] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem jacResidual_step
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (hf : IsSmoothVariation (I := I) f)
@@ -518,9 +541,15 @@ theorem jacResidual_step
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (f q.1 q.2) (covSnd2 (I := I) g f V q.1 q.2) :
               TangentBundle I M)) := by
-    simpa only [covSnd2] using
-      cov_snd_smooth (I := I) g f
-        (fun r v => covSnd (I := I) g f V r v) hDt
+    change ContMDiff _ _ ∞
+      (fun q : Real × Real =>
+        (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
+          (f q.1 q.2)
+          (covSnd (I := I) g f
+            (fun r v => covSnd (I := I) g f V r v) q.1 q.2) :
+            TangentBundle I M))
+    exact cov_snd_smooth (I := I) g f
+      (fun r v => covSnd (I := I) g f V r v) hDt
   have hadd :=
     covFst_add (I := I) g f
       (fun r v => covSnd2 (I := I) g f V r v)
@@ -549,7 +578,7 @@ noncomputable def covFstIter
       covFst (I := I) g f
         (fun r v => covFstIter g f n V r v) s t
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 @[simp]
 theorem covFstIter_zero
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
@@ -557,7 +586,7 @@ theorem covFstIter_zero
     covFstIter (I := I) g f 0 V = V :=
   rfl
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 @[simp]
 theorem covFstIter_succ
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
@@ -568,7 +597,7 @@ theorem covFstIter_succ
         (fun r v => covFstIter (I := I) g f n V r v) s t :=
   rfl
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 theorem covFstIter_zero_of
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (V : forall s t : Real, TangentSpace I (f s t))
@@ -592,7 +621,8 @@ theorem covFstIter_zero_of
       rw [hfield]
       exact covDerivAlong_zero (I := I) g (fun r : Real => f r t) s
 
-omit [InnerProductSpace ℝ E] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space M] [SigmaCompactSpace M] in
 theorem covFstIter_smooth
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (V : forall s t : Real, TangentSpace I (f s t))
@@ -635,7 +665,8 @@ noncomputable def jacJetCorr
     (n : Nat) (s t : Real) : TangentSpace I (f s t) :=
   jacStepCorr (I := I) g f (covFstIter (I := I) g f n V) s t
 
-omit [InnerProductSpace ℝ E] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem jacJetResidual_succ
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (hf : IsSmoothVariation (I := I) f)
@@ -667,9 +698,18 @@ theorem jacJetResidual_succ
     jacResidual_step (I := I) g f hf
       (covFstIter (I := I) g f n V)
       (covFstIter_smooth (I := I) g f V hV n) hJn s t
-  simpa only [jacJetResidual, jacJetCorr, covFstIter_succ] using hstep
+  change
+    jacResidual (I := I) g f
+        (fun r v => covFst (I := I) g f
+          (covFstIter (I := I) g f n V) r v) s t =
+      covFst (I := I) g f
+          (fun r v => jacResidual (I := I) g f
+            (covFstIter (I := I) g f n V) r v) s t -
+        jacStepCorr (I := I) g f (covFstIter (I := I) g f n V) s t
+  exact hstep
 
-omit [InnerProductSpace ℝ E] [T2Space M] [SigmaCompactSpace M] in
+omit [NeZero (Module.finrank ℝ E)] in
+omit [T2Space M] [SigmaCompactSpace M] in
 theorem innerJet_deriv
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (V W : forall s t : Real, TangentSpace I (f s t))
@@ -711,7 +751,8 @@ theorem innerJet_deriv
       ((modelWithCornersSelf Real Real).prod
         (modelWithCornersSelf Real Real))
       ∞ incl := by
-    simpa only [incl] using contMDiff_id.prodMk contMDiff_const
+    change ContMDiff _ _ ∞ (fun r : Real => (id r, t))
+    exact contMDiff_id.prodMk contMDiff_const
   have hViJoint := covFstIter_smooth (I := I) g f V hV i
   have hWjJoint := covFstIter_smooth (I := I) g f W hW j
   have hVi :
@@ -719,13 +760,23 @@ theorem innerJet_deriv
         (fun r : Real =>
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (γ r) (Vi r) : TangentBundle I M)) := by
-    simpa only [γ, Vi, incl] using hViJoint.comp hincl
+    change ContMDiff _ _ ∞
+      ((fun q : Real × Real =>
+          (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
+            (f q.1 q.2) (covFstIter (I := I) g f i V q.1 q.2) :
+              TangentBundle I M)) ∘ incl)
+    exact hViJoint.comp hincl
   have hWj :
       ContMDiff (modelWithCornersSelf Real Real) I.tangent ∞
         (fun r : Real =>
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (γ r) (Wj r) : TangentBundle I M)) := by
-    simpa only [γ, Wj, incl] using hWjJoint.comp hincl
+    change ContMDiff _ _ ∞
+      ((fun q : Real × Real =>
+          (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
+            (f q.1 q.2) (covFstIter (I := I) g f j W q.1 q.2) :
+              TangentBundle I M)) ∘ incl)
+    exact hWjJoint.comp hincl
   have hγ : ContMDiff (modelWithCornersSelf Real Real) I ∞ γ := by
     intro r
     exact (Bundle.contMDiffAt_totalSpace.mp hVi.contMDiffAt).1

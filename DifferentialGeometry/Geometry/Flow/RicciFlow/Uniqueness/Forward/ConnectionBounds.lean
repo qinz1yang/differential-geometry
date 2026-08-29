@@ -5,7 +5,6 @@ import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetricIneq
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Scaling
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -35,11 +34,11 @@ private theorem exists_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
         (TangentSpace I x),
       ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
   classical
-  let D := (tangentMetricData_gen (I := I) g x).metric
-  letI : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
-  letI : NormedAddCommGroup (TangentSpace I x) :=
+  let D := (tangentMetricDataGen (I := I) g x).metric
+  let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
+  let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
-  letI : InnerProductSpace Real (TangentSpace I x) :=
+  let : InnerProductSpace Real (TangentSpace I x) :=
     @InnerProductSpace.ofCore Real (TangentSpace I x) _ _ _ D.toCore.toCore
   let ob := stdOrthonormalBasis Real (TangentSpace I x)
   refine ⟨ob.toBasis, ?_⟩
@@ -47,8 +46,8 @@ private theorem exists_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
   have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
     MetricFiberData.toCore_inner D (ob i) (ob j)
   change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricData_gen.inner_eq_gen
-    (tangentMetricData_gen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
+  rw [← TangentMetricDataGen.inner_eq_gen
+    (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
   change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
   rw [← hinner]
   exact ob.inner_eq_ite i j
@@ -58,9 +57,22 @@ private theorem onFrame_inv {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (b : Module.Basis Idx Real (TangentSpace I x))
     (hON : ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0) :
-    MetricInverseInBasis_gen (I := I) g x b (identityInvMetric (Idx := Idx)) := by
+    MetricInverseInBasisGen (I := I) g x b (identityInvMetric (Idx := Idx)) := by
   intro i j
   constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
+
+omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] in
+private theorem tensor02_expand_eval {Idx : Type*} [Fintype Idx] {x : M}
+    (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
+    (b : Module.Basis Idx Real (TangentSpace I x)) (W Z : TangentSpace I x) :
+    Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then W else Z) =
+      ∑ k, b.repr W k *
+        Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then b k else Z) := by
+  have h := tensor02_expand (I := I) q b W Z
+  change Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then W else Z) =
+    ∑ k, b.repr W k *
+      Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then b k else Z) at h
+  exact h
 
 
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -71,16 +83,18 @@ private theorem repr_inner {Idx : Type*} [Finite Idx] [DecidableEq Idx]
     (v : TangentSpace I x) (k : Idx) :
     b.repr v k = g.inner x v (b k) := by
   classical
-  haveI : Fintype Idx := Fintype.ofFinite Idx
+  have : Fintype Idx := Fintype.ofFinite Idx
   have hval : g.inner x v (b k) =
-      metricTensorField (I := I) g x (fun a : Fin 2 => if a = 0 then v else b k) := by
-    rw [metricTensorField_apply]; simp
-  rw [hval, tensor02_expand (I := I) (metricTensorField (I := I) g x) b v (b k)]
+      Tensor0SSpace.eval (metricTensorField (I := I) g x)
+        (fun a : Fin 2 => if a = 0 then v else b k) := by
+    rw [metricTensorField_eval]; simp
+  rw [hval, tensor02_expand_eval (I := I) (metricTensorField (I := I) g x) b v (b k)]
   have hbb : ∀ l : Idx,
-      metricTensorField (I := I) g x (fun a : Fin 2 => if a = 0 then b l else b k) =
+      Tensor0SSpace.eval (metricTensorField (I := I) g x)
+          (fun a : Fin 2 => if a = 0 then b l else b k) =
         (if l = k then (1 : Real) else 0) := by
     intro l
-    rw [metricTensorField_apply]
+    rw [metricTensorField_eval]
     simpa using hON l k
   simp only [hbb, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
 
@@ -140,23 +154,30 @@ theorem connectionDifferenceLow_eq_lower (g₁ g₂ : SmoothRiemannianMetric I M
       lowerBilin (I := I) (metricTensorField (I := I) g₁ x)
         (CovariantDerivative.difference (metricCov (I := I) g₁)
           (metricCov (I := I) g₂) x) := by
-  refine ContinuousMultilinearMap.ext fun v => ?_
-  rw [connectionDifferenceLowAt_apply, lowerBilin_apply, metricTensorField_apply]
+  refine tensor0SSpace_ext (𝕜 := Real) 3 x fun v => ?_
+  change Tensor0SSpace.eval (connectionDifferenceLowAt (I := I) g₁ g₂ x) v =
+    Tensor0SSpace.eval
+      (lowerBilin (I := I) (metricTensorField (I := I) g₁ x)
+        (CovariantDerivative.difference (metricCov (I := I) g₁)
+          (metricCov (I := I) g₂) x)) v
+  rw [connectionDifferenceLowAt_apply, lowerBilin_apply, metricTensorField_eval]
   simp
 
 
 omit [SigmaCompactSpace M] [T2Space M] in
-private theorem comp_lowerBilin {Idx : Type*} [Finite Idx] {x : M}
+private theorem comp_lowerBilin {Idx : Type*} {x : M}
     (b : Module.Basis Idx Real (TangentSpace I x))
     (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     (A : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x)
     (i j k : Idx) :
     component0S (I := I) b (lowerBilin (I := I) q A)
         (fun a : Fin 3 => if a = 0 then i else if a = 1 then j else k) =
-      q (fun a : Fin 2 => if a = 0 then (A (b j)) (b i) else b k) := by
+      Tensor0SSpace.eval q
+        (fun a : Fin 2 => if a = 0 then (A (b j)) (b i) else b k) := by
   classical
-  haveI : Fintype Idx := Fintype.ofFinite Idx
-  rw [component0S_apply, lowerBilin_apply]
+  change Tensor0SSpace.eval (lowerBilin (I := I) q A)
+      (fun a : Fin 3 => b (if a = 0 then i else if a = 1 then j else k)) = _
+  rw [lowerBilin_apply]
   congr 1
 
 
@@ -174,7 +195,7 @@ theorem lowerBilin_normSq_le (g : SmoothRiemannianMetric I M) (x : M)
   have hq : normSq0S (I := I) g x 2 q =
       ∑ l : Fin (Module.finrank Real (TangentSpace I x)),
         ∑ k : Fin (Module.finrank Real (TangentSpace I x)),
-          (q (fun a : Fin 2 => if a = 0 then b l else b k)) ^ 2 := by
+          (Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then b l else b k)) ^ 2 := by
     rw [normSq0S_identity_eq_sum_sq (I := I) g x 2 b hinv, sumSlots2]
     refine Finset.sum_congr rfl fun l _ => Finset.sum_congr rfl fun k _ => ?_
     congr 1
@@ -192,7 +213,7 @@ theorem lowerBilin_normSq_le (g : SmoothRiemannianMetric I M) (x : M)
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ =>
       Finset.sum_congr rfl fun l _ => ?_
     congr 1
-    rw [comp_lowerBilin (I := I) b _ A i j l, metricTensorField_apply,
+    rw [comp_lowerBilin (I := I) b _ A i j l, metricTensorField_eval,
       repr_inner (I := I) g b hON]
     simp
   have hlow : normSq0S (I := I) g x 3 (lowerBilin (I := I) q A) =
@@ -201,13 +222,14 @@ theorem lowerBilin_normSq_le (g : SmoothRiemannianMetric I M) (x : M)
           ∑ k : Fin (Module.finrank Real (TangentSpace I x)),
             (∑ l : Fin (Module.finrank Real (TangentSpace I x)),
               b.repr ((A (b j)) (b i)) l *
-                q (fun a : Fin 2 => if a = 0 then b l else b k)) ^ 2 := by
+                Tensor0SSpace.eval q
+                  (fun a : Fin 2 => if a = 0 then b l else b k)) ^ 2 := by
     rw [normSq0S_identity_eq_sum_sq (I := I) g x 3 b hinv, sumSlots3]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ =>
       Finset.sum_congr rfl fun k _ => ?_
     congr 1
     rw [comp_lowerBilin (I := I) b q A i j k,
-      tensor02_expand (I := I) q b ((A (b j)) (b i)) (b k)]
+      tensor02_expand_eval (I := I) q b ((A (b j)) (b i)) (b k)]
   rw [hlow, hq, href, Finset.mul_sum]
   refine Finset.sum_le_sum fun i _ => ?_
   rw [Finset.mul_sum]
@@ -215,16 +237,16 @@ theorem lowerBilin_normSq_le (g : SmoothRiemannianMetric I M) (x : M)
   have hstep : ∑ k : Fin (Module.finrank Real (TangentSpace I x)),
         (∑ l : Fin (Module.finrank Real (TangentSpace I x)),
           b.repr ((A (b j)) (b i)) l *
-            q (fun a : Fin 2 => if a = 0 then b l else b k)) ^ 2 ≤
+            Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then b l else b k)) ^ 2 ≤
       ∑ k : Fin (Module.finrank Real (TangentSpace I x)),
         ((∑ l : Fin (Module.finrank Real (TangentSpace I x)),
             (b.repr ((A (b j)) (b i)) l) ^ 2) *
           ∑ l : Fin (Module.finrank Real (TangentSpace I x)),
-            (q (fun a : Fin 2 => if a = 0 then b l else b k)) ^ 2) :=
+            (Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then b l else b k)) ^ 2) :=
     Finset.sum_le_sum fun k _ =>
       Finset.sum_mul_sq_le_sq_mul_sq Finset.univ
         (fun l => b.repr ((A (b j)) (b i)) l)
-        (fun l => q (fun a : Fin 2 => if a = 0 then b l else b k))
+        (fun l => Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then b l else b k))
   refine hstep.trans (le_of_eq ?_)
   rw [← Finset.mul_sum, Finset.sum_comm]
   ring
@@ -315,7 +337,7 @@ end NablaRicci
 section TraceCommute
 
 omit [SigmaCompactSpace M] in
-private theorem nabla_trace_field [I.Boundaryless] {s : ℕ}
+private theorem nabla_trace_field {s : ℕ}
     (g : SmoothRiemannianMetric I M)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (s + 2)) :
@@ -375,7 +397,7 @@ private theorem traceShuffle_normSq_le {s : ℕ}
   rwa [hiso] at hle
 
 omit [SigmaCompactSpace M] in
-private theorem nablaTracePerm_normSq_le [I.Boundaryless] {s : ℕ}
+private theorem nablaTracePerm_normSq_le {s : ℕ}
     (g : SmoothRiemannianMetric I M) (e : Equiv.Perm (Fin (s + 2)))
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (s + 2)) (x : M) :
@@ -409,7 +431,7 @@ private theorem nablaTracePerm_normSq_le [I.Boundaryless] {s : ℕ}
   exact le_of_eq (by rw [hiso])
 
 omit [SigmaCompactSpace M] in
-theorem nablaRicDiff_trace_le [I.Boundaryless]
+theorem nablaRicDiff_trace_le
     (g₁ g₂ : SmoothRiemannianMetric I M)
     (S : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
@@ -508,7 +530,11 @@ theorem coeff_adot_eq
       (b.repr ((Adot x (b j)) (b i)) k) t := by
     have h := (LinearMap.toContinuousLinearMap
       (b.coord k)).hasFDerivAt.comp_hasDerivAt t (hA (b i) (b j))
-    simpa using h
+    change HasDerivAt
+      (fun r : Real => b.repr (CovariantDerivative.difference (metricCov (I := I) (g₁ r))
+        (metricCov (I := I) (g₂ r)) x (b j) (b i)) k)
+      (b.repr (Adot x (b j) (b i)) k) t at h
+    exact h
   rw [hfun] at hL
   have huniq := hL.unique (hΓ i j k)
   rw [hcoeff k, ← hbcoe i, ← hbcoe j]
@@ -519,7 +545,7 @@ theorem lower_raise_cancel [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     (b : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x b gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x b gInv)
     (L : Idx -> Real) (k : Idx) :
     ∑ m : Idx, (∑ l : Idx, gInv m l * L l) * g.inner x (b m) (b k) = L k := by
   classical
@@ -546,10 +572,10 @@ private theorem lowerBilin_basis
     (q : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     (A : TangentSpace I x →L[Real] TangentSpace I x →L[Real] TangentSpace I x)
     (b : Module.Basis Idx Real (TangentSpace I x)) (v : Fin 3 -> Idx) :
-    lowerBilin (I := I) q A (fun a : Fin 3 => b (v a)) =
+    Tensor0SSpace.eval (lowerBilin (I := I) q A) (fun a : Fin 3 => b (v a)) =
       ∑ m : Idx, b.repr ((A (b (v 1))) (b (v 0))) m *
-        q (fun a : Fin 2 => if a = 0 then b m else b (v 2)) := by
-  rw [lowerBilin_apply, tensor02_expand (I := I) q b _ (b (v 2))]
+        Tensor0SSpace.eval q (fun a : Fin 2 => if a = 0 then b m else b (v 2)) := by
+  rw [lowerBilin_apply, tensor02_expand_eval (I := I) q b _ (b (v 2))]
 
 
 omit [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] in
@@ -606,37 +632,44 @@ theorem connSpeedLow_eq
     rw [hcoeff m, ← hbcoe i, ← hbcoe j] at h
     exact h
   refine tensor0SSpace_ext (𝕜 := Real) 3 x fun w => ?_
-  set L : ContinuousMultilinearMap Real (fun _ : Fin 3 => TangentSpace I x) Real :=
+  set L : Tensor0SSpace 3 I x :=
     lowerBilin (I := I) (metricTensorField (I := I) (g₁ t) x) (Adot x) with hLdef
-  set R : ContinuousMultilinearMap Real (fun _ : Fin 3 => TangentSpace I x) Real :=
-    lowerBilin (I := I) (metricTensorField (I := I) (g₁ t) x)
-        (bilinOfComp (I := I) b c₁) -
-      lowerBilin (I := I) (metricTensorField (I := I) (g₂ t) x)
-        (bilinOfComp (I := I) b c₂) -
-      lowerBilin (I := I) (metricDiffAt (I := I) (g₁ t) (g₂ t) x)
-        (bilinOfComp (I := I) b c₂) with hRdef
-  suffices h : L.toMultilinearMap = R.toMultilinearMap by
+  set R : Tensor0SSpace 3 I x :=
+      lowerBilin (I := I) (metricTensorField (I := I) (g₁ t) x)
+          (bilinOfComp (I := I) b c₁) -
+        lowerBilin (I := I) (metricTensorField (I := I) (g₂ t) x)
+          (bilinOfComp (I := I) b c₂) -
+        lowerBilin (I := I) (metricDiffAt (I := I) (g₁ t) (g₂ t) x)
+          (bilinOfComp (I := I) b c₂) with hRdef
+  change Tensor0SSpace.eval L w = Tensor0SSpace.eval R w
+  suffices h :
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 3 x L).toMultilinearMap =
+        (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 3 x R).toMultilinearMap by
     exact congrArg
       (fun T : MultilinearMap Real (fun _ : Fin 3 => TangentSpace I x) Real => T w) h
   refine Module.Basis.ext_multilinear (e := fun _ : Fin 3 => b) ?_
   intro v
-  change L (fun a : Fin 3 => b (v a)) = R (fun a : Fin 3 => b (v a))
-  have hRval : R (fun a : Fin 3 => b (v a)) =
-      lowerBilin (I := I) (metricTensorField (I := I) (g₁ t) x)
-          (bilinOfComp (I := I) b c₁) (fun a : Fin 3 => b (v a)) -
-        lowerBilin (I := I) (metricTensorField (I := I) (g₂ t) x)
-          (bilinOfComp (I := I) b c₂) (fun a : Fin 3 => b (v a)) -
-        lowerBilin (I := I) (metricDiffAt (I := I) (g₁ t) (g₂ t) x)
-          (bilinOfComp (I := I) b c₂) (fun a : Fin 3 => b (v a)) := by
+  change Tensor0SSpace.eval L (fun a : Fin 3 => b (v a)) =
+    Tensor0SSpace.eval R (fun a : Fin 3 => b (v a))
+  have hRval : Tensor0SSpace.eval R (fun a : Fin 3 => b (v a)) =
+      Tensor0SSpace.eval
+        (lowerBilin (I := I) (metricTensorField (I := I) (g₁ t) x)
+          (bilinOfComp (I := I) b c₁)) (fun a : Fin 3 => b (v a)) -
+      Tensor0SSpace.eval
+        (lowerBilin (I := I) (metricTensorField (I := I) (g₂ t) x)
+          (bilinOfComp (I := I) b c₂)) (fun a : Fin 3 => b (v a)) -
+      Tensor0SSpace.eval
+        (lowerBilin (I := I) (metricDiffAt (I := I) (g₁ t) (g₂ t) x)
+          (bilinOfComp (I := I) b c₂)) (fun a : Fin 3 => b (v a)) := by
     rw [hRdef]
-    rw [Tensor0SSpace.sub_apply (I := I) 3 x _ _ (fun a : Fin 3 => b (v a)),
-      Tensor0SSpace.sub_apply (I := I) 3 x _ _ (fun a : Fin 3 => b (v a))]
+    rw [Tensor0SSpace.eval_sub, Tensor0SSpace.eval_sub]
   rw [hLdef, hRval, lowerBilin_basis (I := I) _ _ b v, lowerBilin_basis (I := I) _ _ b v,
     lowerBilin_basis (I := I) _ _ b v, lowerBilin_basis (I := I) _ _ b v,
     ← Finset.sum_sub_distrib, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun m _ => ?_
   rw [hrepr (v 0) (v 1) m, repr_bilinOfComp (I := I) b c₁, repr_bilinOfComp (I := I) b c₂,
-    metricTensorField_apply, metricTensorField_apply, metricDiffAt_apply]
+    metricTensorField_eval, metricTensorField_eval, metricDiffAt,
+    Tensor0SSpace.eval_sub, metricTensorField_eval, metricTensorField_eval]
   simp only []
   ring
 
@@ -646,7 +679,7 @@ theorem lowerHamRHS_comp [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     (b : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x b gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x b gInv)
     (L : Idx -> Idx -> Idx -> Real) (i j k : Idx) :
     component0S (I := I) b
         (lowerBilin (I := I) (metricTensorField (I := I) g x)
@@ -656,16 +689,17 @@ theorem lowerHamRHS_comp [DecidableEq Idx]
   classical
   rw [comp_lowerBilin (I := I) b _ (bilinOfComp (I := I) b
       (fun i' j' m => ∑ l : Idx, gInv m l * L i' j' l)) i j k,
-    tensor02_expand (I := I) (metricTensorField (I := I) g x) b _ (b k)]
+    tensor02_expand_eval (I := I) (metricTensorField (I := I) g x) b _ (b k)]
   have hterm : ∀ m : Idx,
       b.repr ((bilinOfComp (I := I) b
           (fun i' j' m' => ∑ l : Idx, gInv m' l * L i' j' l) (b j)) (b i)) m *
-        metricTensorField (I := I) g x (fun a : Fin 2 => if a = 0 then b m else b k) =
+        Tensor0SSpace.eval (metricTensorField (I := I) g x)
+          (fun a : Fin 2 => if a = 0 then b m else b k) =
       (∑ l : Idx, gInv m l * L i j l) * g.inner x (b m) (b k) := by
     intro m
-    have hg : metricTensorField (I := I) g x
+    have hg : Tensor0SSpace.eval (metricTensorField (I := I) g x)
         (fun a : Fin 2 => if a = 0 then b m else b k) = g.inner x (b m) (b k) := by
-      rw [metricTensorField_apply]; simp
+      rw [metricTensorField_eval]; simp
     rw [repr_bilinOfComp (I := I) b
       (fun i' j' m' => ∑ l : Idx, gInv m' l * L i' j' l) i j m, hg]
   rw [Finset.sum_congr rfl fun m _ => hterm m]
@@ -686,8 +720,9 @@ omit [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M] in
 @[simp] theorem reindexCovariantThreeTensor_apply (e : Equiv.Perm (Fin 3))
     (N : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (v : Fin 3 -> TangentSpace I x) :
-    reindexCovariantThreeTensor (I := I) e N v = N (fun a : Fin 3 => v (e a)) :=
-  Tensor0SSpace.domDomCongr_apply (I := I) e N v
+    Tensor0SSpace.eval (reindexCovariantThreeTensor (I := I) e N) v =
+      Tensor0SSpace.eval N (fun a : Fin 3 => v (e a)) :=
+  Tensor0SSpace.eval_domDomCongr N e v
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem normSq0S_reindexCovariantThreeTensor (g : SmoothRiemannianMetric I M) (e : Equiv.Perm (Fin 3))
@@ -705,7 +740,7 @@ theorem lower_connection_difference_eq_hamilton_combination [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M)
     (b : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x b gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x b gInv)
     (N : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (nr : Idx -> Idx -> Idx -> Real)
     (hnr : ∀ d a c : Idx, nr d a c =
@@ -717,19 +752,23 @@ theorem lower_connection_difference_eq_hamilton_combination [DecidableEq Idx]
       hamiltonConnectionDifferenceCombination (I := I) N := by
   classical
   refine tensor0SSpace_ext (𝕜 := Real) 3 x fun w => ?_
-  set LHS : ContinuousMultilinearMap Real (fun _ : Fin 3 => TangentSpace I x) Real :=
-    lowerBilin (I := I) (metricTensorField (I := I) g x)
-      (bilinOfComp (I := I) b (fun i j m =>
-        ∑ l : Idx, gInv m l * (-nr i j l - nr j i l + nr l i j))) with hLdef
-  set RHS : ContinuousMultilinearMap Real (fun _ : Fin 3 => TangentSpace I x) Real :=
+  set LHS : Tensor0SSpace 3 I x :=
+      lowerBilin (I := I) (metricTensorField (I := I) g x)
+        (bilinOfComp (I := I) b (fun i j m =>
+          ∑ l : Idx, gInv m l * (-nr i j l - nr j i l + nr l i j))) with hLdef
+  set RHS : Tensor0SSpace 3 I x :=
     hamiltonConnectionDifferenceCombination (I := I) N with hRdef
-  suffices h : LHS.toMultilinearMap = RHS.toMultilinearMap by
+  change Tensor0SSpace.eval LHS w = Tensor0SSpace.eval RHS w
+  suffices h :
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 3 x LHS).toMultilinearMap =
+        (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 3 x RHS).toMultilinearMap by
     exact congrArg
       (fun T : MultilinearMap Real (fun _ : Fin 3 => TangentSpace I x) Real => T w) h
   refine Module.Basis.ext_multilinear (e := fun _ : Fin 3 => b) ?_
   intro v
-  change LHS (fun a : Fin 3 => b (v a)) = RHS (fun a : Fin 3 => b (v a))
-  have hLval : LHS (fun a : Fin 3 => b (v a)) =
+  change Tensor0SSpace.eval LHS (fun a : Fin 3 => b (v a)) =
+    Tensor0SSpace.eval RHS (fun a : Fin 3 => b (v a))
+  have hLval : Tensor0SSpace.eval LHS (fun a : Fin 3 => b (v a)) =
       -nr (v 0) (v 1) (v 2) - nr (v 1) (v 0) (v 2) + nr (v 2) (v 0) (v 1) := by
     rw [hLdef]
     have h := lowerHamRHS_comp (I := I) g b gInv hinv
@@ -741,33 +780,38 @@ theorem lower_connection_difference_eq_hamilton_combination [DecidableEq Idx]
       funext a; fin_cases a <;> simp
     rw [hslots] at h
     exact h
-  have hRval : RHS (fun a : Fin 3 => b (v a)) =
-      -(N (fun a : Fin 3 => b (v a))) -
-        N (fun a : Fin 3 => b (v (Equiv.swap (0 : Fin 3) 1 a))) +
-        N (fun a : Fin 3 => b (v (hamiltonConnectionDifferencePermutation a))) := by
+  have hRval : Tensor0SSpace.eval RHS (fun a : Fin 3 => b (v a)) =
+      -(Tensor0SSpace.eval N (fun a : Fin 3 => b (v a))) -
+        Tensor0SSpace.eval N (fun a : Fin 3 => b (v (Equiv.swap (0 : Fin 3) 1 a))) +
+        Tensor0SSpace.eval N
+          (fun a : Fin 3 => b (v (hamiltonConnectionDifferencePermutation a))) := by
     rw [hRdef, hamiltonConnectionDifferenceCombination,
-      Tensor0SSpace.add_apply (I := I) 3 x _ _ (fun a : Fin 3 => b (v a)),
-      Tensor0SSpace.add_apply (I := I) 3 x _ _ (fun a : Fin 3 => b (v a)),
-      Tensor0SSpace.smul_apply (I := I) 3 x (-1 : Real) N (fun a : Fin 3 => b (v a)),
-      Tensor0SSpace.smul_apply (I := I) 3 x (-1 : Real) _ (fun a : Fin 3 => b (v a))]
+      Tensor0SSpace.eval_add, Tensor0SSpace.eval_add,
+      Tensor0SSpace.eval_smul, Tensor0SSpace.eval_smul]
     simp only [reindexCovariantThreeTensor_apply, smul_eq_mul]
     ring
   rw [hLval, hRval]
   have hcomp : ∀ d a c : Idx, nr d a c =
-      N (fun s : Fin 3 => b ((fun s' : Fin 3 =>
+      Tensor0SSpace.eval N (fun s : Fin 3 => b ((fun s' : Fin 3 =>
         if s' = 0 then d else if s' = 1 then a else c) s)) := by
     intro d a c
-    rw [hnr d a c, component0S_apply]
-  have h0 : N (fun a : Fin 3 => b (v a)) = nr (v 0) (v 1) (v 2) := by
+    rw [hnr d a c]
+    change Tensor0SSpace.eval N
+      (fun s : Fin 3 => b (if s = 0 then d else if s = 1 then a else c)) = _
+    rfl
+  have h0 : Tensor0SSpace.eval N (fun a : Fin 3 => b (v a)) =
+      nr (v 0) (v 1) (v 2) := by
     rw [hcomp (v 0) (v 1) (v 2)]
     congr 1
     funext a; fin_cases a <;> simp
-  have h1 : N (fun a : Fin 3 => b (v (Equiv.swap (0 : Fin 3) 1 a))) =
+  have h1 : Tensor0SSpace.eval N (fun a : Fin 3 => b (v (Equiv.swap (0 : Fin 3) 1 a))) =
       nr (v 1) (v 0) (v 2) := by
     rw [hcomp (v 1) (v 0) (v 2)]
     congr 1
     funext a; fin_cases a <;> simp [Equiv.swap_apply_def]
-  have h2 : N (fun a : Fin 3 => b (v (hamiltonConnectionDifferencePermutation a))) = nr (v 2) (v 0) (v 1) := by
+  have h2 : Tensor0SSpace.eval N
+      (fun a : Fin 3 => b (v (hamiltonConnectionDifferencePermutation a))) =
+      nr (v 2) (v 0) (v 1) := by
     rw [hcomp (v 2) (v 0) (v 1)]
     congr 1
     funext a; fin_cases a <;> simp [hamiltonConnectionDifferencePermutation]
@@ -828,13 +872,14 @@ private theorem inner_le_sum_sq {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       g.inner x v v = ∑ k : Idx, g₁.inner x v (b k) * g.inner x v (b k) := by
     intro g
     have hv : g.inner x v v =
-        metricTensorField (I := I) g x (fun a : Fin 2 => if a = 0 then v else v) := by
-      rw [metricTensorField_apply]; simp
-    rw [hv, tensor02_expand (I := I) (metricTensorField (I := I) g x) b v v]
+        Tensor0SSpace.eval (metricTensorField (I := I) g x)
+          (fun a : Fin 2 => if a = 0 then v else v) := by
+      rw [metricTensorField_eval]; simp
+    rw [hv, tensor02_expand_eval (I := I) (metricTensorField (I := I) g x) b v v]
     refine Finset.sum_congr rfl fun k _ => ?_
-    have hval : metricTensorField (I := I) g x
+    have hval : Tensor0SSpace.eval (metricTensorField (I := I) g x)
         (fun a : Fin 2 => if a = 0 then b k else v) = g.inner x (b k) v := by
-      rw [metricTensorField_apply]; simp
+      rw [metricTensorField_eval]; simp
     rw [hval, g.symm x (b k) v, hrepr k]
   set N : Real := ∑ k : Idx, (g₁.inner x v (b k)) ^ 2 with hNdef
   set Q : Real := ∑ k : Idx, (g₂.inner x v (b k)) ^ 2 with hQdef
@@ -870,7 +915,8 @@ theorem lowerBilin_metric_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
         ∑ i : Fin (Module.finrank Real (TangentSpace I x)),
           ∑ j : Fin (Module.finrank Real (TangentSpace I x)),
             ∑ k : Fin (Module.finrank Real (TangentSpace I x)),
-              (q (fun a : Fin 2 => if a = 0 then (A (b j)) (b i) else b k)) ^ 2 := by
+              (Tensor0SSpace.eval q
+                (fun a : Fin 2 => if a = 0 then (A (b j)) (b i) else b k)) ^ 2 := by
     intro q
     rw [normSq0S_identity_eq_sum_sq (I := I) g₁ x 3 b hinv, sumSlots3]
     refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ =>
@@ -879,10 +925,11 @@ theorem lowerBilin_metric_le (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     rw [comp_lowerBilin (I := I) b q A i j k]
   have hcomp : ∀ (g : SmoothRiemannianMetric I M) (w : TangentSpace I x)
       (k : Fin (Module.finrank Real (TangentSpace I x))),
-      metricTensorField (I := I) g x (fun a : Fin 2 => if a = 0 then w else b k) =
+      Tensor0SSpace.eval (metricTensorField (I := I) g x)
+          (fun a : Fin 2 => if a = 0 then w else b k) =
         g.inner x w (b k) := by
     intro g w k
-    rw [metricTensorField_apply]; simp
+    rw [metricTensorField_eval]; simp
   rw [hexp, hexp, Finset.mul_sum]
   refine Finset.sum_le_sum fun i _ => ?_
   rw [Finset.mul_sum]
@@ -1042,7 +1089,7 @@ theorem connSpeedRHS_self (g₁ g₂ : Real → SmoothRiemannianMetric I M) {t :
   ring
 
 omit [SigmaCompactSpace M] in
-theorem connSpeedLow_normSq_le [I.Boundaryless]
+theorem connSpeedLow_normSq_le
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {u : Set M}
     (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (Adot : (y : M) →
@@ -1059,9 +1106,9 @@ theorem connSpeedLow_normSq_le [I.Boundaryless]
     (hRic₂ : ∀ y : M, Ric₂ y = metricRicciAt (I := I) (g₂ t) y)
     (gInv₁ gInv₂ : Real ->
       DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
-    (hgInv₁ : MetricInverseInBasis_gen (I := I) (g₁ t) x (hframe.toBasisAt hx)
+    (hgInv₁ : MetricInverseInBasisGen (I := I) (g₁ t) x (hframe.toBasisAt hx)
       (fun i j : Idx => gInv₁ t x i j))
-    (hgInv₂ : MetricInverseInBasis_gen (I := I) (g₂ t) x (hframe.toBasisAt hx)
+    (hgInv₂ : MetricInverseInBasisGen (I := I) (g₂ t) x (hframe.toBasisAt hx)
       (fun i j : Idx => gInv₂ t x i j))
     (nablaRic₁ nablaRic₂ : Real -> M -> Idx -> Idx -> Idx -> Real)
     (hNR₁ : ∀ d a b : Idx, nablaRic₁ t x d a b =
@@ -1158,7 +1205,7 @@ theorem connSpeedLow_normSq_le [I.Boundaryless]
     hham hsplit htrace hB₃ hd1 hd2 hd3 (hpow 5 (by norm_num)) (hpow 3 (by norm_num))
 
 omit [SigmaCompactSpace M] in
-theorem connectionDifferenceDot_normSq_le [I.Boundaryless]
+theorem connectionDifferenceDot_normSq_le
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {u : Set M}
     (g₁ g₂ : Real → SmoothRiemannianMetric I M)
     (Adot : (y : M) →
@@ -1175,9 +1222,9 @@ theorem connectionDifferenceDot_normSq_le [I.Boundaryless]
     (hRic₂ : ∀ y : M, Ric₂ y = metricRicciAt (I := I) (g₂ t) y)
     (gInv₁ gInv₂ : Real ->
       DifferentialGeometry.Integral.Connection.InverseMetricComponents M Idx)
-    (hgInv₁ : MetricInverseInBasis_gen (I := I) (g₁ t) x (hframe.toBasisAt hx)
+    (hgInv₁ : MetricInverseInBasisGen (I := I) (g₁ t) x (hframe.toBasisAt hx)
       (fun i j : Idx => gInv₁ t x i j))
-    (hgInv₂ : MetricInverseInBasis_gen (I := I) (g₂ t) x (hframe.toBasisAt hx)
+    (hgInv₂ : MetricInverseInBasisGen (I := I) (g₂ t) x (hframe.toBasisAt hx)
       (fun i j : Idx => gInv₂ t x i j))
     (nablaRic₁ nablaRic₂ : Real -> M -> Idx -> Idx -> Idx -> Real)
     (hNR₁ : ∀ d a b : Idx, nablaRic₁ t x d a b =

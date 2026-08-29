@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
     CovariantDerivative
@@ -46,11 +45,11 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 private local instance tensorCovDivergenceModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance tensorCovDivergenceModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -62,30 +61,41 @@ theorem tensorInnerPointwise_0s_succ_eq_sum_curryLeft_orthoFrame
     covariantTensorInnerPointwise (I := I) (M := M) (s + 1) g x S T =
       ∑ a : Fin (Module.finrank ℝ E),
         covariantTensorInnerPointwise (I := I) (M := M) s g x
-          (S.curryLeft (frame a)) (T.curryLeft (frame a)) := by
+          (S.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)))
+          (T.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a))) := by
   classical
   rw [tensorInnerPointwise_0s_eq_diag_sum_orthoFrame (I := I) (M := M) g x (s + 1) frame horth S T]
   rw [show (∑ a : Fin (Module.finrank ℝ E),
         covariantTensorInnerPointwise (I := I) (M := M) s g x
-          (S.curryLeft (frame a)) (T.curryLeft (frame a))) =
+          (S.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)))
+          (T.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)))) =
       ∑ a : Fin (Module.finrank ℝ E),
         ∑ φ : Fin s → Fin (Module.finrank ℝ E),
-          (S.curryLeft (frame a)) (fun k => frame (φ k)) *
-            (T.curryLeft (frame a)) (fun k => frame (φ k)) from by
+          (S.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)))
+              (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (frame (φ k))) *
+            (T.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame a)))
+              (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (frame (φ k))) from by
     refine Finset.sum_congr rfl (fun a _ => ?_)
     rw [tensorInnerPointwise_0s_eq_diag_sum_orthoFrame (I := I) (M := M) g x s frame horth]]
   rw [← (Fintype.sum_equiv (Fin.consEquiv (fun _ : Fin (s + 1) => Fin (Module.finrank ℝ E)))
         (fun pr : Fin (Module.finrank ℝ E) × (Fin s → Fin (Module.finrank ℝ E)) =>
-          (S.curryLeft (frame pr.1)) (fun k => frame (pr.2 k)) *
-            (T.curryLeft (frame pr.1)) (fun k => frame (pr.2 k)))
+          (S.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame pr.1)))
+              (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (frame (pr.2 k))) *
+            (T.curryLeft (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame pr.1)))
+              (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (frame (pr.2 k))))
         (fun ψ : Fin (s + 1) → Fin (Module.finrank ℝ E) =>
-          S (fun k => frame (ψ k)) * T (fun k => frame (ψ k)))
+          S (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (frame (ψ k))) *
+            T (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (frame (ψ k))))
         ?_)]
   · rw [Fintype.sum_prod_type]
   · intro pr
     simp only [Fin.consEquiv_apply, ContinuousMultilinearMap.curryLeft_apply]
-    have hcons : (Fin.cons (frame pr.1) (fun k => frame (pr.2 k)) : Fin (s + 1) → E) =
-        fun k => frame ((Fin.cons pr.1 pr.2 : Fin (s + 1) → Fin (Module.finrank ℝ E)) k) := by
+    have hcons :
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (frame pr.1))
+          (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (frame (pr.2 k))) :
+            Fin (s + 1) → E) =
+        fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (frame ((Fin.cons pr.1 pr.2 : Fin (s + 1) → Fin (Module.finrank ℝ E)) k)) := by
       funext k
       refine Fin.cases ?_ ?_ k
       · simp
@@ -96,29 +106,43 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 lemma contract_covariant_smul_left (s : ℕ) (x : M) (c : ℝ) (v : TangentSpace I x)
     (A : TensorRSSpace 0 (s + 1) I x) :
-    contract_covariant 0 s x (c • v) A =
-      c • contract_covariant 0 s x v A := by
+    contractCovariant 0 s x (c • v) A =
+      c • contractCovariant 0 s x v A := by
   classical
-  have hmodel : ∀ w : E,
-      model_interior_product (𝕜 := ℝ) (E := E) s w = model_interior_bilinear ℝ E s w :=
-    fun w => rfl
-  unfold contract_covariant
+  unfold contractCovariant
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
-  rw [hmodel, hmodel, map_smul, map_smul, ContinuousLinearMap.smul_apply, map_smul]
+  change (tensorRSSpaceContinuousLinearEquiv (I := I) 0 s x).symm
+      (modelContractCovariantBilinear (𝕜 := ℝ) (E := E) 0 s
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x (c • v))
+        (tensorRSSpaceContinuousLinearEquiv (I := I) 0 (s + 1) x A)) =
+    c • (tensorRSSpaceContinuousLinearEquiv (I := I) 0 s x).symm
+      (modelContractCovariantBilinear (𝕜 := ℝ) (E := E) 0 s
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
+        (tensorRSSpaceContinuousLinearEquiv (I := I) 0 (s + 1) x A))
+  rw [map_smul, map_smul, smul_apply, map_smul]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma contract_covariant_add_left (s : ℕ) (x : M) (v w : TangentSpace I x)
     (A : TensorRSSpace 0 (s + 1) I x) :
-    contract_covariant 0 s x (v + w) A =
-      contract_covariant 0 s x v A + contract_covariant 0 s x w A := by
+    contractCovariant 0 s x (v + w) A =
+      contractCovariant 0 s x v A + contractCovariant 0 s x w A := by
   classical
-  have hmodel : ∀ z : E,
-      model_interior_product (𝕜 := ℝ) (E := E) s z = model_interior_bilinear ℝ E s z :=
-    fun z => rfl
-  unfold contract_covariant
+  unfold contractCovariant
   simp only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
-  rw [hmodel, hmodel, hmodel, map_add, map_add, ContinuousLinearMap.add_apply, map_add]
+  change (tensorRSSpaceContinuousLinearEquiv (I := I) 0 s x).symm
+      (modelContractCovariantBilinear (𝕜 := ℝ) (E := E) 0 s
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x (v + w))
+        (tensorRSSpaceContinuousLinearEquiv (I := I) 0 (s + 1) x A)) =
+    (tensorRSSpaceContinuousLinearEquiv (I := I) 0 s x).symm
+        (modelContractCovariantBilinear (𝕜 := ℝ) (E := E) 0 s
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
+          (tensorRSSpaceContinuousLinearEquiv (I := I) 0 (s + 1) x A)) +
+      (tensorRSSpaceContinuousLinearEquiv (I := I) 0 s x).symm
+        (modelContractCovariantBilinear (𝕜 := ℝ) (E := E) 0 s
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x w)
+          (tensorRSSpaceContinuousLinearEquiv (I := I) 0 (s + 1) x A))
+  rw [map_add, map_add, add_apply, map_add]
 
 noncomputable def covDivergenceBilinear
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1)) (y : M) :
@@ -129,7 +153,7 @@ noncomputable def covDivergenceBilinear
     (V' := (TangentSpace I : M → Type _))
     (A := TensorRSSpace 0 s I y)
     (Φ := fun (X Y : Π b : M, TangentSpace I b) =>
-      contract_covariant 0 s y (Y y)
+      contractCovariant 0 s y (Y y)
         ((TensorRSNabla.tensorRSCovariantDerivative I M 0 (s + 1)
             (LeviCivita (I := I) g)).toFun (fun z : M => V.toSection z) y (X y)))
     y
@@ -137,22 +161,22 @@ noncomputable def covDivergenceBilinear
       refine ⟨?_, ?_⟩
       · intro f X _hf _hX
         have hsmul : (f • X : Π b : M, TangentSpace I b) y = f y • X y := rfl
-        change contract_covariant 0 s y (Y y)
+        change contractCovariant 0 s y (Y y)
             ((TensorRSNabla.tensorRSCovariantDerivative I M 0 (s + 1)
               (LeviCivita (I := I) g)).toFun (fun z : M => V.toSection z) y ((f • X) y)) =
-          f y • contract_covariant 0 s y (Y y)
+          f y • contractCovariant 0 s y (Y y)
             ((TensorRSNabla.tensorRSCovariantDerivative I M 0 (s + 1)
               (LeviCivita (I := I) g)).toFun (fun z : M => V.toSection z) y (X y))
         rw [hsmul, ContinuousLinearMap.map_smul, ContinuousLinearMap.map_smul]
       · intro X X' _hX _hX'
         have hadd : (X + X' : Π b : M, TangentSpace I b) y = X y + X' y := rfl
-        change contract_covariant 0 s y (Y y)
+        change contractCovariant 0 s y (Y y)
             ((TensorRSNabla.tensorRSCovariantDerivative I M 0 (s + 1)
               (LeviCivita (I := I) g)).toFun (fun z : M => V.toSection z) y ((X + X') y)) =
-          contract_covariant 0 s y (Y y)
+          contractCovariant 0 s y (Y y)
             ((TensorRSNabla.tensorRSCovariantDerivative I M 0 (s + 1)
               (LeviCivita (I := I) g)).toFun (fun z : M => V.toSection z) y (X y)) +
-          contract_covariant 0 s y (Y y)
+          contractCovariant 0 s y (Y y)
             ((TensorRSNabla.tensorRSCovariantDerivative I M 0 (s + 1)
               (LeviCivita (I := I) g)).toFun (fun z : M => V.toSection z) y (X' y))
         rw [hadd, ContinuousLinearMap.map_add, ContinuousLinearMap.map_add])
@@ -160,23 +184,23 @@ noncomputable def covDivergenceBilinear
       refine ⟨?_, ?_⟩
       · intro f Y _hf _hY
         have hsmul : (f • Y : Π b : M, TangentSpace I b) y = f y • Y y := rfl
-        change contract_covariant 0 s y ((f • Y) y)
+        change contractCovariant 0 s y ((f • Y) y)
             ((TensorRSNabla.tensorRSCovariantDerivative I M 0 (s + 1)
               (LeviCivita (I := I) g)).toFun (fun z : M => V.toSection z) y (X y)) =
-          f y • contract_covariant 0 s y (Y y)
+          f y • contractCovariant 0 s y (Y y)
             ((TensorRSNabla.tensorRSCovariantDerivative I M 0 (s + 1)
               (LeviCivita (I := I) g)).toFun (fun z : M => V.toSection z) y (X y))
         rw [hsmul]
         exact contract_covariant_smul_left s y (f y) (Y y) _
       · intro Y Y' _hY _hY'
         have hadd : (Y + Y' : Π b : M, TangentSpace I b) y = Y y + Y' y := rfl
-        change contract_covariant 0 s y ((Y + Y') y)
+        change contractCovariant 0 s y ((Y + Y') y)
             ((TensorRSNabla.tensorRSCovariantDerivative I M 0 (s + 1)
               (LeviCivita (I := I) g)).toFun (fun z : M => V.toSection z) y (X y)) =
-          contract_covariant 0 s y (Y y)
+          contractCovariant 0 s y (Y y)
             ((TensorRSNabla.tensorRSCovariantDerivative I M 0 (s + 1)
               (LeviCivita (I := I) g)).toFun (fun z : M => V.toSection z) y (X y)) +
-          contract_covariant 0 s y (Y' y)
+          contractCovariant 0 s y (Y' y)
             ((TensorRSNabla.tensorRSCovariantDerivative I M 0 (s + 1)
               (LeviCivita (I := I) g)).toFun (fun z : M => V.toSection z) y (X y))
         rw [hadd]
@@ -192,7 +216,7 @@ theorem codiffPsi_apply
     (hY : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun z : M => TotalSpace.mk' E (E := fun w : M => TangentSpace I w) z (Y z)) y) :
     covDivergenceBilinear (I := I) (M := M) g s V y (X y) (Y y) =
-      contract_covariant 0 s y (Y y)
+      contractCovariant 0 s y (Y y)
         ((TensorRSNabla.tensorRSCovariantDerivative I M 0 (s + 1)
             (LeviCivita (I := I) g)).toFun (fun z : M => V.toSection z) y (X y)) := by
   classical
@@ -211,7 +235,7 @@ def covDivergenceFixedFrame
     (B : Fin (Module.finrank ℝ E) → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (b : M) :
     TensorRSSpace 0 s I b :=
   ∑ i : Fin (Module.finrank ℝ E),
-    contract_covariant 0 s b (B i b)
+    contractCovariant 0 s b (B i b)
       (tensorCovDerivAt (I := I) (M := M) g 0 (s + 1) V b (B i b))
 
 omit [CompactSpace M] in
@@ -221,7 +245,7 @@ lemma covDivergenceFixedFrame_eq_sum_section
     (B : Fin (Module.finrank ℝ E) → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (b : M) :
     covDivergenceFixedFrame (I := I) (M := M) g s V B b =
       ∑ i : Fin (Module.finrank ℝ E),
-        (contract_covariantField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := ∞) 0 s
+        (contractCovariantField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := ∞) 0 s
           (covDerivAlongVFSectionRS (I := I) (M := M) g 0 (s + 1) V.toSection (B i)) (B i)) b :=
   rfl
 
@@ -239,11 +263,11 @@ lemma covDivergenceFixedFrame_contMDiff
       ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel 0 s ℝ E)) ∞
         (fun b : M => TotalSpace.mk' (TensorRSModel 0 s ℝ E)
           (E := fun z : M => TensorRSSpace 0 s I z) b
-          ((contract_covariantField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := ∞) 0 s
+          ((contractCovariantField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := ∞) 0 s
             (covDerivAlongVFSectionRS (I := I) (M := M) g 0 (s + 1) V.toSection (B i))
             (B i)) b)) :=
     fun i =>
-      (contract_covariantField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := ∞) 0 s
+      (contractCovariantField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := ∞) 0 s
         (covDerivAlongVFSectionRS (I := I) (M := M) g 0 (s + 1) V.toSection (B i)) (B i)).contMDiff
   have heq : (fun b : M => TotalSpace.mk' (TensorRSModel 0 s ℝ E)
         (E := fun z : M => TensorRSSpace 0 s I z) b
@@ -251,7 +275,7 @@ lemma covDivergenceFixedFrame_contMDiff
       (fun b : M => TotalSpace.mk' (TensorRSModel 0 s ℝ E)
         (E := fun z : M => TensorRSSpace 0 s I z) b
         (∑ i : Fin (Module.finrank ℝ E),
-          (contract_covariantField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := ∞) 0 s
+          (contractCovariantField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := ∞) 0 s
             (covDerivAlongVFSectionRS (I := I) (M := M) g 0 (s + 1) V.toSection (B i))
             (B i)) b)) := by
     funext b
@@ -368,6 +392,7 @@ lemma covDivergenceRaw_eq_zero_off_tsupport
   rw [codiffPsi_apply (I := I) (M := M) g s V b hSmooth_at hSmooth_at]
   rw [hzero, map_zero]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma covDivergenceRaw_toModel_hasCompactSupport
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1)) :
     HasCompactSupport
@@ -389,11 +414,13 @@ noncomputable def covDivergence
       contMDiff_toFun := covDivergenceRaw_contMDiff (I := I) (M := M) g s V }
   hasCompactSupport := covDivergenceRaw_toModel_hasCompactSupport (I := I) (M := M) g s V
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 @[simp] lemma covDivergence_toSection_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1)) (b : M) :
     (covDivergence (I := I) (M := M) g s V).toSection b =
       covDivergenceRaw (I := I) (M := M) g s V b := rfl
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 @[simp] lemma covDivergence_toFun_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1)) (b : M) :
     (covDivergence (I := I) (M := M) g s V).toFun b =
@@ -405,7 +432,7 @@ def oneSidedDirichletForm
     TangentSpace I b →ₗ[ℝ] ℝ where
   toFun X := tensorInnerPointwise (I := I) (M := M) g 0 s b
     (TensorRSSpace.toModel (T.toSection b))
-    (TensorRSSpace.toModel (contract_covariant 0 s b X (V.toSection b)))
+    (TensorRSSpace.toModel (contractCovariant 0 s b X (V.toSection b)))
   map_add' X Y := by
     rw [contract_covariant_add_left (I := I) (M := M) s b X Y (V.toSection b),
       TensorRSSpace.toModel_add, tensorInnerPointwise_add_right]
@@ -422,7 +449,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     oneSidedDirichletForm (I := I) (M := M) g s T V b X =
       tensorInnerPointwise (I := I) (M := M) g 0 s b
         (TensorRSSpace.toModel (T.toSection b))
-        (TensorRSSpace.toModel (contract_covariant 0 s b X (V.toSection b))) := rfl
+        (TensorRSSpace.toModel (contractCovariant 0 s b X (V.toSection b))) := rfl
 
 def oneSidedDirichletVF
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T : SmoothCcTensor g 0 s)
@@ -447,9 +474,9 @@ private theorem modelContractCovariantBilinear_contMDiffAt
     (hX : ContMDiffAt I 𝓘(ℝ, E) ∞ X x)
     (hA : ContMDiffAt I 𝓘(ℝ, TensorRSModel 0 (s + 1) ℝ E) ∞ A x) :
     ContMDiffAt I 𝓘(ℝ, TensorRSModel 0 s ℝ E) ∞
-      (fun y => model_contract_covariant_bilinear (𝕜 := ℝ) (E := E) 0 s (X y) (A y)) x :=
+      (fun y => modelContractCovariantBilinear (𝕜 := ℝ) (E := E) 0 s (X y) (A y)) x :=
   ((contMDiffAt_const
-    (c := model_contract_covariant_bilinear (𝕜 := ℝ) (E := E) 0 s)).clm_apply hX).clm_apply hA
+    (c := modelContractCovariantBilinear (𝕜 := ℝ) (E := E) 0 s)).clm_apply hX).clm_apply hA
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -459,14 +486,14 @@ lemma contract_chartBasis_contMDiffOn
     ContMDiffOn I (I.prod 𝓘(ℝ, TensorRSModel 0 s ℝ E)) ∞
       (fun b : M => TotalSpace.mk' (TensorRSModel 0 s ℝ E)
         (E := fun y : M => TensorRSSpace 0 s I y) b
-        (contract_covariant 0 s b (chartBasisVecFiber (I := I) α j b) (V.toSection b)))
+        (contractCovariant 0 s b (chartBasisVecFiber (I := I) α j b) (V.toSection b)))
       (trivializationAt E (TangentSpace I) α).baseSet := by
   classical
-  letI := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0 (s + 1)
-  letI := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0 s
-  letI := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0
-  letI := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
-  letI := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (s + 1)
+  let := tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0 (s + 1)
+  let := tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0 s
+  let := tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 0
+  let := tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
+  let := tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (s + 1)
   have hV_on : ContMDiffOn I (I.prod 𝓘(ℝ, TensorRSModel 0 (s + 1) ℝ E)) ∞
       (fun b : M => TotalSpace.mk' (TensorRSModel 0 (s + 1) ℝ E)
         (E := fun y : M => TensorRSSpace 0 (s + 1) I y) b (V.toSection b))
@@ -491,7 +518,7 @@ lemma contract_chartBasis_contMDiffOn
   have hX' := (Bundle.contMDiffAt_section (F := E) (E := TangentSpace I) x₀).mp hX_at
   have h_combine :
       ContMDiffAt I 𝓘(ℝ, TensorRSModel 0 s ℝ E) ∞
-        (fun b : M => model_contract_covariant_bilinear (𝕜 := ℝ) (E := E) 0 s
+        (fun b : M => modelContractCovariantBilinear (𝕜 := ℝ) (E := E) 0 s
           ((trivializationAt E (TangentSpace I) x₀ ⟨b, chartBasisVecFiber (I := I) α j b⟩).2)
           ((trivializationAt (TensorRSModel 0 (s + 1) ℝ E)
             (fun z : M => TensorRSSpace 0 (s + 1) I z) x₀ ⟨b, V.toSection b⟩).2)) x₀ :=
@@ -512,7 +539,7 @@ lemma contract_chartBasis_contMDiffOn
   have h_cLMAt_s : ∀ (Tm : Tensor0SSpace s I b) (v : Fin s → E),
       (trivializationAt (Tensor0SModel s ℝ E)
         (fun z : M => Tensor0SSpace s I z) x₀).continuousLinearMapAt ℝ b Tm v =
-      Tm (fun i => sL (v i)) := by
+      Tensor0SSpace.eval Tm (fun i => sL (v i)) := by
     intro Tm v
     rw [Trivialization.continuousLinearMapAt_apply,
       show ⇑((trivializationAt (Tensor0SModel s ℝ E)
@@ -524,7 +551,7 @@ lemma contract_chartBasis_contMDiffOn
   have h_cLMAt_s1 : ∀ (Tm : Tensor0SSpace (s + 1) I b) (v : Fin (s + 1) → E),
       (trivializationAt (Tensor0SModel (s + 1) ℝ E)
         (fun z : M => Tensor0SSpace (s + 1) I z) x₀).continuousLinearMapAt ℝ b Tm v =
-      Tm (fun i => sL (v i)) := by
+      Tensor0SSpace.eval Tm (fun i => sL (v i)) := by
     intro Tm v
     rw [Trivialization.continuousLinearMapAt_apply,
       show ⇑((trivializationAt (Tensor0SModel (s + 1) ℝ E)
@@ -535,18 +562,15 @@ lemma contract_chartBasis_contMDiffOn
     rfl
   change (trivializationAt (Tensor0SModel s ℝ E)
       (fun z : M => Tensor0SSpace s I z) x₀).continuousLinearMapAt ℝ b
-      (model_interior_product s (chartBasisVecFiber (I := I) α j b : E)
-        ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (s + 1) I b from V.toSection b) gtilde)) w =
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s b
+        ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (s + 1) I b from V.toSection b) gtilde)
+        (chartBasisVecFiber (I := I) α j b)) w =
     (trivializationAt (Tensor0SModel (s + 1) ℝ E)
       (fun z : M => Tensor0SSpace (s + 1) I z) x₀).continuousLinearMapAt ℝ b
       ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (s + 1) I b from V.toSection b) gtilde)
       (Fin.cons Xtilde w)
   rw [h_cLMAt_s, h_cLMAt_s1]
-  change ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (s + 1) I b from V.toSection b) gtilde :
-        Tensor0SModel (s + 1) ℝ E)
-      (@Fin.cons s (fun _ => E) (chartBasisVecFiber (I := I) α j b : E) (fun i => sL (w i))) =
-    ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (s + 1) I b from V.toSection b) gtilde)
-      (fun i => sL (@Fin.cons s (fun _ => E) Xtilde w i))
+  rw [TensorMultilinear.tensor0S_curry_apply_eval]
   congr 1
   funext i
   refine Fin.cases ?_ ?_ i
@@ -581,23 +605,23 @@ lemma oneSidedDirichletForm_chartBasis_component_contMDiffOn
   have hcontract_lowered : ContMDiffOn I 𝓘(ℝ, Tensor0SModel (0 + s) ℝ E) ∞
       (fun b : M => loweredCompose (I := I) (M := M) g 0 s α b
         (TensorRSSpace.toModel
-          (contract_covariant 0 s b (chartBasisVecFiber (I := I) α j b) (V.toSection b))))
+          (contractCovariant 0 s b (chartBasisVecFiber (I := I) α j b) (V.toSection b))))
       (trivializationAt E (TangentSpace I) α).baseSet :=
     TensorMetricLowering.contMDiffOn_loweredCompose_of_section_contMDiffOn
       (I := I) (M := M) g 0 s
-      (fun b : M => contract_covariant 0 s b (chartBasisVecFiber (I := I) α j b) (V.toSection b))
+      (fun b : M => contractCovariant 0 s b (chartBasisVecFiber (I := I) α j b) (V.toSection b))
       α (contract_chartBasis_contMDiffOn (I := I) (M := M) g s V α j)
   have hinner : ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M =>
         tensorInnerPointwise (I := I) (M := M) g 0 s b
           (TensorRSSpace.toModel (T.toSection b))
           (TensorRSSpace.toModel
-            (contract_covariant 0 s b (chartBasisVecFiber (I := I) α j b) (V.toSection b))))
+            (contractCovariant 0 s b (chartBasisVecFiber (I := I) α j b) (V.toSection b))))
       (trivializationAt E (TangentSpace I) α).baseSet :=
     DifferentialGeometry.Tensor.TensorRSRiemannian.chartLocal_contMDiff_inner_of_smooth_sections
       (I := I) (M := M) g 0 s
       (fun b : M => T.toSection b)
-      (fun b : M => contract_covariant 0 s b (chartBasisVecFiber (I := I) α j b) (V.toSection b))
+      (fun b : M => contractCovariant 0 s b (chartBasisVecFiber (I := I) α j b) (V.toSection b))
       α hT_lowered hcontract_lowered
   have hbase_eq : (trivializationAt E (TangentSpace I) α).baseSet =
       (chartAt H α).source :=
@@ -643,19 +667,22 @@ private lemma contract_eval (s : ℕ) (x : M) (v : TangentSpace I x)
     (A : TensorRSSpace 0 (s + 1) I x) (D : Tensor0SSpace 0 I x) (m : Fin s → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-          contract_covariant 0 s x v A) D) m =
+          contractCovariant 0 s x v A) D) m =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s+1) I x from A) D)
-        (Fin.cons (v : E) m) := rfl
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma contract_bare_eval (s : ℕ) (x : M) (v : TangentSpace I x)
-    (A : TensorRSSpace 0 (s + 1) I x) (D : Tensor0SSpace 0 I x) (m : Fin s → E) :
-    ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
-        contract_covariant 0 s x v A) D) m =
-      ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s+1) I x from A) D)
-        (Fin.cons (v : E) m) := rfl
+    (A : TensorRSSpace 0 (s + 1) I x) (D : Tensor0SSpace 0 I x)
+    (m : Fin s → TangentSpace I x) :
+    Tensor0SSpace.eval
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
+          contractCovariant 0 s x v A) D) m =
+      Tensor0SSpace.eval
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s+1) I x from A) D)
+        (Fin.cons v m) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -668,7 +695,7 @@ private lemma D_eq_scalar_smul_unit (x : M) (D : Tensor0SSpace 0 I x) :
   rw [Tensor0SSpace.toModel_smul]
   apply ContinuousMultilinearMap.ext
   intro m
-  rw [ContinuousMultilinearMap.smul_apply]
+  rw [smul_apply]
   rw [unitZeroSec_apply, Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.constOfIsEmpty_apply]
   rw [tensor00Scalar_apply (I := I) (M := M) x D m, smul_eq_mul, mul_one]
@@ -678,9 +705,9 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma contract_eq_tensor0SAsRS_curry (s : ℕ) (x : M) (v : TangentSpace I x)
     (A : TensorRSSpace 0 (s + 1) I x) :
-    contract_covariant 0 s x v A =
+    contractCovariant 0 s x v A =
       tensor0SToTensorRS (I := I) (M := M) x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s+1) I x from A)
             (unitZeroSec (I := I) (M := M) x)) v) := by
   apply tensorRSSpace_ext 0 s x
@@ -691,28 +718,35 @@ private lemma contract_eq_tensor0SAsRS_curry (s : ℕ) (x : M) (v : TangentSpace
   rw [contract_eval (I := I) (M := M) s x v A D m]
   rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
         tensor0SToTensorRS (I := I) (M := M) x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s+1) I x from A)
               (unitZeroSec (I := I) (M := M) x)) v)) D =
       tensor00Scalar (I := I) (M := M) x D •
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s+1) I x from A)
             (unitZeroSec (I := I) (M := M) x)) v) from
     tensor0SAsRS_apply (I := I) (M := M) x _ D]
   change _ = Tensor0SSpace.toModel
       (tensor00Scalar (I := I) (M := M) x D •
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s+1) I x from A)
             (unitZeroSec (I := I) (M := M) x)) v)) m
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply,
-    TensorMultilinear.tensor0S_curry_apply_eval]
+  rw [Tensor0SSpace.toModel_smul, smul_apply]
   conv_lhs => rw [D_eq_scalar_smul_unit (I := I) (M := M) x D]
   rw [ContinuousLinearMap.map_smul]
   change Tensor0SSpace.toModel
       (tensor00Scalar (I := I) (M := M) x D •
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s+1) I x from A)
-          (unitZeroSec (I := I) (M := M) x))) (Fin.cons (v : E) m) = _
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply]
+          (unitZeroSec (I := I) (M := M) x)))
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m) = _
+  rw [Tensor0SSpace.toModel_smul, smul_apply]
+  have hcurry := TensorMultilinear.tensor0S_curry_toModel_apply
+    (I := I) (M := M)
+    ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from A)
+      (unitZeroSec (I := I) (M := M) x))
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m
+  rw [(tangentSpaceModelContinuousLinearEquiv (I := I) x).symm_apply_apply] at hcurry
+  rw [hcurry]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -757,15 +791,15 @@ private lemma contract_covariant_leibniz
       (fun b : M => (⟨b, X b⟩ : TotalSpace E (TangentSpace I))))
     (x : M) :
     (tensorRSCovariantDerivative I M 0 s (LeviCivita (I := I) g)).toFun
-        (fun y : M => contract_covariant 0 s y (X y) (V.toSection y)) x (W x) =
-      contract_covariant 0 s x (X x)
+        (fun y : M => contractCovariant 0 s y (X y) (V.toSection y)) x (W x) =
+      contractCovariant 0 s x (X x)
           ((tensorRSCovariantDerivative I M 0 (s+1) (LeviCivita (I := I) g)).toFun
             (fun y : M => V.toSection y) x (W x))
-        + contract_covariant 0 s x ((LeviCivita (I := I) g).toFun X x (W x)) (V.toSection x) := by
+        + contractCovariant 0 s x ((LeviCivita (I := I) g).toFun X x (W x)) (V.toSection x) := by
   classical
-  have hsec : (fun y : M => contract_covariant 0 s y (X y) (V.toSection y)) =
+  have hsec : (fun y : M => contractCovariant 0 s y (X y) (V.toSection y)) =
       (fun y : M => tensor0SToTensorRS (I := I) (M := M) y
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s y
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s y
           ((show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace (s+1) I y from V.toSection y)
             (unitZeroSec (I := I) (M := M) y)) (X y))) := by
     funext y
@@ -779,7 +813,7 @@ private lemma contract_covariant_leibniz
   rw [rs_zero_recover (I := I) (M := M) s x
     ((tensorRSCovariantDerivative I M 0 s (LeviCivita (I := I) g)).toFun
       (fun y : M => tensor0SToTensorRS (I := I) (M := M) y
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s y
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s y
           ((show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace (s+1) I y from V.toSection y)
             (unitZeroSec (I := I) (M := M) y)) (X y))) x (W x))]
   rw [← tensor0SAsRS_add]
@@ -788,22 +822,26 @@ private lemma contract_covariant_leibniz
   rw [eq_sub_iff_add_eq] at hleib
   exact hleib.symm
 
-omit [BoundarylessManifold I M] in
+omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma contract_covGrad_eq_covDeriv
     (g : SmoothRiemannianMetric I M) (s : ℕ) (T : SmoothCcTensor g 0 s) (x : M)
     (v : TangentSpace I x) :
-    contract_covariant 0 s x v ((covGrad (I := I) (M := M) g 0 s T).toSection x) =
-      tensorCovDerivAt (I := I) (M := M) g 0 s T x v := by
+    contractCovariant 0 s x v ((covGrad (I := I) (M := M) g 0 s T).toSection x) =
+      tensorCovDerivAt (I := I) (M := M) g 0 s T x
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x v) := by
   apply tensorRSSpace_ext 0 s x
   intro D
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro m
   rw [contract_eval (I := I) (M := M) s x v _ D m]
-  rw [covGrad_toSection_apply_eval (I := I) (M := M) g 0 s T x D (Fin.cons (v : E) m)]
-  rw [Fin.cons_zero, Matrix.vecTail, show (Fin.cons (v : E) m ∘ Fin.succ) = m from by funext i;
-                                                                                        simp]
+  rw [covGrad_toSection_apply_eval (I := I) (M := M) g 0 s T x D
+    (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m)]
+  rw [Fin.cons_zero, Matrix.vecTail,
+    show (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) m ∘ Fin.succ) = m from by
+      funext i
+      simp]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -811,7 +849,7 @@ private lemma fiberNormSqComponent_contract (g : SmoothRiemannianMetric I M) (s 
     (n : ℕ) (e : Fin n → TangentSpace I x) (i : Fin n)
     (A : TensorRSSpace 0 (s + 1) I x) (J : Fin s → Fin n) :
     fiberNormSqComponent (I := I) (M := M) g x 0 s
-        (contract_covariant 0 s x (e i) A) n e (fun k => k.elim0) J =
+        (contractCovariant 0 s x (e i) A) n e (fun k => k.elim0) J =
       fiberNormSqComponent (I := I) (M := M) g x 0 (s + 1) A n e (fun k => k.elim0)
         (Fin.cons i J) := by
   unfold fiberNormSqComponent
@@ -835,16 +873,16 @@ private lemma tensorInnerPointwise_succ_eq_sum_contract_orthoFrame
         (TensorRSSpace.toModel A) (TensorRSSpace.toModel B) =
       ∑ i : Fin n,
         tensorInnerPointwise (I := I) (M := M) g 0 s x
-          (TensorRSSpace.toModel (contract_covariant 0 s x (e i) A))
-          (TensorRSSpace.toModel (contract_covariant 0 s x (e i) B)) := by
+          (TensorRSSpace.toModel (contractCovariant 0 s x (e i) A))
+          (TensorRSSpace.toModel (contractCovariant 0 s x (e i) B)) := by
   classical
   rw [tensorInnerPointwise_eq_sum_componentS_mul (I := I) (M := M) g 0 (s + 1) x
     e bse hn hbse horth A B]
   rw [Finset.sum_eq_single (fun k : Fin 0 => k.elim0)]
   · rw [show (∑ i : Fin n,
           tensorInnerPointwise (I := I) (M := M) g 0 s x
-            (TensorRSSpace.toModel (contract_covariant 0 s x (e i) A))
-            (TensorRSSpace.toModel (contract_covariant 0 s x (e i) B))) =
+            (TensorRSSpace.toModel (contractCovariant 0 s x (e i) A))
+            (TensorRSSpace.toModel (contractCovariant 0 s x (e i) B))) =
         ∑ i : Fin n, ∑ J : Fin s → Fin n,
           fiberNormSqComponent (I := I) (M := M) g x 0 (s + 1) A n e (fun k => k.elim0)
             (Fin.cons i J) *
@@ -863,7 +901,7 @@ private lemma tensorInnerPointwise_succ_eq_sum_contract_orthoFrame
       rw [Fintype.sum_prod_type]
     · refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [tensorInnerPointwise_eq_sum_componentS_mul (I := I) (M := M) g 0 s x
-        e bse hn hbse horth (contract_covariant 0 s x (e i) A) (contract_covariant 0 s x (e i) B)]
+        e bse hn hbse horth (contractCovariant 0 s x (e i) A) (contractCovariant 0 s x (e i) B)]
       rw [Finset.sum_eq_single (fun k : Fin 0 => k.elim0)]
       · refine Finset.sum_congr rfl (fun J _ => ?_)
         rw [fiberNormSqComponent_contract (I := I) (M := M) g s x n e i A J,
@@ -877,7 +915,7 @@ private def contractFrameSection
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1)) (b : M)
     (i : Fin (Module.finrank ℝ E)) :
     Cₛ^∞⟮I; TensorRSModel 0 s ℝ E, (fun x : M => TensorRSSpace 0 s I x)⟯ :=
-  contract_covariantField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := ∞) 0 s
+  contractCovariantField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) (n := ∞) 0 s
     V.toSection (smoothOrthoFrameSection (I := I) (M := M) g b i)
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -885,7 +923,7 @@ private lemma contractFrameSection_apply
     (g : SmoothRiemannianMetric I M) (s : ℕ) (V : SmoothCcTensor g 0 (s + 1)) (b : M)
     (i : Fin (Module.finrank ℝ E)) (y : M) :
     contractFrameSection (I := I) (M := M) g s V b i y =
-      contract_covariant 0 s y (smoothOrthoFrame (I := I) g b i y) (V.toSection y) := rfl
+      contractCovariant 0 s y (smoothOrthoFrame (I := I) g b i y) (V.toSection y) := rfl
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
 private lemma divergence_oneSidedVF_summand_eq
@@ -900,14 +938,15 @@ private lemma divergence_oneSidedVF_summand_eq
       tensorInnerPointwise (I := I) (M := M) g 0 s b
           (TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g 0 s T b
-              (smoothOrthoFrame (I := I) g b i b)))
+              (tangentSpaceModelContinuousLinearEquiv (I := I) b
+                (smoothOrthoFrame (I := I) g b i b))))
           (TensorRSSpace.toModel
-            (contract_covariant 0 s b (smoothOrthoFrame (I := I) g b i b)
+            (contractCovariant 0 s b (smoothOrthoFrame (I := I) g b i b)
               (V.toSection b)))
         + tensorInnerPointwise (I := I) (M := M) g 0 s b
           (TensorRSSpace.toModel (T.toSection b))
           (TensorRSSpace.toModel
-            (contract_covariant 0 s b (smoothOrthoFrame (I := I) g b i b)
+            (contractCovariant 0 s b (smoothOrthoFrame (I := I) g b i b)
               ((tensorRSCovariantDerivative I M 0 (s + 1) (LeviCivita (I := I) g)).toFun
                 (fun y : M => V.toSection y) b
                 (smoothOrthoFrame (I := I) g b i b)))) := by
@@ -962,16 +1001,16 @@ private lemma divergence_oneSidedVF_summand_eq
       tensorInnerPointwise (I := I) (M := M) g 0 s b
         (TensorRSSpace.toModel (T.toSection b))
         (TensorRSSpace.toModel
-          (contract_covariant 0 s b
+          (contractCovariant 0 s b
             ((LeviCivita (I := I) g).toFun (fun y : M => B y) b
               ((B : ∀ y, TangentSpace I y) b)) (V.toSection b))) := by
     rw [hZ_def, oneSidedDirichletVFSection_apply, inner_oneSidedDirichletVF,
       oneSidedDirichletForm_apply]
   have hCleib : covDerivAlongVFSectionGen (I := I) (M := M) g s C B b =
-      contract_covariant 0 s b ((B : ∀ y, TangentSpace I y) b)
+      contractCovariant 0 s b ((B : ∀ y, TangentSpace I y) b)
           ((tensorRSCovariantDerivative I M 0 (s + 1) (LeviCivita (I := I) g)).toFun
             (fun y : M => V.toSection y) b ((B : ∀ y, TangentSpace I y) b))
-        + contract_covariant 0 s b
+        + contractCovariant 0 s b
           ((LeviCivita (I := I) g).toFun (fun y : M => B y) b ((B : ∀ y, TangentSpace I y) b))
           (V.toSection b) := by
     rw [show covDerivAlongVFSectionGen (I := I) (M := M) g s C B b =
@@ -997,7 +1036,11 @@ private lemma divergence_oneSidedVF_summand_eq
   rw [hsummand, hprod, haccel]
   rw [hCleib, TensorRSSpace.toModel_add, tensorInnerPointwise_add_right]
   rw [show covDerivAlongVFSectionGen (I := I) (M := M) g s T.toSection B b =
-        tensorCovDerivAt (I := I) (M := M) g 0 s T b ((B : ∀ y, TangentSpace I y) b) from rfl]
+        tensorCovDerivAt (I := I) (M := M) g 0 s T b
+          (tangentSpaceModelContinuousLinearEquiv (I := I) b
+            ((B : ∀ y, TangentSpace I y) b)) from by
+      rw [tensorCovDerivAt_def, ContinuousLinearEquiv.symm_apply_apply]
+      rfl]
   rw [hC_def, contractFrameSection_apply]
   rw [hBb]
   rw [show (fun y : M => (B : ∀ z : M, TangentSpace I z) y) =
@@ -1045,8 +1088,10 @@ private lemma centeredFrame_basis_exists
       exact h_zero
     · intro j _ hjk
       rw [if_neg (fun h => hjk h.symm), mul_zero]
-  have hcard : Fintype.card (Fin (Module.finrank ℝ E)) = Module.finrank ℝ E := by
+  have hcard : Fintype.card (Fin (Module.finrank ℝ E)) =
+      Module.finrank ℝ (TangentSpace I b) := by
     rw [Fintype.card_fin]
+    rfl
   refine ⟨basisOfLinearIndependentOfCardEqFinrank hB_li hcard, ?_, ?_⟩
   · intro i
     change (basisOfLinearIndependentOfCardEqFinrank hB_li hcard :
@@ -1078,10 +1123,11 @@ private lemma tip_sum_right
       rw [Finset.sum_insert ha, Finset.sum_insert ha,
         tensorInnerPointwise_add_right, ih]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem divergence_oneSidedVF_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (T : SmoothCcTensor g 0 s) (V : SmoothCcTensor g 0 (s + 1)) (b : M) :
-    divergence_g (I := I) g (oneSidedDirichletVFSection (I := I) (M := M) g s T V) b =
+    divergenceG (I := I) g (oneSidedDirichletVFSection (I := I) (M := M) g s T V) b =
       tensorInnerPointwise (I := I) (M := M) g 0 (s + 1) b
           (TensorRSSpace.toModel ((covGrad (I := I) (M := M) g 0 s T).toSection b))
           (TensorRSSpace.toModel (V.toSection b))
@@ -1133,7 +1179,7 @@ theorem divergence_oneSidedVF_eq
     refine Finset.sum_congr rfl (fun i _ => ?_)
     have hcodiff : covDivergenceBilinear (I := I) (M := M) g s V b
           (smoothOrthoFrame (I := I) g b i b) (smoothOrthoFrame (I := I) g b i b) =
-        contract_covariant 0 s b (smoothOrthoFrame (I := I) g b i b)
+        contractCovariant 0 s b (smoothOrthoFrame (I := I) g b i b)
           ((tensorRSCovariantDerivative I M 0 (s + 1) (LeviCivita (I := I) g)).toFun
             (fun y : M => V.toSection y) b (smoothOrthoFrame (I := I) g b i b)) := by
       have hSmooth_at : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
@@ -1156,9 +1202,9 @@ theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_covDivergence
     oneSidedDirichletVFSection (I := I) (M := M) g s T V with hZ_def
   have hZ_cs : HasCompactSupport (Z : ∀ x, TangentSpace I x) :=
     HasCompactSupport.of_compactSpace _
-  have hdiv_zero : ∫ b, divergence_g (I := I) g Z b ∂μ = 0 :=
+  have hdiv_zero : ∫ b, divergenceG (I := I) g Z b ∂μ = 0 :=
     integral_divergence_eq_zero_of_hasCompactSupport (I := I) g Z hZ_cs
-  have hpt : ∀ b : M, divergence_g (I := I) g Z b =
+  have hpt : ∀ b : M, divergenceG (I := I) g Z b =
       tensorInnerPointwise (I := I) (M := M) g 0 (s + 1) b
           (TensorRSSpace.toModel ((covGrad (I := I) (M := M) g 0 s T).toSection b))
           (TensorRSSpace.toModel (V.toSection b))

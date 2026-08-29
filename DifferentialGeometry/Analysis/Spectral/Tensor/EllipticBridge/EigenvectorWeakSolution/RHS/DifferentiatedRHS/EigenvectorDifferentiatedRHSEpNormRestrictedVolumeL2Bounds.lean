@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.RHS.DifferentiatedRHS.EigenvectorDifferentiatedRHS
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolevQuant
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -80,7 +81,9 @@ lemma eLpNorm_volume_restrict_contDiffOn_mul_le
         = ENNReal.ofReal C * eLpNorm w 2 μ := by
     have h := eLpNorm_const_smul (μ := μ) (p := 2) (C : ℝ) w
     rw [Real.enorm_of_nonneg hC_nn] at h
-    simpa only [Pi.smul_apply] using h
+    change eLpNorm (fun y => (C : ℝ) • w y) 2 μ =
+      ENNReal.ofReal C * eLpNorm w 2 μ at h
+    exact h
   calc
     eLpNorm (fun y => c y * w y) 2 μ
         ≤ eLpNorm (fun y => (C : ℝ) • w y) 2 μ := h_mono
@@ -172,7 +175,9 @@ lemma eLpNorm_volume_restrict_contDiffOn_mul_le_uniform
         = ENNReal.ofReal C * eLpNorm w 2 μ := by
     have h := eLpNorm_const_smul (μ := μ) (p := 2) (C : ℝ) w
     rw [Real.enorm_of_nonneg hC_nn] at h
-    simpa only [Pi.smul_apply] using h
+    change eLpNorm (fun y => (C : ℝ) • w y) 2 μ =
+      ENNReal.ofReal C * eLpNorm w 2 μ at h
+    exact h
   calc
     eLpNorm (fun y => c y * w y) 2 μ
         ≤ eLpNorm (fun y => (C : ℝ) • w y) 2 μ := h_mono

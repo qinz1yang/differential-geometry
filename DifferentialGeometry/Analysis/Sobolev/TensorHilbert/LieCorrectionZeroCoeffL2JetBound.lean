@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Curvature
 noncomputable section
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -43,6 +42,7 @@ private theorem deTurckLieEndomorphismArm_eq_covariantDerivativeInsertion (g₀ 
   rw [deTurckLieEndoArmField_toSection, deTurckLieCovariantDerivativeInsertionField_toSection]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 private theorem lieCorrectionZeroInsertion_base_eq_neg_covariantDerivativeInsertion (g₀ g₁ : SmoothRiemannianMetric I M) :
     lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g₀ =
       -deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g₀ g₁ g₀ := by

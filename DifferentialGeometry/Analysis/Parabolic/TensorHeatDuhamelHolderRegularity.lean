@@ -235,12 +235,17 @@ theorem tensorHeatMildSolutionHsHolderDeriv_continuousOn
       (tensorHeatMildSolutionHsHolderDeriv (I := I) (M := M)
         g r s σ T₀ F)
       (Set.Ioi 0) := by
-  simpa only [tensorHeatMildSolutionHsHolderDeriv] using
-    abstractSpectralDuhamelHolderDeriv_continuousOn
+  change ContinuousOn
+    (abstractSpectralDuhamelHolderDeriv
       (tensorHsHilbertBasis (I := I) (M := M)
         (g := g) (r := r) (s := s) σ)
-      (fun i => tensor_lambda_nonneg (I := I) (M := M) i)
-      T₀ hα hF
+      (fun i => tensor_lambda_nonneg (I := I) (M := M) i) T₀ F)
+    (Set.Ioi 0)
+  exact abstractSpectralDuhamelHolderDeriv_continuousOn
+    (tensorHsHilbertBasis (I := I) (M := M)
+      (g := g) (r := r) (s := s) σ)
+    (fun i => tensor_lambda_nonneg (I := I) (M := M) i)
+    T₀ hα hF
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatMildSolutionHs_contDiffOn_one_of_holder
@@ -469,12 +474,17 @@ theorem tensorHeatMildSolutionHsHolderDeriv_continuousOn_of_holderOn
       (tensorHeatMildSolutionHsHolderDeriv (I := I) (M := M)
         g r s σ T₀ F)
       (Set.Ioo 0 T) := by
-  simpa only [tensorHeatMildSolutionHsHolderDeriv] using
-    abstractSpectralDuhamelHolderDeriv_continuousOn_of_holderOn
+  change ContinuousOn
+    (abstractSpectralDuhamelHolderDeriv
       (tensorHsHilbertBasis (I := I) (M := M)
         (g := g) (r := r) (s := s) σ)
-      (fun i => tensor_lambda_nonneg (I := I) (M := M) i)
-      T₀ hα hF
+      (fun i => tensor_lambda_nonneg (I := I) (M := M) i) T₀ F)
+    (Set.Ioo 0 T)
+  exact abstractSpectralDuhamelHolderDeriv_continuousOn_of_holderOn
+    (tensorHsHilbertBasis (I := I) (M := M)
+      (g := g) (r := r) (s := s) σ)
+    (fun i => tensor_lambda_nonneg (I := I) (M := M) i)
+    T₀ hα hF
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHeatMildSolutionHs_contDiffOn_one_of_holderOn

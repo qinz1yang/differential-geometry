@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Scalar.Resolvent
 import Mathlib.Analysis.InnerProductSpace.Spectrum
-import Mathlib.Analysis.Normed.Operator.FredholmAlternative
+import Mathlib.Analysis.Normed.Operator.Compact.FredholmAlternative
 
 
 noncomputable section
@@ -13,7 +13,7 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -28,7 +28,6 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
-omit [InnerProductSpace ℝ E] in
 lemma norm_H1ComplToLp_apply_le (g : SmoothRiemannianMetric I M)
     (v : H1Compl g) :
     ‖H1ComplToLp (I := I) (M := M) g v‖ ≤ ‖v‖ := by
@@ -55,7 +54,6 @@ noncomputable def resolventEigenspace (g : SmoothRiemannianMetric I M) (μ : ℝ
   Module.End.eigenspace
     ((resolventL2 (I := I) (M := M) g).toLinearMap) μ
 
-omit [InnerProductSpace ℝ E] in
 lemma mem_resolventEigenspace_iff (g : SmoothRiemannianMetric I M) (μ : ℝ)
     (u : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) :
     u ∈ resolventEigenspace (I := I) (M := M) g μ ↔
@@ -64,7 +62,6 @@ lemma mem_resolventEigenspace_iff (g : SmoothRiemannianMetric I M) (μ : ℝ)
   rw [Module.End.mem_eigenspace_iff]
   rfl
 
-omit [InnerProductSpace ℝ E] in
 theorem resolventEigenspace_finiteDim
     (g : SmoothRiemannianMetric I M)
     (hCompact : IsCompactOperator (resolventL2 (I := I) (M := M) g))
@@ -72,7 +69,6 @@ theorem resolventEigenspace_finiteDim
     FiniteDimensional ℝ (resolventEigenspace (I := I) (M := M) g μ) := by
   exact ContinuousLinearMap.finite_dimensional_eigenspace hCompact μ hμ
 
-omit [InnerProductSpace ℝ E] in
 theorem resolventEigenspaces_iSup_orthogonal_eq_bot
     (g : SmoothRiemannianMetric I M)
     (hCompact : IsCompactOperator (resolventL2 (I := I) (M := M) g)) :
@@ -85,7 +81,6 @@ theorem resolventEigenspaces_iSup_orthogonal_eq_bot
 
 def laplacianEigenvalueOf (μ : ℝ) : ℝ := (1 - μ) / μ
 
-omit [InnerProductSpace ℝ E] in
 private lemma mul_norm_sq_eq_h1Norm_resolvent_sq
     (g : SmoothRiemannianMetric I M)
     {μ : ℝ}
@@ -115,7 +110,6 @@ private lemma mul_norm_sq_eq_h1Norm_resolvent_sq
   rw [real_inner_self_eq_norm_sq] at h_h1
   linarith
 
-omit [InnerProductSpace ℝ E] in
 theorem resolvent_eigenvalue_nonneg
     (g : SmoothRiemannianMetric I M) {μ : ℝ}
     {u : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)}
@@ -129,7 +123,6 @@ theorem resolvent_eigenvalue_nonneg
   have h_prod_nn : 0 ≤ μ * (‖u‖ ^ 2) := h.symm ▸ h_rhs_nn
   exact (mul_nonneg_iff_of_pos_right hu_pos).mp h_prod_nn
 
-omit [InnerProductSpace ℝ E] in
 theorem resolvent_eigenvalue_le_one
     (g : SmoothRiemannianMetric I M) {μ : ℝ}
     {u : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)}
@@ -177,7 +170,6 @@ theorem resolvent_eigenvalue_le_one
   have h_lt : μ < μ ^ 2 := by nlinarith
   linarith
 
-omit [InnerProductSpace ℝ E] in
 theorem resolvent_eigenvalue_mem_unit_interval
     (g : SmoothRiemannianMetric I M) {μ : ℝ}
     {u : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)}
@@ -186,7 +178,6 @@ theorem resolvent_eigenvalue_mem_unit_interval
   ⟨resolvent_eigenvalue_nonneg (I := I) (M := M) g hu hu_ne,
     resolvent_eigenvalue_le_one (I := I) (M := M) g hu hu_ne⟩
 
-omit [InnerProductSpace ℝ E] in
 theorem laplacianEigenvalueOf_nonneg_of_resolventEigenvalue
     (g : SmoothRiemannianMetric I M) {μ : ℝ}
     {u : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)}
@@ -199,7 +190,6 @@ theorem laplacianEigenvalueOf_nonneg_of_resolventEigenvalue
   have h_num_nn : 0 ≤ 1 - μ := by linarith
   exact div_nonneg h_num_nn hμ_pos.le
 
-omit [InnerProductSpace ℝ E] in
 theorem resolventEigenvector_lifts_to_laplacianDomain
     (g : SmoothRiemannianMetric I M) {μ : ℝ} (hμ : μ ≠ 0)
     {u : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)}
@@ -220,7 +210,6 @@ theorem resolventEigenvector_lifts_to_laplacianDomain
     rw [(H1ComplToLp (I := I) (M := M) g).map_smul]
     rw [h_replace, hRu, smul_smul, inv_mul_cancel₀ hμ, one_smul]
 
-omit [InnerProductSpace ℝ E] in
 theorem laplacianOp_of_resolventEigenvector_lift
     (g : SmoothRiemannianMetric I M) {μ : ℝ} (hμ : μ ≠ 0)
     {u : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)}
@@ -268,7 +257,6 @@ theorem laplacianOp_of_resolventEigenvector_lift
     ring
   rw [h_alg, neg_smul]
 
-omit [InnerProductSpace ℝ E] in
 private lemma exists_unit_eigenvector
     (g : SmoothRiemannianMetric I M) {μ : ℝ}
     (hμ : Module.End.HasEigenvalue
@@ -286,7 +274,6 @@ private lemma exists_unit_eigenvector
   · rw [norm_smul, norm_inv, norm_norm]
     exact inv_mul_cancel₀ (ne_of_gt hu_pos)
 
-omit [InnerProductSpace ℝ E] in
 private lemma resolvent_eigenvectors_orthogonal
     (g : SmoothRiemannianMetric I M) {μ ν : ℝ} (hμν : μ ≠ ν)
     {u v : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)}
@@ -299,7 +286,6 @@ private lemma resolvent_eigenvectors_orthogonal
   have hortho := hSymm.orthogonalFamily_eigenspaces hμν
   exact hortho ⟨u, hu⟩ ⟨v, hv⟩
 
-omit [InnerProductSpace ℝ E] in
 private lemma resolventL2_apply_eigenvector
     (g : SmoothRiemannianMetric I M) {μ : ℝ}
     {u : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)}
@@ -307,7 +293,6 @@ private lemma resolventL2_apply_eigenvector
     resolventL2 (I := I) (M := M) g u = μ • u :=
   (mem_resolventEigenspace_iff (I := I) (M := M) g μ u).mp hu
 
-omit [InnerProductSpace ℝ E] in
 private lemma resolventL2_image_separated_of_distinct_eigenvalues
     (g : SmoothRiemannianMetric I M)
     {ε : ℝ} (hε : 0 < ε)
@@ -370,7 +355,6 @@ private lemma resolventL2_image_separated_of_distinct_eigenvalues
   rw [← h_sqrt_eq]
   exact h_target
 
-omit [InnerProductSpace ℝ E] in
 theorem resolvent_eigenvalues_finite_above
     (g : SmoothRiemannianMetric I M)
     (hCompact : IsCompactOperator (resolventL2 (I := I) (M := M) g))

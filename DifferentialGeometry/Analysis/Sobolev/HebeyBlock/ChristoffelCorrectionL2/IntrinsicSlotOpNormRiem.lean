@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -28,7 +27,8 @@ open DifferentialGeometry.Tensor0SBundle
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [manifold : IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
@@ -62,12 +62,14 @@ private lemma tensorRSTriv_baseSet_eq_chartSource (r s : ℕ) (α : M) :
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
+include manifold in
 private lemma slotConjFactor_self_apply
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Π b' : M, TangentSpace I b') {b : M}
     (hb : b ∈ (chartAt H α).source) (w : E) :
     (chartTrivializationLinearMap (I := I) (M := M) α b).comp
-        ((chartLeviCivitaParallelCLM (I := I) g α b X).comp
+        ((tangentLinearMapToModel (I := I)
+            (chartLeviCivitaParallelCLM (I := I) g α b X)).comp
           (chartTrivializationLinearMapSymm (I := I) (M := M) α b)) w =
       christoffelCorrection (I := I) g α b
         (trivToE (I := I) α b (X b))
@@ -76,10 +78,13 @@ private lemma slotConjFactor_self_apply
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet := hb
   rw [ContinuousLinearMap.comp_apply]
   change chartTrivializationLinearMap (I := I) (M := M) α b
-      ((chartLeviCivitaParallelCLM (I := I) g α b X)
+      (tangentLinearMapToModel (I := I)
+        (chartLeviCivitaParallelCLM (I := I) g α b X)
         (chartTrivializationLinearMapSymm (I := I) (M := M) α b w)) = _
+  rw [tangentLinearMapToModel_apply]
   rw [chartLeviCivitaParallelCLM_apply (I := I) g α b X
-    (chartTrivializationLinearMapSymm (I := I) (M := M) α b w)]
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
+      (chartTrivializationLinearMapSymm (I := I) (M := M) α b w))]
   change trivToE (I := I) α b
       (trivFromE (I := I) α b
         (christoffelCorrection (I := I) g α b
@@ -87,6 +92,7 @@ private lemma slotConjFactor_self_apply
           (trivFromE (I := I) α b w))) = _
   rw [trivToE_trivFromE (I := I) α hb_base]
 
+include manifold in
 private lemma slotConjFactor_basis_norm_le_on_pouTsupport
     (g : SmoothRiemannianMetric I M) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -94,8 +100,9 @@ private lemma slotConjFactor_basis_norm_le_on_pouTsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
         ∀ (k : Fin (Module.finrank ℝ E)),
           ‖(chartTrivializationLinearMap (I := I) (M := M) α b).comp
-              ((chartLeviCivitaParallelCLM (I := I) g α b
-                  (chartBasisVecFiber (I := I) α k)).comp
+              ((tangentLinearMapToModel (I := I)
+                  (chartLeviCivitaParallelCLM (I := I) g α b
+                    (chartBasisVecFiber (I := I) α k))).comp
                 (chartTrivializationLinearMapSymm (I := I) (M := M) α b))‖ ≤ C := by
   classical
   obtain ⟨Cχ, hCχ_nn, hCχ_bound⟩ :=
@@ -128,8 +135,9 @@ private lemma slotConjFactor_basis_norm_le_on_pouTsupport
     exact Finset.le_sup' (f := fun k => ‖(chartModelBasis E) k‖) (Finset.mem_univ k)
   have hpt : ∀ w : E,
       ‖(chartTrivializationLinearMap (I := I) (M := M) α b).comp
-          ((chartLeviCivitaParallelCLM (I := I) g α b
-              (chartBasisVecFiber (I := I) α k)).comp
+          ((tangentLinearMapToModel (I := I)
+              (chartLeviCivitaParallelCLM (I := I) g α b
+                (chartBasisVecFiber (I := I) α k))).comp
             (chartTrivializationLinearMapSymm (I := I) (M := M) α b)) w‖ ≤ Cχ * Cvec * ‖w‖ := by
     intro w
     rw [slotConjFactor_self_apply (I := I) (M := M) g α
@@ -259,12 +267,12 @@ private lemma outputSlotChartKernel_apply_norm_le
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ M_F : ℝ, 0 ≤ M_F ∧
       ∀ (T : Π b' : M, TensorRSSpace r s I b') {b : M},
         b ∈ tsupport (fun x : M =>
@@ -274,8 +282,8 @@ theorem chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport
               (chartBasisVecFiber (I := I) α k) b i‖ ≤
             M_F * ‖T b‖ := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+  let _ : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   have hK_cpt : IsCompact (tsupport (fun x : M =>
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :=
     pouTsupport_isCompact (I := I) (M := M) α
@@ -353,12 +361,12 @@ theorem chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem chartTensorRSOutputSlotCorrection_riemannian_norm_le_on_pouTsupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ M_F : ℝ, 0 ≤ M_F ∧
       ∀ (T : Π b' : M, TensorRSSpace r s I b') {b : M},
         b ∈ tsupport (fun x : M =>
@@ -368,8 +376,8 @@ theorem chartTensorRSOutputSlotCorrection_riemannian_norm_le_on_pouTsupport
               (chartBasisVecFiber (I := I) α k) b l‖ ≤
             M_F * ‖T b‖ := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+  let _ : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   have hK_cpt : IsCompact (tsupport (fun x : M =>
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :=
     pouTsupport_isCompact (I := I) (M := M) α

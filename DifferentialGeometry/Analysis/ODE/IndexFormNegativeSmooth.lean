@@ -36,7 +36,7 @@ private theorem indexForm_scale
           (scaleField L Z) (scaleDeriv L U) t =
         L ^ 2 * indexIntegrand R W V Z U (L * t) := by
     simp only [indexIntegrand, scaleCoeff, scaleField, scaleDeriv,
-      ContinuousLinearMap.smul_apply, real_inner_smul_left,
+      smul_apply, real_inner_smul_left,
       real_inner_smul_right]
     ring
   simp_rw [hpoint]
@@ -94,9 +94,8 @@ private theorem splitWeight_hasDeriv {c δ t : ℝ} :
   have harg :
       HasDerivAt (fun s : ℝ => 1 + (s - (c - δ)) / (2 * δ))
         (1 / (2 * δ)) t := by
-    convert (hasDerivAt_const t 1).add
-      (((hasDerivAt_id t).sub_const (c - δ)).div_const (2 * δ)) using 1
-    ring
+    exact ((hasDerivAt_const t 1).add
+      (((hasDerivAt_id t).sub_const (c - δ)).div_const (2 * δ))).congr_deriv (by ring)
   have hvalue :
       HasDerivAt DifferentialGeometry.Analysis.CutoffProfile.value
         (deriv DifferentialGeometry.Analysis.CutoffProfile.value
@@ -104,7 +103,8 @@ private theorem splitWeight_hasDeriv {c δ t : ℝ} :
         (1 + (t - (c - δ)) / (2 * δ)) :=
     ((DifferentialGeometry.Analysis.CutoffProfile.contDiff.differentiable
       (by simp)).differentiableAt).hasDerivAt
-  simpa only [splitWeight] using hvalue.comp t harg
+  exact (hvalue.comp t harg).congr_of_eventuallyEq <|
+    Filter.Eventually.of_forall fun s => by rfl
 
 private theorem splitWeight_deriv {c δ t : ℝ} :
     deriv (splitWeight c δ) t =
@@ -854,7 +854,10 @@ private theorem smooth_split_to
         L * t ≤ L * 1 := mul_le_mul_of_nonneg_left ht.2 hL.le
         _ = L := mul_one L
   have hR₁ : ContinuousOn R₁ (Icc (0 : ℝ) 1) := by
-    exact ContinuousOn.smul continuousOn_const
+    change ContinuousOn (fun t : ℝ => L ^ 2 • R (L * t)) (Icc (0 : ℝ) 1)
+    have hconst : ContinuousOn (fun _ : ℝ => (L ^ 2 : ℝ)) (Icc (0 : ℝ) 1) :=
+      continuousOn_const
+    exact hconst.smul
       (hR.comp (continuous_const.mul continuous_id).continuousOn hmap)
   have hW₀₁ : ContDiff ℝ ∞ W₀₁ := by
     exact hW₀.comp (contDiff_const.mul contDiff_id)
@@ -868,8 +871,9 @@ private theorem smooth_split_to
       (hW.differentiable (by simp)).differentiableAt.hasDerivAt
     have hinner : HasDerivAt (fun s : ℝ => L * s) L t :=
       hasDerivAt_const_mul L
-    simpa only [scaleField, scaleDeriv] using
-      (houter.scomp t hinner).deriv
+    have hcomp := (houter.scomp t hinner).deriv
+    change deriv (fun s : ℝ => W (L * s)) t = L • deriv W (L * t)
+    exact hcomp
   have hdW₀₁ : deriv W₀₁ = scaleDeriv L (deriv W₀) := by
     funext t
     exact scale_deriv W₀ hW₀ t
@@ -918,8 +922,9 @@ private theorem smooth_split_to
       (hW₁.differentiable (by simp)).differentiableAt.hasDerivAt
     have hinner : HasDerivAt (fun s : ℝ => L⁻¹ * s) L⁻¹ t :=
       hasDerivAt_const_mul L⁻¹
-    simpa only [W, scaleField, scaleDeriv] using
-      (houter.scomp t hinner).deriv
+    have hcomp := (houter.scomp t hinner).deriv
+    change deriv (fun s : ℝ => W₁ (L⁻¹ * s)) t = L⁻¹ • deriv W₁ (L⁻¹ * t)
+    exact hcomp
   have hfield : scaleField L W = W₁ := by
     funext t
     simp [scaleField, W, hLne]
@@ -966,9 +971,11 @@ theorem IsJacobiSolOn.exists_smooth_neg_on
   have hZSmooth : ContDiff ℝ ∞ Z := by
     simpa only [Z] using testFieldTo_smooth L (v c)
   have hW₀Smooth : ContDiff ℝ ∞ W₀ := by
-    simpa only [W₀] using hySmooth.add (hZSmooth.const_smul s)
+    change ContDiff ℝ ∞ (fun x => y x + s • Z x)
+    exact hySmooth.add (hZSmooth.const_smul s)
   have hW₁Smooth : ContDiff ℝ ∞ W₁ := by
-    simpa only [W₁] using hZSmooth.const_smul s
+    change ContDiff ℝ ∞ (fun x => s • Z x)
+    exact hZSmooth.const_smul s
   have hZd (t : ℝ) : HasDerivAt Z (DZ t) t := by
     simpa only [Z, DZ] using testFieldTo_deriv L (v c) t
   have hyDeriv (t : ℝ) : HasDerivAt y (deriv y t) t :=

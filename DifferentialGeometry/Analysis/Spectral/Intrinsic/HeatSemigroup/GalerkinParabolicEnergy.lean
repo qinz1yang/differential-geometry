@@ -60,7 +60,7 @@ lemma galerkinEnergy_continuousOn
     (hu : ∀ i ∈ s, ContinuousOn (fun t => u t i) J) :
     ContinuousOn (galerkinEnergy (I := I) (M := M) s u σ) J := by
   unfold galerkinEnergy
-  refine continuousOn_finset_sum s (fun i hi => ?_)
+  refine continuousOn_finsetSum s (fun i hi => ?_)
   exact continuousOn_const.mul ((hu i hi).pow 2)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -860,19 +860,17 @@ theorem energy_l1_diss
     ∀ t ∈ Set.Icc (0 : ℝ) T,
       Y t + c * D t ≤
         Real.exp Sbd * gronwallBound B0 (C + 1) (seed ^ 2 / 4 + c₀) T := by
-  let W : ℝ → ℝ := fun t => Y t + c * D t
-  let W' : ℝ → ℝ := fun t => Y' t + c * Yhi t
+  let W : ℝ → ℝ := Y + fun t => c * D t
+  let W' : ℝ → ℝ := Y' + fun t => c * Yhi t
   have hWnn : ∀ t ∈ Set.Icc (0 : ℝ) T, 0 ≤ W t := by
     intro t ht
-    simp only [W]
+    simp only [W, Pi.add_apply]
     exact add_nonneg (hYnn t ht) (mul_nonneg hc.le (hDnn t ht))
   have hWcont : ContinuousOn W (Set.Icc (0 : ℝ) T) := by
     simp only [W]
     exact hcont.add (continuousOn_const.mul hDcont)
-  have hWderiv : ∀ t ∈ Set.Ico (0 : ℝ) T,
-      HasDerivWithinAt W (W' t) (Set.Ici t) t := by
-    intro t ht
-    simpa only [W, W'] using (hderiv t ht).add ((hDderiv t ht).const_mul c)
+  have hWderiv (t : ℝ) (ht : t ∈ Set.Ico (0 : ℝ) T) :=
+    (hderiv t ht).add ((hDderiv t ht).const_mul c)
   have hWdiss : ∀ t ∈ Set.Ico (0 : ℝ) T,
       W' t ≤ (C + A t) * W t + seed * Real.sqrt (W t) + c₀ := by
     intro t ht
@@ -887,10 +885,10 @@ theorem energy_l1_diss
     have hseedle : seed * Real.sqrt (Y t) ≤ seed * Real.sqrt (W t) :=
       mul_le_mul_of_nonneg_left hsqrt hseed
     have hbase := hdiss t ht
-    simp only [W']
+    simp only [W', Pi.add_apply]
     nlinarith
   have hWinit : W 0 ≤ B0 := by
-    simp only [W, hD0, mul_zero, add_zero]
+    simp only [W, Pi.add_apply, hD0, mul_zero, add_zero]
     exact hinit
   exact energy_l1_single (c := 0) (C := C) (seed := seed) (B0 := B0)
     (c₀ := c₀) (Sbd := Sbd) (Y := W) (Yhi := fun _ => 0) (Y' := W')

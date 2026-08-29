@@ -129,7 +129,23 @@ theorem exists_uniform_background_lowRegularity_solution_with_all_order_weighted
     fun N i => lowRegularityProjMode_zero (I := I) (M := M) g fseq N i
   have hhigh := exists_uniform_higher_order_affine_bounds_at_background (I := I) (M := M)
     g gBase K u gforce hsolveAt hUcont hderiv hUinit hE4 hE5 hKarm
-    (by simpa only [hreal] using hmass) habs
+    (by
+      intro F c R4 hc m
+      have hc' : Real.sqrt (∑ i ∈ F,
+          tensorSobolevWeight (I := I) (M := M) i 4 * (c i) ^ 2) ≤ R4 := hc
+      have h := hmass F c hc' m
+      have haction :
+          galerkinActionVectorBackground (I := I) (M := M) g gBase
+              (lowRegularityStateRadius_pos K.top_nonneg K.slope_nonneg
+                K.outer_pos K.realize_pos).le K.threshold_lt
+              (lowRegularityMetricRealization (I := I) (M := M) g
+                (Ctop := K.top) (B1 := K.slope) (ρ := K.outer)
+                K.realize_pos.le hsolveAt.hreal) F c =
+            galerkinActionVectorBackground (I := I) (M := M) g gBase hRpos.le
+              K.threshold_lt hreal F c := by
+        rfl
+      rw [haction]
+      exact h) habs
   refine ⟨u, gforce, hsolveAt, ?_⟩
   intro σ
   obtain ⟨k, hk⟩ := exists_nat_ge (σ - 5)

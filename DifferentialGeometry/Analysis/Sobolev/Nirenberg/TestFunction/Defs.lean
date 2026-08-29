@@ -226,7 +226,6 @@ theorem tsupport_nirenbergTestFunction_subset
     · subst hh
       exfalso
       apply hx_ne
-      change DifferentialGeometry.Analysis.Sobolev.diffQuot k (-(0 : ℝ)) g x = 0
       have hzeroNeg : (-(0 : ℝ)) = 0 := neg_zero
       rw [hzeroNeg]
       change DifferentialGeometry.Analysis.Sobolev.diffQuot k 0 g x = 0
@@ -355,8 +354,8 @@ theorem fderiv_diffQuot_apply_eq_diffQuot_partial
           fderiv ℝ g x)) ej =
         h⁻¹ • ((fderiv ℝ g (x + h • EuclideanSpace.single k 1)) ej -
           (fderiv ℝ g x) ej) := by
-    rw [ContinuousLinearMap.smul_apply]
-    rw [ContinuousLinearMap.sub_apply]
+    rw [smul_apply]
+    rw [sub_apply]
   rw [h_apply]
   rw [DifferentialGeometry.Analysis.Sobolev.diffQuot_apply_of_ne
     (d := d) k hh _ x]
@@ -398,15 +397,15 @@ theorem fderiv_eta_sq_times_diffQuot_apply
             fderiv ℝ (fun y : E => η y ^ 2) x := by
     exact fderiv_fun_mul (hη_sq_diff x) (h_diffQuot_u_diff x)
   rw [h_prod]
-  rw [ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.smul_apply,
-      ContinuousLinearMap.smul_apply]
+  rw [add_apply,
+      smul_apply,
+      smul_apply]
   have hη_pow_fd :
       fderiv ℝ (fun y : E => η y ^ 2) x =
         ((2 : ℕ) • (η x) ^ ((2 : ℕ) - 1)) • fderiv ℝ η x :=
     fderiv_fun_pow 2 (hη_diff x)
   rw [hη_pow_fd]
-  rw [ContinuousLinearMap.smul_apply]
+  rw [smul_apply]
   have hpow1 : (η x) ^ ((2 : ℕ) - 1) = η x := by
     norm_num
   rw [hpow1]
@@ -418,7 +417,6 @@ theorem fderiv_eta_sq_times_diffQuot_apply
     fderiv_diffQuot_apply_eq_diffQuot_partial (d := d) hu k j hh x
   rw [h_fderiv_diffQuot]
   have h_two_smul : ((2 : ℕ) • η x) = 2 * η x := by
-    change 2 • η x = 2 * η x
     rw [two_smul]
     ring
   rw [h_two_smul]

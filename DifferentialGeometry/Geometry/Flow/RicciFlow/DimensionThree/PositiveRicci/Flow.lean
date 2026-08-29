@@ -30,6 +30,7 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hamilton_finite_time_flow_exists_on_closed_open
     (hM : isClosedThreeManifold (I := I) (M := M))
@@ -38,10 +39,10 @@ theorem hamilton_finite_time_flow_exists_on_closed_open
     exists omega : Real, exists h0ω : 0 < omega,
       exists P : HamiltonFiniteTimeFlow (I := I) (M := M) g0,
         P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω := by
-  letI : CompactSpace M := hM.1
-  letI : ConnectedSpace M := hM.2.1
-  letI : I.Boundaryless := hM.2.2.1
-  letI : NeZero (Module.finrank Real E) := ⟨by
+  let : CompactSpace M := hM.1
+  let : ConnectedSpace M := hM.2.1
+  let : I.Boundaryless := hM.2.2.1
+  let : NeZero (Module.finrank Real E) := ⟨by
     rw [hM.2.2.2]; norm_num⟩
   have hdim : Module.finrank Real E = 3 := hM.2.2.2
   have hscalar_pos : ∀ x : M,
@@ -56,7 +57,10 @@ theorem hamilton_finite_time_flow_exists_on_closed_open
     { D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω
       S := Smax
       isSmooth := smoothOfSol (I := I) Smax hSmax
-      startsAt := by simpa using hstart
+      startsAt := by
+        rw [show (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen
+          0 omega h0ω).initial = 0 by rfl]
+        exact hstart
       curvUnbounded := by
         intro K
         rcases hcurv K with ⟨t, x, ht0, htω, hK⟩
@@ -114,7 +118,7 @@ theorem hamilton_initial_scalar_continuous
     Continuous (fun x : M => hamiltonScalar (I := I) P 0 x) := by
   rw [continuous_iff_continuousAt]
   intro x
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     simpa using (inferInstance : IsManifold I (∞ : WithTop ℕ∞) M)
   have hmdiff :
       MDifferentiableAt I 𝓘(Real, Real)
@@ -197,7 +201,8 @@ theorem hamilton_initial_scalar_positive
       rfl
     simpa [hinit] using P.startsAt
   have hdimx : Module.finrank Real (TangentSpace I x) = 3 := by
-    simpa using hdim
+    rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl]
+    exact hdim
   have hpos0 :
       forall v : TangentSpace I x, v ≠ 0 ->
         0 < P.S.ricciAt 0 x (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v) := by
@@ -247,8 +252,10 @@ theorem hamilton_scalar_slab_continuous_on
       DifferentialGeometry.PDE.RicciFlow.ScalarSTContOn
         (I := I) (M := M) (hamiltonSolution (I := I) P) :=
     hamilton_scalar_space_time_continuous (I := I) (M := M) P
-  simpa [hamiltonScalar, DifferentialGeometry.Analysis.Parabolic.spacetimeSlab] using
-    DifferentialGeometry.PDE.RicciFlow.SolutionOn.scalar_continuousOn
+  change ContinuousOn
+    (fun p : Real × M => (hamiltonSolution (I := I) P).scalar p.1 p.2)
+    ((Set.Icc 0 T).prod Set.univ)
+  exact DifferentialGeometry.PDE.RicciFlow.SolutionOn.scalar_continuousOn
       (I := I) (M := M) (hamiltonSolution (I := I) P)
       hreg
       T
@@ -292,7 +299,18 @@ theorem hamilton_scalar_evolution_equation
     · intro t
       have ht : (t : Real) ∈ P.D.carrier := P.D.regular_subset t.2
       simp [hamiltonMetricConnectionFamily, hamiltonMetricConnectionFamilyCore, ht]
-  simpa [hamiltonScalar, hamiltonScalarLaplacian, hamiltonRicciNormSq, hamiltonSolution] using h
+  have hscalar : hamiltonScalar (I := I) P =
+      (hamiltonSolution (I := I) P).scalar := rfl
+  have hlap : hamiltonScalarLaplacian (I := I) P = fun t x =>
+      DifferentialGeometry.Geometry.Curvature.laplacianAt (I := I)
+        (hamiltonMetricConnectionFamily (I := I) P) t
+        ((hamiltonSolution (I := I) P).scalar t) x := rfl
+  have hnorm : hamiltonRicciNormSq (I := I) P = fun t x =>
+      Tensor0SBundle.normSq0S (I := I)
+        ((hamiltonSolution (I := I) P).family.metric t) x 2
+        ((hamiltonSolution (I := I) P).ricci t x) := rfl
+  rw [hscalar, hlap, hnorm]
+  exact h
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -353,20 +371,20 @@ theorem hamilton_scalar_sq_le_three_ricci_norm_sq
     (1 / 3 : Real) * (hamiltonScalar (I := I) P t x) ^ 2 <=
       hamiltonRicciNormSq (I := I) P t x := by
   classical
-  letI : Nonempty (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :=
+  let : Nonempty (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :=
     ⟨⟨0, by simp [hdim]⟩⟩
   let basis : Module.Basis (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
     Real
       (TangentSpace I x) :=
-    DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+    DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let gInv :
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
         DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
     fun k l =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
         (I := I) (P.S.family.metric t) x k l (extChartAt I x x)
   have hinv :
-      Tensor0SBundle.MetricInverseInBasis (I := I) (P.S.family.metric t) x
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) (P.S.family.metric t) x
         basis gInv := by
     simpa [basis, gInv] using
       Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
@@ -503,8 +521,8 @@ theorem hamilton_scalar_evolution_data
                   (M := M) T scalar
                   (DifferentialGeometry.PDE.RicciFlow.scalarLowerBarrier 3 c0))) := by
   rcases hM with ⟨hcompact, _hconnected, _hboundaryless, hdim⟩
-  letI : CompactSpace M := hcompact
-  letI : Nonempty M := inferInstance
+  let : CompactSpace M := hcompact
+  let : Nonempty M := inferInstance
   rcases hamilton_initial_scalar_minimum (I := I) (M := M) hdim h0ω hpos P hD with
     ⟨c0, hinit_min, hinit_pos⟩
   have hcont :
@@ -544,10 +562,10 @@ theorem hamilton_extinction_time_bound
     exists c0 : Real, 0 < c0 /\ omega <= 3 / (2 * c0) := by
   have hMcopy := hM
   rcases hM with ⟨hcompact, hconnected, hboundaryless, _hdim⟩
-  letI : CompactSpace M := hcompact
-  letI : ConnectedSpace M := hconnected
-  letI : I.Boundaryless := hboundaryless
-  letI : Nonempty M := inferInstance
+  let : CompactSpace M := hcompact
+  let : ConnectedSpace M := hconnected
+  let : I.Boundaryless := hboundaryless
+  let : Nonempty M := inferInstance
   rcases hamilton_scalar_evolution_data (I := I) (M := M) h0ω hMcopy g0 hpos P hD with
     ⟨G, c0, scalar, scalarLap, ricciNormSq, K,
       hinit_min, hinit_pos, hscalar_cont, hreg, hevol, hlap, hricci, hF_lip⟩

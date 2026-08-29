@@ -59,6 +59,11 @@ private lemma local_frame_eq_chart
       chartBasisVecFiber (I := I) α i x := by
   rw [(trivializationAt E (TangentSpace I) α).localFrame_apply_of_mem_baseSet
     (chartModelBasis E) hx]
+  rw [Bundle.Trivialization.basisAt, Module.Basis.map_apply]
+  change ((trivializationAt E (TangentSpace I) α).linearEquivAt Real x hx).symm
+      (chartModelBasis E i) =
+    (trivializationAt E (TangentSpace I) α).symmL Real x (chartModelBasis E i)
+  rw [(trivializationAt E (TangentSpace I) α).symmL_apply hx]
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
@@ -212,7 +217,10 @@ theorem nablaChartJoint
           chartChristoffel (I := I) (g p.1) x₀ i j l
             (extChartAt I x₀ p.2)) := by
       filter_upwards [hgood] with p hp
-      simpa [chr, frame, hframe₁] using
+      change christoffelSymbolInFrame (metricCov (I := I) (g p.1)) frame hframe₁
+          p.2 i j l =
+        chartChristoffel (I := I) (g p.1) x₀ i j l (extChartAt I x₀ p.2)
+      simpa only [frame, hframe₁] using
         (local_chr_eq_chart (I := I) (g p.1) x₀ hp.2 i j l)
     exact hchart'.congr_of_eventuallyEq heq
       (heq.self_of_nhdsWithin ⟨ht, hxbase⟩)
@@ -448,7 +456,12 @@ theorem nablaKRmChartJoint
           chartChristoffel (I := I) (g p.1) x₀ i j l
             (extChartAt I x₀ p.2)) := by
       filter_upwards [hgood] with p hp
-      simpa [chr, S, frame, hframe₁] using
+      change christoffelSymbolInFrame (S.family.connection p.1) frame hframe₁
+          p.2 i j l =
+        chartChristoffel (I := I) (g p.1) x₀ i j l (extChartAt I x₀ p.2)
+      rw [christoffel_symbol_in_frame_eq_solution_metric_christoffel
+        (I := I) (D := RealTimeInterval.univ 0) g frame hframe₁ p.1 p.2 i j l]
+      simpa only [frame, hframe₁] using
         (local_chr_eq_chart (I := I) (g p.1) x₀ hp.2 i j l)
     exact hchart'.congr_of_eventuallyEq heq
       (heq.self_of_nhdsWithin ⟨ht, hxbase⟩)

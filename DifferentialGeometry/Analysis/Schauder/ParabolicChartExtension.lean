@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Schauder.ParabolicChartRegularity
 import DifferentialGeometry.Analysis.Schauder.ParabolicChartOperator
 
+
 noncomputable section
 
 open Matrix Set
@@ -25,7 +26,7 @@ variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
   [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M]
 
 private abbrev EuclN (E : Type uE) [NormedAddCommGroup E]
-    [NormedSpace Real E] [FiniteDimensional Real E] :=
+    [NormedSpace Real E] :=
   EuclideanSpace Real (Fin (Module.finrank Real E))
 
 def parabolicChartPrincipalCoefficientExtension
@@ -153,7 +154,7 @@ variable {E : Type vE} [NormedAddCommGroup E] [NormedSpace Real E]
   [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M]
 
 private abbrev EuclM (E : Type vE) [NormedAddCommGroup E]
-    [NormedSpace Real E] [FiniteDimensional Real E] :=
+    [NormedSpace Real E] :=
   EuclideanSpace Real (Fin (Module.finrank Real E))
 
 theorem exists_parabolic_chart_nondivergence_operator_coefficient_extension_schauder_bounds
@@ -184,7 +185,7 @@ theorem exists_parabolic_chart_nondivergence_operator_coefficient_extension_scha
         ‖parabolicChartPrincipalCoefficientExtension (I := I)
           center R Rext G.metric chartCenter p0 i j p‖ ≤ A i j) ∧
       (∀ i j, HolderWith (Ka i j) alpha
-        ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+        ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
           (parabolicChartPrincipalCoefficientExtension (I := I)
             center R Rext G.metric chartCenter p0 i j))) ∧
       (Matrix.of fun i j : Fin (Module.finrank Real E) =>
@@ -205,7 +206,7 @@ theorem exists_parabolic_chart_nondivergence_operator_coefficient_extension_scha
         ‖parabolicChartDriftCoefficientExtension (I := I)
           center R Rext G.metric chartCenter p0 k p‖ ≤ Bb k) ∧
       (∀ k, HolderWith (Kb k) alpha
-        ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+        ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
           (parabolicChartDriftCoefficientExtension (I := I)
             center R Rext G.metric chartCenter p0 k))) ∧
       (∀ k p, p.space ∈ Metric.closedBall center R →
@@ -217,7 +218,7 @@ theorem exists_parabolic_chart_nondivergence_operator_coefficient_extension_scha
         ‖parabolicChartPotentialCoefficientExtension (I := I)
           center R Rext V chartCenter p0 p‖ ≤ Bc) ∧
       HolderWith Kc alpha
-        ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+        ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
           (parabolicChartPotentialCoefficientExtension (I := I)
             center R Rext V chartCenter p0)) ∧
       ∀ p, p.space ∈ Metric.closedBall center R →
@@ -282,7 +283,7 @@ theorem exists_parabolic_chart_nondivergence_operator_coefficient_extension_scha
   · intro i j
     simpa only [parabolicChartPrincipalCoefficientExtension, apr, Ka] using
       (parabolicBallCutoffExtension_holderWith (alpha := alpha)
-        (zero_le alpha) halpha center hR hRRext (apr i j p0) (apr i j)
+        (zero_le : 0 ≤ alpha) halpha center hR hRRext (apr i j p0) (apr i j)
         (((HolderWith.restrict_iff.mp (ha i j)).mono hball).holderWith)
         (fun p hp ↦ hAnorm i j p (hball hp)))
   · have hp0Outer : p0 ∈ parabolicCylinder (Set.Icc a b)
@@ -302,7 +303,7 @@ theorem exists_parabolic_chart_nondivergence_operator_coefficient_extension_scha
   · intro k
     simpa only [parabolicChartDriftCoefficientExtension, bpr, Kb] using
       (parabolicBallCutoffExtension_holderWith (alpha := alpha)
-        (zero_le alpha) halpha center hR hRRext (bpr k p0) (bpr k)
+        (zero_le : 0 ≤ alpha) halpha center hR hRRext (bpr k p0) (bpr k)
         (((HolderWith.restrict_iff.mp (hb k)).mono hball).holderWith)
         (fun p hp ↦ hbnorm k p (hball hp)))
   · intro k p hp
@@ -311,7 +312,7 @@ theorem exists_parabolic_chart_nondivergence_operator_coefficient_extension_scha
   · simpa only [parabolicChartPotentialCoefficientExtension, cpr, Bc] using hglobalC
   · simpa only [parabolicChartPotentialCoefficientExtension, cpr, Kc] using
       (parabolicBallCutoffExtension_holderWith (alpha := alpha)
-        (zero_le alpha) halpha center hR hRRext (cpr p0) cpr
+        (zero_le : 0 ≤ alpha) halpha center hR hRRext (cpr p0) cpr
         (((HolderWith.restrict_iff.mp hc).mono hball).holderWith)
         (fun p hp ↦ hcnorm p (hball hp)))
   · intro p hp

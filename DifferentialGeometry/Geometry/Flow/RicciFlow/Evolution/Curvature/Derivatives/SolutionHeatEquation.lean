@@ -53,11 +53,11 @@ theorem towerHeatSol_raw
   let gInv : Real → Idx → Idx → Real := fun r =>
     basisInvMetric (I := I) (S'.base.metric r) x basis
   have hinv : ∀ r : Real,
-      MetricInverseInBasis_gen (I := I) (S'.base.metric r) x basis (gInv r) := by
+      MetricInverseInBasisGen (I := I) (S'.base.metric r) x basis (gInv r) := by
     intro r
     simpa only [gInv] using
       basisInvMetric_real (I := I) (S'.base.metric r) x basis
-  have hinvId : MetricInverseInBasis_gen (I := I) (S'.base.metric (t : Real)) x basis
+  have hinvId : MetricInverseInBasisGen (I := I) (S'.base.metric (t : Real)) x basis
       (identityInvMetric (Idx := Idx)) :=
     metricInverseInBasis_identity_of_orthonormal
       (I := I) (S'.base.metric (t : Real)) basis horth
@@ -79,8 +79,11 @@ theorem towerHeatSol_raw
       simpa only [gInv] using
         basisInv_time (I := I) (fun r => S'.base.metric r) gdot basis
           (fun p q => by
-            simpa only [gdot, ric] using
-              metricDerivAt (I := I) S' hS' t x (basis p) (basis q)) i j
+            change HasDerivAt
+              (fun r => (S'.family.metric r).inner x (basis p) (basis q))
+              ((-2 : Real) * S'.ricciAt (t : Real) x
+                (vec2 (I := I) (basis p) (basis q))) (t : Real)
+            exact metricDerivAt (I := I) S' hS' t x (basis p) (basis q)) i j
     have hterm :
         (∑ p : Idx, ∑ q : Idx,
           gInv (t : Real) i p * gdot p q * gInv (t : Real) q j) =
@@ -154,13 +157,15 @@ theorem towerHeatSol_raw
       (Fintype.card Idx : Real) *
         Real.sqrt (nablaKRm04NormSqIntrinsic (I := I) S' 0 (t : Real) x) := by
     intro p q
-    simpa only [ric, SolutionOn.ricciAt, SolutionFamily.ricciAt,
-      nablaKRm04NormSqIntrinsic, nablaKRm04Field_zero,
-      SolutionFamily.rm04, metricRm04] using
-        (metricRicciComp_le (I := I) (g := S'.base.metric (t : Real))
-          basis horth p q)
+    change |metricRicciAt (I := I) (S'.base.metric (t : Real)) x
+        (vec2 (I := I) (basis p) (basis q))| ≤
+      (Fintype.card (Fin (Module.finrank ℝ E)) : Real) *
+        Real.sqrt (normSq0S (I := I) (S'.base.metric (t : Real)) x 4
+          (metricRm04At (I := I) (S'.base.metric (t : Real)) x))
+    exact metricRicciComp_le (I := I) (g := S'.base.metric (t : Real))
+      basis horth p q
   have hheat := nablaKNormHeatAt (I := I) S' k t x basis gInv ric Tdot
-    (fun r => by simpa only [MetricInverseInBasis, MetricInverseInBasis_gen] using hinv r)
+    (fun r => by simpa only [MetricInverseInBasis, MetricInverseInBasisGen] using hinv r)
     hT hgInvDt
   have hreact0 := nablaKReactionAt_le (I := I) S' (t : Real) x basis
     (gInv (t : Real)) ric Tdot

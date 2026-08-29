@@ -133,8 +133,8 @@ private lemma extChartAt_target_measurableSet (α : M) :
   DifferentialGeometry.Integral.Measure.measurableSet_extChartAt_target
     (I := I) (M := M) α
 
-private abbrev EuclN (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] := EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
+private abbrev EuclN (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] :=
+  EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private lemma toEuclidean_measurableEmbedding :
     MeasurableEmbedding (toEuclidean : E → EuclN E) :=
@@ -197,8 +197,9 @@ theorem mdiff_of_raw (α : M) {f : M → ℝ} {x : M}
   have hext : MDifferentiableAt I 𝓘(ℝ, E) (extChartAt I α) x :=
     mdifferentiableAt_extChartAt hx
   have hcoord : MDifferentiableAt I 𝓘(ℝ, EuclN E) coord x := by
-    simpa only [coord, Function.comp_apply] using
-      (toEuclidean (E := E)).differentiable.differentiableAt.comp_mdifferentiableAt hext
+    change MDifferentiableAt I 𝓘(ℝ, EuclN E)
+      ((toEuclidean (E := E)) ∘ extChartAt I α) x
+    exact (toEuclidean (E := E)).differentiable.differentiableAt.comp_mdifferentiableAt hext
   have hf' : DifferentiableAt ℝ
       (chartPushedRaw (I := I) (M := M) α f) (coord x) := by
     simpa only [coord] using hf
@@ -829,7 +830,7 @@ theorem lintegral_riemannianMeasure_le_const_mul_lintegral_chartPushedRaw
       ≤ _
     rw [show (fun x : M => (‖(0 : M → ℝ) x‖ₑ : ℝ≥0∞) ^ p) =
         fun _ => (‖(0 : ℝ)‖ₑ : ℝ≥0∞) ^ p by funext x; rfl, hLHS_zero]
-    exact zero_le _
+    exact bot_le
 
 theorem eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw
     [T2Space M] [CompactSpace M]
@@ -1030,7 +1031,7 @@ theorem lintegral_chartPushedRaw_le_const_mul_lintegral_riemannianMeasure
       simp_rw [hpw]
       simp [MeasureTheory.lintegral_const]
     rw [hLHS_zero]
-    exact zero_le _
+    exact bot_le
 
 theorem eLpNorm_chartPushedRaw_le_const_mul_eLpNorm_riemannianMeasure
     [T2Space M] [CompactSpace M]
@@ -1571,7 +1572,7 @@ private lemma chartPushedRaw_aeEq_zero_of_ae_zero_riemannianMeasure
     rw [Filter.EventuallyEq, MeasureTheory.ae_iff]
     refine MeasureTheory.measure_mono_null ?_ h_chartLocal_offSrc_zero
     intro x hx
-    simp only [Set.mem_setOf_eq] at hx
+    simp only [Set.mem_ofPred_eq] at hx
     by_cases hxsrc : x ∈ (chartAt H α).source
     · exfalso
       apply hx

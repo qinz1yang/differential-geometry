@@ -27,7 +27,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem homFieldAction_iteratedCovGrad_expansion (g : SmoothRiemannianMetric I M) (r m c : ℕ)
     (Q : HomTensorRSField (E := E) (M := M) r m c I) (k : ℕ) :
     ∃ D : (i : ℕ) → HomTensorRSField (E := E) (M := M) r (m + i) (c + k) I,
@@ -121,7 +121,7 @@ theorem homFieldAction_iteratedCovGrad_expansion (g : SmoothRiemannianMetric I M
           (iteratedCovGrad g r m i W)) k]
       abel
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_appFullSec_iteratedCovGrad_window_bound (g : SmoothRiemannianMetric I M)
     (r m c : ℕ) (Q : HomTensorRSField (E := E) (M := M) r m c I) :
     ∃ cc : ℕ → ℝ, (∀ k, 0 ≤ cc k) ∧
@@ -191,7 +191,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private theorem covGrad_heq_congr_hw (g : SmoothRiemannianMetric I M) (r : ℕ) {a b : ℕ}
     (h : a = b) {Y : SmoothCcTensor g r a} {Z : SmoothCcTensor g r b} (hYZ : HEq Y Z) :
     HEq (covGrad (I := I) (M := M) g r a Y) (covGrad (I := I) (M := M) g r b Z) := by
@@ -199,7 +199,7 @@ private theorem covGrad_heq_congr_hw (g : SmoothRiemannianMetric I M) (r : ℕ) 
   rw [eq_of_heq hYZ]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private theorem iteratedCovGrad_comp_heq (g : SmoothRiemannianMetric I M) (r s j : ℕ)
     (S : SmoothCcTensor g r s) (i : ℕ) :
     HEq (iteratedCovGrad g r (s + j) i (iteratedCovGrad g r s j S))
@@ -225,7 +225,7 @@ private theorem riemannianFiberNormSq_congr_of_heq (g : SmoothRiemannianMetric I
   rw [eq_of_heq hYZ]
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_comp (g : SmoothRiemannianMetric I M) (r s j i : ℕ)
     (S : SmoothCcTensor g r s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g r ((s + j) + i) x
@@ -237,7 +237,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_comp (g : SmoothRiemannianMetric I
     (iteratedCovGrad_comp_heq (I := I) (M := M) g r s j S i) x
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private theorem riemannianFiberNormSq_iteratedCovGrad_order_congr (g : SmoothRiemannianMetric I M)
     (r s : ℕ) {n n' : ℕ} (h : n = n') (S : SmoothCcTensor g r s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g r (s + n) x
@@ -249,7 +249,7 @@ private theorem riemannianFiberNormSq_iteratedCovGrad_order_congr (g : SmoothRie
 
 end NormedIteratedCovGrad
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem exists_appFullSec_on_jet_iteratedCovGrad_window_bound (g : SmoothRiemannianMetric I M)
     (r s j c : ℕ) (Q : HomTensorRSField (E := E) (M := M) r (s + j) c I) :
     ∃ cc : ℕ → ℝ, (∀ k, 0 ≤ cc k) ∧

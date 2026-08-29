@@ -5,6 +5,7 @@ open DifferentialGeometry.Analysis.Calculus
 
 noncomputable section
 
+
 open Filter Set
 open scoped Topology
 
@@ -89,7 +90,9 @@ def hypDensityDeriv (q : ℝ) (d : ℕ) (r : ℝ) : ℝ :=
 
 theorem hasDerivAt_hypDen (q : ℝ) (d : ℕ) (r : ℝ) :
     HasDerivAt (hypDensity q d) (hypDensityDeriv q d r) r := by
-  simpa [hypDensity, hypDensityDeriv] using (hasDerivAt_hypSn q r).pow d
+  change HasDerivAt (hypSn q ^ d)
+    ((d : ℝ) * hypSn q r ^ (d - 1) * hypSnDeriv q r) r
+  exact (hasDerivAt_hypSn q r).pow d
 
 theorem hypDen_continuous (q : ℝ) (d : ℕ) : Continuous (hypDensity q d) :=
   continuous_iff_continuousAt.mpr fun r => (hasDerivAt_hypDen q d r).continuousAt
@@ -131,7 +134,13 @@ theorem hypMeanCurv_le
         Real.cosh (q * r) ≤
           (1 / r + q) * (Real.sinh (q * r) / q) := by
       have hdiv := (div_le_div_iff_of_pos_right hqr).mpr hmain
-      convert hdiv using 1 <;> field_simp
+      calc
+        Real.cosh (q * r) =
+            (q * r * Real.cosh (q * r)) / (q * r) := by
+          field_simp
+        _ ≤ ((1 + q * r) * Real.sinh (q * r)) / (q * r) := hdiv
+        _ = (1 / r + q) * (Real.sinh (q * r) / q) := by
+          field_simp
     have hratio :
         Real.cosh (q * r) / (Real.sinh (q * r) / q) ≤ 1 / r + q :=
       (div_le_iff₀ (div_pos hsinh hqpos)).mpr hmodel
@@ -174,7 +183,9 @@ theorem hypLog_tendsto {q : ℝ} (hq : 0 ≤ q) :
     apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within
     · have hsn0 : Tendsto (hypSn q) (𝓝 (0 : ℝ)) (𝓝 (hypSn q 0)) :=
         (hypSn_continuous q).continuousAt
-      simpa [hypSn] using hsn0.mono_left inf_le_left
+      rw [show hypSn q 0 = 0 by simp [hypSn]] at hsn0
+      change Tendsto (hypSn q) (𝓝 (0 : ℝ) ⊓ 𝓟 (Set.Ioi 0)) (𝓝 0)
+      exact hsn0.mono_left inf_le_left
     · filter_upwards [self_mem_nhdsWithin] with r hr
       exact hypSn_pos hq hr
   have hsd : Tendsto (hypSnDeriv q) (𝓝[>] (0 : ℝ)) (𝓝 (1 : ℝ)) := by

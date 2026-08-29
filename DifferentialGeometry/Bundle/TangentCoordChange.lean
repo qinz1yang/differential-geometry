@@ -43,6 +43,36 @@ theorem fderiv_chartChange_rev_eq_tangentCoordChange {x₀ x : M}
     exact interior_mono (by intro y hy; rw [extChartAt_target] at hy; exact hy.2) htarget
   exact (hw.hasFDerivAt (mem_interior_iff_mem_nhds.mp hmem)).fderiv
 
+omit [IsManifold IM ⊤ M] in
+theorem symmL_coordChange [IsManifold IM 1 M] {p q x : M}
+    (hp : x ∈ (extChartAt IM p).source) (hq : x ∈ (extChartAt IM q).source)
+    (v : EM) :
+    (trivializationAt EM (TangentSpace IM) q).symmL ℝ x
+        (tangentCoordChange IM p q x v) =
+      (trivializationAt EM (TangentSpace IM) p).symmL ℝ x v := by
+  have hchange :
+      (trivializationAt EM (TangentSpace IM) q).continuousLinearMapAt ℝ x ∘L
+          (trivializationAt EM (TangentSpace IM) p).symmL ℝ x =
+        tangentCoordChange IM p q x := by
+    rw [TangentBundle.continuousLinearMapAt_trivializationAt_eq_core (by simpa
+      [extChartAt_source] using hq),
+      TangentBundle.symmL_trivializationAt_eq_core (by simpa [extChartAt_source] using hp)]
+    apply ContinuousLinearMap.ext
+    intro w
+    have hx : x ∈ (extChartAt IM p).source ∩ (extChartAt IM x).source ∩
+        (extChartAt IM q).source := ⟨⟨hp, by simp⟩, hq⟩
+    change tangentCoordChange IM x q x
+        (tangentCoordChange IM p x x w) = tangentCoordChange IM p q x w
+    exact tangentCoordChange_comp (w := p) (x := x) (y := q) (z := x) hx
+  rw [← hchange]
+  change (trivializationAt EM (TangentSpace IM) q).symmL ℝ x
+      ((trivializationAt EM (TangentSpace IM) q).continuousLinearMapAt ℝ x
+        ((trivializationAt EM (TangentSpace IM) p).symmL ℝ x v)) = _
+  exact Bundle.Trivialization.symmL_continuousLinearMapAt (R := ℝ)
+    (trivializationAt EM (TangentSpace IM) q)
+    (by simpa [extChartAt_source] using hq)
+    ((trivializationAt EM (TangentSpace IM) p).symmL ℝ x v)
+
 end DifferentialGeometry
 
 end

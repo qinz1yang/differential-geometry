@@ -40,7 +40,7 @@ omit [NeZero (Module.finrank Real E)] in
 theorem intrCore_compact
     {R a : Real} (haR : a < R) :
     IsCompact (intrCore (E := E) R a) := by
-  letI : ProperSpace E := FiniteDimensional.proper Real E
+  let : ProperSpace E := FiniteDimensional.proper Real E
   rw [Subtype.isCompact_iff]
   have himage :
       ((fun z : intrPullBall (E := E) R => (z : E)) ''
@@ -49,7 +49,9 @@ theorem intrCore_compact
     ext z
     constructor
     · rintro ⟨w, hw, rfl⟩
-      simpa only [Metric.mem_closedBall, dist_zero_right] using hw
+      change ‖(w : E)‖ ≤ a at hw
+      rw [Metric.mem_closedBall, dist_zero_right]
+      exact hw
     · intro hz
       have hza : ‖z‖ ≤ a := by
         simpa only [Metric.mem_closedBall, dist_zero_right] using hz
@@ -135,8 +137,8 @@ variable {H : Type*} [TopologicalSpace H]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -169,11 +171,11 @@ theorem intrRadial_len
     Manifold.pathELength 𝓘(Real, E)
         (intrRadial (E := E) z) 0 1 =
       ENNReal.ofReal ‖(z : E)‖ := by
-  letI : SigmaCompactSpace (intrPullBall (E := E) R) :=
+  let : SigmaCompactSpace (intrPullBall (E := E) R) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen
         𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun y : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) y) :=
     ⟨(intrPullMetric (I := I) g hEnorm p hloc).toRiemannianMetric⟩
@@ -192,8 +194,21 @@ theorem intrRadial_len
       γ = intrinsicGeodesic (I := I) g hEnorm p v := by
     funext t
     dsimp only [γ, v]
-    rw [intrFrame_apply, map_smul, expMapIntrinsic_def,
-      intrinsicGeodesic_smul]
+    calc
+      intrinsicFramedExp (I := I) g hEnorm p (t • (z : E)) =
+          expMapIntrinsic (I := I) g hEnorm p
+            (normalFrame (I := I) g p (t • (z : E))) :=
+        intrFrame_apply (I := I) g hEnorm p (t • (z : E))
+      _ = expMapIntrinsic (I := I) g hEnorm p
+            (t • normalFrame (I := I) g p (z : E)) :=
+        congrArg (expMapIntrinsic (I := I) g hEnorm p)
+          ((normalFrame (I := I) g p).map_smul t (z : E))
+      _ = intrinsicGeodesic (I := I) g hEnorm p
+            (t • normalFrame (I := I) g p (z : E)) 1 := rfl
+      _ = intrinsicGeodesic (I := I) g hEnorm p
+            (normalFrame (I := I) g p (z : E)) t :=
+        intrinsicGeodesic_smul (I := I) g hEnorm p
+          (normalFrame (I := I) g p (z : E)) t
   have hγC1 :
       ContMDiffOn 𝓘(Real, Real) I 1 γ (Set.Icc 0 1) := by
     rw [hγ]
@@ -244,11 +259,11 @@ theorem intrPull_dist_zero
         (intrPullMetric (I := I) g hEnorm p hloc)
         (intrZero (E := E) hR) z =
       ENNReal.ofReal ‖(z : E)‖ := by
-  letI : SigmaCompactSpace (intrPullBall (E := E) R) :=
+  let : SigmaCompactSpace (intrPullBall (E := E) R) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen
         𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun y : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) y) :=
     ⟨(intrPullMetric (I := I) g hEnorm p hloc).toRiemannianMetric⟩
@@ -298,8 +313,11 @@ theorem intrPull_dist_zero
         Manifold.pathELength I
             ((intrinsicFramedExp (I := I) g hEnorm p) ∘ η) 0 1 =
           Manifold.pathELength 𝓘(Real, E) γ 0 1 := by
-      simpa only [η, intrExpOn, Function.comp_apply] using
-        (intrPull_pathLen (I := I) g hEnorm p hloc hγC1)
+      rw [show (intrinsicFramedExp (I := I) g hEnorm p) ∘ η =
+          intrExpOn (I := I) g hEnorm p R ∘ γ by
+        funext t
+        rfl]
+      exact intrPull_pathLen (I := I) g hEnorm p hloc hγC1
     have hnorm_le :
         ENNReal.ofReal ‖(z : E)‖ ≤
           Manifold.pathELength 𝓘(Real, E) γ 0 1 := by
@@ -356,23 +374,23 @@ theorem intrPull_pair_pos
         (covDerivAlong (I := 𝓘(Real, E))
           (intrPullMetric (I := I) g hEnorm p hloc) γ J 1)
         (J 1) := by
-  letI : SigmaCompactSpace (intrPullBall (E := E) R) :=
+  let : SigmaCompactSpace (intrPullBall (E := E) R) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen
         𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun y : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) y) :=
     ⟨gPull.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun y : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) y) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : PseudoEMetricSpace (intrPullBall (E := E) R) :=
+  let : PseudoEMetricSpace (intrPullBall (E := E) R) :=
     PseudoEMetricSpace.ofRiemannianMetric 𝓘(Real, E)
       (intrPullBall (E := E) R)
-  letI : IsRiemannianManifold 𝓘(Real, E)
+  let : IsRiemannianManifold 𝓘(Real, E)
       (intrPullBall (E := E) R) :=
     ⟨fun _ _ => rfl⟩
   apply Variation.jacobi_pair_pos
@@ -386,8 +404,12 @@ theorem intrPull_pair_pos
   · intro t ht
     have hquad :=
       intrPull_quad_le (I := I) g hEnorm p hloc (γ t)
-        (hRm t ht) (J t) (curveVelocity (I := 𝓘(Real, E)) γ t)
+        (hRm t ht)
+        (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) (γ t) (J t))
+        (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) (γ t)
+          (curveVelocity (I := 𝓘(Real, E)) γ t))
     dsimp only at hquad
+    simp only [ContinuousLinearEquiv.symm_apply_apply] at hquad
     rw [hspeed t ht] at hquad
     simpa only [mul_assoc, mul_left_comm, mul_comm] using hquad
 
@@ -406,11 +428,11 @@ theorem intrCore_edist_lt
     riemannianEDistOf (I := 𝓘(Real, E))
         (intrPullMetric (I := I) g hEnorm p hloc) x q <
       ENNReal.ofReal (2 * a) := by
-  letI : SigmaCompactSpace (intrPullBall (E := E) R) :=
+  let : SigmaCompactSpace (intrPullBall (E := E) R) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen
         𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun y : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) y) :=
     ⟨(intrPullMetric (I := I) g hEnorm p hloc).toRiemannianMetric⟩

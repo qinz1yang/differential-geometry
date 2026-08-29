@@ -53,9 +53,10 @@ theorem parabolicNondivergenceOperator_eq_jetOperator
     fun x ↦ parabolicPoint p.time x
   let spaceDomain : Set (Euc n) := spaceSlice ⁻¹' Q
   have hspaceSlice : Continuous spaceSlice := by
-    simpa only [spaceSlice, parabolicPoint] using
+    let h : Continuous spaceSlice :=
       (continuous_const : Continuous
         (fun _ : Euc n ↦ Metric.Snowflaking.toSnowflaking p.time)).prodMk continuous_id
+    exact h
   have hspaceDomain : IsOpen spaceDomain := hQ.preimage hspaceSlice
   have hpSpace : p.space ∈ spaceDomain := by
     change parabolicPoint p.time p.space ∈ Q
@@ -107,8 +108,8 @@ theorem tendsto_parabolicNondivergenceJetOperator_apply
       (nhds (matrixLap (fun i j ↦ a i j p) (d2u p))) := by
     classical
     unfold matrixLap
-    refine tendsto_finset_sum Finset.univ fun i _ ↦
-      tendsto_finset_sum Finset.univ fun j _ ↦ ?_
+    refine tendsto_finsetSum Finset.univ fun i _ ↦
+      tendsto_finsetSum Finset.univ fun j _ ↦ ?_
     have hi := Filter.Tendsto.comp
       ((ContinuousLinearMap.apply Real (Euc n →L[Real] F))
         (EuclideanSpace.basisFun n Real i)).continuous.continuousAt hd2u
@@ -121,7 +122,7 @@ theorem tendsto_parabolicNondivergenceJetOperator_apply
         duApprox k p (EuclideanSpace.basisFun n Real i)) l
       (nhds (∑ i, b i p • du p (EuclideanSpace.basisFun n Real i))) := by
     classical
-    refine tendsto_finset_sum Finset.univ fun i _ ↦ ?_
+    refine tendsto_finsetSum Finset.univ fun i _ ↦ ?_
     have hi := Filter.Tendsto.comp
       ((ContinuousLinearMap.apply Real F)
         (EuclideanSpace.basisFun n Real i)).continuous.continuousAt hdu

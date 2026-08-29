@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -37,8 +36,8 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-private abbrev EuclN (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] := EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
+private abbrev EuclN (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] :=
+  EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -192,7 +191,7 @@ theorem eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar_le_per
     calc ENNReal.ofReal (a + 1)
         = ENNReal.ofReal (a + 1) * 1 := by rw [mul_one]
       _ ≤ ENNReal.ofReal (a + 1) * (‖S‖₊ + 1) :=
-          mul_le_mul_of_nonneg_left h_one_le (by exact zero_le _)
+          mul_le_mul_of_nonneg_left h_one_le (by exact zero_le)
   exact h1.trans h2
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -273,8 +272,9 @@ theorem sum_eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar_le
       ∑ k : Fin (Module.finrank ℝ E), ENNReal.ofReal (Ck k) ≤
         ENNReal.ofReal (∑ k : Fin (Module.finrank ℝ E), Ck k) := by
     rw [ENNReal.ofReal_sum_of_nonneg (fun k _ => hCk_nn k)]
-  exact mul_le_mul_of_nonneg_right hENN (by exact zero_le _)
+  exact mul_le_mul_of_nonneg_right hENN (by exact zero_le)
 
+omit [FiniteDimensional ℝ E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem wkpNorm_one_two_decomposition
     (u : EuclN E → ℝ) (Ω : Set (EuclN E)) :
@@ -300,7 +300,7 @@ theorem wkpNorm_one_two_decomposition
     have hUniq : ∀ α : Fin 0 → Fin (Module.finrank ℝ E),
         α = (fun i : Fin 0 => i.elim0) := fun α => by
       funext i; exact i.elim0
-    haveI : Unique (Fin 0 → Fin (Module.finrank ℝ E)) :=
+    have : Unique (Fin 0 → Fin (Module.finrank ℝ E)) :=
       { default := fun i : Fin 0 => i.elim0
         uniq := fun α => (hUniq α).symm ▸ rfl }
     rw [Fintype.sum_unique (f := fun α : Fin 0 → Fin (Module.finrank ℝ E) =>
@@ -372,7 +372,7 @@ theorem wkpNorm_chartPushed_tensorChartComponentScalar_le_per_section
       calc ENNReal.ofReal (a₀ + 1)
           = ENNReal.ofReal (a₀ + 1) * 1 := by rw [mul_one]
         _ ≤ ENNReal.ofReal (a₀ + 1) * (‖S‖₊ + 1) :=
-            mul_le_mul_of_nonneg_left h_one_le (by exact zero_le _)
+            mul_le_mul_of_nonneg_left h_one_le (by exact zero_le)
     exact h1.trans h2
   have h_one_bd : ∑ k : Fin (Module.finrank ℝ E),
         eLpNorm
@@ -390,7 +390,7 @@ theorem wkpNorm_chartPushed_tensorChartComponentScalar_le_per_section
   have h_ofReal_sum : ENNReal.ofReal (a₀ + 1) + ENNReal.ofReal C₁ ≤
       ENNReal.ofReal (a₀ + 1 + C₁) := by
     rw [ENNReal.ofReal_add (by linarith : (0 : ℝ) ≤ a₀ + 1) hC₁_nn]
-  exact mul_le_mul_of_nonneg_right h_ofReal_sum (by exact zero_le _)
+  exact mul_le_mul_of_nonneg_right h_ofReal_sum (by exact zero_le)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem wkpNorm_chartPushed_tensorChartComponentScalar_le

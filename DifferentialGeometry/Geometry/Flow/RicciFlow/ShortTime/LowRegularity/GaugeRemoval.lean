@@ -137,6 +137,7 @@ private theorem full_gauge
     change (Φ_fam s : M → M) x = Φ s x
     rw [hfun_eqOn s hs]
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem ricci_gauge_of_dt
     (g₀ g_bg : SmoothRiemannianMetric I M) {T : ℝ}

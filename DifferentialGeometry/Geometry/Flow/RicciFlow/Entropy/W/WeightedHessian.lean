@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Curvature.Bochner.BochnerConcrete
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Connection.ChartBridge.HessFrobenius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.F.Geometry
+
+
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -35,6 +37,16 @@ private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
+omit [IsManifold I 1 M] [T2Space M] in
+private theorem grad_g_mk_apply [I.Boundaryless]
+    (g : SmoothRiemannianMetric I M) (f : M → Real)
+    (hf : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) f) (x : M) :
+    gradG (I := I) g
+        (⟨f, hf⟩ : C^∞⟮I, M; Real⟯) x =
+      gradientFun (I := I) g f x := by
+  change gradFun (I := I) g f x = gradientFun (I := I) g f x
+  exact (gradient_eq_gradFun (I := I) g f x).symm
+
 omit [IsManifold I 1 M] in
 private theorem weighted_int [CompactSpace M]
     (g : SmoothRiemannianMetric I M) {f q : M -> Real}
@@ -44,8 +56,9 @@ private theorem weighted_int [CompactSpace M]
       (expNegPotentialWeightedMeasure
         (riemannianVolumeMeasure (I := I) (M := M) g) f) := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  haveI : IsFiniteMeasure μ :=
+  have hFiniteMeasure : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
+  let _ := hFiniteMeasure
   have hmeas :
       AEMeasurable
         (fun x : M => ENNReal.ofReal (expNegPotentialDensity f x)) μ :=
@@ -162,7 +175,7 @@ private theorem norm_sq_shift
   classical
   let D := tensor0SMetricData (I := I) g x 2
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) g basis hON
@@ -171,7 +184,10 @@ private theorem norm_sq_shift
   have hmetric :
       normSq0S (I := I) g x 2 (metricTensor0S (I := I) g x) =
         (Module.finrank Real E : Real) := by
-    simpa using normSq0S_metricTensor0S_eq_card (I := I) g basis
+    change normSq0S (I := I) g x 2 (metricTensor0S (I := I) g x) =
+      (Module.finrank Real (TangentSpace I x) : Real)
+    simpa only [Fintype.card_fin] using
+      normSq0S_metricTensor0S_eq_card (I := I) g basis
       (identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) hinv
   have hBA : inner0S (I := I) g x 2 B A = inner02 (I := I) g x A B := by
@@ -217,12 +233,12 @@ theorem weighted_hess_split [I.Boundaryless] [CompactSpace M]
               (hessianSec (I := I) (metricCov (I := I) (M := M) g)
                 (metricCov_smooth (I := I) (M := M) g) f hf x) -
           metricRicciAt (I := I) (M := M) g x
-            (vec2 (I := I) (grad_g (I := I) g ⟨_, hf⟩ x)
-              (grad_g (I := I) g ⟨_, hf⟩ x)) -
+            (vec2 (I := I) (gradG (I := I) g ⟨_, hf⟩ x)
+              (gradG (I := I) g ⟨_, hf⟩ x)) -
           (1 / 2 : Real) * metricScalarAt (I := I) (M := M) g x *
-            (Δ_g (I := I) g ⟨_, hf⟩ x -
-              g.inner x (grad_g (I := I) g ⟨_, hf⟩ x)
-                (grad_g (I := I) g ⟨_, hf⟩ x)))
+            (ΔG (I := I) g ⟨_, hf⟩ x -
+              g.inner x (gradG (I := I) g ⟨_, hf⟩ x)
+                (gradG (I := I) g ⟨_, hf⟩ x)))
       ∂(expNegPotentialWeightedMeasure
           (riemannianVolumeMeasure (I := I) (M := M) g) f) = 0 := by
   have hmeas :
@@ -245,17 +261,17 @@ theorem weighted_bochner [I.Boundaryless] [CompactSpace M]
               (hessianSec (I := I) (metricCov (I := I) (M := M) g)
                 (metricCov_smooth (I := I) (M := M) g) f hf x) +
           metricRicciAt (I := I) (M := M) g x
-            (vec2 (I := I) (grad_g (I := I) g ⟨_, hf⟩ x)
-              (grad_g (I := I) g ⟨_, hf⟩ x)) -
-          (Δ_g (I := I) g ⟨_, hf⟩ x -
-              g.inner x (grad_g (I := I) g ⟨_, hf⟩ x)
-                (grad_g (I := I) g ⟨_, hf⟩ x)) ^ 2 -
+            (vec2 (I := I) (gradG (I := I) g ⟨_, hf⟩ x)
+              (gradG (I := I) g ⟨_, hf⟩ x)) -
+          (ΔG (I := I) g ⟨_, hf⟩ x -
+              g.inner x (gradG (I := I) g ⟨_, hf⟩ x)
+                (gradG (I := I) g ⟨_, hf⟩ x)) ^ 2 -
           (1 / 2 : Real) *
-            g.inner x (grad_g (I := I) g ⟨_, hf⟩ x)
-              (grad_g (I := I) g ⟨_, hf⟩ x) *
-            (Δ_g (I := I) g ⟨_, hf⟩ x -
-              g.inner x (grad_g (I := I) g ⟨_, hf⟩ x)
-                (grad_g (I := I) g ⟨_, hf⟩ x)))
+            g.inner x (gradG (I := I) g ⟨_, hf⟩ x)
+              (gradG (I := I) g ⟨_, hf⟩ x) *
+            (ΔG (I := I) g ⟨_, hf⟩ x -
+              g.inner x (gradG (I := I) g ⟨_, hf⟩ x)
+                (gradG (I := I) g ⟨_, hf⟩ x)))
       ∂(expNegPotentialWeightedMeasure
           (riemannianVolumeMeasure (I := I) (M := M) g) f) = 0 := by
   classical
@@ -263,8 +279,10 @@ theorem weighted_bochner [I.Boundaryless] [CompactSpace M]
   · apply integral_eq_zero_of_ae
     exact Filter.Eventually.of_forall fun x => by
       have htang : Module.finrank Real (TangentSpace I x) = 0 := hdim
-      letI : Subsingleton (TangentSpace I x) := Module.finrank_zero_iff.mp htang
-      have hgrad : grad_g (I := I) g ⟨_, hf⟩ x = 0 := Subsingleton.elim _ _
+      let hSubsingleton : Subsingleton (TangentSpace I x) :=
+        Module.finrank_zero_iff.mp htang
+      let _ := hSubsingleton
+      have hgrad : gradG (I := I) g ⟨_, hf⟩ x = 0 := Subsingleton.elim _ _
       let basis := Module.finBasis Real (TangentSpace I x)
       let gInv : Fin (Module.finrank Real (TangentSpace I x)) ->
           Fin (Module.finrank Real (TangentSpace I x)) -> Real := fun _ _ => 0
@@ -291,8 +309,10 @@ theorem weighted_bochner [I.Boundaryless] [CompactSpace M]
         intro i _
         have hi : i.val < 0 := by simpa only [hdim] using i.isLt
         exact (Nat.not_lt_zero _ hi).elim
-      have hLap : Δ_g (I := I) g ⟨_, hf⟩ x = 0 := by
-        rw [Δ_g_def, divergence_g_def, localDivergence_def, hunivE]
+      have hLap : ΔG (I := I) g ⟨_, hf⟩ x = 0 := by
+        change divergenceG (I := I) g
+          (gradG (I := I) g (⟨f, hf⟩ : C^∞⟮I, M; Real⟯)) x = 0
+        rw [divergence_g_def, localDivergence_def, hunivE]
         simp
       have hRic :
           metricRicciAt (I := I) (M := M) g x
@@ -301,47 +321,49 @@ theorem weighted_bochner [I.Boundaryless] [CompactSpace M]
           (i := 0) (by simp [vec2])
       have hinner :
           g.inner x (0 : TangentSpace I x) (0 : TangentSpace I x) = 0 := by
-        rw [(g.inner x).map_zero, ContinuousLinearMap.zero_apply]
+        rw [(g.inner x).map_zero, zero_apply]
       change
         normSq0S (I := I) g x 2
               (hessianSec (I := I) (metricCov (I := I) (M := M) g)
                 (metricCov_smooth (I := I) (M := M) g) f hf x) +
             metricRicciAt (I := I) (M := M) g x
-              (vec2 (I := I) (grad_g (I := I) g ⟨_, hf⟩ x)
-                (grad_g (I := I) g ⟨_, hf⟩ x)) -
-            (Δ_g (I := I) g ⟨_, hf⟩ x -
-                g.inner x (grad_g (I := I) g ⟨_, hf⟩ x)
-                  (grad_g (I := I) g ⟨_, hf⟩ x)) ^ 2 -
+              (vec2 (I := I) (gradG (I := I) g ⟨_, hf⟩ x)
+                (gradG (I := I) g ⟨_, hf⟩ x)) -
+            (ΔG (I := I) g ⟨_, hf⟩ x -
+                g.inner x (gradG (I := I) g ⟨_, hf⟩ x)
+                  (gradG (I := I) g ⟨_, hf⟩ x)) ^ 2 -
             (1 / 2 : Real) *
-              g.inner x (grad_g (I := I) g ⟨_, hf⟩ x)
-                (grad_g (I := I) g ⟨_, hf⟩ x) *
-              (Δ_g (I := I) g ⟨_, hf⟩ x -
-                g.inner x (grad_g (I := I) g ⟨_, hf⟩ x)
-                  (grad_g (I := I) g ⟨_, hf⟩ x)) = 0
+              g.inner x (gradG (I := I) g ⟨_, hf⟩ x)
+                (gradG (I := I) g ⟨_, hf⟩ x) *
+              (ΔG (I := I) g ⟨_, hf⟩ x -
+                g.inner x (gradG (I := I) g ⟨_, hf⟩ x)
+                  (gradG (I := I) g ⟨_, hf⟩ x)) = 0
       rw [hgrad, hHessNorm, hLap, hRic, hinner]
       ring
-  · letI : NeZero (Module.finrank Real E) := ⟨hdim⟩
+  · let hNeZero : NeZero (Module.finrank Real E) := ⟨hdim⟩
+    let _ := hNeZero
     let q : M -> Real := fun x =>
-      g.inner x (grad_g (I := I) g ⟨_, hf⟩ x) (grad_g (I := I) g ⟨_, hf⟩ x)
+      g.inner x (gradG (I := I) g ⟨_, hf⟩ x) (gradG (I := I) g ⟨_, hf⟩ x)
     have hq : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) q := by
-      simpa only [q, grad_g_apply] using
-        (normGradSqFun_contMDiff (I := I) g hf)
-    let L : M -> Real := Δ_g (I := I) g ⟨_, hf⟩
+      change ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+        (normGradSqFun (I := I) g f)
+      exact normGradSqFun_contMDiff (I := I) g hf
+    let L : M -> Real := ΔG (I := I) g ⟨_, hf⟩
     have hL : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) L := by
       simpa only [L] using Δ_g_contMDiff (I := I) g ⟨_, hf⟩
     let z : M -> Real := fun x => L x - q x
     have hz : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) z := by
       exact hL.sub hq
     let cross : M -> Real := fun x =>
-      g.inner x (grad_g (I := I) g ⟨_, hL⟩ x) (grad_g (I := I) g ⟨_, hf⟩ x)
+      g.inner x (gradG (I := I) g ⟨_, hL⟩ x) (gradG (I := I) g ⟨_, hf⟩ x)
     have hcross : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) cross := by
       simpa only [cross] using
         (contMDiff_g_inner_of_smooth_sections (I := I) (M := M) g
-          (grad_g (I := I) g ⟨_, hL⟩) (grad_g (I := I) g ⟨_, hf⟩))
+          (gradG (I := I) g ⟨_, hL⟩) (gradG (I := I) g ⟨_, hf⟩))
     let A0 : M -> Real := fun x =>
-      (1 / 2 : Real) * (Δ_g (I := I) g ⟨_, hq⟩ x + q x * z x)
-    let A1 : M -> Real := fun x => Δ_g (I := I) g ⟨_, hL⟩ x - cross x
-    let A2 : M -> Real := fun x => Δ_g (I := I) g ⟨_, hL⟩ x + L x * z x
+      (1 / 2 : Real) * (ΔG (I := I) g ⟨_, hq⟩ x + q x * z x)
+    let A1 : M -> Real := fun x => ΔG (I := I) g ⟨_, hL⟩ x - cross x
+    let A2 : M -> Real := fun x => ΔG (I := I) g ⟨_, hL⟩ x + L x * z x
     have hA0 : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) A0 := by
       exact contMDiff_const.mul
         ((Δ_g_contMDiff (I := I) g ⟨_, hq⟩).add (hq.mul hz))
@@ -357,11 +379,11 @@ theorem weighted_bochner [I.Boundaryless] [CompactSpace M]
           (riemannianVolumeMeasure (I := I) (M := M) g) :=
       (ENNReal.continuous_ofReal.comp
         (expNegPotentialDensity_contMDiff (I := I) hf).continuous).aemeasurable
-    have hDqI : Integrable (fun x : M => Δ_g (I := I) g ⟨_, hq⟩ x) μw :=
+    have hDqI : Integrable (fun x : M => ΔG (I := I) g ⟨_, hq⟩ x) μw :=
       weighted_int (I := I) g hf (Δ_g_contMDiff (I := I) g ⟨_, hq⟩).continuous
     have hqzI : Integrable (fun x : M => q x * z x) μw :=
       weighted_int (I := I) g hf (hq.mul hz).continuous
-    have hDLI : Integrable (fun x : M => Δ_g (I := I) g ⟨_, hL⟩ x) μw :=
+    have hDLI : Integrable (fun x : M => ΔG (I := I) g ⟨_, hL⟩ x) μw :=
       weighted_int (I := I) g hf (Δ_g_contMDiff (I := I) g ⟨_, hL⟩).continuous
     have hLzI : Integrable (fun x : M => L x * z x) μw :=
       weighted_int (I := I) g hf (hL.mul hz).continuous
@@ -370,10 +392,10 @@ theorem weighted_bochner [I.Boundaryless] [CompactSpace M]
     have hA2I : Integrable A2 μw := weighted_int (I := I) g hf hA2.continuous
     have hqGreen := weightedGreen (I := I) g hf hq hmeas
     have hqRight :
-        (∫ x, q x * (-Δ_g (I := I) g ⟨_, hf⟩ x + q x) ∂μw) =
+        (∫ x, q x * (-ΔG (I := I) g ⟨_, hf⟩ x + q x) ∂μw) =
           -(∫ x, q x * z x ∂μw) := by
       calc
-        (∫ x, q x * (-Δ_g (I := I) g ⟨_, hf⟩ x + q x) ∂μw) =
+        (∫ x, q x * (-ΔG (I := I) g ⟨_, hf⟩ x + q x) ∂μw) =
             ∫ x, -(q x * z x) ∂μw := by
           apply integral_congr_ae
           exact Filter.Eventually.of_forall fun x => by
@@ -382,7 +404,7 @@ theorem weighted_bochner [I.Boundaryless] [CompactSpace M]
         _ = -(∫ x, q x * z x ∂μw) := by rw [integral_neg]
     have hA0zero : (∫ x, A0 x ∂μw) = 0 := by
       have hraw :
-          (∫ x, Δ_g (I := I) g ⟨_, hq⟩ x + q x * z x ∂μw) = 0 := by
+          (∫ x, ΔG (I := I) g ⟨_, hq⟩ x + q x * z x ∂μw) = 0 := by
         rw [integral_add hDqI hqzI, hqGreen, hqRight]
         ring
       dsimp only [A0]
@@ -393,10 +415,10 @@ theorem weighted_bochner [I.Boundaryless] [CompactSpace M]
         (weighted_grad_zero (I := I) g hf hL)
     have hLGreen := weightedGreen (I := I) g hf hL hmeas
     have hLRight :
-        (∫ x, L x * (-Δ_g (I := I) g ⟨_, hf⟩ x + q x) ∂μw) =
+        (∫ x, L x * (-ΔG (I := I) g ⟨_, hf⟩ x + q x) ∂μw) =
           -(∫ x, L x * z x ∂μw) := by
       calc
-        (∫ x, L x * (-Δ_g (I := I) g ⟨_, hf⟩ x + q x) ∂μw) =
+        (∫ x, L x * (-ΔG (I := I) g ⟨_, hf⟩ x + q x) ∂μw) =
             ∫ x, -(L x * z x) ∂μw := by
           apply integral_congr_ae
           exact Filter.Eventually.of_forall fun x => by
@@ -412,10 +434,10 @@ theorem weighted_bochner [I.Boundaryless] [CompactSpace M]
               (hessianSec (I := I) (metricCov (I := I) (M := M) g)
                 (metricCov_smooth (I := I) (M := M) g) f hf x) +
             metricRicciAt (I := I) (M := M) g x
-              (vec2 (I := I) (grad_g (I := I) g ⟨_, hf⟩ x)
-                (grad_g (I := I) g ⟨_, hf⟩ x)) -
-            (Δ_g (I := I) g ⟨_, hf⟩ x - q x) ^ 2 -
-            (1 / 2 : Real) * q x * (Δ_g (I := I) g ⟨_, hf⟩ x - q x) =
+              (vec2 (I := I) (gradG (I := I) g ⟨_, hf⟩ x)
+                (gradG (I := I) g ⟨_, hf⟩ x)) -
+            (ΔG (I := I) g ⟨_, hf⟩ x - q x) ^ 2 -
+            (1 / 2 : Real) * q x * (ΔG (I := I) g ⟨_, hf⟩ x - q x) =
           A0 x + A1 x - A2 x := by
       intro x
       have hHess :
@@ -427,39 +449,42 @@ theorem weighted_bochner [I.Boundaryless] [CompactSpace M]
           (hessSec_normSq (I := I) g hf x)
       have hRic :
           metricRicciAt (I := I) (M := M) g x
-              (vec2 (I := I) (grad_g (I := I) g ⟨_, hf⟩ x)
-                (grad_g (I := I) g ⟨_, hf⟩ x)) =
+              (vec2 (I := I) (gradG (I := I) g ⟨_, hf⟩ x)
+                (gradG (I := I) g ⟨_, hf⟩ x)) =
             ricciTensor (I := I) g x
               (gradFun (I := I) g f x) (gradFun (I := I) g f x) := by
-        simpa only [grad_g_apply] using
+        simpa only [grad_g_mk_apply, gradient_eq_gradFun] using
           (metricRicciAt_apply_eq_ricciTensor (I := I) g x
-            (grad_g (I := I) g ⟨_, hf⟩ x) (grad_g (I := I) g ⟨_, hf⟩ x))
+            (gradG (I := I) g ⟨_, hf⟩ x) (gradG (I := I) g ⟨_, hf⟩ x))
       have hsymm :
           g.inner x (gradFun (I := I) g f x)
               (gradFun (I := I) g L x) = cross x := by
         dsimp only [cross]
-        simp only [grad_g_apply]
+        simp only [grad_g_mk_apply, gradient_eq_gradFun]
         exact g.symm x _ _
       have hB := bochner_pointwise_concrete_metric (I := I) g hf x
       rw [← hHess, ← hRic, hsymm] at hB
       have hB' :
-          Δ_g (I := I) g ⟨_, hq⟩ x =
+          ΔG (I := I) g ⟨_, hq⟩ x =
             2 * normSq0S (I := I) g x 2
                 (hessianSec (I := I) (metricCov (I := I) (M := M) g)
                   (metricCov_smooth (I := I) (M := M) g) f hf x) +
               2 * metricRicciAt (I := I) (M := M) g x
-                (vec2 (I := I) (grad_g (I := I) g ⟨_, hf⟩ x)
-                  (grad_g (I := I) g ⟨_, hf⟩ x)) +
+                (vec2 (I := I) (gradG (I := I) g ⟨_, hf⟩ x)
+                  (gradG (I := I) g ⟨_, hf⟩ x)) +
               2 * cross x := by
-        simpa only [q, L, normGradSqFun, grad_g_apply] using hB
+        change ΔG (I := I) g
+            ⟨normGradSqFun (I := I) g f,
+              normGradSqFun_contMDiff (I := I) g hf⟩ x = _
+        exact hB
       have hHR :
           normSq0S (I := I) g x 2
                 (hessianSec (I := I) (metricCov (I := I) (M := M) g)
                   (metricCov_smooth (I := I) (M := M) g) f hf x) +
               metricRicciAt (I := I) (M := M) g x
-                (vec2 (I := I) (grad_g (I := I) g ⟨_, hf⟩ x)
-                  (grad_g (I := I) g ⟨_, hf⟩ x)) =
-            (1 / 2 : Real) * Δ_g (I := I) g ⟨_, hq⟩ x - cross x := by
+                (vec2 (I := I) (gradG (I := I) g ⟨_, hf⟩ x)
+                  (gradG (I := I) g ⟨_, hf⟩ x)) =
+            (1 / 2 : Real) * ΔG (I := I) g ⟨_, hq⟩ x - cross x := by
         linarith [hB']
       rw [hHR]
       dsimp only [A0, A1, A2, z, L]
@@ -470,17 +495,17 @@ theorem weighted_bochner [I.Boundaryless] [CompactSpace M]
                 (hessianSec (I := I) (metricCov (I := I) (M := M) g)
                   (metricCov_smooth (I := I) (M := M) g) f hf x) +
             metricRicciAt (I := I) (M := M) g x
-              (vec2 (I := I) (grad_g (I := I) g ⟨_, hf⟩ x)
-                (grad_g (I := I) g ⟨_, hf⟩ x)) -
-            (Δ_g (I := I) g ⟨_, hf⟩ x -
-                g.inner x (grad_g (I := I) g ⟨_, hf⟩ x)
-                  (grad_g (I := I) g ⟨_, hf⟩ x)) ^ 2 -
+              (vec2 (I := I) (gradG (I := I) g ⟨_, hf⟩ x)
+                (gradG (I := I) g ⟨_, hf⟩ x)) -
+            (ΔG (I := I) g ⟨_, hf⟩ x -
+                g.inner x (gradG (I := I) g ⟨_, hf⟩ x)
+                  (gradG (I := I) g ⟨_, hf⟩ x)) ^ 2 -
             (1 / 2 : Real) *
-              g.inner x (grad_g (I := I) g ⟨_, hf⟩ x)
-                (grad_g (I := I) g ⟨_, hf⟩ x) *
-              (Δ_g (I := I) g ⟨_, hf⟩ x -
-                g.inner x (grad_g (I := I) g ⟨_, hf⟩ x)
-                  (grad_g (I := I) g ⟨_, hf⟩ x))) ∂μw) =
+              g.inner x (gradG (I := I) g ⟨_, hf⟩ x)
+                (gradG (I := I) g ⟨_, hf⟩ x) *
+              (ΔG (I := I) g ⟨_, hf⟩ x -
+                g.inner x (gradG (I := I) g ⟨_, hf⟩ x)
+                  (gradG (I := I) g ⟨_, hf⟩ x))) ∂μw) =
           ∫ x, A0 x + A1 x - A2 x ∂μw := by
         apply integral_congr_ae
         exact Filter.Eventually.of_forall fun x => by
@@ -504,11 +529,11 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
     let R : M -> Real := metricScalarAt (I := I) (M := M) g
     let q : M -> Real := fun x =>
       g.inner x (gradientFun (I := I) g f x) (gradientFun (I := I) g f x)
-    let L : M -> Real := Δ_g (I := I) g ⟨_, hf⟩
+    let L : M -> Real := ΔG (I := I) g ⟨_, hf⟩
     let z : M -> Real := fun x => L x - q x
     let ft : M -> Real := fun x => z x + R x - (n : Real) / (2 * s)
     let Rt : M -> Real := fun x =>
-      -(Δ_g (I := I) g ⟨_, (metricScalar_smooth (I := I) (M := M) g)⟩ x +
+      -(ΔG (I := I) g ⟨_, (metricScalar_smooth (I := I) (M := M) g)⟩ x +
         2 * normSq0S (I := I) g x 2 (metricRicciAt (I := I) (M := M) g x))
     let qt : M -> Real := fun x =>
       (-2 : Real) * metricRicciAt (I := I) (M := M) g x
@@ -540,11 +565,11 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
     (metricCov_smooth (I := I) (M := M) g) f hf
   let q : M -> Real := fun x =>
     g.inner x (gradientFun (I := I) g f x) (gradientFun (I := I) g f x)
-  let L : M -> Real := Δ_g (I := I) g ⟨_, hf⟩
+  let L : M -> Real := ΔG (I := I) g ⟨_, hf⟩
   let z : M -> Real := fun x => L x - q x
   let ft : M -> Real := fun x => z x + R x - (n : Real) / (2 * s)
   let Rt : M -> Real := fun x =>
-    -(Δ_g (I := I) g ⟨_, (metricScalar_smooth (I := I) (M := M) g)⟩ x +
+    -(ΔG (I := I) g ⟨_, (metricScalar_smooth (I := I) (M := M) g)⟩ x +
       2 * normSq0S (I := I) g x 2 (Ric x))
   let qt : M -> Real := fun x =>
     (-2 : Real) * Ric x
@@ -559,14 +584,16 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
   by_cases hdim : Module.finrank Real E = 0
   · have hLap0 (a : M -> Real)
         (ha : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) a) (x : M) :
-        Δ_g (I := I) g ⟨_, ha⟩ x = 0 := by
+        ΔG (I := I) g ⟨_, ha⟩ x = 0 := by
       have hunivE :
           (Finset.univ : Finset (Fin (Module.finrank Real E))) = ∅ := by
         apply Finset.eq_empty_iff_forall_notMem.mpr
         intro i _
         have hi : i.val < 0 := by simpa only [hdim] using i.isLt
         exact (Nat.not_lt_zero _ hi).elim
-      rw [Δ_g_def, divergence_g_def, localDivergence_def, hunivE]
+      change divergenceG (I := I) g
+        (gradG (I := I) g (⟨a, ha⟩ : C^∞⟮I, M; Real⟯)) x = 0
+      rw [divergence_g_def, localDivergence_def, hunivE]
       simp
     have hNorm0 (x : M)
         (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
@@ -610,10 +637,12 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
       simp
     have hq0 (x : M) : q x = 0 := by
       have htang : Module.finrank Real (TangentSpace I x) = 0 := hdim
-      letI : Subsingleton (TangentSpace I x) := Module.finrank_zero_iff.mp htang
+      let hSubsingleton : Subsingleton (TangentSpace I x) :=
+        Module.finrank_zero_iff.mp htang
+      let _ := hSubsingleton
       have hgrad : gradientFun (I := I) g f x = 0 := Subsingleton.elim _ _
       dsimp only [q]
-      rw [hgrad, (g.inner x).map_zero, ContinuousLinearMap.zero_apply]
+      rw [hgrad, (g.inner x).map_zero, zero_apply]
     have hft0 (x : M) : ft x = 0 := by
       dsimp only [ft, z]
       have hL0 : L x = 0 := by simpa only [L] using hLap0 f hf x
@@ -625,14 +654,16 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
       ring
     have hqt0 (x : M) : qt x = 0 := by
       have htang : Module.finrank Real (TangentSpace I x) = 0 := hdim
-      letI : Subsingleton (TangentSpace I x) := Module.finrank_zero_iff.mp htang
+      let hSubsingleton : Subsingleton (TangentSpace I x) :=
+        Module.finrank_zero_iff.mp htang
+      let _ := hSubsingleton
       have hgrad : gradientFun (I := I) g f x = 0 := Subsingleton.elim _ _
       have hgradft : gradientFun (I := I) g ft x = 0 := Subsingleton.elim _ _
       have hRic : Ric x (vec2 (I := I) (0 : TangentSpace I x) 0) = 0 := by
         exact (Ric x).map_coord_zero (i := 0) (by simp [vec2])
       have hinner :
           g.inner x (0 : TangentSpace I x) (0 : TangentSpace I x) = 0 := by
-        rw [(g.inner x).map_zero, ContinuousLinearMap.zero_apply]
+        rw [(g.inner x).map_zero, zero_apply]
       dsimp only [qt]
       rw [hgrad, hgradft, hRic, hinner]
       ring
@@ -665,9 +696,12 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
         -2 * s * ∫ x, Sq0 x ∂μw
     rw [hleft, hright]
     ring
-  letI : NeZero (Module.finrank Real E) := ⟨hdim⟩
+  let hNeZero : NeZero (Module.finrank Real E) := ⟨hdim⟩
+  let _ := hNeZero
   have hq : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) q := by
-    simpa only [q, grad_g_apply] using normGradSqFun_contMDiff (I := I) g hf
+    change ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
+      (normGradSqFun (I := I) g f)
+    exact normGradSqFun_contMDiff (I := I) g hf
   have hL : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) L := by
     simpa only [L] using Δ_g_contMDiff (I := I) g ⟨_, hf⟩
   have hz : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) z := by
@@ -683,26 +717,27 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
   have hZG (a : M -> Real)
       (ha : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) a) :
       (∫ x,
-          (Δ_g (I := I) g ⟨_, ha⟩ x -
-            g.inner x (grad_g (I := I) g ⟨_, ha⟩ x) (grad_g (I := I) g ⟨_, hf⟩ x))
+          (ΔG (I := I) g ⟨_, ha⟩ x -
+            g.inner x (gradG (I := I) g ⟨_, ha⟩ x) (gradG (I := I) g ⟨_, hf⟩ x))
         ∂μw) = 0 := by
     simpa only [μw] using weighted_grad_zero (I := I) g hf ha
   have hWG (a : M -> Real)
       (ha : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) a) :
-      (∫ x, (Δ_g (I := I) g ⟨_, ha⟩ x + a x * z x) ∂μw) = 0 := by
-    have hDaI : Integrable (fun x : M => Δ_g (I := I) g ⟨_, ha⟩ x) μw := by
+      (∫ x, (ΔG (I := I) g ⟨_, ha⟩ x + a x * z x) ∂μw) = 0 := by
+    have hDaI : Integrable (fun x : M => ΔG (I := I) g ⟨_, ha⟩ x) μw := by
       simpa only [μw] using weighted_int (I := I) g hf
         (Δ_g_contMDiff (I := I) g ⟨_, ha⟩).continuous
     have hazI : Integrable (fun x : M => a x * z x) μw := by
+      change Integrable (a * z) μw
       simpa only [μw] using weighted_int (I := I) g hf (ha.mul hz).continuous
     have hgreen :
-        (∫ x, Δ_g (I := I) g ⟨_, ha⟩ x ∂μw) =
+        (∫ x, ΔG (I := I) g ⟨_, ha⟩ x ∂μw) =
           ∫ x, a x * (-L x + q x) ∂μw := by
-      simpa only [μw, L, q, grad_g_apply] using
+      simpa only [μw, L, q, grad_g_mk_apply, gradient_eq_gradFun] using
         weightedGreen (I := I) g hf ha hmeas
     calc
-      (∫ x, (Δ_g (I := I) g ⟨_, ha⟩ x + a x * z x) ∂μw) =
-          (∫ x, Δ_g (I := I) g ⟨_, ha⟩ x ∂μw) +
+      (∫ x, (ΔG (I := I) g ⟨_, ha⟩ x + a x * z x) ∂μw) =
+          (∫ x, ΔG (I := I) g ⟨_, ha⟩ x ∂μw) +
             ∫ x, a x * z x ∂μw := integral_add hDaI hazI
       _ = (∫ x, a x * (-L x + q x) ∂μw) +
             ∫ x, a x * z x ∂μw := by rw [hgreen]
@@ -726,14 +761,14 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
   let HS : M -> Real := fun x =>
     C x - RicGrad x - (1 / 2 : Real) * R x * z x
   let Zft : M -> Real := fun x =>
-    Δ_g (I := I) g ⟨_, hft⟩ x -
-      g.inner x (grad_g (I := I) g ⟨_, hft⟩ x) (grad_g (I := I) g ⟨_, hf⟩ x)
-  let Wft : M -> Real := fun x => Δ_g (I := I) g ⟨_, hft⟩ x + ft x * z x
-  let WR : M -> Real := fun x => Δ_g (I := I) g ⟨_, hR⟩ x + R x * z x
-  let Wf : M -> Real := fun x => Δ_g (I := I) g ⟨_, hf⟩ x + f x * z x
+    ΔG (I := I) g ⟨_, hft⟩ x -
+      g.inner x (gradG (I := I) g ⟨_, hft⟩ x) (gradG (I := I) g ⟨_, hf⟩ x)
+  let Wft : M -> Real := fun x => ΔG (I := I) g ⟨_, hft⟩ x + ft x * z x
+  let WR : M -> Real := fun x => ΔG (I := I) g ⟨_, hR⟩ x + R x * z x
+  let Wf : M -> Real := fun x => ΔG (I := I) g ⟨_, hf⟩ x + f x * z x
   let Zf : M -> Real := fun x =>
-    Δ_g (I := I) g ⟨_, hf⟩ x -
-      g.inner x (grad_g (I := I) g ⟨_, hf⟩ x) (grad_g (I := I) g ⟨_, hf⟩ x)
+    ΔG (I := I) g ⟨_, hf⟩ x -
+      g.inner x (gradG (I := I) g ⟨_, hf⟩ x) (gradG (I := I) g ⟨_, hf⟩ x)
   let Sq : M -> Real := fun x =>
     normSq0S (I := I) g x 2
       (Ric x + Hess x - (1 / (2 * s)) • metricTensor0S (I := I) g x)
@@ -751,16 +786,17 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
     intro x
     simp only [Pi.add_apply]
     rw [ricDriftAct (I := I) g hf x]
-    simp only [RicGrad, Ric, R, q, metricRicci_apply, grad_g_apply,
-      gradient_eq_gradFun, ContMDiffMap.coeFn_mk]
+    simp only [RicGrad, Ric, R, q, metricRicci_apply, grad_g_mk_apply,
+      gradient_eq_gradFun]
     ring
   have hHB : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) HB := by
     have hHessNorm := normSq02_smooth (I := I) g Hess
     have hhalfqz : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun x : M => (1 / 2 : Real) * q x * z x) :=
       (contMDiff_const.mul hq).mul hz
-    simpa only [HB] using
-      (((hHessNorm.add hRicGrad).sub (hz.pow 2)).sub hhalfqz)
+    refine (((hHessNorm.add hRicGrad).sub (hz.pow 2)).sub hhalfqz).congr ?_
+    intro x
+    rfl
   have hHS : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) HS := by
     have hd := divergence_g_contMDiff (I := I) g (ricDriftVec (I := I) g hf)
     have ha := tangentSectionAction_contMDiff (I := I)
@@ -769,20 +805,20 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
     intro x
     rw [ricDriftDiv (I := I) g hf x, ricDriftAct (I := I) g hf x]
     simp only [HS, C, RicGrad, Ric, Hess, R, L, q, z,
-      metricRicci_apply, grad_g_apply, gradient_eq_gradFun, ContMDiffMap.coeFn_mk]
+      metricRicci_apply, grad_g_mk_apply, gradient_eq_gradFun]
     ring
   have hZGsm (a : M -> Real)
       (ha : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) a) :
       ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
-        (fun x => Δ_g (I := I) g ⟨_, ha⟩ x -
-          g.inner x (grad_g (I := I) g ⟨_, ha⟩ x) (grad_g (I := I) g ⟨_, hf⟩ x)) :=
+        (fun x => ΔG (I := I) g ⟨_, ha⟩ x -
+          g.inner x (gradG (I := I) g ⟨_, ha⟩ x) (gradG (I := I) g ⟨_, hf⟩ x)) :=
     (Δ_g_contMDiff (I := I) g ⟨_, ha⟩).sub
       (contMDiff_g_inner_of_smooth_sections (I := I) (M := M) g
-        (grad_g (I := I) g ⟨_, ha⟩) (grad_g (I := I) g ⟨_, hf⟩))
+        (gradG (I := I) g ⟨_, ha⟩) (gradG (I := I) g ⟨_, hf⟩))
   have hWGsm (a : M -> Real)
       (ha : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) a) :
       ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
-        (fun x => Δ_g (I := I) g ⟨_, ha⟩ x + a x * z x) :=
+        (fun x => ΔG (I := I) g ⟨_, ha⟩ x + a x * z x) :=
     (Δ_g_contMDiff (I := I) g ⟨_, ha⟩).add (ha.mul hz)
   have hZft : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) Zft := by
     simpa only [Zft] using hZGsm ft hft
@@ -811,7 +847,7 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
         normSq0S (I := I) g x 2
           (Ric x + Hess x - (1 / (2 * s)) • metricTensorField (I := I) g x)
     rw [hmetric x]
-  have hmc : IsMetricCompatible_gen (I := I)
+  have hmc : IsMetricCompatibleGen (I := I)
       (metricCov (I := I) (M := M) g) g := by
     simpa only [metricCov] using
       (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)
@@ -826,7 +862,7 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
       metricTracePair0SAt (I := I) g (Hess x) =
           laplacian (I := I) (metricCov (I := I) (M := M) g) g f x := by
         simpa only [Hess, scalarLapTraceAt_eq_pair] using htrace.symm
-      _ = Δ_g (I := I) g ⟨_, hf⟩ x := by
+      _ = ΔG (I := I) g ⟨_, hf⟩ x := by
         simpa only [metricCov, LeviCivita] using
           (laplacian_levi_eq (I := I) g hf x)
       _ = L x := rfl
@@ -839,10 +875,12 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
       (1 / (2 * s)) (R x) (L x) (hRtrace x) (hHtrace x)
   have hHBzero : (∫ x, HB x ∂μw) = 0 := by
     simpa only [HB, RicGrad, Ric, Hess, q, L, z, μw,
-      metricRicci_apply, grad_g_apply] using weighted_bochner (I := I) g hf
+      metricRicci_apply, grad_g_mk_apply, gradient_eq_gradFun] using
+      weighted_bochner (I := I) g hf
   have hHSzero : (∫ x, HS x ∂μw) = 0 := by
     simpa only [HS, C, RicGrad, Ric, Hess, R, q, L, z, μw,
-      metricRicci_apply, grad_g_apply] using weighted_hess_split (I := I) g hf
+      metricRicci_apply, grad_g_mk_apply, gradient_eq_gradFun] using
+      weighted_hess_split (I := I) g hf
   have hZftzero : (∫ x, Zft x ∂μw) = 0 := by
     simpa only [Zft] using hZG ft hft
   have hWftzero : (∫ x, Wft x ∂μw) = 0 := by
@@ -884,7 +922,9 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
         (fun x => (-1) * Wf x) := contMDiff_const.mul hWf
     have h6 : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
         (fun x => (2 * (n : Real)) * Zf x) := contMDiff_const.mul hZf
-    simpa only [Corr] using (((((h0.add h1).add h2).add h3).add h4).add h5).add h6
+    refine (((((h0.add h1).add h2).add h3).add h4).add h5).add h6 |>.congr ?_
+    intro x
+    rfl
   have hCorrI : Integrable Corr μw := by
     simpa only [μw] using weighted_int (I := I) g hf hCorr.continuous
   have hCorrzero : (∫ x, Corr x ∂μw) = 0 := by
@@ -901,7 +941,7 @@ theorem weighted_w_square [I.Boundaryless] [CompactSpace M]
       Rt, qt]
     rw [hsq x]
     dsimp only [R, L, n]
-    simp only [grad_g_apply, gradient_eq_gradFun, ContMDiffMap.coeFn_mk]
+    simp only [grad_g_mk_apply, gradient_eq_gradFun]
     rw [show ft x = z x + R x - (n : Real) / (2 * s) from rfl]
     dsimp only [z, L, q, R, n]
     simp only [gradient_eq_gradFun]

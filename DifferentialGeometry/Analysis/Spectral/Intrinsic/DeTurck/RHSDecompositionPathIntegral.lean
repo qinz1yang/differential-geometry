@@ -5,7 +5,6 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciLineariza
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory intervalIntegral
 open scoped BigOperators Manifold Topology ContDiff
@@ -38,7 +37,7 @@ omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem unitModel_add_app
     (g : SmoothRiemannianMetric I M) (A B : SmoothCcTensor g 0 2)
-    (x : M) (v : Fin 2 → TangentSpace I x) :
+    (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g 2 (A + B) x v =
       unitModel (I := I) (M := M) g 2 A x v +
         unitModel (I := I) (M := M) g 2 B x v := by
@@ -47,14 +46,14 @@ private theorem unitModel_add_app
         unitModel (I := I) (M := M) g 2 B x := by
     simp only [unitModel]
     rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply,
-      ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add]
-  rw [hfun, ContinuousMultilinearMap.add_apply]
+      add_apply, Tensor0SSpace.toModel_add]
+  rw [hfun, add_apply]
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem unitModel_sub_app
     (g : SmoothRiemannianMetric I M) (A B : SmoothCcTensor g 0 2)
-    (x : M) (v : Fin 2 → TangentSpace I x) :
+    (x : M) (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g 2 (A - B) x v =
       unitModel (I := I) (M := M) g 2 A x v -
         unitModel (I := I) (M := M) g 2 B x v := by
@@ -63,8 +62,8 @@ private theorem unitModel_sub_app
         unitModel (I := I) (M := M) g 2 B x := by
     simp only [unitModel]
     rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-      ContinuousLinearMap.sub_apply, Tensor0SSpace.toModel_sub]
-  rw [hfun, ContinuousMultilinearMap.sub_apply]
+      sub_apply, Tensor0SSpace.toModel_sub]
+  rw [hfun, sub_apply]
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -87,8 +86,6 @@ private theorem threeArm_param_smul
     linearizedRicciThreeArmHjoint (I := I) (M := M) g r
       (fun t => t • A t) (δ := delta) (δ' := delta') := by
   rw [linearizedRicciThreeArmHjoint] at hA ⊢
-  letI := tensorRSBundle_topology (𝕜 := Real) (E := E) (H := H)
-    (I := I) (M := M) r 2
   intro p hp
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -161,7 +158,7 @@ private theorem threeArm_comp
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-private theorem movingMetricPairTraceOperator_joint
+private theorem secondMetricPairTraceOperator_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
     (hdelta : gFibreOpBound (I := I) (M := M) g
@@ -169,7 +166,7 @@ private theorem movingMetricPairTraceOperator_joint
     (hdeltaZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g (0 : SmoothCcTensor g 0 2)) delta) :
     linearizedRicciThreeArmHjoint (I := I) (M := M) g 6
-      (fun t => movingMetricPairTraceOperator (I := I) (M := M) g
+      (fun t => secondMetricPairTraceOperator (I := I) (M := M) g
         (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t))
       (δ := delta) (δ' := delta) := by
   rw [linearizedRicciThreeArmHjoint]
@@ -180,7 +177,7 @@ private theorem movingMetricPairTraceOperator_joint
     (V₂ := fun x : M => Tensor0SSpace 2 I x)
     (φ := fun p : M × Real =>
       (show Tensor0SSpace 6 I p.1 →L[Real] Tensor0SSpace 2 I p.1 from
-        (movingMetricPairTraceOperator (I := I) (M := M) g
+        (secondMetricPairTraceOperator (I := I) (M := M) g
           (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ p.2)).toSection p.1))
     (S := metricPerturbationPathDomain (δ := delta) (δ' := delta))
     (fun Y => by
@@ -223,17 +220,17 @@ theorem edgePairMono_joint
         (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t) G sigma)
       (δ := delta) (δ' := delta) := by
   have h := threeArm_comp (I := I) (M := M) g 2 6
-    (fun t => movingMetricPairTraceOperator (I := I) (M := M) g
+    (fun t => secondMetricPairTraceOperator (I := I) (M := M) g
       (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ t))
-    (rsDomDomCongrSection (I := I) (M := M) g 2 6 movingMetricPairTracePermutation
-      (slotExtendTwo (I := I) (M := M) g
+    (rsDomDomCongrSection (I := I) (M := M) g 2 6 ricciFoldRemainderSlotPerm
+      (slotExtendIter (I := I) (M := M) g 0 4 2
         (domDomCongrSection (I := I) g
           (sigma.trans (Equiv.swap (0 : Fin 4) 2 *
             Equiv.swap (1 : Fin 4) 3)) G)))
-    (movingMetricPairTraceOperator_joint (I := I) (M := M) g T hdelta hdeltaZ)
+    (secondMetricPairTraceOperator_joint (I := I) (M := M) g T hdelta hdeltaZ)
   simpa only [topOrderPairingCoefficient] using h
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem edgeLiePair_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -282,6 +279,7 @@ theorem edgeLiePair_joint
       (δ := delta) (δ' := delta)
   simpa only [Fin.sum_univ_three] using hscaled
 
+omit [SigmaCompactSpace M] in
 private theorem ricciHalf_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -307,6 +305,7 @@ private theorem ricciHalf_joint
     (threeArmJoint_smul (I := I) (M := M) g (1 / 2 : Real) _ hriem)
   simpa only [ricciPalatiniHalfCoefficient, linearizedRicciConnectionDifferenceOrder0Coeff] using hsum
 
+omit [SigmaCompactSpace M] in
 private theorem ricciDecomposition0_joint
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -348,6 +347,7 @@ private theorem ricciDecomposition0_joint
     (threeArmJoint_smul (I := I) (M := M) g (2 : Real) _ hinner)
   simpa only [ricciDecomposition0] using hall
 
+omit [SigmaCompactSpace M] in
 private theorem covDeriv_joint
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -364,6 +364,7 @@ private theorem covDeriv_joint
     (I := I) (M := M) g T 0 hdelta hdeltaZ g_bg).congr
       (fun p _ => by rfl)
 
+omit [SigmaCompactSpace M] in
 private theorem endo_joint
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -383,6 +384,7 @@ private theorem endo_joint
   simpa only [deTurckLieCoeffField_eq_covDerivArm_add_endoArm,
     add_sub_cancel_left] using hsub
 
+omit [SigmaCompactSpace M] in
 theorem lieDecomposition_joint
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -400,6 +402,7 @@ theorem lieDecomposition_joint
     (edgeLiePair_joint (I := I) (M := M)
       g T hdelta hdeltaZ lieDecompositionQ lieDecompositionEps)
 
+omit [SigmaCompactSpace M] in
 theorem rhsDecomposition0_joint
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -426,7 +429,23 @@ theorem rhsDecomposition0_joint
   have htail := threeArmJoint_add (I := I) (M := M) g _ _
     (threeArmJoint_add (I := I) (M := M) g _ _ hLie hEndo) hCorr
   have hall := threeArmJoint_add (I := I) (M := M) g _ _ hhead htail
-  simpa only [rhsDecomposition0] using hall
+  have hfamily :
+      rhsDecomposition0 (I := I) (M := M) g g_bg T hdelta hdeltaZ =
+        fun s =>
+          (-2 : Real) • ricciPalatiniHalfCoefficient (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) +
+            ricciDecomposition0 (I := I) (M := M) g
+              (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) (s • T) +
+            (lieDecomposition0 (I := I) (M := M) g
+                (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) g_bg
+                T hdelta hdeltaZ s +
+              deTurckLieEndoArmField (I := I) (M := M) g
+                (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) g_bg +
+              lieCorrectionZeroField (I := I) (M := M) g
+                (metricPerturbationPath (I := I) g T 0 hdelta hdeltaZ s) g_bg) := by
+    rfl
+  rw [hfamily]
+  exact hall
 
 def rhsDecomposition0Int
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
@@ -550,10 +569,16 @@ theorem rhs_sub_zero_decomposition
     funext i
     fin_cases i <;> rfl
   rw [hv, unitModel_sub_app]
-  rw [← rhs_chart_sum_one (I := I) g g_bg T 0
-      hdelta_lt hdelta hdelta_lt hdeltaZ x,
-    ← rhs_chart_sum_zero (I := I) g g_bg T 0
-      hdelta_lt hdelta hdelta_lt hdeltaZ x]
+  let v0T : TangentSpace I x :=
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)
+  let v1T : TangentSpace I x :=
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)
+  have hOne := rhs_chart_sum_one (I := I) g g_bg T 0
+    hdelta_lt hdelta hdelta_lt hdeltaZ x v0T v1T
+  have hZero := rhs_chart_sum_zero (I := I) g g_bg T 0
+    hdelta_lt hdelta hdelta_lt hdeltaZ x v0T v1T
+  simp only [v0T, v1T, ContinuousLinearEquiv.apply_symm_apply] at hOne hZero
+  rw [← hOne, ← hZero]
   rw [rhsSum_sub_eq_int (I := I) g g_bg T 0
     hdelta_lt hdelta hdelta_lt hdeltaZ x]
   have hI0 : IntervalIntegrable (fun s : Real =>
@@ -580,7 +605,7 @@ theorem rhs_sub_zero_decomposition
       (metricPerturbationPathDomain (δ := delta) (δ' := delta)) hSI hc2 x ![v 0, v 1]
   have hintegrand : ∀ᵐ s ∂volume, s ∈ Set.uIoc (0 : Real) 1 →
       rhsSumSlope (I := I) g g_bg T 0 hdelta_lt hdelta
-          hdelta_lt hdeltaZ x (v 0) (v 1) s =
+          hdelta_lt hdeltaZ x v0T v1T s =
         unitModel (I := I) (M := M) g 2
             (operatorFieldApply (I := I) (M := M) g 2 2 (Psi0 s) T) x ![v 0, v 1] +
           unitModel (I := I) (M := M) g 2
@@ -592,7 +617,7 @@ theorem rhs_sub_zero_decomposition
     rw [MeasureTheory.ae_iff]
     have hnull : volume ({1} : Set Real) = 0 := by simp
     refine MeasureTheory.measure_mono_null (fun s hs => ?_) hnull
-    rw [Set.mem_setOf_eq, Classical.not_imp] at hs
+    rw [Set.mem_ofPred_eq, Classical.not_imp] at hs
     obtain ⟨hsmem, hsneq⟩ := hs
     rw [Set.uIoc_of_le zero_le_one, Set.mem_Ioc] at hsmem
     rw [Set.mem_singleton_iff]
@@ -600,9 +625,10 @@ theorem rhs_sub_zero_decomposition
     have hsIoo : s ∈ Set.Ioo (0 : Real) 1 :=
       ⟨hsmem.1, lt_of_le_of_ne hsmem.2 hne⟩
     refine hsneq ?_
-    simpa only [hPsi0def, hPsi1def, hPsi2def, unitModel_add_app] using
+    simpa only [hPsi0def, hPsi1def, hPsi2def, unitModel_add_app,
+      v0T, v1T, ContinuousLinearEquiv.apply_symm_apply] using
       rhsSlope_decomposition (I := I) (M := M) g g_bg T hTsymm
-        hdelta_lt hdelta hdeltaZ x (v 0) (v 1) hsIoo
+        hdelta_lt hdelta hdeltaZ x v0T v1T hsIoo
   rw [intervalIntegral.integral_congr_ae hintegrand]
   rw [intervalIntegral.integral_add (hI0.add hI1) hI2,
     intervalIntegral.integral_add hI0 hI1]

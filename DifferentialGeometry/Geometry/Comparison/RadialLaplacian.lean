@@ -7,6 +7,8 @@ import DifferentialGeometry.Geometry.Comparison.Variation.JacobiShape
 import DifferentialGeometry.Geometry.Comparison.Volume.RadialGronwall
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Laplacian
 import DifferentialGeometry.Tensor.RSTensor.MetricTrace.LineSplit
+
+
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -38,8 +40,8 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -110,7 +112,8 @@ theorem branchHess_radial
     simpa only [γ] using
       intrinsicGeodesic_isGeodesic (I := I) g hEnorm p u
   have hqU' : γ 1 ∈ U := by
-    simpa only [γ, expMapIntrinsic_def] using hqU
+    convert hqU using 1
+    rfl
   have htrace :=
     deriv2_comp_geo_on (I := I) g hUopen hrU hγ hgeo hqU'
   have hu1 :
@@ -119,10 +122,17 @@ theorem branchHess_radial
   have hzero :
       (deriv^[2]
         (branchRadius (I := I) g B ∘ γ)) 1 = 0 := by
-    simpa only [γ, Function.comp_apply, one_smul] using
-      branchDeriv2_zero (I := I) B (t := (1 : Real)) zero_lt_one hu1
+    have hfun :
+        branchRadius (I := I) g B ∘ γ =
+          fun s ↦ branchRadius (I := I) g B
+            (intrinsicGeodesic (I := I) g hEnorm p u s) := by
+      funext s
+      rfl
+    rw [hfun]
+    exact branchDeriv2_zero (I := I) B (t := (1 : Real)) zero_lt_one hu1
   rw [htrace] at hzero
-  simpa only [curveVelocity] using hzero
+  convert hzero using 1
+  all_goals rfl
 
 theorem branchLap_eq_mean
     {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -163,18 +173,19 @@ theorem branchLap_eq_mean
   obtain ⟨U, hUopen, hqU, hrU⟩ :=
     branchRadius_open (I := I) B hu hu_pos
   have hqU' : q ∈ U := by
-    simpa only [q, γ, expMapIntrinsic_def] using hqU
+    convert hqU using 1
+    rfl
   have hZ : 0 < g.inner q Z Z := by
     rw [show g.inner q Z Z = g.inner p u u by
-      simpa only [q, Z, γ, curveVelocity] using
-        intrinsicGeodesic_speedSq_eq (I := I) g hEnorm p u 1]
+      convert intrinsicGeodesic_speedSq_eq (I := I) g hEnorm p u 1 using 1
+      all_goals rfl]
     exact hu_pos
   have hperp_end : ∀ i, g.inner q Z (V i 1) = 0 := by
     intro i
     have hp :
         g.inner q Z (V i 1) = g.inner p u (v i) := by
-      simpa only [q, Z, γ, V, curveVelocity, intrinsicVelocityLift] using
-        intrinsicJacobi_perp (I := I) g hEnorm p u (v i)
+      convert intrinsicJacobi_perp (I := I) g hEnorm p u (v i) using 1
+      all_goals rfl
     exact hp.trans (hperp i)
   have hLI : LinearIndependent Real fun i => V i 1 := by
     simpa only [V] using intrinsicJacobi_li (I := I) B hu v hv
@@ -225,6 +236,7 @@ omit [SigmaCompactSpace M]
   [RiemannianBundle (fun x : M ↦ TangentSpace I x)] [PseudoEMetricSpace M]
   [IsRiemannianManifold I M] [CompleteSpace M]
   [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)] in
+omit [NeZero (Module.finrank ℝ E)] in
 private theorem smul_c2_eventually
     (g : SmoothRiemannianMetric I M) (p : M) (x : E) {t : Real}
     (htx : ‖t • x‖ < expMapC2Radius (I := I) g p) :
@@ -240,7 +252,8 @@ private theorem smul_c2_eventually
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-  [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)] in
+  [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
+  [Bundle.RiemannianBundle (fun x : M ↦ TangentSpace I x)] in
 private lemma metric_smul_left
     (g : SmoothRiemannianMetric I M) (p : M)
     (c : Real) (v y : E) :
@@ -255,11 +268,12 @@ private lemma metric_smul_left
         (c • (show TangentSpace I p from v))
         (show TangentSpace I p from y) =
       _
-  rw [map_smul (g.inner p), ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [map_smul (g.inner p), smul_apply, smul_eq_mul]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-  [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)] in
+  [IsContinuousRiemannianBundle E (fun x : M ↦ TangentSpace I x)]
+  [Bundle.RiemannianBundle (fun x : M ↦ TangentSpace I x)] in
 private lemma metric_smul_right
     (g : SmoothRiemannianMetric I M) (p : M)
     (c : Real) (v y : E) :
@@ -286,9 +300,17 @@ private theorem radialCurve_eq_intr
         (show TangentSpace I p from x) := by
   filter_upwards [smul_c2_eventually (I := I) g p x htx] with s hs
   rw [radialCurve, exp_eq_intr_of_c2 (I := I) g hEnorm p hs]
-  simpa only [expMapIntrinsic_def] using
-    intrinsicGeodesic_smul (I := I) g hEnorm p
-      (show TangentSpace I p from x) s
+  calc
+    expMapIntrinsic (I := I) g hEnorm p
+        (show TangentSpace I p from s • x) =
+      intrinsicGeodesic (I := I) g hEnorm p
+        (show TangentSpace I p from s • x) 1 :=
+      expMapIntrinsic_def (I := I) g hEnorm p
+        (show TangentSpace I p from s • x)
+    _ = intrinsicGeodesic (I := I) g hEnorm p
+        (show TangentSpace I p from x) s :=
+      intrinsicGeodesic_smul (I := I) g hEnorm p
+        (show TangentSpace I p from x) s
 
 private theorem radialJacobi_eq_intr
     (g : SmoothRiemannianMetric I M)
@@ -324,9 +346,17 @@ private theorem radialJacobi_eq_intr
           intrinsicGeodesic (I := I) g hEnorm p
             (show TangentSpace I p from x + r • w) s := by
     funext r
-    simpa only [expMapIntrinsic_def] using
-      intrinsicGeodesic_smul (I := I) g hEnorm p
-        (show TangentSpace I p from x + r • w) s
+    calc
+      expMapIntrinsic (I := I) g hEnorm p
+          (show TangentSpace I p from s • (x + r • w)) =
+        intrinsicGeodesic (I := I) g hEnorm p
+          (show TangentSpace I p from s • (x + r • w)) 1 :=
+        expMapIntrinsic_def (I := I) g hEnorm p
+          (show TangentSpace I p from s • (x + r • w))
+      _ = intrinsicGeodesic (I := I) g hEnorm p
+          (show TangentSpace I p from x + r • w) s :=
+        intrinsicGeodesic_smul (I := I) g hEnorm p
+          (show TangentSpace I p from x + r • w) s
   have hagree :
       (fun r : Real =>
         expMap (I := I) g p
@@ -338,8 +368,21 @@ private theorem radialJacobi_eq_intr
   have hmf :=
     Filter.EventuallyEq.mfderiv_eq
       (I := 𝓘(Real, Real)) (I' := I) hagree
-  have happ := congrArg (fun L => (L (1 : Real) : E)) hmf
-  simpa only [radialJacobiField, intrinsicJacobi] using happ
+  have happ := congrArg (fun L => L (1 : Real)) hmf
+  have hpoint :
+      expMap (I := I) g p
+          (show TangentSpace I p from s • (x + (0 : Real) • w)) =
+        expMap (I := I) g p (show TangentSpace I p from s • x) := by
+    rw [zero_smul, add_zero]
+  rw [← hpoint]
+  change
+    (mfderiv 𝓘(Real, Real) I
+        (fun r : Real ↦ expMap (I := I) g p
+          (show TangentSpace I p from s • (x + r • w))) 0) 1 =
+      (mfderiv 𝓘(Real, Real) I
+        (fun r : Real ↦ intrinsicGeodesic (I := I) g hEnorm p
+          (show TangentSpace I p from x + r • w) s) 0) 1
+  exact happ
 
 private theorem intrJacobi_smul
     (g : SmoothRiemannianMetric I M)
@@ -462,7 +505,13 @@ theorem radialLap_eq_mean
   have hMeanRI :
       curveMean (I := I) g γR VR t =
         curveMean (I := I) g γI VI t := by
-    rw [curveMean, curveMean, curveShape, curveShape, hGramRI, hMixedRI]
+    change Matrix.trace
+        ((curveGram (I := I) g γR VR t)⁻¹ *
+          curveMixedGram (I := I) g γR VR t) =
+      Matrix.trace
+        ((curveGram (I := I) g γI VI t)⁻¹ *
+          curveMixedGram (I := I) g γI VI t)
+    rw [hGramRI, hMixedRI]
   have hγT (s : Real) : γT s = γI (t * s) := by
     dsimp only [γT, γI]
     calc
@@ -517,7 +566,7 @@ theorem radialLap_eq_mean
           (covDerivAlong (I := I) g γI (VI i) t)
           (VI j t)
     rw [hDi, (g.inner (γI t)).map_smul,
-      ContinuousLinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
   have hMeanT :
       curveMean (I := I) g γT VT 1 =
         t * curveMean (I := I) g γI VI t := by
@@ -556,8 +605,13 @@ theorem radialLap_eq_mean
         hsrc hu_pos hvT hperpT hcard
   have hend : γR t = γT 1 := by
     dsimp only [γR, γT]
-    simpa only [radialCurve, expMapIntrinsic_def] using
-      exp_eq_intr_of_c2 (I := I) g hEnorm p hC2
+    change expMap (I := I) g p
+        (show TangentSpace I p from t • x) =
+      intrinsicGeodesic (I := I) g hEnorm p
+        (show TangentSpace I p from t • x) 1
+    exact (exp_eq_intr_of_c2 (I := I) g hEnorm p hC2).trans
+      (expMapIntrinsic_def (I := I) g hEnorm p
+        (show TangentSpace I p from t • x))
   have hinnerT :
       g.inner p (t • x) (t • x) =
         t ^ 2 * g.inner p x x := by

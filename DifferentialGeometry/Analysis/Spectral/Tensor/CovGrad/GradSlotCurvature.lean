@@ -12,7 +12,6 @@ open DifferentialGeometry.Integral.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped Manifold Topology ContDiff BigOperators
@@ -86,6 +85,7 @@ theorem gradSlotCurv_eval
   rw [gradSlotCurv_apply]
   exact slotFreeCurvOpFib_apply_eval (I := I) (M := M) g₀ 2 x A u w m
 
+omit [SigmaCompactSpace M] in
 theorem gradSlot_cov_eval
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     (A : Tensor0SSpace 2 I x) (d u w : TangentSpace I x)
@@ -98,24 +98,44 @@ theorem gradSlot_cov_eval
       - ∑ k : Fin 2, Tensor0SSpace.toModel A
           (Function.update m k
             (nablaRiemannOp (I := I) g₀ x d u w (m k))) := by
-  have htail :
-      Matrix.vecTail
-          (Fin.cons d (Fin.cons u (Fin.cons w m)) :
-            Fin 5 → TangentSpace I x) =
-        Fin.cons u (Fin.cons w m) := by
-    funext k
-    rw [Matrix.vecTail, Function.comp_apply, Fin.cons_succ]
-  rw [covGrad_toSection_apply_eval (I := I) (M := M) g₀ 2 4
-    (gradSlotCurvCoeff (I := I) (M := M) g₀) x A,
-    Fin.cons_zero, htail, tensorCovDerivAt_def]
+  have h := covGrad_toSection_apply_eval (I := I) (M := M) g₀ 2 4
+    (gradSlotCurvCoeff (I := I) (M := M) g₀) x A
+    (Fin.cons d (Fin.cons u (Fin.cons w m)))
+  change Tensor0SSpace.toModel
+      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 5 I x from
+        (covGrad (I := I) (M := M) g₀ 2 4
+          (gradSlotCurvCoeff (I := I) (M := M) g₀)).toSection x) A)
+      (Fin.cons d (Fin.cons u (Fin.cons w m))) =
+    Tensor0SSpace.toModel
+      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
+        tensorCovDerivAt (I := I) (M := M) g₀ 2 4
+          (gradSlotCurvCoeff (I := I) (M := M) g₀) x d) A)
+      (Fin.cons u (Fin.cons w m)) at h
+  rw [h]
+  change Tensor0SSpace.toModel
+      (TensorRSSpace.toCLM
+        (tensorCovDerivAt (I := I) (M := M) g₀ 2 4
+          (gradSlotCurvCoeff (I := I) (M := M) g₀) x (show E from d)) A)
+      (Fin.cons u (Fin.cons w m)) = _
+  rw [tensorCovDerivAt_def]
   change Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
         TensorRSNabla.tensorRSCovariantDerivative I M 2 4
           (LeviCivita (I := I) g₀)
           (slotFreeOpCc (I := I) (M := M) g₀ 2).toSection x d) A)
       (Fin.cons u (Fin.cons w m)) = _
+  change Tensor0SSpace.eval
+      ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
+        TensorRSNabla.tensorRSCovariantDerivative I M 2 4
+          (LeviCivita (I := I) g₀)
+          (slotFreeOpCc (I := I) (M := M) g₀ 2).toSection x d) A)
+      (Fin.cons u (Fin.cons w m)) =
+    - ∑ k : Fin 2, Tensor0SSpace.eval A
+        (Function.update m k
+          (nablaRiemannOp (I := I) g₀ x d u w (m k)))
   exact slotFree_cov_eval (I := I) (M := M) g₀ 2 x d A u w m
 
+omit [SigmaCompactSpace M] in
 theorem gradSlotCurv_spec
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 2) :
     iteratedCovGrad (I := I) g₀ 0 2 2 S -
@@ -128,7 +148,7 @@ theorem gradSlotCurv_spec
   intro x
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [unitModel_sub (I := I) g₀ 4 _ _ x, ContinuousMultilinearMap.sub_apply,
+  rw [unitModel_sub (I := I) g₀ 4 _ _ x, sub_apply,
     domDomCongrSection_unitModel (I := I) g₀ (Equiv.swap (0 : Fin 4) 1)
       (iteratedCovGrad (I := I) g₀ 0 2 2 S) x,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -195,20 +215,22 @@ theorem gradSlotCurv_spec
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
           riemannSec (tensorCov (I := I) g₀ 0 2) (fun b => Xs b) (fun b => Ys b)
             (fun y : M => S.toSection y) x) (unitZeroSec (I := I) (M := M) x)) m := by
-    rw [← h3]
-    rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorSecondCovDeriv (I := I) g₀ 0 2 (fun b => Xs b) (fun b => Ys b)
-          (fun y : M => S.toSection y) x -
-        tensorSecondCovDeriv (I := I) g₀ 0 2 (fun b => Ys b) (fun b => Xs b)
-          (fun y : M => S.toSection y) x) =
-      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorSecondCovDeriv (I := I) g₀ 0 2 (fun b => Xs b) (fun b => Ys b)
-          (fun y : M => S.toSection y) x) -
-      (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorSecondCovDeriv (I := I) g₀ 0 2 (fun b => Ys b) (fun b => Xs b)
-          (fun y : M => S.toSection y) x) from rfl]
-    rw [ContinuousLinearMap.sub_apply, Tensor0SSpace.toModel_sub,
-      ContinuousMultilinearMap.sub_apply]
+    change Tensor0SSpace.eval
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
+          tensorSecondCovDeriv (I := I) g₀ 0 2 (fun b => Xs b) (fun b => Ys b)
+            (fun y : M => S.toSection y) x) (unitZeroSec (I := I) (M := M) x)) m -
+      Tensor0SSpace.eval
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
+          tensorSecondCovDeriv (I := I) g₀ 0 2 (fun b => Ys b) (fun b => Xs b)
+            (fun y : M => S.toSection y) x) (unitZeroSec (I := I) (M := M) x)) m =
+      Tensor0SSpace.eval
+        ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
+          riemannSec (tensorCov (I := I) g₀ 0 2) (fun b => Xs b) (fun b => Ys b)
+            (fun y : M => S.toSection y) x) (unitZeroSec (I := I) (M := M) x)) m
+    have h3eval := congrArg
+      (fun L : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x =>
+        Tensor0SSpace.eval (L (unitZeroSec (I := I) (M := M) x)) m) h3
+    simpa only [sub_apply, Tensor0SSpace.eval_sub] using h3eval
   have h5 := riemannSec_tensorCov_apply_eval (I := I) (M := M) g₀ 0 2 Xs Ys
     S.toSection (unitZeroSec (I := I) (M := M)) x m
   have h6 : riemannSec
@@ -237,13 +259,21 @@ theorem gradSlotCurv_spec
     rw [hm_def]
     funext i
     fin_cases i <;> rfl
-  rw [h1, h2, h4, h5, h6, map_zero, Tensor0SSpace.toModel_zero,
-    ContinuousMultilinearMap.zero_apply, sub_zero, h7]
+  rw [h1, h2, h4, h5, h6, map_zero]
+  change Tensor0SSpace.eval
+      (riemannSec
+        (Tensor0SNabla.tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g₀))
+        (fun b => Xs b) (fun b => Ys b)
+        (fun b => (show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 2 I b from
+          S.toSection b) (unitZeroSec (I := I) (M := M) b)) x) m -
+    Tensor0SSpace.eval (0 : Tensor0SSpace 2 I x) m = _
+  rw [Tensor0SSpace.eval_zero, sub_zero, h7]
   rw [Finset.sum_congr rfl (fun k _ => by rw [h8 (m k)])]
   rw [← h9]
   conv_rhs => rw [unitModel, hv0]
   rfl
 
+omit [SigmaCompactSpace M] in
 theorem gradSlot_sub_eq_curv
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : SmoothCcTensor g₀ 2 4,

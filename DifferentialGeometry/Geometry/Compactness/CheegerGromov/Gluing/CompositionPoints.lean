@@ -18,11 +18,11 @@ open scoped Topology Manifold ContDiff ENNReal
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E]
-[InnerProductSpace Real E] [FiniteDimensional Real E]
+  [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
@@ -127,25 +127,25 @@ theorem hatSrcPtsOfComp
                 (X.obj (L.φ n)).metric (center gamma)).symm
                   (A gamma b (B gamma a ((NormalCoordinates.normalChartAt (I := I)
                     (X.obj (L.φ n)).metric (center gamma)) x)))) < eps := by
-  letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
-  letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
-  letI : SigmaCompactSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).sigmaCompact
-  letI : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
+  let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
+  let : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
+  let : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
+  let : SigmaCompactSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).sigmaCompact
+  let : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
     (X.obj (L.φ n)).t2TangentBundle
-  letI : ConnectedSpace (X.obj (L.φ n)).M := hconn
-  letI : TopologicalSpace.MetrizableSpace (X.obj (L.φ n)).M :=
+  let : ConnectedSpace (X.obj (L.φ n)).M := hconn
+  let : TopologicalSpace.MetrizableSpace (X.obj (L.φ n)).M :=
     Manifold.metrizableSpace I (X.obj (L.φ n)).M
-  letI : T3Space (X.obj (L.φ n)).M := inferInstance
-  letI : RiemannianBundle
+  let : T3Space (X.obj (L.φ n)).M := inferInstance
+  let : RiemannianBundle
       (fun x : (X.obj (L.φ n)).M => TangentSpace I x) :=
     ⟨(X.obj (L.φ n)).metric.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun x : (X.obj (L.φ n)).M => TangentSpace I x) :=
     ⟨(X.obj (L.φ n)).metric.inner,
       (X.obj (L.φ n)).metric.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace (X.obj (L.φ n)).M :=
+  let : MetricSpace (X.obj (L.φ n)).M :=
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
   exact
     NetLimitData.hatChartPtsSrcK (I := I) (X := X) hd P L pb r n center sourceK
@@ -255,25 +255,25 @@ theorem hatSuppPtsOfComp
               (X.obj (L.φ n)).metric (center gamma)).symm
                 (A gamma b (B gamma a ((NormalCoordinates.normalChartAt (I := I)
                   (X.obj (L.φ n)).metric (center gamma)) x)))) < eps := by
-  letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
-  letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
-  letI : SigmaCompactSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).sigmaCompact
-  letI : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
+  let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
+  let : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
+  let : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
+  let : SigmaCompactSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).sigmaCompact
+  let : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
     (X.obj (L.φ n)).t2TangentBundle
-  letI : ConnectedSpace (X.obj (L.φ n)).M := hconn
-  letI : TopologicalSpace.MetrizableSpace (X.obj (L.φ n)).M :=
+  let : ConnectedSpace (X.obj (L.φ n)).M := hconn
+  let : TopologicalSpace.MetrizableSpace (X.obj (L.φ n)).M :=
     Manifold.metrizableSpace I (X.obj (L.φ n)).M
-  letI : T3Space (X.obj (L.φ n)).M := inferInstance
-  letI : RiemannianBundle
+  let : T3Space (X.obj (L.φ n)).M := inferInstance
+  let : RiemannianBundle
       (fun x : (X.obj (L.φ n)).M => TangentSpace I x) :=
     ⟨(X.obj (L.φ n)).metric.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun x : (X.obj (L.φ n)).M => TangentSpace I x) :=
     ⟨(X.obj (L.φ n)).metric.inner,
       (X.obj (L.φ n)).metric.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace (X.obj (L.φ n)).M :=
+  let : MetricSpace (X.obj (L.φ n)).M :=
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
   intro gamma eps heps
   let S : Set (X.obj (L.φ n)).M :=

@@ -174,9 +174,25 @@ theorem exists_uniform_galerkin_action_all_order_affine_bound
     linarith [htri, h2', h1', hlower]
   have hmass := cc_partial_le_norm (I := I) (M := M) g 2 (m : ℝ)
     (A.secondOrderAction (I := I) (M := M) T + A.firstOrderAction (I := I) (M := M) T) F
-  refine le_trans (le_trans (Real.sqrt_le_sqrt hmass)
-    (le_of_eq (Real.sqrt_sq (norm_nonneg _)))) ?_
-  simpa only [T, A, galerkinActionVectorBackground] using harms
+  have hpartial :
+      Real.sqrt (∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (m : ℝ) *
+          ((smoothCcToTensorHs (I := I) (M := M) g (m : ℝ)
+            (A.secondOrderAction (I := I) (M := M) T +
+              A.firstOrderAction (I := I) (M := M) T)).coeff i) ^ 2) ≤
+        ‖smoothCcToTensorHs (I := I) (M := M) g (m : ℝ)
+          (A.secondOrderAction (I := I) (M := M) T +
+            A.firstOrderAction (I := I) (M := M) T)‖ := by
+    exact (Real.sqrt_le_sqrt hmass).trans
+      (le_of_eq (Real.sqrt_sq (norm_nonneg _)))
+  have hgal (i : TensorEigenIdx (I := I) (M := M) g 0 2) :
+      (galerkinActionVectorBackground (I := I) (M := M) g gBase hR0
+          (lt_of_le_of_lt hδ_le (by norm_num)) hreal F c).coeff i =
+        (smoothCcToTensorHs (I := I) (M := M) g (m : ℝ)
+          (A.secondOrderAction (I := I) (M := M) T +
+            A.firstOrderAction (I := I) (M := M) T)).coeff i := by
+    simp only [galerkinActionVectorBackground, smoothCcToTensorHs_coeff, A, T]
+  simp_rw [hgal]
+  exact hpartial.trans harms
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 

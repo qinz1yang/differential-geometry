@@ -6,7 +6,6 @@ import Mathlib.Analysis.Normed.Module.Multilinear.Basic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap ContinuousMultilinearMap
 open scoped Manifold Topology Bundle ContDiff BigOperators

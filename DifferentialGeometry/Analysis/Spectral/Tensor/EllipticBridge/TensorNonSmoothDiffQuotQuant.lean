@@ -55,15 +55,15 @@ theorem tensor_h2_chart_loc_of_data_quantitative
         ∃ g_ik : EuclN → ℝ,
           MemLp g_ik 2 ((volume : Measure EuclN).restrict Ω'') ∧
           DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k g_ik
-            (D.weak_partial i) Ω'' ∧
+            (D.weakPartial i) Ω'' ∧
           eLpNorm g_ik 2 ((volume : Measure EuclN).restrict Ω'') ≤
             ENNReal.ofReal (C_geom i k * Real.sqrt (
               (∑ l : Fin (Module.finrank ℝ E),
-                (eLpNorm (D.weak_partial l) 2
+                (eLpNorm (D.weakPartial l) 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)
-              + (eLpNorm D.u_chart 2
+              + (eLpNorm D.uChart 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2
-              + (eLpNorm D.f_chart 2
+              + (eLpNorm D.fChart 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)) := by
   classical
   obtain ⟨C_geom, hC_geom_nn, hC_geom⟩ := exists_weak_second_partial_bound_by_geometric_constant
@@ -101,15 +101,15 @@ example (α : M) (P₀ : TensorCompIdx (E := E) r s)
         ∃ g_ik : EuclN → ℝ,
           MemLp g_ik 2 ((volume : Measure EuclN).restrict Ω'') ∧
           DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k g_ik
-            (D.weak_partial i) Ω'' ∧
+            (D.weakPartial i) Ω'' ∧
           eLpNorm g_ik 2 ((volume : Measure EuclN).restrict Ω'') ≤
             ENNReal.ofReal (C_geom i k * Real.sqrt (
               (∑ l : Fin (Module.finrank ℝ E),
-                (eLpNorm (D.weak_partial l) 2
+                (eLpNorm (D.weakPartial l) 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)
-              + (eLpNorm D.u_chart 2
+              + (eLpNorm D.uChart 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2
-              + (eLpNorm D.f_chart 2
+              + (eLpNorm D.fChart 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)) :=
   tensor_h2_chart_loc_of_data_quantitative hη hη_supp hη_range hN h_fderiv_eta
     hΩ' hΩ'_chart hΩ'_compact hη_in_Ω' hR₀_pos hh_supp_in_Ω' hη_one_on_Ω''

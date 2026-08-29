@@ -11,7 +11,6 @@ import Mathlib.Analysis.InnerProductSpace.Completion
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Manifold MeasureTheory Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -112,7 +111,7 @@ theorem smoothCcTensor_eq_of_toL2_eq (S T : SmoothCcTensor g r s)
         (fun x : M => tensorInnerPointwise_nonneg (I := I) (M := M) g r s x
           ((S - T).toFun x))
         (SmoothCcTensor.memL2_toFun (I := I) (M := M) (S - T))).mp hinner0
-    haveI : (riemannianVolumeMeasure (I := I) (M := M) g).IsOpenPosMeasure :=
+    have : (riemannianVolumeMeasure (I := I) (M := M) g).IsOpenPosMeasure :=
       riemannianVolumeMeasure_isOpenPosMeasure (I := I) (M := M) g
     have heq :
         (fun x : M => tensorInnerPointwise (I := I) (M := M) g r s x

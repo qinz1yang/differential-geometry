@@ -6,7 +6,6 @@ import Mathlib.Geometry.Manifold.VectorBundle.Hom
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set ContinuousLinearMap
 

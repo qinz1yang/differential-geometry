@@ -6,7 +6,6 @@ namespace TensorLieDeriv
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap VectorField Filter
     DifferentialGeometry.Tensor0SBundle Function
@@ -34,11 +33,16 @@ private theorem contDiffWithinAt_clm_of_apply
     (Module.finrank_fin_fun (R := 𝕜) (n := d)).symm
   let e₁ : E ≃L[𝕜] (Fin d → 𝕜) := ContinuousLinearEquiv.ofFinrankEq hd
   let e₂ : (E →L[𝕜] F) ≃L[𝕜] (Fin d → F) :=
-    (e₁.arrowCongr (1 : F ≃L[𝕜] F)).trans (ContinuousLinearEquiv.piRing (Fin d))
+    (e₁.arrowCongr (ContinuousLinearEquiv.refl 𝕜 F)).trans
+      (ContinuousLinearEquiv.piRing (Fin d))
   rw [← id_comp Γ, ← e₂.symm_comp_self]
   refine e₂.symm.contDiff.comp_contDiffWithinAt ?_
   refine contDiffWithinAt_pi.mpr fun i => ?_
-  simpa [e₁, e₂, Function.comp_def] using hΓ (e₁.symm (Pi.single i (1 : 𝕜)))
+  apply ContDiffWithinAt.congr_of_eventuallyEq
+    (hΓ (e₁.symm (Pi.single i (1 : 𝕜))))
+  · exact Filter.Eventually.of_forall fun z => by
+      simp [e₁, e₂, ContinuousLinearEquiv.piRing]
+  · simp [e₁, e₂, ContinuousLinearEquiv.piRing]
 
 section ConnectionEndomorphism
 
@@ -58,7 +62,8 @@ private theorem covariantDerivative_finset_sum
   | insert i t hit ih =>
       have hσi : MDiffAt (T% (σ i)) x := hσ i
       have hsum : MDiffAt (T% (t.sum σ)) x := by
-        have hsum_raw := MDifferentiableAt.sum_section (s := t) (t := σ) hσ
+        have hsum_raw := MDifferentiableAt.sum_section (s := t) (t := σ)
+          (fun i _ => hσ i)
         simpa using hsum_raw
       calc
         (cov ((insert i t).sum σ) x) v
@@ -281,7 +286,7 @@ lemma connectionEndomorphismInChartL_apply_center_modelVector
     connectionEndomorphismInChartL_apply_modelVector
       (𝕜 := 𝕜) (I := I) cov X x (mem_extChartAt_target (I := I) x) v
   rw [extChartAt_to_inv] at h
-  simpa using h
+  exact h
 
 lemma connectionEndomorphismInChartL_apply_center
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -296,7 +301,12 @@ lemma connectionEndomorphismInChartL_apply_center
   rw [TangentBundle.continuousLinearMapAt_trivializationAt
     (I := I) (x₀ := x) (x := x) (mem_chart_source H x)] at h
   rw [mfderiv_extChartAt_self] at h
-  simpa using h
+  have hid :
+      (ContinuousLinearMap.id 𝕜 (TangentSpace I x)) (X x) = X x := rfl
+  exact (congrArg
+    (fun w : TangentSpace I x =>
+      connectionEndomorphismInChartL (𝕜 := 𝕜) (I := I) cov x
+        (extChartAt I x x) w v) hid).symm.trans h
 
 theorem covariantDerivative_modelInChart_center_eq_sum
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
@@ -317,7 +327,7 @@ theorem covariantDerivative_modelInChart_center_eq_sum
     tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀
         (fun p : M => (cov V p) (X p)) (extChartAt I x₀ x₀) =
       (∑ i : Fin (Module.finrank 𝕜 E),
-        extDerivFun (I := I) (zfun i) x₀ (X x₀) • b i) +
+        mvfderiv (I := I) (zfun i) x₀ (X x₀) • b i) +
         connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov X x₀
           (extChartAt I x₀ x₀)
           (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ V
@@ -344,7 +354,8 @@ theorem covariantDerivative_modelInChart_center_eq_sum
   have hsum_diff : MDiffAt (T% ((Finset.univ : Finset (Fin (Module.finrank 𝕜 E))).sum term))
     x₀ := by
     simpa using MDifferentiableAt.sum_section
-      (s := (Finset.univ : Finset (Fin (Module.finrank 𝕜 E)))) (t := term) hterm_diff
+      (s := (Finset.univ : Finset (Fin (Module.finrank 𝕜 E)))) (t := term)
+      (fun i _ => hterm_diff i)
   have hV_ev :
       V =ᶠ[𝓝 x₀]
         fun p : M =>
@@ -356,11 +367,16 @@ theorem covariantDerivative_modelInChart_center_eq_sum
   have hcov_congr :
       cov V x₀ = cov ((Finset.univ : Finset (Fin (Module.finrank 𝕜 E))).sum term) x₀ :=
     cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq hV hsum_diff
-      (by simp) (by simpa [term] using hV_ev)
+      (by simp) (by
+        filter_upwards [hV_ev] with q hq
+        rw [Finset.sum_apply]
+        change V q = ∑ i : Fin (Module.finrank 𝕜 E),
+          zfun i q • tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (b i) q
+        exact hq)
   have hcov_sum :
       (cov V x₀) (X x₀) =
         ∑ i : Fin (Module.finrank 𝕜 E),
-          (extDerivFun (I := I) (zfun i) x₀ (X x₀) •
+          (mvfderiv (I := I) (zfun i) x₀ (X x₀) •
               tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (b i) x₀ +
             zfun i x₀ •
               (cov (tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (b i)) x₀) (X x₀)) := by
@@ -373,7 +389,7 @@ theorem covariantDerivative_modelInChart_center_eq_sum
             exact covariantDerivative_finset_sum (𝕜 := 𝕜) (I := I) cov
               (Finset.univ : Finset (Fin (Module.finrank 𝕜 E))) term (X x₀) hterm_diff
       _ = ∑ i : Fin (Module.finrank 𝕜 E),
-            (extDerivFun (I := I) (zfun i) x₀ (X x₀) •
+            (mvfderiv (I := I) (zfun i) x₀ (X x₀) •
                 tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (b i) x₀ +
               zfun i x₀ •
                 (cov (tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (b i)) x₀) (X x₀)) := by
@@ -434,7 +450,7 @@ theorem covariantDerivative_modelInChart_center_eq_sum
   rw [extChartAt_to_inv]
   change e.continuousLinearMapAt 𝕜 x₀ ((cov V x₀) (X x₀)) =
     (∑ i : Fin (Module.finrank 𝕜 E),
-      extDerivFun (I := I) (zfun i) x₀ (X x₀) • b i) +
+      mvfderiv (I := I) (zfun i) x₀ (X x₀) • b i) +
       connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov X x₀
         (extChartAt I x₀ x₀)
         (e.continuousLinearMapAt 𝕜 x₀ (V x₀))
@@ -465,7 +481,7 @@ theorem covariantDerivative_modelInChart_eq_sum
     tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀
         (fun q : M => (cov V q) (X q)) (extChartAt I x₀ p) =
       (∑ i : Fin (Module.finrank 𝕜 E),
-        extDerivFun (I := I) (zfun i) p (X p) • b i) +
+        mvfderiv (I := I) (zfun i) p (X p) • b i) +
         connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov X x₀
           (extChartAt I x₀ p)
           (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ V
@@ -490,7 +506,8 @@ theorem covariantDerivative_modelInChart_eq_sum
     exact (hz i).smul_section (hconst_diff i)
   have hsum_diff : MDiffAt (T% ((Finset.univ : Finset (Fin (Module.finrank 𝕜 E))).sum term)) p := by
     simpa using MDifferentiableAt.sum_section
-      (s := (Finset.univ : Finset (Fin (Module.finrank 𝕜 E)))) (t := term) hterm_diff
+      (s := (Finset.univ : Finset (Fin (Module.finrank 𝕜 E)))) (t := term)
+      (fun i _ => hterm_diff i)
   have hV_ev :
       V =ᶠ[𝓝 p]
         fun q : M =>
@@ -502,11 +519,16 @@ theorem covariantDerivative_modelInChart_eq_sum
   have hcov_congr :
       cov V p = cov ((Finset.univ : Finset (Fin (Module.finrank 𝕜 E))).sum term) p :=
     cov.isCovariantDerivativeOnUniv.congr_of_eventuallyEq hV hsum_diff
-      (by simp) (by simpa [term] using hV_ev)
+      (by simp) (by
+        filter_upwards [hV_ev] with q hq
+        rw [Finset.sum_apply]
+        change V q = ∑ i : Fin (Module.finrank 𝕜 E),
+          zfun i q • tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (b i) q
+        exact hq)
   have hcov_sum :
       (cov V p) (X p) =
         ∑ i : Fin (Module.finrank 𝕜 E),
-          (extDerivFun (I := I) (zfun i) p (X p) •
+          (mvfderiv (I := I) (zfun i) p (X p) •
               tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (b i) p +
             zfun i p •
               (cov (tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (b i)) p) (X p)) := by
@@ -519,7 +541,7 @@ theorem covariantDerivative_modelInChart_eq_sum
             exact covariantDerivative_finset_sum (𝕜 := 𝕜) (I := I) cov
               (Finset.univ : Finset (Fin (Module.finrank 𝕜 E))) term (X p) hterm_diff
       _ = ∑ i : Fin (Module.finrank 𝕜 E),
-            (extDerivFun (I := I) (zfun i) p (X p) •
+            (mvfderiv (I := I) (zfun i) p (X p) •
                 tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (b i) p +
               zfun i p •
                 (cov (tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (b i)) p) (X p)) := by
@@ -588,7 +610,7 @@ theorem covariantDerivative_modelInChart_eq_sum
   rw [hleft]
   change e.continuousLinearMapAt 𝕜 p ((cov V p) (X p)) =
     (∑ i : Fin (Module.finrank 𝕜 E),
-      extDerivFun (I := I) (zfun i) p (X p) • b i) +
+      mvfderiv (I := I) (zfun i) p (X p) • b i) +
       connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov X x₀
         (extChartAt I x₀ p)
         (e.continuousLinearMapAt 𝕜 p (V p))
@@ -610,7 +632,7 @@ lemma connectionEndomorphismInChart_apply_contDiffWithinAt
         connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀ y v)
       (Set.range I) (extChartAt I x₀ x₀) := by
   let e := trivializationAt E (TangentSpace I) x₀
-  haveI : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I :=
+  have : ContMDiffVectorBundle n E (TangentSpace I : M → Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := n)
   let σ : (p : M) → TangentSpace I p :=
     tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ v

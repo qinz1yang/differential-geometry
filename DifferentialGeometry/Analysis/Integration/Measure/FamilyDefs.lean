@@ -95,8 +95,9 @@ theorem FunctionRegularAt.of_contMDiff
       contMDiff_iff_contDiff.mp
         (hf.comp (contMDiff_id.prodMk contMDiff_const))
     exact (htime.differentiable (by norm_num)).differentiableAt.hasDerivAt
-  · simpa only [F] using
-      (DifferentialGeometry.contMDiff_partial_deriv_fst I F).continuous
+  · have h := (DifferentialGeometry.contMDiff_partial_deriv_fst I F).continuous
+    change Continuous (fun p : ℝ × M => deriv (fun s : ℝ => f s p.2) p.1) at h
+    exact h
 
 section ChartDensityFamily
 

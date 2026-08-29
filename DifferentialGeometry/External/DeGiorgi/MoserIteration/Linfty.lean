@@ -1,6 +1,7 @@
 -- Modified 2026-04-28: updated internal import paths for project namespace
 import DifferentialGeometry.External.DeGiorgi.MoserIteration.Iteration
 
+
 /-!
 # Moser Linfty Closeout
 
@@ -91,7 +92,7 @@ private theorem moser_closeout_superlevel_null
   let g : E → ℝ := fun x => f x ^ (p₀ / 2)
   let K : ℝ := moserLinftyBoundPow (d := d) A (u := u) p₀ ^ (1 / 2 : ℝ)
   let S : Set E := {x | c ≤ g x}
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ, Bhalf]
     rw [isFiniteMeasure_restrict]
     exact measure_ne_top_of_subset Metric.ball_subset_closedBall
@@ -162,7 +163,7 @@ private theorem moser_closeout_superlevel_null
       ext x
       exact hgq_eq x
     have hInt_mu : Integrable (fun x => g x ^ q_n) μ := by
-      simpa [μ, Bhalf] using hInt_half
+      exact hInt_half.integrable
     have hnonneg_ae : 0 ≤ᵐ[μ] fun x => g x ^ q_n := by
       exact Filter.Eventually.of_forall fun x => Real.rpow_nonneg (hg_nonneg x) _
     have hmarkov :
@@ -294,7 +295,7 @@ private theorem moser_ae_closeout
   let f : E → ℝ := fun x => |max (u x) 0|
   let g : E → ℝ := fun x => f x ^ (p₀ / 2)
   let K : ℝ := moserLinftyBoundPow (d := d) A (u := u) p₀ ^ (1 / 2 : ℝ)
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ, Bhalf]
     rw [isFiniteMeasure_restrict]
     exact measure_ne_top_of_subset Metric.ball_subset_closedBall
@@ -372,7 +373,7 @@ theorem linfty_subsolution_Moser
         (Metric.ball (0 : E) 1) volume) :
     ∀ᵐ x ∂(volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))),
       |max (u x) 0| ^ p₀ ≤
-      C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+      CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
         (p₀ / (p₀ - 1)) ^ (d : ℝ) *
         ∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ p₀ ∂volume := by
   have hiter_raw :=
@@ -404,19 +405,19 @@ theorem linfty_subsolution_Moser_two
         (Metric.ball (0 : E) 1) volume) :
     ∀ᵐ x ∂(volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))),
       |max (u x) 0| ^ 2 ≤
-        C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+        CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
           (2 / (2 - 1 : ℝ)) ^ (d : ℝ) *
           ∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ 2 ∂volume := by
   let I₂ : ℝ := ∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ 2 ∂volume
-  let c : ℝ := C_DeGiorgi_subsolution_normalized d * A.1.Λ ^ ((d : ℝ) / 4)
+  let c : ℝ := CDeGiorgiSubsolutionNormalized d * A.1.Λ ^ ((d : ℝ) / 4)
   have hI₂_nonneg : 0 ≤ I₂ := by
     dsimp [I₂]
     refine integral_nonneg ?_
     intro x
     positivity
   have hc_nonneg : 0 ≤ c := by
-    have hCDG_nonneg : 0 ≤ C_DeGiorgi_subsolution_normalized d := by
-      dsimp [C_DeGiorgi_subsolution_normalized]
+    have hCDG_nonneg : 0 ≤ CDeGiorgiSubsolutionNormalized d := by
+      dsimp [CDeGiorgiSubsolutionNormalized]
       exact
         (C_DeGiorgiSmallness_pos (d := d)
           (K_DeGiorgi_subsolution_normalized_pos (d := d))).le
@@ -444,11 +445,11 @@ theorem linfty_subsolution_Moser_two
         rw [mul_pow, Real.sq_sqrt hI₂_nonneg]
   have hconst :
       c ^ 2 * I₂ ≤
-        C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+        CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
           (2 / (2 - 1 : ℝ)) ^ (d : ℝ) * I₂ := by
     have hbase :
         c ^ 2 ≤
-          C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+          CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
             (2 / (2 - 1 : ℝ)) ^ (d : ℝ) := by
       have hpow :
           (A.1.Λ ^ ((d : ℝ) / 4)) ^ 2 = A.1.Λ ^ ((d : ℝ) / 2) := by
@@ -456,23 +457,23 @@ theorem linfty_subsolution_Moser_two
         ring_nf
       calc
         c ^ 2
-            = (C_DeGiorgi_subsolution_normalized d) ^ 2 *
+            = (CDeGiorgiSubsolutionNormalized d) ^ 2 *
                 A.1.Λ ^ ((d : ℝ) / 2) := by
                   dsimp [c]
                   rw [mul_pow, hpow]
-        _ ≤ C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) := by
+        _ ≤ CMoser d * A.1.Λ ^ ((d : ℝ) / 2) := by
             exact mul_le_mul_of_nonneg_right
               (C_DeGiorgi_subsolution_normalized_sq_le_C_Moser (d := d))
               (Real.rpow_nonneg A.1.Λ_nonneg _)
-        _ ≤ C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+        _ ≤ CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
               (2 / (2 - 1 : ℝ)) ^ (d : ℝ) := by
-            have hleft_nonneg : 0 ≤ C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) := by
+            have hleft_nonneg : 0 ≤ CMoser d * A.1.Λ ^ ((d : ℝ) / 2) := by
               exact mul_nonneg
                 (le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_Moser (d := d)))
                 (Real.rpow_nonneg A.1.Λ_nonneg _)
             have hone : (1 : ℝ) ≤ (2 / (2 - 1 : ℝ)) ^ (d : ℝ) := by
               have hbase : (1 : ℝ) ≤ 2 / (2 - 1 : ℝ) := by norm_num
-              have hd_nonneg : 0 ≤ (d : ℝ) := by exact_mod_cast Nat.zero_le d
+              have hd_nonneg : 0 ≤ (d : ℝ) := by exact_mod_cast Nat.zero_le (n := d)
               exact Real.one_le_rpow hbase hd_nonneg
             simpa [mul_assoc] using
               (mul_le_mul_of_nonneg_left hone hleft_nonneg)

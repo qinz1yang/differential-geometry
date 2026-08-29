@@ -2,7 +2,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorFieldJet
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -35,6 +34,7 @@ def covariantJetFiberNormSqGrid (g₀ : SmoothRiemannianMetric I M) {rb sb : ℕ
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma covariantJetFiberNormSqGrid_nonneg (g₀ : SmoothRiemannianMetric I M) {rb sb : ℕ}
     (P : SmoothCcTensor g₀ rb sb)
     (x : M) (j : ℕ) : 0 ≤ covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x j :=
@@ -54,6 +54,7 @@ lemma operatorFieldCompositionGridConstant_nonneg {u v : ℕ} {KΦ KW : ℕ → 
   exact mul_nonneg (mul_nonneg (hKΦ i') (hKW l))
     (Combinatorics.antidiagonalTupleGridWindowMulConst_nonneg _ _)
 
+omit [SigmaCompactSpace M] in
 theorem operatorFieldComposition_antidiagonalTupleGridWindow_bound (g₀ : SmoothRiemannianMetric I M) {p a b : ℕ} (u v : ℕ)
     (Φ : SmoothCcTensor g₀ a b) (W : SmoothCcTensor g₀ p a)
     {rb sb : ℕ} (P : SmoothCcTensor g₀ rb sb) {KΦ KW : ℕ → ℝ}
@@ -172,7 +173,7 @@ theorem antidiagonalTupleGridWindow_bound_to_covariant_jet_bound_rs (g₀ : Smoo
               (1 + ∑ j ∈ Finset.range (n + w),
                 ‖iteratedCovGrad (I := I) g₀ rb sb j P‖ ^ 2) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Kint, hKint_nn, hKint⟩ :=
     atgGridIntRs (I := I) (M := M) g₀ rb sb hΛ₀0
@@ -207,7 +208,7 @@ theorem antidiagonalTupleGridWindow_bound_to_covariant_jet_bound_rs (g₀ : Smoo
               (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) k) := by
       funext y; rw [Combinatorics.antidiagonalTupleGridWindow]
     rw [this]
-    exact MeasureTheory.integrable_finset_sum _ (fun k _ => (hgrid k).1)
+    exact MeasureTheory.integrable_finsetSum _ (fun k _ => (hgrid k).1)
   have hL2 := normSq_le_integral_of_pointwise_fiberNormSq_le_rs
     (I := I) (M := M) g₀ r (c + n) (iteratedCovGrad (I := I) g₀ r c n X) _ hwinInt hX
   refine hL2.trans ?_
@@ -223,7 +224,7 @@ theorem antidiagonalTupleGridWindow_bound_to_covariant_jet_bound_rs (g₀ : Smoo
         = (fun x => ∑ k ∈ Finset.range (n + w),
             Combinatorics.antidiagonalTupleGrid
               (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) k) := rfl
-    rw [hpt, MeasureTheory.integral_finset_sum _ (fun k _ => (hgrid k).1)]
+    rw [hpt, MeasureTheory.integral_finsetSum _ (fun k _ => (hgrid k).1)]
   rw [hwinEq]
   have hsumj : (0 : ℝ) ≤ ∑ j ∈ Finset.range (n + w),
       ‖iteratedCovGrad (I := I) g₀ rb sb j P‖ ^ 2 :=

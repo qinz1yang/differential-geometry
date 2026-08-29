@@ -486,7 +486,8 @@ theorem HasRadiusTail.geom_tail
   exact ⟨by
     simpa only [Lq, Lbase, NetLimitData.hatSourceBall] using hloc0,
     by simpa only [Lq, Lbase, NetLimitData.hatSourceBall] using hinj0,
-    by simpa only [Lq, Lbase] using hbase0⟩
+    by
+      convert hbase0 using 1 <;> rfl⟩
 
 end HCGCompactness
 end DifferentialGeometry

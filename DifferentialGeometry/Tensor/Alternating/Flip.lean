@@ -33,7 +33,7 @@ def _root_.LinearIsometryEquiv.flipAlternating :
           (LinearIsometryEquiv.flipMultilinear.symm f.toContinuousMultilinearMap m)
           (fun v i j h₁ h₂ ↦ by
             change (f v) m = 0
-            rw [f.map_eq_zero_of_eq _ h₁ h₂, ContinuousLinearMap.zero_apply])
+            rw [f.map_eq_zero_of_eq _ h₁ h₂, zero_apply])
         map_add' := fun x y ↦ by ext; exact ContinuousLinearMap.map_add _ _ _
         map_smul' := fun c x ↦ by ext; exact ContinuousLinearMap.map_smul _ _ _ }
       ‖f‖ (fun x ↦ ContinuousAlternatingMap.opNorm_le_bound _ (by positivity) fun m ↦ calc
@@ -46,12 +46,28 @@ def _root_.LinearIsometryEquiv.flipAlternating :
   left_inv := congrFun rfl
   right_inv := congrFun rfl
   norm_map' := fun f => by
-    simp only [LinearEquiv.coe_mk, LinearMap.coe_mk, AddHom.coe_mk]
-    have : ‖f.flipAlternating‖ = ‖f.flipAlternating.toContinuousMultilinearMap‖ := rfl
-    rw [this]
-    rw [←LinearIsometryEquiv.flipMultilinear.symm.norm_map
-      f.flipAlternating.toContinuousMultilinearMap]
-    rfl
+    with_reducible_and_instances
+      change ‖f.flipAlternating‖ = ‖f‖
+      rw [show ‖f.flipAlternating‖ =
+        ‖f.flipAlternating.toContinuousMultilinearMap‖ from rfl]
+      rw [← LinearIsometryEquiv.flipMultilinear.symm.norm_map
+        f.flipAlternating.toContinuousMultilinearMap]
+      let f' := (ContinuousAlternatingMap.toContinuousMultilinearMapCLM 𝕜).comp f
+      have hmap : LinearIsometryEquiv.flipMultilinear.symm
+          f.flipAlternating.toContinuousMultilinearMap = f' := by
+        rw [show f.flipAlternating.toContinuousMultilinearMap =
+          LinearIsometryEquiv.flipMultilinear f' by
+            unfold ContinuousLinearMap.flipAlternating LinearIsometryEquiv.flipMultilinear f'
+            rfl]
+        rw [LinearIsometryEquiv.symm_apply_apply]
+      rw [hmap]
+      apply le_antisymm
+      · exact ContinuousLinearMap.opNorm_le_bound f' (norm_nonneg f) fun x => by
+          rw [show ‖f' x‖ = ‖f x‖ from rfl]
+          exact f.le_opNorm x
+      · exact ContinuousLinearMap.opNorm_le_bound f (norm_nonneg f') fun x => by
+          rw [show ‖f x‖ = ‖f' x‖ from rfl]
+          exact f'.le_opNorm x
 
 end ContinuousLinearMap
 

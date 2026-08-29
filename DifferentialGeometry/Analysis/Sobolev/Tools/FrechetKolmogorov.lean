@@ -164,7 +164,7 @@ private lemma enorm_convolution_sub_le_lintegral
     rw [norm_eta_smul_eq_eta_mul_norm hη_nonneg s,
       ENNReal.ofReal_mul (hη_nonneg s)]
     congr 1
-    rw [ofReal_norm_eq_enorm]
+    rw [ofReal_norm]
   have hf_norm_e :
       (‖∫ s, η s • (u (x - s) - u x) ∂volume‖ₑ : ℝ≥0∞) ≤
         ENNReal.ofReal (∫ s, ‖η s • (u (x - s) - u x)‖ ∂volume) := by
@@ -489,7 +489,7 @@ theorem tendsto_lp_of_tendstoUniformlyOn_compact
     refine ⟨N, fun n hn => ?_⟩
     have := hN n hn
     rw [hM_zero, zero_mul] at this
-    exact this.trans (zero_le _)
+    exact this.trans bot_le
   · have hM_pos : 0 < M := pos_iff_ne_zero.mpr hM_zero
     set ε_e : ℝ≥0∞ := ε_top / M with hε_e_def
     have hε_e_pos : 0 < ε_e := by
@@ -622,7 +622,7 @@ private lemma cauchy_lp_of_uniformly_cauchy_on_compact_supp
         norm_num
     have h := h_eLp_le j l 1 (by norm_num) hbnd
     rw [hM_zero, zero_mul] at h
-    exact h.trans (zero_le _)
+    exact h.trans bot_le
   · have hM_pos : 0 < M := pos_iff_ne_zero.mpr hM_zero
     have hε_e_pos : 0 < ENNReal.ofReal ε := ENNReal.ofReal_pos.mpr hε
     set ε_e : ℝ≥0∞ := ENNReal.ofReal ε / M with hε_e_def
@@ -886,7 +886,7 @@ theorem tendsto_subseq_of_uniform_translation_in_Lp
       conv_lhs => rw [h_ind_eq]
       exact MeasureTheory.eLpNorm_indicator_eq_eLpNorm_restrict (μ := volume)
         (s := K) (p := p) (f := vFn n) hK_meas
-    haveI : IsFiniteMeasure (volume.restrict K) := by
+    have : IsFiniteMeasure (volume.restrict K) := by
       refine ⟨?_⟩
       rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
       exact hK_vol_lt_top

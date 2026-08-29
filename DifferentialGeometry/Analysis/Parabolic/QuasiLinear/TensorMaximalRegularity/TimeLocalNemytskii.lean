@@ -61,7 +61,9 @@ theorem memLp_time_tame
     have hscaled : MemLp (K • fun t => ‖f t‖) 2 (timeMeasure T) := hnorm.const_smul K
     have hconst : MemLp (fun _ : ℝ => Q) 2 (timeMeasure T) := memLp_const Q
     have hadd := hscaled.add hconst
-    simpa only [major, Pi.add_apply, Pi.smul_apply, smul_eq_mul] using hadd
+    apply hadd.ae_eq
+    filter_upwards [] with t
+    simp only [major, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
   refine hmajor.of_le hmeas ?_
   filter_upwards [hf, hzeroN, htame] with t ht htzero httame
   let u : S := ⟨f t, ht⟩

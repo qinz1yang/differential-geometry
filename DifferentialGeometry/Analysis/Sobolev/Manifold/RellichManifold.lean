@@ -685,7 +685,7 @@ lemma eLpNorm_chartPushed_le_wkpNormChart
     rw [Finset.sum_range_one]
     have hUniq : ∀ α : Fin 0 → Fin (Module.finrank ℝ E), α = (fun i : Fin 0 => i.elim0) :=
       fun α => by funext i; exact i.elim0
-    haveI : Unique (Fin 0 → Fin (Module.finrank ℝ E)) :=
+    have : Unique (Fin 0 → Fin (Module.finrank ℝ E)) :=
       { default := fun i : Fin 0 => i.elim0
         uniq := fun α => (hUniq α).symm ▸ rfl }
     rw [Fintype.sum_unique
@@ -800,7 +800,7 @@ lemma eLpNorm_rellich_witness_weakGrad_le_wkpNormChart
       rw [h_iter_eq]
     rw [← hf_α_i]
     exact Finset.single_le_sum (f := f)
-      (fun α' _ => zero_le _) (Finset.mem_univ α_i)
+      (fun α' _ => zero_le) (Finset.mem_univ α_i)
   exact h_in_wkpNorm.trans (ENNReal.le_tsum α)
 
 private lemma exists_chart_rellich_subseq_aux
@@ -1323,7 +1323,6 @@ private lemma tsupport_chartPushedRaw_pou_mul_sub_subset_chartCompact
   exact h_chartCompact_closed.closure_subset_iff.mpr h_supp_sub
 
 private lemma memLp_pou_mul_riemannianMeasure
-    [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : M → ℝ} (hu_meas : Measurable u)
@@ -1392,7 +1391,6 @@ private lemma memLp_pou_mul_riemannianMeasure
     exact MemLp.zero
 
 private lemma memLp_riemannianMeasure_of_memWkpChart
-    [NeZero (Module.finrank ℝ E)]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {p : ℝ} (hp_one : 1 < p)
     {u : M → ℝ} (hu_meas : Measurable u)
@@ -1402,7 +1400,7 @@ private lemma memLp_riemannianMeasure_of_memWkpChart
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) := by
   classical
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M)
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M)
     with hS_def
   have h_sum : u =
       fun x : M => ∑ α ∈ S,
@@ -1413,7 +1411,7 @@ private lemma memLp_riemannianMeasure_of_memWkpChart
     rw [chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x]
     rw [one_mul]
   rw [h_sum]
-  exact memLp_finset_sum S
+  exact memLp_finsetSum S
     (fun α _ => memLp_pou_mul_riemannianMeasure (I := I) (M := M) g hp_one hu_meas hu α)
 
 end Chart

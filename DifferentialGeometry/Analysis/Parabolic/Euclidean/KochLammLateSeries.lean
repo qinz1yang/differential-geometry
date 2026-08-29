@@ -22,8 +22,9 @@ private theorem klLateLin_sum (d : ℕ) : Summable (klLateLinWt d) := by
   have hsucc := hbase.comp_injective Nat.succ_injective
   have hmul := hsucc.mul_left
     ((5 : ℝ) ^ d * Real.exp (4 : ℝ)⁻¹)
-  convert hmul using 1
-  funext k
+  apply hmul.congr
+  intro k
+  symm
   unfold klLateLinWt
   simp only [Function.comp_apply, Nat.cast_succ]
   rw [mul_pow]

@@ -5,12 +5,12 @@ import Mathlib.Topology.VectorBundle.Hom
 import Mathlib.Topology.Order.Compact
 import Mathlib.Topology.Separation.Basic
 import Mathlib.Analysis.Normed.Operator.Bilinear
+import Mathlib.Analysis.Normed.Operator.NormedSpace
 import Mathlib.Analysis.InnerProductSpace.Basic
 
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -25,12 +25,26 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
 
 local instance tangentSpaceNormedAddCommGroup (y : M) :
-    NormedAddCommGroup (TangentSpace I y) :=
-  inferInstanceAs (NormedAddCommGroup E)
+    NormedAddCommGroup (TangentSpace I y) := by
+  change NormedAddCommGroup E
+  infer_instance
 
 local instance tangentSpaceNormedSpace (y : M) :
-    NormedSpace ℝ (TangentSpace I y) :=
-  inferInstanceAs (NormedSpace ℝ E)
+    NormedSpace ℝ (TangentSpace I y) := by
+  change NormedSpace ℝ E
+  infer_instance
+
+local instance tangentCovectorNormedAddCommGroup (y : M) :
+    NormedAddCommGroup (TangentSpace I y →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedAddCommGroup (σ₁₂ := RingHom.id ℝ)
+
+local instance tangentCovectorNormedSpace (y : M) :
+    NormedSpace ℝ (TangentSpace I y →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedSpace (σ₁₂ := RingHom.id ℝ)
+
+local instance tangentBilinearNormedAddCommGroup (y : M) :
+    NormedAddCommGroup (TangentSpace I y →L[ℝ] TangentSpace I y →L[ℝ] ℝ) :=
+  ContinuousLinearMap.toNormedAddCommGroup (σ₁₂ := RingHom.id ℝ)
 
 lemma normalized_bilinear_le_opNorm
     {E₀ : Type*} [NormedAddCommGroup E₀] [NormedSpace ℝ E₀]

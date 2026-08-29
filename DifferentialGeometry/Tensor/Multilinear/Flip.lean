@@ -62,10 +62,10 @@ def flipMultilinear (f : ContinuousMultilinearMap 𝕜 (fun _ : ι ↦ M)
             map_update_add' := fun m' i x y ↦ by
               change (f (Function.update m' i (x + y))) m
                 = (f (Function.update m' i x)) m + (f (Function.update m' i y)) m
-              rw [ContinuousMultilinearMap.map_update_add, ContinuousMultilinearMap.add_apply]
+              rw [ContinuousMultilinearMap.map_update_add, add_apply]
             map_update_smul' := fun m' i c x ↦ by
               change (f (Function.update m' i (c • x))) m = c • (f (Function.update m' i x)) m
-              rw [ContinuousMultilinearMap.map_update_smul, ContinuousMultilinearMap.smul_apply] }
+              rw [ContinuousMultilinearMap.map_update_smul, smul_apply] }
           (‖f‖ * ∏ i, ‖m i‖) (fun m' ↦ calc
             ‖f m' m‖ ≤ ‖f m'‖ * ∏ i, ‖m i‖ := (f m').le_opNorm m
             _ ≤ (‖f‖ * ∏ i, ‖m' i‖) * ∏ i, ‖m i‖ := mul_le_mul_of_nonneg_right (f.le_opNorm m')

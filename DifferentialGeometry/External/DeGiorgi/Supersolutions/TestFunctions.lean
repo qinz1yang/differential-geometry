@@ -4,6 +4,7 @@ import Mathlib.Topology.Algebra.Order.LiminfLimsup
 import DifferentialGeometry.External.DeGiorgi.MoserIteration
 import DifferentialGeometry.External.DeGiorgi.Support.MeasureBounds
 
+
 /-!
 # Chapter 06: Supersolution Estimates
 
@@ -46,26 +47,26 @@ local notation "μhalf" => (volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ)))
 
 /-- The weakened forward-stage constant that honestly absorbs the finite-measure
 `L^p` to `L^{p₀}` upgrade on the unit ball. -/
-noncomputable def C_weakHarnack0Forward
+noncomputable def CWeakHarnack0Forward
     (d : ℕ) [NeZero d] (_hd : 2 < (d : ℝ)) : ℝ :=
   let _ := _hd
-  (C_weakHarnack0 d * (volume.real (Metric.ball (0 : AmbientSpace d) 1) + 1)) ^
+  (CWeakHarnack0 d * (volume.real (Metric.ball (0 : AmbientSpace d) 1) + 1)) ^
     (moserChi d)
 
 theorem one_le_C_weakHarnack0Forward
     (hd : 2 < (d : ℝ)) :
-    1 ≤ C_weakHarnack0Forward (d := d) hd := by
-  unfold C_weakHarnack0Forward
+    1 ≤ CWeakHarnack0Forward (d := d) hd := by
+  unfold CWeakHarnack0Forward
   have hbase : 1 ≤
-      C_weakHarnack0 d * (volume.real (Metric.ball (0 : E) 1) + 1) := by
-    have hC : 1 ≤ C_weakHarnack0 d := one_le_C_weakHarnack0 (d := d)
+      CWeakHarnack0 d * (volume.real (Metric.ball (0 : E) 1) + 1) := by
+    have hC : 1 ≤ CWeakHarnack0 d := one_le_C_weakHarnack0 (d := d)
     have hV : 1 ≤ volume.real (Metric.ball (0 : E) 1) + 1 := by
       have hV_nonneg : 0 ≤ volume.real (Metric.ball (0 : E) 1) := by
         exact measureReal_nonneg
       linarith
     calc
       (1 : ℝ) = 1 * 1 := by ring
-      _ ≤ C_weakHarnack0 d * (volume.real (Metric.ball (0 : E) 1) + 1) := by
+      _ ≤ CWeakHarnack0 d * (volume.real (Metric.ball (0 : E) 1) + 1) := by
           exact mul_le_mul hC hV (by positivity) (by positivity)
   exact Real.one_le_rpow hbase (moserChi_pos (d := d) hd).le
 
@@ -303,8 +304,11 @@ theorem weighted_absorb
         (fun x =>
           (1 / 2 : ℝ) * η x ^ 2 * ψd x * Quad x +
             2 * Λ * ζ x ^ 2 * (|ψ x| ^ 2 / ψd x)) μ := by
-    simpa [mul_assoc, add_comm, add_left_comm, add_assoc] using
-      (hleft_int.const_mul (1 / 2 : ℝ)).add (hbound_int.const_mul (2 * Λ))
+    refine ((hleft_int.const_mul (1 / 2 : ℝ)).add
+      (hbound_int.const_mul (2 * Λ))).congr ?_
+    filter_upwards with x
+    rw [Pi.add_apply]
+    simp only [mul_assoc]
   have hcross_bound :
       ∫ x, 2 * |η x| * |ψ x| * ζ x * |M x| ∂μ ≤
         ∫ x, (1 / 2 : ℝ) * η x ^ 2 * ψd x * Quad x +
@@ -382,7 +386,7 @@ lemma regInvPow_deriv_bounded {ε p : ℝ} (hε : 0 < ε) (hp : 0 < p) :
   have hsqrt_ne : Real.sqrt (t ^ 2 + ε ^ 2) ≠ 0 := ne_of_gt hsqrt_pos
   -- d/dt[t² + ε²] = 2t
   have hd_sum : HasDerivAt (fun t => t ^ 2 + ε ^ 2) (2 * t) t := by
-    convert (hasDerivAt_pow 2 t).add (hasDerivAt_const t (ε ^ 2)) using 1; ring
+    exact ((hasDerivAt_pow 2 t).add_const (ε ^ 2)).congr_deriv (by ring)
   -- d/dt[√(t²+ε²)] = t/√(t²+ε²)
   have hd_sqrt : HasDerivAt (fun t => Real.sqrt (t ^ 2 + ε ^ 2))
       (t / Real.sqrt (t ^ 2 + ε ^ 2)) t := by
@@ -444,7 +448,6 @@ theorem superExactLeftTransition_eq_one_of_nonneg
     {ε t : ℝ} (hε : 0 < ε) (ht : 0 ≤ t) :
     superExactLeftTransition ε t = 1 := by
   apply Real.smoothTransition.one_of_one_le
-  dsimp [superExactLeftTransition]
   have : 0 ≤ (2 / ε) * t := by positivity
   linarith
 
@@ -459,7 +462,6 @@ theorem superExactInput_eq_zero_of_le_neg_half
     superExactInput ε t = 0 := by
   have hσ : superExactLeftTransition ε t = 0 := by
     apply Real.smoothTransition.zero_of_nonpos
-    dsimp [superExactLeftTransition]
     have hcoeff_nonneg : 0 ≤ 2 / ε := by positivity
     have hmul : (2 / ε) * t ≤ (2 / ε) * (-ε / 2) :=
       mul_le_mul_of_nonneg_left ht hcoeff_nonneg
@@ -491,18 +493,18 @@ theorem superExactLeftTransition_contDiff
     {ε : ℝ} (_hε : 0 < ε) :
     ContDiff ℝ (⊤ : ℕ∞) (superExactLeftTransition ε) := by
   let _ := _hε
-  have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => (2 / ε) * t + 1) := by
-    simpa [mul_comm, mul_left_comm, mul_assoc] using
-      ((contDiff_const : ContDiff ℝ (⊤ : ℕ∞) fun _ : ℝ => 2 / ε).mul contDiff_id).add
-        contDiff_const
-  simpa [superExactLeftTransition, add_comm, add_left_comm, add_assoc] using
-    Real.smoothTransition.contDiff.comp hlin
+  have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => 1 + (2 / ε) * t) := by
+    exact contDiff_const.add
+      ((contDiff_const : ContDiff ℝ (⊤ : ℕ∞) fun _ : ℝ => 2 / ε).mul contDiff_id)
+  change ContDiff ℝ (⊤ : ℕ∞)
+    (Real.smoothTransition ∘ fun t : ℝ => 1 + (2 / ε) * t)
+  exact Real.smoothTransition.contDiff.comp hlin
 
 theorem superExactInput_contDiff
     {ε : ℝ} (hε : 0 < ε) :
     ContDiff ℝ (⊤ : ℕ∞) (superExactInput ε) := by
-  simpa [superExactInput] using
-    (contDiff_id.mul (superExactLeftTransition_contDiff (ε := ε) hε))
+  change ContDiff ℝ (⊤ : ℕ∞) (fun t => t * superExactLeftTransition ε t)
+  exact contDiff_id.mul (superExactLeftTransition_contDiff (ε := ε) hε)
 
 theorem superExactBase_ne_zero
     {ε : ℝ} (hε : 0 < ε) :
@@ -530,14 +532,14 @@ theorem superExactShiftPow_contDiff
     ContDiff ℝ (⊤ : ℕ∞) (superExactShiftPow ε a) := by
   have hbase : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => ε + superExactInput ε t) := by
     exact contDiff_const.add (superExactInput_contDiff (ε := ε) hε)
-  simpa [superExactShiftPow] using
-    hbase.rpow_const_of_ne (superExactBase_ne_zero (ε := ε) hε)
+  change ContDiff ℝ (⊤ : ℕ∞) (fun t => (ε + superExactInput ε t) ^ a)
+  exact hbase.rpow_const_of_ne (superExactBase_ne_zero (ε := ε) hε)
 
 theorem superExactShiftReg_contDiff
     {ε a : ℝ} (hε : 0 < ε) :
     ContDiff ℝ (⊤ : ℕ∞) (superExactShiftReg ε a) := by
-  simpa [superExactShiftReg] using
-    (superExactShiftPow_contDiff (ε := ε) (a := a) hε).sub contDiff_const
+  change ContDiff ℝ (⊤ : ℕ∞) (fun t => superExactShiftPow ε a t - ε ^ a)
+  exact (superExactShiftPow_contDiff (ε := ε) (a := a) hε).sub contDiff_const
 
 theorem superExactShiftPow_eq_shifted_of_nonneg
     {ε a t : ℝ} (hε : 0 < ε) (ht : 0 ≤ t) :
@@ -675,14 +677,14 @@ noncomputable def superExactPowerCutoffRegWitness
       MemW1pWitness 2
         (fun x => superExactShiftReg ε a (u x))
         (Metric.ball (0 : E) 1) :=
-    MemW1pWitness.comp_smooth_bounded (d := d) Metric.isOpen_ball hu1
+    MemW1pWitness.compSmoothBounded (d := d) Metric.isOpen_ball hu1
       (superExactShiftReg ε a)
       (superExactShiftReg_contDiff (ε := ε) (a := a) hε)
       (superExactShiftReg_zero (ε := ε) (a := a) hε)
       (superExactShiftReg_deriv_bounded (ε := ε) (a := a) hε ha)
   have hCη_nonneg : 0 ≤ Cη := by
     exact le_trans (norm_nonneg _) (hη_grad_bound (0 : E))
-  exact hwReg.mul_smooth_bounded Metric.isOpen_ball hη
+  exact hwReg.mulSmoothBounded Metric.isOpen_ball hη
     (C₀ := 1) (C₁ := Cη) (by norm_num) hCη_nonneg hη_bound hη_grad_bound
 
 noncomputable def superExactTestCutoffRegWitness
@@ -699,7 +701,7 @@ noncomputable def superExactTestCutoffRegWitness
       MemW1pWitness 2
         (fun x => superExactShiftReg ε a (u x))
         (Metric.ball (0 : E) 1) :=
-    MemW1pWitness.comp_smooth_bounded (d := d) Metric.isOpen_ball hu1
+    MemW1pWitness.compSmoothBounded (d := d) Metric.isOpen_ball hu1
       (superExactShiftReg ε a)
       (superExactShiftReg_contDiff (ε := ε) (a := a) hε)
       (superExactShiftReg_zero (ε := ε) (a := a) hε)
@@ -707,9 +709,9 @@ noncomputable def superExactTestCutoffRegWitness
   have hCη_nonneg : 0 ≤ Cη := by
     exact le_trans (norm_nonneg _) (hη_grad_bound (0 : E))
   let hwηReg :=
-    hwReg.mul_smooth_bounded Metric.isOpen_ball hη
+    hwReg.mulSmoothBounded Metric.isOpen_ball hη
       (C₀ := 1) (C₁ := Cη) (by norm_num) hCη_nonneg hη_bound hη_grad_bound
-  exact hwηReg.mul_smooth_bounded Metric.isOpen_ball hη
+  exact hwηReg.mulSmoothBounded Metric.isOpen_ball hη
     (C₀ := 1) (C₁ := Cη) (by norm_num) hCη_nonneg hη_bound hη_grad_bound
 
 lemma superExactPowerCutoffRegWitness_grad
@@ -725,7 +727,7 @@ lemma superExactPowerCutoffRegWitness_grad
       η x * deriv (superExactShiftReg ε a) (u x) * hu1.weakGrad x i +
         (fderiv ℝ η x) (EuclideanSpace.single i 1) * superExactShiftReg ε a (u x) := by
   simp only [superExactPowerCutoffRegWitness,
-    MemW1pWitness.mul_smooth_bounded, MemW1pWitness.comp_smooth_bounded,
+    MemW1pWitness.mulSmoothBounded, MemW1pWitness.compSmoothBounded,
     WithLp.ofLp_add, WithLp.ofLp_smul, smul_eq_mul, Pi.add_apply, Pi.smul_apply]
   ring
 
@@ -743,7 +745,7 @@ lemma superExactTestCutoffRegWitness_grad
         superExactShiftReg ε a (u x) +
       η x ^ 2 * deriv (superExactShiftReg ε a) (u x) * hu1.weakGrad x i := by
   simp only [superExactTestCutoffRegWitness,
-    MemW1pWitness.mul_smooth_bounded, MemW1pWitness.comp_smooth_bounded,
+    MemW1pWitness.mulSmoothBounded, MemW1pWitness.compSmoothBounded,
     WithLp.ofLp_add, WithLp.ofLp_smul, smul_eq_mul, Pi.add_apply, Pi.smul_apply]
   ring
 
@@ -753,7 +755,7 @@ noncomputable def superEtaWitness
     (hη_sub_ball : tsupport η ⊆ Metric.ball (0 : E) s) :
     MemW1pWitness 2 η (Metric.ball (0 : E) 1) := by
   let hwUniv : MemW1pWitness 2 η Set.univ :=
-    MemW1pWitness.of_contDiff_hasCompactSupport (p := 2) hη
+    MemW1pWitness.ofContDiffHasCompactSupport (p := 2) hη
       (hasCompactSupport_of_tsupport_subset_ball (f := η) hη_sub_ball)
   exact hwUniv.restrict Metric.isOpen_ball (by intro x hx; simp)
 
@@ -786,7 +788,10 @@ noncomputable def superExactPowerCutoffWitness
     superExactPowerCutoffRegWitness (d := d) (u := u) (η := η) (ε := ε) (a := a)
       (Cη := Cη) hε ha hu1 hη hη_bound hη_grad_bound
   let hwη := superEtaWitness (d := d) (η := η) (s := s) hη hη_sub_ball
-  simpa [superExactPowerCutoff] using hwReg.add (hwη.smul (ε ^ a))
+  change MemW1pWitness 2
+    (fun x => superExactPowerCutoffReg η u ε a x + ε ^ a * η x)
+    (Metric.ball (0 : E) 1)
+  exact hwReg.add (hwη.smul (ε ^ a))
 
 lemma superExactPowerCutoffWitness_grad
     {u η : E → ℝ} {ε a s Cη : ℝ}
@@ -801,14 +806,23 @@ lemma superExactPowerCutoffWitness_grad
       (s := s) (Cη := Cη) hε ha hu1 hη hη_bound hη_grad_bound hη_sub_ball).weakGrad x i =
       η x * deriv (superExactShiftReg ε a) (u x) * hu1.weakGrad x i +
         (fderiv ℝ η x) (EuclideanSpace.single i 1) * superExactShiftPow ε a (u x) := by
+  let hwReg := superExactPowerCutoffRegWitness (d := d) (u := u) (η := η) (ε := ε)
+    (a := a) (Cη := Cη) hε ha hu1 hη hη_bound hη_grad_bound
+  let hwη := superEtaWitness (d := d) (η := η) (s := s) hη hη_sub_ball
+  have hgrad :
+      (superExactPowerCutoffWitness (d := d) (u := u) (η := η) (ε := ε) (a := a)
+        (s := s) (Cη := Cη) hε ha hu1 hη hη_bound hη_grad_bound hη_sub_ball).weakGrad x =
+        hwReg.weakGrad x + ε ^ a • hwη.weakGrad x := by
+    rfl
+  have hcomponent := congrArg (fun v : E => v i) hgrad
   rw [show
       (superExactPowerCutoffWitness (d := d) (u := u) (η := η) (ε := ε) (a := a)
         (s := s) (Cη := Cη) hε ha hu1 hη hη_bound hη_grad_bound hη_sub_ball).weakGrad x i =
       (superExactPowerCutoffRegWitness (d := d) (u := u) (η := η) (ε := ε) (a := a)
         (Cη := Cη) hε ha hu1 hη hη_bound hη_grad_bound).weakGrad x i +
         ε ^ a * (superEtaWitness (d := d) (η := η) (s := s) hη hη_sub_ball).weakGrad x i by
-      simp [superExactPowerCutoffWitness, MemW1pWitness.add, MemW1pWitness.smul,
-        smul_eq_mul],
+      simpa only [hwReg, hwη, WithLp.ofLp_add, WithLp.ofLp_smul, Pi.add_apply,
+        Pi.smul_apply, smul_eq_mul] using hcomponent,
     superExactPowerCutoffRegWitness_grad (d := d) (u := u) (η := η) (ε := ε) (a := a)
       (Cη := Cη) hε ha hu1 hη hη_bound hη_grad_bound x i,
     superEtaWitness_grad (d := d) (η := η) (s := s) hη hη_sub_ball x i]
@@ -834,7 +848,7 @@ noncomputable def superExactTestCutoffWitness
   change MemW1pWitness 2
     (fun x => η x * superExactPowerCutoff η u ε a x)
     (Metric.ball (0 : E) 1)
-  exact hwPow.mul_smooth_bounded (η := η) Metric.isOpen_ball hη
+  exact hwPow.mulSmoothBounded (η := η) Metric.isOpen_ball hη
       (C₀ := 1) (C₁ := Cη) (by norm_num) hCη_nonneg hη_bound hη_grad_bound
 
 lemma superExactTestCutoffWitness_grad
@@ -851,6 +865,16 @@ lemma superExactTestCutoffWitness_grad
       2 * η x * (fderiv ℝ η x) (EuclideanSpace.single i 1) *
         superExactShiftPow ε a (u x) +
       η x ^ 2 * deriv (superExactShiftReg ε a) (u x) * hu1.weakGrad x i := by
+  let hwPow := superExactPowerCutoffWitness (d := d) (u := u) (η := η) (ε := ε)
+    (a := a) (s := s) (Cη := Cη) hε ha hu1 hη hη_bound hη_grad_bound hη_sub_ball
+  have hgrad :
+      (superExactTestCutoffWitness (d := d) (u := u) (η := η) (ε := ε) (a := a)
+        (s := s) (Cη := Cη) hε ha hu1 hη hη_bound hη_grad_bound hη_sub_ball).weakGrad x =
+        η x • hwPow.weakGrad x +
+          WithLp.toLp 2 (fun i =>
+            (fderiv ℝ η x) (EuclideanSpace.single i 1) * superExactPowerCutoff η u ε a x) := by
+    rfl
+  have hcomponent := congrArg (fun v : E => v i) hgrad
   rw [show
       (superExactTestCutoffWitness (d := d) (u := u) (η := η) (ε := ε) (a := a)
         (s := s) (Cη := Cη) hε ha hu1 hη hη_bound hη_grad_bound hη_sub_ball).weakGrad x i =
@@ -858,8 +882,8 @@ lemma superExactTestCutoffWitness_grad
         (superExactPowerCutoffWitness (d := d) (u := u) (η := η) (ε := ε) (a := a)
           (s := s) (Cη := Cη) hε ha hu1 hη hη_bound hη_grad_bound hη_sub_ball).weakGrad x i +
         (fderiv ℝ η x) (EuclideanSpace.single i 1) * superExactPowerCutoff η u ε a x by
-      simp [superExactTestCutoffWitness,
-        MemW1pWitness.mul_smooth_bounded, smul_eq_mul],
+      simpa only [hwPow, WithLp.ofLp_add, WithLp.ofLp_smul, Pi.add_apply, Pi.smul_apply,
+        smul_eq_mul, PiLp.toLp_apply] using hcomponent,
     superExactPowerCutoffWitness_grad (d := d) (u := u) (η := η) (ε := ε) (a := a)
       (s := s) (Cη := Cη) hε ha hu1 hη hη_bound hη_grad_bound hη_sub_ball x i]
   rw [superExactPowerCutoff_eq_mul_shiftPow (u := u) (η := η) (ε := ε) (a := a) (x := x)]
@@ -1103,7 +1127,9 @@ theorem superExactShiftPow_deriv_eq_shifted
         HasDerivAt (fun y => superExactShiftReg ε a y + ε ^ a)
           (a * (ε + t) ^ (a - 1)) t := by
       simpa [superExactShiftReg, superExactShiftPow] using hreg.add_const (ε ^ a)
-    simpa [superExactShiftReg, superExactShiftPow] using hpow
+    exact hpow.congr_of_eventuallyEq (Filter.Eventually.of_forall fun y => by
+      simp only [superExactShiftReg, superExactShiftPow]
+      ring)
   exact hbase.deriv
 
 lemma superExactShiftPow_nonneg
@@ -1447,7 +1473,9 @@ theorem superExactFwd_shiftPow_integrableOn_ball
     exact integrableOn_const (measure_ball_lt_top (μ := volume) (x := (0 : E)) (r := s)).ne
   have hsum_int :
       Integrable (fun x => ε ^ p + |u x| ^ p) (volume.restrict Ω) := by
-    simpa [Ω, IntegrableOn] using hconst_int.add hpInt
+    change Integrable ((fun _ : E => ε ^ p) + fun x => |u x| ^ p)
+      (volume.restrict Ω)
+    exact hconst_int.add hpInt
   refine Integrable.mono' hsum_int ?_ ?_
   · exact
       (superExactShiftPow_comp_aemeasurable

@@ -195,7 +195,9 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_secondOrder_bound_uniform
     calc
       riemannianFiberNormSq (I := I) (M := M) g 2 2 x
           ((inverseMetricDifferenceSlotCoefficient (I := I) g g₁).toSection x) ≤
-          (n * (δ / (1 - δ))) ^ 2 := by simpa only [n] using hb
+          (n * (δ / (1 - δ))) ^ 2 := by
+        with_unfolding_all
+          exact hb
       _ ≤ (2 * n * Cop * N) ^ 2 :=
         pow_le_pow_left₀ (mul_nonneg hn hratio_nn) hmul 2
       _ = Kpt * N ^ 2 := by dsimp only [Kpt]; ring
@@ -234,7 +236,8 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_secondOrder_bound_uniform
       hCh (mul_nonneg hCh hN) hjetBall htop
     have hgrid_int : Integrable (invJetGrid (I := I) (M := M) g T i)
         (riemannianVolumeMeasure (I := I) (M := M) g) := by
-      simpa only [invJetGrid] using hgrid.1
+      with_unfolding_all
+        exact hgrid.1
     have hinv_pt : ∀ x : M,
         riemannianFiberNormSq (I := I) (M := M) g 2 (2 + i) x
             ((iteratedCovGrad (I := I) g 2 2 i

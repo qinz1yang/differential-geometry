@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
@@ -33,10 +32,12 @@ noncomputable def fiberNormSqComponent
     (S : TensorRSSpace r s I b)
     (n : ℕ) (e : Fin n → TangentSpace I b)
     (K : Fin r → Fin n) (J : Fin s → Fin n) : ℝ :=
-  (S : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
-      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-        (fun k => g.inner b (e (K k))))
-      (fun k => e (J k))
+  Tensor0SSpace.eval
+    ((S : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
+        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
+          (fun k => g.inner b (e (K k))))))
+    (fun k => e (J k))
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
@@ -59,19 +60,9 @@ lemma fiberNormSqComponent_add
       fiberNormSqComponent (I := I) (M := M) g b r s S n e K J +
         fiberNormSqComponent (I := I) (M := M) g b r s S' n e K J := by
   unfold fiberNormSqComponent
-  rw [show ((S + S' : TensorRSSpace r s I b) :
-        Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
-        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-          (fun k => g.inner b (e (K k)))) =
-      (S : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
-        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-          (fun k => g.inner b (e (K k)))) +
-      (S' : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
-        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-          (fun k => g.inner b (e (K k)))) from rfl]
   rfl
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
+omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
 lemma fiberNormSqComponent_smul
     (g : SmoothRiemannianMetric I M) (b : M) (r s : ℕ)
@@ -81,13 +72,6 @@ lemma fiberNormSqComponent_smul
     fiberNormSqComponent (I := I) (M := M) g b r s (c • S) n e K J =
       c * fiberNormSqComponent (I := I) (M := M) g b r s S n e K J := by
   unfold fiberNormSqComponent
-  rw [show ((c • S : TensorRSSpace r s I b) :
-        Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
-        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-          (fun k => g.inner b (e (K k)))) =
-      c • (S : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
-        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-          (fun k => g.inner b (e (K k)))) from rfl]
   rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
@@ -133,9 +117,9 @@ lemma exists_orthonormal_frame_riemannianFiberNormSq
   have hbnd : Bornology.IsVonNBounded ℝ {v : TangentSpace I b |
       RCLike.re (cd.inner v v) < 1} :=
     g.toRiemannianMetric.isVonNBounded b
-  letI nag : NormedAddCommGroup (TangentSpace I b) :=
+  let nag : NormedAddCommGroup (TangentSpace I b) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace ℝ (TangentSpace I b) :=
+  let ips : InnerProductSpace ℝ (TangentSpace I b) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
   set n : ℕ := Module.finrank ℝ (TangentSpace I b) with hn_def
   set e : OrthonormalBasis (Fin n) ℝ (TangentSpace I b) := stdOrthonormalBasis ℝ _ with he_def
@@ -183,9 +167,9 @@ lemma tangent_frame_expansion
   have hbnd : Bornology.IsVonNBounded ℝ {v : TangentSpace I b |
       RCLike.re (cd.inner v v) < 1} :=
     g.toRiemannianMetric.isVonNBounded b
-  letI nag : NormedAddCommGroup (TangentSpace I b) :=
+  let nag : NormedAddCommGroup (TangentSpace I b) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace ℝ (TangentSpace I b) :=
+  let ips : InnerProductSpace ℝ (TangentSpace I b) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
   set n : ℕ := Module.finrank ℝ (TangentSpace I b) with hn_def
   set e : OrthonormalBasis (Fin n) ℝ (TangentSpace I b) := stdOrthonormalBasis ℝ _ with he_def
@@ -248,24 +232,24 @@ lemma riemannOp_tensorCov_frame_expand
     conv_lhs => rw [hv]
     exact clm_apply_smul_sum R Finset.univ (fun i => g.inner x (e i) v) e
   have hRvw : R v w = ∑ i : Fin n, g.inner x (e i) v • R (e i) w := by
-    rw [hRv, ContinuousLinearMap.sum_apply]
+    rw [hRv, sum_apply]
     refine Finset.sum_congr rfl (fun i _ => ?_)
-    rw [ContinuousLinearMap.smul_apply]
+    rw [smul_apply]
   have hRei_w : ∀ i : Fin n, R (e i) w =
       ∑ j : Fin n, g.inner x (e j) w • R (e i) (e j) := by
     intro i
     conv_lhs => rw [hw]
     exact clm_apply_smul_sum (R (e i)) Finset.univ (fun j => g.inner x (e j) w) e
   have hRvwT : R v w T = ∑ i : Fin n, g.inner x (e i) v • (R (e i) w) T := by
-    rw [hRvw, ContinuousLinearMap.sum_apply]
+    rw [hRvw, sum_apply]
     refine Finset.sum_congr rfl (fun i _ => ?_)
-    rw [ContinuousLinearMap.smul_apply]
+    rw [smul_apply]
   rw [hRvwT]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [hRei_w i]
-  rw [ContinuousLinearMap.sum_apply, Finset.smul_sum]
+  rw [sum_apply, Finset.smul_sum]
   refine Finset.sum_congr rfl (fun j _ => ?_)
-  rw [ContinuousLinearMap.smul_apply, smul_smul]
+  rw [smul_apply, smul_smul]
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma fiberNormSqSummand_riemannOp_tensorCov_vw_le

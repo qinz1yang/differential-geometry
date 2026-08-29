@@ -31,7 +31,7 @@ noncomputable def moserRegClippedPosPartWitness
       (Metric.ball (0 : E) s) := by
   let hwClip :=
     moserClippedPosPartWitness (d := d) (u := u) (s := s) (N := N) hs hs1 hN hu1
-  exact (MemW1pWitness.comp_smooth_bounded
+  exact (MemW1pWitness.compSmoothBounded
     (d := d) Metric.isOpen_ball hwClip (moserRegPow ε N p)
     (moserRegPow_contDiff (ε := ε) (N := N) (p := p) hε hN)
     (moserRegPow_eq_zero_of_nonpos (ε := ε) (N := N) (p := p) hε hN (le_rfl : (0 : ℝ) ≤ 0))
@@ -56,7 +56,7 @@ noncomputable def moserRegPowerCutoffWitness
   have hCη_nonneg : 0 ≤ Cη := by
     have := hη_grad_bound (0 : E)
     exact le_trans (norm_nonneg _) this
-  exact hwReg.mul_smooth_bounded Metric.isOpen_ball hη
+  exact hwReg.mulSmoothBounded Metric.isOpen_ball hη
     (C₀ := 1) (C₁ := Cη) (by norm_num) hCη_nonneg hη_bound hη_grad_bound
 
 noncomputable def moserRegTestCutoff
@@ -77,7 +77,7 @@ noncomputable def moserRegTestCutoffWitness
       MemW1pWitness 2
         (fun x => moserRegTestPow ε N p (min (max (u x) 0) N))
         (Metric.ball (0 : E) s) :=
-    (MemW1pWitness.comp_smooth_bounded
+    (MemW1pWitness.compSmoothBounded
       (d := d) Metric.isOpen_ball
       (moserClippedPosPartWitness (d := d) (u := u) (s := s) (N := N) hs hs1 hN hu1)
       (moserRegTestPow ε N p)
@@ -88,10 +88,10 @@ noncomputable def moserRegTestCutoffWitness
     have := hη_grad_bound (0 : E)
     exact le_trans (norm_nonneg _) this
   let hwη :=
-    hwTest.mul_smooth_bounded Metric.isOpen_ball hη
+    hwTest.mulSmoothBounded Metric.isOpen_ball hη
       (C₀ := 1) (C₁ := Cη) (by norm_num) hCη_nonneg hη_bound hη_grad_bound
   exact
-    hwη.mul_smooth_bounded Metric.isOpen_ball hη
+    hwη.mulSmoothBounded Metric.isOpen_ball hη
       (C₀ := 1) (C₁ := Cη) (by norm_num) hCη_nonneg hη_bound hη_grad_bound
 
 /-- The `moserRegTestPow` is nonneg on nonneg inputs: since `smoothClip(t) ≥ 0` for `t ≥ 0`,
@@ -180,10 +180,10 @@ lemma moserRegPowerCutoffWitness_grad
         hs hs1 hε hN hu1).weakGrad x i +
       (fderiv ℝ η x) (EuclideanSpace.single i 1) *
         moserRegPow ε N p (min (max (u x) 0) N) := by
-  -- moserRegPowerCutoffWitness = hwComp.mul_smooth_bounded η
-  -- mul_smooth_bounded.weakGrad x i = η x * hw.weakGrad x i + ∂ᵢη(x) * u(x)
+  -- moserRegPowerCutoffWitness = hwComp.mulSmoothBounded η
+  -- mulSmoothBounded.weakGrad x i = η x * hw.weakGrad x i + ∂ᵢη(x) * u(x)
   -- This is definitionally true by the construction.
-  simp only [moserRegPowerCutoffWitness, MemW1pWitness.mul_smooth_bounded,
+  simp only [moserRegPowerCutoffWitness, MemW1pWitness.mulSmoothBounded,
     moserRegClippedPosPartWitness, WithLp.ofLp_add, WithLp.ofLp_smul,
     smul_eq_mul, Pi.add_apply, Pi.smul_apply]
 

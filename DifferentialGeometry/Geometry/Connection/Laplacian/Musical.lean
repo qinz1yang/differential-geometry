@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -120,8 +119,8 @@ private lemma cotCLM_sub {x : M} (α β : Tensor0SSpace 1 I x) :
       cotangentToCLM (I := I) α - cotangentToCLM (I := I) β := by
   apply ContinuousLinearMap.ext
   intro w
-  rw [ContinuousLinearMap.sub_apply, cotCLM_apply, cotCLM_apply, cotCLM_apply,
-    ContinuousMultilinearMap.sub_apply]
+  rw [sub_apply, cotCLM_apply, cotCLM_apply, cotCLM_apply,
+    sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -143,9 +142,9 @@ private lemma cotCLM_sum {ι : Type*} [Fintype ι] {x : M}
   classical
   apply ContinuousLinearMap.ext
   intro w
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   simp only [cotCLM_apply]
-  rw [ContinuousMultilinearMap.sum_apply]
+  rw [sum_apply]
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 private lemma second01_eq
     (g : SmoothRiemannianMetric I M)
@@ -287,7 +286,7 @@ theorem mixed01_connLap
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
           connLaplacianMixed (E := E) (I := I) (M := M) g 0 1 S.toSection x)
           (unitZeroSec (I := I) (M := M) x)) =
-      connLaplacian_oneForm (I := I) g (ccTensorOneForm (I := I) g S) x := by
+      connLaplacianOneForm (I := I) g (ccTensorOneForm (I := I) g S) x := by
   classical
   let w : ContMDiffSection I (Tensor0SModel 1 ℝ E) ∞
       (fun y : M => Tensor0SSpace 1 I y) :=
@@ -297,17 +296,27 @@ theorem mixed01_connLap
   rw [connLaplacianMixed_def,
     rawTensorConnLap_eq_frame_trace_secondCovDeriv,
     connLaplacian_oneForm_def]
-  rw [ContinuousLinearMap.sum_apply, cotCLM_sum]
+  rw [sum_apply, cotCLM_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [tensorSecondCovDeriv_unit_eval_genVal (I := I) (M := M) g 1 S
     (smoothOrthoFrame_smooth (I := I) g x i) x]
-  simpa only [w, ccTensorOneForm, unitEvalSection] using
-    second01_eq (I := I) g w (smoothOrthoFrame_smooth (I := I) g x i) x
+  have hw : (fun y : M => w y) = unitEvalSection (I := I) (M := M) g 1 S := by
+    funext y
+    rfl
+  have h := second01_eq (I := I) g w
+    (smoothOrthoFrame_smooth (I := I) g x i) x
+  have hcot : (fun y : M => cotangentToCLM (I := I) (w y)) =
+      ccTensorOneForm (I := I) g S := by
+    funext y
+    rfl
+  rw [hw] at h
+  rw [hcot] at h
+  exact h
 
 omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem sharp_connLap
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 1) (x : M) :
-    connLaplacian_vector (I := I) g
+    connLaplacianVector (I := I) g
         (fun y : M => inverseMetricSharpFib (I := I) g y
           (unitEvalSection (I := I) (M := M) g 1 S y)) x =
       inverseMetricSharpFib (I := I) g x
@@ -323,12 +332,17 @@ theorem sharp_connLap
   rw [connLaplacian_vector_def, localConnLap_vector_def,
     connLaplacianMixed_def,
     rawTensorConnLap_eq_frame_trace_secondCovDeriv]
-  rw [ContinuousLinearMap.sum_apply, map_sum]
+  rw [sum_apply, map_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [tensorSecondCovDeriv_unit_eval_genVal (I := I) (M := M) g 1 S
     (smoothOrthoFrame_smooth (I := I) g x i) x]
-  simpa only [w, unitEvalSection] using
-    sharp_second_eq (I := I) g w (smoothOrthoFrame_smooth (I := I) g x i) x
+  have hw : (fun y : M => w y) = unitEvalSection (I := I) (M := M) g 1 S := by
+    funext y
+    rfl
+  have h := sharp_second_eq (I := I) g w
+    (smoothOrthoFrame_smooth (I := I) g x i) x
+  rw [hw] at h
+  exact h
 
 end Connection
 end Geometry

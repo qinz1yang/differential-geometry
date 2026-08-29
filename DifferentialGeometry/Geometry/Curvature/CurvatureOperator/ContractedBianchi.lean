@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.SecondBianchi
 import DifferentialGeometry.Geometry.Curvature.Bochner.TensorWeitzenbockIdentity
 import DifferentialGeometry.Geometry.Curvature.MetricLeviCivitaReconcile
 import DifferentialGeometry.Geometry.Operator.NormGradSq
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection
@@ -30,7 +32,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 def nablaRicci (g : SmoothRiemannianMetric I M)
     (X V W : Π b : M, TangentSpace I b) (x : M) : ℝ :=
-  extDerivFun (I := I) (fun b => ricciTensor (I := I) g b (V b) (W b)) x (X x)
+  mvfderiv (I := I) (fun b => ricciTensor (I := I) g b (V b) (W b)) x (X x)
     - ricciTensor (I := I) g x ((LeviCivita (I := I) g).toFun V x (X x)) (W x)
     - ricciTensor (I := I) g x (V x) ((LeviCivita (I := I) g).toFun W x (X x))
 
@@ -39,7 +41,7 @@ omit [SigmaCompactSpace M] in
 lemma nablaRicci_def (g : SmoothRiemannianMetric I M)
     (X V W : Π b : M, TangentSpace I b) (x : M) :
     nablaRicci (I := I) g X V W x =
-      extDerivFun (I := I) (fun b => ricciTensor (I := I) g b (V b) (W b)) x (X x)
+      mvfderiv (I := I) (fun b => ricciTensor (I := I) g b (V b) (W b)) x (X x)
         - ricciTensor (I := I) g x ((LeviCivita (I := I) g).toFun V x (X x)) (W x)
         - ricciTensor (I := I) g x (V x) ((LeviCivita (I := I) g).toFun W x (X x)) := rfl
 
@@ -64,10 +66,10 @@ theorem orthonormal_frame_vector_expansion
   refine SmoothRiemannianMetric.eq_of_inner_eq g (fun ζ => ?_)
   rw [g_inner_eq_orthonormal_parseval_sum (I := I) g x u ζ B hB]
   rw [map_sum]
-  simp only [ContinuousLinearMap.coe_sum', Finset.sum_apply]
+  simp only [FunLike.coe_sum, Finset.sum_apply]
   refine Finset.sum_congr rfl ?_
   intro i _
-  rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  rw [map_smul, smul_apply, smul_eq_mul]
 
 end FrameExpansion
 
@@ -109,8 +111,8 @@ theorem symm_bilin_orthonormal_trace_invariant
     rw [show (T (∑ l, g.inner x (C i) (B l) • B l)) (B k) =
         ∑ l, g.inner x (C i) (B l) • (T (B l)) (B k) from by
           rw [map_sum]
-          simp only [ContinuousLinearMap.coe_sum', Finset.sum_apply, map_smul, smul_eq_mul,
-            ContinuousLinearMap.smul_apply]]
+          simp only [FunLike.coe_sum, Finset.sum_apply, map_smul, smul_eq_mul,
+            smul_apply]]
     rw [Finset.mul_sum]
     refine Finset.sum_congr rfl ?_
     intro l _
@@ -165,16 +167,16 @@ theorem scalarCurv_eq_orthonormal_trace
     (fun i => smoothOrthoFrame (I := I) g x i x) hB
     (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g x i j)
 
-omit [SigmaCompactSpace M] in
-theorem metricScalar_eq_scal
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+theorem metric_scalar_at_eq_chart_ricci_sum
     (g : SmoothRiemannianMetric I M) (x : M) :
-    metricScalarAt (I := I) g x = scalarCurv (I := I) g x := by
+    metricScalarAt (I := I) g x =
+      ∑ i : Fin (Module.finrank Real E), ∑ j : Fin (Module.finrank Real E),
+        chartInvGramMatrix (I := I) g x x i j *
+          ricciTensor (I := I) g x
+            ((centeredChartTangentBasis (I := I) x) i)
+            ((centeredChartTangentBasis (I := I) x) j) := by
   classical
-  let B : Fin (Module.finrank Real E) -> TangentSpace I x :=
-    fun i => smoothOrthoFrame (I := I) g x i x
-  have hB : forall i j : Fin (Module.finrank Real E),
-      g.inner x (B i) (B j) = if i = j then (1 : Real) else 0 :=
-    fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g x i j
   have hbase : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt' x
   have hgram : forall i j : Fin (Module.finrank Real E),
@@ -182,7 +184,8 @@ theorem metricScalar_eq_scal
         chartGramMatrix (I := I) g x x i j := by
     intro i j
     rw [chartGramMatrix_apply, chartBasisVecFiber_self, chartBasisVecFiber_self]
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) g x
+    simp only [centeredChartTangentBasis_apply, centeredChartTangentEquiv_symm_apply]
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x
       (chartModelBasis E) (fun i j => chartInvGramMatrix (I := I) g x x i j) := by
     intro i j
     constructor
@@ -202,22 +205,48 @@ theorem metricScalar_eq_scal
     metricScalarAt (I := I) g x =
         metricTracePair0SAt (I := I) g (metricRicciAt (I := I) g x) :=
       metricScalarAt_def (I := I) g x
-    _ = ∑ i : Fin (Module.finrank Real E), ∑ j : Fin (Module.finrank Real E),
-        chartInvGramMatrix (I := I) g x x i j *
-          metricRicciAt (I := I) g x
-            (vec2 ((chartModelBasis E) i) ((chartModelBasis E) j)) :=
+    _ =
+        ∑ i : Fin (Module.finrank Real E), ∑ j : Fin (Module.finrank Real E),
+          chartInvGramMatrix (I := I) g x x i j *
+            metricRicciAt (I := I) g x
+              (vec2 (I := I) ((chartModelBasis E) i) ((chartModelBasis E) j)) :=
       metricTracePair0SAt_eq_sum_basis (I := I) g (chartModelBasis E)
         (fun i j => chartInvGramMatrix (I := I) g x x i j) hinv
         (metricRicciAt (I := I) g x)
     _ = ∑ i : Fin (Module.finrank Real E), ∑ j : Fin (Module.finrank Real E),
-        chartInvGramMatrix (I := I) g x x i j *
-          ricciTensor (I := I) g x ((chartModelBasis E) i) ((chartModelBasis E) j) := by
+          chartInvGramMatrix (I := I) g x x i j *
+            ricciTensor (I := I) g x
+              ((centeredChartTangentBasis (I := I) x) i)
+              ((centeredChartTangentBasis (I := I) x) j) := by
       refine Finset.sum_congr rfl (fun i _ => Finset.sum_congr rfl (fun j _ => ?_))
-      rw [metricRicciAt_apply_eq_ricciTensor]
-    _ = ∑ i : Fin (Module.finrank Real E), ricciTensor (I := I) g x (B i) (B i) :=
-      (orthonormal_basis_bilin_trace (I := I) g x (ricciTensor (I := I) g x) B hB).symm
-    _ = scalarCurv (I := I) g x :=
-      (scalarCurv_eq_orthonormal_trace (I := I) g x B hB).symm
+      simp only [centeredChartTangentBasis_apply, centeredChartTangentEquiv_symm_apply]
+      exact congrArg (fun r : ℝ => chartInvGramMatrix (I := I) g x x i j * r)
+        (metricRicciAt_apply_eq_ricciTensor (I := I) g x
+          ((chartModelBasis E) i) ((chartModelBasis E) j))
+
+omit [SigmaCompactSpace M] in
+theorem chart_ricci_sum_eq_smooth_orthonormal_sum
+    (g : SmoothRiemannianMetric I M) (x : M) :
+    (∑ i : Fin (Module.finrank Real E), ∑ j : Fin (Module.finrank Real E),
+      chartInvGramMatrix (I := I) g x x i j *
+        ricciTensor (I := I) g x
+          ((centeredChartTangentBasis (I := I) x) i)
+          ((centeredChartTangentBasis (I := I) x) j)) =
+      ∑ i : Fin (Module.finrank Real E),
+        ricciTensor (I := I) g x
+          (smoothOrthoFrame (I := I) g x i x)
+          (smoothOrthoFrame (I := I) g x i x) := by
+  exact (orthonormal_basis_bilin_trace
+    (I := I) g x (ricciTensor (I := I) g x)
+      (fun i => smoothOrthoFrame (I := I) g x i x)
+      (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g x i j)).symm
+
+omit [SigmaCompactSpace M] in
+theorem metricScalar_eq_scal
+    (g : SmoothRiemannianMetric I M) (x : M) :
+    metricScalarAt (I := I) g x = scalarCurv (I := I) g x := by
+  exact (metric_scalar_at_eq_chart_ricci_sum (I := I) g x).trans
+    ((chart_ricci_sum_eq_smooth_orthonormal_sum (I := I) g x).trans rfl)
 
 end ScalarCurv
 
@@ -236,7 +265,11 @@ private lemma mdiffAt_finsetSum_aux {ι : Type*} (t : Finset ι) (f : ι → M �
     MDifferentiableAt I 𝓘(ℝ) (t.sum f) x := by
   classical
   induction t using Finset.induction_on with
-  | empty => simpa using mdifferentiableAt_const
+  | empty =>
+      rw [show (∅ : Finset ι).sum f = fun _ : M => (0 : ℝ) by
+        funext y
+        simp]
+      exact mdifferentiableAt_const
   | insert i t hit ih =>
       have hfi : MDifferentiableAt I 𝓘(ℝ) (f i) x := hf i (by simp)
       have hft : ∀ j ∈ t, MDifferentiableAt I 𝓘(ℝ) (f j) x :=
@@ -246,11 +279,11 @@ private lemma mdiffAt_finsetSum_aux {ι : Type*} (t : Finset ι) (f : ι → M �
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-private lemma extDerivFun_finsetSum_aux {ι : Type*} (t : Finset ι) (f : ι → M → ℝ)
+private lemma mvfderiv_finsetSum_aux {ι : Type*} (t : Finset ι) (f : ι → M → ℝ)
     {x : M} (v : TangentSpace I x)
     (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(ℝ) (f i) x) :
-    extDerivFun (I := I) (t.sum f) x v =
-      t.sum (fun i => extDerivFun (I := I) (f i) x v) := by
+    mvfderiv (I := I) (t.sum f) x v =
+      t.sum (fun i => mvfderiv (I := I) (f i) x v) := by
   classical
   induction t using Finset.induction_on with
   | empty => simp
@@ -260,10 +293,10 @@ private lemma extDerivFun_finsetSum_aux {ι : Type*} (t : Finset ι) (f : ι →
         fun j hj => hf j (by simp [hj])
       have hsum : MDifferentiableAt I 𝓘(ℝ) (t.sum f) x :=
         mdiffAt_finsetSum_aux (I := I) t f hft
-      have hstep : extDerivFun (I := I) ((insert i t).sum f) x v =
-          extDerivFun (I := I) (f i) x v + extDerivFun (I := I) (t.sum f) x v := by
+      have hstep : mvfderiv (I := I) ((insert i t).sum f) x v =
+          mvfderiv (I := I) (f i) x v + mvfderiv (I := I) (t.sum f) x v := by
         rw [Finset.sum_insert hit]
-        have hadd := congr($(extDerivFun_add (I := I) (g := f i) (g' := t.sum f)
+        have hadd := congr($(mvfderiv_add (I := I) (g := f i) (g' := t.sum f)
           (x := x) hfi hsum) v)
         simpa [Pi.add_apply] using hadd
       rw [hstep, ih hft, Finset.sum_insert hit]
@@ -308,7 +341,7 @@ theorem orthonormal_frame_correction_sum_eq_zero
         ricciEndo (I := I) g x (V x) (W x) (B j) := (ricciEndo_apply _ _ _ _ _).symm
     rw [he1, he2, LinearMap.map_smul (ricciEndo (I := I) g x (V x) (W x)) c (B j),
       (g.inner x).map_smul c (ricciEndo (I := I) g x (V x) (W x) (B j)),
-      ContinuousLinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
   have hfirst : ∀ i, g.inner x (riemannOp (LeviCivita (I := I) g) x (u i) (V x) (W x)) (B i) =
       ∑ j, a i j * Tm j i := by
     intro i
@@ -317,12 +350,12 @@ theorem orthonormal_frame_correction_sum_eq_zero
     have hri : riemannOp (LeviCivita (I := I) g) x (u i) (V x) (W x) =
         ricciEndo (I := I) g x (V x) (W x) (u i) := (ricciEndo_apply _ _ _ _ _).symm
     rw [hri, hexp, map_sum, map_sum]
-    simp only [ContinuousLinearMap.coe_sum', Finset.sum_apply]
+    simp only [FunLike.coe_sum, Finset.sum_apply]
     refine Finset.sum_congr rfl ?_
     intro j _
     rw [LinearMap.map_smul (ricciEndo (I := I) g x (V x) (W x)) (g.inner x (u i) (B j)) (B j),
       (g.inner x).map_smul (g.inner x (u i) (B j)) (ricciEndo (I := I) g x (V x) (W x) (B j)),
-      ContinuousLinearMap.smul_apply, smul_eq_mul, ricciEndo_apply]
+      smul_apply, smul_eq_mul, ricciEndo_apply]
   have hsecond : ∀ i, g.inner x (riemannOp (LeviCivita (I := I) g) x (B i) (V x) (W x)) (u i) =
       ∑ j, a i j * Tm i j := by
     intro i
@@ -394,23 +427,23 @@ theorem nablaRicci_eq_frame_trace_nablaCurvSec
       ⟨fun b => S i b, hSsm i⟩ ⟨fun b => B i b, hBsm i⟩
   have hmd : ∀ i, MDifferentiableAt I 𝓘(ℝ) (fun b => g.inner b (S i b) (B i b)) x :=
     fun i => ((hginner_sm i) x).mdifferentiableAt (by simp)
-  have hsum_deriv : extDerivFun (I := I)
+  have hsum_deriv : mvfderiv (I := I)
       (fun b => ricciTensor (I := I) g b (V b) (W b)) x (X x) =
       ∑ i, (g.inner x (cov.toFun (S i) x (X x)) (B i x)
         + g.inner x (S i x) (cov.toFun (B i) x (X x))) := by
     have hmfd : mfderiv I 𝓘(ℝ, ℝ) (fun b => ricciTensor (I := I) g b (V b) (W b)) x =
         mfderiv I 𝓘(ℝ, ℝ) (fun b => ∑ i, g.inner b (S i b) (B i b)) x :=
       Filter.EventuallyEq.mfderiv_eq hnbhd
-    have hmf_eq : extDerivFun (I := I)
+    have hmf_eq : mvfderiv (I := I)
         (fun b => ricciTensor (I := I) g b (V b) (W b)) x (X x) =
-        extDerivFun (I := I) (fun b => ∑ i, g.inner b (S i b) (B i b)) x (X x) :=
+        mvfderiv (I := I) (fun b => ∑ i, g.inner b (S i b) (B i b)) x (X x) :=
       DFunLike.congr_fun hmfd (X x)
     rw [hmf_eq]
     rw [show (fun b => ∑ i, g.inner b (S i b) (B i b)) =
         (Finset.univ : Finset (Fin (Module.finrank ℝ E))).sum
           (fun i => fun b => g.inner b (S i b) (B i b)) from by
       funext b; rw [Finset.sum_apply]]
-    rw [extDerivFun_finsetSum_aux (I := I) _ _ (X x) (fun i _ => hmd i)]
+    rw [mvfderiv_finsetSum_aux (I := I) _ _ (X x) (fun i _ => hmd i)]
     refine Finset.sum_congr rfl ?_
     intro i _
     have hmc := (LeviCivita_isMetricCompatible (I := I) g).apply
@@ -456,8 +489,8 @@ theorem nablaRicci_eq_frame_trace_nablaCurvSec
     refine Finset.sum_congr rfl ?_
     intro i _
     rw [hdecomp i, hriS i]
-    rw [map_add, ContinuousLinearMap.add_apply, map_add, ContinuousLinearMap.add_apply,
-      map_add, ContinuousLinearMap.add_apply]
+    rw [map_add, add_apply, map_add, add_apply,
+      map_add, add_apply]
     have hrcB : riemannSec cov (covApply cov X (B i)) V W x =
         riemannOp cov x (covApply cov X (B i) x) (V x) (W x) :=
       (riemannOp_apply_smooth cov (covApply_contMDiff (cov := cov) hX (hBsm i)) hV hW).symm
@@ -495,14 +528,14 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 def nablaScalar (g : SmoothRiemannianMetric I M)
     (X : Π b : M, TangentSpace I b) (x : M) : ℝ :=
-  extDerivFun (I := I) (scalarCurv (I := I) g) x (X x)
+  mvfderiv (I := I) (scalarCurv (I := I) g) x (X x)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 lemma nablaScalar_def (g : SmoothRiemannianMetric I M)
     (X : Π b : M, TangentSpace I b) (x : M) :
     nablaScalar (I := I) g X x =
-      extDerivFun (I := I) (scalarCurv (I := I) g) x (X x) := rfl
+      mvfderiv (I := I) (scalarCurv (I := I) g) x (X x) := rfl
 
 omit [SigmaCompactSpace M] in
 theorem ricci_orthonormal_frame_correction_eq_zero
@@ -539,8 +572,8 @@ theorem ricci_orthonormal_frame_correction_eq_zero
     have he : u i = ∑ j, g.inner x (u i) (B j) • B j :=
       orthonormal_frame_vector_expansion (I := I) g x (u i) B hBon
     rw [he, map_sum]
-    simp only [ContinuousLinearMap.coe_sum', Finset.sum_apply, map_smul,
-      ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp only [FunLike.coe_sum, Finset.sum_apply, map_smul,
+      smul_apply, smul_eq_mul]
     refine Finset.sum_congr rfl ?_
     intro j _
     rw [ha_def, hRm_def]
@@ -589,16 +622,16 @@ theorem nablaScalar_eq_frame_trace_nablaRicci
   have hmfd : mfderiv I 𝓘(ℝ, ℝ) (scalarCurv (I := I) g) x =
       mfderiv I 𝓘(ℝ, ℝ) (fun b => ∑ i, ricciTensor (I := I) g b (B i b) (B i b)) x :=
     Filter.EventuallyEq.mfderiv_eq hnbhd
-  have hext_eq : extDerivFun (I := I) (scalarCurv (I := I) g) x (X x) =
-      extDerivFun (I := I) (fun b => ∑ i, ricciTensor (I := I) g b (B i b) (B i b)) x (X x) :=
+  have hext_eq : mvfderiv (I := I) (scalarCurv (I := I) g) x (X x) =
+      mvfderiv (I := I) (fun b => ∑ i, ricciTensor (I := I) g b (B i b) (B i b)) x (X x) :=
     DFunLike.congr_fun hmfd (X x)
   rw [hext_eq]
   rw [show (fun b => ∑ i, ricciTensor (I := I) g b (B i b) (B i b)) =
       (Finset.univ : Finset (Fin (Module.finrank ℝ E))).sum
         (fun i => fun b => ricciTensor (I := I) g b (B i b) (B i b)) from by
     funext b; rw [Finset.sum_apply]]
-  rw [extDerivFun_finsetSum_aux (I := I) _ _ (X x) (fun i _ => hmd i)]
-  have hper : ∀ i, extDerivFun (I := I)
+  rw [mvfderiv_finsetSum_aux (I := I) _ _ (X x) (fun i _ => hmd i)]
+  have hper : ∀ i, mvfderiv (I := I)
       (fun b => ricciTensor (I := I) g b (B i b) (B i b)) x (X x) =
       nablaRicci (I := I) g X (B i) (B i) x
         + (ricciTensor (I := I) g x
@@ -707,9 +740,9 @@ theorem nablaCurvSec_metric_skew45
       (fun b => g.inner b (riemannSec cov Y Z U b) (W b)) x :=
     ((DifferentialGeometry.Geometry.Operator.contMDiff_g_inner_of_smooth_sections (I := I) g
       ⟨_, hRU_sm⟩ ⟨fun b => W b, hW⟩) x).mdifferentiableAt (by simp)
-  have hmf0 : extDerivFun (I := I) (fun b => g.inner b (riemannSec cov Y Z W b) (U b)) x (X x)
-      + extDerivFun (I := I) (fun b => g.inner b (riemannSec cov Y Z U b) (W b)) x (X x) = 0 := by
-    have hsum0 : extDerivFun (I := I)
+  have hmf0 : mvfderiv (I := I) (fun b => g.inner b (riemannSec cov Y Z W b) (U b)) x (X x)
+      + mvfderiv (I := I) (fun b => g.inner b (riemannSec cov Y Z U b) (W b)) x (X x) = 0 := by
+    have hsum0 : mvfderiv (I := I)
         ((fun b => g.inner b (riemannSec cov Y Z W b) (U b))
           + (fun b => g.inner b (riemannSec cov Y Z U b) (W b))) x (X x) = 0 := by
       have hmfd0 : mfderiv I 𝓘(ℝ, ℝ)
@@ -721,11 +754,11 @@ theorem nablaCurvSec_metric_skew45
         ((fun b => g.inner b (riemannSec cov Y Z W b) (U b))
           + (fun b => g.inner b (riemannSec cov Y Z U b) (W b))) x) (X x) = 0
       rw [hmfd0, mfderiv_const]; rfl
-    rw [extDerivFun_add (I := I) hmd1 hmd2] at hsum0
+    rw [mvfderiv_add (I := I) hmd1 hmd2] at hsum0
     simpa [Pi.add_apply] using hsum0
-  rw [show extDerivFun (I := I) (fun b => g.inner b (riemannSec cov Y Z W b) (U b)) x (X x) =
+  rw [show mvfderiv (I := I) (fun b => g.inner b (riemannSec cov Y Z W b) (U b)) x (X x) =
       (mfderiv I 𝓘(ℝ) (fun b => g.inner b (riemannSec cov Y Z W b) (U b)) x) (X x) from rfl,
-    show extDerivFun (I := I) (fun b => g.inner b (riemannSec cov Y Z U b) (W b)) x (X x) =
+    show mvfderiv (I := I) (fun b => g.inner b (riemannSec cov Y Z U b) (W b)) x (X x) =
       (mfderiv I 𝓘(ℝ) (fun b => g.inner b (riemannSec cov Y Z U b) (W b)) x) (X x) from rfl,
     (LeviCivita_isMetricCompatible (I := I) g).apply hRWat hUat (X x),
     (LeviCivita_isMetricCompatible (I := I) g).apply hRUat hWat (X x)] at hmf0
@@ -766,7 +799,7 @@ theorem nablaCurvSec_metric_skew45
   have p2 := hsk Y (covApply cov X Z) W U hY hcXZ hW hU
   have p3 := hsk Y Z (covApply cov X W) U hY hZ hcXW hU
   have p4 := hsk Y Z W (covApply cov X U) hY hZ hW hcXU
-  simp only [map_add, ContinuousLinearMap.add_apply] at hmf0
+  simp only [map_add, add_apply] at hmf0
   rw [show ((LeviCivita (I := I) g).toFun U x) (X x) = covApply cov X U x from rfl,
       show ((LeviCivita (I := I) g).toFun W x) (X x) = covApply cov X W x from rfl] at hmf0
   linarith [hmf0, p1, p2, p3, p4]
@@ -813,9 +846,9 @@ theorem nablaCurvSec_inner_pair_symm
       (fun b => g.inner b (riemannSec cov W U Y b) (Z b)) x :=
     ((DifferentialGeometry.Geometry.Operator.contMDiff_g_inner_of_smooth_sections (I := I) g
       ⟨_, hRWUY_sm⟩ ⟨fun b => Z b, hZ⟩) x).mdifferentiableAt (by simp)
-  have hmf0 : extDerivFun (I := I) (fun b => g.inner b (riemannSec cov Y Z W b) (U b)) x (X x)
-      - extDerivFun (I := I) (fun b => g.inner b (riemannSec cov W U Y b) (Z b)) x (X x) = 0 := by
-    have hsub0 : extDerivFun (I := I)
+  have hmf0 : mvfderiv (I := I) (fun b => g.inner b (riemannSec cov Y Z W b) (U b)) x (X x)
+      - mvfderiv (I := I) (fun b => g.inner b (riemannSec cov W U Y b) (Z b)) x (X x) = 0 := by
+    have hsub0 : mvfderiv (I := I)
         ((fun b => g.inner b (riemannSec cov Y Z W b) (U b))
           - (fun b => g.inner b (riemannSec cov W U Y b) (Z b))) x (X x) = 0 := by
       have hmfd0 : mfderiv I 𝓘(ℝ, ℝ)
@@ -827,12 +860,12 @@ theorem nablaCurvSec_inner_pair_symm
         ((fun b => g.inner b (riemannSec cov Y Z W b) (U b))
           - (fun b => g.inner b (riemannSec cov W U Y b) (Z b))) x) (X x) = 0
       rw [hmfd0, mfderiv_const]; rfl
-    have hsubeq : extDerivFun (I := I)
+    have hsubeq : mvfderiv (I := I)
         ((fun b => g.inner b (riemannSec cov Y Z W b) (U b))
           - (fun b => g.inner b (riemannSec cov W U Y b) (Z b))) x =
-        extDerivFun (I := I) (fun b => g.inner b (riemannSec cov Y Z W b) (U b)) x
-          - extDerivFun (I := I) (fun b => g.inner b (riemannSec cov W U Y b) (Z b)) x := by
-      have hadd := extDerivFun_add (I := I)
+        mvfderiv (I := I) (fun b => g.inner b (riemannSec cov Y Z W b) (U b)) x
+          - mvfderiv (I := I) (fun b => g.inner b (riemannSec cov W U Y b) (Z b)) x := by
+      have hadd := mvfderiv_add (I := I)
         (g := (fun b => g.inner b (riemannSec cov Y Z W b) (U b))
           - (fun b => g.inner b (riemannSec cov W U Y b) (Z b)))
         (g' := (fun b => g.inner b (riemannSec cov W U Y b) (Z b))) (x := x)
@@ -846,10 +879,10 @@ theorem nablaCurvSec_inner_pair_symm
       rw [eq_sub_iff_add_eq, ← hadd]
     have := hsub0
     rw [hsubeq] at this
-    simpa [ContinuousLinearMap.sub_apply] using this
-  rw [show extDerivFun (I := I) (fun b => g.inner b (riemannSec cov Y Z W b) (U b)) x (X x) =
+    simpa [sub_apply] using this
+  rw [show mvfderiv (I := I) (fun b => g.inner b (riemannSec cov Y Z W b) (U b)) x (X x) =
       (mfderiv I 𝓘(ℝ) (fun b => g.inner b (riemannSec cov Y Z W b) (U b)) x) (X x) from rfl,
-    show extDerivFun (I := I) (fun b => g.inner b (riemannSec cov W U Y b) (Z b)) x (X x) =
+    show mvfderiv (I := I) (fun b => g.inner b (riemannSec cov W U Y b) (Z b)) x (X x) =
       (mfderiv I 𝓘(ℝ) (fun b => g.inner b (riemannSec cov W U Y b) (Z b)) x) (X x) from rfl,
     (LeviCivita_isMetricCompatible (I := I) g).apply hRYZWat hUat (X x),
     (LeviCivita_isMetricCompatible (I := I) g).apply hRWUYat hZat (X x)] at hmf0
@@ -902,7 +935,7 @@ theorem nablaCurvSec_inner_pair_symm
     (riemannOp_apply_smooth cov hW hU hcXY).symm
   have r5 : riemannSec cov W U Y x = riemannOp cov x (W x) (U x) (Y x) :=
     (riemannOp_apply_smooth cov (x := x) hW hU hY).symm
-  simp only [map_add, ContinuousLinearMap.add_apply] at hmf0
+  simp only [map_add, add_apply] at hmf0
   rw [show ((LeviCivita (I := I) g).toFun U x) (X x) = covApply cov X U x from rfl,
       show ((LeviCivita (I := I) g).toFun Z x) (X x) = covApply cov X Z x from rfl] at hmf0
   rw [q1, q2, q3, q4, r1, r2, r3, r5] at hmf0
@@ -925,7 +958,7 @@ theorem nablaCurvSec_bianchi_paired
         + nablaCurvSec (LeviCivita (I := I) g) Y Z X W x
         + nablaCurvSec (LeviCivita (I := I) g) Z X Y W x) (U x) = 0 := by
     rw [hb]; simp
-  rw [map_add, map_add, ContinuousLinearMap.add_apply, ContinuousLinearMap.add_apply] at hsum
+  rw [map_add, map_add, add_apply, add_apply] at hsum
   exact hsum
 
 end NablaCurvSymmetries
@@ -1025,7 +1058,7 @@ theorem contracted_second_bianchi
         (x := x) (hBsm j) hV (hBsm i)
       simp only [hNR_def]
       rw [hs1] at hs2
-      simp only [map_neg, ContinuousLinearMap.neg_apply] at hs2
+      simp only [map_neg, neg_apply] at hs2
       linarith [hs2]
     rw [hR3_def, hP_def]
     rw [Finset.sum_congr rfl (fun j _ => Finset.sum_congr rfl (fun i _ => hterm j i))]

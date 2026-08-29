@@ -16,7 +16,7 @@ import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.RingTheory.Finiteness.Defs
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
 import DifferentialGeometry.Tensor.Multilinear.Basis
@@ -41,7 +41,11 @@ import Mathlib.LinearAlgebra.Contraction
 import Mathlib.RingTheory.TensorProduct.Finite
 import Mathlib.Analysis.Normed.Operator.Banach
 import Mathlib.Topology.Algebra.Module.Equiv
-import Mathlib.Topology.Algebra.Module.LinearMap
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Idempotent
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Restrict
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.RestrictScalars
 import DifferentialGeometry.Tensor.Alternating.Curry
 import DifferentialGeometry.Tensor.Alternating.Flip
 import DifferentialGeometry.Tensor.Multilinear.Flip
@@ -77,7 +81,6 @@ noncomputable section
 namespace DifferentialGeometry
 namespace Tensor0SBundle
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Module
 open scoped Manifold ContDiff Topology BigOperators
@@ -102,7 +105,7 @@ omit [DecidableEq Idx] in
 theorem componentRS_basisTensor_apply {r s : Nat}
     (T : TensorRSSpace r s I x)
     (upper : Fin r -> Idx) (lower : Fin s -> Idx) :
-    componentRS_gen (I := I) basis T upper lower =
+    componentRSGen (I := I) basis T upper lower =
       (T (basisTensor0S (I := I) basis upper))
         (fun a => basis (lower a)) := by
   rfl
@@ -111,7 +114,7 @@ omit [DecidableEq Idx] in
 @[simp]
 theorem component11_apply
     (T : TensorRSSpace 1 1 I x) (i j : Idx) :
-    componentRS_gen (I := I) basis T (fun _ : Fin 1 => i) (fun _ : Fin 1 => j) =
+    componentRSGen (I := I) basis T (fun _ : Fin 1 => i) (fun _ : Fin 1 => j) =
       (T (basisTensor0S (I := I) basis (fun _ : Fin 1 => i)))
         (fun _ : Fin 1 => basis j) := by
   rfl
@@ -119,7 +122,7 @@ theorem component11_apply
 omit [DecidableEq Idx] in
 theorem component13_apply
     (T : TensorRSSpace 1 3 I x) (a i j k : Idx) :
-    componentRS_gen (I := I) basis T
+    componentRSGen (I := I) basis T
         (fun _ : Fin 1 => a)
         (fun q : Fin 3 => if q = 0 then i else if q = 1 then j else k) =
       (T (basisTensor0S (I := I) basis (fun _ : Fin 1 => a)))
@@ -170,14 +173,14 @@ section Contractions
 @[simp]
 theorem model_contract_trace_first_upper_first_lower_apply
     (r s : Nat) (T : TensorRSModel (1 + r) (s + 1) K E) :
-    model_contract_trace (𝕜 := K) (E := E) r s T =
+    modelContractTrace (𝕜 := K) (E := E) r s T =
       ∑ i : Fin (Module.finrank K E),
-        (model_contract_covariant_bilinear
+        (modelContractCovariantBilinear
           (𝕜 := K) (E := E) r s
           ((Module.finBasis K E) i))
-          ((model_contract_contravariant_first_bilinear
+          ((modelContractContravariantFirstBilinear
             (𝕜 := K) (E := E) r (s + 1)
-            (model_covectorOfCLM (𝕜 := K) (E := E)
+            (modelCovectorOfCLM (𝕜 := K) (E := E)
               ((Module.finBasis K E).cDualBasis i))) T) := by
   exact model_contract_trace_apply (𝕜 := K) (E := E) r s T
 
@@ -185,7 +188,7 @@ theorem model_contract_trace_first_upper_first_lower_apply
 theorem contract_contravariant_first_model_apply
     {r : Nat} (alpha : Tensor0SModel 1 K E) (beta : Tensor0SModel r K E)
     (v : Fin (1 + r) -> E) :
-    model_tensorWithCovector_first (𝕜 := K) (E := E) r alpha beta v =
+    modelTensorWithCovectorFirst (𝕜 := K) (E := E) r alpha beta v =
       alpha (v ∘ Fin.castAdd r) * beta (v ∘ Fin.natAdd 1) := by
   change Bundle.continuousMultilinearMap.modelProduct 1 r alpha beta v =
     alpha (v ∘ Fin.castAdd r) * beta (v ∘ Fin.natAdd 1)

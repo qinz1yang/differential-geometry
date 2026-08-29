@@ -113,7 +113,7 @@ theorem parabolicCutoffValue_apply
     parabolicCutoffValue chi u t x =
       chi (parabolicPoint t x) • u t x := rfl
 
-omit [DecidableEq n] [Nonempty n] in
+omit [Fintype n] [DecidableEq n] [Nonempty n] in
 @[simp]
 theorem parabolicCutoffSpatialJet1_apply
     (chi : ParabolicPoint (Euc n) → Real)
@@ -124,8 +124,9 @@ theorem parabolicCutoffSpatialJet1_apply
     parabolicCutoffSpatialJet1 chi dchi u du p =
       chi p • du p + (dchi p).smulRight (u p.time p.space) := rfl
 
-omit [DecidableEq n] [Nonempty n] in
+omit [Fintype n] [DecidableEq n] [Nonempty n] in
 theorem parabolicCutoffValue_hasFDerivAt
+    [Finite n]
     (chi : ParabolicPoint (Euc n) → Real)
     (dchi : ParabolicPoint (Euc n) → Euc n →L[Real] Real)
     (u : Real → Euc n → F)
@@ -137,8 +138,11 @@ theorem parabolicCutoffValue_hasFDerivAt
     HasFDerivAt (parabolicCutoffValue chi u t)
       (parabolicCutoffSpatialJet1 chi dchi u du
         (parabolicPoint t x)) x := by
-  simpa only [parabolicCutoffValue_apply,
-    parabolicCutoffSpatialJet1_apply] using hchi.smul hu
+  let _ := Fintype.ofFinite n
+  change HasFDerivAt (fun y ↦ chi (parabolicPoint t y) • u t y)
+    (chi (parabolicPoint t x) • du (parabolicPoint t x) +
+      (dchi (parabolicPoint t x)).smulRight (u t x)) x
+  exact hchi.smul hu
 
 omit [DecidableEq n] [Nonempty n] in
 theorem parabolicCutoffSpatialJet1_hasFDerivAt
@@ -170,7 +174,7 @@ theorem parabolicCutoffSpatialJet1_hasFDerivAt
   change HasFDerivAt
     (fun y ↦ chi (parabolicPoint t y) • du (parabolicPoint t y) +
       (dchi (parabolicPoint t y)).smulRight (u t y)) _ x
-  simpa only [parabolicCutoffSpatialJet2, add_assoc] using
+  simpa only [parabolicCutoffSpatialJet2, add_assoc] using!
     hleft.add hright
 
 omit [DecidableEq n] [Nonempty n] in
@@ -243,7 +247,7 @@ theorem parabolicTimeDerivative_cutoff
       (chi p • dtimeU p + dtimeChi p • u p.time p.space) p.time := by
     simpa only [parabolicCutoffValue_apply, Pi.smul_apply,
       parabolicPoint_time, parabolicPoint_space, parabolicPoint_time_space,
-      add_comm] using hchi.smul hu
+      add_comm] using! hchi.smul hu
   unfold parabolicTimeDerivative parabolicCutoffTimeDerivative
   rw [hprod.hasFDerivAt.fderiv]
   simp only [ContinuousLinearMap.toSpanSingleton_apply, one_smul]
@@ -265,17 +269,22 @@ theorem matrixLap_parabolicCutoffSpatialJet2
       chi p • matrixLap (fun i j ↦ a i j p) (d2u p) +
         parabolicMatrixCutoffCommutator a dchi d2chi u du p := by
   simp only [matrixLap, parabolicCutoffSpatialJet2,
-    parabolicMatrixCutoffCommutator, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.smul_apply, ContinuousLinearMap.smulRight_apply,
+    parabolicMatrixCutoffCommutator, _root_.add_apply,
+    _root_.smul_apply,
     ContinuousLinearMap.precompR, ContinuousLinearMap.precompL,
     ContinuousLinearMap.compL_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.flip_apply,
-    ContinuousLinearMap.smulRightL_apply_apply, smul_add,
-    Finset.sum_add_distrib, Finset.smul_sum, smul_smul]
-  have hcomm : ∀ i j, a i j p * chi p = chi p * a i j p :=
-    fun i j ↦ mul_comm _ _
-  simp_rw [hcomm]
-  abel
+    ContinuousLinearMap.smulRightL_apply_apply]
+  simp_rw [Finset.smul_sum]
+  rw [← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro i _
+  rw [← Finset.sum_add_distrib]
+  apply Finset.sum_congr rfl
+  intro j _
+  simp only [ContinuousLinearMap.smulRight_apply, _root_.smul_apply,
+    smul_add, smul_smul]
+  module
 
 omit [DecidableEq n] [Nonempty n] in
 theorem parabolicVariableMatrixOperator_cutoff
@@ -355,8 +364,8 @@ theorem parabolicGradientComponent_cutoff
   simp only [parabolicGradientComponent_apply, parabolicSpatialJet,
     continuousMultilinearCurryFin1_apply, iteratedFDeriv_one_apply,
     hcut.fderiv, hu.fderiv, parabolicCutoffSpatialJet1_apply,
-    ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.smulRight_apply, Fin.snoc_zero]
+    _root_.add_apply, _root_.smul_apply, Fin.snoc_zero]
+  rfl
 
 omit [DecidableEq n] [Nonempty n] in
 theorem parabolicDriftTerm_cutoff

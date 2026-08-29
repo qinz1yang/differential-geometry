@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.Measure.BorelManifold.Defs
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Defs
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Topology.VectorBundle.Basic
@@ -13,7 +13,6 @@ import Mathlib.MeasureTheory.Function.StronglyMeasurable.AEStronglyMeasurable
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Set MeasureTheory Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff
@@ -35,10 +34,10 @@ theorem measurable_of_continuousOn_chart_source
     {F : Type*} [TopologicalSpace F]
     (f : M → F) (hf : ∀ α : M, ContinuousOn f (chartAt H α).source) :
     @Measurable M F (borel M) (borel F) f := by
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  letI : MeasurableSpace F := borel F
-  haveI : BorelSpace F := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace F := borel F
+  have : BorelSpace F := ⟨rfl⟩
   classical
   have hcount := IsBorelChartedSpace.chartAt_range_countable (H := H) (M := M)
   have hmeas := IsBorelChartedSpace.measurableSet_chartAt_preimage (H := H) (M := M)
@@ -125,11 +124,11 @@ private lemma contMDiffOn_trivProj
         (fun x : M => TensorRSSpace r s I x) α
           ⟨x, S.toSection x⟩).2)
       ((chartAt H α).source) := by
-  letI : IsManifold I (∞ + 1) M := by
+  let : IsManifold I (∞ + 1) M := by
     have : ((∞ : WithTop ℕ∞) + 1) = ∞ := by
       simp
     rw [this]; infer_instance
-  letI : ContMDiffVectorBundle ∞ (TensorRSModel r s ℝ E)
+  let : ContMDiffVectorBundle ∞ (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) I :=
     tensorRSBundle_smooth (n := ∞) r s
   have hbase := rs_baseSet_eq_chart_source' (I := I) (M := M) α r s
@@ -265,7 +264,7 @@ private lemma tensorRS_levelSet_identity
   rw [heq]
   ext v
   unfold ContinuousLinearMap.inCoordinates
-  simp only [ContinuousLinearMap.coe_comp', Function.comp_apply]
+  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply]
   rw [tensor0S_symmL_levelSet_apply (I := I) (M := M) r α x hx v]
   rw [tensor0S_continuousLinearMapAt_levelSet_apply (I := I) (M := M) s α x hx
     ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from S.toSection x) v)]
@@ -276,12 +275,12 @@ theorem SmoothCcTensor.measurable_toFun
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (S : SmoothCcTensor g r s) :
     @Measurable M (TensorRSModel r s ℝ E) (borel M) _ S.toFun := by
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace (TensorRSModel r s ℝ E) := borel (TensorRSModel r s ℝ E)
-  haveI : BorelSpace (TensorRSModel r s ℝ E) := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace (TensorRSModel r s ℝ E) := borel (TensorRSModel r s ℝ E)
+  have : BorelSpace (TensorRSModel r s ℝ E) := ⟨rfl⟩
   classical
   have hcount := IsBorelChartedSpace.chartAt_range_countable (H := H) (M := M)
   have hmeas_lvl := IsBorelChartedSpace.measurableSet_chartAt_preimage (H := H) (M := M)
@@ -377,10 +376,10 @@ theorem SmoothCcTensor.stronglyMeasurable_toFun
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     (S : SmoothCcTensor g r s) :
     @StronglyMeasurable M (TensorRSModel r s ℝ E) _ (borel M) S.toFun := by
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  letI : MeasurableSpace (TensorRSModel r s ℝ E) := borel (TensorRSModel r s ℝ E)
-  haveI : BorelSpace (TensorRSModel r s ℝ E) := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace (TensorRSModel r s ℝ E) := borel (TensorRSModel r s ℝ E)
+  have : BorelSpace (TensorRSModel r s ℝ E) := ⟨rfl⟩
   have hmeas := SmoothCcTensor.measurable_toFun (I := I) (M := M) S
   exact hmeas.stronglyMeasurable
 
@@ -391,8 +390,8 @@ theorem SmoothCcTensor.aestronglyMeasurable_toFun
     (μ : letI : MeasurableSpace M := borel M; MeasureTheory.Measure M) :
     letI : MeasurableSpace M := borel M
     AEStronglyMeasurable S.toFun μ := by
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   exact (SmoothCcTensor.stronglyMeasurable_toFun (I := I) (M := M) S).aestronglyMeasurable
 
 end BorelManifold

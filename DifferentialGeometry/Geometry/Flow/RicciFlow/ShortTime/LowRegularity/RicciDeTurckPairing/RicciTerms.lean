@@ -477,10 +477,9 @@ private noncomputable def ricciQuadraticConnectionBlock
     (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
       (connectionDifferenceContravariantInsertionField (I := I) g gm) Z)
 
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-private theorem ricciQuadraticConnectionKernel_eq_block_sum (g gm : SmoothRiemannianMetric I M) :
-    ricciConnectionDifferenceQuadraticKernel (I := I) (M := M) g gm =
-      ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_cycleZeroThreeOneTwo
+private noncomputable def ricciQuadraticConnectionBlockSum
+    (g gm : SmoothRiemannianMetric I M) : SmoothCcTensor g 2 4 :=
+  ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_cycleZeroThreeOneTwo
           (ricciQuadraticConnectionInner (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_swapZeroOne) +
         reindexCoeffGen (I := I) (M := M) g 2 4
           (ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_swapBlocks
@@ -497,7 +496,21 @@ private theorem ricciQuadraticConnectionKernel_eq_block_sum (g gm : SmoothRieman
         reindexCoeffGen (I := I) (M := M) g 2 4
           (ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_swapZeroTwo
             (ricciQuadraticConnectionInner (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_rotateInputs))
-          innerCoreInPerm10 :=
+          innerCoreInPerm10
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
+private theorem ricciQuadraticConnectionKernel_eq_block_sum (g gm : SmoothRiemannianMetric I M) :
+    ricciConnectionDifferenceQuadraticKernel (I := I) (M := M) g gm =
+      ricciQuadraticConnectionBlockSum (I := I) (M := M) g gm := by
+  apply SmoothCcTensor.ext
+  apply ContMDiffSection.ext
+  intro x
+  apply ContinuousLinearMap.ext
+  intro D
+  apply DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.toModel_injective
+  apply ContinuousMultilinearMap.ext
+  intro m
+  unfold ricciConnectionDifferenceQuadraticKernel ricciQuadraticConnectionBlockSum
   rfl
 
 private noncomputable def ricciQuadraticConnectionJetCap
@@ -702,6 +715,7 @@ private theorem exists_ricciQuadraticConnectionBlock_covariantJetNormSq_differen
   exact (mul_le_mul_of_nonneg_left hxy (mul_nonneg hC₄ hp0)).trans_eq
     (by simp only [OT, OU]; ring)
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem covariantJetNormSq_ricciQuadraticConnectionKernel_sum_le
     (g : SmoothRiemannianMetric I M)
@@ -895,6 +909,7 @@ private theorem exists_ricciQuadraticConnectionKernel_covariantJetNormSq_bound
     (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl))))) _
     (hZinn ricciQuadraticConnectionPermutation_rotateInputs (Or.inr rfl))
   rw [ricciQuadraticConnectionKernel_eq_block_sum (I := I) (M := M) g gm]
+  unfold ricciQuadraticConnectionBlockSum
   set Y0 := ricciQuadraticConnectionBlock (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_cycleZeroThreeOneTwo
     (ricciQuadraticConnectionInner (I := I) (M := M) g gm ricciQuadraticConnectionPermutation_swapZeroOne)
   set Y1 := reindexCoeffGen (I := I) (M := M) g 2 4
@@ -1261,6 +1276,7 @@ private theorem exists_ricciQuadraticConnectionKernel_covariantJetNormSq_tame_di
     (hZDinn ricciQuadraticConnectionPermutation_rotateInputs (Or.inr rfl))
   rw [ricciQuadraticConnectionKernel_eq_block_sum (I := I) (M := M) g gT,
     ricciQuadraticConnectionKernel_eq_block_sum (I := I) (M := M) g gU]
+  unfold ricciQuadraticConnectionBlockSum
   let Y0 := ricciQuadraticConnectionBlock (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_cycleZeroThreeOneTwo
     (ricciQuadraticConnectionInner (I := I) (M := M) g gT ricciQuadraticConnectionPermutation_swapZeroOne)
   let Y1 := reindexCoeffGen (I := I) (M := M) g 2 4
@@ -1359,7 +1375,6 @@ private theorem exists_ricciQuadraticConnectionKernel_covariantJetNormSq_tame_di
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] in
 private theorem cometricDoubleTraceCoefficient_eq_pureTrace
     (g gm : SmoothRiemannianMetric I M) :
@@ -1504,7 +1519,7 @@ private theorem exists_ricciCometricFourTraceCastG0_covariantJetNormSq_differenc
       ring
 
 omit [BoundarylessManifold I M] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem kernelContractionMonomialField_sub
     (g : SmoothRiemannianMetric I M)
     (G H : SmoothCcTensor g 0 4) (σ : Equiv.Perm (Fin 4)) :
@@ -2640,7 +2655,7 @@ by
         ccTensorBilin (I := I) g P x v u := by
     intro x u v
     simp only [hcP, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hT x u v
   have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -2648,7 +2663,7 @@ by
         ccTensorBilin (I := I) g Q x v u := by
     intro x u v
     simp only [hcQ, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hU x u v
   have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -3626,12 +3641,12 @@ theorem RicciDeTurckLowOrder.exists_symmetricRicciTerm_covariantJetNormSq_differ
     R A D2 D3 N hR hA hD2 hD3 hN
     hT2 hU2 hT3 hU3 hTU2 hTU3 hTn hUn hTUn s hs
   have hδ_lt : δ < 1 := lt_of_le_of_lt hδ_le (by norm_num)
-  let gmT : SmoothRiemannianMetric I M :=
+  set gmT : SmoothRiemannianMetric I M :=
     metricPerturbationPath (I := I) g T 0 hδT hδZ s
-  let gmU : SmoothRiemannianMetric I M :=
+  set gmU : SmoothRiemannianMetric I M :=
     metricPerturbationPath (I := I) g U 0 hδU hδZ s
-  let P : SmoothCcTensor g 0 2 := s • T
-  let Q : SmoothCcTensor g 0 2 := s • U
+  set P : SmoothCcTensor g 0 2 := s • T
+  set Q : SmoothCcTensor g 0 2 := s • U
   have hs_mem : s ∈ metricPerturbationPathDomain (δ := δ) (δ' := δ) :=
     Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt hs
   have hsabs : ‖s‖ ≤ (1 : ℝ) := by
@@ -3644,7 +3659,7 @@ theorem RicciDeTurckLowOrder.exists_symmetricRicciTerm_covariantJetNormSq_differ
         ccTensorBilin (I := I) g P x v u := by
     intro x u v
     simp only [P, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hT x u v
   have hQsymm : ∀ (x : M) (u v : TangentSpace I x),
@@ -3652,7 +3667,7 @@ theorem RicciDeTurckLowOrder.exists_symmetricRicciTerm_covariantJetNormSq_differ
         ccTensorBilin (I := I) g Q x v u := by
     intro x u v
     simp only [Q, ccTensorBilin_apply, ccTensorModel_smul,
-      ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+      smul_apply, smul_eq_mul]
     apply congrArg (fun z : ℝ => s * z)
     simpa only [ccTensorBilin_apply] using hU x u v
   have hPtie : ∀ (x : M) (u v : TangentSpace I x),
@@ -3815,14 +3830,7 @@ theorem RicciDeTurckLowOrder.exists_symmetricRicciTerm_covariantJetNormSq_differ
       (mul_nonneg
         (add_nonneg (mul_nonneg (by norm_num) (hBA R hR)) (hBD R hR))
         (add_nonneg (by norm_num) (sq_nonneg A))) hS
-  rw [show
-      RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g
-            (metricPerturbationPath (I := I) g T 0 hδT hδZ s) (s • T) -
-          RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g
-            (metricPerturbationPath (I := I) g U 0 hδU hδZ s) (s • U) =
-        RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmT P -
-          RicciDeTurckLowOrder.symmetrizedRicciConnectionDifferenceLowOrderCoefficient (I := I) (M := M) g gmU Q by rfl,
-    hgood]
+  rw [hgood]
   calc
     covariantJetNormSq (I := I) (M := M) g 2
         (ccInputSlotSymm (I := I) (M := M) g

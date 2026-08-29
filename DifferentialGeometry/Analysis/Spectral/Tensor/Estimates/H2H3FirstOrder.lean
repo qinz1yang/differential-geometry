@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.H2H4Principal
 
+
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
 open scoped ContDiff Manifold Topology BigOperators
@@ -52,7 +53,9 @@ theorem operatorFieldApplication_h2_h3_h2
   have hJ :
       ∑ j ∈ Finset.range 4,
           ‖iteratedCovGrad (I := I) g 0 s j U‖ ≤ B := by
-    simpa only [B, N, Nat.reduceAdd] using hin U
+    have h := hin U
+    rw [show (((3 : ℕ) : ℝ)) = 3 by norm_num] at h
+    simpa only [B, N, Nat.reduceAdd] using h
   have hWsum :
       ∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 0 (s + 1) j W‖ ≤ B := by
@@ -111,7 +114,9 @@ theorem operatorFieldApplication_h2_h3_h2
       ‖ccTensorToHs (I := I) (M := M) g c (2 : ℝ) Y‖ ≤
         Csp * ∑ j ∈ Finset.range 3,
           ‖iteratedCovGrad (I := I) g 0 c j Y‖ := by
-    simpa only [Nat.reduceAdd] using hsp Y
+    have h := hsp Y
+    rw [show (((2 : ℕ) : ℝ)) = 2 by norm_num] at h
+    simpa only [Nat.reduceAdd] using h
   change ‖ccTensorToHs (I := I) (M := M) g c (2 : ℝ) Y‖ ≤
     C * A * N
   calc

@@ -112,12 +112,12 @@ private theorem mixed_real_holder_two_nonneg
     ∫ x, φ x * ψ x ∂(riemannianVolumeMeasure (I := I) (M := M) g) ≤
       (∫ x, φ x ^ p ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ^ (1 / p) *
       (∫ x, ψ x ^ q ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ^ (1 / q) := by
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g with hμ
-  haveI : IsFiniteMeasure μ :=
+  have : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   have hp_pos : 0 < p := hpq.left_pos
   have hq_pos : 0 < q := hpq.right_pos
@@ -219,11 +219,11 @@ private theorem operatorFieldApplication_integrated_grid_twoArm_mixed
               + ΛS ^ 2 * ∑ l ∈ Finset.range (k + 1),
                 ‖iteratedCovGrad (I := I) g 0 s₂ l T‖ ^ 2) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g
   set CSf : ℕ → ℝ := fun m =>
     if h : 1 ≤ m then
@@ -529,17 +529,17 @@ private theorem operatorFieldApplication_integrated_grid_twoArm_mixed
         ∑ l ∈ Finset.range (k + 1 - i), Tj l x ∂μ)
       = ∑ i ∈ Finset.range (k + 1), ∑ l ∈ Finset.range (k + 1 - i),
           ∫ x, Sj i x * Tj l x ∂μ := by
-    rw [MeasureTheory.integral_finset_sum _
+    rw [MeasureTheory.integral_finsetSum _
       (fun i _ => by
         rw [hμ]
-        exact ((hSj_cont i).mul (continuous_finset_sum _
+        exact ((hSj_cont i).mul (continuous_finsetSum _
           (fun l _ => hTj_cont l))).integrable_of_hasCompactSupport
           (HasCompactSupport.of_compactSpace _))]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [show (∫ x, Sj i x * ∑ l ∈ Finset.range (k + 1 - i), Tj l x ∂μ)
           = ∫ x, ∑ l ∈ Finset.range (k + 1 - i), Sj i x * Tj l x ∂μ from by
         simp only [Finset.mul_sum],
-      MeasureTheory.integral_finset_sum _ (fun l _ => hint_cell i l)]
+      MeasureTheory.integral_finsetSum _ (fun l _ => hint_cell i l)]
   rw [hrw]
   have hsum_le : ∑ i ∈ Finset.range (k + 1), ∑ l ∈ Finset.range (k + 1 - i),
         ∫ x, Sj i x * Tj l x ∂μ ≤
@@ -589,11 +589,11 @@ theorem ccTensorContract_topOrder_l2_twoArm_mixed_ballUniform
               + ΛΦ ^ 2 * ∑ l ∈ Finset.range (k + 1),
                 ‖iteratedCovGrad (I := I) g₀ 0 b₀ l W‖ ^ 2) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Cgrid, hCgrid_nn, hCgrid⟩ :=
     operatorFieldApplication_integrated_grid_twoArm_mixed (I := I) g₀ b₀ s₀ b₀ k
@@ -628,8 +628,8 @@ theorem ccTensorContract_topOrder_l2_twoArm_mixed_ballUniform
       x
   have hgrid_cont : Continuous grid := by
     rw [hgrid]
-    refine continuous_finset_sum _ (fun i _ => (mixed_continuous_riemannianFiberNormSq g₀ b₀ (s₀ + i) _).mul ?_)
-    exact continuous_finset_sum _ (fun l _ => mixed_continuous_riemannianFiberNormSq g₀ 0 (b₀ + l) _)
+    refine continuous_finsetSum _ (fun i _ => (mixed_continuous_riemannianFiberNormSq g₀ b₀ (s₀ + i) _).mul ?_)
+    exact continuous_finsetSum _ (fun l _ => mixed_continuous_riemannianFiberNormSq g₀ 0 (b₀ + l) _)
   have hgrid_int : Integrable grid μ := by
     rw [hμ]; exact hgrid_cont.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   have hmono : ∫ x, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (s₀ + k) x
@@ -656,6 +656,7 @@ theorem ccTensorContract_topOrder_l2_twoArm_mixed_ballUniform
           + ΛΦ ^ 2 * ∑ l ∈ Finset.range (k + 1),
             ‖iteratedCovGrad (I := I) g₀ 0 b₀ l W‖ ^ 2) := by ring
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma jetTowerSum_add_le (g₀ : SmoothRiemannianMetric I M) (r s n : ℕ)
@@ -690,7 +691,7 @@ lemma jetTowerSum_add_le (g₀ : SmoothRiemannianMetric I M) (r s n : ℕ)
           2 * (∑ i ∈ Finset.range n, ‖iteratedCovGrad (I := I) g₀ r s i B‖ ^ 2) := by
         rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
 
-set_option backward.isDefEq.respectTransparency false in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem armField_covGrad_step_jointSmooth
     (g₀ : SmoothRiemannianMetric I M) (r sIdx : ℕ)
@@ -709,7 +710,6 @@ private theorem armField_covGrad_step_jointSmooth
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem armField_jointSmooth_riemannianFiberNormSq_jointContinuous
     (g₀ : SmoothRiemannianMetric I M) (r sIdx : ℕ)
@@ -770,7 +770,7 @@ private theorem armField_jointSmooth_riemannianFiberNormSq_jointContinuous
       ((Ψ t).toSection x),
     DifferentialGeometry.Tensor.TensorRSRiemannianBundle.tensorRSRiemannianInnerCLM_apply]
 
-set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem armField_covGrad_pathIntegral_comm
     (g₀ : SmoothRiemannianMetric I M) (r sIdx : ℕ)
@@ -792,7 +792,6 @@ private theorem armField_covGrad_pathIntegral_comm
   DifferentialGeometry.Analysis.Parabolic.TensorSpectral.covGrad_pathIntegral_comm
     (I := I) (M := M) g₀ r sIdx Ψ S hS hSI hjoint hjg
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem pathIntegralCoeffField_congr
     (g₀ : SmoothRiemannianMetric I M) (r sIdx : ℕ)
@@ -815,7 +814,7 @@ private theorem pathIntegralCoeffField_congr
   intro x
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem armField_iteratedCovGrad_jointSmooth
     (g₀ : SmoothRiemannianMetric I M) (r sIdx i : ℕ)
@@ -835,7 +834,7 @@ private theorem armField_iteratedCovGrad_jointSmooth
     exact armField_covGrad_step_jointSmooth (I := I) g₀ r (sIdx + j)
       (fun t => iteratedCovGrad (I := I) g₀ r sIdx j (Φ t)) S ih
 
-set_option backward.isDefEq.respectTransparency false in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem armField_iteratedCovGrad_riemannianFiberNormSq_jointContinuous
     (g₀ : SmoothRiemannianMetric I M) (r sIdx i : ℕ)
@@ -854,7 +853,6 @@ private theorem armField_iteratedCovGrad_riemannianFiberNormSq_jointContinuous
     (by rw [Set.uIcc_of_le (zero_le_one (α := ℝ))] at hSI; exact hSI)
     (armField_iteratedCovGrad_jointSmooth (I := I) g₀ r sIdx i Φ S hjoint)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem armField_iteratedCovGrad_normSq_intervalIntegrable
     (g₀ : SmoothRiemannianMetric I M) (r sIdx i : ℕ)
@@ -867,12 +865,12 @@ private theorem armField_iteratedCovGrad_normSq_intervalIntegrable
     IntervalIntegrable
       (fun t : ℝ => ‖iteratedCovGrad (I := I) g₀ r sIdx i (Φ t)‖ ^ 2) volume 0 1 := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
   set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g₀ with hμ
-  haveI : IsFiniteMeasure μ :=
+  have : IsFiniteMeasure μ :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set F : ℝ × M → ℝ := fun p : ℝ × M =>
     riemannianFiberNormSq (I := I) (M := M) g₀ r (sIdx + i) p.2
@@ -900,7 +898,7 @@ private theorem armField_iteratedCovGrad_normSq_intervalIntegrable
   rw [heq]
   exact hcontInt.intervalIntegrable_of_Icc (by norm_num)
 
-set_option backward.isDefEq.respectTransparency false in
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem armField_iteratedCovGrad_pathIntegral_comm
     (g₀ : SmoothRiemannianMetric I M) (r sIdx i : ℕ)
@@ -950,7 +948,6 @@ private theorem armField_iteratedCovGrad_pathIntegral_comm
       (fun t => iteratedCovGrad (I := I) g₀ r sIdx (j + 1) (Φ t)) S hS hSI hjgsucc hji
       (by funext t; rw [iteratedCovGrad_succ])
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem pathIntegralCoeffField_jetL2_tower_le
     (g₀ : SmoothRiemannianMetric I M) (r a : ℕ)

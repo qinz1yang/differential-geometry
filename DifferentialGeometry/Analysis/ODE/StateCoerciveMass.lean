@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.CoerciveBilinInverse
 import Mathlib.Analysis.ODE.PicardLindelof
+import Mathlib.Analysis.ODE.ExistUnique
 import Mathlib.Analysis.Calculus.MeanValue
 
 noncomputable section
@@ -46,7 +47,7 @@ theorem coerOn_of_lip
   have hDlow : -((c / 2) * ‖v‖ * ‖v‖) ≤ D v v :=
     neg_le_of_abs_le habs
   have heval : B u v v = B 0 v v + D v v := by
-    simp only [D, ContinuousLinearMap.sub_apply]
+    simp only [D, sub_apply]
     ring
   rw [heval]
   calc
@@ -87,6 +88,9 @@ theorem stateMass_exists
   let An : ℝ≥0 := ⟨A, hA⟩
   let Lf : ℝ≥0 := cinv * An
   let Kf : ℝ≥0 := cinv * Kr + cinv * (Km * (cinv * An))
+  have hKfcoe : (Kf : ℝ) =
+      c⁻¹ * (Kr : ℝ) + c⁻¹ * ((Km : ℝ) * (c⁻¹ * A)) := by
+    with_unfolding_all rfl
   let τ : ℝ := min T (R / ((Lf : ℝ) + 1))
   have hden : 0 < (Lf : ℝ) + 1 := by positivity
   have hτ : 0 < τ := lt_min hT (div_pos hR hden)
@@ -165,8 +169,7 @@ theorem stateMass_exists
             exact hres_bound t htT v hv
       _ = (Kf : ℝ) * dist u v := by
             rw [dist_eq_norm]
-            simp only [Kf, cinv, An, NNReal.coe_add, NNReal.coe_mul,
-              NNReal.coe_mk]
+            rw [hKfcoe]
             ring
   have hftime : ∀ u ∈ closedBall (0 : V) R,
       ContinuousOn (fun t ↦ f t u) (Icc (0 : ℝ) τ) := by
@@ -179,12 +182,12 @@ theorem stateMass_exists
         (fun t : Icc (0 : ℝ) τ ↦ (hcsub t t.2).sharpCLM) :=
       IsCoercive.sharpCLM_cont_sub (fun t ↦ mass t u) hm hcsub
     have hr : Continuous (fun t : Icc (0 : ℝ) τ ↦ resid t u) :=
-      ((hres_time u hu).mono htime_sub).restrict
-    rw [continuousOn_iff_continuous_restrict]
+      ((hres_time u hu).mono htime_sub).domRestrict
+    rw [continuousOn_iff_continuous_domRestrict]
     have happ := hsharp.clm_apply hr
     convert happ using 1
     funext t
-    simp only [f, Set.restrict_apply, dif_pos (htime_sub t.2), dif_pos hu]
+    simp only [f, Set.domRestrict_apply, dif_pos (htime_sub t.2), dif_pos hu]
   let tzero : Icc (0 : ℝ) τ := ⟨0, by exact ⟨le_rfl, hτ.le⟩⟩
   let aN : ℝ≥0 := ⟨R, hR.le⟩
   have hPL : IsPicardLindelof f tzero (0 : V) aN 0 Lf Kf :=

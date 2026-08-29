@@ -145,7 +145,7 @@ private theorem chosenWeakPartial'_extend_zero_ae
         (fun _ : E => (0 : ℝ)) :=
       chosenWeakPartial'_ae_zero_on_sdiff_tsupport hp hV hu_V i
     exact ae_restrict_of_ae_restrict_of_subset
-      (Set.diff_subset_diff_right hu_supp) h_g_V_zero
+      (Set.sdiff_subset_sdiff_right hu_supp) h_g_V_zero
   have h_meas_Ω : MeasurableSet Ω := hΩ.measurableSet
   have h_on_Ω : g_V =ᵐ[volume.restrict Ω] Ω.indicator g_Ω := by
     have h_ind_eq : Ω.indicator g_Ω =ᵐ[volume.restrict Ω] g_Ω := by
@@ -406,13 +406,13 @@ theorem wkpNorm_le_of_memWkp_precompact_of_ae_zero_off_compact
   have hv_compact : HasCompactSupport v := hχ_compact.mul_right
   have hv_ae_eq_u : v =ᵐ[(volume : Measure E).restrict Ω] u := by
     have h_split : Ω = (Ω ∩ N) ∪ (Ω \ N) := by
-      rw [Set.inter_union_diff]
+      rw [Set.inter_union_sdiff]
     have h_on_inter : v =ᵐ[(volume : Measure E).restrict (Ω ∩ N)] u := by
       refine (ae_restrict_iff' (hΩ_open.measurableSet.inter hN_meas)).mpr ?_
       refine Filter.Eventually.of_forall fun x hx => ?_
       simp only [hv_def, hχ_one x hx.2, one_mul]
     have h_on_diff : v =ᵐ[(volume : Measure E).restrict (Ω \ N)] u := by
-      have h_sub : Ω \ N ⊆ Ω \ K := Set.diff_subset_diff_right hK_sub_N
+      have h_sub : Ω \ N ⊆ Ω \ K := Set.sdiff_subset_sdiff_right hK_sub_N
       have hu_zero_diff : u =ᵐ[(volume : Measure E).restrict (Ω \ N)] 0 :=
         hu_ae_zero.filter_mono
           (ae_mono (Measure.restrict_mono_set volume h_sub))
@@ -469,13 +469,13 @@ theorem wkpNorm_le_of_memWkp_precompact_of_ae_zero_off_compact_uniform
   have hv_compact : HasCompactSupport v := hχ_compact.mul_right
   have hv_ae_eq_u : v =ᵐ[(volume : Measure E).restrict Ω] u := by
     have h_split : Ω = (Ω ∩ N) ∪ (Ω \ N) := by
-      rw [Set.inter_union_diff]
+      rw [Set.inter_union_sdiff]
     have h_on_inter : v =ᵐ[(volume : Measure E).restrict (Ω ∩ N)] u := by
       refine (ae_restrict_iff' (hΩ_open.measurableSet.inter hN_meas)).mpr ?_
       refine Filter.Eventually.of_forall fun x hx => ?_
       simp only [hv_def, hχ_one x hx.2, one_mul]
     have h_on_diff : v =ᵐ[(volume : Measure E).restrict (Ω \ N)] u := by
-      have h_sub : Ω \ N ⊆ Ω \ K := Set.diff_subset_diff_right hK_sub_N
+      have h_sub : Ω \ N ⊆ Ω \ K := Set.sdiff_subset_sdiff_right hK_sub_N
       have hu_zero_diff : u =ᵐ[(volume : Measure E).restrict (Ω \ N)] 0 :=
         hu_ae_zero.filter_mono
           (ae_mono (Measure.restrict_mono_set volume h_sub))

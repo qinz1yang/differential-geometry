@@ -8,7 +8,6 @@ noncomputable section
 namespace DifferentialGeometry
 namespace Tensor0SBundle
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle
 open scoped Manifold ContDiff BigOperators
@@ -101,28 +100,29 @@ noncomputable def connectionDifferenceOutput
         TangentSpace I x →L[Real] TangentSpace I x)
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x :=
-  ContinuousLinearMap.uncurryLeft
-    (𝕜 := Real) (n := 1) (Ei := fun _ : Fin 2 => TangentSpace I x) (G := Real)
-    (LinearMap.toContinuousLinearMap
-      { toFun := fun X =>
-          (continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).symm
-            (connectionDifferenceSlotCLM (I := I) A α X)
-        map_add' := by
-          intro X Y
-          apply (continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).injective
-          ext Z
-          change α (fun _ : Fin 1 => (A Z) (X + Y)) =
-            α (fun _ : Fin 1 => (A Z) X) + α (fun _ : Fin 1 => (A Z) Y)
-          rw [map_add]
-          exact tensor0S_one_apply_add (I := I) α ((A Z) X) ((A Z) Y)
-        map_smul' := by
-          intro c X
-          apply (continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).injective
-          ext Z
-          change α (fun _ : Fin 1 => (A Z) (c • X)) =
-            c • α (fun _ : Fin 1 => (A Z) X)
-          rw [map_smul]
-          exact tensor0S_one_apply_smul (I := I) α c ((A Z) X) })
+  (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).symm
+    (ContinuousLinearMap.uncurryLeft
+      (𝕜 := Real) (n := 1) (Ei := fun _ : Fin 2 => TangentSpace I x) (G := Real)
+      (LinearMap.toContinuousLinearMap
+        { toFun := fun X =>
+            (continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).symm
+              (connectionDifferenceSlotCLM (I := I) A α X)
+          map_add' := by
+            intro X Y
+            apply (continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).injective
+            ext Z
+            change α (fun _ : Fin 1 => (A Z) (X + Y)) =
+              α (fun _ : Fin 1 => (A Z) X) + α (fun _ : Fin 1 => (A Z) Y)
+            rw [map_add]
+            exact tensor0S_one_apply_add (I := I) α ((A Z) X) ((A Z) Y)
+          map_smul' := by
+            intro c X
+            apply (continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).injective
+            ext Z
+            change α (fun _ : Fin 1 => (A Z) (c • X)) =
+              c • α (fun _ : Fin 1 => (A Z) X)
+            rw [map_smul]
+            exact tensor0S_one_apply_smul (I := I) α c ((A Z) X) }))
 
 @[simp]
 theorem connectionDifferenceOutput_apply
@@ -131,9 +131,10 @@ theorem connectionDifferenceOutput_apply
         TangentSpace I x →L[Real] TangentSpace I x)
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (v : Fin 2 -> TangentSpace I x) :
-    connectionDifferenceOutput (I := I) A α v =
-      α (fun _ : Fin 1 => (A (v 1)) (v 0)) := by
-  unfold connectionDifferenceOutput
+    Tensor0SSpace.eval (connectionDifferenceOutput (I := I) A α) v =
+      Tensor0SSpace.eval α (fun _ : Fin 1 => (A (v 1)) (v 0)) := by
+  unfold connectionDifferenceOutput Tensor0SSpace.eval
+  rw [ContinuousLinearEquiv.apply_symm_apply]
   rw [ContinuousLinearMap.uncurryLeft_apply]
   change
     ((continuousMultilinearCurryFin1 Real (TangentSpace I x) Real).symm
@@ -152,9 +153,9 @@ theorem connectionDifferenceOutput_apply_slots
         TangentSpace I x →L[Real] TangentSpace I x)
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (X Y : TangentSpace I x) :
-    connectionDifferenceOutput (I := I) A α
+    Tensor0SSpace.eval (connectionDifferenceOutput (I := I) A α)
         (fun q : Fin 2 => if q = 0 then X else Y) =
-      α (fun _ : Fin 1 => (A Y) X) := by
+      Tensor0SSpace.eval α (fun _ : Fin 1 => (A Y) X) := by
   rw [connectionDifferenceOutput_apply]
   simp
 
@@ -170,28 +171,38 @@ noncomputable def connectionDifferenceTensorAt
           (CovariantDerivative.difference cov cov' x) α
       map_add' := by
         intro α β
-        apply ContinuousMultilinearMap.ext
+        apply tensor0SSpace_ext 2 x
         intro v
+        change Tensor0SSpace.eval
+            (connectionDifferenceOutput (I := I)
+              (CovariantDerivative.difference cov cov' x) (α + β)) v =
+          Tensor0SSpace.eval
+            (connectionDifferenceOutput (I := I)
+                (CovariantDerivative.difference cov cov' x) α +
+              connectionDifferenceOutput (I := I)
+                (CovariantDerivative.difference cov cov' x) β) v
         rw [connectionDifferenceOutput_apply]
-        change (α + β) (fun _ : Fin 1 =>
-            (CovariantDerivative.difference cov cov' x (v 1)) (v 0)) =
-          connectionDifferenceOutput (I := I)
-              (CovariantDerivative.difference cov cov' x) α v +
-            connectionDifferenceOutput (I := I)
-              (CovariantDerivative.difference cov cov' x) β v
-        rw [connectionDifferenceOutput_apply, connectionDifferenceOutput_apply]
-        rfl
+        change Tensor0SSpace.eval (α + β) (fun _ : Fin 1 =>
+            (CovariantDerivative.difference cov cov' x (v 1)) (v 0)) = _
+        rw [Tensor0SSpace.eval_add]
+        rw [Tensor0SSpace.eval_add, connectionDifferenceOutput_apply,
+          connectionDifferenceOutput_apply]
       map_smul' := by
         intro c α
-        apply ContinuousMultilinearMap.ext
+        apply tensor0SSpace_ext 2 x
         intro v
+        change Tensor0SSpace.eval
+            (connectionDifferenceOutput (I := I)
+              (CovariantDerivative.difference cov cov' x) (c • α)) v =
+          Tensor0SSpace.eval
+            (c • connectionDifferenceOutput (I := I)
+              (CovariantDerivative.difference cov cov' x) α) v
+        rw [Tensor0SSpace.eval_smul, connectionDifferenceOutput_apply]
+        change Tensor0SSpace.eval (c • α) (fun _ : Fin 1 =>
+            (CovariantDerivative.difference cov cov' x (v 1)) (v 0)) = _
+        rw [Tensor0SSpace.eval_smul]
         rw [connectionDifferenceOutput_apply]
-        change (c • α) (fun _ : Fin 1 =>
-            (CovariantDerivative.difference cov cov' x (v 1)) (v 0)) =
-          c • connectionDifferenceOutput (I := I)
-            (CovariantDerivative.difference cov cov' x) α v
-        rw [connectionDifferenceOutput_apply]
-        rfl }
+        }
 
 @[simp]
 theorem connectionDifferenceTensorAt_apply
@@ -201,12 +212,12 @@ theorem connectionDifferenceTensorAt_apply
     {x : M}
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (v : Fin 2 -> TangentSpace I x) :
-    connectionDifferenceTensorAt (I := I) cov cov' x α v =
-      α (fun _ : Fin 1 =>
+    Tensor0SSpace.eval (connectionDifferenceTensorAt (I := I) cov cov' x α) v =
+      Tensor0SSpace.eval α (fun _ : Fin 1 =>
         ((CovariantDerivative.difference cov cov' x) (v 1)) (v 0)) := by
-  change connectionDifferenceOutput (I := I)
-      (CovariantDerivative.difference cov cov' x) α v =
-    α (fun _ : Fin 1 =>
+  change Tensor0SSpace.eval (connectionDifferenceOutput (I := I)
+      (CovariantDerivative.difference cov cov' x) α) v =
+    Tensor0SSpace.eval α (fun _ : Fin 1 =>
       ((CovariantDerivative.difference cov cov' x) (v 1)) (v 0))
   rw [connectionDifferenceOutput_apply]
 
@@ -217,9 +228,9 @@ theorem connectionDifferenceTensorAt_apply_slots
     {x : M}
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (X Y : TangentSpace I x) :
-    connectionDifferenceTensorAt (I := I) cov cov' x α
+    Tensor0SSpace.eval (connectionDifferenceTensorAt (I := I) cov cov' x α)
         (fun q : Fin 2 => if q = 0 then X else Y) =
-      α (fun _ : Fin 1 =>
+      Tensor0SSpace.eval α (fun _ : Fin 1 =>
         ((CovariantDerivative.difference cov cov' x) Y) X) := by
   rw [connectionDifferenceTensorAt_apply]
   simp
@@ -231,14 +242,20 @@ theorem componentRS_connectionDifferenceTensorAt
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (i j k : Idx) :
-    componentRS_gen (I := I) basis (connectionDifferenceTensorAt (I := I) cov cov' x)
+    componentRSGen (I := I) basis (connectionDifferenceTensorAt (I := I) cov cov' x)
         (fun _ : Fin 1 => k)
         (fun q : Fin 2 => if q = 0 then i else j) =
       basis.coord k
         (((CovariantDerivative.difference cov cov' x) (basis j)) (basis i)) := by
   classical
-  rw [componentRS_apply_gen, connectionDifferenceTensorAt_apply]
-  simp [basisTensor0S_apply]
+  rw [componentRS_apply_gen]
+  change Tensor0SSpace.eval
+      (connectionDifferenceTensorAt (I := I) cov cov' x
+        (basisTensor0S (I := I) basis fun _ => k))
+      (fun a => basis (if a = 0 then i else j)) = _
+  rw [connectionDifferenceTensorAt_apply]
+  rw [Tensor0SSpace.eval_eq, basisTensor0S_apply]
+  simp
 
 end Tensor0SBundle
 end DifferentialGeometry

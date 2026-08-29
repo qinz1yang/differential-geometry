@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.EnergyBound.EigenvectorChartWeightedMemLp
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -86,7 +87,9 @@ theorem eLpNorm_weighted_contDiffOn_mul_le
         = ENNReal.ofReal C * eLpNorm w 2 μw := by
     have h := eLpNorm_const_smul (μ := μw) (p := 2) (C : ℝ) w
     rw [Real.enorm_of_nonneg hC_nn] at h
-    simpa only [Pi.smul_apply] using h
+    change eLpNorm (fun y => (C : ℝ) • w y) 2 μw =
+      ENNReal.ofReal C * eLpNorm w 2 μw at h
+    exact h
   calc
     eLpNorm (fun y => c y * w y) 2 μw
         ≤ eLpNorm (fun y => (C : ℝ) • w y) 2 μw := h_mono
@@ -142,7 +145,9 @@ theorem eLpNorm_weighted_contDiffOn_mul_le_uniform
         = ENNReal.ofReal C * eLpNorm w 2 μw := by
     have h := eLpNorm_const_smul (μ := μw) (p := 2) (C : ℝ) w
     rw [Real.enorm_of_nonneg hC_nn] at h
-    simpa only [Pi.smul_apply] using h
+    change eLpNorm (fun y => (C : ℝ) • w y) 2 μw =
+      ENNReal.ofReal C * eLpNorm w 2 μw at h
+    exact h
   calc
     eLpNorm (fun y => c y * w y) 2 μw
         ≤ eLpNorm (fun y => (C : ℝ) • w y) 2 μw := h_mono

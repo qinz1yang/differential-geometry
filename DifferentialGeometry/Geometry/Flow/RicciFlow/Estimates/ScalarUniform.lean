@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -48,7 +50,13 @@ private theorem time_patch
       ContinuousAt
         (fun p : Real × M =>
           f p.1 p.2 - f t0 p.2) (t0, x) := by
-    simpa only [F] using hmove.sub hfix
+    have heq :
+        ((fun p : Real × M => f p.1 p.2) - fun p => f t0 p.2) =
+          fun p => f p.1 p.2 - f t0 p.2 := by
+      funext p
+      rfl
+    rw [← heq]
+    exact hmove.sub hfix
   have hsmall :
       {p : Real × M |
         |f p.1 p.2 - f t0 p.2| < epsilon} ∈ 𝓝 (t0, x) := by

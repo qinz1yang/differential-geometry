@@ -127,7 +127,7 @@ lemma exists_chart_cutoff_with_data
   exact hb_range ⟨x, rfl⟩
 
 private lemma smoothExtension_eq_chartPushed_uv
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (α : M) (u v : M → ℝ) {y : EuclN}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     smoothExtension (I := I) (M := M) α
@@ -315,7 +315,7 @@ lemma leftSmoothFactor_smooth
 
 omit [IsManifold I ∞ M] in
 private lemma leftSmoothFactor_hasCompactSupport
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
+    [CompactSpace M]
     (α : M) {b u : M → ℝ}
     (hb_supp : tsupport b ⊆ (chartAt H α).source) :
     HasCompactSupport (leftSmoothFactor (I := I) (M := M) α b u) := by
@@ -356,7 +356,7 @@ lemma tsupport_smoothPushed_subset_chartTarget
   exact tsupport_smoothExtension_subset_chartTarget (I := I) (M := M) α hpou_u_supp
 
 lemma leftSmoothFactor_memW1p
-    [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
+    [CompactSpace M] [I.Boundaryless]
     (α : M) {b u : M → ℝ}
     (hb : ContMDiff I 𝓘(ℝ, ℝ) ∞ b) (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     (hb_supp : tsupport b ⊆ (chartAt H α).source)

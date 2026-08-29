@@ -25,7 +25,7 @@ theorem lintegral_enorm_le_sqrt (μ : Measure X) (f : X → F)
       (μ Set.univ) ^ ((1 : ℝ) / 2) *
         (∫⁻ x, ENNReal.ofReal (‖f x‖ ^ 2) ∂μ) ^ ((1 : ℝ) / 2) := by
   have hg : AEMeasurable (fun x => ‖f x‖ₑ) μ := by
-    simpa only [← ofReal_norm_eq_enorm] using
+    simpa only [← ofReal_norm] using
       hf.norm.aemeasurable.ennreal_ofReal
   have hholder := ENNReal.lintegral_mul_le_Lp_mul_Lq
     (μ := μ) Real.HolderConjugate.two_two
@@ -37,7 +37,7 @@ theorem lintegral_enorm_le_sqrt (μ : Measure X) (f : X → F)
       ∫⁻ x, ENNReal.ofReal (‖f x‖ ^ 2) ∂μ := by
     apply lintegral_congr
     intro x
-    rw [ENNReal.rpow_two, ← ofReal_norm_eq_enorm,
+    rw [ENNReal.rpow_two, ← ofReal_norm,
       ← ENNReal.ofReal_pow (norm_nonneg _) 2]
   rw [hone, hsq] at hholder
   simpa only [Pi.mul_apply, one_mul] using hholder
@@ -164,7 +164,7 @@ theorem earlyFlux_l1 {T t : ℝ} {C : ℝ≥0∞}
       change (∫⁻ z, ENNReal.ofReal ‖f z‖ ∂μ) = ∫⁻ z, ‖f z‖ₑ ∂μ
       apply lintegral_congr
       intro z
-      rw [ofReal_norm_eq_enorm]
+      rw [ofReal_norm]
     _ ≤ (μ Set.univ) ^ ((1 : ℝ) / 2) *
         (∫⁻ z, ENNReal.ofReal (‖f z‖ ^ 2) ∂μ) ^ ((1 : ℝ) / 2) := hholder
     _ ≤ ((ENNReal.ofReal (heatScale t)) ^ (Module.finrank ℝ V + 2) *
@@ -386,7 +386,7 @@ theorem fluxShellMass_raw {T t : ℝ} {C : ℝ≥0∞}
         ENNReal.ofReal K * ENNReal.ofReal ‖f z‖ := by
     intro z hz
     have hk := heatD1_early_shell ht hz.1.1.le hz.1.2 w k hz.2
-    rw [← ofReal_norm_eq_enorm, norm_smul,
+    rw [← ofReal_norm, norm_smul,
       ENNReal.ofReal_mul (norm_nonneg _)]
     exact mul_le_mul_left (ENNReal.ofReal_le_ofReal hk) _
   have hm : AEMeasurable (fun z : ℝ × V => ENNReal.ofReal ‖f z‖)
@@ -616,7 +616,7 @@ theorem heatEarly1Near_norm {T t : ℝ} {C : ℝ≥0∞}
         ENNReal.ofReal K * ENNReal.ofReal ‖f z‖ := by
     intro z hz
     have hk := heatD1_early_near ht hz.1.2 w hz.2
-    rw [← ofReal_norm_eq_enorm, norm_smul,
+    rw [← ofReal_norm, norm_smul,
       ENNReal.ofReal_mul (norm_nonneg _)]
     exact mul_le_mul_left (ENNReal.ofReal_le_ofReal hk) _
   have hm : AEMeasurable (fun z : ℝ × V => ENNReal.ofReal ‖f z‖)

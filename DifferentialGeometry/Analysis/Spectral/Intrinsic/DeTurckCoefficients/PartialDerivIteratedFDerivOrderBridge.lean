@@ -44,9 +44,12 @@ lemma partialDeriv_sub_eqOn
     (hv.contDiffAt (hs.mem_nhds hy)).differentiableAt (by simp)
   simp only [partialDeriv]
   have hfd : fderiv ℝ (fun z => u z - v z) y = fderiv ℝ u y - fderiv ℝ v y := by
-    have := fderiv_sub (𝕜 := ℝ) hdu hdv
-    simpa using this
-  rw [hfd, ContinuousLinearMap.sub_apply]
+    have hfun : (fun z => u z - v z) = u - v := by
+      funext z
+      rfl
+    rw [hfun]
+    exact fderiv_sub (𝕜 := ℝ) hdu hdv
+  rw [hfd, sub_apply]
 
 omit [InnerProductSpace ℝ E] in
 theorem partial_eq_iter1 (u : E → ℝ) (i : Fin (Module.finrank ℝ E)) (y : E) :

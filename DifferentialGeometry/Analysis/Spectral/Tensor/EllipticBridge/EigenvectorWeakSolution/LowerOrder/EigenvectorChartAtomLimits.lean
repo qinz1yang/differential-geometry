@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators Matrix ENNReal NNReal
@@ -73,7 +72,7 @@ lemma approxComponentLp_tendsto
       atTop
       (𝓝 (componentLpLimit (I := I) (M := M) g r s i α P)) := by
   classical
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
   have h_tendsto :=
     (eigenvectorChartComponentL2_tendsto (I := I) (M := M)
       g r s i α P).const_smul i.fst.val

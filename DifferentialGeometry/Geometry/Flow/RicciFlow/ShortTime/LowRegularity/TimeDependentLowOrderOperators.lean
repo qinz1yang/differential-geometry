@@ -51,7 +51,7 @@ private theorem ccBilin_smul
     ccTensorBilin (I := I) g (c • T) x u v =
       c * ccTensorBilin (I := I) g T x u v := by
   rw [ccTensorBilin_apply, ccTensorBilin_apply, ccTensorModel_smul,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    smul_apply, smul_eq_mul]
 
 private theorem ccToHs_neg
     (g : SmoothRiemannianMetric I M) (σ : ℝ)
@@ -263,16 +263,20 @@ noncomputable def symmHs
     (g : SmoothRiemannianMetric I M) {σ : ℝ} (hσ : 0 ≤ σ) :
     tensorHs (I := I) (M := M) g 0 2 σ →L[ℝ]
       tensorHs (I := I) (M := M) g 0 2 σ :=
-  LinearMap.mkContinuous
+  let L : tensorHs (I := I) (M := M) g 0 2 σ →ₗ[ℝ]
+      tensorHs (I := I) (M := M) g 0 2 σ :=
     { toFun := symmFun (I := I) (M := M) g hσ
       map_add' := symmFun_add (I := I) (M := M) g hσ
       map_smul' := symmFun_smul (I := I) (M := M) g hσ }
+  LinearMap.mkContinuous L
     1
     (fun u => by
       have h := (symmFun_lip (I := I) (M := M) g hσ).dist_le_mul u 0
       rw [NNReal.coe_one, one_mul, symmFun_zero (I := I) (M := M) g hσ,
         dist_zero_right, dist_zero_right] at h
-      simpa only [one_mul] using h)
+      change ‖L u‖ ≤ 1 * ‖u‖
+      rw [show L u = symmFun (I := I) (M := M) g hσ u by rfl, one_mul]
+      exact h)
 
 theorem symmHs_core
     (g : SmoothRiemannianMetric I M) {σ : ℝ} (hσ : 0 ≤ σ)
@@ -365,7 +369,7 @@ theorem radialCLM_le
     (v : tensorHs (I := I) (M := M) g 0 2 (2 : ℝ))
     (u : tensorHs (I := I) (M := M) g 0 2 σ) :
     ‖radialCLM (I := I) (M := M) g hσ ρ v u‖ ≤ ‖u‖ := by
-  rw [radialCLM, ContinuousLinearMap.smul_apply, norm_smul,
+  rw [radialCLM, smul_apply, norm_smul,
     Real.norm_eq_abs, abs_of_nonneg
       (radialScale_nonneg (I := I) (M := M) g hρ v)]
   calc
@@ -412,7 +416,10 @@ theorem radialCLM_aemeas
       AEStronglyMeasurable
         (fun _ : Ω => symmHs (I := I) (M := M) g hσ) μ :=
     aestronglyMeasurable_const
-  simpa only [radialCLM, radialScale] using hscale.smul hconst
+  refine (hscale.smul hconst).congr ?_
+  exact Filter.Eventually.of_forall fun x => by
+    simp only [radialCLM, radialScale]
+    congr 3
 
 theorem radialCLM_incl
     (g : SmoothRiemannianMetric I M) {τ σ : ℝ}
@@ -427,7 +434,7 @@ theorem radialCLM_incl
   apply ContinuousLinearMap.ext
   intro u
   simp only [ContinuousLinearMap.comp_apply, radialCLM,
-    ContinuousLinearMap.smul_apply, map_smul]
+    smul_apply, map_smul]
   have h := DFunLike.congr_fun
     (symmHs_incl (I := I) (M := M) g hτ hσ hτσ) u
   simp only [ContinuousLinearMap.comp_apply] at h
@@ -857,7 +864,11 @@ private theorem radialHigh_cont
             (0 : metricThirdOrderSobolev (I := I) (M := M) g) R ∈ 𝓝 x :=
     continuousAt_subtype_val.preimage_mem_nhds hclosed
   apply (hK.continuousOn x hxclosed).continuousAt
-  simpa only [Metric.mem_closedBall, Set.mem_setOf_eq] using hpre
+  change ((↑) : highCore (I := I) (M := M) g →
+      metricThirdOrderSobolev (I := I) (M := M) g) ⁻¹'
+      Metric.closedBall
+        (0 : metricThirdOrderSobolev (I := I) (M := M) g) R ∈ 𝓝 x
+  exact hpre
 
 noncomputable def lowRadialH3
     (g : SmoothRiemannianMetric I M) (ρ : ℝ) :
@@ -1024,7 +1035,7 @@ theorem lowRadialH3_sub
   have huv : (u, v) ∈ {p | lhs p ≤ rhs p} := by
     rw [huniv]
     trivial
-  simpa only [Set.mem_setOf_eq, lhs, rhs] using huv
+  simpa only [Set.mem_ofPred_eq, lhs, rhs] using huv
 
 private abbrev lowCore (g : SmoothRiemannianMetric I M) :=
   Set.range (ccToHsLin (I := I) (M := M) g 2 (2 : ℝ))
@@ -1194,7 +1205,7 @@ theorem radialCLM_h3
       lowRadialH3 (I := I) (M := M) g ρ u := by
   rw [lowRadialH3_eq (I := I) (M := M) g hρ]
   unfold radialCLM radialScale lowScaleCutoff
-  simp only [ContinuousLinearMap.smul_apply]
+  simp only [smul_apply]
   have h := DFunLike.congr_fun
     (symmHs_incl (I := I) (M := M) g
       (τ := (2 : ℝ)) (σ := (3 : ℝ))
@@ -1697,7 +1708,23 @@ theorem lowCore_split
     (hreal S (lowRadial_norm (I := I) (M := M) g hρ T))
     (zeroBound (I := I) (M := M) g hδ0)
     R B hR hB hR2 hB2
-  simpa only [S, lowCoreActionCoefficients] using hs.1
+  change deTurckSmoothRemainder (I := I) (M := M) g g S
+        (lt_of_le_of_lt hδ_le (by norm_num))
+        (hreal S (lowRadial_norm (I := I) (M := M) g hρ T)) -
+      deTurckSmoothRemainder (I := I) (M := M) g g
+        (0 : SmoothCcTensor g 0 2)
+        (lt_of_le_of_lt hδ_le (by norm_num))
+        (zeroBound (I := I) (M := M) g hδ0) =
+      (lowCoreActionCoefficients (I := I) (M := M) g hρ hδ0 hδ_le hreal T).secondOrderAction
+          (I := I) (M := M) S +
+        (lowCoreActionCoefficients (I := I) (M := M) g hρ hδ0 hδ_le hreal T).firstOrderAction
+          (I := I) (M := M) S
+  rw [show lowCoreActionCoefficients (I := I) (M := M) g hρ hδ0 hδ_le hreal T =
+      lowerScaleActionCoefficients (I := I) (M := M) g g S
+        (lt_of_le_of_lt hδ_le (by norm_num))
+        (hreal S (lowRadial_norm (I := I) (M := M) g hρ T))
+        (zeroBound (I := I) (M := M) g hδ0) by rfl]
+  exact hs.1
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 

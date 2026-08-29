@@ -43,7 +43,7 @@ lemma compactRep_ae {Ω K : Set EuclN} (hK : MeasurableSet K)
     compactRep K v =ᵐ[(volume : Measure EuclN).restrict Ω] v := by
   have hv' : v =ᵐ[((volume : Measure EuclN).restrict Ω).restrict Kᶜ] 0 := by
     rw [Measure.restrict_restrict hK.compl]
-    simpa only [Set.diff_eq, Set.inter_comm] using hv
+    simpa only [Set.sdiff_eq, Set.inter_comm] using hv
   simpa only [compactRep] using
     (indicator_ae_eq_of_restrict_compl_ae_eq_zero
       (μ := (volume : Measure EuclN).restrict Ω) hK hv')
@@ -140,7 +140,7 @@ theorem crossPullback_ae [I.Boundaryless]
         chartPushed (I := I) (M := M) ρ γ (chartPullback I α w) := by
     rw [Filter.EventuallyEq, ae_restrict_union_eq]
     exact ⟨h_on_overlap, h_on_diff⟩
-  rw [Set.union_diff_cancel hOγα_sub] at h_union
+  rw [Set.union_sdiff_cancel hOγα_sub] at h_union
   exact h_union
 
 theorem crossChartAeJoint

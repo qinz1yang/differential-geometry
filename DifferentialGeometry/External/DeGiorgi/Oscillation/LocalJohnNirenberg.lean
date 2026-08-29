@@ -11,6 +11,7 @@ John-Nirenberg inequality.
 
 noncomputable section
 
+
 open MeasureTheory Metric Filter Topology Set
 open scoped ENNReal
 
@@ -91,18 +92,18 @@ theorem john_nirenberg_level_set_decay
     have := ENNReal.toReal_mono hfin henn_le
     rwa [ENNReal.toReal_mul, ENNReal.toReal_ofReal (by norm_num : (0:ℝ) ≤ 1/2)] at this
   have hAdiffU_sub : E_lam_A \ U ⊆ E_lam \ U :=
-    diff_subset_diff_left hE_lam_A_sub
+    sdiff_subset_sdiff_left hE_lam_A_sub
   -- volume.real E_lam_A = volume.real (E_lam_A ∩ U) + volume.real (E_lam_A \ U)
   have hE_lam_A_split : volume.real E_lam_A =
       volume.real (E_lam_A ∩ U) + volume.real (E_lam_A \ U) := by
-    rw [← measureReal_inter_add_diff hU_meas hE_lam_A_fin]
+    rw [← measureReal_inter_add_sdiff hU_meas hE_lam_A_fin]
   -- volume.real (E_lam \ U) = volume.real E_lam - volume.real U
   have hE_lam_diff : volume.real (E_lam \ U) = volume.real E_lam - volume.real U :=
-    measureReal_diff hU_sub_E_lam hU_meas hE_lam_fin
+    measureReal_sdiff hU_sub_E_lam hU_meas hE_lam_fin
   -- volume.real (E_lam_A \ U) ≤ volume.real (E_lam \ U)
   have hAdiffU_le : volume.real (E_lam_A \ U) ≤ volume.real (E_lam \ U) := by
     exact measureReal_mono hAdiffU_sub
-      (ne_top_of_le_ne_top hE_lam_fin (measure_mono diff_subset))
+      (ne_top_of_le_ne_top hE_lam_fin (measure_mono sdiff_subset))
   have hU_lower : 1 / (5 : ℝ) ^ d * volume.real E_lam ≤ volume.real U := by
     by_cases h5d : (5 : ℝ) ^ d = 0
     · simp [h5d]
@@ -180,7 +181,7 @@ lemma abs_sub_const_bmo_le_two
   have hB_vol_pos : 0 < volume B := measure_ball_pos volume z hs
   have hB_vol_ne_zero : volume B ≠ 0 := hB_vol_pos.ne'
   have hB_vol_ne_top : volume B ≠ ⊤ := measure_ball_lt_top.ne
-  haveI : IsFiniteMeasure (volume.restrict B) :=
+  have : IsFiniteMeasure (volume.restrict B) :=
     ⟨by rw [Measure.restrict_apply_univ]; exact hB_vol_ne_top.lt_top⟩
   have hvolR_pos : 0 < volume.real B :=
     ENNReal.toReal_pos hB_vol_ne_zero hB_vol_ne_top
@@ -331,7 +332,8 @@ lemma abs_subballAverage_sub_ballAverage_le
       _ = ⨍ z in S, |u z - avg| ∂volume := by
             rw [MeasureTheory.setAverage_eq, smul_eq_mul]
   have habsB_int : IntegrableOn (fun z => |u z - avg|) B volume := by
-    simpa [Real.norm_eq_abs, avg] using (hu_int.sub (integrableOn_const hBfin)).norm
+    change Integrable (fun z => ‖u z - avg‖) (volume.restrict B)
+    exact (hu_int.sub (integrableOn_const hBfin)).norm
   have hmono :
       ∫ z in S, |u z - avg| ∂volume ≤ ∫ z in B, |u z - avg| ∂volume := by
     exact MeasureTheory.setIntegral_mono_set habsB_int
@@ -1122,7 +1124,8 @@ private lemma fivefold_cover_real_le
   have hreal := ENNReal.toReal_mono hmul_fin (h1.trans h2)
   rw [ENNReal.toReal_mul,
     ENNReal.toReal_ofReal (by positivity : (0 : ℝ) ≤ (5 : ℝ) ^ d)] at hreal
-  simpa [U] using hreal
+  unfold Measure.real
+  simpa only [U] using hreal
 
 private lemma assigned_union_half_measure_real
     {u : E → ℝ} {x₀ : E} {R M lam μ A C5 avgR : ℝ}
@@ -1147,7 +1150,10 @@ private lemma assigned_union_half_measure_real
     volume.real (⋃ p : SMu, (BMu p).carrier) ≤
       (1 / (2 * 5 ^ d)) * volume.real (⋃ q : SLam, (BLam q).carrier) := by
   have hw_int : IntegrableOn w (Metric.ball x₀ (6 * R)) volume := by
-    simpa [hw_def] using (hu_int.sub integrableOn_const).norm
+    rw [hw_def]
+    change Integrable (fun x => ‖u x - avgR‖)
+      (volume.restrict (Metric.ball x₀ (6 * R)))
+    exact (hu_int.sub integrableOn_const).norm
   let V : SLam → Set E := fun q => ⋃ p : {p : SMu // assign p = q}, (BMu p.1).carrier
   have hV_sub : ∀ q : SLam, V q ⊆ (BLam q).fivefold := by
     intro q x hx
@@ -1279,7 +1285,7 @@ private lemma assigned_union_half_measure_real
         exact mul_pos (by positivity) b.radius_pos
       have hu_bmo_five :=
         hu_bmo b.center (5 * b.radius) h5r_pos b.closedBall_fivefold_subset_sixBall
-      simpa [hw_def, avg5] using
+      simpa [hw_def, avg5, JNBall.fivefold] using
         (abs_sub_const_bmo_le_two (M := M) (u := u) (c := avgR) (z := b.center)
           (s := 5 * b.radius) h5r_pos
           (hu_int := hu_int.mono_set b.fivefold_subset_sixBall)
@@ -1433,7 +1439,8 @@ private lemma assigned_union_half_measure_real
   have hreal := ENNReal.toReal_mono hfin henn
   rw [ENNReal.toReal_mul,
     ENNReal.toReal_ofReal (by positivity : (0 : ℝ) ≤ 1 / (2 * 5 ^ d))] at hreal
-  simpa [UMu, ULam] using hreal
+  unfold Measure.real
+  simpa only [UMu, ULam] using hreal
 
 private lemma closedBall_ae_eq_ball_of_pos_aux (x : E) {r : ℝ} (hr : 0 < r) :
     Metric.closedBall x r =ᵐ[volume] Metric.ball x r := by
@@ -1449,7 +1456,7 @@ private lemma closedBall_ae_eq_ball_of_pos_aux (x : E) {r : ℝ} (hr : 0 < r) :
       simp [Metric.mem_closedBall, hyx, hr.le]
     simp [hball, hclosed]
   · have hdpos : 0 < d := Nat.pos_of_ne_zero hd
-    haveI : Nontrivial E := Module.nontrivial_of_finrank_pos (R := ℝ) (M := E) <| by
+    have : Nontrivial E := Module.nontrivial_of_finrank_pos (R := ℝ) (M := E) <| by
       simpa [finrank_euclideanSpace] using hdpos
     refine (ae_eq_of_subset_of_measure_ge Metric.ball_subset_closedBall ?_
       measurableSet_ball.nullMeasurableSet measure_closedBall_lt_top.ne).symm
@@ -1587,8 +1594,8 @@ theorem john_nirenberg_local
     {t : ℝ} (ht : 0 < t) :
     volume ({x ∈ Metric.ball x₀ R |
       ‖u x - ⨍ y in Metric.ball x₀ R, u y ∂volume‖ > t}) ≤
-    ENNReal.ofReal (C_JN d) * volume (Metric.ball x₀ R) *
-      ENNReal.ofReal (Real.exp (-t / (C_JN d * M))) := by
+    ENNReal.ofReal (CJN d) * volume (Metric.ball x₀ R) *
+      ENNReal.ofReal (Real.exp (-t / (CJN d * M))) := by
   let _ := _hu_meas
   classical
   set B := Metric.ball x₀ R with hB_def
@@ -1605,7 +1612,17 @@ theorem john_nirenberg_local
     rw [hsixB_def, Metric.mem_ball]
     linarith
   have hw_int : IntegrableOn w sixB volume := by
-    simpa [w, hw_def, sixB, hsixB_def] using (hu_int.sub integrableOn_const).norm
+    rw [hw_def]
+    change Integrable (fun x => ‖u x - avgR‖) (volume.restrict sixB)
+    have hconst : IntegrableOn (fun _ : E => avgR) sixB volume :=
+      integrableOn_const
+    have h := (hu_int.sub hconst).norm
+    have hfun : (fun x => ‖(u - fun _ : E => avgR) x‖) =
+        fun x => ‖u x - avgR‖ := by
+      funext x
+      rfl
+    rw [← hfun]
+    exact h
   have hθ_pos : 0 < θ := by simp [hθ_def]
   have hθ_lt : θ < 1 := by
     rw [hθ_def]
@@ -1791,8 +1808,8 @@ theorem john_nirenberg_local
       obtain ⟨SMu, hSMu_count, hSMu_disj, hSMu_hit, hSMu_cover⟩ :=
         vitali_covering_lemma (ι := F μ) (x := fun p => p.center) (r := rMu)
           hrMu_pos hrMu_bdd hrawMu_nonempty
-      haveI : Countable SLam := hSLam_count.to_subtype
-      haveI : Countable SMu := hSMu_count.to_subtype
+      have : Countable SLam := hSLam_count.to_subtype
+      have : Countable SMu := hSMu_count.to_subtype
       let BLam : SLam → JNBall x₀ R := fun q =>
         { center := q.1.center
           radius := rLam q.1
@@ -1816,19 +1833,21 @@ theorem john_nirenberg_local
         intro i j hij
         exact hSMu_disj i.1 i.2 j.1 j.2 (fun h => hij (Subtype.ext h))
       have hBMu_cover : Ebad μ ⊆ ⋃ q : SMu, (BMu q).fivefold := by
-        simpa [Ebad, hμA, BMu, rMu] using hSMu_cover
+        simpa [Ebad, hμA, BMu, rMu, JNBall.fivefold] using hSMu_cover
       have hULam_sub : (⋃ q : SLam, (BLam q).carrier) ⊆ Ebad lam := by
         intro x hx
         dsimp [Ebad]
         rw [dif_pos hlamA]
         rcases Set.mem_iUnion.1 hx with ⟨q, hq⟩
-        exact Set.mem_iUnion.2 ⟨q.1, by simpa [BLam, rLam] using hq⟩
+        exact Set.mem_iUnion.2 ⟨q.1, by
+          simpa [BLam, rLam, JNBall.carrier] using hq⟩
       have hUMu_sub : (⋃ q : SMu, (BMu q).carrier) ⊆ Ebad μ := by
         intro x hx
         dsimp [Ebad]
         rw [dif_pos hμA]
         rcases Set.mem_iUnion.1 hx with ⟨q, hq⟩
-        exact Set.mem_iUnion.2 ⟨q.1, by simpa [BMu, rMu] using hq⟩
+        exact Set.mem_iUnion.2 ⟨q.1, by
+          simpa [BMu, rMu, JNBall.carrier] using hq⟩
       let toLow : SMu → F lam := fun p => weakenBadWitness hlamμ p.1
       let assign : SMu → SLam := fun p =>
         ⟨Classical.choose (hSLam_hit (toLow p)), (Classical.choose_spec (hSLam_hit (toLow p))).1⟩
@@ -1884,7 +1903,7 @@ theorem john_nirenberg_local
             (⨍ x in b.fivefold, ‖w x - avg5‖ ∂volume) ≤ 2 * M := by
           have hu_bmo_five :=
             hu_bmo b.center (5 * b.radius) h5r_pos b.closedBall_fivefold_subset_sixBall
-          simpa [w, hw_def, avg5] using
+          simpa [w, hw_def, avg5, JNBall.fivefold] using
             (abs_sub_const_bmo_le_two (M := M) (u := u) (c := avgR) (z := b.center)
               (s := 5 * b.radius) h5r_pos
               (hu_int := hu_int.mono_set b.fivefold_subset_sixBall)
@@ -1970,7 +1989,7 @@ theorem john_nirenberg_local
           volume (Ebad μ) ≤ ENNReal.ofReal (1 / 2) * volume (Ebad lam) :=
         volume_real_le_to_ennreal hEbadMu_fin hEbadLam_fin (by norm_num) hreal_decay
       simpa [Ebad, hμA, θ, hθ_def, μ] using henn_decay
-    · haveI : IsEmpty (F μ) := not_nonempty_iff.mp hFμ_nonempty
+    · have : IsEmpty (F μ) := not_nonempty_iff.mp hFμ_nonempty
       have hEbadμ_empty : Ebad μ = ∅ := by
         simp [Ebad, hμA]
       simp [hEbadμ_empty, θ, μ]
@@ -2008,10 +2027,10 @@ theorem john_nirenberg_local
     rw [mul_pow]
     ring
   have h_coeff_ball :
-      ENNReal.ofReal 4 * volume sixB ≤ ENNReal.ofReal (C_JN d) * volume B := by
+      ENNReal.ofReal 4 * volume sixB ≤ ENNReal.ofReal (CJN d) * volume B := by
     rw [hsixB_vol]
-    have hcoeff : 4 * (6 : ℝ) ^ d ≤ C_JN d := by
-      rw [C_JN]
+    have hcoeff : 4 * (6 : ℝ) ^ d ≤ CJN d := by
+      rw [CJN]
       have h36 : (6 : ℝ) ^ d ≤ 36 ^ d :=
         pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ 6) (by norm_num : (6 : ℝ) ≤ 36) d
       calc
@@ -2024,20 +2043,23 @@ theorem john_nirenberg_local
       ENNReal.ofReal 4 * (ENNReal.ofReal ((6 : ℝ) ^ d) * volume B)
           = ENNReal.ofReal (4 * (6 : ℝ) ^ d) * volume B := by
               rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
-      _ ≤ ENNReal.ofReal (C_JN d) * volume B := by
+      _ ≤ ENNReal.ofReal (CJN d) * volume B := by
           exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal hcoeff) (by positivity)
   have h_const_exp : ∀ s : ℝ, 0 < s →
-      -s * (-Real.log θ / A) ≤ -s / (C_JN d * M) := by
+      -s * (-Real.log θ / A) ≤ -s / (CJN d * M) := by
     intro s hs
-    have hCJN_pos : 0 < C_JN d := C_JN_pos d
-    have hCM_pos : 0 < C_JN d * M := mul_pos hCJN_pos hM
-    suffices hkey : A ≤ C_JN d * M * (-Real.log θ) by
-      have h_rate : 1 / (C_JN d * M) ≤ -Real.log θ / A := by
+    have hCJN_pos : 0 < CJN d := C_JN_pos d
+    have hCM_pos : 0 < CJN d * M := mul_pos hCJN_pos hM
+    suffices hkey : A ≤ CJN d * M * (-Real.log θ) by
+      have h_rate : 1 / (CJN d * M) ≤ -Real.log θ / A := by
         rw [div_le_div_iff₀ hCM_pos hA_pos, one_mul]
-        linarith [mul_comm (C_JN d * M) (-Real.log θ)]
+        linarith [mul_comm (CJN d * M) (-Real.log θ)]
       have := mul_le_mul_of_nonpos_left h_rate (neg_nonpos.mpr (le_of_lt hs))
       simp only [mul_div_assoc'] at this
-      convert this using 1 <;> ring
+      calc
+        -s * (-Real.log θ / A) = -s * (-Real.log θ) / A := by ring
+        _ ≤ -s * 1 / (CJN d * M) := this
+        _ = -s / (CJN d * M) := by ring
     have hlog : Real.log θ ≤ θ - 1 := Real.log_le_sub_one_of_pos hθ_pos
     have hneg_log : (1 / 2 : ℝ) ≤ -Real.log θ := by
       rw [hθ_def] at hlog ⊢
@@ -2048,14 +2070,14 @@ theorem john_nirenberg_local
           have hpow : (25 : ℝ) ^ d ≤ 36 ^ d :=
             pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ 25) (by norm_num : (25 : ℝ) ≤ 36) d
           nlinarith [hpow, hM]
-      _ = C_JN d * M * (1 / 2) := by
-          rw [C_JN]
+      _ = CJN d * M * (1 / 2) := by
+          rw [CJN]
           ring
-      _ ≤ C_JN d * M * (-Real.log θ) := by
-          exact mul_le_mul_of_nonneg_left hneg_log (by positivity : 0 ≤ C_JN d * M)
+      _ ≤ CJN d * M * (-Real.log θ) := by
+          exact mul_le_mul_of_nonneg_left hneg_log (by positivity : 0 ≤ CJN d * M)
   have hexp_bound :
       ENNReal.ofReal (Real.exp (-t * (-Real.log θ / A))) ≤
-        ENNReal.ofReal (Real.exp (-t / (C_JN d * M))) := by
+        ENNReal.ofReal (Real.exp (-t / (CJN d * M))) := by
     exact ENNReal.ofReal_le_ofReal (Real.exp_le_exp.2 (h_const_exp t ht))
   calc
     volume ({x ∈ Metric.ball x₀ R |
@@ -2067,16 +2089,16 @@ theorem john_nirenberg_local
     _ = (ENNReal.ofReal 4 * volume sixB) *
           ENNReal.ofReal (Real.exp (-t * (-Real.log θ / A))) := by
             rfl
-    _ ≤ (ENNReal.ofReal (C_JN d) * volume B) *
+    _ ≤ (ENNReal.ofReal (CJN d) * volume B) *
           ENNReal.ofReal (Real.exp (-t * (-Real.log θ / A))) := by
             exact mul_le_mul_of_nonneg_right h_coeff_ball (by positivity)
-    _ = ENNReal.ofReal (C_JN d) * volume B *
+    _ = ENNReal.ofReal (CJN d) * volume B *
           ENNReal.ofReal (Real.exp (-t * (-Real.log θ / A))) := by
             rfl
-    _ ≤ ENNReal.ofReal (C_JN d) * volume B *
-          ENNReal.ofReal (Real.exp (-t / (C_JN d * M))) := by
+    _ ≤ ENNReal.ofReal (CJN d) * volume B *
+          ENNReal.ofReal (Real.exp (-t / (CJN d * M))) := by
             exact mul_le_mul_of_nonneg_left hexp_bound
-              (by positivity : 0 ≤ ENNReal.ofReal (C_JN d) * volume B)
+              (by positivity : 0 ≤ ENNReal.ofReal (CJN d) * volume B)
 
 
 end DeGiorgi

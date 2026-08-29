@@ -168,52 +168,52 @@ structure DiffTwiceChartBilinearH1ComplData
     (g : SmoothRiemannianMetric I M) (α : M) where
   base1 : DiffChartBilinearH1ComplData (I := I) (M := M) g α
   direction2 : Fin (Module.finrank ℝ E)
-  u_chart_deriv2 : EuclN → ℝ
-  f_chart_deriv2 : EuclN → ℝ
-  u_chart_second_deriv : EuclN → ℝ
-  weak_partial_deriv2 : Fin (Module.finrank ℝ E) → EuclN → ℝ
-  weak_partial_second_deriv : Fin (Module.finrank ℝ E) → EuclN → ℝ
+  uChartDeriv2 : EuclN → ℝ
+  fChartDeriv2 : EuclN → ℝ
+  uChartSecondDeriv : EuclN → ℝ
+  weakPartialDeriv2 : Fin (Module.finrank ℝ E) → EuclN → ℝ
+  weakPartialSecondDeriv : Fin (Module.finrank ℝ E) → EuclN → ℝ
   u_chart_deriv2_isWeakPartial :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction2
-      u_chart_deriv2 base1.u_chart_deriv
+      uChartDeriv2 base1.uChartDeriv
       (chartTargetEuclid (I := I) (M := M) α)
   f_chart_deriv2_isWeakPartial :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction2
-      f_chart_deriv2 base1.f_chart_deriv
+      fChartDeriv2 base1.fChartDeriv
       (chartTargetEuclid (I := I) (M := M) α)
   u_chart_second_deriv_isWeakPartial :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction2
-      u_chart_second_deriv base1.u_chart_deriv
+      uChartSecondDeriv base1.uChartDeriv
       (chartTargetEuclid (I := I) (M := M) α)
   weak_partial_deriv2_isWeakPartial :
     ∀ i, DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction2
-      (weak_partial_deriv2 i) (base1.weak_partial_deriv i)
+      (weakPartialDeriv2 i) (base1.weakPartialDeriv i)
       (chartTargetEuclid (I := I) (M := M) α)
   weak_partial_second_deriv_isWeakPartial :
     ∀ i, DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) direction2
-      (weak_partial_second_deriv i) (base1.weak_partial_deriv i)
+      (weakPartialSecondDeriv i) (base1.weakPartialDeriv i)
       (chartTargetEuclid (I := I) (M := M) α)
   u_chart_deriv2_locally_memLp :
     ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
-      MemLp u_chart_deriv2 2 ((volume : Measure EuclN).restrict K)
+      MemLp uChartDeriv2 2 ((volume : Measure EuclN).restrict K)
   f_chart_deriv2_locally_memLp :
     ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
-      MemLp f_chart_deriv2 2 ((volume : Measure EuclN).restrict K)
+      MemLp fChartDeriv2 2 ((volume : Measure EuclN).restrict K)
   u_chart_second_deriv_locally_memLp :
     ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
-      MemLp u_chart_second_deriv 2 ((volume : Measure EuclN).restrict K)
+      MemLp uChartSecondDeriv 2 ((volume : Measure EuclN).restrict K)
   weak_partial_deriv2_locally_memLp :
     ∀ i, ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
-      MemLp (weak_partial_deriv2 i) 2
+      MemLp (weakPartialDeriv2 i) 2
         ((volume : Measure EuclN).restrict K)
   weak_partial_second_deriv_locally_memLp :
     ∀ i, ∀ K : Set EuclN, IsCompact K →
       K ⊆ chartTargetEuclid (I := I) (M := M) α →
-      MemLp (weak_partial_second_deriv i) 2
+      MemLp (weakPartialSecondDeriv i) 2
         ((volume : Measure EuclN).restrict K)
   twice_differentiated_variational_identity :
     ∀ ψ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
@@ -222,35 +222,35 @@ structure DiffTwiceChartBilinearH1ComplData
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             weightedInvGramOnEuclid (I := I) g α i j y *
-              weak_partial_second_deriv i y *
+              weakPartialSecondDeriv i y *
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
         ∂(volume : Measure EuclN)) +
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
-        densityOnEuclid (I := I) g α y * u_chart_second_deriv y * ψ y
+        densityOnEuclid (I := I) g α y * uChartSecondDeriv y * ψ y
         ∂(volume : Measure EuclN)) =
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
-        densityOnEuclid (I := I) g α y * f_chart_deriv2 y * ψ y
+        densityOnEuclid (I := I) g α y * fChartDeriv2 y * ψ y
         ∂(volume : Measure EuclN)) -
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             weightedInvGramDerivOnEuclid (I := I) g α i j direction2 y *
-              weak_partial_deriv2 i y *
+              weakPartialDeriv2 i y *
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
         ∂(volume : Measure EuclN)) -
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
         densityDerivOnEuclid (I := I) g α direction2 y *
-          u_chart_deriv2 y * ψ y
+          uChartDeriv2 y * ψ y
         ∂(volume : Measure EuclN)) +
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
         densityDerivOnEuclid (I := I) g α direction2 y *
-          f_chart_deriv2 y * ψ y
+          fChartDeriv2 y * ψ y
         ∂(volume : Measure EuclN)) -
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             weightedInvGramDerivOnEuclid (I := I) g α i j base1.direction y *
-              weak_partial_deriv2 i y *
+              weakPartialDeriv2 i y *
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
         ∂(volume : Measure EuclN)) -
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -258,26 +258,26 @@ structure DiffTwiceChartBilinearH1ComplData
           ∑ j : Fin (Module.finrank ℝ E),
             weightedInvGramSecondDerivOnEuclid (I := I) g α i j
                 base1.direction direction2 y *
-              base1.base.weak_partial i y *
+              base1.base.weakPartial i y *
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
         ∂(volume : Measure EuclN)) -
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
         densitySecondDerivOnEuclid (I := I) g α
             base1.direction direction2 y *
-          base1.base.u_chart y * ψ y
+          base1.base.uChart y * ψ y
         ∂(volume : Measure EuclN)) -
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
         densityDerivOnEuclid (I := I) g α base1.direction y *
-          base1.base.weak_partial direction2 y * ψ y
+          base1.base.weakPartial direction2 y * ψ y
         ∂(volume : Measure EuclN)) +
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
         densitySecondDerivOnEuclid (I := I) g α
             base1.direction direction2 y *
-          base1.base.f_chart y * ψ y
+          base1.base.fChart y * ψ y
         ∂(volume : Measure EuclN)) +
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
         densityDerivOnEuclid (I := I) g α base1.direction y *
-          f_chart_deriv2 y * ψ y
+          fChartDeriv2 y * ψ y
         ∂(volume : Measure EuclN))
 
 abbrev base1Data
@@ -310,35 +310,35 @@ theorem twice_differentiated_chart_bilinear_identity
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramOnEuclid (I := I) g α i j y *
-            D.weak_partial_second_deriv i y *
+            D.weakPartialSecondDeriv i y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN)) +
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
-      densityOnEuclid (I := I) g α y * D.u_chart_second_deriv y * ψ y
+      densityOnEuclid (I := I) g α y * D.uChartSecondDeriv y * ψ y
       ∂(volume : Measure EuclN)) =
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
-      densityOnEuclid (I := I) g α y * D.f_chart_deriv2 y * ψ y
+      densityOnEuclid (I := I) g α y * D.fChartDeriv2 y * ψ y
       ∂(volume : Measure EuclN)) -
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramDerivOnEuclid (I := I) g α i j D.direction2 y *
-            D.weak_partial_deriv2 i y *
+            D.weakPartialDeriv2 i y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN)) -
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityDerivOnEuclid (I := I) g α D.direction2 y *
-        D.u_chart_deriv2 y * ψ y
+        D.uChartDeriv2 y * ψ y
       ∂(volume : Measure EuclN)) +
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityDerivOnEuclid (I := I) g α D.direction2 y *
-        D.f_chart_deriv2 y * ψ y
+        D.fChartDeriv2 y * ψ y
       ∂(volume : Measure EuclN)) -
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramDerivOnEuclid (I := I) g α i j D.base1.direction y *
-            D.weak_partial_deriv2 i y *
+            D.weakPartialDeriv2 i y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN)) -
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -346,26 +346,26 @@ theorem twice_differentiated_chart_bilinear_identity
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramSecondDerivOnEuclid (I := I) g α i j
               D.base1.direction D.direction2 y *
-            D.base1.base.weak_partial i y *
+            D.base1.base.weakPartial i y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN)) -
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densitySecondDerivOnEuclid (I := I) g α
           D.base1.direction D.direction2 y *
-        D.base1.base.u_chart y * ψ y
+        D.base1.base.uChart y * ψ y
       ∂(volume : Measure EuclN)) -
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityDerivOnEuclid (I := I) g α D.base1.direction y *
-        D.base1.base.weak_partial D.direction2 y * ψ y
+        D.base1.base.weakPartial D.direction2 y * ψ y
       ∂(volume : Measure EuclN)) +
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densitySecondDerivOnEuclid (I := I) g α
           D.base1.direction D.direction2 y *
-        D.base1.base.f_chart y * ψ y
+        D.base1.base.fChart y * ψ y
       ∂(volume : Measure EuclN)) +
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityDerivOnEuclid (I := I) g α D.base1.direction y *
-        D.f_chart_deriv2 y * ψ y
+        D.fChartDeriv2 y * ψ y
       ∂(volume : Measure EuclN)) :=
   D.twice_differentiated_variational_identity ψ hψ hψ_cs hψ_supp
 
@@ -381,29 +381,29 @@ theorem differentiated_chart_bilinear_identity_via_base1
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramOnEuclid (I := I) g α i j y *
-            D.base1.weak_partial_deriv i y *
+            D.base1.weakPartialDeriv i y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN)) +
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
-      densityOnEuclid (I := I) g α y * D.base1.u_chart_deriv y * ψ y
+      densityOnEuclid (I := I) g α y * D.base1.uChartDeriv y * ψ y
       ∂(volume : Measure EuclN)) =
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
-      densityOnEuclid (I := I) g α y * D.base1.f_chart_deriv y * ψ y
+      densityOnEuclid (I := I) g α y * D.base1.fChartDeriv y * ψ y
       ∂(volume : Measure EuclN)) -
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramDerivOnEuclid (I := I) g α i j D.base1.direction y *
-            D.base1.base.weak_partial i y *
+            D.base1.base.weakPartial i y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN)) -
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityDerivOnEuclid (I := I) g α D.base1.direction y *
-        D.base1.base.u_chart y * ψ y
+        D.base1.base.uChart y * ψ y
       ∂(volume : Measure EuclN)) +
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityDerivOnEuclid (I := I) g α D.base1.direction y *
-        D.base1.base.f_chart y * ψ y
+        D.base1.base.fChart y * ψ y
       ∂(volume : Measure EuclN)) :=
   D.base1.differentiated_variational_identity ψ hψ hψ_cs hψ_supp
 
@@ -419,14 +419,14 @@ theorem base_chart_bilinear_identity_via_base1
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramOnEuclid (I := I) g α i j y *
-            D.base1.base.weak_partial i y *
+            D.base1.base.weakPartial i y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN)) +
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
-      densityOnEuclid (I := I) g α y * D.base1.base.u_chart y * ψ y
+      densityOnEuclid (I := I) g α y * D.base1.base.uChart y * ψ y
       ∂(volume : Measure EuclN)) =
     ∫ y in chartTargetEuclid (I := I) (M := M) α,
-      densityOnEuclid (I := I) g α y * D.base1.base.f_chart y * ψ y
+      densityOnEuclid (I := I) g α y * D.base1.base.fChart y * ψ y
       ∂(volume : Measure EuclN) :=
   D.base1.base.variational_identity ψ hψ hψ_cs hψ_supp
 
@@ -436,10 +436,10 @@ theorem u_chart_second_deriv_isMixedWeakPartial
     {g : SmoothRiemannianMetric I M} {α : M}
     (D : DiffTwiceChartBilinearH1ComplData (I := I) (M := M) g α) :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) D.direction2
-      D.u_chart_second_deriv D.base1.u_chart_deriv
+      D.uChartSecondDeriv D.base1.uChartDeriv
       (chartTargetEuclid (I := I) (M := M) α) ∧
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) D.base1.direction
-      D.base1.u_chart_deriv D.base1.base.u_chart
+      D.base1.uChartDeriv D.base1.base.uChart
       (chartTargetEuclid (I := I) (M := M) α) :=
   ⟨D.u_chart_second_deriv_isWeakPartial,
    D.base1.u_chart_deriv_isWeakPartial⟩
@@ -451,10 +451,10 @@ theorem weak_partial_second_deriv_isMixedWeakPartial
     (D : DiffTwiceChartBilinearH1ComplData (I := I) (M := M) g α)
     (i : Fin (Module.finrank ℝ E)) :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) D.direction2
-      (D.weak_partial_second_deriv i) (D.base1.weak_partial_deriv i)
+      (D.weakPartialSecondDeriv i) (D.base1.weakPartialDeriv i)
       (chartTargetEuclid (I := I) (M := M) α) ∧
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) D.base1.direction
-      (D.base1.weak_partial_deriv i) (D.base1.base.weak_partial i)
+      (D.base1.weakPartialDeriv i) (D.base1.base.weakPartial i)
       (chartTargetEuclid (I := I) (M := M) α) :=
   ⟨D.weak_partial_second_deriv_isWeakPartial i,
    D.base1.weak_partial_deriv_isWeakPartial i⟩
@@ -466,7 +466,7 @@ noncomputable def chosenSecondPartialUChartDeriv
     (D₁ : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
     (l₂ : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
   DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-    (d := Module.finrank ℝ E) 2 l₂ D₁.u_chart_deriv
+    (d := Module.finrank ℝ E) 2 l₂ D₁.uChartDeriv
     (chartTargetEuclid (I := I) (M := M) α)
 
 noncomputable def chosenSecondPartialFChartDeriv
@@ -474,7 +474,7 @@ noncomputable def chosenSecondPartialFChartDeriv
     (D₁ : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
     (l₂ : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
   DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-    (d := Module.finrank ℝ E) 2 l₂ D₁.f_chart_deriv
+    (d := Module.finrank ℝ E) 2 l₂ D₁.fChartDeriv
     (chartTargetEuclid (I := I) (M := M) α)
 
 noncomputable def chosenSecondPartialWeakPartialDeriv
@@ -482,7 +482,7 @@ noncomputable def chosenSecondPartialWeakPartialDeriv
     (D₁ : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
     (i l₂ : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
   DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-    (d := Module.finrank ℝ E) 2 l₂ (D₁.weak_partial_deriv i)
+    (d := Module.finrank ℝ E) 2 l₂ (D₁.weakPartialDeriv i)
     (chartTargetEuclid (I := I) (M := M) α)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -490,11 +490,11 @@ private lemma chosenSecondPartialUChartDeriv_isWeakPartial
     {g : SmoothRiemannianMetric I M} {α : M}
     {D₁ : DiffChartBilinearH1ComplData (I := I) (M := M) g α}
     (h_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      D₁.u_chart_deriv (chartTargetEuclid (I := I) (M := M) α))
+      D₁.uChartDeriv (chartTargetEuclid (I := I) (M := M) α))
     (l₂ : Fin (Module.finrank ℝ E)) :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) l₂
       (chosenSecondPartialUChartDeriv (I := I) (M := M) D₁ l₂)
-      D₁.u_chart_deriv
+      D₁.uChartDeriv
       (chartTargetEuclid (I := I) (M := M) α) := by
   unfold chosenSecondPartialUChartDeriv
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
@@ -505,11 +505,11 @@ private lemma chosenSecondPartialFChartDeriv_isWeakPartial
     {g : SmoothRiemannianMetric I M} {α : M}
     {D₁ : DiffChartBilinearH1ComplData (I := I) (M := M) g α}
     (h_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      D₁.f_chart_deriv (chartTargetEuclid (I := I) (M := M) α))
+      D₁.fChartDeriv (chartTargetEuclid (I := I) (M := M) α))
     (l₂ : Fin (Module.finrank ℝ E)) :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) l₂
       (chosenSecondPartialFChartDeriv (I := I) (M := M) D₁ l₂)
-      D₁.f_chart_deriv
+      D₁.fChartDeriv
       (chartTargetEuclid (I := I) (M := M) α) := by
   unfold chosenSecondPartialFChartDeriv
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
@@ -521,11 +521,11 @@ private lemma chosenSecondPartialWeakPartialDeriv_isWeakPartial
     {D₁ : DiffChartBilinearH1ComplData (I := I) (M := M) g α}
     {i : Fin (Module.finrank ℝ E)}
     (h_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      (D₁.weak_partial_deriv i) (chartTargetEuclid (I := I) (M := M) α))
+      (D₁.weakPartialDeriv i) (chartTargetEuclid (I := I) (M := M) α))
     (l₂ : Fin (Module.finrank ℝ E)) :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) l₂
       (chosenSecondPartialWeakPartialDeriv (I := I) (M := M) D₁ i l₂)
-      (D₁.weak_partial_deriv i)
+      (D₁.weakPartialDeriv i)
       (chartTargetEuclid (I := I) (M := M) α) := by
   unfold chosenSecondPartialWeakPartialDeriv
   exact DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
@@ -536,7 +536,7 @@ private lemma chosenSecondPartialUChartDeriv_memLp
     {g : SmoothRiemannianMetric I M} {α : M}
     {D₁ : DiffChartBilinearH1ComplData (I := I) (M := M) g α}
     (h_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      D₁.u_chart_deriv (chartTargetEuclid (I := I) (M := M) α))
+      D₁.uChartDeriv (chartTargetEuclid (I := I) (M := M) α))
     (l₂ : Fin (Module.finrank ℝ E)) :
     MemLp (chosenSecondPartialUChartDeriv (I := I) (M := M) D₁ l₂) 2
       ((volume : Measure EuclN).restrict
@@ -550,7 +550,7 @@ private lemma chosenSecondPartialFChartDeriv_memLp
     {g : SmoothRiemannianMetric I M} {α : M}
     {D₁ : DiffChartBilinearH1ComplData (I := I) (M := M) g α}
     (h_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      D₁.f_chart_deriv (chartTargetEuclid (I := I) (M := M) α))
+      D₁.fChartDeriv (chartTargetEuclid (I := I) (M := M) α))
     (l₂ : Fin (Module.finrank ℝ E)) :
     MemLp (chosenSecondPartialFChartDeriv (I := I) (M := M) D₁ l₂) 2
       ((volume : Measure EuclN).restrict
@@ -565,7 +565,7 @@ private lemma chosenSecondPartialWeakPartialDeriv_memLp
     {D₁ : DiffChartBilinearH1ComplData (I := I) (M := M) g α}
     {i : Fin (Module.finrank ℝ E)}
     (h_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      (D₁.weak_partial_deriv i) (chartTargetEuclid (I := I) (M := M) α))
+      (D₁.weakPartialDeriv i) (chartTargetEuclid (I := I) (M := M) α))
     (l₂ : Fin (Module.finrank ℝ E)) :
     MemLp (chosenSecondPartialWeakPartialDeriv (I := I) (M := M) D₁ i l₂) 2
       ((volume : Measure EuclN).restrict
@@ -594,16 +594,16 @@ private lemma memLp_restrict_of_memLp_chartTarget
   rw [← h_eq]
   exact hf.restrict K
 
-noncomputable def diffTwiceChartBilinearH1ComplData_of_diff
+noncomputable def diffTwiceChartBilinearH1ComplDataOfDiff
     {g : SmoothRiemannianMetric I M} {α : M}
     (D₁ : DiffChartBilinearH1ComplData (I := I) (M := M) g α)
     (l₂ : Fin (Module.finrank ℝ E))
     (h_uDeriv_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      D₁.u_chart_deriv (chartTargetEuclid (I := I) (M := M) α))
+      D₁.uChartDeriv (chartTargetEuclid (I := I) (M := M) α))
     (h_fDeriv_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      D₁.f_chart_deriv (chartTargetEuclid (I := I) (M := M) α))
+      D₁.fChartDeriv (chartTargetEuclid (I := I) (M := M) α))
     (h_wpDeriv_memW1p : ∀ i, DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      (D₁.weak_partial_deriv i) (chartTargetEuclid (I := I) (M := M) α))
+      (D₁.weakPartialDeriv i) (chartTargetEuclid (I := I) (M := M) α))
     (h_identity :
       ∀ ψ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
         tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α →
@@ -649,22 +649,22 @@ noncomputable def diffTwiceChartBilinearH1ComplData_of_diff
             ∑ j : Fin (Module.finrank ℝ E),
               weightedInvGramSecondDerivOnEuclid (I := I) g α i j
                   D₁.direction l₂ y *
-                D₁.base.weak_partial i y *
+                D₁.base.weakPartial i y *
                 (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
           ∂(volume : Measure EuclN)) -
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densitySecondDerivOnEuclid (I := I) g α
               D₁.direction l₂ y *
-            D₁.base.u_chart y * ψ y
+            D₁.base.uChart y * ψ y
           ∂(volume : Measure EuclN)) -
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityDerivOnEuclid (I := I) g α D₁.direction y *
-            D₁.base.weak_partial l₂ y * ψ y
+            D₁.base.weakPartial l₂ y * ψ y
           ∂(volume : Measure EuclN)) +
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densitySecondDerivOnEuclid (I := I) g α
               D₁.direction l₂ y *
-            D₁.base.f_chart y * ψ y
+            D₁.base.fChart y * ψ y
           ∂(volume : Measure EuclN)) +
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityDerivOnEuclid (I := I) g α D₁.direction y *
@@ -673,12 +673,12 @@ noncomputable def diffTwiceChartBilinearH1ComplData_of_diff
     DiffTwiceChartBilinearH1ComplData (I := I) (M := M) g α where
   base1 := D₁
   direction2 := l₂
-  u_chart_deriv2 := chosenSecondPartialUChartDeriv (I := I) (M := M) D₁ l₂
-  f_chart_deriv2 := chosenSecondPartialFChartDeriv (I := I) (M := M) D₁ l₂
-  u_chart_second_deriv := chosenSecondPartialUChartDeriv (I := I) (M := M) D₁ l₂
-  weak_partial_deriv2 := fun i =>
+  uChartDeriv2 := chosenSecondPartialUChartDeriv (I := I) (M := M) D₁ l₂
+  fChartDeriv2 := chosenSecondPartialFChartDeriv (I := I) (M := M) D₁ l₂
+  uChartSecondDeriv := chosenSecondPartialUChartDeriv (I := I) (M := M) D₁ l₂
+  weakPartialDeriv2 := fun i =>
     chosenSecondPartialWeakPartialDeriv (I := I) (M := M) D₁ i l₂
-  weak_partial_second_deriv := fun i =>
+  weakPartialSecondDeriv := fun i =>
     chosenSecondPartialWeakPartialDeriv (I := I) (M := M) D₁ i l₂
   u_chart_deriv2_isWeakPartial :=
     chosenSecondPartialUChartDeriv_isWeakPartial
@@ -717,14 +717,14 @@ noncomputable def diffTwiceChartBilinearH1ComplData_of_diff
         (I := I) (M := M) (h_wpDeriv_memW1p i) l₂) hK hKin
   twice_differentiated_variational_identity := h_identity
 
-noncomputable def diffTwiceChartBilinearH1ComplData_of_laplacianDomainPow_two
+noncomputable def diffTwiceChartBilinearH1ComplDataOfLaplacianDomainPowTwo
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (l₁ l₂ : Fin (Module.finrank ℝ E))
     (h_base_f_chart_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
         (laplacianDomainPow_succ_subset_laplacianDomain
-          (I := I) (M := M) g 1 hu_h)).f_chart
+          (I := I) (M := M) g 1 hu_h)).fChart
       (chartTargetEuclid (I := I) (M := M) α))
     (h_once_identity :
       ∀ ψ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
@@ -739,9 +739,9 @@ noncomputable def diffTwiceChartBilinearH1ComplData_of_laplacianDomainPow_two
           ∂(volume : Measure EuclN)) +
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityOnEuclid (I := I) g α y *
-            (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+            (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
               (laplacianDomainPow_succ_subset_laplacianDomain
-                (I := I) (M := M) g 1 hu_h)).weak_partial l₁ y * ψ y
+                (I := I) (M := M) g 1 hu_h)).weakPartial l₁ y * ψ y
           ∂(volume : Measure EuclN)) =
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityOnEuclid (I := I) g α y *
@@ -751,38 +751,38 @@ noncomputable def diffTwiceChartBilinearH1ComplData_of_laplacianDomainPow_two
           (∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
               weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
-                (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+                (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
                   (laplacianDomainPow_succ_subset_laplacianDomain
-                    (I := I) (M := M) g 1 hu_h)).weak_partial i y *
+                    (I := I) (M := M) g 1 hu_h)).weakPartial i y *
                 (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
           ∂(volume : Measure EuclN)) -
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityDerivOnEuclid (I := I) g α l₁ y *
-            (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+            (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
               (laplacianDomainPow_succ_subset_laplacianDomain
-                (I := I) (M := M) g 1 hu_h)).u_chart y * ψ y
+                (I := I) (M := M) g 1 hu_h)).uChart y * ψ y
           ∂(volume : Measure EuclN)) +
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityDerivOnEuclid (I := I) g α l₁ y *
-            (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+            (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
               (laplacianDomainPow_succ_subset_laplacianDomain
-                (I := I) (M := M) g 1 hu_h)).f_chart y * ψ y
+                (I := I) (M := M) g 1 hu_h)).fChart y * ψ y
           ∂(volume : Measure EuclN)))
     (h_uDeriv_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+      (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
         (I := I) (M := M) g α hu_h l₁
-        h_base_f_chart_memW1p h_once_identity).u_chart_deriv
+        h_base_f_chart_memW1p h_once_identity).uChartDeriv
       (chartTargetEuclid (I := I) (M := M) α))
     (h_fDeriv_memW1p : DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-      (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+      (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
         (I := I) (M := M) g α hu_h l₁
-        h_base_f_chart_memW1p h_once_identity).f_chart_deriv
+        h_base_f_chart_memW1p h_once_identity).fChartDeriv
       (chartTargetEuclid (I := I) (M := M) α))
     (h_wpDeriv_memW1p : ∀ i,
       DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-        ((diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+        ((diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
           (I := I) (M := M) g α hu_h l₁
-          h_base_f_chart_memW1p h_once_identity).weak_partial_deriv i)
+          h_base_f_chart_memW1p h_once_identity).weakPartialDeriv i)
         (chartTargetEuclid (I := I) (M := M) α))
     (h_twice_identity :
       ∀ ψ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
@@ -792,7 +792,7 @@ noncomputable def diffTwiceChartBilinearH1ComplData_of_laplacianDomainPow_two
             ∑ j : Fin (Module.finrank ℝ E),
               weightedInvGramOnEuclid (I := I) g α i j y *
                 (chosenSecondPartialWeakPartialDeriv (I := I) (M := M)
-                  (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+                  (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
                     (I := I) (M := M) g α hu_h l₁
                     h_base_f_chart_memW1p h_once_identity) i l₂) y *
                 (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
@@ -800,14 +800,14 @@ noncomputable def diffTwiceChartBilinearH1ComplData_of_laplacianDomainPow_two
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityOnEuclid (I := I) g α y *
             (chosenSecondPartialUChartDeriv (I := I) (M := M)
-              (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+              (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
                 (I := I) (M := M) g α hu_h l₁
                 h_base_f_chart_memW1p h_once_identity) l₂) y * ψ y
           ∂(volume : Measure EuclN)) =
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityOnEuclid (I := I) g α y *
             (chosenSecondPartialFChartDeriv (I := I) (M := M)
-              (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+              (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
                 (I := I) (M := M) g α hu_h l₁
                 h_base_f_chart_memW1p h_once_identity) l₂) y * ψ y
           ∂(volume : Measure EuclN)) -
@@ -816,7 +816,7 @@ noncomputable def diffTwiceChartBilinearH1ComplData_of_laplacianDomainPow_two
             ∑ j : Fin (Module.finrank ℝ E),
               weightedInvGramDerivOnEuclid (I := I) g α i j l₂ y *
                 (chosenSecondPartialWeakPartialDeriv (I := I) (M := M)
-                  (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+                  (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
                     (I := I) (M := M) g α hu_h l₁
                     h_base_f_chart_memW1p h_once_identity) i l₂) y *
                 (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
@@ -824,14 +824,14 @@ noncomputable def diffTwiceChartBilinearH1ComplData_of_laplacianDomainPow_two
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityDerivOnEuclid (I := I) g α l₂ y *
             (chosenSecondPartialUChartDeriv (I := I) (M := M)
-              (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+              (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
                 (I := I) (M := M) g α hu_h l₁
                 h_base_f_chart_memW1p h_once_identity) l₂) y * ψ y
           ∂(volume : Measure EuclN)) +
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityDerivOnEuclid (I := I) g α l₂ y *
             (chosenSecondPartialFChartDeriv (I := I) (M := M)
-              (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+              (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
                 (I := I) (M := M) g α hu_h l₁
                 h_base_f_chart_memW1p h_once_identity) l₂) y * ψ y
           ∂(volume : Measure EuclN)) -
@@ -839,11 +839,11 @@ noncomputable def diffTwiceChartBilinearH1ComplData_of_laplacianDomainPow_two
           (∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
               weightedInvGramDerivOnEuclid (I := I) g α i j
-                  (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+                  (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
                     (I := I) (M := M) g α hu_h l₁
                     h_base_f_chart_memW1p h_once_identity).direction y *
                 (chosenSecondPartialWeakPartialDeriv (I := I) (M := M)
-                  (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+                  (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
                     (I := I) (M := M) g α hu_h l₁
                     h_base_f_chart_memW1p h_once_identity) i l₂) y *
                 (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
@@ -852,55 +852,55 @@ noncomputable def diffTwiceChartBilinearH1ComplData_of_laplacianDomainPow_two
           (∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
               weightedInvGramSecondDerivOnEuclid (I := I) g α i j
-                  (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+                  (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
                     (I := I) (M := M) g α hu_h l₁
                     h_base_f_chart_memW1p h_once_identity).direction l₂ y *
-                (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+                (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
                   (I := I) (M := M) g α hu_h l₁
-                  h_base_f_chart_memW1p h_once_identity).base.weak_partial i y *
+                  h_base_f_chart_memW1p h_once_identity).base.weakPartial i y *
                 (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
           ∂(volume : Measure EuclN)) -
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densitySecondDerivOnEuclid (I := I) g α
-              (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+              (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
                 (I := I) (M := M) g α hu_h l₁
                 h_base_f_chart_memW1p h_once_identity).direction l₂ y *
-            (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+            (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
               (I := I) (M := M) g α hu_h l₁
-              h_base_f_chart_memW1p h_once_identity).base.u_chart y * ψ y
+              h_base_f_chart_memW1p h_once_identity).base.uChart y * ψ y
           ∂(volume : Measure EuclN)) -
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityDerivOnEuclid (I := I) g α
-              (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+              (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
                 (I := I) (M := M) g α hu_h l₁
                 h_base_f_chart_memW1p h_once_identity).direction y *
-            (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+            (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
               (I := I) (M := M) g α hu_h l₁
-              h_base_f_chart_memW1p h_once_identity).base.weak_partial l₂ y *
+              h_base_f_chart_memW1p h_once_identity).base.weakPartial l₂ y *
             ψ y
           ∂(volume : Measure EuclN)) +
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densitySecondDerivOnEuclid (I := I) g α
-              (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+              (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
                 (I := I) (M := M) g α hu_h l₁
                 h_base_f_chart_memW1p h_once_identity).direction l₂ y *
-            (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+            (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
               (I := I) (M := M) g α hu_h l₁
-              h_base_f_chart_memW1p h_once_identity).base.f_chart y * ψ y
+              h_base_f_chart_memW1p h_once_identity).base.fChart y * ψ y
           ∂(volume : Measure EuclN)) +
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityDerivOnEuclid (I := I) g α
-              (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+              (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
                 (I := I) (M := M) g α hu_h l₁
                 h_base_f_chart_memW1p h_once_identity).direction y *
             (chosenSecondPartialFChartDeriv (I := I) (M := M)
-              (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+              (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
                 (I := I) (M := M) g α hu_h l₁
                 h_base_f_chart_memW1p h_once_identity) l₂) y * ψ y
           ∂(volume : Measure EuclN))) :
     DiffTwiceChartBilinearH1ComplData (I := I) (M := M) g α :=
-  diffTwiceChartBilinearH1ComplData_of_diff (I := I) (M := M)
-    (diffChartBilinearH1ComplData_of_laplacianDomainPow_two
+  diffTwiceChartBilinearH1ComplDataOfDiff (I := I) (M := M)
+    (diffChartBilinearH1ComplDataOfLaplacianDomainPowTwo
       (I := I) (M := M) g α hu_h l₁
       h_base_f_chart_memW1p h_once_identity)
     l₂

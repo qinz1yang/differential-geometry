@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -59,10 +58,10 @@ theorem rawTensorConnLapSmooth_toSection_eq_parseval_secondCovDeriv_sum
     tensorHessianBilinAt (I := I) g 0 k (fun z : M => T.toSection z) hT x with hΨ
   set B : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] TensorRSSpace 0 k I x :=
     LinearMap.mk₂ ℝ (fun u v => Ψ u v)
-      (fun u u' v => by beta_reduce; rw [map_add, ContinuousLinearMap.add_apply])
-      (fun c u v => by beta_reduce; rw [map_smul, ContinuousLinearMap.smul_apply])
-      (fun u v v' => by beta_reduce; rw [map_add])
-      (fun c u v => by beta_reduce; rw [map_smul])
+      (fun u u' v => by rw [map_add, add_apply])
+      (fun c u v => by rw [map_smul, smul_apply])
+      (fun u v v' => by rw [map_add])
+      (fun c u v => by rw [map_smul])
   have hframe := rawTensorConnLap_eq_frame_trace (I := I) g 0 k
     (fun z : M => T.toSection z) hT x e horth
   have hpars := parseval_family_sum_bilin_eq (I := I) (M := M) g x
@@ -113,7 +112,7 @@ private lemma tensor0SAsRS_add (t : ℕ) (x : M) (C D : Tensor0SSpace t I x) :
     intro v
     rw [Tensor0SSpace.toModel_smul, Tensor0SSpace.toModel_add, Tensor0SSpace.toModel_add,
       Tensor0SSpace.toModel_smul, Tensor0SSpace.toModel_smul]
-    simp only [ContinuousMultilinearMap.smul_apply, ContinuousMultilinearMap.add_apply,
+    simp only [smul_apply, add_apply,
       smul_eq_mul]
     ring
   exact h
@@ -149,11 +148,11 @@ theorem tensorInnerPointwise_succ_eq_parseval_sum_slot0
       ∑ a : Fin N,
         tensorInnerPointwise (I := I) (M := M) g 0 s x
           (TensorRSSpace.toModel (tensor0SToTensorRS (I := I) (M := M) x
-            ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+            ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
               ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from A)
                 (unitZeroSec (I := I) (M := M) x))) (V a x))))
           (TensorRSSpace.toModel (tensor0SToTensorRS (I := I) (M := M) x
-            ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+            ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
               ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from B)
                 (unitZeroSec (I := I) (M := M) x))) (V a x)))) := by
   classical
@@ -210,9 +209,9 @@ theorem tensorInnerPointwise_succ_eq_parseval_sum_slot0
       ∑ i : Fin (Module.finrank ℝ E),
         tensorInnerPointwise (I := I) (M := M) g 0 s x
           (TensorRSSpace.toModel (tensor0SToTensorRS (I := I) (M := M) x
-            ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x A₀) (e i))))
+            ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x A₀) (e i))))
           (TensorRSSpace.toModel (tensor0SToTensorRS (I := I) (M := M) x
-            ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x B₀) (e i)))) := by
+            ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x B₀) (e i)))) := by
     rw [hsplit0]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec (I := I) (M := M) g x s e K₀ A i,
@@ -221,25 +220,21 @@ theorem tensorInnerPointwise_succ_eq_parseval_sum_slot0
     LinearMap.mk₂ ℝ (fun u v =>
       tensorInnerPointwise (I := I) (M := M) g 0 s x
         (TensorRSSpace.toModel (tensor0SToTensorRS (I := I) (M := M) x
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x A₀) u)))
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x A₀) u)))
         (TensorRSSpace.toModel (tensor0SToTensorRS (I := I) (M := M) x
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x B₀) v))))
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x B₀) v))))
       (fun u u' v => by
-        beta_reduce
-        rw [map_add ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) A₀) u u',
+        rw [map_add ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) A₀) u u',
           tensor0SAsRS_add, TensorRSSpace.toModel_add, tensorInnerPointwise_add_left])
       (fun c u v => by
-        beta_reduce
-        rw [map_smul ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) A₀) c u,
+        rw [map_smul ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) A₀) c u,
           tensor0SAsRS_smul, TensorRSSpace.toModel_smul, tensorInnerPointwise_smul_left,
           smul_eq_mul])
       (fun u v v' => by
-        beta_reduce
-        rw [map_add ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) B₀) v v',
+        rw [map_add ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) B₀) v v',
           tensor0SAsRS_add, TensorRSSpace.toModel_add, tensorInnerPointwise_add_right])
       (fun c u v => by
-        beta_reduce
-        rw [map_smul ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) B₀) c v,
+        rw [map_smul ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) B₀) c v,
           tensor0SAsRS_smul, TensorRSSpace.toModel_smul, tensorInnerPointwise_smul_right,
           smul_eq_mul])
   have hpars := parseval_family_sum_bilin_eq (I := I) (M := M) g x
@@ -247,27 +242,27 @@ theorem tensorInnerPointwise_succ_eq_parseval_sum_slot0
   have hBval : ∀ u v : TangentSpace I x, Bmap u v =
       tensorInnerPointwise (I := I) (M := M) g 0 s x
         (TensorRSSpace.toModel (tensor0SToTensorRS (I := I) (M := M) x
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x A₀) u)))
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x A₀) u)))
         (TensorRSSpace.toModel (tensor0SToTensorRS (I := I) (M := M) x
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x B₀) v))) :=
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x B₀) v))) :=
     fun u v => rfl
   calc tensorInnerPointwise (I := I) (M := M) g 0 (s + 1) x
         (TensorRSSpace.toModel A) (TensorRSSpace.toModel B)
       = ∑ i : Fin (Module.finrank ℝ E),
           tensorInnerPointwise (I := I) (M := M) g 0 s x
             (TensorRSSpace.toModel (tensor0SToTensorRS (I := I) (M := M) x
-              ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x A₀) (e i))))
+              ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x A₀) (e i))))
             (TensorRSSpace.toModel (tensor0SToTensorRS (I := I) (M := M) x
-              ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x B₀) (e i)))) := hsplit
+              ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x B₀) (e i)))) := hsplit
     _ = ∑ i : Fin (Module.finrank ℝ E), Bmap (e i) (e i) :=
         Finset.sum_congr rfl (fun i _ => (hBval (e i) (e i)).symm)
     _ = ∑ a : Fin N, Bmap (V a x) (V a x) := hpars.symm
     _ = ∑ a : Fin N,
           tensorInnerPointwise (I := I) (M := M) g 0 s x
             (TensorRSSpace.toModel (tensor0SToTensorRS (I := I) (M := M) x
-              ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x A₀) (V a x))))
+              ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x A₀) (V a x))))
             (TensorRSSpace.toModel (tensor0SToTensorRS (I := I) (M := M) x
-              ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x B₀) (V a x)))) :=
+              ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x B₀) (V a x)))) :=
         Finset.sum_congr rfl (fun a _ => hBval (V a x) (V a x))
 
 end Elliptic

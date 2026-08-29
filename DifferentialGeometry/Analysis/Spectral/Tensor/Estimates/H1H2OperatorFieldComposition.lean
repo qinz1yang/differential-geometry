@@ -9,6 +9,7 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
+
 namespace DifferentialGeometry.Analysis.Spectral
 
 open scoped ContDiff Manifold Topology BigOperators ENNReal
@@ -31,7 +32,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
 private theorem grad_inner_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) :
@@ -52,6 +53,7 @@ private theorem grad_inner_eq
   exact (tensorCovDerivPointwiseInner_eq_tensorInnerPointwise_grad
     (I := I) (M := M) g r s S S x).symm
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem h1_norm_sq_jet
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -65,6 +67,7 @@ private theorem h1_norm_sq_jet
     ← SmoothCcTensor.norm_sq_eq_inner_self (I := I) (M := M)
       (covGrad (I := I) (M := M) g r s S)]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem smooth_cc_tensor_h1_norm_sq_eq_covariant_jet
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -198,7 +201,7 @@ private theorem rsFiber3_le_6
         C * lpNorm (rsFiberFun g r s S) 6
           (riemannianVolumeMeasure (I := I) (M := M) g) := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -327,7 +330,7 @@ private theorem rs_l6_l3_l2
         lpNorm (rsFiberFun g p r W) 3
           (riemannianVolumeMeasure (I := I) (M := M) g) := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -341,7 +344,7 @@ private theorem rs_l6_l3_l2
     hWc.memLp_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   have hYmem : MemLp (rsFiberFun g p c Y) 2 μ :=
     hYc.memLp_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
-  haveI : ENNReal.HolderTriple (6 : ENNReal) 3 2 := by
+  have : ENNReal.HolderTriple (6 : ENNReal) 3 2 := by
     exact ENNReal.HolderTriple.of_toReal (by
       rw [Real.holderTriple_iff]
       norm_num)
@@ -424,7 +427,7 @@ theorem operator_field_composition_h1_bound_of_embedding_bounds
   have hΦsq :
       ‖Φ‖ ^ 2 + ‖covGrad (I := I) (M := M) g r c Φ‖ ^ 2 ≤ A ^ 2 := by
     simpa only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
-      iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add] using hΦjet
+      iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add, Nat.add_zero] using hΦjet
   have hΦ0 : ‖Φ‖ ≤ A := by
     nlinarith [sq_nonneg ‖covGrad (I := I) (M := M) g r c Φ‖,
       norm_nonneg Φ]
@@ -588,7 +591,7 @@ theorem operator_field_composition_h1_h2_to_h1_bound
   have hΦsq :
       ‖Φ‖ ^ 2 + ‖covGrad (I := I) (M := M) g r c Φ‖ ^ 2 ≤ A ^ 2 := by
     simpa only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
-      iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add] using hΦjet
+      iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add, Nat.add_zero] using hΦjet
   have hΦ0 : ‖Φ‖ ≤ A := by
     nlinarith [sq_nonneg ‖covGrad (I := I) (M := M) g r c Φ‖,
       norm_nonneg Φ]
@@ -634,14 +637,14 @@ theorem operator_field_composition_h1_h2_to_h1_bound
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤ CΦ * A := by
     calc
       _ ≤ CΦ * ‖(⟨Φ⟩ : SmoothCcTensorH1 g r c)‖ := by
-        simpa only [rsFiberFun] using hΦ6 (⟨Φ⟩ : SmoothCcTensorH1 g r c)
+        with_unfolding_all exact hΦ6 (⟨Φ⟩ : SmoothCcTensorH1 g r c)
       _ ≤ CΦ * A := mul_le_mul_of_nonneg_left hΦH1 hCΦ
   have hG6' :
       lpNorm (rsFiberFun g p (r + 1) G) 6
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤ CG * B := by
     calc
       _ ≤ CG * ‖(⟨G⟩ : SmoothCcTensorH1 g p (r + 1))‖ := by
-        simpa only [rsFiberFun] using hG6 (⟨G⟩ : SmoothCcTensorH1 g p (r + 1))
+        with_unfolding_all exact hG6 (⟨G⟩ : SmoothCcTensorH1 g p (r + 1))
       _ ≤ CG * B := mul_le_mul_of_nonneg_left hGH1 hCG
   have hG3' :
       lpNorm (rsFiberFun g p (r + 1) G) 3
@@ -811,7 +814,7 @@ theorem operator_field_composition_h2_bound_of_embedding_bounds
   have hWsq :
       ‖W‖ ^ 2 + ‖covGrad (I := I) (M := M) g p r W‖ ^ 2 ≤ B ^ 2 := by
     simpa only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
-      iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add] using hWjet
+      iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add, Nat.add_zero] using hWjet
   have hWH1 : ‖(⟨W⟩ : SmoothCcTensorH1 g p r)‖ ≤ B := by
     have hsq : ‖(⟨W⟩ : SmoothCcTensorH1 g p r)‖ ^ 2 ≤ B ^ 2 := by
       rw [h1_norm_sq_jet (I := I) (M := M) g p r W]
@@ -1006,7 +1009,7 @@ theorem operator_field_composition_h2_h1_to_h1_bound
   have hWsq :
       ‖W‖ ^ 2 + ‖covGrad (I := I) (M := M) g p r W‖ ^ 2 ≤ B ^ 2 := by
     simpa only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
-      iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add] using hWjet
+      iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add, Nat.add_zero] using hWjet
   have hWH1 : ‖(⟨W⟩ : SmoothCcTensorH1 g p r)‖ ≤ B := by
     have hsq : ‖(⟨W⟩ : SmoothCcTensorH1 g p r)‖ ^ 2 ≤ B ^ 2 := by
       rw [h1_norm_sq_jet (I := I) (M := M) g p r W]
@@ -1017,15 +1020,14 @@ theorem operator_field_composition_h2_h1_to_h1_bound
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤ CG * A := by
     calc
       _ ≤ CG * ‖(⟨GΦ⟩ : SmoothCcTensorH1 g r (c + 1))‖ := by
-        simpa only [rsFiberFun] using
-          hG6 (⟨GΦ⟩ : SmoothCcTensorH1 g r (c + 1))
+        with_unfolding_all exact hG6 (⟨GΦ⟩ : SmoothCcTensorH1 g r (c + 1))
       _ ≤ CG * A := mul_le_mul_of_nonneg_left hGΦH1 hCG
   have hW6' :
       lpNorm (rsFiberFun g p r W) 6
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤ CW * B := by
     calc
       _ ≤ CW * ‖(⟨W⟩ : SmoothCcTensorH1 g p r)‖ := by
-        simpa only [rsFiberFun] using hW6 (⟨W⟩ : SmoothCcTensorH1 g p r)
+        with_unfolding_all exact hW6 (⟨W⟩ : SmoothCcTensorH1 g p r)
       _ ≤ CW * B := mul_le_mul_of_nonneg_left hWH1 hCW
   have hW3 :
       lpNorm (rsFiberFun g p r W) 3

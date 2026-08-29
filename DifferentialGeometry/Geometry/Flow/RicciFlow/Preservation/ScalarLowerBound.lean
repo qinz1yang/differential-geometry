@@ -68,11 +68,19 @@ theorem scalarLowerBarrier_hasDerivWithinAt
           (1 - ((2 / n) * c0) * t) ^ 2) t :=
     hnum.div hdenDeriv hden'
   have hwithin := hquot.hasDerivWithinAt (s := s)
-  convert hwithin using 1
-  rw [scalarLowerReaction]
-  unfold scalarLowerBarrier
-  field_simp [hden, hden', hn]
-  ring_nf
+  change HasDerivWithinAt
+    (fun y : Real => c0 / (1 - ((2 / n) * c0) * y))
+    (scalarLowerReaction n (scalarLowerBarrier n c0 t)) s t
+  have hderiv :
+      ((0 * (1 - ((2 / n) * c0) * t) - c0 * (-((2 / n) * c0))) /
+          (1 - ((2 / n) * c0) * t) ^ 2) =
+        scalarLowerReaction n (scalarLowerBarrier n c0 t) := by
+    rw [scalarLowerReaction_apply]
+    unfold scalarLowerBarrier
+    field_simp [hden, hden', hn]
+    ring_nf
+  rw [← hderiv]
+  exact hwithin
 
 theorem scalarLowerBarrier_derivWithin
     {T n c0 t : Real}
@@ -310,7 +318,11 @@ theorem scalarRegOfSmooth
         (fun _p : Real × M => c0)
         (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) := by
       exact continuous_const.continuousOn
-    simpa [scalarLowerBarrier] using hconst.div hden_cont hden_ne
+    change ContinuousOn
+      ((fun _p : Real × M => c0) /
+        fun p : Real × M => 1 - (2 / n) * c0 * p.1)
+      (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T)
+    exact hconst.div hden_cont hden_ne
   refine
     { weighted_cont := ?_
       weighted_mdiff := ?_
@@ -325,15 +337,24 @@ theorem scalarRegOfSmooth
       have hlin : Continuous
           (fun p : Real × M => -((K : Real) * p.1)) :=
         (continuous_const.mul continuous_fst).neg
-      simpa using (Real.continuous_exp.comp hlin).continuousOn
+      have h : ContinuousOn
+          (Real.exp ∘ fun p : Real × M => -((K : Real) * p.1))
+          (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) :=
+        (Real.continuous_exp.comp hlin).continuousOn
+      change ContinuousOn (fun p : Real × M => Real.exp (-((K : Real) * p.1)))
+        (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T) at h
+      simpa only [neg_mul] using h
     exact hexp_cont.mul (hscalar_cont.sub hbar_cont)
   · intro t ht x
     have hdiff :
         MDifferentiableAt I 𝓘(Real, Real)
           (fun y : M => S.scalar t y - scalarLowerBarrier n c0 t) x :=
       (hreg.scalar_space t (hsubset t ht) x).sub mdifferentiableAt_const
-    simpa [smul_eq_mul] using
-      (hdiff.const_smul (Real.exp (-(K : Real) * t)))
+    have h := hdiff.const_smul (Real.exp (-(K : Real) * t))
+    change MDifferentiableAt I 𝓘(Real, Real)
+      (fun y : M => Real.exp (-(K : Real) * t) *
+        (S.scalar t y - scalarLowerBarrier n c0 t)) x at h
+    exact h
   · intro t ht x
     rw [hmetric t ht]
     exact hreg.scalar_grad_const_mul_sub_const t (hsubset t ht)

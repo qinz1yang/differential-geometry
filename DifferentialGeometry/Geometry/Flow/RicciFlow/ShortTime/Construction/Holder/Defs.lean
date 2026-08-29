@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.WeakParabolic.Defs
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Topology.MetricSpace.HolderNorm
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -46,23 +48,14 @@ private theorem iterFDeriv_lip
   let f : EuclN →
       ContinuousMultilinearMap ℝ (fun _ : Fin m => EuclN) ℝ :=
     iteratedFDeriv ℝ m u
-  letI : NormedAddCommGroup
-      (EuclN →L[ℝ]
-        ContinuousMultilinearMap ℝ (fun _ : Fin m => EuclN) ℝ) :=
-    @ContinuousLinearMap.toNormedAddCommGroup
-      ℝ ℝ EuclN
-      (ContinuousMultilinearMap ℝ (fun _ : Fin m => EuclN) ℝ)
-      _ (iterFDerivTargetNormedAddCommGroup m) _ _ _
-      (iterFDerivTargetNormedSpace m) (RingHom.id ℝ) _
   refine @lipschitzWith_of_nnnorm_fderiv_le
     ℝ (ContinuousMultilinearMap ℝ (fun _ : Fin m => EuclN) ℝ)
     _ _ (iterFDerivTargetNormedAddCommGroup m)
     (iterFDerivTargetNormedSpace m) EuclN _ _ f ⟨C, hC⟩ ?_ ?_
   · exact hu.differentiable_iteratedFDeriv
-      (WithTop.coe_lt_coe.mpr (ENat.coe_lt_top m))
+      (WithTop.coe_lt_coe.mpr (ENat.natCast_lt_top m))
   · intro x
-    rw [← NNReal.coe_le_coe]
-    simp only [coe_nnnorm, NNReal.coe_mk]
+    change ‖fderiv ℝ f x‖ ≤ C
     dsimp only [f]
     rw [norm_fderiv_iteratedFDeriv]
     exact hnext x
@@ -76,7 +69,7 @@ theorem metricDiff_c2half
     (hbdd : ∀ k : ι, ∀ q : ℕ, q ≤ 3 →
       MetricCovDerivOrderBoundOn (I := I) Set.univ q (gSeq k) gBase B) :
     ∃ C₀ : ℝ, 0 ≤ C₀ ∧ ∃ Cα : ℝ≥0,
-      ∀ (α : M), α ∈ chartAtlasPOU_finset (I := I) (M := M) →
+      ∀ (α : M), α ∈ chartAtlasPOUFinset (I := I) (M := M) →
         ∀ (k : ι) (Jdx : Fin 2 → Fin (Module.finrank ℝ E)),
           (∀ j : ℕ, j ≤ 2 → ∀ y : EuclN,
             ‖iteratedFDeriv ℝ j
@@ -123,14 +116,19 @@ theorem metricDiff_c2half
             ≤ ‖iteratedFDeriv ℝ 2 u x‖ + ‖iteratedFDeriv ℝ 2 u y‖ :=
           norm_sub_le _ _
         _ ≤ Cjet + Cjet := add_le_add (h2 x) (h2 y)
-        _ = (Cα : ℝ) := by simp [Cα]; ring
+        _ = (Cα : ℝ) := by
+          change Cjet + Cjet = 2 * Cjet
+          ring
     have hmono : ⟨Cjet, hCjet⟩ ≤ Cα := by
       dsimp only [Cα]
-      nlinarith
+      change (⟨Cjet, hCjet⟩ : ℝ≥0) ≤ 2 * (⟨Cjet, hCjet⟩ : ℝ≥0)
+      change Cjet ≤ 2 * Cjet
+      linarith
     have hone : HolderWith Cα 1 (iteratedFDeriv ℝ 2 u) :=
       hlip.holderWith.mono hmono
     have hhalf0 : (0 : ℝ≥0) ≤ 1 / 2 := by norm_num
     have hhalf1 : (1 / 2 : ℝ≥0) ≤ 1 := by norm_num
-    simpa using hzero.of_le_of_le hone hhalf0 hhalf1
+    change HolderWith Cα (1 / 2 : ℝ≥0) (iteratedFDeriv ℝ 2 u)
+    simpa only [max_self] using hzero.of_le_of_le hone hhalf0 hhalf1
 
 end DifferentialGeometry.PDE.RicciFlow

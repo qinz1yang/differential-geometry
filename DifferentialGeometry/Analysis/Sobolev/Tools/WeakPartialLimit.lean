@@ -62,7 +62,7 @@ private lemma abs_integral_mul_le_eLpNorm_mul_eLpNorm
     have hint : ‖∫ x, f x * g x ∂μ‖ₑ ≤ ∫⁻ x, ‖f x * g x‖ₑ ∂μ :=
       enorm_integral_le_lintegral_enorm _
     have hofreal : ENNReal.ofReal ‖∫ x, f x * g x ∂μ‖ = ‖∫ x, f x * g x ∂μ‖ₑ :=
-      ofReal_norm_eq_enorm _
+      ofReal_norm _
     rw [hofreal]
     exact hint
   have h_lintegral_eq :
@@ -77,7 +77,7 @@ private lemma abs_integral_mul_le_eLpNorm_mul_eLpNorm
       funext x
       simp [smul_eq_mul]
     rw [h_mul_eq]
-    haveI : ENNReal.HolderTriple q p 1 := ENNReal.HolderTriple.symm
+    have : ENNReal.HolderTriple q p 1 := ENNReal.HolderTriple.symm
     exact eLpNorm_smul_le_mul_eLpNorm hf.aestronglyMeasurable hg.aestronglyMeasurable
   calc
     ENNReal.ofReal |∫ x, f x * g x ∂μ|
@@ -98,7 +98,7 @@ private lemma tendsto_integral_mul_of_eLpNorm_tendsto_zero
   have h_bound_pointwise : ∀ n,
       ENNReal.ofReal |∫ x, f x * g n x ∂μ| ≤ eLpNorm f q μ * eLpNorm (g n) p μ := by
     intro n
-    haveI : ENNReal.HolderConjugate q p := ENNReal.HolderConjugate.symm
+    have : ENNReal.HolderConjugate q p := ENNReal.HolderConjugate.symm
     have h := abs_integral_mul_le_eLpNorm_mul_eLpNorm (μ := μ) (f := f) (g := g n)
       (p := q) (q := p) hf (hg n)
     exact h
@@ -155,10 +155,10 @@ theorem hasWeakPartialDeriv_of_tendsto_eLpNorm
   let μ : Measure E := volume.restrict Ω
   let dφ : E → ℝ := fun x => (fderiv ℝ φ x) (EuclideanSpace.single i 1)
   let q : ℝ≥0∞ := conj p
-  haveI hpq : ENNReal.HolderConjugate p q := holderConjugate_conj p hp_one
-  haveI hpq_symm : ENNReal.HolderConjugate q p := ENNReal.HolderConjugate.symm
-  haveI hpq1 : ENNReal.HolderTriple p q 1 := hpq
-  haveI hpq1_symm : ENNReal.HolderTriple q p 1 := hpq_symm
+  have hpq : ENNReal.HolderConjugate p q := holderConjugate_conj p hp_one
+  have hpq_symm : ENNReal.HolderConjugate q p := ENNReal.HolderConjugate.symm
+  have hpq1 : ENNReal.HolderTriple p q 1 := hpq
+  have hpq1_symm : ENNReal.HolderTriple q p 1 := hpq_symm
   have hdφ_memLp : MemLp dφ q μ :=
     fderiv_apply_memLp hφ hφ_supp (EuclideanSpace.single i 1) Ω q
   have hφ_memLp : MemLp φ q μ :=
@@ -181,7 +181,8 @@ theorem hasWeakPartialDeriv_of_tendsto_eLpNorm
           (∫ x, u x * dφ x ∂μ) + ∫ x, dφ x * (u_n n x - u x) ∂μ := by
       intro n
       have hfi : Integrable (fun x => u x * dφ x) μ := by
-        simpa [mul_comm] using MemLp.integrable_mul hdφ_memLp hu_lp
+        exact (MemLp.integrable_mul hdφ_memLp hu_lp).congr <|
+          Filter.Eventually.of_forall fun x ↦ by simp only [Pi.mul_apply, mul_comm]
       have hdi : Integrable (fun x => dφ x * (u_n n x - u x)) μ :=
         MemLp.integrable_mul hdφ_memLp (h_u_diff_memLp n)
       calc
@@ -209,7 +210,8 @@ theorem hasWeakPartialDeriv_of_tendsto_eLpNorm
           (∫ x, g x * φ x ∂μ) + ∫ x, φ x * (g_n n x - g x) ∂μ := by
       intro n
       have hgi : Integrable (fun x => g x * φ x) μ := by
-        simpa [mul_comm] using MemLp.integrable_mul hφ_memLp hg_lp
+        exact (MemLp.integrable_mul hφ_memLp hg_lp).congr <|
+          Filter.Eventually.of_forall fun x ↦ by simp only [Pi.mul_apply, mul_comm]
       have hdi : Integrable (fun x => φ x * (g_n n x - g x)) μ :=
         MemLp.integrable_mul hφ_memLp (h_g_diff_memLp n)
       calc

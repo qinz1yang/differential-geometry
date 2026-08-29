@@ -182,10 +182,10 @@ lemma boundaryGramMatrix_dotProduct_mulVec
       intro i _
       exact ContinuousLinearMap.map_smul _ _ _
     rw [hL]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl ?_
     intro i _
-    rw [ContinuousLinearMap.smul_apply]
+    rw [smul_apply]
     have hR :
         (inducedMetricInner (M := M) g α
             (boundaryChartBasisVecFiber (M := M) α₀ i α))
@@ -197,7 +197,6 @@ lemma boundaryGramMatrix_dotProduct_mulVec
       rw [map_sum]
       refine Finset.sum_congr rfl ?_
       intro j _
-      change _ = c j * _
       rw [← smul_eq_mul]
       exact ContinuousLinearMap.map_smul _ _ _
     rw [hR, smul_eq_mul, Finset.mul_sum]
@@ -293,10 +292,10 @@ lemma boundaryGramMatrix_det_contMDiffOn
     rw [Matrix.det_apply]
     simp [Units.smul_def]
   rw [hexp]
-  refine contMDiffOn_finset_sum (fun σ _ => ?_)
+  refine contMDiffOn_finsetSum (fun σ _ => ?_)
   refine ContMDiffOn.mul
     (contMDiffOn_const (c := ((Equiv.Perm.sign σ : ℤ) : ℝ))) ?_
-  refine contMDiffOn_finset_prod (fun i _ => ?_)
+  refine contMDiffOn_finsetProd (fun i _ => ?_)
   exact boundaryGramMatrix_entry_contMDiffOn (M := M) g α₀ (σ i) i
 
 def boundaryInvGramMatrix (g : SmoothRiemannianMetric I M)
@@ -361,9 +360,9 @@ lemma boundaryGramMatrix_adjugate_entry_contMDiffOn
     rw [Matrix.det_apply]
     simp [Units.smul_def]
   rw [hexp2]
-  refine contMDiffOn_finset_sum (fun σ _ => ?_)
+  refine contMDiffOn_finsetSum (fun σ _ => ?_)
   refine ContMDiffOn.mul (contMDiffOn_const (c := ((Equiv.Perm.sign σ : ℤ) : ℝ))) ?_
-  refine contMDiffOn_finset_prod (fun k _ => ?_)
+  refine contMDiffOn_finsetProd (fun k _ => ?_)
   by_cases hσk : σ k = j
   · have heq : (fun α : BoundaryManifold I M =>
         (boundaryGramMatrix (M := M) g α₀ α).updateRow j

@@ -396,7 +396,7 @@ theorem maximalGeodesicChosenCurve_rescale_at_one
     maximalGeodesicChosenCurve (I := I) g p (a • v) h1_dom 1 =
       maximalGeodesicChosenCurve (I := I) g p v ha_dom a := by
   have h := h1_in
-  simp only [Set.mem_setOf_eq, mul_one] at h
+  simp only [Set.mem_ofPred_eq, mul_one] at h
   exact h.symm
 
 omit [NeZero (Module.finrank ℝ E)] in

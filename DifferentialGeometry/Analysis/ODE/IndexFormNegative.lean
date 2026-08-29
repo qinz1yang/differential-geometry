@@ -7,6 +7,7 @@ open scoped ContDiff RealInnerProductSpace
 
 noncomputable section
 
+
 namespace DifferentialGeometry.Analysis.ODE
 
 variable {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
@@ -21,11 +22,12 @@ theorem testFieldTo_deriv (L : ℝ) (q : F) (t : ℝ) :
     HasDerivAt (indexTestFieldTo L q) (indexTestDerivTo L q t) t := by
   have hscalar :
       HasDerivAt (fun s : ℝ => s * (L - s)) (L - 2 * t) t := by
-    convert (hasDerivAt_id t).mul
-      ((hasDerivAt_const t L).sub (hasDerivAt_id t)) using 1
-    all_goals simp
-    ring
-  simpa only [indexTestFieldTo, indexTestDerivTo] using hscalar.smul_const q
+    change HasDerivAt ((fun s : ℝ => s) * fun s => L - s) (L - 2 * t) t
+    have hder : L - 2 * t = 1 * (L - t) + t * -1 := by ring
+    rw [hder]
+    exact (hasDerivAt_id' t).mul ((hasDerivAt_id' t).const_sub L)
+  unfold indexTestFieldTo indexTestDerivTo
+  exact hscalar.smul_const q
 
 theorem testFieldTo_cont (L : ℝ) (q : F) :
     Continuous (indexTestFieldTo L q) := by
@@ -42,10 +44,10 @@ theorem testFieldTo_smooth (L : ℝ) (q : F) :
   unfold indexTestFieldTo
   fun_prop
 
-def indexTestField (q : F) (t : ℝ) : F :=
+abbrev indexTestField (q : F) (t : ℝ) : F :=
   indexTestFieldTo 1 q t
 
-def indexTestDeriv (q : F) (t : ℝ) : F :=
+abbrev indexTestDeriv (q : F) (t : ℝ) : F :=
   indexTestDerivTo 1 q t
 
 theorem indexTestField_deriv (q : F) (t : ℝ) :

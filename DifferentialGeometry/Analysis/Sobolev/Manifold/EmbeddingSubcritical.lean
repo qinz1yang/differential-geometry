@@ -309,7 +309,7 @@ private lemma eLpNorm_fderiv_smooth_le_d_mul_wkpNorm
           Ω := by
     rw [hWkpEq, Finset.sum_range_succ, Finset.sum_range_one, ← h_j1_term]
     refine le_add_of_nonneg_left ?_
-    exact zero_le _
+    exact zero_le
   refine h_le_wkp.trans ?_
   have hd_pos : 0 < d := NeZero.pos d
   have hd_one_le : (1 : ℝ≥0∞) ≤ (d : ℝ≥0∞) := by exact_mod_cast hd_pos
@@ -325,7 +325,7 @@ private lemma sobolev_smooth_compactSupport_in_Ω
     (hφ_compact : HasCompactSupport φ) (hφ_supp : tsupport φ ⊆ Ω) :
     eLpNorm φ
         (ENNReal.ofReal ((d : ℝ) * p / ((d : ℝ) - p))) (volume.restrict Ω) ≤
-      ENNReal.ofReal (DeGiorgi.C_gns d p) *
+      ENNReal.ofReal (DeGiorgi.CGns d p) *
         eLpNorm (fderiv ℝ φ) (ENNReal.ofReal p) (volume.restrict Ω) := by
   have h_lhs_eq :
       eLpNorm φ
@@ -352,7 +352,7 @@ theorem eLpNorm_p_star_le_const_mul_wkpNorm_of_memWkp
     (hf_compact : HasCompactSupport f) (hf_supp : tsupport f ⊆ Ω) :
     eLpNorm f
         (ENNReal.ofReal ((d : ℝ) * p / ((d : ℝ) - p))) (volume.restrict Ω) ≤
-      ENNReal.ofReal (DeGiorgi.C_gns d p) * (d : ℝ≥0∞) *
+      ENNReal.ofReal (DeGiorgi.CGns d p) * (d : ℝ≥0∞) *
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm (d := d)
           1 (ENNReal.ofReal p) f Ω := by
   classical
@@ -391,7 +391,7 @@ theorem eLpNorm_p_star_le_const_mul_wkpNorm_of_memWkp
     fun n => (h_pick n).choose_spec.2.2.2
   have h_smooth_sob : ∀ n,
       eLpNorm (φ n) p_star (volume.restrict Ω) ≤
-        ENNReal.ofReal (DeGiorgi.C_gns d p) *
+        ENNReal.ofReal (DeGiorgi.CGns d p) *
           eLpNorm (fderiv ℝ (φ n)) p_enn (volume.restrict Ω) := fun n =>
     sobolev_smooth_compactSupport_in_Ω (d := d) hp_one hp_dim hΩ_open
       (hφ_smooth n) (hφ_compact n) (hφ_supp n)
@@ -474,7 +474,7 @@ theorem eLpNorm_p_star_le_const_mul_wkpNorm_of_memWkp
           ENNReal.ofReal (1 / (n + 1 : ℝ)) := fun n =>
       (h_eLpNorm_diff_le_wkp n).trans (hφ_close n)
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_decay_to_zero
-      (Filter.Eventually.of_forall (fun _ => zero_le _))
+      (Filter.Eventually.of_forall (fun _ => zero_le))
       (Filter.Eventually.of_forall h_total_le)
   have hf_aesm : AEStronglyMeasurable f (volume.restrict Ω) := hf.memLp.aestronglyMeasurable
   have hφ_aesm : ∀ n, AEStronglyMeasurable (φ n) (volume.restrict Ω) :=
@@ -498,7 +498,7 @@ theorem eLpNorm_p_star_le_const_mul_wkpNorm_of_memWkp
   have h_fatou : eLpNorm f p_star (volume.restrict Ω) ≤
       atTop.liminf (fun n => eLpNorm (φ (σ n)) p_star (volume.restrict Ω)) :=
     MeasureTheory.Lp.eLpNorm_lim_le_liminf_eLpNorm h_aesm_subseq f hσ_ae
-  set C : ℝ≥0∞ := ENNReal.ofReal (DeGiorgi.C_gns d p) * (d : ℝ≥0∞) with hC_def
+  set C : ℝ≥0∞ := ENNReal.ofReal (DeGiorgi.CGns d p) * (d : ℝ≥0∞) with hC_def
   set N : ℝ≥0∞ := DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
     (d := d) 1 p_enn f Ω with hN_def
   have h_per_n : ∀ n,
@@ -510,9 +510,9 @@ theorem eLpNorm_p_star_le_const_mul_wkpNorm_of_memWkp
     have h1 := h_smooth_sob (σ n)
     have h2 := h_grad_bound (σ n)
     calc eLpNorm (φ (σ n)) p_star (volume.restrict Ω)
-        ≤ ENNReal.ofReal (DeGiorgi.C_gns d p) *
+        ≤ ENNReal.ofReal (DeGiorgi.CGns d p) *
             eLpNorm (fderiv ℝ (φ (σ n))) p_enn (volume.restrict Ω) := h1
-      _ ≤ ENNReal.ofReal (DeGiorgi.C_gns d p) *
+      _ ≤ ENNReal.ofReal (DeGiorgi.CGns d p) *
             ((d : ℝ≥0∞) *
               DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
                 (d := d) 1 p_enn (φ (σ n)) Ω) := by gcongr
@@ -538,14 +538,14 @@ theorem eLpNorm_p_star_le_const_mul_wkpNorm_of_memWkp
             (d := d) 1 p_enn (fun x => f x - φ (σ n) x) Ω)) := by
     refine Filter.liminf_le_liminf (Filter.Eventually.of_forall h_per_n_v2) ?_ ?_
     · exact isBoundedUnder_of_eventually_ge (a := 0)
-        (Filter.Eventually.of_forall (fun _ => zero_le _))
+        (Filter.Eventually.of_forall (fun _ => zero_le))
     · exact isCoboundedUnder_ge_of_eventually_le atTop
         (Filter.Eventually.of_forall (fun _ => le_top))
   have h_wkp_diff_decay : Tendsto (fun n =>
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := d) 1 p_enn (fun x => f x - φ n x) Ω) atTop (nhds 0) := by
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_decay_to_zero
-      (Filter.Eventually.of_forall (fun _ => zero_le _))
+      (Filter.Eventually.of_forall (fun _ => zero_le))
       (Filter.Eventually.of_forall hφ_close)
   have h_wkp_diff_subseq_decay : Tendsto (fun n =>
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
@@ -573,7 +573,14 @@ theorem eLpNorm_p_star_le_const_mul_wkpNorm_of_memWkp
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := d) 1 p_enn (fun x => f x - φ (σ n) x) Ω)
         = C * N := by
-    simpa using ENNReal.liminf_add_of_right_tendsto_zero h_C_diff_decay (fun _ => C * N)
+    rw [show (fun n => C * N + C *
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
+          (d := d) 1 p_enn (fun x => f x - φ (σ n) x) Ω) =
+      (fun _ => C * N) + (fun n => C *
+        DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
+          (d := d) 1 p_enn (fun x => f x - φ (σ n) x) Ω) by rfl]
+    rw [ENNReal.liminf_add_of_right_tendsto_zero h_C_diff_decay]
+    simp
   rw [h_liminf_const_add] at h_liminf_le_C_lim
   exact h_fatou.trans h_liminf_le_C_lim
 
@@ -798,7 +805,7 @@ private theorem perChart_eLpNorm_pStar_le
   obtain ⟨C_α, hC_α_pos, hbridge⟩ :=
     eLpNorm_riemannianMeasure_le_const_mul_eLpNorm_chartPushedRaw_uniform_of_subset
       (I := I) (M := M) g α hKα_compact hKα_sub hp_star_one hp_star_top
-  set C_d : ℝ≥0∞ := ENNReal.ofReal (DeGiorgi.C_gns d p) * (d : ℝ≥0∞) with hC_d_def
+  set C_d : ℝ≥0∞ := ENNReal.ofReal (DeGiorgi.CGns d p) * (d : ℝ≥0∞) with hC_d_def
   have hC_d_ne_top : C_d ≠ ⊤ := by
     rw [hC_d_def]
     exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top (ENNReal.natCast_ne_top _)
@@ -880,13 +887,13 @@ private theorem perChart_eLpNorm_pStar_le
     _ = K_α * wkpNormChart (I := I) (M := M) 1 p_enn u := by rw [hK_α_def]; ring
 
 private theorem chartAtlasPOU_pou_decomp_subcritical
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (u : M → ℝ) (x : M) :
-    u x = ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+    u x = ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
       (I := I) (M := M),
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ) x * u x := by
   classical
-  have hsum : ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+  have hsum : ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
       (I := I) (M := M),
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ) x = 1 :=
     DifferentialGeometry.Analysis.Sobolev.Chart.chartAtlasPOU_finset_sum_eq_one
@@ -960,7 +967,7 @@ private theorem sobolev_embedding_chart_subcritical_measurable
   have hp_star_real_one : 1 ≤ p_real_star := le_trans hp_one hp_star_real_ge_p
   have hp_star_one : (1 : ℝ≥0∞) ≤ p_star := by
     rw [hp_star_def, ← ENNReal.ofReal_one]; exact ENNReal.ofReal_le_ofReal hp_star_real_one
-  set S : Finset M := DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+  set S : Finset M := DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
     (I := I) (M := M) with hS_def
   set D : ℝ≥0∞ :=
     ∑ α ∈ S, perChartConst_pStar (I := I) (M := M) g hp_one hp_dim α
@@ -1083,7 +1090,7 @@ theorem sobolev_closed
   have hp_star_real_one : 1 ≤ p_real_star := le_trans hp_one hp_star_real_ge_p
   have hp_star_one : (1 : ℝ≥0∞) ≤ p_star := by
     rw [hp_star_def, ← ENNReal.ofReal_one]; exact ENNReal.ofReal_le_ofReal hp_star_real_one
-  set S : Finset M := DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+  set S : Finset M := DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
     (I := I) (M := M) with hS_def
   set D : ℝ≥0∞ :=
     ∑ α ∈ S, perChartConst_pStar (I := I) (M := M) g hp_one hp_dim α

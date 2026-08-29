@@ -63,7 +63,8 @@ theorem exists_live_metric
     (liveCenters_cage inp.decay inp.hD P inp.realizes L inp.pack r)
   let shift : Nat → Nat := fun k ↦ k + N
   have hshift : StrictMono shift := by
-    simpa only [shift] using strictMono_id.add_const N
+    intro a b hab
+    exact Nat.add_lt_add_right hab N
   let index : Nat → Nat := fun k ↦ L.φ (shift k)
   let X' : PointedRiemannianSeq.{u, uE, uH} (I := I) := X.subseq index
   let input' : NormalCoordMetricBoundInput (I := I) X' :=
@@ -78,8 +79,8 @@ theorem exists_live_metric
       Metric.ball (0 : E) (inp.normalRadius.phaseRadius R) ⊆
         Metric.ball 0 (input'.radius k (c alpha k)) := by
     intro k alpha
-    simpa only [input', X', index, c, PointedRiemannianSeq.subseq] using
-      inp.normalRadius.phaseRadius_metric (hcenter k alpha)
+    with_unfolding_all
+      exact inp.normalRadius.phaseRadius_metric (hcenter k alpha)
   have hsub : ∀ k alpha,
       letI : TopologicalSpace (X'.obj k).M := (X'.obj k).topology
       letI : ChartedSpace H (X'.obj k).M := (X'.obj k).charted
@@ -91,10 +92,10 @@ theorem exists_live_metric
         (Geometry.Riemannian.expMapC2Radius
             (I := I) (X'.obj k).metric (c alpha k)) := by
     intro k alpha
-    letI : TopologicalSpace (X'.obj k).M := (X'.obj k).topology
-    letI : ChartedSpace H (X'.obj k).M := (X'.obj k).charted
-    letI : IsManifold I ∞ (X'.obj k).M := (X'.obj k).smooth
-    letI : T2Space (TangentBundle I (X'.obj k).M) :=
+    let : TopologicalSpace (X'.obj k).M := (X'.obj k).topology
+    let : ChartedSpace H (X'.obj k).M := (X'.obj k).charted
+    let : IsManifold I ∞ (X'.obj k).M := (X'.obj k).smooth
+    let : T2Space (TangentBundle I (X'.obj k).M) :=
       (X'.obj k).t2TangentBundle
     have hquarter := inp.normalRadius.phaseRadius_exp (hcenter k alpha)
     have hquarter' : Metric.ball (0 : E) (inp.normalRadius.phaseRadius R) ⊆
@@ -151,7 +152,8 @@ theorem exists_slot_metric
     (liveCenters_rInf inp.decay P inp.realizes L inp.pack r)
   let shift : Nat → Nat := fun n => n + N
   have hshift : StrictMono shift := by
-    simpa only [shift] using strictMono_id.add_const N
+    intro a b hab
+    exact Nat.add_lt_add_right hab N
   let U : LiveSlot L inp.pack r → Set E := fun alpha =>
     Metric.ball 0
       (inp.normalRadius.phaseRadius (L.rInf (alpha.1 : Nat) + 1))
@@ -186,8 +188,8 @@ theorem exists_slot_metric
     have hdom : ∀ n, U alpha ⊆
         Metric.ball (0 : E) (input'.radius n (c n)) := by
       intro n
-      simpa only [U, input', X', index, c, PointedRiemannianSeq.subseq] using
-        inp.normalRadius.phaseRadius_metric (hcenter n)
+      with_unfolding_all
+        exact inp.normalRadius.phaseRadius_metric (hcenter n)
     have hsub : ∀ n,
         letI : TopologicalSpace (X'.obj n).M := (X'.obj n).topology
         letI : ChartedSpace H (X'.obj n).M := (X'.obj n).charted
@@ -198,10 +200,10 @@ theorem exists_slot_metric
           (Geometry.Riemannian.expMapC2Radius
             (I := I) (X'.obj n).metric (c n)) := by
       intro n
-      letI : TopologicalSpace (X'.obj n).M := (X'.obj n).topology
-      letI : ChartedSpace H (X'.obj n).M := (X'.obj n).charted
-      letI : IsManifold I ∞ (X'.obj n).M := (X'.obj n).smooth
-      letI : T2Space (TangentBundle I (X'.obj n).M) :=
+      let : TopologicalSpace (X'.obj n).M := (X'.obj n).topology
+      let : ChartedSpace H (X'.obj n).M := (X'.obj n).charted
+      let : IsManifold I ∞ (X'.obj n).M := (X'.obj n).smooth
+      let : T2Space (TangentBundle I (X'.obj n).M) :=
         (X'.obj n).t2TangentBundle
       have hquarter := inp.normalRadius.phaseRadius_exp (hcenter n)
       have hquarter' : U alpha ⊆ Metric.ball (0 : E)

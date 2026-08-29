@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Metric.DistanceScaling
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
+
 noncomputable section
 
 open MeasureTheory Set Filter Topology Bundle Manifold Function
@@ -58,8 +59,8 @@ private lemma lip_mul_bdd
       simp only [NNReal.coe_add, NNReal.coe_mul, one_mul]
       ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem chart_pou_lip
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
@@ -73,9 +74,9 @@ theorem chart_pou_lip
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α :
             C^∞⟮I, M; ℝ⟯) x * u x)) := by
   classical
-  letI : RiemannianBundle (fun (x : M) ↦ TangentSpace I x) :=
+  let : RiemannianBundle (fun (x : M) ↦ TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun (x : M) ↦ TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ ↦ rfl⟩
   let ρ : M → ℝ := fun x =>
@@ -144,7 +145,9 @@ theorem chart_pou_lip
     by_cases hy : y ∈ tsupport v
     · have hyΩ : y ∈ Ω := hv_supp hy
       have hyE : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
-        simpa only [Ω, chartTargetEuclid_eq_preimage_symm] using hyΩ
+        rw [show Ω = chartTargetEuclid (I := I) (M := M) α from rfl,
+          chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hyΩ
+        exact hyΩ
       obtain ⟨C, s, hs, hC⟩ :=
         DifferentialGeometry.Geometry.Riemannian.chart_inv_edist_le
           (I := I) α hyE
@@ -204,7 +207,9 @@ theorem chart_pou_lip
         intro z hz
         have hzΩ : z ∈ Ω := hwΩ hz
         have hzE : (toEuclidean (E := E)).symm z ∈ (extChartAt I α).target := by
-          simpa only [Ω, chartTargetEuclid_eq_preimage_symm] using hzΩ
+          rw [show Ω = chartTargetEuclid (I := I) (M := M) α from rfl,
+            chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hzΩ
+          exact hzΩ
         change dist
           (if (toEuclidean (E := E)).symm z ∈ (extChartAt I α).target then
             ρ ((extChartAt I α).symm ((toEuclidean (E := E)).symm z)) else 0) 0 ≤ 1
@@ -227,7 +232,9 @@ theorem chart_pou_lip
           (hz : z ∈ w) : v z = ρE z * raw z := by
         have hzΩ : z ∈ Ω := hwΩ hz
         have hzE : (toEuclidean (E := E)).symm z ∈ (extChartAt I α).target := by
-          simpa only [Ω, chartTargetEuclid_eq_preimage_symm] using hzΩ
+          rw [show Ω = chartTargetEuclid (I := I) (M := M) α from rfl,
+            chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hzΩ
+          exact hzΩ
         rw [show v z = ρ ((extChartAt I α).symm
             ((toEuclidean (E := E)).symm z)) *
               u ((extChartAt I α).symm ((toEuclidean (E := E)).symm z)) by
@@ -287,8 +294,8 @@ private lemma pou_ae_mdiff
   filter_upwards [pou_ae_diff (I := I) g α hu hB] with x hx
   exact fun hx_source => mdiff_of_raw (I := I) α hx_source (hx hx_source)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem ae_mdiff_of_lip
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
@@ -334,8 +341,8 @@ theorem ae_mdiff_of_lip
   filter_upwards [hρ_smooth.continuousAt.eventually_ne hρ_ne] with y hy
   rw [← mul_assoc, inv_mul_cancel₀ hy, one_mul]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem mem_chart_one_of_lip
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)

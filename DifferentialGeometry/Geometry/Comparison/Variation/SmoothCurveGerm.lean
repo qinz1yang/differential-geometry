@@ -5,6 +5,7 @@ import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 
 noncomputable section
 
+
 open Set Function Filter Manifold Bundle
 open scoped Topology Manifold ContDiff
 
@@ -30,14 +31,13 @@ theorem exists_contMDiffAt_hasMFDerivAt_of_tangent (x : M) (v : TangentSpace I x
     have : ContDiffAt ℝ ∞ (fun r : ℝ => φ + r • w) 0 := by fun_prop
     simpa [hL] using this
   have hLine : HasMFDerivAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) L 0 ((1 : ℝ →L[ℝ] ℝ).smulRight w) := by
-    rw [hasMFDerivAt_iff_hasFDerivAt]
     have hadd : HasFDerivAt L ((0 : ℝ →L[ℝ] E) + (1 : ℝ →L[ℝ] ℝ).smulRight w) 0 := by
       rw [hL]
       refine HasFDerivAt.add (hasFDerivAt_const φ (0 : ℝ)) ?_
       refine (((1 : ℝ →L[ℝ] ℝ).smulRight w).hasFDerivAt (x := (0 : ℝ))).congr_of_eventuallyEq ?_
       filter_upwards with r using by simp [ContinuousLinearMap.smulRight_apply]
     rw [zero_add] at hadd
-    exact hadd
+    exact hadd.hasMFDerivAt
   have hsymmC : ContMDiffAt 𝓘(ℝ, E) I ∞ (extChartAt I x).symm φ := by
     refine (contMDiffOn_extChartAt_symm (n := (∞ : WithTop ℕ∞)) x).contMDiffAt ?_
     simpa [hφ] using extChartAt_target_mem_nhds x
@@ -53,8 +53,8 @@ theorem exists_contMDiffAt_hasMFDerivAt_of_tangent (x : M) (v : TangentSpace I x
       exact mfderivWithin_range_extChartAt_symm
     have hwd : HasMFDerivWithinAt 𝓘(ℝ, E) I (extChartAt I x).symm univ φ
         (ContinuousLinearMap.id ℝ E) := heq ▸ hdiff.hasMFDerivWithinAt
-    rw [hL0, ← hasMFDerivWithinAt_univ]
-    exact hwd
+    rw [hL0]
+    exact hasMFDerivWithinAt_univ.mp hwd
   refine ⟨fun r => (extChartAt I x).symm (L r), ?_, ?_, ?_⟩
   · exact (hsymmC.comp_of_eq hLcm hL0 :)
   · simp [hL, hφ]

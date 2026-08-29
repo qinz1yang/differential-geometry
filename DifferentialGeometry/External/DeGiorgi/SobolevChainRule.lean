@@ -133,10 +133,11 @@ private theorem integral_mul_tendsto_of_eLpNorm_tendsto
   -- Squeeze: upper bound → 0
   have h_lintegral_tendsto : Tendsto (fun n => ∫⁻ x, ‖(f n x - g x) * ψ x‖ₑ ∂μ)
       atTop (nhds 0) := by
-    apply tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds _
-      (Eventually.of_forall (fun _ => zero_le _)) (Eventually.of_forall h_bound2)
-    rw [show (0 : ℝ≥0∞) = K * 0 from by simp]
-    exact ENNReal.Tendsto.const_mul h_conv (Or.inr hK_ne_top)
+    apply tendsto_of_tendsto_of_tendsto_of_le_of_le'
+      (show Tendsto (fun _ : ℕ => (0 : ℝ≥0∞)) atTop (nhds 0) from tendsto_const_nhds) _
+      (Eventually.of_forall (fun _ => show (0 : ℝ≥0∞) ≤ _ from bot_le))
+      (Eventually.of_forall h_bound2)
+    simpa only [mul_zero] using ENNReal.Tendsto.const_mul h_conv (Or.inr hK_ne_top)
   have h_diff_int : ∀ᶠ n in atTop,
       Integrable (fun x => (f n x - g x) * ψ x) μ := by
     have h_diff_memLp : ∀ᶠ n in atTop, MemLp (fun x => f n x - g x) 2 μ := by
@@ -150,7 +151,7 @@ private theorem integral_mul_tendsto_of_eLpNorm_tendsto
   -- ∫ (f_n - g) * ψ → 0
   have h_diff_integral : Tendsto (fun n => ∫ x, (f n x - g x) * ψ x ∂μ) atTop (nhds 0) := by
     rw [show (0 : ℝ) = ∫ _, (0 : ℝ) ∂μ from by simp]
-    apply tendsto_integral_of_L1 (fun _ => (0 : ℝ)) (integrable_zero _ _ _)
+    apply tendsto_integral_of_L1 (fun _ => (0 : ℝ)) aestronglyMeasurable_zero
     · filter_upwards [h_diff_int] with n hn; exact hn
     · simpa [sub_zero] using h_lintegral_tendsto
   by_cases hgψ_int : Integrable (fun x => g x * ψ x) μ
@@ -257,7 +258,7 @@ private theorem eLpNorm_one_tendsto_of_eLpNorm_two_tendsto
     apply tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
       (show Tendsto (fun n => eLpNorm (fun x => f n x - g x) 2 μ * K)
         atTop (nhds 0) from ?_)
-      (Eventually.of_forall (fun _ => zero_le _))
+      (Eventually.of_forall (fun _ => bot_le))
       (Eventually.of_forall h_L1_le_L2)
     rw [show (0 : ℝ≥0∞) = 0 * K from by simp]
     exact ENNReal.Tendsto.mul_const h (Or.inr (by
@@ -328,7 +329,7 @@ theorem sobolev_chain_rule_unitBall
       atTop
       (nhds (∫ x in Metric.ball (0 : E) 1, Φ (u x) *
         (fderiv ℝ φ x) (EuclideanSpace.single i 1))) := by
-    have hΦ_lip : LipschitzWith ⟨M, hM_pos⟩ Φ :=
+    have hΦ_lip : LipschitzWith (NNReal.mk M hM_pos) Φ :=
       lipschitzWith_of_nnnorm_deriv_le (hΦ.differentiable (by simp)) (fun t => by
         simp only [← NNReal.coe_le_coe, NNReal.coe_mk, coe_nnnorm]
         exact (Real.norm_eq_abs _).symm ▸ hM t)
@@ -344,7 +345,7 @@ theorem sobolev_chain_rule_unitBall
       apply tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds
         (show Tendsto (fun n => ‖(M : ℝ)‖ₑ * eLpNorm (fun x => ψ (ns n) x - u x) 2 μ)
           atTop (nhds 0) from ?_)
-        (Eventually.of_forall (fun _ => zero_le _))
+        (Eventually.of_forall (fun _ => bot_le))
         (Eventually.of_forall (fun n => ?_))
       · rw [show (0 : ℝ≥0∞) = ‖(M : ℝ)‖ₑ * 0 from by simp]
         exact ENNReal.Tendsto.const_mul hψ_sub (Or.inr enorm_ne_top)
@@ -383,7 +384,7 @@ theorem sobolev_chain_rule_unitBall
       exact ⟨C, fun x => by rw [← Real.norm_eq_abs]; exact hC x⟩
     have hgi_int : IntegrableOn (fun x => hw.weakGrad x i)
         (Metric.ball (0 : E) 1) volume := by
-      haveI : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) :=
+      have : IsFiniteMeasure (volume.restrict (Metric.ball (0 : E) 1)) :=
         isFiniteMeasure_restrict.mpr (ne_top_of_lt hB_fin)
       exact (hw.weakGrad_component_memLp i).integrable one_le_two
     -- Term 1: ∫ Φ'(ψ_n)·(∂ᵢψ_n - gi)·φ → 0
@@ -540,7 +541,7 @@ private theorem sobolev_chain_rule_ball
       (fun x => deriv Φ (u x) * hw.weakGrad x i)
       (fun x => Φ (u x))
       (Metric.ball x₀ R) := by
-  set hwU := hw.rescale_to_unitBall hR with hwU_def
+  set hwU := hw.rescaleToUnitBall hR with hwU_def
   -- hwU is a witness for ũ(z) = u(x₀ + R·z) on ball(0,1),
   -- with hwU.weakGrad z i = R * hw.weakGrad (x₀ + R·z) i.
   have hUB := sobolev_chain_rule_unitBall hwU i Φ hΦ hΦ0 hΦ'_bdd
@@ -594,16 +595,21 @@ private theorem sobolev_chain_rule_ball
     have hT_fd : HasFDerivAt T (R • ContinuousLinearMap.id ℝ E) z := by
       have h1 := (hasFDerivAt_const (𝕜 := ℝ) x₀ z).add
         ((ContinuousLinearMap.id ℝ E).hasFDerivAt.const_smul R)
-      simpa using h1
+      have hfun : (fun _ : E => x₀) + R • (⇑(ContinuousLinearMap.id ℝ E)) = T := by
+        funext y
+        change x₀ + R • y = T y
+        rfl
+      rw [hfun, zero_add] at h1
+      exact h1
     have hφ_at : HasFDerivAt φ (fderiv ℝ φ (x₀ + R • z)) (x₀ + R • z) :=
       ((hφ.differentiable (by simp)).differentiableAt).hasFDerivAt
     have h_comp := hφ_at.comp z hT_fd
     rw [show ψ = φ ∘ T from rfl, h_comp.fderiv]
-    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply,
+    simp only [ContinuousLinearMap.comp_apply, smul_apply,
       ContinuousLinearMap.id_apply, map_smul, smul_eq_mul]
   have hgrad_eq : ∀ z : E, hwU.weakGrad z i = R * hw.weakGrad (x₀ + R • z) i := by
     intro z
-    simp [hwU_def, MemW1pWitness.rescale_to_unitBall, smul_eq_mul]
+    simp [hwU_def, MemW1pWitness.rescaleToUnitBall, smul_eq_mul]
   -- LHS of hUB_applied becomes:
   --   ∫ z in B₁, Φ(u(T z)) * R * (fderiv ℝ φ (T z))(single i 1)
   -- = R * ∫ z in B₁, Φ(u(T z)) * (fderiv ℝ φ (T z))(single i 1)
@@ -799,7 +805,7 @@ private theorem HasWeakPartialDeriv'_of_local
         ∑ k ∈ S, fderiv ℝ (fun x => (ρ k : E → ℝ) x * φ x) x := by
       rw [hfun_eq]; exact fderiv_sum (fun k _ => (hψ_smooth k).differentiable (by simp) x)
     conv_lhs => rw [show φ = fun x => ∑ k ∈ S, (ρ k : E → ℝ) x * φ x from heq]
-    rw [hfd_sum, ContinuousLinearMap.sum_apply]
+    rw [hfd_sum, sum_apply]
   have hf_dφ_sum : ∀ x,
       f x * (fderiv ℝ φ x) (EuclideanSpace.single i 1) =
       ∑ k ∈ S, f x * (fderiv ℝ (fun x => (ρ k : E → ℝ) x * φ x) x) (EuclideanSpace.single i 1) := by
@@ -811,7 +817,7 @@ private theorem HasWeakPartialDeriv'_of_local
         congr 1; ext x; exact hf_dφ_sum x
     _ = ∑ k ∈ S, ∫ x in Ω, f x * (fderiv ℝ (fun x => (ρ k : E → ℝ) x * φ x) x)
       (EuclideanSpace.single i 1) := by
-        rw [integral_finset_sum S (fun k _ => by
+        rw [integral_finsetSum S (fun k _ => by
           let ψk : E → ℝ := fun x => (ρ k : E → ℝ) x * φ x
           have hψk_cont : Continuous (fun x =>
               (fderiv ℝ ψk x) (EuclideanSpace.single i 1)) :=
@@ -827,7 +833,7 @@ private theorem HasWeakPartialDeriv'_of_local
         by rw [Finset.sum_neg_distrib]
     _ = -(∫ x in Ω, ∑ k ∈ S, g x * ((ρ k : E → ℝ) x * φ x)) := by
         congr 1
-        rw [integral_finset_sum S (fun k _ => by
+        rw [integral_finsetSum S (fun k _ => by
           let ψk : E → ℝ := fun x => (ρ k : E → ℝ) x * φ x
           simpa [ψk, smul_eq_mul] using
             hg_loc.integrable_smul_right_of_hasCompactSupport
@@ -892,8 +898,8 @@ theorem sobolev_chain_rule
     have hu_loc : LocallyIntegrable u (volume.restrict Ω) :=
       hw.memLp.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     have hMu_loc : LocallyIntegrable (fun x => M * u x) (volume.restrict Ω) := by
-      simpa [smul_eq_mul] using hu_loc.smul M
-    have hΦ_lip : LipschitzWith ⟨M, hM_pos⟩ Φ :=
+      exact (hu_loc.smul M).congr (Filter.Eventually.of_forall fun _ => rfl)
+    have hΦ_lip : LipschitzWith (NNReal.mk M hM_pos) Φ :=
       lipschitzWith_of_nnnorm_deriv_le (hΦ.differentiable (by simp)) (fun t => by
         simp only [← NNReal.coe_le_coe, NNReal.coe_mk, coe_nnnorm]
         exact (Real.norm_eq_abs _).symm ▸ hM t)
@@ -911,7 +917,7 @@ theorem sobolev_chain_rule
     have hgi_loc : LocallyIntegrable gi (volume.restrict Ω) :=
       hgi_Lp.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     have hMgi_loc : LocallyIntegrable (fun x => M * gi x) (volume.restrict Ω) := by
-      simpa [smul_eq_mul] using hgi_loc.smul M
+      exact (hgi_loc.smul M).congr (Filter.Eventually.of_forall fun _ => rfl)
     exact hMgi_loc.mono
       (((hΦ.continuous_deriv (by simp)).comp_aestronglyMeasurable
         hw.memLp.aestronglyMeasurable).mul hgi_Lp.aestronglyMeasurable)

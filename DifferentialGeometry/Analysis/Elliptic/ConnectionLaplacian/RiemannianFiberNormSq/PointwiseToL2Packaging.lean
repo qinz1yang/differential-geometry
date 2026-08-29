@@ -236,7 +236,7 @@ theorem tensorL2Norm_le_of_pointwise_fiberNormSq_bound_sum
     exact tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq (I := I) (M := M) g c Curv
   set RHS : M → ℝ := fun x => C ^ 2 * ∑ i ∈ Finset.range N, gi i x with hRHS_def
   have hsum_int : MeasureTheory.Integrable (fun x => ∑ i ∈ Finset.range N, gi i x) μ :=
-    MeasureTheory.integrable_finset_sum (Finset.range N) (fun i _ => hint_i i)
+    MeasureTheory.integrable_finsetSum (Finset.range N) (fun i _ => hint_i i)
   have hRHS_int : MeasureTheory.Integrable RHS μ := by
     rw [hRHS_def]; exact hsum_int.const_mul (C ^ 2)
   have hcurv_nn_ae : (0 : M → ℝ) ≤ᵐ[μ]
@@ -255,7 +255,7 @@ theorem tensorL2Norm_le_of_pointwise_fiberNormSq_bound_sum
       (∫ x, RHS x ∂μ) = C ^ 2 * ∑ i ∈ Finset.range N, ∫ x, gi i x ∂μ := by
     rw [hRHS_def, MeasureTheory.integral_const_mul]
     congr 1
-    exact MeasureTheory.integral_finset_sum (Finset.range N) (fun i _ => hint_i i)
+    exact MeasureTheory.integral_finsetSum (Finset.range N) (fun i _ => hint_i i)
   have hsq_bound : nCurv ^ 2 ≤ C ^ 2 * ∑ i ∈ Finset.range N, fi i ^ 2 := by
     rw [hbridgeCurv]
     calc (∫ x, riemannianFiberNormSq (I := I) (M := M) g 0 c x (Curv.toSection x) ∂μ)

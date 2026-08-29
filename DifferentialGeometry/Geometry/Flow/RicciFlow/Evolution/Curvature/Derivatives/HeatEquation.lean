@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -31,7 +30,7 @@ variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 private local instance tensor0SModelNormedSpace_local {s : ℕ} :
     NormedSpace ℝ (Tensor0SModel s ℝ E) :=
-  Tensor0SBundle.tensor0SModel_normedSpace (𝕜 := Real) (E := E) s
+  Tensor0SBundle.tensor0SModelNormedSpace (𝕜 := Real) (E := E) s
 
 private local instance tensor0SModelNormedAddCommGroup_local {s : ℕ} :
     NormedAddCommGroup (Tensor0SModel s ℝ E) := inferInstance
@@ -97,9 +96,9 @@ theorem nablaKNorm_smooth
     (S : SolutionOn (I := I) (M := M) D) (t : Real) (k : ℕ) :
     ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
       (nablaKRm04NormSqIntrinsic (I := I) S k t) := by
-  simpa [nablaKRm04NormSqIntrinsic] using
-    (normSq0S_smooth (I := I) (S.base.metric t)
-      (nablaKRm04Field (I := I) S t k))
+  with_unfolding_all
+    exact normSq0S_smooth (I := I) (S.base.metric t)
+      (nablaKRm04Field (I := I) S t k)
 
 noncomputable def nablaKNormDu
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -135,9 +134,31 @@ theorem towerNorm_grad_le
     (nablaT := nablaKRm04Field (I := I) S t (k + 1))
     (nablaKRm04Field_realizes (I := I) S t k)
     (du := nablaKNormDu (I := I) S t k) hdu x
-  simpa [nablaKNormDu, nablaKRm04NormSqIntrinsic, duSec_apply,
-    normSq0S_eq_inner, Nat.add_assoc,
-    inner0S_differential1FormFun_pair_eq_grad_inner] using hK
+  have hnext :
+      normSq0S (I := I) (S.base.metric t) x (4 + k + 1)
+          (nablaKRm04Field (I := I) S t (k + 1) x)
+        = normSq0S (I := I) (S.base.metric t) x (4 + (k + 1))
+          (nablaKRm04Field (I := I) S t (k + 1) x) := by
+    with_unfolding_all rfl
+  have hK' :
+      normSq0S (I := I) (S.base.metric t) x 1
+          (nablaKNormDu (I := I) S t k x) ≤
+        4 * normSq0S (I := I) (S.base.metric t) x (4 + k)
+            (nablaKRm04Field (I := I) S t k x) *
+          normSq0S (I := I) (S.base.metric t) x (4 + (k + 1))
+            (nablaKRm04Field (I := I) S t (k + 1) x) := by
+    calc
+      _ ≤ 4 * normSq0S (I := I) (S.base.metric t) x (4 + k)
+            (nablaKRm04Field (I := I) S t k x) *
+          normSq0S (I := I) (S.base.metric t) x (4 + k + 1)
+            (nablaKRm04Field (I := I) S t (k + 1) x) := hK
+      _ = _ := congrArg
+        (fun z : ℝ => 4 * normSq0S (I := I) (S.base.metric t) x (4 + k)
+          (nablaKRm04Field (I := I) S t k x) * z) hnext
+  with_unfolding_all
+    simpa [nablaKNormDu, nablaKRm04NormSqIntrinsic, duSec_apply,
+      normSq0S_eq_inner, ← Nat.add_assoc,
+      inner0S_differential1FormFun_pair_eq_grad_inner] using hK'
 
 noncomputable def nablaKNormHess
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -194,7 +215,7 @@ theorem nablaKNormHeatAt
             (gInv (t : Real)) ric Tdot))
       D.carrier (t : Real) := by
   classical
-  have hmc : IsMetricCompatible_gen (I := I)
+  have hmc : IsMetricCompatibleGen (I := I)
       (S.family.connection (t : Real)) (S.base.metric (t : Real)) :=
     solution_isMetricCompatible (I := I) S (t : Real)
   let X : Idx → ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -221,10 +242,10 @@ theorem nablaKNormHeatAt
       (S.family.connection (t : Real))
       (nablaKNormDu (I := I) S (t : Real) k)
       (nablaKNormHess (I := I) S (t : Real) k) x := by
-    simpa [nablaKNormDu, nablaKNormHess] using
-      (hessianSec_realizesAt (I := I)
+    with_unfolding_all
+      exact hessianSec_realizesAt (I := I)
         (S.family.connection (t : Real)) (connSmoothInf (I := I) S (t : Real))
-        (nablaKRm04NormSqIntrinsic (I := I) S k (t : Real)) hf x)
+        (nablaKRm04NormSqIntrinsic (I := I) S k (t : Real)) hf x
   have hlapReal :=
     scalarLap_smooth (I := I)
       (S.family.connection (t : Real)) (connSmoothInf (I := I) S (t : Real))
@@ -240,7 +261,7 @@ theorem nablaKNormHeatAt
       nablaKNormLap (I := I) S k (t : Real) x =
         metricTrace0S2InBasis (I := I) basis (gInv (t : Real))
           (nablaKNormHess (I := I) S (t : Real) k x) Fin.elim0 := by
-    simpa [nablaKNormLap] using hlapBasis
+    with_unfolding_all exact hlapBasis
   have hdt :=
     hasDerivWithinAt_normSq0S_ricciFlow (I := I)
       (s := 4 + k) (x := x) (u := D.carrier) (t := (t : Real))
@@ -356,7 +377,7 @@ theorem nablaKRm04NormHeatEquationOn_intrinsic
       (nablaKRm04ReactionIntrinsic (I := I) S k basis gInv ric Tdot) := by
   classical
   intro t x
-  have hmc : IsMetricCompatible_gen (I := I)
+  have hmc : IsMetricCompatibleGen (I := I)
       (S.family.connection (t : Real)) (S.base.metric (t : Real)) :=
     solution_isMetricCompatible (I := I) S (t : Real)
   have hdt :=
@@ -493,10 +514,10 @@ theorem iteratedRmComp_hasDerivWithinAt
     (hswap : ∀ (k : ℕ) (d : Idx) (m : Fin (4 + k) → Idx),
       HasDerivWithinAt
         (fun s : Real =>
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M => iteratedRmComp (I := I) frame chr base k s y m) x
             (frame d x))
-        (extDerivFun (I := I)
+        (mvfderiv (I := I)
           (fun y : M => iteratedRmCompDt (I := I) frame chr chrDt base baseDt k t y m) x
           (frame d x))
         D t) :

@@ -50,8 +50,12 @@ theorem canonical_curvature_norm_sq_bounded_of_realization
   have hcan :
       rm04RealizesConnection (I := I) (S.base.metric t)
         (metricCov (I := I) (M := M) (S.base.metric t)) (S.base.rm04 t) := by
-    simpa [SolutionFamily.rm04, metricCov] using
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
+    change rm04RealizesConnection (I := I) (S.base.metric t)
+      (leviCivitaConnectionOfMetric (I := I) (S.base.metric t))
+      (metricRm04 (I := I) (M := M) (S.base.metric t))
+    rw [show metricRm04 (I := I) (M := M) (S.base.metric t) =
+      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04 by rfl]
+    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have heq := rm04_eq_of_realizes (I := I) (S.base.metric t)
     (metricCov (I := I) (M := M) (S.base.metric t)) hcan
     (hRm t ⟨htAlpha, htOmega⟩) x
@@ -152,8 +156,10 @@ theorem movingRmBoundSol
     have hRaw := hK0 (s + t0) y (by linarith [hAlphaT0, hs.1])
       (by linarith [hs.2, hPsi.2])
     have hRaw' : nablaKRm04NormSqIntrinsic (I := I) S0 0 s y <= K0 := by
-      simpa [nablaKRm04NormSqIntrinsic, nablaKRm04Field_zero, S0, SShift,
-        SolutionOn.timeRestrict, SolutionOn.timeShift, SolutionFamily.timeShift] using hRaw
+      rw [nablaKRm04NormSqIntrinsic, nablaKRm04Field_zero]
+      change normSq0S (I := I) (S.base.metric (s + t0)) y 4
+        (S.base.rm04 (s + t0) y) ≤ K0
+      exact hRaw
     nlinarith [hK0K, hKOne]
   have hTK : psi - t0 <= aScale / K := by
     calc

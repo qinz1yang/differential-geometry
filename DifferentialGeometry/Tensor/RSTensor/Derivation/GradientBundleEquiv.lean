@@ -6,7 +6,6 @@ import Mathlib.Analysis.Normed.Module.Multilinear.Curry
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff BigOperators
@@ -43,51 +42,60 @@ def covGradBundleEquiv (r s : ℕ) (x : M) :
     (TangentSpace I x →L[ℝ] TensorRSSpace r s I x) ≃L[ℝ]
       TensorRSSpace r (s + 1) I x :=
   ((ContinuousLinearEquiv.refl ℝ (TangentSpace I x)).arrowCongr
-      (tensorRSSpace_continuousLinearEquiv (I := I) r s x)).trans
+      (tensorRSSpaceContinuousLinearEquiv (I := I) r s x)).trans
     ((covGradModelEquiv (E := E) r s).trans
-      (tensorRSSpace_continuousLinearEquiv (I := I) r (s + 1) x).symm)
+      (tensorRSSpaceContinuousLinearEquiv (I := I) r (s + 1) x).symm)
 
-set_option backward.isDefEq.respectTransparency true in
 theorem covGradBundleEquiv_apply (r s : ℕ) (x : M)
     (Φ : TangentSpace I x →L[ℝ] TensorRSSpace r s I x) :
     covGradBundleEquiv (I := I) (M := M) r s x Φ =
       TensorRSSpace.ofModel
         (covGradModelEquiv (E := E) r s
-          (((tensorRSSpace_continuousLinearEquiv (I := I) r s x : _ →L[ℝ] _).comp
+          (((tensorRSSpaceContinuousLinearEquiv (I := I) r s x : _ →L[ℝ] _).comp
             Φ : TangentSpace I x →L[ℝ] TensorRSModel r s ℝ E))) :=
   rfl
 
-set_option backward.isDefEq.respectTransparency true in
 theorem covGradBundleEquiv_symm_apply (r s : ℕ) (x : M)
     (T : TensorRSSpace r (s + 1) I x) :
     (covGradBundleEquiv (I := I) (M := M) r s x).symm T =
-      ((tensorRSSpace_continuousLinearEquiv (I := I) r s x).symm
+      ((tensorRSSpaceContinuousLinearEquiv (I := I) r s x).symm
           : TensorRSModel r s ℝ E →L[ℝ] TensorRSSpace r s I x).comp
         ((covGradModelEquiv (E := E) r s).symm
           (TensorRSSpace.toModel T)) :=
   rfl
 
-set_option backward.isDefEq.respectTransparency true in
-theorem covGradBundleEquiv_apply_eval (r s : ℕ) (x : M)
+theorem covGradBundleEquiv_apply_toModel (r s : ℕ) (x : M)
     (Φ : TangentSpace I x →L[ℝ] TensorRSSpace r s I x)
-    (D : Tensor0SSpace r I x) (v : Fin (s + 1) → TangentSpace I x) :
+    (D : Tensor0SSpace r I x) (v : Fin (s + 1) → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           covGradBundleEquiv (I := I) (M := M) r s x Φ) D) v =
       Tensor0SSpace.toModel
+        ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
+          Φ ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) D)
+        (Matrix.vecTail v) := by
+  rw [covGradBundleEquiv_apply (I := I) (M := M) r s x Φ]
+  rfl
+
+theorem covGradBundleEquiv_apply_eval (r s : ℕ) (x : M)
+    (Φ : TangentSpace I x →L[ℝ] TensorRSSpace r s I x)
+    (D : Tensor0SSpace r I x) (v : Fin (s + 1) → TangentSpace I x) :
+    Tensor0SSpace.eval
+        ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 1) I x from
+          covGradBundleEquiv (I := I) (M := M) r s x Φ) D) v =
+      Tensor0SSpace.eval
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ (v 0)) D)
         (Matrix.vecTail v) := by
   rw [covGradBundleEquiv_apply (I := I) (M := M) r s x Φ]
   rfl
 
-set_option backward.isDefEq.respectTransparency true in
 theorem covGradBundleEquiv_symm_apply_eval (r s : ℕ) (x : M)
     (T : TensorRSSpace r (s + 1) I x) (w : TangentSpace I x)
     (D : Tensor0SSpace r I x) (v : Fin s → TangentSpace I x) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
           ((covGradBundleEquiv (I := I) (M := M) r s x).symm T) w) D) v =
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + 1) I x from T) D)
         (Fin.cons w v) := by
   rw [covGradBundleEquiv_symm_apply (I := I) (M := M) r s x T]
@@ -127,8 +135,9 @@ private theorem tensor0S_trivFibre_apply (n : ℕ) (α : M) {b : M}
     (trivializationAt (Tensor0SModel n ℝ E)
         (fun x : M => Tensor0SSpace n I x) α ⟨b, X⟩).2 v =
       Tensor0SSpace.toModel X
-        (fun j => (trivializationAt E (TangentSpace I) α).symmL ℝ b (v j)) := by
-  have hX : X = (tensor0SSpace_continuousLinearEquiv (I := I) n b).symm
+        (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) b
+          ((trivializationAt E (TangentSpace I) α).symmL ℝ b (v j))) := by
+  have hX : X = (tensor0SSpaceContinuousLinearEquiv (I := I) n b).symm
       (Tensor0SSpace.toModel X) :=
     (Tensor0SSpace.ofModel_toModel X).symm
   have hkey := tensor0SBundle_linearMapAt_apply_of_mem (I := I) (M := M) α b hb
@@ -153,12 +162,12 @@ theorem covGradBundleEquiv_trivializationAt_eq (r s : ℕ) (α : M) {b : M}
         ((trivializationAt (E →L[ℝ] TensorRSModel r s ℝ E)
           (fun y : M => TangentSpace I y →L[ℝ] TensorRSSpace r s I y) α
           ⟨b, Φ⟩).2) := by
-  letI : TopologicalSpace (TotalSpace (Tensor0SModel r ℝ E)
-      (fun x : M => Tensor0SSpace r I x)) := tensor0SBundle_topology r
-  letI : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
-      (fun x : M => Tensor0SSpace s I x)) := tensor0SBundle_topology s
-  letI : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
-      (fun x : M => Tensor0SSpace (s + 1) I x)) := tensor0SBundle_topology (s + 1)
+  let : TopologicalSpace (TotalSpace (Tensor0SModel r ℝ E)
+      (fun x : M => Tensor0SSpace r I x)) := tensor0SBundleTopology r
+  let : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
+      (fun x : M => Tensor0SSpace s I x)) := tensor0SBundleTopology s
+  let : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
+      (fun x : M => Tensor0SSpace (s + 1) I x)) := tensor0SBundleTopology (s + 1)
   have hb_r : b ∈ (trivializationAt (Tensor0SModel r ℝ E)
       (fun x : M => Tensor0SSpace r I x) α).baseSet := hb
   have hb_s : b ∈ (trivializationAt (Tensor0SModel s ℝ E)
@@ -240,14 +249,16 @@ theorem covGradBundleEquiv_trivializationAt_eq (r s : ℕ) (α : M) {b : M}
             Φ ((trivializationAt E (TangentSpace I) α).symmL ℝ b (v 0))) Dr)
         (Matrix.vecTail
           (fun j : Fin (s + 1) =>
-            (trivializationAt E (TangentSpace I) α).symmL ℝ b (v j))) := by
+            tangentSpaceModelContinuousLinearEquiv (I := I) b
+              ((trivializationAt E (TangentSpace I) α).symmL ℝ b (v j)))) := by
     rw [hLHS_fibre]
     change ((trivializationAt (Tensor0SModel (s + 1) ℝ E)
         (fun x : M => Tensor0SSpace (s + 1) I x) α).continuousLinearMapAt ℝ b)
           ((show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace (s + 1) I b from
             covGradBundleEquiv (I := I) (M := M) r s b Φ) Dr) v = _
     rw [hclmAt_s1, tensor0S_trivFibre_apply (I := I) (M := M) (s + 1) α hb_s1]
-    rw [covGradBundleEquiv_apply_eval (I := I) (M := M) r s b Φ Dr]
+    rw [covGradBundleEquiv_apply_toModel (I := I) (M := M) r s b Φ Dr]
+    rw [(tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply]
   have hRHS :
       covGradModelEquiv (E := E) r s
         ((trivializationAt (E →L[ℝ] TensorRSModel r s ℝ E)
@@ -257,8 +268,9 @@ theorem covGradBundleEquiv_trivializationAt_eq (r s : ℕ) (α : M) {b : M}
         ((show Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b from
             Φ ((trivializationAt E (TangentSpace I) α).symmL ℝ b (v 0))) Dr)
         (fun j : Fin s =>
-          (trivializationAt E (TangentSpace I) α).symmL ℝ b
-            (Matrix.vecTail v j)) := by
+          tangentSpaceModelContinuousLinearEquiv (I := I) b
+            ((trivializationAt E (TangentSpace I) α).symmL ℝ b
+              (Matrix.vecTail v j))) := by
     rw [covGradModelEquiv_apply]
     rw [hG_fibre]
     change ((trivializationAt (TensorRSModel r s ℝ E)
@@ -333,9 +345,9 @@ theorem covGradBundleEquiv_symm_contMDiff_totalSpace (r s : ℕ) :
         (⟨p.1, (covGradBundleEquiv (I := I) (M := M) r s p.1).symm p.2⟩ :
           TotalSpace (E →L[ℝ] TensorRSModel r s ℝ E)
             (fun y : M => TangentSpace I y →L[ℝ] TensorRSSpace r s I y))) := by
-  letI : TopologicalSpace (TotalSpace (TensorRSModel r (s + 1) ℝ E)
+  let : TopologicalSpace (TotalSpace (TensorRSModel r (s + 1) ℝ E)
       (fun y : M => TensorRSSpace r (s + 1) I y)) :=
-    tensorRSBundle_topology r (s + 1)
+    tensorRSBundleTopology r (s + 1)
   intro p₀
   rw [contMDiffAt_totalSpace]
   refine ⟨?_, ?_⟩
@@ -362,15 +374,15 @@ theorem covGradBundleEquiv_symm_contMDiff_totalSpace (r s : ℕ) :
 
 noncomputable def covGradBundleSmoothEquiv (r s : ℕ) :=
   letI : NormedAddCommGroup (TensorRSModel r (s + 1) ℝ E) :=
-    tensorRSModel_normedAddCommGroup r (s + 1)
+    tensorRSModelNormedAddCommGroup r (s + 1)
   letI : NormedSpace ℝ (TensorRSModel r (s + 1) ℝ E) :=
-    tensorRSModel_normedSpace r (s + 1)
+    tensorRSModelNormedSpace r (s + 1)
   letI : TopologicalSpace (TotalSpace (TensorRSModel r (s + 1) ℝ E)
       (fun y : M => TensorRSSpace r (s + 1) I y)) :=
-    tensorRSBundle_topology r (s + 1)
+    tensorRSBundleTopology r (s + 1)
   letI : FiberBundle (TensorRSModel r (s + 1) ℝ E)
       (fun y : M => TensorRSSpace r (s + 1) I y) :=
-    tensorRSBundle_fiber r (s + 1)
+    tensorRSBundleFiber r (s + 1)
   letI : VectorBundle ℝ (TensorRSModel r (s + 1) ℝ E)
       (fun y : M => TensorRSSpace r (s + 1) I y) :=
     tensorRSBundle_vector r (s + 1)

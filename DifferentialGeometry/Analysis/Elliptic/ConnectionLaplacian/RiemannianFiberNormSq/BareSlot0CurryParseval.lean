@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.SlotSplitParsevalBridge
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.CovGradParallelNaturality
+
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -52,8 +54,8 @@ lemma coframeS_zero_eq_unitZeroSec
   intro u
   rw [coframeS_apply (I := I) (M := M) g x 0 e K₀ u]
   rw [Fin.prod_univ_zero]
-  rw [show ((unitZeroSec (I := I) (M := M) x) u : ℝ) =
-      Tensor0SSpace.toModel (unitZeroSec (I := I) (M := M) x) u from rfl]
+  change 1 = Tensor0SSpace.toModel (unitZeroSec (I := I) (M := M) x)
+    (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (u i))
   rw [unitZeroSec_apply (I := I) (M := M) x, Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.constOfIsEmpty_apply]
 
@@ -66,7 +68,7 @@ private lemma tensor01_comp
     (e : Fin n → TangentSpace I x) (J : Fin 1 → Fin n)
     (K₀ : Fin 0 → Fin n) :
     fiberNormSqComponent (I := I) (M := M) g x 0 1 W n e K₀ J =
-      Tensor0SSpace.toModel
+      Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from W)
           (unitZeroSec (I := I) (M := M) x))
         (fun i : Fin 1 ↦ e (J i)) := by
@@ -84,7 +86,7 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
 theorem sq_unit_eval_le
     (g : SmoothRiemannianMetric I M) (x : M)
     (W : TensorRSSpace 0 1 I x) (X : TangentSpace I x) :
-    (Tensor0SSpace.toModel
+    (Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from W)
           (unitZeroSec (I := I) (M := M) x))
         (fun _ : Fin 1 ↦ X)) ^ 2 ≤
@@ -94,6 +96,10 @@ theorem sq_unit_eval_le
   obtain ⟨n, e, _bse, _hn, _hbse, _horth, hpars, hexpand, hriemannianFiberNormSq⟩ :=
     tangent_orthonormalBasisS_witness (I := I) (M := M) g 1 x
   let vec : Fin 1 → TangentSpace I x := fun _ ↦ X
+  let vecE : Fin 1 → E := fun i ↦
+    tangentSpaceModelContinuousLinearEquiv (I := I) x (vec i)
+  let eE : Fin n → E := fun j ↦
+    tangentSpaceModelContinuousLinearEquiv (I := I) x (e j)
   let B : ContinuousMultilinearMap ℝ (fun _ : Fin 1 ↦ E) ℝ :=
     Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from W)
@@ -101,20 +107,21 @@ theorem sq_unit_eval_le
   let coef : (Fin 1 → Fin n) → ℝ := fun J ↦
     ∏ i : Fin 1, g.inner x (e (J i)) (vec i)
   let comp : (Fin 1 → Fin n) → ℝ := fun J ↦
-    B (fun i : Fin 1 ↦ e (J i))
-  have hvalue : B vec = ∑ J : Fin 1 → Fin n, coef J * comp J := by
-    have hrw : B vec = B (fun i : Fin 1 ↦
-        ∑ j : Fin n, g.inner x (e j) (vec i) • e j) := by
+    B (fun i : Fin 1 ↦ eE (J i))
+  have hvalue : B vecE = ∑ J : Fin 1 → Fin n, coef J * comp J := by
+    have hrw : B vecE = B (fun i : Fin 1 ↦
+        ∑ j : Fin n, g.inner x (e j) (vec i) • eE j) := by
       congr 1
       funext i
-      exact hexpand (vec i)
+      simpa only [vecE, eE, map_sum, map_smul] using
+        congrArg (tangentSpaceModelContinuousLinearEquiv (I := I) x) (hexpand (vec i))
     rw [hrw, ContinuousMultilinearMap.map_sum]
     refine Finset.sum_congr rfl (fun J _ ↦ ?_)
     dsimp only [coef, comp]
     simpa only [smul_eq_mul] using
       B.map_smul_univ
         (fun i : Fin 1 ↦ g.inner x (e (J i)) (vec i))
-        (fun i : Fin 1 ↦ (show E from e (J i)))
+        (fun i : Fin 1 ↦ eE (J i))
   have hcs : (∑ J : Fin 1 → Fin n, coef J * comp J) ^ 2 ≤
       (∑ J : Fin 1 → Fin n, coef J ^ 2) *
         ∑ J : Fin 1 → Fin n, comp J ^ 2 :=
@@ -144,7 +151,9 @@ theorem sq_unit_eval_le
     dsimp only [comp]
     rw [fiberNormSqSummand_eq_component_sq,
       tensor01_comp (I := I) (M := M) g x W e J (default : Fin 0 → Fin n)]
-  change (B vec) ^ 2 ≤ _
+    rw [Tensor0SSpace.toModel_apply_model_vector]
+    simp only [eE, ContinuousLinearEquiv.symm_apply_apply, Tensor0SSpace.eval_eq]
+  change (B vecE) ^ 2 ≤ _
   rw [hvalue]
   calc
     (∑ J : Fin 1 → Fin n, coef J * comp J) ^ 2
@@ -163,13 +172,10 @@ lemma slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec
     (T : TensorRSSpace 0 (s + 1) I x) (a : Fin n) :
     slot0Curry (I := I) (M := M) g x s e K₀ T a =
       tensor0SToTensorRS (I := I) (M := M) x
-        (tensor0S_curry (I := I) (M := M) s x
+        (tensor0SCurry (I := I) (M := M) s x
           ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
             (unitZeroSec (I := I) (M := M) x)) (e a)) := by
   unfold slot0Curry tensor0SToTensorRS
-  rw [show ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
-        (fun k => g.inner x (e (K₀ k))) : Tensor0SSpace 0 I x) =
-      coframeS (I := I) (M := M) g x 0 e K₀ from rfl]
   rw [coframeS_zero_eq_unitZeroSec (I := I) (M := M) g x e K₀]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
@@ -183,7 +189,7 @@ theorem riemannianFiberNormSq_succ_eq_sum_bareSlot0Curry
         ∑ a : Fin n,
           riemannianFiberNormSq (I := I) (M := M) g 0 s x
             (tensor0SToTensorRS (I := I) (M := M) x
-              (tensor0S_curry (I := I) (M := M) s x
+              (tensor0SCurry (I := I) (M := M) s x
                 ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
                   (unitZeroSec (I := I) (M := M) x)) (e a))) := by
   classical
@@ -205,7 +211,7 @@ theorem riemannianFiberNormSq_three_eq_sum_bareSlot0Curry
         ∑ a : Fin n,
           riemannianFiberNormSq (I := I) (M := M) g 0 2 x
             (tensor0SToTensorRS (I := I) (M := M) x
-              (tensor0S_curry (I := I) (M := M) 2 x
+              (tensor0SCurry (I := I) (M := M) 2 x
                 ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x)
                   (unitZeroSec (I := I) (M := M) x)) (e a))) :=
   riemannianFiberNormSq_succ_eq_sum_bareSlot0Curry (I := I) (M := M) g 2 x T

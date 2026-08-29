@@ -236,6 +236,67 @@ semantic-preserving source-style change; no statement, proof term or declaration
 retaining each opening whose removal prevented elaboration. This is a semantic-preserving lexical
 scope cleanup; no declaration, statement, or proof was changed.
 
+### 2026-08-29 — definition-name normalization
+
+**Files**:
+- `BallExtension/RoughInput.lean`
+- `BallExtension/SmoothApproximation.lean`
+- `BallExtensionEstimates.lean`
+- `BallScaling.lean`
+- `Crossover/ExponentialIntegrability.lean`
+- `Crossover/LocalIntegrability.lean`
+- `Crossover/LogGradient.lean`
+- `Crossover/ProductBound.lean`
+- `Crossover/PublicEstimate.lean`
+- `DeGiorgiIteration/CutoffAdmissibility.lean`
+- `DeGiorgiIteration/Energy.lean`
+- `DeGiorgiIteration/Linfty.lean`
+- `DeGiorgiIteration/PreIteration.lean`
+- `Harnack.lean`
+- `Holder/LocalBounds.lean`
+- `Holder/OscillationDecay.lean`
+- `Holder/PublicEstimate.lean`
+- `Holder/Representative.lean`
+- `Localization.lean`
+- `MoserIteration/Constants.lean`
+- `MoserIteration/CutoffPrep/Basics.lean`
+- `MoserIteration/CutoffPrep/ExactRegularization.lean`
+- `MoserIteration/CutoffPrep/PreEstimate.lean`
+- `MoserIteration/CutoffPrep/RegularizedEnergy.lean`
+- `MoserIteration/CutoffPrep/RegularizedWitnesses.lean`
+- `MoserIteration/Iteration.lean`
+- `MoserIteration/Linfty.lean`
+- `Oscillation/BMO.lean`
+- `Oscillation/Campanato.lean`
+- `Oscillation/LocalJohnNirenberg.lean`
+- `Poincare.lean`
+- `PositivePart.lean`
+- `ScaledBallEstimates.lean`
+- `SobolevChainRule.lean`
+- `SobolevPoincare.lean`
+- `SobolevSpace/Approximation.lean`
+- `SobolevSpace/Witnesses.lean`
+- `Supersolutions/Caccioppoli.lean`
+- `Supersolutions/ForwardIteration/Iteration.lean`
+- `Supersolutions/ForwardIteration/OneStep.lean`
+- `Supersolutions/InverseIteration.lean`
+- `Supersolutions/InverseOneStep.lean`
+- `Supersolutions/StageOne.lean`
+- `Supersolutions/TestFunctions.lean`
+- `Support/IterationConstants.lean`
+- `UnitBallApproximationCore/Approximation.lean`
+- `UnitBallApproximationCore/Dilation.lean`
+- `UnitBallApproximationCore/Rescaling.lean`
+- `WeakFormulation/WeightedEstimates.lean`
+- `WeakHarnack.lean`
+- `WholeSpaceSobolev.lean`
+
+**Change**: renamed definition, abbreviation, and structure-field identifiers from theorem-style
+snake case to Mathlib camel case, and updated every internal reference. Two witness constructors
+whose short source names also name Mathlib declarations were migrated only at their project-owned
+declarations and qualified references. This is an API-only, semantic-preserving migration; theorem
+statements and proof bodies are unchanged.
+
 <!-- Add entries below as modifications occur. -->
 
 ### 2026-08-20 — explicit small-ball average estimate
@@ -318,3 +379,102 @@ their proof terms. The affected mathematical conclusions are unchanged or genera
 **Change**: removed a redundant `MemLp` hypothesis from the uniqueness theorem for the
 inhomogeneous Dirichlet problem and updated its callers. Existence still requires the integrability
 hypothesis; uniqueness now states only the assumptions used by its mathematical argument.
+
+### 2026-08-23 — Mathlib 4.33 API migration
+
+**Files**:
+- `Crossover/ExponentialIntegrability.lean`
+- `Crossover/ProductBound.lean`
+- `ScaledBallEstimates.lean`
+- `WeakHarnack.lean`
+
+**Change**: migrated renamed Mathlib APIs and made restriction coercions, rescaling identities,
+measurability bridges, the John--Nirenberg level-set identification, the finite-dimensional volume
+equivalence, affine ball rescaling, and the Fatou lemma indexing explicit. The theorem statements
+and mathematical arguments are unchanged.
+
+### 2026-08-24 — Mathlib 4.33 Lipschitz constant elaboration
+
+**Files**:
+- `Crossover/LogGradient.lean`
+
+**Change**: made the nonnegative real type of a Lipschitz constant explicit after Mathlib's
+subtype elaboration changed. The theorem statement and mathematical argument are unchanged.
+
+### 2026-08-28 — Mathlib 4.33 migration and warning cleanup
+
+**Files**:
+- `BallExtension.lean`
+- `BallExtension/ApproximationControl.lean`
+- `BallExtension/RoughInput.lean`
+- `BallExtension/SmoothApproximation.lean`
+- `BallExtension/SmoothCore.lean`
+- `BallExtensionEstimates.lean`
+- `BallScaling.lean`
+- `Crossover/ExponentialIntegrability.lean`
+- `Crossover/LocalIntegrability.lean`
+- `Crossover/LogGradient.lean`
+- `Crossover/ProductBound.lean`
+- `DeGiorgiIteration/CutoffAdmissibility.lean`
+- `DeGiorgiIteration/Energy.lean`
+- `DeGiorgiIteration/Linfty.lean`
+- `DeGiorgiIteration/PreIteration.lean`
+- `FiniteCover.lean`
+- `Harnack.lean`
+- `Holder/LocalBounds.lean`
+- `Holder/OscillationDecay.lean`
+- `Holder/Representative.lean`
+- `Localization.lean`
+- `LpFunctionToolkit.lean`
+- `MoserIteration/CutoffPrep/Basics.lean`
+- `MoserIteration/CutoffPrep/ExactRegularization.lean`
+- `MoserIteration/CutoffPrep/PreEstimate.lean`
+- `MoserIteration/CutoffPrep/Profiles.lean`
+- `MoserIteration/CutoffPrep/RegularizedEnergy.lean`
+- `MoserIteration/CutoffPrep/WitnessConstruction.lean`
+- `MoserIteration/Iteration.lean`
+- `MoserIteration/Linfty.lean`
+- `Oscillation/BMO.lean`
+- `Oscillation/Campanato.lean`
+- `Oscillation/LocalJohnNirenberg.lean`
+- `Poincare.lean`
+- `PositivePart.lean`
+- `ScaledBallEstimates.lean`
+- `SobolevChainRule.lean`
+- `SobolevPoincare.lean`
+- `SobolevSpace/Approximation.lean`
+- `SobolevSpace/WeakDerivatives.lean`
+- `SobolevSpace/Witnesses.lean`
+- `StampacchiaTruncation.lean`
+- `Supersolutions/Caccioppoli.lean`
+- `Supersolutions/ForwardIteration/Basics.lean`
+- `Supersolutions/ForwardIteration/Energy.lean`
+- `Supersolutions/ForwardIteration/Iteration.lean`
+- `Supersolutions/ForwardIteration/OneStep.lean`
+- `Supersolutions/InverseEnergy.lean`
+- `Supersolutions/InverseIteration.lean`
+- `Supersolutions/InverseOneStep.lean`
+- `Supersolutions/RegularizationSupport.lean`
+- `Supersolutions/StageOne.lean`
+- `Supersolutions/TestFunctions.lean`
+- `Support/MeasureBounds.lean`
+- `UnitBallApproximationCore/Approximation.lean`
+- `UnitBallApproximationCore/Dilation.lean`
+- `UnitBallApproximationCore/Profiles.lean`
+- `UnitBallApproximationCore/Rescaling.lean`
+- `WeakFormulation/BilinearForm.lean`
+- `WeakFormulation/CoefficientOperator.lean`
+- `WeakFormulation/ExistenceTheory.lean`
+- `WeakFormulation/SmoothTests.lean`
+- `WeakFormulation/WeightedEstimates.lean`
+- `WeakHarnack.lean`
+- `WholeSpaceSobolev.lean`
+
+**Change**: completed the remaining Mathlib 4.33 API and elaboration migration and brought the
+vendored modules to the project's zero-warning standard. The semantic-preserving changes update
+renamed or deprecated APIs and import paths, remove redundant simp arguments and obsolete tactic
+steps, replace proof-valued local instances with ordinary local facts, repair declaration-linter
+findings by removing genuinely unused assumptions, and make dependent casts and coercions explicit
+where the newer elaborator no longer infers them. The affected conclusions and mathematical
+arguments are unchanged or generalized. The original `LICENSE`, `README.md`, and `CITATION.cff`
+remain unmodified.

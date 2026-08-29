@@ -72,7 +72,7 @@ lemma partialDeriv_const_mul (c : ℝ) (u : E → ℝ)
       c * partialDeriv (E := E) i u y := by
   unfold partialDeriv
   rw [fderiv_const_mul hu c]
-  simp [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  simp [smul_apply, smul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma partialDeriv_mul (u v : E → ℝ)
@@ -81,7 +81,7 @@ lemma partialDeriv_mul (u v : E → ℝ)
       partialDeriv (E := E) i u y * v y + u y * partialDeriv (E := E) i v y := by
   unfold partialDeriv
   rw [fderiv_fun_mul hu hv]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  simp only [add_apply, smul_apply, smul_eq_mul]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -91,7 +91,7 @@ lemma partialDeriv_sum {ι : Type*} (s : Finset ι) (A : ι → E → ℝ)
       ∑ k ∈ s, partialDeriv (E := E) i (A k) y := by
   unfold partialDeriv
   rw [fderiv_fun_sum hA]
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma partialDeriv_const (c : ℝ) :

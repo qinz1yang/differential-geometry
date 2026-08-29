@@ -53,10 +53,10 @@ theorem limit_accel_bounds
   let aInf : E × E → E := fun z ↦ (MetricKoszul.metricSpray gInf z).2
   have hg_cd : ∀ n, ContDiffOn Real ∞ (g n) U := by
     intro n
-    letI : TopologicalSpace (X.obj n).M := (X.obj n).topology
-    letI : ChartedSpace H (X.obj n).M := (X.obj n).charted
-    letI : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
-    letI : T2Space (TangentBundle I (X.obj n).M) :=
+    let : TopologicalSpace (X.obj n).M := (X.obj n).topology
+    let : ChartedSpace H (X.obj n).M := (X.obj n).charted
+    let : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
+    let : T2Space (TangentBundle I (X.obj n).M) :=
       (X.obj n).t2TangentBundle
     apply (normalCoordMetric_contDiffOn_expBall (I := I) (X.obj n) (c n)).mono
     exact (h.phaseRadius_exp (hc n)).trans (Metric.ball_subset_ball (by
@@ -86,12 +86,12 @@ theorem limit_accel_bounds
     have heq : (fun n ↦ (MetricKoszul.metricSpray (g n) z).2) =
         fun n ↦ a n z := by
       funext n
-      letI : TopologicalSpace (X.obj n).M := (X.obj n).topology
-      letI : ChartedSpace H (X.obj n).M := (X.obj n).charted
-      letI : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
-      letI : SigmaCompactSpace (X.obj n).M := (X.obj n).sigmaCompact
-      letI : T2Space (X.obj n).M := (X.obj n).t2
-      letI : T2Space (TangentBundle I (X.obj n).M) :=
+      let : TopologicalSpace (X.obj n).M := (X.obj n).topology
+      let : ChartedSpace H (X.obj n).M := (X.obj n).charted
+      let : IsManifold I ∞ (X.obj n).M := (X.obj n).smooth
+      let : SigmaCompactSpace (X.obj n).M := (X.obj n).sigmaCompact
+      let : T2Space (X.obj n).M := (X.obj n).t2
+      let : T2Space (TangentBundle I (X.obj n).M) :=
         (X.obj n).t2TangentBundle
       have hphase := normalPhase_eq_spray (I := I) (X.obj n) (c n) z
         (h.phaseRadius_exp (hc n) hz.1)
@@ -171,14 +171,16 @@ theorem exists_limit_phase
     intro z hz
     refine ⟨?_, hz.2⟩
     rw [mem_ball_zero_iff]
-    exact hz.1.trans_lt (by simpa only [P, NNReal.coe_mul,
-      NNReal.coe_natCast] using hqPos)
+    exact hz.1.trans_lt (by
+      change (4 : Real) * (q : Real) < h.phaseRadius R
+      exact hqPos)
   have haLip : LipschitzOnWith (normalPhaseK hb V) aInf
       (PhaseFlow.phaseBox (E := E) P V) := haLipFull.mono hbox
   have haNorm : ∀ z ∈ PhaseFlow.phaseBox (E := E) P V,
       ‖aInf z‖ ≤ (A : Real) := by
     intro z hz
-    simpa only [A, NNReal.coe_mk] using haNormFull z (hbox hz)
+    change ‖aInf z‖ ≤ 3 * hb.metricC 1 * (V : Real) ^ 2
+    exact haNormFull z (hbox hz)
   have hVP : V ≤ half * P := by
     rw [← NNReal.coe_le_coe]
     change (2 : Real) * (q : Real) ≤ (1 / 2 : Real) * (4 * (q : Real))
@@ -234,7 +236,8 @@ theorem exists_limit_phase
     intro z hz t ht
     have hpos := (hmem z hz t (hsmall ht)).1
     simpa only [U, mem_ball_zero_iff] using hpos.trans_lt (by
-      simpa only [P, NNReal.coe_mul, NNReal.coe_natCast] using hqPos)
+      change (4 : Real) * (q : Real) < h.phaseRadius R
+      exact hqPos)
   have hcont01 : ∀ z ∈ Metric.closedBall (0 : E × E) q,
       ContinuousOn (ΦInf z) (Icc 0 1) :=
     fun z hz ↦ (hcont z hz).mono hsmall
@@ -251,9 +254,10 @@ theorem exists_limit_phase
   have hzeroCurve : IsIntegralCurveOn (fun _ : Real ↦ (0 : E × E))
       (fun _ ↦ MetricKoszul.metricSpray gInf) (Icc 0 1) := by
     intro t _ht
-    simpa [MetricKoszul.metricSpray] using
-      (hasDerivWithinAt_const (x := t) (s := Icc (0 : Real) 1)
-        (c := (0 : E × E)))
+    refine (hasDerivWithinAt_const (x := t) (s := Icc (0 : Real) 1)
+      (c := (0 : E × E))).congr_deriv ?_
+    simp only [MetricKoszul.metricSpray, Prod.snd_zero, Prod.fst_zero, map_zero, neg_zero]
+    exact Prod.ext rfl rfl
   have hspraySmooth : ContDiffOn Real ∞ (MetricKoszul.metricSpray gInf)
       phaseU := by
     apply MetricKoszul.metricSpray_contDiffOn Metric.isOpen_ball hgInf_cd
@@ -401,9 +405,10 @@ theorem exists_limit_diag
     have hconstCurve : IsIntegralCurveOn (fun _ : Real ↦ (z, 0))
         (fun _ ↦ MetricKoszul.metricSpray gInf) (Icc 0 1) := by
       intro t _ht
-      simpa [MetricKoszul.metricSpray] using
-        (hasDerivWithinAt_const (x := t) (s := Icc (0 : Real) 1)
-          (c := (z, 0)))
+      refine (hasDerivWithinAt_const (x := t) (s := Icc (0 : Real) 1)
+        (c := (z, 0))).congr_deriv ?_
+      simp only [MetricKoszul.metricSpray, map_zero, neg_zero]
+      exact Prod.ext rfl rfl
     let phaseU : Set (E × E) :=
       Metric.ball (0 : E) (h.phaseRadius R) ×ˢ Set.univ
     have hspraySmooth : ContDiffOn Real ∞ (MetricKoszul.metricSpray gInf)

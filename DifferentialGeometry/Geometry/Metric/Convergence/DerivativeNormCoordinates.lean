@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.GoodFrame
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
 
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 

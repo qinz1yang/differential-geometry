@@ -51,7 +51,7 @@ theorem chartLeviCivitaGoodSet_target_diff_image_eq_empty
         ((extChartAt I α) '' (chartLeviCivitaGoodSet (I := I) α))
       = (∅ : Set E) := by
   rw [chartLeviCivitaGoodSet_image_eq_target (I := I) α]
-  exact Set.diff_self
+  exact Set.sdiff_self
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartLeviCivitaGoodSet_chartTargetEuclid_diff_image_eq_empty
@@ -61,7 +61,7 @@ theorem chartLeviCivitaGoodSet_chartTargetEuclid_diff_image_eq_empty
           ((extChartAt I α) '' (chartLeviCivitaGoodSet (I := I) α)))
       = (∅ : Set EuclN) := by
   rw [chartLeviCivitaGoodSet_imageEuclid_eq_chartTargetEuclid (I := I) (M := M) α]
-  exact Set.diff_self
+  exact Set.sdiff_self
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartLeviCivitaGoodSet_target_diff_image_measure_zero

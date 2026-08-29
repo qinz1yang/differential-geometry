@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Field
 import DifferentialGeometry.Geometry.Metric.ChartGram
 import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
 
+
 noncomputable section
 
 namespace DifferentialGeometry
@@ -89,7 +90,10 @@ lemma metricFamilySmoothOn_stationary
     have hmaps : Set.MapsTo (fun p : ℝ × M => p.2) (D.regular ×ˢ u) u :=
       fun p hp => hp.2
     have hcomp := hinner.comp hproj hmaps
-    simpa [stationaryMetricFamily] using hcomp
+    change ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+      ((fun x : M => g.inner x (frame i x) (frame j x)) ∘
+        fun p : ℝ × M => p.2) (D.regular ×ˢ u)
+    exact hcomp
 
 end Curvature
 end Geometry

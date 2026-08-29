@@ -45,6 +45,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iterated_covgrad_comp_l2_sq_h5
     (g : SmoothRiemannianMetric I M) (r s l m : ℕ)
@@ -97,6 +98,7 @@ private theorem slot_extend_sq_h5
   rw [MeasureTheory.integral_const_mul, hint] at hsq
   exact hsq
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iter_two_jet_two_le_four_h5
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -116,6 +118,7 @@ private theorem iter_two_jet_two_le_four_h5
   nlinarith [sq_nonneg ‖S‖,
     sq_nonneg ‖iteratedCovGrad (I := I) g r s 1 S‖]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iter_two_jet_three_le_five_h5
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -143,6 +146,7 @@ private theorem iter_two_jet_three_le_five_h5
     norm_nonneg (iteratedCovGrad (I := I) g r s 3 S),
     norm_nonneg (iteratedCovGrad (I := I) g r s 4 S)]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iter_three_jet_two_le_five_h5
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -165,8 +169,7 @@ private theorem iter_three_jet_two_le_five_h5
     norm_nonneg (iteratedCovGrad (I := I) g r s 3 S),
     norm_nonneg (iteratedCovGrad (I := I) g r s 4 S)]
 
-set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem covgrad_slot_extend_eq_reindex_h5
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) :
@@ -183,6 +186,20 @@ private theorem covgrad_slot_extend_eq_reindex_h5
       (I := I) (M := M) g r s S x,
     rsDomDomCongrSection_toSection]
 
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [SigmaCompactSpace M]
+    [BoundarylessManifold I M] in
+private theorem reindexCoeffGen_refl_h5 (g : SmoothRiemannianMetric I M)
+    (r s : ℕ) (R : SmoothCcTensor g r s) :
+    reindexCoeffGen (I := I) (M := M) g r s R (Equiv.refl _) = R := by
+  apply SmoothCcTensor.ext
+  apply ContMDiffSection.ext
+  intro x
+  apply ContinuousLinearMap.ext
+  intro D
+  rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply]
+  congr 1
+
 omit [BoundarylessManifold I M] in
 private theorem rs_dom_iterated_norm_sq_h5
     (g : SmoothRiemannianMetric I M) (r s i : ℕ)
@@ -198,7 +215,8 @@ private theorem rs_dom_iterated_norm_sq_h5
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
   have h := riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongr_both_eq
     (I := I) (M := M) g r s (Equiv.refl (Fin r)) σ S i x
-  simpa using h
+  rw [reindexCoeffGen_refl_h5 (I := I) (M := M)] at h
+  exact h
 
 omit [BoundarylessManifold I M] in
 private theorem slot_covgrad_jet_three_le_four_h5
@@ -235,7 +253,8 @@ private theorem slot_covgrad_jet_three_le_four_h5
           (covGrad (I := I) (M := M) g r s S)‖ ^ 2 ≤
         (Module.finrank ℝ E : ℝ) *
           ‖iteratedCovGrad (I := I) g r s 1 S‖ ^ 2 := by
-    simpa only [iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.zero_add] using h0
+    simpa only [iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.zero_add,
+      Nat.add_zero] using h0
   nlinarith [h0', sq_nonneg ‖S‖,
     (Nat.cast_nonneg (Module.finrank ℝ E) :
       0 ≤ (Module.finrank ℝ E : ℝ))]
@@ -257,7 +276,6 @@ private theorem covgrad_slot_jet_three_le_four_h5
     slot_covgrad_jet_three_le_four_h5
       (I := I) (M := M) g r s S
 
-set_option backward.isDefEq.respectTransparency false in
 private theorem edge_corner_inner_h1_of_jets_h5
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)
@@ -343,7 +361,10 @@ private theorem edge_corner_inner_h1_of_jets_h5
   have hTjetSum :
       ∑ j ∈ Finset.range 5,
         ‖iteratedCovGrad (I := I) g 0 2 j T‖ ≤ CJ * q := by
-    simpa only [q] using hjet4 T
+    have h := hjet4 T
+    have hfour : ((4 : ℕ) : ℝ) = (4 : ℝ) := by norm_num
+    rw [hfour] at h
+    simpa only [q] using h
   have hHTjet :
       (∑ j ∈ Finset.range 3,
         ‖iteratedCovGrad (I := I) g 0 4 j HT‖ ^ 2) ≤
@@ -468,7 +489,8 @@ private theorem trace_three_app_h1_h5
       calc
         _ = ‖(⟨Q⟩ : SmoothCcTensorH1 g 0 4)‖ ^ 2 := by
           simpa only [Finset.sum_range_succ, Finset.sum_range_zero,
-            zero_add, iteratedCovGrad_zero] using
+            zero_add, iteratedCovGrad_zero, iteratedCovGrad_succ,
+            Nat.zero_add, Nat.add_zero] using
               (smooth_cc_tensor_h1_norm_sq_eq_covariant_jet (I := I) (M := M) g 0 4 Q).symm
         _ ≤ _ := le_rfl
     simpa only [operatorFieldComposition_zero_eq_operatorFieldApply] using
@@ -509,9 +531,12 @@ private theorem three_corner_pair_h5_le
       ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) W‖ = z := by
     dsimp only [z]
     rw [norm_ccHs_eq_smoothHs, norm_ccHs_eq_smoothHs]
-    simpa only [W] using
-      (smoothCcToTensorHs_add_two_norm_eq_oneMinusConnLap
-        (I := I) (M := M) g 3 T).symm
+    have h := (smoothCcToTensorHs_add_two_norm_eq_oneMinusConnLap
+      (I := I) (M := M) g 3 T).symm
+    have hthree : ((3 : ℕ) : ℝ) = (3 : ℝ) := by norm_num
+    have hfive : (((3 + 2 : ℕ) : ℝ)) = (5 : ℝ) := by norm_num
+    rw [hthree, hfive] at h
+    simpa only [W] using h
   have h20 := one_minus_connection_laplacian_squared_pairing_h3_h1_bound
     (I := I) (M := M) g W P20
   have h11L := one_minus_connection_laplacian_squared_pairing_h3_h1_bound
@@ -527,7 +552,6 @@ private theorem three_corner_pair_h5_le
   dsimp only [V, W, z]
   nlinarith
 
-set_option backward.isDefEq.respectTransparency false in
 theorem mixed_derivative_action_h1_uniform_bound
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)
@@ -707,7 +731,6 @@ theorem mixed_derivative_action_h1_uniform_bound
         A20, A11L, A11R, D3T, HT, y, q] using hIn) hscale
     _ = G * y * q := by dsimp only [G]; ring
 
-set_option backward.isDefEq.respectTransparency false in
 theorem mixed_derivative_action_pairing_h5_uniform_bound
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)

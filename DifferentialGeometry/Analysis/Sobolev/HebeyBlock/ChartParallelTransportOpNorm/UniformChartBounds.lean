@@ -620,7 +620,7 @@ private lemma per_alpha_j_integral_bound
                     (Fin (Module.finrank ℝ E)) ℝ (basisIdx i))| ^ 2)
           ∂(volume :
             Measure (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))) := by
-    refine MeasureTheory.lintegral_finset_sum' _ ?_
+    refine MeasureTheory.lintegral_finsetSum' _ ?_
     intro basisIdx _
     exact hsIntegrand_aemeasurable
       (I := I) (M := M) g r s T α Idx Jdx j basisIdx

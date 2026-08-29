@@ -32,7 +32,7 @@ theorem wkpTime_complete
     (k : ℕ) {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ ⊤)
     (T : ℝ) :
     CompleteSpace (WkpTimeL2 (I := I) (M := M) k p hp_one T) := by
-  letI := wkpQuot_complete (I := I) (M := M) k hp_one hp_top
+  let := wkpQuot_complete (I := I) (M := M) k hp_one hp_top
   infer_instance
 
 theorem wkpTime_fixed
@@ -45,7 +45,7 @@ theorem wkpTime_fixed
     (hPhi : ContractingWith K Phi) :
     ∃ x, Function.IsFixedPt Phi x ∧
       ∀ y, Function.IsFixedPt Phi y → y = x := by
-  letI := wkpTime_complete (I := I) (M := M) k hp_one hp_top T
+  let := wkpTime_complete (I := I) (M := M) k hp_one hp_top T
   refine ⟨ContractingWith.fixedPoint Phi hPhi,
     ContractingWith.fixedPoint_isFixedPt hPhi, ?_⟩
   intro y hy

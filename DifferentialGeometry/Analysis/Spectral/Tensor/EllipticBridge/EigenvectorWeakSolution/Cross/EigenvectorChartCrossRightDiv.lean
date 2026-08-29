@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators Matrix ENNReal NNReal
@@ -451,7 +450,7 @@ theorem crossRightTestGradTerm_byParts
     refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall ?_)
     intro y
     simp only [Finset.sum_mul]
-  rw [hsum_eq, MeasureTheory.integral_finset_sum _ (fun l _ =>
+  rw [hsum_eq, MeasureTheory.integral_finsetSum _ (fun l _ =>
     (integrable_euclidPartial_crossRightTestGradTerm_mul_test
       (I := I) (M := M) g r s S α P₀ l hφ hφ_cs hφ_supp).restrict)]
 
@@ -482,29 +481,29 @@ private lemma tendsto_sum3
       Filter.Tendsto (fun n => (hf a b c n).toLp (f a b c n)) atTop
         (𝓝 ((hflim a b c).toLp (flim a b c)))) :
     Filter.Tendsto
-      (fun n => (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun a _ => memLp_finset_sum Finset.univ
-            (fun b _ => memLp_finset_sum Finset.univ
+      (fun n => (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun a _ => memLp_finsetSum Finset.univ
+            (fun b _ => memLp_finsetSum Finset.univ
               (fun c _ => hf a b c n)))).toLp
         (fun y => ∑ a, ∑ b, ∑ c, f a b c n y))
       atTop
-      (𝓝 ((memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun a _ => memLp_finset_sum Finset.univ
-            (fun b _ => memLp_finset_sum Finset.univ
+      (𝓝 ((memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun a _ => memLp_finsetSum Finset.univ
+            (fun b _ => memLp_finsetSum Finset.univ
               (fun c _ => hflim a b c)))).toLp
         (fun y => ∑ a, ∑ b, ∑ c, flim a b c y))) :=
   tendsto_sumToLp (I := I) (M := M) α
     (f := fun a => fun n y => ∑ b, ∑ c, f a b c n y)
     (flim := fun a => fun y => ∑ b, ∑ c, flim a b c y)
-    (fun a n => memLp_finset_sum Finset.univ
-      (fun b _ => memLp_finset_sum Finset.univ (fun c _ => hf a b c n)))
-    (fun a => memLp_finset_sum Finset.univ
-      (fun b _ => memLp_finset_sum Finset.univ (fun c _ => hflim a b c)))
+    (fun a n => memLp_finsetSum Finset.univ
+      (fun b _ => memLp_finsetSum Finset.univ (fun c _ => hf a b c n)))
+    (fun a => memLp_finsetSum Finset.univ
+      (fun b _ => memLp_finsetSum Finset.univ (fun c _ => hflim a b c)))
     (fun a => tendsto_sumToLp (I := I) (M := M) α
       (f := fun b => fun n y => ∑ c, f a b c n y)
       (flim := fun b => fun y => ∑ c, flim a b c y)
-      (fun b n => memLp_finset_sum Finset.univ (fun c _ => hf a b c n))
-      (fun b => memLp_finset_sum Finset.univ (fun c _ => hflim a b c))
+      (fun b n => memLp_finsetSum Finset.univ (fun c _ => hf a b c n))
+      (fun b => memLp_finsetSum Finset.univ (fun c _ => hflim a b c))
       (fun b => tendsto_sumToLp (I := I) (M := M) α
         (hf := fun c n => hf a b c n) (hflim := fun c => hflim a b c)
         (h_tendsto a b)))
@@ -572,20 +571,20 @@ theorem crossRightGradCoeffDivLimit_memLp
   classical
   unfold crossRightGradCoeffDivLimit
   refine MemLp.add ?_ ?_
-  · exact memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-      (fun l _ => memLp_finset_sum
+  · exact memLp_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+      (fun l _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-        (fun P _ => memLp_finset_sum
+        (fun P _ => memLp_finsetSum
           (Finset.univ : Finset (TensorCompIdx (E := E) r s))
           (fun Q _ => memLp_indicatorFactor_mul_cutoffLp (I := I) (M := M) α
             (euclidPartial_crossRightDivFactor_contDiffOn (I := I) (M := M)
               g r s α P₀ l P Q)
             (crossRightLimitComponent (I := I) (M := M)
               g r s i α P))))
-  · exact memLp_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-      (fun l _ => memLp_finset_sum
+  · exact memLp_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+      (fun l _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-        (fun P _ => memLp_finset_sum
+        (fun P _ => memLp_finsetSum
           (Finset.univ : Finset (TensorCompIdx (E := E) r s))
           (fun Q _ => memLp_indicatorFactor_mul_cutoffLp (I := I) (M := M) α
             (crossRightDivFactor_contDiffOn (I := I) (M := M) g r s α P₀ l P Q)
@@ -994,11 +993,11 @@ theorem crossRightGradCoeffDivSum_memLp
                 (eigenvectorSmoothApprox (I := I) (M := M)
                   g r s i n).toCcTensor α P.1 P.2 y) 2
       (chartL2Measure (I := I) (M := M) α) :=
-    memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
+    memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
       (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-      (fun l _ => memLp_finset_sum
+      (fun l _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-        (fun P _ => memLp_finset_sum
+        (fun P _ => memLp_finsetSum
           (Finset.univ : Finset (TensorCompIdx (E := E) r s))
           (fun Q _ => memLp_factor_mul_cutoffComponentAtom
             (I := I) (M := M) g r s i α P n
@@ -1016,11 +1015,11 @@ theorem crossRightGradCoeffDivSum_memLp
                   (eigenvectorSmoothApprox (I := I) (M := M)
                     g r s i n).toCcTensor α P.1 P.2) y) 2
       (chartL2Measure (I := I) (M := M) α) :=
-    memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
+    memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
       (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
-      (fun l _ => memLp_finset_sum
+      (fun l _ => memLp_finsetSum
         (Finset.univ : Finset (TensorCompIdx (E := E) r s))
-        (fun P _ => memLp_finset_sum
+        (fun P _ => memLp_finsetSum
           (Finset.univ : Finset (TensorCompIdx (E := E) r s))
           (fun Q _ => memLp_factor_mul_cutoffPartialAtom
             (I := I) (M := M) g r s i α P l n
@@ -1128,9 +1127,9 @@ theorem crossRightGradCoeffDivSum_tendsto
   have h_termN : ∀ n : ℕ,
       (crossRightGradCoeffDivSum_memLp (I := I) (M := M)
         g r s i α P₀ n).toLp _ =
-      (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun l _ => memLp_finset_sum Finset.univ
-            (fun P _ => memLp_finset_sum Finset.univ
+      (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun l _ => memLp_finsetSum Finset.univ
+            (fun P _ => memLp_finsetSum Finset.univ
               (fun Q _ => memLp_factor_mul_cutoffComponentAtom
                 (I := I) (M := M) g r s i α P n
                 (euclidPartial_crossRightDivFactor_contDiffOn (I := I) (M := M)
@@ -1138,9 +1137,9 @@ theorem crossRightGradCoeffDivSum_tendsto
                 (fun y hy =>
                   euclidPartial_crossRightDivFactor_eq_zero_off_chartPouKernel
                     (I := I) (M := M) g r s α P₀ l P Q hy))))).toLp _ +
-        (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun l _ => memLp_finset_sum Finset.univ
-            (fun P _ => memLp_finset_sum Finset.univ
+        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun l _ => memLp_finsetSum Finset.univ
+            (fun P _ => memLp_finsetSum Finset.univ
               (fun Q _ => memLp_factor_mul_cutoffPartialAtom
                 (I := I) (M := M) g r s i α P l n
                 (crossRightDivFactor_contDiffOn (I := I) (M := M)
@@ -1161,17 +1160,17 @@ theorem crossRightGradCoeffDivSum_tendsto
   have h_termLim :
       (crossRightGradCoeffDivLimit_memLp (I := I) (M := M)
         g r s i α P₀).toLp _ =
-      (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun l _ => memLp_finset_sum Finset.univ
-            (fun P _ => memLp_finset_sum Finset.univ
+      (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun l _ => memLp_finsetSum Finset.univ
+            (fun P _ => memLp_finsetSum Finset.univ
               (fun Q _ => memLp_indicatorFactor_mul_cutoffLp (I := I) (M := M) α
                 (euclidPartial_crossRightDivFactor_contDiffOn (I := I) (M := M)
                   g r s α P₀ l P Q)
                 (crossRightLimitComponent (I := I) (M := M)
                   g r s i α P))))).toLp _ +
-        (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun l _ => memLp_finset_sum Finset.univ
-            (fun P _ => memLp_finset_sum Finset.univ
+        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun l _ => memLp_finsetSum Finset.univ
+            (fun P _ => memLp_finsetSum Finset.univ
               (fun Q _ => memLp_indicatorFactor_mul_cutoffLp (I := I) (M := M) α
                 (crossRightDivFactor_contDiffOn (I := I) (M := M)
                   g r s α P₀ l P Q)
@@ -1182,9 +1181,9 @@ theorem crossRightGradCoeffDivSum_tendsto
     rw [crossRightGradCoeffDivLimit]
   rw [show (fun n => (crossRightGradCoeffDivSum_memLp
         (I := I) (M := M) g r s i α P₀ n).toLp _) =
-      (fun n => (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun l _ => memLp_finset_sum Finset.univ
-            (fun P _ => memLp_finset_sum Finset.univ
+      (fun n => (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun l _ => memLp_finsetSum Finset.univ
+            (fun P _ => memLp_finsetSum Finset.univ
               (fun Q _ => memLp_factor_mul_cutoffComponentAtom
                 (I := I) (M := M) g r s i α P n
                 (euclidPartial_crossRightDivFactor_contDiffOn (I := I) (M := M)
@@ -1192,9 +1191,9 @@ theorem crossRightGradCoeffDivSum_tendsto
                 (fun y hy =>
                   euclidPartial_crossRightDivFactor_eq_zero_off_chartPouKernel
                     (I := I) (M := M) g r s α P₀ l P Q hy))))).toLp _ +
-        (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
-          Finset.univ (fun l _ => memLp_finset_sum Finset.univ
-            (fun P _ => memLp_finset_sum Finset.univ
+        (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
+          Finset.univ (fun l _ => memLp_finsetSum Finset.univ
+            (fun P _ => memLp_finsetSum Finset.univ
               (fun Q _ => memLp_factor_mul_cutoffPartialAtom
                 (I := I) (M := M) g r s i α P l n
                 (crossRightDivFactor_contDiffOn (I := I) (M := M)

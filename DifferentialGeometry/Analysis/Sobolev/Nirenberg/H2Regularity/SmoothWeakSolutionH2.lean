@@ -137,7 +137,7 @@ private lemma memLp_two_continuous_compact_closure
     hΩ_compact.measure_lt_top
   have h_volume_lt_top : volume Ω < ⊤ :=
     lt_of_le_of_lt (measure_mono subset_closure) h_volume_closure_lt_top
-  haveI : IsFiniteMeasure (volume.restrict Ω) := by
+  have : IsFiniteMeasure (volume.restrict Ω) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
     exact h_volume_lt_top
@@ -314,7 +314,7 @@ theorem loc_smooth_solution
             (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single j 1)) x)
           (EuclideanSpace.single k 1))^2)) := by
     intro x
-    refine tendsto_finset_sum Finset.univ ?_
+    refine tendsto_finsetSum Finset.univ ?_
     intro j _
     have h := h_diffQuot_tendsto j x
     exact h.pow 2
@@ -390,7 +390,7 @@ theorem loc_smooth_solution
           DifferentialGeometry.Analysis.Sobolev.diffQuot k
             ((1 : ℝ) / (n + 1))
             (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single j 1)) x ^ 2) := by
-        refine continuous_finset_sum Finset.univ ?_
+        refine continuous_finsetSum Finset.univ ?_
         intro j _
         have h_partial_smooth_j : ContDiff ℝ (⊤ : ℕ∞)
             (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single j 1)) := by
@@ -475,7 +475,7 @@ theorem loc_smooth_solution
     have h_q_n_int : Integrable (q_n n) (volume.restrict Ω'') := by
       have hq_n_cont : Continuous (q_n n) := by
         rw [hq_n_def]
-        refine continuous_finset_sum Finset.univ ?_
+        refine continuous_finsetSum Finset.univ ?_
         intro j _
         have h_partial_smooth_j : ContDiff ℝ (⊤ : ℕ∞)
             (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single j 1)) := by
@@ -496,7 +496,7 @@ theorem loc_smooth_solution
       have h_volume_lt_top : volume Ω'' < ⊤ :=
         lt_of_le_of_lt (measure_mono subset_closure)
           hΩ''_compact_closure.measure_lt_top
-      haveI : IsFiniteMeasure (volume.restrict Ω'') := by
+      have : IsFiniteMeasure (volume.restrict Ω'') := by
         refine ⟨?_⟩
         rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
         exact h_volume_lt_top
@@ -523,7 +523,7 @@ theorem loc_smooth_solution
     intro n
     have hq_n_cont : Continuous (q_n n) := by
       rw [hq_n_def]
-      refine continuous_finset_sum Finset.univ ?_
+      refine continuous_finsetSum Finset.univ ?_
       intro j _
       have h_partial_smooth_j : ContDiff ℝ (⊤ : ℕ∞)
           (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single j 1)) := by
@@ -587,7 +587,7 @@ theorem loc_smooth_solution
     refine le_trans ?_ h_lint_q_bound
     have hq_cont : Continuous q := by
       rw [hq_def]
-      refine continuous_finset_sum Finset.univ ?_
+      refine continuous_finsetSum Finset.univ ?_
       intro j _
       exact (contDiff_secondPartialDeriv (d := d) hu j k).continuous.pow 2
     have hq_meas : Measurable (fun x : E => ENNReal.ofReal (q x)) :=
@@ -602,7 +602,7 @@ theorem loc_smooth_solution
     have h_volume_lt_top : volume Ω'' < ⊤ :=
       lt_of_le_of_lt (measure_mono subset_closure)
         hΩ''_compact_closure.measure_lt_top
-    haveI : IsFiniteMeasure (volume.restrict Ω'') := by
+    have : IsFiniteMeasure (volume.restrict Ω'') := by
       refine ⟨?_⟩
       rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
       exact h_volume_lt_top

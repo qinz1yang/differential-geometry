@@ -39,23 +39,23 @@ def chartPulledWeightedMeasure (g : SmoothRiemannianMetric I M) (α : M) :
 structure ChartBilinearH1ComplData
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) where
-  u_chart : EuclN → ℝ
-  f_chart : EuclN → ℝ
-  weak_partial : Fin (Module.finrank ℝ E) → EuclN → ℝ
+  uChart : EuclN → ℝ
+  fChart : EuclN → ℝ
+  weakPartial : Fin (Module.finrank ℝ E) → EuclN → ℝ
   u_chart_memLp_weighted :
-    MemLp u_chart 2
+    MemLp uChart 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))
   f_chart_memLp_weighted :
-    MemLp f_chart 2
+    MemLp fChart 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))
   weak_partial_locally_memLp :
     ∀ i, ∀ K : Set EuclN, IsCompact K → K ⊆ chartTargetEuclid (I := I) (M := M) α →
-      MemLp (weak_partial i) 2 ((volume : Measure EuclN).restrict K)
+      MemLp (weakPartial i) 2 ((volume : Measure EuclN).restrict K)
   weak_partial_isWeakPartial :
     ∀ i, DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-      (weak_partial i) u_chart
+      (weakPartial i) uChart
       (chartTargetEuclid (I := I) (M := M) α)
   variational_identity :
     ∀ ψ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
@@ -64,14 +64,14 @@ structure ChartBilinearH1ComplData
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             weightedInvGramOnEuclid (I := I) g α i j y *
-              weak_partial i y *
+              weakPartial i y *
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
         ∂(volume : Measure EuclN)) +
       (∫ y in chartTargetEuclid (I := I) (M := M) α,
-        densityOnEuclid (I := I) g α y * u_chart y * ψ y
+        densityOnEuclid (I := I) g α y * uChart y * ψ y
         ∂(volume : Measure EuclN)) =
       ∫ y in chartTargetEuclid (I := I) (M := M) α,
-        densityOnEuclid (I := I) g α y * f_chart y * ψ y
+        densityOnEuclid (I := I) g α y * fChart y * ψ y
         ∂(volume : Measure EuclN)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -86,14 +86,14 @@ theorem chart_bilinear_identity_h1Compl
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramOnEuclid (I := I) g α i j y *
-            D.weak_partial i y *
+            D.weakPartial i y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN)) +
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
-      densityOnEuclid (I := I) g α y * D.u_chart y * ψ y
+      densityOnEuclid (I := I) g α y * D.uChart y * ψ y
       ∂(volume : Measure EuclN)) =
     ∫ y in chartTargetEuclid (I := I) (M := M) α,
-      densityOnEuclid (I := I) g α y * D.f_chart y * ψ y
+      densityOnEuclid (I := I) g α y * D.fChart y * ψ y
       ∂(volume : Measure EuclN) :=
   D.variational_identity ψ hψ hψ_cs hψ_supp
 

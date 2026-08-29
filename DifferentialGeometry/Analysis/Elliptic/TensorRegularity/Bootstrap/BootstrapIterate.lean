@@ -50,12 +50,12 @@ private lemma chain_step_le
     S' ≤ ENNReal.ofReal (a * (1 + c)) * (BFp' + L) := by
   have hlow' : S ≤ ENNReal.ofReal c * (BFp' + L) :=
     hlow.trans (mul_le_mul_of_nonneg_left
-      (add_le_add hBF_mono le_rfl) (zero_le _))
+      (add_le_add hBF_mono le_rfl) (zero_le))
   have hsum : BFp' + S ≤ (1 + ENNReal.ofReal c) * (BFp' + L) := by
     rw [add_mul, one_mul]
     exact add_le_add (le_add_right le_rfl) hlow'
   refine hstep.trans ?_
-  refine (mul_le_mul_of_nonneg_left hsum (zero_le _)).trans (le_of_eq ?_)
+  refine (mul_le_mul_of_nonneg_left hsum (zero_le)).trans (le_of_eq ?_)
   rw [← mul_assoc,
     show (1 : ℝ≥0∞) + ENNReal.ofReal c = ENNReal.ofReal (1 + c) from by
       rw [ENNReal.ofReal_add (by norm_num : (0 : ℝ) ≤ 1) hc, ENNReal.ofReal_one],
@@ -127,7 +127,7 @@ theorem tensorComponent_aPriori_estimate
     exact (Finset.single_le_sum
       (f := fun P : CompIdx E r s => iteratedWeakSobolevNorm (d := dimE) (2 * k + 2) 2
         (tensorComponentEuclid (I := I) (M := M) g r s T α P) Ω'')
-      (fun P _ => zero_le _) (Finset.mem_univ P₀)).trans
+      (fun P _ => zero_le) (Finset.mem_univ P₀)).trans
         (hC T F hT_supp hF_supp hT_K hF_K hweak)
   induction k with
   | zero =>
@@ -242,7 +242,7 @@ theorem tensorComponent_aPriori_estimate_all
     refine (hCf P₀ T F hT_supp hF_supp hT_K hF_K hweak).trans ?_
     exact mul_le_mul_of_nonneg_right
       (ENNReal.ofReal_le_ofReal (Finset.le_sup' Cf (Finset.mem_univ P₀)))
-      (zero_le _)
+      (zero_le)
 
 end Headline
 

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ChartBridge.RiemannBasisIdentityOffCentre
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.DifferentiatedRicciEndomorphism
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -241,7 +242,8 @@ private lemma nablaCurvSec_chartBasisVec_alpha_leadingTerm
     fun m => MDifferentiableAt.smul_section (hRc_diff m) (hframe_diff m)
   have hsum_diff :
       MDiffAt (T% fun y : M => ∑ m : Fin (Module.finrank ℝ E), term m y) x :=
-    MDifferentiableAt.sum_section (s := Finset.univ) (t := term) hterm_diff
+    MDifferentiableAt.sum_section (s := Finset.univ) (t := term)
+      (fun m _ => hterm_diff m)
   have hS_ev_sum :
       (fun y : M => S y) =ᶠ[𝓝 x]
         (fun y : M => ∑ m : Fin (Module.finrank ℝ E), term m y) := by
@@ -269,7 +271,7 @@ private lemma nablaCurvSec_chartBasisVec_alpha_leadingTerm
   rw [hsum_apply]
   have hleib : ∀ m : Fin (Module.finrank ℝ E),
       (cov.toFun (term m) x) (chartBasisVecFiber (I := I) α p x) =
-        extDerivFun (I := I) (Rc m) x (chartBasisVecFiber (I := I) α p x) •
+        mvfderiv (I := I) (Rc m) x (chartBasisVecFiber (I := I) α p x) •
             chartBasisVecFiber (I := I) α m x +
           Rc m x •
             (cov.toFun (fun y : M => chartBasisVecFiber (I := I) α m y) x)
@@ -282,12 +284,12 @@ private lemma nablaCurvSec_chartBasisVec_alpha_leadingTerm
       funext y; rfl
     rw [hterm_eq]
     have happ := congr($(hleibniz) (chartBasisVecFiber (I := I) α p x))
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply] at happ
     rw [happ, add_comm]
   rw [Finset.sum_congr rfl (fun m _ => hleib m)]
   have hder : ∀ m : Fin (Module.finrank ℝ E),
-      extDerivFun (I := I) (Rc m) x (chartBasisVecFiber (I := I) α p x) =
+      mvfderiv (I := I) (Rc m) x (chartBasisVecFiber (I := I) α p x) =
         partialDeriv (E := E) p (chartRiemannTensor (I := I) g α s q r m) (extChartAt I α x) := by
     intro m
     have hR_cda : ContDiffAt ℝ ∞ (chartRiemannTensor (I := I) g α s q r m) (extChartAt I α x) := by
@@ -295,7 +297,7 @@ private lemma nablaCurvSec_chartBasisVec_alpha_leadingTerm
         chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hx
       exact (chartRiemannTensor_contDiffOn_interior (I := I) g α s q r m).contDiffAt
         (isOpen_interior.mem_nhds hxint)
-    exact extDerivFun_comp_extChartAt_apply_basis_alpha (I := I) α hx hR_cda p
+    exact mvfderiv_comp_extChartAt_apply_basis_alpha (I := I) α hx hR_cda p
   have hRc_x : ∀ m : Fin (Module.finrank ℝ E),
       Rc m x = chartRiemannTensor (I := I) g α s q r m (extChartAt I α x) := fun m => rfl
   have hinner : ∀ m : Fin (Module.finrank ℝ E),
@@ -424,8 +426,8 @@ private lemma nablaCurvSec_chartBasisVec_alpha_corr_firstAntisym
           chartChristoffel (I := I) g α p q m (extChartAt I α x) •
             riemannOp (cov := cov) x (chartBasisVecFiber (I := I) α m x) er es := by
     rw [map_sum]
-    simp only [ContinuousLinearMap.coe_sum', Finset.sum_apply, map_smul,
-      ContinuousLinearMap.smul_apply]
+    simp only [FunLike.coe_sum, Finset.sum_apply, map_smul,
+      smul_apply]
   rw [hexpand]
   have hper : ∀ m : Fin (Module.finrank ℝ E),
       chartChristoffel (I := I) g α p q m (extChartAt I α x) •
@@ -483,8 +485,8 @@ private lemma nablaCurvSec_chartBasisVec_alpha_corr_secondAntisym
           chartChristoffel (I := I) g α p r m (extChartAt I α x) •
             riemannOp (cov := cov) x eq' (chartBasisVecFiber (I := I) α m x) es := by
     rw [map_sum]
-    simp only [map_smul, ContinuousLinearMap.coe_sum', Finset.sum_apply,
-      ContinuousLinearMap.smul_apply]
+    simp only [map_smul, FunLike.coe_sum, Finset.sum_apply,
+      smul_apply]
   rw [hexpand]
   have hper : ∀ m : Fin (Module.finrank ℝ E),
       chartChristoffel (I := I) g α p r m (extChartAt I α x) •

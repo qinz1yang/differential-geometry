@@ -178,7 +178,7 @@ theorem principal_term_ge_lambda_norm_sq_nonsmooth
         funext x; ring
       rw [h_eq]
       exact hint
-    have h_sum_int := integrable_finset_sum (Finset.univ : Finset (Fin d))
+    have h_sum_int := integrable_finsetSum (Finset.univ : Finset (Fin d))
       (fun i _ => h_per_i i)
     have h_eq_outer : (fun x : EuclN => B.lam * ((η x)^2 *
         ∑ i : Fin d, (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x)^2)) =
@@ -346,8 +346,8 @@ theorem principal_term_ge_lambda_norm_sq_nonsmooth
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g i) x *
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g j) x)
         (volume : Measure EuclN) :=
-      fun i => integrable_finset_sum _ (fun j _ => h_rhs_per_ij_int i j)
-    exact integrable_finset_sum _ (fun i _ => h_inner i)
+      fun i => integrable_finsetSum _ (fun j _ => h_rhs_per_ij_int i j)
+    exact integrable_finsetSum _ (fun i _ => h_inner i)
   exact integral_mono h_lhs_int h_rhs_int h_pointwise
 
 

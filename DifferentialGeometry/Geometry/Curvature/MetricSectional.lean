@@ -124,10 +124,10 @@ private theorem metricModel_isAlg
       anti_last := ?_
       bianchi := ?_ }
   · intro X₁ X₂ Y Z W
-    simp only [metricModel, map_add, ContinuousLinearMap.add_apply]
+    simp only [metricModel, map_add, add_apply]
     ring
   · intro a X Y Z W
-    simp only [metricModel, map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp only [metricModel, map_smul, smul_apply, smul_eq_mul]
     ring
   · intro X Y Z W
     simp only [metricModel]
@@ -200,8 +200,8 @@ theorem riemannOp_of_rm
     g.symm x (riemannOp (LeviCivita (I := I) g) x X Y Z) W,
     riemannOp_eq_chartRiemannCLM_apply,
     ← metricRm04StdAt_eq_chartRiemannCLM, hRm]
-  simp only [map_smul, map_sub, ContinuousLinearMap.smul_apply,
-    ContinuousLinearMap.sub_apply, smul_eq_mul]
+  simp only [map_smul, map_sub, smul_apply,
+    sub_apply, smul_eq_mul]
 
 omit [SigmaCompactSpace M] in
 theorem metricRm_scale_one

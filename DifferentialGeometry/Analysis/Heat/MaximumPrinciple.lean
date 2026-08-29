@@ -238,7 +238,8 @@ private lemma sndFDeriv_apply_self_nonpos_of_isLocalMax
     have hφ_deriv : HasDerivAt φ v t := by
       have h1 : HasDerivAt (fun s : ℝ => s • v) v t := by
         simpa using (hasDerivAt_id t).smul_const v
-      simpa using (hasDerivAt_const t y₀).add h1
+      rw [hφ_def]
+      exact h1.const_add y₀
     have hf_hasFDeriv : HasFDerivAt ftilde (fderiv ℝ ftilde (φ t)) (φ t) := hf_diff.hasFDerivAt
     have hcomp := hf_hasFDeriv.comp_hasDerivAt t hφ_deriv
     have hg_hasDeriv : HasDerivAt g (fderiv ℝ ftilde (φ t) v) t := by
@@ -261,7 +262,8 @@ private lemma sndFDeriv_apply_self_nonpos_of_isLocalMax
     have hφ_hasDeriv : HasDerivAt φ v 0 := by
       have h1 : HasDerivAt (fun s : ℝ => s • v) v 0 := by
         simpa using (hasDerivAt_id (0 : ℝ)).smul_const v
-      simpa using (hasDerivAt_const (0 : ℝ) y₀).add h1
+      rw [hφ_def]
+      exact h1.const_add y₀
     have h_inner : HasDerivAt ((fderiv ℝ ftilde) ∘ φ)
         ((fderiv ℝ (fderiv ℝ ftilde) y₀) v) 0 :=
       HasFDerivAt.comp_hasDerivAt_of_eq (hl := hfderiv_hasFDeriv)
@@ -331,8 +333,8 @@ private lemma sndFDeriv_apply_self_eq_sum_of_basis
     calc B v v = (∑ i, (b.repr v) i • (B (b i))) v := by
             rw [step1]
       _ = ∑ i, (b.repr v) i • ((B (b i)) v) := by
-            rw [ContinuousLinearMap.sum_apply]
-            simp only [ContinuousLinearMap.smul_apply]
+            rw [sum_apply]
+            simp only [smul_apply]
       _ = ∑ i, (b.repr v) i • (∑ j, (b.repr v) j • (B (b i)) (b j)) := by
             refine Finset.sum_congr rfl ?_
             intros i _
@@ -354,7 +356,7 @@ private lemma sndFDeriv_apply_self_eq_sum_of_basis
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma chartHessianTensor_quad_form_nonpos_at_max
-    [I.Boundaryless] [T2Space M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {x_max : M} (h_max : ∀ x : M, f x ≤ f x_max)
@@ -461,7 +463,7 @@ theorem laplacian_nonpos_at_max
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {x_max : M} (h_max : ∀ x : M, f x ≤ f x_max) :
-    Δ_g (I := I) g ⟨_, hf⟩ x_max ≤ 0 := by
+    ΔG (I := I) g ⟨_, hf⟩ x_max ≤ 0 := by
   let _ := (inferInstance : (SigmaCompactSpace M))
   classical
   have h_trace_eq :=
@@ -525,14 +527,13 @@ theorem weak_maximum_principle_of_closed
     (h_t_diff : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M,
       HasDerivAt (fun s : ℝ => u s x) (Du t x) t)
     (h_ineq : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M,
-      Du t x ≤ Δ_g (I := I) g ⟨u t, hu_smooth t⟩ x)
+      Du t x ≤ ΔG (I := I) g ⟨u t, hu_smooth t⟩ x)
     (h_init : ∀ x : M, u 0 x ≤ 0) :
     ∀ t ∈ Set.Icc (0 : ℝ) T, ∀ x : M, u t x ≤ 0 := by
   classical
   have key : ∀ {δ : ℝ}, 0 < δ → ∀ {η : ℝ}, 0 < η → η < T →
       ∀ t ∈ Set.Icc (0 : ℝ) (T - η), ∀ x : M, u t x ≤ δ * (t + 1) := by
-    intros δ hδ η hη hηT
-    intros t ht x
+    intro δ hδ η hη hηT t ht x
     set K : Set (ℝ × M) := Set.Icc (0 : ℝ) (T - η) ×ˢ (Set.univ : Set M) with hK_def
     have hK_compact : IsCompact K :=
       (isCompact_Icc (a := (0 : ℝ)) (b := T - η)).prod (CompactSpace.isCompact_univ)
@@ -581,7 +582,7 @@ theorem weak_maximum_principle_of_closed
       rw [hv1, hv2] at h
       linarith
     have h_laplacian_nonpos :
-        Δ_g (I := I) g ⟨u p₀.1, hu_smooth p₀.1⟩ p₀.2 ≤ 0 :=
+        ΔG (I := I) g ⟨u p₀.1, hu_smooth p₀.1⟩ p₀.2 ≤ 0 :=
       laplacian_nonpos_at_max (I := I) g (hu_smooth p₀.1) h_spatial_max
     have h_y_in_cone : -(p₀.1 / 2) ∈ posTangentConeAt
         (Set.Icc (0 : ℝ) (T - η)) p₀.1 := by

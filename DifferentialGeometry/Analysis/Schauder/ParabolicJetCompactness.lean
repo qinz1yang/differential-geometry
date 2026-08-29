@@ -49,10 +49,10 @@ theorem exists_parabolic_jet_subseq_of_locally_holderOnWith
         ParabolicJetRealizesOn Q u dtimeU du d2u ∧
         IsParabolicC2On Q (fun t x => u (parabolicPoint t x)) := by
   classical
-  letI : LocallyCompactSpace
+  let : LocallyCompactSpace
       (Metric.Snowflaking Real (1 / 2) (by norm_num) (by norm_num)) :=
     Metric.Snowflaking.homeomorph.locallyCompactSpace_iff.mpr inferInstance
-  letI : LocallyCompactSpace Q := hQ.locallyCompactSpace
+  let : LocallyCompactSpace Q := hQ.locallyCompactSpace
   let jetApprox : Nat → Q →
       (F × F) × ((E →L[Real] F) × (E →L[Real] E →L[Real] F)) :=
     fun n p => ((uApprox n p, dtimeUApprox n p),
@@ -95,28 +95,76 @@ theorem exists_parabolic_jet_subseq_of_locally_holderOnWith
     exact ⟨K, hKmem, hgunif K hK V hV⟩
   have hleft : TendstoLocallyUniformly
       (fun n p => (jetApprox (phi n) p).1) (fun p => (g p).1) atTop := by
-    simpa only [Function.comp_apply] using
-      uniformContinuous_fst.comp_tendstoLocallyUniformly hgloc
+    have hraw := uniformContinuous_fst.comp_tendstoLocallyUniformly hgloc
+    have hseq : (fun n => (fun p => p.1) ∘ jetApprox (phi n)) =
+        fun n p => (jetApprox (phi n) p).1 := by
+      funext n p
+      rfl
+    have hlim : (fun p => p.1) ∘ g = fun p => (g p).1 := by
+      funext p
+      rfl
+    rw [hseq, hlim] at hraw
+    exact hraw
   have hright : TendstoLocallyUniformly
       (fun n p => (jetApprox (phi n) p).2) (fun p => (g p).2) atTop := by
-    simpa only [Function.comp_apply] using
-      uniformContinuous_snd.comp_tendstoLocallyUniformly hgloc
+    have hraw := uniformContinuous_snd.comp_tendstoLocallyUniformly hgloc
+    have hseq : (fun n => (fun p => p.2) ∘ jetApprox (phi n)) =
+        fun n p => (jetApprox (phi n) p).2 := by
+      funext n p
+      rfl
+    have hlim : (fun p => p.2) ∘ g = fun p => (g p).2 := by
+      funext p
+      rfl
+    rw [hseq, hlim] at hraw
+    exact hraw
   have huSub : TendstoLocallyUniformly
       (fun n p => (jetApprox (phi n) p).1.1) (fun p => (g p).1.1) atTop := by
-    simpa only [Function.comp_apply] using
-      uniformContinuous_fst.comp_tendstoLocallyUniformly hleft
+    have hraw := uniformContinuous_fst.comp_tendstoLocallyUniformly hleft
+    have hseq : (fun n => (fun p => p.1) ∘ fun p => (jetApprox (phi n) p).1) =
+        fun n p => (jetApprox (phi n) p).1.1 := by
+      funext n p
+      rfl
+    have hlim : (fun p => p.1) ∘ (fun p => (g p).1) = fun p => (g p).1.1 := by
+      funext p
+      rfl
+    rw [hseq, hlim] at hraw
+    exact hraw
   have hdtimeUSub : TendstoLocallyUniformly
       (fun n p => (jetApprox (phi n) p).1.2) (fun p => (g p).1.2) atTop := by
-    simpa only [Function.comp_apply] using
-      uniformContinuous_snd.comp_tendstoLocallyUniformly hleft
+    have hraw := uniformContinuous_snd.comp_tendstoLocallyUniformly hleft
+    have hseq : (fun n => (fun p => p.2) ∘ fun p => (jetApprox (phi n) p).1) =
+        fun n p => (jetApprox (phi n) p).1.2 := by
+      funext n p
+      rfl
+    have hlim : (fun p => p.2) ∘ (fun p => (g p).1) = fun p => (g p).1.2 := by
+      funext p
+      rfl
+    rw [hseq, hlim] at hraw
+    exact hraw
   have hduSub : TendstoLocallyUniformly
       (fun n p => (jetApprox (phi n) p).2.1) (fun p => (g p).2.1) atTop := by
-    simpa only [Function.comp_apply] using
-      uniformContinuous_fst.comp_tendstoLocallyUniformly hright
+    have hraw := uniformContinuous_fst.comp_tendstoLocallyUniformly hright
+    have hseq : (fun n => (fun p => p.1) ∘ fun p => (jetApprox (phi n) p).2) =
+        fun n p => (jetApprox (phi n) p).2.1 := by
+      funext n p
+      rfl
+    have hlim : (fun p => p.1) ∘ (fun p => (g p).2) = fun p => (g p).2.1 := by
+      funext p
+      rfl
+    rw [hseq, hlim] at hraw
+    exact hraw
   have hd2uSub : TendstoLocallyUniformly
       (fun n p => (jetApprox (phi n) p).2.2) (fun p => (g p).2.2) atTop := by
-    simpa only [Function.comp_apply] using
-      uniformContinuous_snd.comp_tendstoLocallyUniformly hright
+    have hraw := uniformContinuous_snd.comp_tendstoLocallyUniformly hright
+    have hseq : (fun n => (fun p => p.2) ∘ fun p => (jetApprox (phi n) p).2) =
+        fun n p => (jetApprox (phi n) p).2.2 := by
+      funext n p
+      rfl
+    have hlim : (fun p => p.2) ∘ (fun p => (g p).2) = fun p => (g p).2.2 := by
+      funext p
+      rfl
+    rw [hseq, hlim] at hraw
+    exact hraw
   let u : ParabolicPoint E → F := fun p =>
     if hp : p ∈ Q then (g ⟨p, hp⟩).1.1 else 0
   let dtimeU : ParabolicPoint E → F := fun p =>
@@ -158,12 +206,12 @@ theorem exists_parabolic_jet_subseq_of_locally_holderOnWith
     rw [heq]
     simpa only [jetApprox] using hd2uSub
   have hd2uContinuous : ContinuousOn d2u Q := by
-    rw [continuousOn_iff_continuous_restrict]
+    rw [continuousOn_iff_continuous_domRestrict]
     have hproj : Continuous (fun p : Q => (g p).2.2) :=
       continuous_snd.comp (continuous_snd.comp hg)
-    have heq : Q.restrict d2u = fun p => (g p).2.2 := by
+    have heq : Q.domRestrict d2u = fun p => (g p).2.2 := by
       funext p
-      simp only [restrict_apply, d2u, dif_pos p.2]
+      simp only [Set.domRestrict_apply, d2u, dif_pos p.2]
     rw [heq]
     exact hproj
   have hlimit : ParabolicJetRealizesOn Q u dtimeU du d2u :=
@@ -273,7 +321,9 @@ theorem exists_parabolic_jet_subseq_of_lower_jets_gauge
     intro K _
     refine ⟨C, fun n => ?_⟩
     have hholder := parabolicValue_holderWith_restrict_of_lower_jets (hgauge n)
-    simpa only [parabolicPoint_time_space] using hholder.holderOnWith K
+    intro x hx y hy
+    simpa only [Set.domRestrict_apply, parabolicPoint_time_space] using
+      hholder.holderOnWith K x hx y hy
   have hdtimeUHolder : ∀ K : Set Q, IsCompact K →
       ∃ C' : NNReal, ∀ n,
         HolderOnWith C' r (fun p : Q => dtimeUApprox n p) K := by

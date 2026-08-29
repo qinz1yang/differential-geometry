@@ -56,13 +56,13 @@ private theorem covD_congr
     covDerivConnectionDifference (I := I) g₂ g₁ W X Y x =
       covDerivConnectionDifference (I := I) g₂ g₁ W' X' Y' x := by
   classical
-  haveI : IsManifold I 2 M :=
+  have : IsManifold I 2 M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : (2 : WithTop ℕ∞) ≤ ∞)
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
-  haveI : IsManifold I (1 + 1) M :=
+  have : IsManifold I (1 + 1) M :=
     IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
   have hpair : ∀ Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -308,8 +308,9 @@ theorem uniformPalatini1_le
           Real.sqrt (gBase.inner x w w) := by
     intro x v w
     have h := connectionDifference_gJet_le (I := I) hEq hjet1 (Set.mem_univ x) w v
-    simpa [C₀, DifferentialGeometry.PDE.DeTurck.connectionDifference,
-      mul_assoc, mul_left_comm, mul_comm] using h
+    unfold DifferentialGeometry.PDE.DeTurck.connectionDifference
+      DifferentialGeometry.Geometry.Connection.LeviCivita
+    simpa [C₀, mul_assoc, mul_left_comm, mul_comm] using h
   let C₁ : ℝ := 3 / 2 * Λ ^ 4 * (Λ + Λ * Λ ^ 2)
   have hC₁0 : 0 ≤ C₁ := by
     dsimp [C₁]
@@ -414,10 +415,44 @@ theorem uniformPalatini1_le
       diffSec, mul_assoc, mul_left_comm, mul_comm] using h
   have hCdyz : L (Cdyzs x) ≤ C₁ * L D * L Y * L Z := by
     have h := hC₁ x D Y Z
-    simpa [Cdyzs, Ds, Ys, Zs, L] using h
+    change Real.sqrt (gBase.inner x
+        (covDerivConnectionDifference (I := I) gBase g₀
+          (extSec (I := I) x D) (extSec (I := I) x Y) (extSec (I := I) x Z) x)
+        (covDerivConnectionDifference (I := I) gBase g₀
+          (extSec (I := I) x D) (extSec (I := I) x Y) (extSec (I := I) x Z) x)) ≤
+      C₁ * Real.sqrt (gBase.inner x D D) * Real.sqrt (gBase.inner x Y Y) *
+        Real.sqrt (gBase.inner x Z Z)
+    have hD :
+        (extSec (I := I) x D : (p : M) → TangentSpace I p) =
+          smoothExtensionTangent (I := I) x D := rfl
+    have hY :
+        (extSec (I := I) x Y : (p : M) → TangentSpace I p) =
+          smoothExtensionTangent (I := I) x Y := rfl
+    have hZ :
+        (extSec (I := I) x Z : (p : M) → TangentSpace I p) =
+          smoothExtensionTangent (I := I) x Z := rfl
+    rw [hD, hY, hZ]
+    exact h
   have hCdxz : L (Cdxzs x) ≤ C₁ * L D * L X * L Z := by
     have h := hC₁ x D X Z
-    simpa [Cdxzs, Ds, Xs, Zs, L] using h
+    change Real.sqrt (gBase.inner x
+        (covDerivConnectionDifference (I := I) gBase g₀
+          (extSec (I := I) x D) (extSec (I := I) x X) (extSec (I := I) x Z) x)
+        (covDerivConnectionDifference (I := I) gBase g₀
+          (extSec (I := I) x D) (extSec (I := I) x X) (extSec (I := I) x Z) x)) ≤
+      C₁ * Real.sqrt (gBase.inner x D D) * Real.sqrt (gBase.inner x X X) *
+        Real.sqrt (gBase.inner x Z Z)
+    have hD :
+        (extSec (I := I) x D : (p : M) → TangentSpace I p) =
+          smoothExtensionTangent (I := I) x D := rfl
+    have hX :
+        (extSec (I := I) x X : (p : M) → TangentSpace I p) =
+          smoothExtensionTangent (I := I) x X := rfl
+    have hZ :
+        (extSec (I := I) x Z : (p : M) → TangentSpace I p) =
+          smoothExtensionTangent (I := I) x Z := rfl
+    rw [hD, hX, hZ]
+    exact h
   have hR : L R ≤ C₀ * C₁ * prod4 := by
     have heq :
         covDerivConnectionDifference (I := I) gBase g₀ Ds Ys AXZs x =

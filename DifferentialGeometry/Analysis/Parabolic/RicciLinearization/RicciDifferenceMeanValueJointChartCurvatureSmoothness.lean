@@ -13,7 +13,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Set Function MeasureTheory intervalIntegral Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Topology Manifold BigOperators ContDiff Matrix

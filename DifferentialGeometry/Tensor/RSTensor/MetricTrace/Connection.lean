@@ -39,9 +39,9 @@ private def connTraceEvalLin
       Real where
   toFun β :=
     metricTrace0S2InBasis (I := I)
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x)
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x)
       (fun k l : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E =>
-        DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component (I := I) g x
+        DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent (I := I) g x
           k l
           (extChartAt I x x))
       (A β) Fin.elim0
@@ -69,31 +69,31 @@ def connTraceOneFormAt
     {x : M}
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=
-  dualToCotangent_gen (I := I)
+  dualToCotangentGen (I := I)
     ((connTraceEvalLin (I := I) g A).comp
-      ((dualToCotangentLinear (I := I)).comp (tangentFlatLinear_gen (I := I) g x)))
+      ((dualToCotangentLinear (I := I)).comp (tangentFlatLinearGen (I := I) g x)))
 
 theorem connTraceOneFormAt_apply
     (g : SmoothRiemannianMetric I M)
     {x : M}
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x)
     (V : TangentSpace I x) :
-    cotangentToDual_gen (I := I) (connTraceOneFormAt (I := I) g A) V =
+    cotangentToDualGen (I := I) (connTraceOneFormAt (I := I) g A) V =
       metricTraceFirstTwo0STensor (I := I) g
-        (A (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) V)))
+        (A (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) V)))
         Fin.elim0 := by
   unfold connTraceOneFormAt connTraceEvalLin
   rw [cotangentToDual_dualToCotangent_gen]
   rw [metricTraceFirstTwo0STensor_apply]
   exact metricTrace0S2InBasis_eq_metricTrace (I := I) g
-    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x)
+    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x)
     (fun k l : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component (I := I) g x k
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent (I := I) g x k
         l
         (extChartAt I x x))
     (inverseMetricFlatModelInChart_metricInverseInBasis_center
       (I := I) g x)
-    (A (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) V))) Fin.elim0
+    (A (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) V))) Fin.elim0
 
 theorem connTraceOneFormAt_coord
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
@@ -102,12 +102,12 @@ theorem connTraceOneFormAt_coord
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (q : Idx) :
-    cotangentToDual_gen (I := I) (connTraceOneFormAt (I := I) g A) (basis q) =
+    cotangentToDualGen (I := I) (connTraceOneFormAt (I := I) g A) (basis q) =
       ∑ i : Idx, ∑ j : Idx,
         gInv i j *
-          (A (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) (basis q))))
+          (A (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (basis q))))
             (metricTraceInput (I := I) (basis i) (basis j) Fin.elim0) := by
   rw [connTraceOneFormAt_apply]
   rw [metricTraceFirstTwo0STensor_apply]
@@ -119,14 +119,14 @@ def connTraceAt
     {x : M}
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x) :
     TangentSpace I x :=
-  cotangentSharp_gen (I := I) g x (connTraceOneFormAt (I := I) g A)
+  cotangentSharpGen (I := I) g x (connTraceOneFormAt (I := I) g A)
 
 @[simp] theorem connTraceAt_eq
     (g : SmoothRiemannianMetric I M)
     {x : M}
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x) :
     connTraceAt (I := I) g A =
-      cotangentSharp_gen (I := I) g x (connTraceOneFormAt (I := I) g A) := by
+      cotangentSharpGen (I := I) g x (connTraceOneFormAt (I := I) g A) := by
   rfl
 
 theorem connTraceAt_coord
@@ -136,15 +136,15 @@ theorem connTraceAt_coord
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv) :
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv) :
     connTraceAt (I := I) g A =
       ∑ p : Idx,
         (∑ q : Idx,
           gInv p q *
             (∑ i : Idx, ∑ j : Idx,
               gInv i j *
-                (A (dualToCotangent_gen (I := I)
-                    ((tangentFlatLinear_gen (I := I) g x) (basis q))))
+                (A (dualToCotangentGen (I := I)
+                    ((tangentFlatLinearGen (I := I) g x) (basis q))))
                   (metricTraceInput (I := I) (basis i) (basis j) Fin.elim0))) •
           basis p := by
   rw [connTraceAt_eq]
@@ -176,17 +176,17 @@ private theorem traceFlat_apply_sum
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (q i j : Idx) :
-    (A (dualToCotangent_gen (I := I)
-        ((tangentFlatLinear_gen (I := I) g x) (basis q))))
+    (A (dualToCotangentGen (I := I)
+        ((tangentFlatLinearGen (I := I) g x) (basis q))))
       (metricTraceInput (I := I) (basis i) (basis j) Fin.elim0) =
       ∑ r : Idx,
         g.inner x (basis q) (basis r) *
-          componentRS_gen (I := I) basis A
+          componentRSGen (I := I) basis A
             (fun _ : Fin 1 => r)
             (fun a : Fin 2 => if a = 0 then i else j) := by
   classical
   have h := componentRS_apply_input_eq_sum (I := I) basis A
-    (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) (basis q)))
+    (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (basis q)))
     (fun a : Fin 2 => if a = 0 then i else j)
   have hslots :
       metricTraceInput (I := I) (basis i) (basis j) Fin.elim0 =
@@ -194,25 +194,26 @@ private theorem traceFlat_apply_sum
     funext a
     fin_cases a <;> rfl
   calc
-    (A (dualToCotangent_gen (I := I)
-        ((tangentFlatLinear_gen (I := I) g x) (basis q))))
+    (A (dualToCotangentGen (I := I)
+        ((tangentFlatLinearGen (I := I) g x) (basis q))))
       (metricTraceInput (I := I) (basis i) (basis j) Fin.elim0) =
         ∑ r : Fin 1 → Idx,
-          (dualToCotangent_gen (I := I)
-            ((tangentFlatLinear_gen (I := I) g x) (basis q)))
+          (dualToCotangentGen (I := I)
+            ((tangentFlatLinearGen (I := I) g x) (basis q)))
               (fun a : Fin 1 => basis (r a)) *
-            componentRS_gen (I := I) basis A r
+            componentRSGen (I := I) basis A r
               (fun a : Fin 2 => if a = 0 then i else j) := by
           rw [hslots]
-          simpa [component0S_apply] using h
+          simpa only [component0S_apply, fin2_apply_ite] using h
     _ =
       ∑ r : Idx,
         g.inner x (basis q) (basis r) *
-          componentRS_gen (I := I) basis A
+          componentRSGen (I := I) basis A
             (fun _ : Fin 1 => r)
             (fun a : Fin 2 => if a = 0 then i else j) := by
         rw [sumFinOne]
-        simp [dualToCotangent_apply_gen, tangentFlatLinear_apply_gen]
+        refine Finset.sum_congr rfl (fun r _ => ?_)
+        congr 1
 
 private theorem sumFourComm
     {ι κ η μ α : Type*} [Fintype ι] [Fintype κ] [Fintype η] [Fintype μ]
@@ -334,12 +335,12 @@ theorem connTraceCoeff
     (A : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 2 x)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (p : Idx) :
     basis.repr (connTraceAt (I := I) g A) p =
       ∑ i : Idx, ∑ j : Idx,
         gInv i j *
-          componentRS_gen (I := I) basis A
+          componentRSGen (I := I) basis A
             (fun _ : Fin 1 => p)
             (fun q : Fin 2 => if q = 0 then i else j) := by
   classical
@@ -348,8 +349,8 @@ theorem connTraceCoeff
       gInv p0 q *
         (∑ i : Idx, ∑ j : Idx,
           gInv i j *
-            (A (dualToCotangent_gen (I := I)
-                ((tangentFlatLinear_gen (I := I) g x) (basis q))))
+            (A (dualToCotangentGen (I := I)
+                ((tangentFlatLinearGen (I := I) g x) (basis q))))
               (metricTraceInput (I := I) (basis i) (basis j) Fin.elim0))
   have hvec :
       connTraceAt (I := I) g A =
@@ -362,7 +363,7 @@ theorem connTraceCoeff
     simp only [map_smul, Module.Basis.repr_self]
     simp only [Finsupp.smul_single, smul_eq_mul, mul_one]
     change (∑ c : Idx, Finsupp.single c (coeff c)) p = coeff p
-    rw [Finsupp.finset_sum_apply
+    rw [Finsupp.finsetSum_apply
       (S := Finset.univ)
       (f := fun c : Idx => (Finsupp.single c (coeff c) : Idx →₀ Real))
       (a := p)]
@@ -386,7 +387,7 @@ theorem connTraceCoeff
   simp_rw [traceFlat_apply_sum (I := I) g A basis]
   exact traceAlg gInv (fun q r => g.inner x (basis q) (basis r))
     (fun r i j =>
-      componentRS_gen (I := I) basis A
+      componentRSGen (I := I) basis A
         (fun _ : Fin 1 => r)
         (fun q : Fin 2 => if q = 0 then i else j))
     (fun a b => (hinv a b).1) p
@@ -396,11 +397,11 @@ private theorem gInvComp_contMDiffAt
     (i j : CoordinateIdx (𝕜 := Real) E) :
     ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M =>
-        inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+        inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
           (extChartAt I x₀ y)) x₀ := by
-  haveI : CompleteSpace E := FiniteDimensional.complete Real E
+  have : CompleteSpace E := FiniteDimensional.complete Real E
   let f : E → Real :=
-    inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+    inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
   have hf :
       ContDiffWithinAt Real ∞ f (Set.range I) (extChartAt I x₀ x₀) :=
     inverseMetricFlatModelInChart_component_contDiffWithinAt (I := I) g x₀ i j
@@ -429,7 +430,7 @@ private theorem trace02_eventually
       fun y : M =>
         ∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
-            inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+            inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
                 (extChartAt I x₀ y) *
               A y
                 (fun q : Fin 2 =>
@@ -438,10 +439,10 @@ private theorem trace02_eventually
   filter_upwards
     [(coordinateFrameSet_open (I := I) x₀).mem_nhds
       (coordinateFrameAt_mem (I := I) x₀)] with y hy
-  let basis := coordinateFrameAt_basis (I := I) x₀ hy
+  let basis := coordinateFrameAtBasis (I := I) x₀ hy
   let gInv : CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real :=
     fun i j =>
-      inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+      inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
         (extChartAt I x₀ y)
   have htrace :=
     metricTracePair0SAt_eq_sum_basis (I := I) g basis gInv
@@ -454,7 +455,7 @@ private theorem trace02_eventually
     _ =
         ∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
-            inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+            inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
                 (extChartAt I x₀ y) *
               A y
                 (fun q : Fin 2 =>
@@ -480,14 +481,14 @@ theorem trace02_smooth
         (fun y : M =>
           ∑ i : CoordinateIdx (𝕜 := Real) E,
             ∑ j : CoordinateIdx (𝕜 := Real) E,
-              inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+              inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
                   (extChartAt I x₀ y) *
                 A y
         (fun q : Fin 2 =>
           coordinateFrameAt (I := I) x₀ (if q = 0 then i else j) y))
         x₀ := by
     refine ContMDiffAt.sum fun i _ => ContMDiffAt.sum fun j _ => ?_
-    haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+    have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
       change IsManifold I ∞ M
       infer_instance
     exact (gInvComp_contMDiffAt (I := I) g x₀ i j).mul
@@ -507,9 +508,9 @@ private theorem normSq02_eventually
           ∑ j : CoordinateIdx (𝕜 := Real) E,
             ∑ k : CoordinateIdx (𝕜 := Real) E,
               ∑ l : CoordinateIdx (𝕜 := Real) E,
-                inverseMetricFlatModelInChart_component (I := I) g x₀ i k
+                inverseMetricFlatModelInChartComponent (I := I) g x₀ i k
                     (extChartAt I x₀ y) *
-                  inverseMetricFlatModelInChart_component (I := I) g x₀ j l
+                  inverseMetricFlatModelInChartComponent (I := I) g x₀ j l
                     (extChartAt I x₀ y) *
                   A y (fun q : Fin 2 =>
                     coordinateFrameAt (I := I) x₀ (if q = 0 then i else j) y) *
@@ -519,10 +520,10 @@ private theorem normSq02_eventually
   filter_upwards
     [(coordinateFrameSet_open (I := I) x₀).mem_nhds
       (coordinateFrameAt_mem (I := I) x₀)] with y hy
-  let basis := coordinateFrameAt_basis (I := I) x₀ hy
+  let basis := coordinateFrameAtBasis (I := I) x₀ hy
   let gInv : CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real :=
     fun i j =>
-      inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+      inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
         (extChartAt I x₀ y)
   have hsq :=
     normSq0S_two_eq_coord (I := I) g y basis gInv
@@ -553,9 +554,9 @@ theorem normSq02_smooth
             ∑ j : CoordinateIdx (𝕜 := Real) E,
               ∑ k : CoordinateIdx (𝕜 := Real) E,
                 ∑ l : CoordinateIdx (𝕜 := Real) E,
-                  inverseMetricFlatModelInChart_component (I := I) g x₀ i k
+                  inverseMetricFlatModelInChartComponent (I := I) g x₀ i k
                       (extChartAt I x₀ y) *
-                    inverseMetricFlatModelInChart_component (I := I) g x₀ j l
+                    inverseMetricFlatModelInChartComponent (I := I) g x₀ j l
                       (extChartAt I x₀ y) *
                     A y (fun q : Fin 2 =>
                       coordinateFrameAt (I := I) x₀ (if q = 0 then i else j) y) *
@@ -564,7 +565,7 @@ theorem normSq02_smooth
         x₀ := by
     refine ContMDiffAt.sum fun i _ => ContMDiffAt.sum fun j _ =>
       ContMDiffAt.sum fun k _ => ContMDiffAt.sum fun l _ => ?_
-    haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+    have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
       change IsManifold I ∞ M
       infer_instance
     exact (((gInvComp_contMDiffAt (I := I) g x₀ i k).mul
@@ -587,7 +588,7 @@ private theorem normSq0S_eventually
         ∑ I0 : Fin s → CoordinateIdx (𝕜 := Real) E,
           ∑ J0 : Fin s → CoordinateIdx (𝕜 := Real) E,
             (∏ a : Fin s,
-                inverseMetricFlatModelInChart_component (I := I) g x₀
+                inverseMetricFlatModelInChartComponent (I := I) g x₀
                   (I0 a) (J0 a) (extChartAt I x₀ y)) *
               A y (fun a : Fin s => coordinateFrameAt (I := I) x₀ (I0 a) y) *
               A y (fun a : Fin s => coordinateFrameAt (I := I) x₀ (J0 a) y) := by
@@ -595,10 +596,10 @@ private theorem normSq0S_eventually
   filter_upwards
     [(coordinateFrameSet_open (I := I) x₀).mem_nhds
       (coordinateFrameAt_mem (I := I) x₀)] with y hy
-  let basis := coordinateFrameAt_basis (I := I) x₀ hy
+  let basis := coordinateFrameAtBasis (I := I) x₀ hy
   let gInv : CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real :=
     fun i j =>
-      inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+      inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
         (extChartAt I x₀ y)
   rw [normSq0S_eq_coord (I := I) g y s basis gInv
     (gInvBasisAt (I := I) g x₀ hy) (A y)]
@@ -628,7 +629,7 @@ theorem normSq0S_smooth {s : Nat}
           ∑ I0 : Fin s → CoordinateIdx (𝕜 := Real) E,
             ∑ J0 : Fin s → CoordinateIdx (𝕜 := Real) E,
               (∏ a : Fin s,
-                  inverseMetricFlatModelInChart_component (I := I) g x₀
+                  inverseMetricFlatModelInChartComponent (I := I) g x₀
                     (I0 a) (J0 a) (extChartAt I x₀ y)) *
                 A y (fun a : Fin s => coordinateFrameAt (I := I) x₀ (I0 a) y) *
                 A y (fun a : Fin s => coordinateFrameAt (I := I) x₀ (J0 a) y))
@@ -638,7 +639,7 @@ theorem normSq0S_smooth {s : Nat}
         ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
           (fun y : M =>
             ∏ a : Fin s,
-              inverseMetricFlatModelInChart_component (I := I) g x₀
+              inverseMetricFlatModelInChartComponent (I := I) g x₀
                 (I0 a) (J0 a) (extChartAt I x₀ y)) x₀ := by
       exact ContMDiffAt.prod fun a _ =>
         gInvComp_contMDiffAt (I := I) g x₀ (I0 a) (J0 a)
@@ -660,27 +661,27 @@ theorem connTraceCoeff_eventually
       fun y : M =>
         ∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
-            inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+            inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
                 (extChartAt I x₀ y) *
               (A y
                 (Tensor0SSpace.constInChart (𝕜 := Real) (E := E) (H := H)
                   (I := I) (M := M) 1 x₀
-                  ((continuousMultilinearMap_basis
+                  ((continuousMultilinearMapBasis
                     (𝕜 := Real) (F := E) (Module.finBasis Real E) 1)
                     (fun _ : Fin 1 => p)) y))
                 (fun q : Fin 2 =>
                   coordinateFrameAt (I := I) x₀ (if q = 0 then i else j) y) := by
   classical
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     change IsManifold I ∞ M
     infer_instance
   filter_upwards
     [(coordinateFrameSet_open (I := I) x₀).mem_nhds
       (coordinateFrameAt_mem (I := I) x₀)] with y hy
-  let basis := coordinateFrameAt_basis (I := I) x₀ hy
+  let basis := coordinateFrameAtBasis (I := I) x₀ hy
   let gInv : CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real :=
     fun i j =>
-      inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+      inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
         (extChartAt I x₀ y)
   have hcoeff :=
     connTraceCoeff (I := I) g (A y) basis gInv
@@ -690,23 +691,23 @@ theorem connTraceCoeff_eventually
         (connTraceAt (I := I) g (A y))
         =
           basis.repr (connTraceAt (I := I) g (A y)) p := by
-            simp [basis, coordinateFrameAt_basis, IsLocalFrameOn.coeff, hy]
+            simp [basis, coordinateFrameAtBasis, IsLocalFrameOn.coeff, hy]
     _ =
         ∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
             gInv i j *
-              componentRS_gen (I := I) basis (A y)
+              componentRSGen (I := I) basis (A y)
                 (fun _ : Fin 1 => p)
                 (fun q : Fin 2 => if q = 0 then i else j) := hcoeff
     _ =
         ∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
-            inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+            inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
                 (extChartAt I x₀ y) *
               (A y
                 (Tensor0SSpace.constInChart (𝕜 := Real) (E := E) (H := H)
                   (I := I) (M := M) 1 x₀
-                  ((continuousMultilinearMap_basis
+                  ((continuousMultilinearMapBasis
                     (𝕜 := Real) (F := E) (Module.finBasis Real E) 1)
                     (fun _ : Fin 1 => p)) y))
                 (fun q : Fin 2 =>
@@ -737,19 +738,19 @@ private theorem connTraceCoeff_contMDiffAt
         (fun y : M =>
           ∑ i : CoordinateIdx (𝕜 := Real) E,
             ∑ j : CoordinateIdx (𝕜 := Real) E,
-              inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+              inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
                   (extChartAt I x₀ y) *
                 (A y
                   (Tensor0SSpace.constInChart (𝕜 := Real) (E := E) (H := H)
                     (I := I) (M := M) 1 x₀
-                    ((continuousMultilinearMap_basis
+                    ((continuousMultilinearMapBasis
                       (𝕜 := Real) (F := E) (Module.finBasis Real E) 1)
                       (fun _ : Fin 1 => p)) y))
                   (fun q : Fin 2 =>
                     coordinateFrameAt (I := I) x₀ (if q = 0 then i else j) y))
         x₀ := by
     refine ContMDiffAt.sum fun i _ => ContMDiffAt.sum fun j _ => ?_
-    haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+    have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
       change IsManifold I ∞ M
       infer_instance
     exact (gInvComp_contMDiffAt (I := I) g x₀ i j).mul
@@ -789,16 +790,16 @@ theorem connTraceField_coord
         (connTraceField (I := I) g A x) =
       ∑ i : CoordinateIdx (𝕜 := Real) E,
         ∑ j : CoordinateIdx (𝕜 := Real) E,
-          inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+          inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
               (extChartAt I x₀ x) *
-            componentRS_gen (I := I) (coordinateFrameAt_basis (I := I) x₀ hx)
+            componentRSGen (I := I) (coordinateFrameAtBasis (I := I) x₀ hx)
               (A x) (fun _ : Fin 1 => p)
               (fun q : Fin 2 => if q = 0 then i else j) := by
   classical
-  let basis := coordinateFrameAt_basis (I := I) x₀ hx
+  let basis := coordinateFrameAtBasis (I := I) x₀ hx
   let gInv : CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real :=
     fun i j =>
-      inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+      inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
         (extChartAt I x₀ x)
   have hcoeff :=
     connTraceCoeff (I := I) g (A x) basis gInv
@@ -808,19 +809,19 @@ theorem connTraceField_coord
         (connTraceField (I := I) g A x)
         =
           basis.repr (connTraceAt (I := I) g (A x)) p := by
-            simp [basis, coordinateFrameAt_basis, IsLocalFrameOn.coeff, hx]
+            simp [basis, coordinateFrameAtBasis, IsLocalFrameOn.coeff, hx]
     _ =
       ∑ i : CoordinateIdx (𝕜 := Real) E,
         ∑ j : CoordinateIdx (𝕜 := Real) E,
           gInv i j *
-            componentRS_gen (I := I) basis (A x) (fun _ : Fin 1 => p)
+            componentRSGen (I := I) basis (A x) (fun _ : Fin 1 => p)
               (fun q : Fin 2 => if q = 0 then i else j) := hcoeff
     _ =
       ∑ i : CoordinateIdx (𝕜 := Real) E,
         ∑ j : CoordinateIdx (𝕜 := Real) E,
-          inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+          inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
               (extChartAt I x₀ x) *
-            componentRS_gen (I := I) (coordinateFrameAt_basis (I := I) x₀ hx)
+            componentRSGen (I := I) (coordinateFrameAtBasis (I := I) x₀ hx)
               (A x) (fun _ : Fin 1 => p)
               (fun q : Fin 2 => if q = 0 then i else j) := rfl
 

@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter NormedSpace
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -73,8 +72,10 @@ private lemma tensorChartComponentProjection_covApply_eq_covDerivComponentEuclid
         (LeviCivita (I := I) g)).toFun (fun z : M => T₀.toSection z) b
         (chartBasisVecFiber (I := I) α k b) =
       tensorCovDerivAt (I := I) (M := M) g r s T₀ b
-        (chartBasisVecFiber (I := I) α k b) := by
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (chartBasisVecFiber (I := I) α k b)) := by
     rw [tensorCovDerivAt_def]
+    simp only [ContinuousLinearEquiv.symm_apply_apply]
   rw [hCovDerivAt]
   exact tensorCovDerivAt_eq_chartTensorRSCovariantDerivative
     (I := I) (M := M) g r s T₀ α k (b := b) hb_good
@@ -142,7 +143,7 @@ theorem chartLeibnizRemainder_eq_T₀_linear
         ∑ l : Fin (Module.finrank ℝ E),
           ∑ k : Fin (Module.finrank ℝ E),
             chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M) g α i l b *
-              (extDerivFun (I := I) (fun z : M =>
+              (mvfderiv (I := I) (fun z : M =>
                   chartFrameNormGlobalSmoothCoordMatrix (I := I) (M := M)
                     g α i k z) b
                   (chartBasisVecFiber (I := I) α l b)) *

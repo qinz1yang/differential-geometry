@@ -26,8 +26,9 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 variable {F : Type uF} [NormedAddCommGroup F] [InnerProductSpace Real F] [CompleteSpace F]
 
+omit [CompleteSpace E] in
 theorem properCone_innerDual_pairing_eq_zero_of_terminal_eq_zero
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -76,8 +77,9 @@ theorem properCone_innerDual_pairing_eq_zero_of_terminal_eq_zero
       (I := I) G hT C u phi hphi V hsol' htau hmem hgrad_cont
         hlaplacian_cont L hV hzero'
 
+omit [CompleteSpace E] in
 theorem properCone_mem_innerDualZeroFace_of_terminal_eq_zero
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -115,8 +117,9 @@ theorem properCone_mem_innerDualZeroFace_of_terminal_eq_zero
     ⟨hmem t ht x, by
       simpa [innerScalarization, real_inner_comm] using hpairing t ht x⟩
 
+omit [CompleteSpace E] in
 theorem properCone_innerDual_pairing_eq_zero_of_terminal_eq_zero_of_metricFamilySmoothOn
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -149,8 +152,9 @@ theorem properCone_innerDual_pairing_eq_zero_of_terminal_eq_zero_of_metricFamily
   · exact hV
   · exact hzero
 
+omit [CompleteSpace E] in
 theorem properCone_mem_innerDualZeroFace_of_terminal_eq_zero_of_metricFamilySmoothOn
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)

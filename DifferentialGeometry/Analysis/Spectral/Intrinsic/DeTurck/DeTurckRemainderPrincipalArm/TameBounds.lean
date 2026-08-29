@@ -2373,6 +2373,7 @@ section BalLadder
 
 variable (g₀ : SmoothRiemannianMetric I M)
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma iteratedCovGrad_le_sq_envelope_product (g₀ : SmoothRiemannianMetric I M)
@@ -3378,7 +3379,6 @@ lemma de_turck_budget_half_add_thirty_two_lt_one (n : ℕ) :
     linarith
   linarith
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.Measure in
 theorem exists_inverseMetricDifferenceSlotCoefficient_grid_l2_jetLinear_highOrder
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -3396,7 +3396,7 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_grid_l2_jetLinear_highOrde
           Kg i * (1 + ∑ j ∈ Finset.range (i + 2),
             ‖iteratedCovGrad (I := I) g₀ 0 2 j T₀‖ ^ 2) := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨C2, hC2_nn, hC2⟩ :=
     exists_iteratedCovGrad_sum_le_smoothCcToTensorHs_general (I := I) (M := M) g₀ (a + 2)
@@ -3539,7 +3539,7 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_grid_l2_jetLinear_highOrde
           ∏ m : Fin n', riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T₀).toSection x)) := by
         intro n' e
-        refine continuous_finset_prod _ fun m _ => ?_
+        refine continuous_finsetProd _ fun m _ => ?_
         have hc := Integral.L2.SmoothCcTensor.continuous_inner_self (I := I) (M := M)
           (iteratedCovGrad (I := I) g₀ 0 2 (e m) T₀)
         refine hc.congr fun x => ?_
@@ -3719,8 +3719,8 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_grid_l2_jetLinear_highOrde
           _ = Cbig i * ‖iteratedCovGrad (I := I) g₀ 0 2 i T₀‖ ^ 2 := by
             simp only [hCbig_def]
             ring
-      rw [MeasureTheory.integral_finset_sum _
-        (fun n' _ => MeasureTheory.integrable_finset_sum _ (fun e _ => hint_prod n' e))]
+      rw [MeasureTheory.integral_finsetSum _
+        (fun n' _ => MeasureTheory.integrable_finsetSum _ (fun e _ => hint_prod n' e))]
       have hinner : ∀ n' ∈ Finset.range (i + 1),
           (∫ x, ∑ e ∈ Finset.Nat.antidiagonalTuple n' i, ∏ m : Fin n',
               riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
@@ -3731,7 +3731,7 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_grid_l2_jetLinear_highOrde
               riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T₀).toSection x)
             ∂(DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g₀) :=
-        fun n' _ => MeasureTheory.integral_finset_sum _ (fun e _ => hint_prod n' e)
+        fun n' _ => MeasureTheory.integral_finsetSum _ (fun e _ => hint_prod n' e)
       rw [Finset.sum_congr rfl hinner]
       have hle1 : ∑ n' ∈ Finset.range (i + 1), ∑ e ∈ Finset.Nat.antidiagonalTuple n' i,
             (∫ x, ∏ m : Fin n',
@@ -3768,7 +3768,6 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_grid_l2_jetLinear_highOrde
             mul_le_mul_of_nonneg_right (le_add_of_nonneg_right hvol_nn)
               (le_trans zero_le_one h1S)
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.Measure in
 theorem exists_deTurckPrincipalCometricCoeff_realize_coeffJetEnvelope_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -3874,7 +3873,7 @@ theorem exists_deTurckPrincipalCometricCoeff_realize_coeffJetEnvelope_le
               ((iteratedCovGrad (I := I) g₀ 2 2 j
                 (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x))
           (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
-        (MeasureTheory.integrable_finset_sum _ (fun j _ => hint_slot j)).const_mul (Cd i)
+        (MeasureTheory.integrable_finsetSum _ (fun j _ => hint_slot j)).const_mul (Cd i)
       have hkey := normSq_le_integral_of_pointwise_fiberNormSq_le_rs (I := I) (M := M) g₀
         (2 + 2) (2 + i)
         (iteratedCovGrad (I := I) g₀ (2 + 2) 2 i
@@ -3887,7 +3886,7 @@ theorem exists_deTurckPrincipalCometricCoeff_realize_coeffJetEnvelope_le
       refine le_trans hkey ?_
       rw [MeasureTheory.integral_const_mul]
       refine mul_le_mul_of_nonneg_left ?_ (hCd_nn i)
-      rw [MeasureTheory.integral_finset_sum _ (fun j _ => hint_slot j)]
+      rw [MeasureTheory.integral_finsetSum _ (fun j _ => hint_slot j)]
       refine Finset.sum_le_sum fun j _ => ?_
       have hbr := tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs (I := I) (M := M)
         g₀ 2 (2 + j) (iteratedCovGrad (I := I) g₀ 2 2 j (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁))
@@ -3928,8 +3927,8 @@ theorem exists_deTurckPrincipalCometricCoeff_realize_coeffJetEnvelope_le
                 ∏ m : Fin n',
                   riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                     ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T₀).toSection x)) := by
-          refine continuous_finset_sum _ fun n' _ => continuous_finset_sum _ fun e _ =>
-            continuous_finset_prod _ fun m _ => ?_
+          refine continuous_finsetSum _ fun n' _ => continuous_finsetSum _ fun e _ =>
+            continuous_finsetProd _ fun m _ => ?_
           have hc := Integral.L2.SmoothCcTensor.continuous_inner_self (I := I) (M := M)
             (iteratedCovGrad (I := I) g₀ 0 2 (e m) T₀)
           refine hc.congr fun x => ?_
@@ -4006,7 +4005,6 @@ theorem exists_deTurckPrincipalCometricCoeff_realize_coeffJetEnvelope_le
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-set_option backward.isDefEq.respectTransparency false in
 private lemma riemannianFiberNormSq_toSection_smul (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (c : ℝ) (V : SmoothCcTensor g r s) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g r s x ((c • V).toSection x) =
@@ -4020,7 +4018,6 @@ private lemma riemannianFiberNormSq_toSection_smul (g : SmoothRiemannianMetric I
     tensorInnerPointwise_smul_right]
   ring
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem normSq_iteratedCovGrad_reindexCoeffGen_eq (g₀ : SmoothRiemannianMetric I M)
     (R : SmoothCcTensor g₀ 4 2) (ρ : Equiv.Perm (Fin 4)) (i : ℕ) :
@@ -4037,7 +4034,6 @@ private theorem normSq_iteratedCovGrad_reindexCoeffGen_eq (g₀ : SmoothRiemanni
   refine MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
   exact riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ 4 2 R ρ i x
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization in
 open DifferentialGeometry.Integral.Measure in
 theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
@@ -4315,8 +4311,8 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
                   ∏ m : Fin n',
                     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                       ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T₀).toSection x)) := by
-            refine continuous_finset_sum _ fun n' _ => continuous_finset_sum _ fun e _ =>
-              continuous_finset_prod _ fun m _ => ?_
+            refine continuous_finsetSum _ fun n' _ => continuous_finsetSum _ fun e _ =>
+              continuous_finsetProd _ fun m _ => ?_
             have hc := Integral.L2.SmoothCcTensor.continuous_inner_self (I := I) (M := M)
               (iteratedCovGrad (I := I) g₀ 0 2 (e m) T₀)
             refine hc.congr fun x => ?_
@@ -5515,6 +5511,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 open DifferentialGeometry.Integral.Measure in
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem iteratedCovGrad_comp_l2_sq_eq_rs
@@ -5763,6 +5760,7 @@ theorem exists_coeffAction_iteratedCovGrad_l2_coeffJetEnvelope_dataJetWindow_le_
   exact mul_le_mul_of_nonneg_right hDle (Real.sqrt_nonneg _)
 
 open DifferentialGeometry.Integral.Measure in
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem iteratedCovGrad_comp_l2_sq_eq
@@ -5791,6 +5789,7 @@ private theorem iteratedCovGrad_comp_l2_sq_eq
   simpa only [Nat.add_assoc] using hrw
 
 open DifferentialGeometry.Integral.Measure in
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem iteratedCovGrad_comp_jetSum_le
@@ -6595,7 +6594,7 @@ private lemma gFibreOpBound_delta_nonneg [Nonempty M] (g₀ : SmoothRiemannianMe
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
-private lemma riemannianFiberNormSq_le_of_ccTensorBilinSymm_gFibreOpBound [Nonempty M]
+private lemma riemannianFiberNormSq_le_of_ccTensorBilinSymm_gFibreOpBound
     (g₀ : SmoothRiemannianMetric I M) {δ : ℝ}
     (T₀ : SmoothCcTensor g₀ 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -7099,7 +7098,7 @@ private lemma exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le_of_gFibreOpBo
         hL2, tensorL2Coeff_eq_inner, inner_zero_right]
     rw [hzero, hzero, hzero]
     simp
-  · haveI := hM
+  · have := hM
     have hB_nn : 0 ≤ Real.sqrt (Module.finrank ℝ E) * δ :=
       mul_nonneg (Real.sqrt_nonneg _) hδ_nn
     have hdata : ∀ x : M,
@@ -7173,7 +7172,7 @@ private theorem exists_smoothCcToTensorHs_coeffAction_arm0_opNorm_le
           hL2, tensorL2Coeff_eq_inner, inner_zero_right]
       rw [hzero, hzero, hzero]
       simp
-    · haveI := hM
+    · have := hM
       have hδ_nn : 0 ≤ δ :=
         gFibreOpBound_delta_nonneg (I := I) (M := M) g₀
           (ccTensorBilinSymm (I := I) g₀ T₀) hfibre

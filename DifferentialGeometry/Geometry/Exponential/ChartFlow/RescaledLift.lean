@@ -242,7 +242,15 @@ private lemma local_lift_eventuallyEq_chartFlowOrbitLiftRescaled
         simpa using (hasDerivAt_id τ).const_add s₀
       have hcomp := hτD.scomp τ h_shift
       simp only [one_smul] at hcomp
-      convert hcomp using 1
+      rw [hc₂_def]
+      change HasDerivAt
+        ((fun s' : ℝ => rescaleChartOrbit (E := E) t'
+          (Φ (((extChartAt I p p, v) : E × E), t' * s'))) ∘
+            fun τ : ℝ => s₀ + τ)
+        (chartPhaseVF (I := I) g p
+          (rescaleChartOrbit (E := E) t'
+            (Φ (((extChartAt I p p, v) : E × E), t' * (s₀ + τ))))) τ
+      exact hcomp
     · exact rescaleChartOrbit_mem_chartTargetInterior (I := I) (p := p) t' hτT
   have hπ_cont : Continuous
       (Bundle.TotalSpace.proj : TangentBundle I M → M) :=
@@ -292,7 +300,15 @@ private lemma local_lift_eventuallyEq_chartFlowOrbitLiftRescaled
       simpa using (hasDerivAt_id τ).const_add s₀
     have hcomp := hτD.scomp τ h_shift
     simp only [one_smul] at hcomp
-    convert hcomp using 1
+    rw [hc₁_def]
+    change HasDerivAt
+      ((fun s' : ℝ => extChartAt I.tangent
+        (⟨p, (0 : E)⟩ : TangentBundle I M) (g_loc s')) ∘
+          fun τ : ℝ => s₀ + τ)
+      (chartPhaseVF (I := I) g p
+        (extChartAt I.tangent (⟨p, (0 : E)⟩ : TangentBundle I M)
+          (g_loc (s₀ + τ)))) τ
+    exact hcomp
   have hc_eq : c₁ =ᶠ[𝓝 (0 : ℝ)] c₂ :=
     chartPhaseVF_orbit_uniqueness (I := I) (g := g) (α := p)
       (c₁ := c₁) (c₂ := c₂) (z₀ := z₀) hz₀_interior hc₁_zero hc₂_zero hd_c₁ hd_c₂

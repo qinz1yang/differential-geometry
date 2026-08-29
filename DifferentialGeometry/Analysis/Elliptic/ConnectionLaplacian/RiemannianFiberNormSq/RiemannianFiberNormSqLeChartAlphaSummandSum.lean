@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle Metric
 open scoped Manifold Topology ContDiff ENNReal BigOperators Matrix
@@ -38,7 +37,7 @@ private lemma sphere_isCompact_forward :
   have hcont : Continuous
       (fun ξ : Fin (Module.finrank ℝ E) → ℝ =>
         ∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2) :=
-    continuous_finset_sum _ (fun i _ => (continuous_apply i).pow 2)
+    continuous_finsetSum _ (fun i _ => (continuous_apply i).pow 2)
   have hclosed : IsClosed {ξ : Fin (Module.finrank ℝ E) → ℝ |
       ∑ i : Fin (Module.finrank ℝ E), ξ i ^ 2 = 1} :=
     isClosed_eq hcont continuous_const
@@ -63,7 +62,6 @@ private lemma sphere_isCompact_forward :
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma exists_chartGramMatrix_quadForm_lower_bound_on_compact
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {Kα : Set M} (hKα_compact : IsCompact Kα)
     (hKα_sub_baseSet :
@@ -106,8 +104,8 @@ private lemma exists_chartGramMatrix_quadForm_lower_bound_on_compact
   have hQ_cont : ContinuousOn Q
       ((trivializationAt E (TangentSpace I) α).baseSet ×ˢ
         (Set.univ : Set (Fin (Module.finrank ℝ E) → ℝ))) := by
-    refine continuousOn_finset_sum _ (fun i _ => ?_)
-    refine continuousOn_finset_sum _ (fun j _ => ?_)
+    refine continuousOn_finsetSum _ (fun i _ => ?_)
+    refine continuousOn_finsetSum _ (fun j _ => ?_)
     refine ContinuousOn.mul ?_ ?_
     · refine ContinuousOn.mul ?_ ?_
       · have hentry := (chartGramMatrix_entry_contMDiffOn
@@ -210,7 +208,7 @@ private lemma exists_chartGramMatrix_quadForm_lower_bound_on_compact
     intro b hb ξ
     by_cases hKα_ne : Kα.Nonempty
     · by_cases hn : Nonempty (Fin (Module.finrank ℝ E))
-      · haveI : Nonempty (Fin (Module.finrank ℝ E)) := hn
+      · let _ : Nonempty (Fin (Module.finrank ℝ E)) := hn
         set i₀ : Fin (Module.finrank ℝ E) := Classical.arbitrary _
         set e₀ : Fin (Module.finrank ℝ E) → ℝ :=
           (Pi.single i₀ (1 : ℝ) : Fin (Module.finrank ℝ E) → ℝ) with he₀_def
@@ -239,7 +237,7 @@ private lemma exists_chartGramMatrix_quadForm_lower_bound_on_compact
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma exists_chartGramMatrix_quadForm_lower_bound_on_pouTsupport
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
     ∃ c : ℝ, 0 < c ∧
       ∀ b : M, b ∈ tsupport
@@ -273,9 +271,9 @@ private lemma riemannianFiberNormSq_eq_sum_witness_orthonormal
   have hb : Bornology.IsVonNBounded ℝ {v : TangentSpace I b |
       RCLike.re (cd.inner v v) < 1} :=
     g.toRiemannianMetric.isVonNBounded b
-  letI nag : NormedAddCommGroup (TangentSpace I b) :=
+  let _ : NormedAddCommGroup (TangentSpace I b) :=
     cd.toNormedAddCommGroupOfTopology hc hb
-  letI ips : InnerProductSpace ℝ (TangentSpace I b) :=
+  let _ : InnerProductSpace ℝ (TangentSpace I b) :=
     InnerProductSpace.ofCoreOfTopology cd hc hb
   let n : ℕ := Module.finrank ℝ (TangentSpace I b)
   let e : OrthonormalBasis (Fin n) ℝ (TangentSpace I b) := stdOrthonormalBasis ℝ _
@@ -293,7 +291,7 @@ private lemma riemannianFiberNormSq_eq_sum_witness_orthonormal
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma sum_sq_repr_le_inv_c
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
+    [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M)
     {c : ℝ} (hc_pos : 0 < c)
     (hG_lower :
@@ -356,9 +354,9 @@ private lemma mkPiAlgebra_inner_eK_expand_repr
             g.inner b (chartBasisVecFiber (I := I) α j b) (v k) := by
     intro k
     rw [hA (K k)]
-    rw [map_sum, ContinuousLinearMap.sum_apply]
+    rw [map_sum, sum_apply]
     refine Finset.sum_congr rfl (fun j _ => ?_)
-    rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [map_smul, smul_apply, smul_eq_mul]
   trans (∏ k : Fin r,
         ∑ j : Fin (Module.finrank ℝ E),
           A (K k) j *
@@ -366,7 +364,12 @@ private lemma mkPiAlgebra_inner_eK_expand_repr
   · exact Finset.prod_congr rfl (fun k _ => h_each k)
   rw [Finset.prod_univ_sum]
   rw [Fintype.piFinset_univ]
-  refine Eq.trans ?_ (ContinuousMultilinearMap.sum_apply _ v).symm
+  refine Eq.trans ?_ (sum_apply Finset.univ
+    (fun I' : Fin r → Fin (Module.finrank ℝ E) =>
+      (∏ k : Fin r, A (K k) (I' k)) •
+        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
+          (fun k : Fin r =>
+            g.inner b (chartBasisVecFiber (I := I) α (I' k) b)))) v).symm
   refine Finset.sum_congr rfl ?_
   intro I' _
   change ∏ k, A (K k) (I' k) *
@@ -437,25 +440,42 @@ private lemma fiberNormSqSummand_at_eg_le_chartAlpha_sum
   classical
   have h_cov_expand :=
     mkPiAlgebra_inner_eK_expand_repr (I := I) (M := M) g α hb_base r e K A hA
-  have h_T_apply :
-      (T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
+  have h_cov_expand_TSp :
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
         ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
           (fun k : Fin r => g.inner b (e (K k)))) =
         ∑ I' : Fin r → Fin (Module.finrank ℝ E),
           (∏ k : Fin r, A (K k) (I' k)) •
-            (T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
+            (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
               ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
                 (fun k : Fin r =>
                   g.inner b (chartBasisVecFiber (I := I) α (I' k) b))) := by
-    rw [h_cov_expand, map_sum]
+    have h := congrArg
+      (fun X => (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm X)
+      h_cov_expand
+    simpa only [map_sum, map_smul] using h
+  have h_T_apply :
+      (T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
+          ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
+            (fun k : Fin r => g.inner b (e (K k))))) =
+        ∑ I' : Fin r → Fin (Module.finrank ℝ E),
+          (∏ k : Fin r, A (K k) (I' k)) •
+            (T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
+              ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
+                ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
+                  (fun k : Fin r =>
+                    g.inner b (chartBasisVecFiber (I := I) α (I' k) b)))) := by
+    rw [h_cov_expand_TSp, map_sum]
     refine Finset.sum_congr rfl ?_
     intro I' _
     rw [map_smul]
   set XKJ : ℝ :=
-    (((T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
-        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-          (fun k : Fin r => g.inner b (e (K k))))) :
-        ContinuousMultilinearMap ℝ (fun _ : Fin s => TangentSpace I b) ℝ)
+    Tensor0SSpace.eval
+      ((T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
+          ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
+            (fun k : Fin r => g.inner b (e (K k))))))
       (fun k : Fin s => e (J k)) with hXKJ_def
   have h_XKJ_eq :
       XKJ =
@@ -463,26 +483,60 @@ private lemma fiberNormSqSummand_at_eg_le_chartAlpha_sum
           ∑ J' : Fin s → Fin (Module.finrank ℝ E),
             (∏ k : Fin r, A (K k) (I' k)) *
               ((∏ l : Fin s, A (J l) (J' l)) *
-                (((T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
-                    ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-                      (fun k : Fin r =>
-                        g.inner b (chartBasisVecFiber (I := I) α (I' k) b)))) :
-                    ContinuousMultilinearMap ℝ (fun _ : Fin s => TangentSpace I b) ℝ)
+                Tensor0SSpace.eval
+                  ((T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
+                    ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
+                      ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
+                        (fun k : Fin r =>
+                          g.inner b (chartBasisVecFiber (I := I) α (I' k) b)))))
                   (fun k : Fin s => chartBasisVecFiber (I := I) α (J' k) b)) := by
     rw [hXKJ_def, h_T_apply]
-    rw [ContinuousMultilinearMap.sum_apply]
+    rw [Tensor0SSpace.eval_eq, Tensor0SSpace.sum_apply]
     refine Finset.sum_congr rfl ?_
     intro I' _
-    rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul]
-    rw [tensor0S_apply_eJ_expand_repr (I := I) (M := M) (s := s) e α A hA _ J]
+    change Tensor0SSpace.eval
+      ((∏ k : Fin r, A (K k) (I' k)) •
+        (T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
+          ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
+            ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
+              (fun k : Fin r =>
+                g.inner b (chartBasisVecFiber (I := I) α (I' k) b)))))
+      (fun k : Fin s => e (J k)) = _
+    rw [Tensor0SSpace.eval_smul, smul_eq_mul]
+    have h_eval := tensor0S_apply_eJ_expand_repr (I := I) (M := M) (s := s)
+      e α A hA
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s b
+        ((T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
+          ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
+            ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
+              (fun k : Fin r =>
+                g.inner b (chartBasisVecFiber (I := I) α (I' k) b)))))) J
+    change Tensor0SSpace.eval
+        ((T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
+          ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
+            ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
+              (fun k : Fin r =>
+                g.inner b (chartBasisVecFiber (I := I) α (I' k) b)))))
+        (fun k : Fin s => e (J k)) =
+      ∑ J' : Fin s → Fin (Module.finrank ℝ E),
+        (∏ l : Fin s, A (J l) (J' l)) *
+          Tensor0SSpace.eval
+            ((T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
+              ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
+                ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
+                  (fun k : Fin r =>
+                    g.inner b (chartBasisVecFiber (I := I) α (I' k) b)))))
+            (fun k : Fin s => chartBasisVecFiber (I := I) α (J' k) b) at h_eval
+    rw [h_eval]
     rw [Finset.mul_sum]
   set Yfn : (Fin r → Fin (Module.finrank ℝ E)) × (Fin s → Fin (Module.finrank ℝ E)) → ℝ :=
     fun p =>
-      (((T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
-        ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-          (fun k : Fin r =>
-            g.inner b (chartBasisVecFiber (I := I) α (p.1 k) b)))) :
-          ContinuousMultilinearMap ℝ (fun _ : Fin s => TangentSpace I b) ℝ)
+      Tensor0SSpace.eval
+        ((T : Tensor0SSpace r I b →L[ℝ] Tensor0SSpace s I b)
+          ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b).symm
+            ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
+              (fun k : Fin r =>
+                g.inner b (chartBasisVecFiber (I := I) α (p.1 k) b)))))
         (fun k : Fin s => chartBasisVecFiber (I := I) α (p.2 k) b)
     with hYfn_def
   set αfn : (Fin r → Fin (Module.finrank ℝ E)) × (Fin s → Fin (Module.finrank ℝ E)) → ℝ :=
@@ -660,7 +714,7 @@ private lemma finrank_tangentSpace_eq (b : M) :
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem riemannianFiberNormSq_le_chartAlpha_summand_sum_on_pouTsupport
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g r s),

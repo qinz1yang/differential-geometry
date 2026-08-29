@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.CovGrad.EigenvectorCovGradChristoffelLimit
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.ChartPartial.EigenvectorWeakPartials
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cross.EigenvectorChartCrossLimits
+
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 
@@ -118,7 +119,11 @@ private lemma contDiffOn_euclidPartial_chartPushedRaw_chartAtlasPOU
         (EuclideanSpace.single k 1)) y := by
     have h := (ContinuousLinearMap.apply ℝ ℝ
       (EuclideanSpace.single k 1)).contDiff.comp_contDiffAt y hfderiv
-    simpa only [Function.comp_def] using h
+    change ContDiffAt ℝ ∞
+      (fun z : EuclN => fderiv ℝ (chartPushedRaw I β
+        ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ)) z
+          (EuclideanSpace.single k 1)) y at h
+    exact h
   refine (heval.contDiffWithinAt).congr ?_ ?_
   · intro z _; rw [euclidPartial_def]
   · rw [euclidPartial_def]
@@ -219,6 +224,7 @@ private lemma crossMultiplier_mul_chartPushedRaw_eq_cutoffComponent
   · rw [euclidPartial_chartPushedRaw_chartAtlasPOU_eq_zero_off_chartPouKernel
       (I := I) (M := M) β k hker, zero_mul, zero_mul]
 
+omit [CompactSpace M] in
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartPushedRaw_pou_mul_covDerivLowerOrderTerm_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

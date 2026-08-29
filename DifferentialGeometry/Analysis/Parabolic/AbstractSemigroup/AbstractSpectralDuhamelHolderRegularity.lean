@@ -89,18 +89,20 @@ theorem abstractSpectralDuhamelHolderCorrection_intervalIntegrable
     (continuous_const.sub continuous_id).prodMk
       (hFcont.sub continuous_const)
   have hGraw : ContinuousOn Graw (Set.Iio t) := by
-    simpa only [Graw, Function.comp_apply] using
-      (abstractSpectralSemigroupDeriv_continuousOn_uncurry b hlam).comp
+    have h := (abstractSpectralSemigroupDeriv_continuousOn_uncurry b hlam).comp
         hinner.continuousOn
         (fun s hs => ⟨by
           simpa using sub_pos.mpr (Set.mem_Iio.mp hs), Set.mem_univ _⟩)
+    exact h.congr fun _ _ => rfl
   have hGmeas : AEStronglyMeasurable G volume := by
     have hp : AEStronglyMeasurable
         ((Set.Iio t).piecewise Graw (0 : ℝ → X)) volume :=
       AEStronglyMeasurable.piecewise (μ := volume) measurableSet_Iio
       (hGraw.aestronglyMeasurable measurableSet_Iio)
       aestronglyMeasurable_zero
-    simpa only [G, Set.piecewise, Set.mem_Iio, Pi.zero_apply] using hp
+    refine hp.congr (ae_of_all _ fun s => ?_)
+    by_cases hs : s < t <;> simp only [G, Graw, Set.piecewise, Set.mem_Iio,
+      Pi.zero_apply, hs, ↓reduceIte]
   have hpow : IntervalIntegrable
       (fun s : ℝ => (t - s) ^ ((α : ℝ) - 1)) volume 0 t := by
     have hbase : IntervalIntegrable
@@ -169,18 +171,20 @@ theorem abstractSpectralDuhamelHolderCorrection_continuousOn
       continuous_id.prodMk
         ((hFcont.comp (continuous_const.sub continuous_id)).sub continuous_const)
     have hGraw : ContinuousOn Graw (Set.Ioi 0) := by
-      simpa only [Graw, Function.comp_apply] using
-        (abstractSpectralSemigroupDeriv_continuousOn_uncurry b hlam).comp
+      have h := (abstractSpectralSemigroupDeriv_continuousOn_uncurry b hlam).comp
           hinner.continuousOn
           (fun τ hτ => ⟨hτ, Set.mem_univ _⟩)
+      exact h.congr fun _ _ => rfl
     have hp : AEStronglyMeasurable
         ((Set.Ioi 0).piecewise Graw (0 : ℝ → X)) volume :=
       AEStronglyMeasurable.piecewise measurableSet_Ioi
         (hGraw.aestronglyMeasurable measurableSet_Ioi)
         aestronglyMeasurable_zero
     have hglobal : AEStronglyMeasurable (G q) volume := by
-      simpa only [G, abstractSpectralDuhamelHolderKernel, Set.piecewise,
-        Set.mem_Ioi, Pi.zero_apply] using hp
+      refine hp.congr (ae_of_all _ fun τ => ?_)
+      by_cases hτ : 0 < τ <;> simp only [G, Graw,
+        abstractSpectralDuhamelHolderKernel, Set.piecewise, Set.mem_Ioi,
+        Pi.zero_apply, hτ, ↓reduceIte]
     exact hglobal.mono_measure Measure.restrict_le_self
   have hGbound : ∀ᶠ q in 𝓝 t,
       ∀ᵐ τ ∂volume.restrict (Set.uIoc (-1 : ℝ) (2 * t)),
@@ -232,9 +236,11 @@ theorem abstractSpectralDuhamelHolderCorrection_continuousOn
       by_cases hτ : 0 < τ
       · have harg : Continuous (fun q : ℝ => F (q - τ) - F q) :=
           (hFcont.comp (continuous_id.sub continuous_const)).sub hFcont
-        simpa only [G, abstractSpectralDuhamelHolderKernel, if_pos hτ] using
-          ((abstractSpectralSemigroupDerivCLM b hlam τ hτ).continuous.comp
-            harg).continuousAt
+        have h := (abstractSpectralSemigroupDerivCLM b hlam τ hτ).continuous.comp harg
+        have h' : Continuous
+            (fun q : ℝ => abstractSpectralSemigroupDeriv b lam τ (F (q - τ) - F q)) :=
+          h.congr fun _ => rfl
+        simpa only [G, abstractSpectralDuhamelHolderKernel, if_pos hτ] using h'.continuousAt
       · simpa only [G, abstractSpectralDuhamelHolderKernel, if_neg hτ] using
           (continuousAt_const : ContinuousAt (fun _ : ℝ => (0 : X)) t)
   have hparam := intervalIntegral.continuousAt_parametric_primitive_of_dominated
@@ -320,8 +326,8 @@ theorem abstractSpectralDuhamelHolderDeriv_repr_apply
         Real.exp (-(lam i) * (t - s)) * (b.repr (F s) : ι → ℝ) i) +
       (1 - Real.exp (-(lam i) * t)) * (b.repr (F t) : ι → ℝ) i := by
     have hmode : Continuous (fun s : ℝ => (b.repr (F s) : ι → ℝ) i) := by
-      simpa only [b.repr_apply_apply] using
-        (innerSL (𝕜 := ℝ) (E := X) (b i)).continuous.comp hFcont
+      have h := (innerSL (𝕜 := ℝ) (E := X) (b i)).continuous.comp hFcont
+      exact h.congr fun s => (b.repr_apply_apply (F s) i).symm
     rw [show (fun s : ℝ =>
         -(lam i) * Real.exp (-(lam i) * (t - s)) *
           ((b.repr (F s) : ι → ℝ) i - (b.repr (F t) : ι → ℝ) i)) =
@@ -419,10 +425,16 @@ private theorem holderIccExtension_holderWith
     {F : ℝ → X} {T : ℝ} (hT : 0 ≤ T) {K α : NNReal}
     (hF : HolderOnWith K α F (Set.Icc 0 T)) :
     HolderWith K α (holderIccExtension F T hT) := by
-  have hrestricted : HolderWith K α (Set.restrict (Set.Icc 0 T) F) :=
+  have hrestricted : HolderWith K α (Set.domRestrict (Set.Icc 0 T) F) :=
     hF.holderWith
   have hcomp := hrestricted.comp (LipschitzWith.projIcc hT).holderWith
-  simpa [holderIccExtension] using hcomp
+  change HolderWith K α (fun t => F (Set.projIcc 0 T hT t))
+  have heq : Set.domRestrict (Set.Icc 0 T) F ∘ Set.projIcc 0 T hT =
+      fun t => F (Set.projIcc 0 T hT t) := by
+    funext t
+    exact Set.domRestrict_apply F (Set.Icc 0 T) (Set.projIcc 0 T hT t)
+  rw [heq] at hcomp
+  simpa only [NNReal.one_rpow, mul_one] using hcomp
 
 omit [NormedAddCommGroup X] [InnerProductSpace ℝ X] [CompleteSpace X] in
 private theorem holderIccExtension_apply

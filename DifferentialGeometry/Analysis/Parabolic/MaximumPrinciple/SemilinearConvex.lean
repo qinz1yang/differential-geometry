@@ -73,7 +73,7 @@ lemma mem_closed_convex_iff_forall_exists_inner_le
   · intro hp
     have hInter := iInter_halfSpaces_eq (E := F) (s := C) hconvex hclosed
     rw [← hInter]
-    simp only [mem_iInter, mem_setOf_eq]
+    simp only [mem_iInter, mem_ofPred_eq]
     intro l
     let ν : F := (InnerProductSpace.toDual ℝ F).symm l
     have hl : l = InnerProductSpace.toDual ℝ F ν := by
@@ -88,7 +88,6 @@ include completeF in
 theorem closed_convex_heat_reaction_mem_of_supporting_normal
     [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)
     (C : Set F) (hne : C.Nonempty) (hclosed : IsClosed C) (hconvex : Convex Real C)
@@ -194,9 +193,15 @@ theorem closed_convex_heat_reaction_mem_of_supporting_normal
     have hq₀carrier : q₀.1 ∈ (RealTimeInterval.closed 0 T hT).carrier :=
       (RealTimeInterval.closed 0 T hT).regular_subset hq₀reg
     have hzslice : ContMDiff I 𝓘(Real, Real) ∞ (z q₀.1) := by
-      simpa only [z, innerScalarization, inner_sub_left] using
-        contMDiff_const.mul
-          ((hsol.scalarSliceSmooth ν q₀.1 hq₀carrier).sub contMDiff_const)
+      have hfun : z q₀.1 =
+          (fun _ : M => Real.exp (-K * q₀.1)) *
+            (innerScalarization u ν q₀.1 - fun _ : M => inner Real p ν) := by
+        funext y
+        dsimp [z, innerScalarization]
+        rw [inner_sub_left]
+      rw [hfun]
+      exact contMDiff_const.mul
+        ((hsol.scalarSliceSmooth ν q₀.1 hq₀carrier).sub contMDiff_const)
     have hzlap : laplacianAt (I := I) G q₀.1 (z q₀.1) q₀.2 ≤ 0 :=
       laplacianAt_nonpos_at_spatial_max (I := I) G q₀.1 hzspatial hzslice
     have hztimeMax : IsMaxOn (fun s ↦ z s q₀.2) (Set.Icc 0 q₀.1) q₀.1 := by
@@ -207,17 +212,20 @@ theorem closed_convex_heat_reaction_mem_of_supporting_normal
         (Real.exp (-K * q₀.1) * (-K)) q₀.1 := by
       have hinner : HasDerivAt (fun s : Real ↦ -K * s) (-K) q₀.1 := by
         simpa using (hasDerivAt_id q₀.1).const_mul (-K)
-      simpa only [Function.comp_apply] using
-        (Real.hasDerivAt_exp (-K * q₀.1)).comp q₀.1 hinner
+      convert (Real.hasDerivAt_exp (-K * q₀.1)).comp q₀.1 hinner using 1 <;> rfl
     have hzderiv : HasDerivAt (fun s ↦ z s q₀.2)
         (Real.exp (-K * q₀.1) *
             (laplacianAt (I := I) G q₀.1 (innerScalarization u ν q₀.1) q₀.2 +
               inner Real (reaction q₀.1 q₀.2 (u q₀.1 q₀.2)) ν) -
           K * Real.exp (-K * q₀.1) * inner Real (u q₀.1 q₀.2 - p) ν) q₀.1 := by
       convert hexpDeriv.mul (hscalarEq.sub_const (inner Real p ν)) using 1
+      · rfl
+      · rfl
       · funext s
-        simp only [z, innerScalarization, inner_sub_left, Pi.mul_apply]
-      · simp only [innerScalarization, inner_sub_left]
+        dsimp [z, innerScalarization]
+        rw [inner_sub_left]
+      · dsimp [innerScalarization]
+        rw [inner_sub_left]
         ring
     have hztime : 0 ≤
         Real.exp (-K * q₀.1) *
@@ -318,7 +326,6 @@ include completeF in
 theorem closed_convex_heat_reaction_mem_of_tangent
     [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)
     (C : Set F) (hne : C.Nonempty) (hclosed : IsClosed C) (hconvex : Convex Real C)
@@ -348,7 +355,6 @@ theorem closed_convex_heat_reaction_mem_of_tangent
 theorem properCone_heat_reaction_mem_of_tangent
     [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)
     (C : ProperCone Real F)
@@ -370,7 +376,6 @@ include completeF in
 theorem properCone_heat_reaction_mem_of_dualZeroFace_nonneg
     [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)
     (C : ProperCone Real F)
@@ -401,7 +406,7 @@ theorem properCone_heat_reaction_mem_of_dualZeroFace_nonneg
     have hφ : ProperCone.IsDualElement C φ := by
       intro q hq
       have h := hnormal q hq
-      simp only [φ, ContinuousLinearMap.neg_apply, innerSL_apply_apply]
+      simp only [φ, neg_apply, innerSL_apply_apply]
       rw [inner_sub_right, hνp] at h
       linarith
     have hpface : p ∈ ProperCone.dualZeroFace C φ := by
@@ -415,7 +420,6 @@ theorem properCone_heat_reaction_mem_of_dualZeroFace_nonneg
 theorem properCone_heat_reaction_mem_of_mapsTo
     [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)
     (C : ProperCone Real F)
@@ -440,7 +444,6 @@ theorem properCone_heat_reaction_mem_of_mapsTo
 theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
     [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)
     (C : Real → Set F)
@@ -487,13 +490,10 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
       have hfun : (fun x : M => inner ℝ (u' t x) y) =
           fun x : M => innerScalarization u (WithLp.ofLp y).1 t x + (WithLp.ofLp y).2 * t := by
         funext x
-        have hreal : ∀ a b : ℝ, inner ℝ a b = a * b := by
-          intro a b
-          rw [mul_comm]
-          rfl
         rw [real_inner_comm, WithLp.prod_inner_apply]
         simp only [u']
-        simp [innerScalarization, real_inner_comm, hreal]
+        simp [innerScalarization, real_inner_comm]
+        ring
       rw [hfun]
       exact hsum
     · intro y t ht x
@@ -504,13 +504,10 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
       have hfun : (fun s : Real => innerScalarization u (WithLp.ofLp y).1 s x + (WithLp.ofLp y).2 * s) =
           fun s : Real => inner ℝ (u' s x) y := by
         funext s
-        have hreal : ∀ a b : ℝ, inner ℝ a b = a * b := by
-          intro a b
-          rw [mul_comm]
-          rfl
         rw [real_inner_comm, WithLp.prod_inner_apply]
         simp only [u']
-        simp [innerScalarization, real_inner_comm, hreal]
+        simp [innerScalarization, real_inner_comm]
+        ring
       have htarget :
           laplacianAt (I := I) G t (innerScalarization u (WithLp.ofLp y).1 t) x +
               inner ℝ (reaction t x (u t x)) (WithLp.ofLp y).1 + (WithLp.ofLp y).2 =
@@ -521,13 +518,10 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
           have hfunx : (fun x : M => inner ℝ (u' t x) y) =
               fun x : M => innerScalarization u (WithLp.ofLp y).1 t x + (WithLp.ofLp y).2 * t := by
             funext x
-            have hreal : ∀ a b : ℝ, inner ℝ a b = a * b := by
-              intro a b
-              rw [mul_comm]
-              rfl
             rw [real_inner_comm, WithLp.prod_inner_apply]
             simp only [u']
-            simp [innerScalarization, real_inner_comm, hreal]
+            simp [innerScalarization, real_inner_comm]
+            ring
           rw [hfunx]
           have hconst : ContMDiff I 𝓘(Real, Real) ∞ (fun _ : M => (WithLp.ofLp y).2 * t) := contMDiff_const
           have hsum_lap := laplacianAt_add (I := I) G (t := t)
@@ -546,11 +540,7 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
         rw [hlapl]
         rw [real_inner_comm, WithLp.prod_inner_apply]
         simp only [u', reac']
-        have hreal : ∀ a b : ℝ, inner ℝ a b = a * b := by
-          intro a b
-          rw [mul_comm]
-          rfl
-        simp [real_inner_comm, hreal]
+        simp [real_inner_comm]
         ring
       change HasDerivAt (fun s : Real => inner ℝ (u' s x) y)
         (laplacianAt (I := I) G t (fun x : M => inner ℝ (u' t x) y) x +
@@ -648,7 +638,9 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
           congr 2
           abel
         _ ≤ ‖u' s y - q‖ * ‖ν'‖ + 0 :=
-          add_le_add (real_inner_le_norm _ _) (by simpa [real_inner_comm] using hnormal q hqK)
+          add_le_add (real_inner_le_norm _ _) (by
+            rw [real_inner_comm]
+            exact hnormal q hqK)
         _ = Metric.infDist (u' s y) K * ‖ν'‖ := by rw [hqdist, add_zero]
     let z : Real → M → Real := fun s y ↦
       Real.exp (-KK * s) * inner ℝ (u' s y - p) ν'
@@ -672,9 +664,16 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
     have hq₀carrier : q₀.1 ∈ (RealTimeInterval.closed 0 T hT).carrier :=
       (RealTimeInterval.closed 0 T hT).regular_subset hq₀reg
     have hzslice : ContMDiff I 𝓘(Real, Real) ∞ (z q₀.1) := by
-      simpa only [z, innerScalarization, inner_sub_left] using
-        contMDiff_const.mul
-          ((hsol'.scalarSliceSmooth ν' q₀.1 hq₀carrier).sub contMDiff_const)
+      have hfun : z q₀.1 =
+          (fun _ : M => Real.exp (-KK * q₀.1)) *
+            (innerScalarization u' ν' q₀.1 - fun _ : M => inner Real p ν') := by
+        funext y
+        dsimp [z, innerScalarization]
+        rw [inner_sub_left]
+        rfl
+      rw [hfun]
+      exact contMDiff_const.mul
+        ((hsol'.scalarSliceSmooth ν' q₀.1 hq₀carrier).sub contMDiff_const)
     have hzlap : laplacianAt (I := I) G q₀.1 (z q₀.1) q₀.2 ≤ 0 :=
       laplacianAt_nonpos_at_spatial_max (I := I) G q₀.1 hzspatial hzslice
     have hztimeMax : IsMaxOn (fun s ↦ z s q₀.2) (Set.Icc 0 q₀.1) q₀.1 := by
@@ -685,17 +684,29 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
         (Real.exp (-KK * q₀.1) * (-KK)) q₀.1 := by
       have hinner : HasDerivAt (fun s : Real ↦ -KK * s) (-KK) q₀.1 := by
         simpa using (hasDerivAt_id q₀.1).const_mul (-KK)
-      simpa only [Function.comp_apply] using
-        (Real.hasDerivAt_exp (-KK * q₀.1)).comp q₀.1 hinner
+      convert (Real.hasDerivAt_exp (-KK * q₀.1)).comp q₀.1 hinner using 1 <;> rfl
     have hzderiv : HasDerivAt (fun s ↦ z s q₀.2)
         (Real.exp (-KK * q₀.1) *
             (laplacianAt (I := I) G q₀.1 (innerScalarization u' ν' q₀.1) q₀.2 +
               inner ℝ (reac' q₀.1 q₀.2 (u' q₀.1 q₀.2)) ν') -
           KK * Real.exp (-KK * q₀.1) * inner ℝ (u' q₀.1 q₀.2 - p) ν') q₀.1 := by
       convert hexpDeriv.mul (hscalarEq.sub_const (inner ℝ p ν')) using 1
+      · rfl
+      · rfl
       · funext s
-        simp only [z, innerScalarization, inner_sub_left, Pi.mul_apply]
-      · simp only [innerScalarization, inner_sub_left]
+        dsimp [z, innerScalarization]
+        rw [inner_sub_left]
+        rfl
+      · dsimp [innerScalarization]
+        rw [inner_sub_left]
+        rw [WithLp.prod_inner_apply p ν']
+        rw [show inner ℝ (WithLp.ofLp p).2 (WithLp.ofLp ν').2 =
+            (WithLp.ofLp p).2 * (WithLp.ofLp ν').2 by
+          rw [mul_comm]
+          rfl]
+        rw [starRingEnd_apply, star_trivial]
+        rw [WithLp.ofLp_fst p, WithLp.ofLp_fst ν',
+          WithLp.ofLp_snd p, WithLp.ofLp_snd ν']
         ring
     have hztime : 0 ≤
         Real.exp (-KK * q₀.1) *
@@ -751,7 +762,9 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
       · have htau : (WithLp.ofLp p).2 ∈ Set.Ico 0 T := ⟨hpK'.1.1, hp2lt⟩
         have htan := htangent (WithLp.ofLp p).2 htau q₀.2 (WithLp.ofLp p).1 hpK'.2
         have hcone : reac' q₀.1 q₀.2 p ∈ posTangentConeAt K p := by
-          simpa [reac', WithLp.toLp_ofLp] using htan
+          have hp : WithLp.toLp 2 (WithLp.ofLp p) = p := WithLp.toLp_ofLp 2 p
+          dsimp [reac']
+          exact hp ▸ htan
         exact hmax.localize.hasFDerivWithinAt_nonpos
           (innerSL ℝ ν').hasFDerivAt.hasFDerivWithinAt hcone
       · have hp2eq : (WithLp.ofLp p).2 = T := le_antisymm hpK'.1.2 (le_of_not_gt hp2lt)
@@ -892,7 +905,6 @@ private lemma withLp_prod_fst_norm_le {F : Type*} [NormedAddCommGroup F] (a : F)
 theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
     [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)
     (C : Real → Set F)
@@ -940,13 +952,10 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
       have hfun : (fun x : M => inner ℝ (u' t x) y) =
           fun x : M => innerScalarization u (WithLp.ofLp y).1 t x + (WithLp.ofLp y).2 * t := by
         funext x
-        have hreal : ∀ a b : ℝ, inner ℝ a b = a * b := by
-          intro a b
-          rw [mul_comm]
-          rfl
         rw [real_inner_comm, WithLp.prod_inner_apply]
         simp only [u']
-        simp [innerScalarization, real_inner_comm, hreal]
+        simp [innerScalarization, real_inner_comm]
+        ring
       rw [hfun]
       exact hsum
     · intro y t ht x
@@ -957,13 +966,10 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
       have hfun : (fun s : Real => innerScalarization u (WithLp.ofLp y).1 s x + (WithLp.ofLp y).2 * s) =
           fun s : Real => inner ℝ (u' s x) y := by
         funext s
-        have hreal : ∀ a b : ℝ, inner ℝ a b = a * b := by
-          intro a b
-          rw [mul_comm]
-          rfl
         rw [real_inner_comm, WithLp.prod_inner_apply]
         simp only [u']
-        simp [innerScalarization, real_inner_comm, hreal]
+        simp [innerScalarization, real_inner_comm]
+        ring
       have htarget :
           laplacianAt (I := I) G t (innerScalarization u (WithLp.ofLp y).1 t) x +
               inner ℝ (reaction t x (u t x)) (WithLp.ofLp y).1 + (WithLp.ofLp y).2 =
@@ -974,13 +980,10 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
           have hfunx : (fun x : M => inner ℝ (u' t x) y) =
               fun x : M => innerScalarization u (WithLp.ofLp y).1 t x + (WithLp.ofLp y).2 * t := by
             funext x
-            have hreal : ∀ a b : ℝ, inner ℝ a b = a * b := by
-              intro a b
-              rw [mul_comm]
-              rfl
             rw [real_inner_comm, WithLp.prod_inner_apply]
             simp only [u']
-            simp [innerScalarization, real_inner_comm, hreal]
+            simp [innerScalarization, real_inner_comm]
+            ring
           rw [hfunx]
           have hconst : ContMDiff I 𝓘(Real, Real) ∞ (fun _ : M => (WithLp.ofLp y).2 * t) := contMDiff_const
           have hsum_lap := laplacianAt_add (I := I) G (t := t)
@@ -999,11 +1002,7 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
         rw [hlapl]
         rw [real_inner_comm, WithLp.prod_inner_apply]
         simp only [u', reac']
-        have hreal : ∀ a b : ℝ, inner ℝ a b = a * b := by
-          intro a b
-          rw [mul_comm]
-          rfl
-        simp [real_inner_comm, hreal]
+        simp [real_inner_comm]
         ring
       change HasDerivAt (fun s : Real => inner ℝ (u' s x) y)
         (laplacianAt (I := I) G t (fun x : M => inner ℝ (u' t x) y) x +
@@ -1106,7 +1105,9 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
           congr 2
           abel
         _ ≤ ‖u' s y - q‖ * ‖ν'‖ + 0 :=
-          add_le_add (real_inner_le_norm _ _) (by simpa [real_inner_comm] using hnormal q hqK)
+          add_le_add (real_inner_le_norm _ _) (by
+            rw [real_inner_comm]
+            exact hnormal q hqK)
         _ = Metric.infDist (u' s y) K * ‖ν'‖ := by rw [hqdist, add_zero]
     let z : Real → M → Real := fun s y ↦
       Real.exp (-KK * s) * inner ℝ (u' s y - p) ν'
@@ -1130,9 +1131,16 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
     have hq₀carrier : q₀.1 ∈ (RealTimeInterval.closed 0 T hT).carrier :=
       (RealTimeInterval.closed 0 T hT).regular_subset hq₀reg
     have hzslice : ContMDiff I 𝓘(Real, Real) ∞ (z q₀.1) := by
-      simpa only [z, innerScalarization, inner_sub_left] using
-        contMDiff_const.mul
-          ((hsol'.scalarSliceSmooth ν' q₀.1 hq₀carrier).sub contMDiff_const)
+      have hfun : z q₀.1 =
+          (fun _ : M => Real.exp (-KK * q₀.1)) *
+            (innerScalarization u' ν' q₀.1 - fun _ : M => inner Real p ν') := by
+        funext y
+        dsimp [z, innerScalarization]
+        rw [inner_sub_left]
+        rfl
+      rw [hfun]
+      exact contMDiff_const.mul
+        ((hsol'.scalarSliceSmooth ν' q₀.1 hq₀carrier).sub contMDiff_const)
     have hzlap : laplacianAt (I := I) G q₀.1 (z q₀.1) q₀.2 ≤ 0 :=
       laplacianAt_nonpos_at_spatial_max (I := I) G q₀.1 hzspatial hzslice
     have hztimeMax : IsMaxOn (fun s ↦ z s q₀.2) (Set.Icc 0 q₀.1) q₀.1 := by
@@ -1143,17 +1151,29 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
         (Real.exp (-KK * q₀.1) * (-KK)) q₀.1 := by
       have hinner : HasDerivAt (fun s : Real ↦ -KK * s) (-KK) q₀.1 := by
         simpa using (hasDerivAt_id q₀.1).const_mul (-KK)
-      simpa only [Function.comp_apply] using
-        (Real.hasDerivAt_exp (-KK * q₀.1)).comp q₀.1 hinner
+      convert (Real.hasDerivAt_exp (-KK * q₀.1)).comp q₀.1 hinner using 1 <;> rfl
     have hzderiv : HasDerivAt (fun s ↦ z s q₀.2)
         (Real.exp (-KK * q₀.1) *
             (laplacianAt (I := I) G q₀.1 (innerScalarization u' ν' q₀.1) q₀.2 +
               inner ℝ (reac' q₀.1 q₀.2 (u' q₀.1 q₀.2)) ν') -
           KK * Real.exp (-KK * q₀.1) * inner ℝ (u' q₀.1 q₀.2 - p) ν') q₀.1 := by
       convert hexpDeriv.mul (hscalarEq.sub_const (inner ℝ p ν')) using 1
+      · rfl
+      · rfl
       · funext s
-        simp only [z, innerScalarization, inner_sub_left, Pi.mul_apply]
-      · simp only [innerScalarization, inner_sub_left]
+        dsimp [z, innerScalarization]
+        rw [inner_sub_left]
+        rfl
+      · dsimp [innerScalarization]
+        rw [inner_sub_left]
+        rw [WithLp.prod_inner_apply p ν']
+        rw [show inner ℝ (WithLp.ofLp p).2 (WithLp.ofLp ν').2 =
+            (WithLp.ofLp p).2 * (WithLp.ofLp ν').2 by
+          rw [mul_comm]
+          rfl]
+        rw [starRingEnd_apply, star_trivial]
+        rw [WithLp.ofLp_fst p, WithLp.ofLp_fst ν',
+          WithLp.ofLp_snd p, WithLp.ofLp_snd ν']
         ring
     have hztime : 0 ≤
         Real.exp (-KK * q₀.1) *
@@ -1209,7 +1229,9 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
       · have htau : (WithLp.ofLp p).2 ∈ Set.Ico 0 T := ⟨hpK'.1.1, hp2lt⟩
         have htan := htangent (WithLp.ofLp p).2 htau q₀.2 (WithLp.ofLp p).1 hpK'.2
         have hcone : reac' q₀.1 q₀.2 p ∈ posTangentConeAt K p := by
-          simpa [reac', WithLp.toLp_ofLp] using htan
+          have hp : WithLp.toLp 2 (WithLp.ofLp p) = p := WithLp.toLp_ofLp 2 p
+          dsimp [reac']
+          exact hp ▸ htan
         exact hmax.localize.hasFDerivWithinAt_nonpos
           (innerSL ℝ ν').hasFDerivAt.hasFDerivWithinAt hcone
       · have hp2eq : (WithLp.ofLp p).2 = T := le_antisymm hpK'.1.2 (le_of_not_gt hp2lt)
@@ -1372,7 +1394,6 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
 theorem timeDepHalfspace_heat_reaction_mem_of_tangent
     [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)
     (ν : F) (hν : ν ≠ 0) (s : Real → Real)
@@ -1441,7 +1462,11 @@ theorem timeDepHalfspace_heat_reaction_mem_of_tangent
           (laplacianAt (I := I) G t (innerScalarization u y t) x +
               inner ℝ (reaction t x (u t x)) y -
             (derivWithin s (Set.Icc 0 T) t / ‖ν‖ ^ 2) * inner ℝ ν y) t := by
-        simpa [innerScalarization] using hA.sub hB
+        convert hA.sub hB using 1
+        · rfl
+        · rfl
+        · funext r
+          rfl
       have hfun : (fun r : Real => innerScalarization v y r x) =
           fun r : Real => innerScalarization u y r x - c r * inner ℝ ν y := by
         funext r
@@ -1598,7 +1623,6 @@ theorem timeDepHalfspace_heat_reaction_mem_of_tangent
 theorem closed_convex_timeDep_heat_reaction_mem_of_supporting_normal
     [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)
     (C : Real → Set F)

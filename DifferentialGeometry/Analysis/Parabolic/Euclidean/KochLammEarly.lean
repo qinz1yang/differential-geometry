@@ -44,7 +44,7 @@ theorem kl0_to_srcCarl {T : ℝ} {A₁ A_q : ℝ≥0}
     have hi := (ENNReal.mul_le_iff_le_inv hs0 hsT).mp hb
     rw [klL1Scale_inv (V := V) hR] at hi
     simpa [srcMass, paraCyl, klCyl, stVolume, klVolume, mul_comm,
-      eLpNorm_one_eq_lintegral_enorm, ofReal_norm_eq_enorm] using hi
+      eLpNorm_one_eq_lintegral_enorm, ofReal_norm] using hi
 
 omit [CompleteSpace F] in
 theorem kl0_early_norm {T t : ℝ} {A₁ A_q : ℝ≥0}

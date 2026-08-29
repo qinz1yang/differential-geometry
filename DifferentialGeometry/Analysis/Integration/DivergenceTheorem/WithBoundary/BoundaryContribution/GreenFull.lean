@@ -41,28 +41,28 @@ variable {M : Type*} [TopologicalSpace M]
   [ChartedSpace (EuclideanHalfSpace n) M]
   [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
 
-noncomputable def Δ_g_classical
+noncomputable def ΔGClassical
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {h : M → ℝ} (hh : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ h) :
     M → ℝ :=
-  divergence_g_with_boundary
+  divergenceGWithBoundary
     (I := modelWithCornersEuclideanHalfSpace n) g
-    (grad_g_full_section (M := M) (n := n) g hh)
+    (gradGFullSection (M := M) (n := n) g hh)
 
 @[simp] lemma Δ_g_classical_def
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {h : M → ℝ} (hh : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ h)
     (x : M) :
-    Δ_g_classical (M := M) (n := n) g hh x =
-      divergence_g_with_boundary
+    ΔGClassical (M := M) (n := n) g hh x =
+      divergenceGWithBoundary
         (I := modelWithCornersEuclideanHalfSpace n) g
-        (grad_g_full_section (M := M) (n := n) g hh) x := rfl
+        (gradGFullSection (M := M) (n := n) g hh) x := rfl
 
 end ClassicalLaplacian
 
 section IntegrabilityHelpers
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -70,17 +70,16 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance instMeasurableSpaceE : MeasurableSpace E := borel E
 private local instance instBorelSpaceE : @BorelSpace E _ (borel E) := ⟨rfl⟩
 
-omit [InnerProductSpace ℝ E] in
 private lemma integrable_divergence_g_with_boundary
     [hI : HasSmoothBoundary E H I]
     [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    Integrable (divergence_g_with_boundary (I := I) g X)
+    Integrable (divergenceGWithBoundary (I := I) g X)
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   set ρ : SmoothPartitionOfUnity M I M (univ : Set M) := chartAtlasPOU I M with hρ_def
-  set S : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hS_def
+  set S : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have hρsub : ρ.IsSubordinate (fun α : M => (chartAt H α).source) :=
     chartAtlasPOU_isSubordinate I M
   have hsupp_each : ∀ α : M, tsupport ((ρ α : M → ℝ)) ⊆ (chartAt H α).source := by
@@ -180,7 +179,7 @@ private lemma integrable_divergence_g_with_boundary
             simp
       _ < ⊤ := ENNReal.mul_lt_top ENNReal.ofReal_lt_top hμ_supp
   have hae_eq : ∀ α : M,
-      (fun x : M => divergence_g_with_boundary (I := I) g X x * (ρ α : M → ℝ) x)
+      (fun x : M => divergenceGWithBoundary (I := I) g X x * (ρ α : M → ℝ) x)
         =ᵐ[chartLocalMeasure (I := I) g α]
       (fun x : M => localDivergenceWithin (I := I) g α X x * (ρ α : M → ℝ) x) := by
     intro α
@@ -193,11 +192,11 @@ private lemma integrable_divergence_g_with_boundary
     refine MeasureTheory.ae_iff.mpr ?_
     apply MeasureTheory.measure_mono_null _ h_bad_measzero
     intro x hx
-    simp only [Set.mem_setOf_eq] at hx
+    simp only [Set.mem_ofPred_eq] at hx
     by_cases hx_chart : x ∈ (chartAt H α).source
     · by_cases hx_int : x ∈ I.interior M
       · exfalso; apply hx
-        have hd_eq : divergence_g_with_boundary (I := I) g X x =
+        have hd_eq : divergenceGWithBoundary (I := I) g X x =
             localDivergenceWithin (I := I) g α X x :=
           voss_weyl_divergence_with_boundary_formula (I := I) g α X hx_chart hx_int
         rw [hd_eq]
@@ -213,13 +212,13 @@ private lemma integrable_divergence_g_with_boundary
       rw [hρ_zero, mul_zero, mul_zero]
   have hglob_int : ∀ α : M,
       Integrable
-        (fun x : M => divergence_g_with_boundary (I := I) g X x *
+        (fun x : M => divergenceGWithBoundary (I := I) g X x *
           (ρ α : M → ℝ) x) (chartLocalMeasure (I := I) g α) :=
     fun α => (hloc_int α).congr (hae_eq α).symm
   have hVol_eq :=
     riemannianVolumeMeasure_eq_finset_sum (I := I) (M := M) g
   rw [hVol_eq]
-  rw [integrable_finset_sum_measure]
+  rw [integrable_finsetSum_measure]
   intro α _hα
   have hρα_meas : Measurable (fun y : M => ENNReal.ofReal ((ρ α : M → ℝ) y)) :=
     ENNReal.measurable_ofReal.comp (ρ α).contMDiff.continuous.measurable
@@ -231,14 +230,14 @@ private lemma integrable_divergence_g_with_boundary
   have hρα_nonneg : ∀ x : M, 0 ≤ (ρ α : M → ℝ) x :=
     fun x => ρ.nonneg α x
   have hsmul_eq : (fun x : M => (ENNReal.ofReal ((ρ α : M → ℝ) x)).toReal •
-              divergence_g_with_boundary (I := I) g X x)
-        = fun x : M => divergence_g_with_boundary (I := I) g X x *
+              divergenceGWithBoundary (I := I) g X x)
+        = fun x : M => divergenceGWithBoundary (I := I) g X x *
             (ρ α : M → ℝ) x := by
     funext x
     rw [ENNReal.toReal_ofReal (hρα_nonneg x), smul_eq_mul, mul_comm]
   refine (integrable_withDensity_iff_integrable_smul₀'
     hρα_aemeas hρα_lt_top
-    (g := fun x : M => divergence_g_with_boundary (I := I) g X x)).mpr ?_
+    (g := fun x : M => divergenceGWithBoundary (I := I) g X x)).mpr ?_
   rw [hsmul_eq]
   exact hglob_int α
 
@@ -257,11 +256,11 @@ theorem green_first_eq_boundary_surface_integral
     {f h : M → ℝ}
     (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f)
     (hh : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ h)
-    (h_chart_iden : ∀ α ∈ chartAtlasPOU_finset
+    (h_chart_iden : ∀ α ∈ chartAtlasPOUFinset
         (I := modelWithCornersEuclideanHalfSpace n) (M := M),
       chartFaceIntegralEqualsSurfaceIntegralOnChart (n := n) (M := M)
         g α (smoothSmul (I := modelWithCornersEuclideanHalfSpace n) f hf
-              (grad_g_full_section (M := M) (n := n) g hh))
+              (gradGFullSection (M := M) (n := n) g hh))
         ((chartAtlasPOU (modelWithCornersEuclideanHalfSpace n) M) α : M → ℝ))
     (h_int : Integrable
       (fun b : BoundaryManifold (modelWithCornersEuclideanHalfSpace n) M =>
@@ -270,7 +269,7 @@ theorem green_first_eq_boundary_surface_integral
               (I := modelWithCornersEuclideanHalfSpace n) (M := M) g b :
             TangentSpace _ b.val)
           ((smoothSmul (I := modelWithCornersEuclideanHalfSpace n) f hf
-              (grad_g_full_section (M := M) (n := n) g hh)) b.val))
+              (gradGFullSection (M := M) (n := n) g hh)) b.val))
       (surfaceMeasure
         (I := modelWithCornersEuclideanHalfSpace n) (M := M) g)) :
     ∫ x, g.inner x
@@ -278,7 +277,7 @@ theorem green_first_eq_boundary_surface_integral
         (gradFun (I := modelWithCornersEuclideanHalfSpace n) g h x)
         ∂(riemannianVolumeMeasure
           (I := modelWithCornersEuclideanHalfSpace n) (M := M) g) +
-      ∫ x, f x * Δ_g_classical (M := M) (n := n) g hh x
+      ∫ x, f x * ΔGClassical (M := M) (n := n) g hh x
         ∂(riemannianVolumeMeasure
           (I := modelWithCornersEuclideanHalfSpace n) (M := M) g) =
       ∫ x : (modelWithCornersEuclideanHalfSpace n).boundary M,
@@ -295,20 +294,20 @@ theorem green_first_eq_boundary_surface_integral
     modelWithCornersEuclideanHalfSpace n with hI'_def
   set X : Cₛ^∞⟮I'; EuclideanSpace ℝ (Fin n),
       (TangentSpace I' : M → Type _)⟯ :=
-    grad_g_full_section (M := M) (n := n) g hh with hX_def
+    gradGFullSection (M := M) (n := n) g hh with hX_def
   set Y : Cₛ^∞⟮I'; EuclideanSpace ℝ (Fin n),
       (TangentSpace I' : M → Type _)⟯ :=
     smoothSmul (I := I') f hf X with hY_def
   have hStokes :=
     integral_divergence_with_boundary_eq_boundaryFaceSum (I := I') g Y
   have h_leibniz : ∀ x : M,
-      divergence_g_with_boundary (I := I') g Y x =
-        f x * divergence_g_with_boundary (I := I') g X x +
+      divergenceGWithBoundary (I := I') g Y x =
+        f x * divergenceGWithBoundary (I := I') g X x +
           tangentSectionAction (I := I') X f x :=
     divergence_g_with_boundary_smoothSmul (I := I') g f hf X
   have h1 : ∀ x : M,
-      f x * divergence_g_with_boundary (I := I') g X x =
-        f x * Δ_g_classical (M := M) (n := n) g hh x := by
+      f x * divergenceGWithBoundary (I := I') g X x =
+        f x * ΔGClassical (M := M) (n := n) g hh x := by
     intro x; rfl
   have h2 : ∀ x : M,
       tangentSectionAction (I := I') X f x =
@@ -325,27 +324,27 @@ theorem green_first_eq_boundary_surface_integral
         (gradFun (I := I') g h x)
     exact g.symm x _ _
   have h_combined : ∀ x : M,
-      divergence_g_with_boundary (I := I') g Y x =
-        f x * Δ_g_classical (M := M) (n := n) g hh x +
+      divergenceGWithBoundary (I := I') g Y x =
+        f x * ΔGClassical (M := M) (n := n) g hh x +
           g.inner x
             (gradFun (I := I') g f x)
             (gradFun (I := I') g h x) := by
     intro x
     rw [h_leibniz x, h1 x, h2 x]
   have h_int_eq :
-      ∫ x, divergence_g_with_boundary (I := I') g Y x
+      ∫ x, divergenceGWithBoundary (I := I') g Y x
           ∂(riemannianVolumeMeasure (I := I') (M := M) g) =
-        ∫ x, (f x * Δ_g_classical (M := M) (n := n) g hh x +
+        ∫ x, (f x * ΔGClassical (M := M) (n := n) g hh x +
                 g.inner x
                   (gradFun (I := I') g f x)
                   (gradFun (I := I') g h x))
           ∂(riemannianVolumeMeasure (I := I') (M := M) g) := by
     refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
     exact h_combined x
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I') (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I') (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I') (M := M) g
-  haveI : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) := by
+  have : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) := by
     rw [finrank_euclideanSpace_fin]
     infer_instance
   have hgrad_f_smooth : ContMDiff I' (I'.prod 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) ∞
@@ -354,7 +353,7 @@ theorem green_first_eq_boundary_surface_integral
     grad_g_smooth_section_full (M := M) (n := n) g hf
   set X_f : Cₛ^∞⟮I'; EuclideanSpace ℝ (Fin n),
       (TangentSpace I' : M → Type _)⟯ :=
-    grad_g_full_section (M := M) (n := n) g hf with hX_f_def
+    gradGFullSection (M := M) (n := n) g hf with hX_f_def
   have h_inner_cont : Continuous (fun x : M =>
       g.inner x (X_f x) (X x)) :=
     (contMDiff_g_inner_of_smooth_sections (I := I') g X_f X).continuous
@@ -378,28 +377,28 @@ theorem green_first_eq_boundary_surface_integral
       exact ⟨C, fun x => hCmem ⟨x, Set.mem_univ _, rfl⟩⟩
     exact (integrable_const C).mono' h_inner_cont'.aestronglyMeasurable
       (Filter.Eventually.of_forall hC)
-  have h_div_Y_int : Integrable (divergence_g_with_boundary (I := I') g Y)
+  have h_div_Y_int : Integrable (divergenceGWithBoundary (I := I') g Y)
       (riemannianVolumeMeasure (I := I') (M := M) g) :=
     integrable_divergence_g_with_boundary (I := I') g Y
-  have h_div_Y_ae : (fun x : M => divergence_g_with_boundary (I := I') g Y x)
+  have h_div_Y_ae : (fun x : M => divergenceGWithBoundary (I := I') g Y x)
       =ᵐ[riemannianVolumeMeasure (I := I') (M := M) g]
-      (fun x : M => f x * Δ_g_classical (M := M) (n := n) g hh x +
+      (fun x : M => f x * ΔGClassical (M := M) (n := n) g hh x +
         g.inner x
           (gradFun (I := I') g f x)
           (gradFun (I := I') g h x)) :=
     Filter.Eventually.of_forall h_combined
   have h_sum_int : Integrable (fun x : M =>
-      f x * Δ_g_classical (M := M) (n := n) g hh x +
+      f x * ΔGClassical (M := M) (n := n) g hh x +
         g.inner x
           (gradFun (I := I') g f x)
           (gradFun (I := I') g h x))
       (riemannianVolumeMeasure (I := I') (M := M) g) :=
     h_div_Y_int.congr h_div_Y_ae
   have h_fΔ_int : Integrable (fun x : M =>
-      f x * Δ_g_classical (M := M) (n := n) g hh x)
+      f x * ΔGClassical (M := M) (n := n) g hh x)
       (riemannianVolumeMeasure (I := I') (M := M) g) := by
-    have h_eq : (fun x : M => f x * Δ_g_classical (M := M) (n := n) g hh x) =
-        (fun x : M => (f x * Δ_g_classical (M := M) (n := n) g hh x +
+    have h_eq : (fun x : M => f x * ΔGClassical (M := M) (n := n) g hh x) =
+        (fun x : M => (f x * ΔGClassical (M := M) (n := n) g hh x +
             g.inner x
               (gradFun (I := I') g f x)
               (gradFun (I := I') g h x)) -

@@ -10,7 +10,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.M
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.ConvexJets
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -79,7 +78,7 @@ private theorem inner_fiber_le
           fiberLpFun g rC sC C x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   let μ := riemannianVolumeMeasure (I := I) (M := M) g
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
@@ -291,8 +290,10 @@ theorem top_order_path_pairing_permuted_h4_uniform_bound
         C6two * y := by
     calc
       _ ≤ C6two * ‖(⟨LT⟩ : SmoothCcTensorH1 g 0 2)‖ := by
-        simpa only [fiberLpFun] using h6two g hEq hjet1
-          (⟨LT⟩ : SmoothCcTensorH1 g 0 2)
+        change lpNorm (fun x => Real.sqrt
+          (riemannianFiberNormSq (I := I) (M := M) g 0 2 x (LT.toSection x))) 6
+            (riemannianVolumeMeasure (I := I) (M := M) g) ≤ _
+        exact h6two g hEq hjet1 (⟨LT⟩ : SmoothCcTensorH1 g 0 2)
       _ = C6two * y := by rw [hspec LT, hshift1]
   have hcompD2 :
       ‖covGrad (I := I) (M := M) g 0 4 D2T‖ = ‖D3T‖ := by
@@ -331,8 +332,10 @@ theorem top_order_path_pairing_permuted_h4_uniform_bound
         C6four * (C3 * y) := by
     calc
       _ ≤ C6four * ‖(⟨D2T⟩ : SmoothCcTensorH1 g 0 4)‖ := by
-        simpa only [fiberLpFun] using h6four g hEq hjet1
-          (⟨D2T⟩ : SmoothCcTensorH1 g 0 4)
+        change lpNorm (fun x => Real.sqrt
+          (riemannianFiberNormSq (I := I) (M := M) g 0 4 x (D2T.toSection x))) 6
+            (riemannianVolumeMeasure (I := I) (M := M) g) ≤ _
+        exact h6four g hEq hjet1 (⟨D2T⟩ : SmoothCcTensorH1 g 0 4)
       _ ≤ C6four * (C3 * y) :=
         mul_le_mul_of_nonneg_left hD2H1 hC6four
   have hD2T3 :
@@ -484,20 +487,24 @@ theorem top_order_path_pairing_permuted_h4_uniform_bound
         abs_add_le _ _
       _ ≤ A * y ^ 2 * z + B * R * z ^ 2 :=
         add_le_add htermTL htermLT
-  change 2 * |tensorL2Inner (I := I) (M := M) g 0 2 V.toFun
-      (YTL + YLT).toFun| ≤ C * R * z ^ 2
-  rw [show tensorL2Inner (I := I) (M := M) g 0 2 V.toFun
-      (YTL + YLT).toFun = Inner.inner ℝ V (YTL + YLT) from
-    (SmoothCcTensor.inner_def (I := I) (M := M) V (YTL + YLT)).symm]
-  calc
-    2 * |Inner.inner ℝ V (YTL + YLT)| ≤
-        2 * (A * y ^ 2 * z + B * R * z ^ 2) :=
-      mul_le_mul_of_nonneg_left hsum (by norm_num)
-    _ ≤ 2 * (A * (R * z) * z + B * R * z ^ 2) := by
-      gcongr
-    _ = C * R * z ^ 2 := by
-      dsimp only [C]
-      ring
+  have hinner : tensorL2Inner (I := I) (M := M) g 0 2 V.toFun
+      (YTL + YLT).toFun = Inner.inner ℝ V (YTL + YLT) :=
+    (SmoothCcTensor.inner_def (I := I) (M := M) V (YTL + YLT)).symm
+  have hfinal : 2 * |Inner.inner ℝ V (YTL + YLT)| ≤ C * R * z ^ 2 := by
+    calc
+      2 * |Inner.inner ℝ V (YTL + YLT)| ≤
+          2 * (A * y ^ 2 * z + B * R * z ^ 2) :=
+        mul_le_mul_of_nonneg_left hsum (by norm_num)
+      _ ≤ 2 * (A * (R * z) * z + B * R * z ^ 2) := by
+        gcongr
+      _ = C * R * z ^ 2 := by
+        dsimp only [C]
+        ring
+  have htarget : 2 * |tensorL2Inner (I := I) (M := M) g 0 2 V.toFun
+      (YTL + YLT).toFun| ≤ C * R * z ^ 2 := by
+    rw [hinner]
+    exact hfinal
+  simpa only [LT, V, YTL, YLT, z] using htarget
 
 theorem top_order_path_pairing_diagonal_h4_uniform_bound
     (hDim : Module.finrank ℝ E = 3)

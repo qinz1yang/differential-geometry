@@ -49,14 +49,14 @@ theorem MemWkp_of_memWkp_precompact_of_ae_zero_off_compact
       hv_memWkp_Ω' hv_tsupp hv_compact
   have hv_ae_eq_u : v =ᵐ[(volume : Measure E).restrict Ω] u := by
     have h_split : Ω = (Ω ∩ N) ∪ (Ω \ N) := by
-      rw [Set.inter_union_diff]
+      rw [Set.inter_union_sdiff]
     have h_on_inter : v =ᵐ[(volume : Measure E).restrict (Ω ∩ N)] u := by
       refine (ae_restrict_iff' (hΩ_open.measurableSet.inter hN_meas)).mpr ?_
       refine Filter.Eventually.of_forall fun x hx => ?_
       have hxN : x ∈ N := hx.2
       simp only [hv_def, hχ_one x hxN, one_mul]
     have h_on_diff : v =ᵐ[(volume : Measure E).restrict (Ω \ N)] u := by
-      have h_sub : Ω \ N ⊆ Ω \ K := Set.diff_subset_diff_right hK_sub_N
+      have h_sub : Ω \ N ⊆ Ω \ K := Set.sdiff_subset_sdiff_right hK_sub_N
       have hu_zero_diff : u =ᵐ[(volume : Measure E).restrict (Ω \ N)] 0 :=
         hu_ae_zero.filter_mono
           (ae_mono (Measure.restrict_mono_set volume h_sub))

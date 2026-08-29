@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -33,6 +32,19 @@ variable
       [BoundarylessManifold I M] [T2Space M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
+
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
+    [BoundarylessManifold I M] in
+private theorem reindexCoeffGen_refl_local (g : SmoothRiemannianMetric I M)
+    (r s : ℕ) (R : SmoothCcTensor g r s) :
+    reindexCoeffGen (I := I) (M := M) g r s R (Equiv.refl _) = R := by
+  apply SmoothCcTensor.ext
+  apply ContMDiffSection.ext
+  intro x
+  apply ContinuousLinearMap.ext
+  intro D
+  rw [reindexCoeffGen_toSection, reindexCoeffFibGen_apply]
+  congr 1
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem covariantJetGrid_h1_tame_bound
@@ -105,12 +117,19 @@ theorem covariantJetGrid_h1_tame_bound
       (∫ x, lowJetGrid (I := I) (M := M) g P k x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) ≤ Km k := by
     intro k hk
+    have hlow : lowJetGrid (I := I) (M := M) g P k = fun x =>
+        ∑ n ∈ Finset.range (k + 1),
+          ∑ e ∈ Finset.Nat.antidiagonalTuple n k,
+            ∏ m, riemannianFiberNormSq (I := I) (M := M) g 0 (2 + e m) x
+              ((iteratedCovGrad (I := I) g 0 2 (e m) P).toSection x) := by
+      rfl
+    rw [hlow]
     by_cases hk3 : k = 3
     · subst k
-      simpa only [lowJetGrid, Km, if_pos, Nat.reduceAdd] using
+      simpa only [Km, if_pos, Nat.reduceAdd] using
         hgrid3 P R A hR hA hP2 htop
     · have hk2 : k ≤ 2 := by omega
-      simpa only [lowJetGrid, Km, if_neg hk3] using
+      simpa only [Km, if_neg hk3] using
         hgrid0 P R hR hP2 k hk2
   have hle := grid_h1_le (I := I) (M := M) g P Km C
     hgr hC Φ hΦ
@@ -291,8 +310,16 @@ private theorem app_h1h2
       SmoothCcTensorH1 g p c)) hnorm 2
   rw [smooth_cc_tensor_h1_norm_sq_eq_covariant_jet (I := I) (M := M) g p c
     (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W)] at hsquare
-  simpa only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
-    iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add] using hsquare
+  have hsum : (∑ j ∈ Finset.range 2,
+      ‖iteratedCovGrad (I := I) g p c j
+        (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W)‖ ^ 2) =
+      ‖ccOperatorFieldComp (I := I) (M := M) g p r c Φ W‖ ^ 2 +
+        ‖covGrad (I := I) g p c
+          (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W)‖ ^ 2 := by
+    norm_num [Finset.sum_range_succ, iteratedCovGrad_zero, iteratedCovGrad_succ]
+    simp only [Nat.add_zero]
+  rw [hsum]
+  exact hsquare
 
 private theorem app_h2h1
     (hDim : Module.finrank ℝ E = 3)
@@ -317,8 +344,16 @@ private theorem app_h2h1
       SmoothCcTensorH1 g p c)) hnorm 2
   rw [smooth_cc_tensor_h1_norm_sq_eq_covariant_jet (I := I) (M := M) g p c
     (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W)] at hsquare
-  simpa only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add,
-    iteratedCovGrad_zero, iteratedCovGrad_succ, Nat.zero_add] using hsquare
+  have hsum : (∑ j ∈ Finset.range 2,
+      ‖iteratedCovGrad (I := I) g p c j
+        (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W)‖ ^ 2) =
+      ‖ccOperatorFieldComp (I := I) (M := M) g p r c Φ W‖ ^ 2 +
+        ‖covGrad (I := I) g p c
+          (ccOperatorFieldComp (I := I) (M := M) g p r c Φ W)‖ ^ 2 := by
+    norm_num [Finset.sum_range_succ, iteratedCovGrad_zero, iteratedCovGrad_succ]
+    simp only [Nat.add_zero]
+  rw [hsum]
+  exact hsquare
 
 theorem linearizedRicciConnectionDifferenceOrder0CoeffField_h1_tame_bound
     (hDim : Module.finrank ℝ E = 3)
@@ -665,8 +700,24 @@ theorem lieCorrectionZeroVectorBundle_h1_tame_bound
       (hBt2 R hR) (hNb R hR (R + A) hRA) hT2 hInn
   rw [lieCorrectionZeroVectorBundle_eq_field (I := I) (M := M) g₀ g₁]
   have htwo := jet_two (I := I) (M := M) g₀ 2 2 2 Out
-  rw [show lieCorrectionZeroVectorBundleField (I := I) (M := M) g₀ g₁ = (2 : ℝ) • Out by rfl,
-    htwo]
+  have hT1_base : lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1 = T1 := by
+    exact (reindexCoeffGen_refl_local g₀ 3 1
+      (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1)).symm
+  have hVFlat : lieCorrectionZeroVFlat (I := I) (M := M) g₀ g₁ g₀ = Vf := by
+    rw [lieCorrectionZeroVFlat, hT1_base]
+  have hT1i_def :
+      reindexCoeffGen (I := I) (M := M) g₀ 3 1
+        (lieCorrectionZeroPureDT (I := I) (M := M) g₀ g₁ 1)
+          lieCorrectionZeroIVPerm = T1i := by
+    rfl
+  have hVs_def : slotExtendIter (I := I) (M := M) g₀ 0 1 2 Vf = Vs := by
+    rfl
+  have hIV : lieCorrectionZeroIVField (I := I) (M := M) g₀ g₁ g₀ = Iv := by
+    rw [lieCorrectionZeroIVField, hVFlat, hT1i_def, hVs_def]
+  have hfield : lieCorrectionZeroVectorBundleField (I := I) (M := M) g₀ g₁ =
+      (2 : ℝ) • Out := by
+    rw [lieCorrectionZeroVectorBundleField, hIV]
+  rw [hfield, htwo]
   change 4 * (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g₀ 2 2 i Out‖ ^ 2) ≤
     (B0 R + B1 R * A) ^ 2
@@ -838,8 +889,22 @@ theorem lieCorrectionZeroMixedConnection_h1_tame_bound
     (Ob R (R + A)) (Ob R (R + A)) hOa hOb'
   rw [lieCorrectionZeroMixedConnection_eq_lieCorrectionZeroMixedConnectionField (I := I) (M := M) g₀ g₁ gB]
   have htwo := jet_two (I := I) (M := M) g₀ 2 2 2 (Oa + Ob')
-  rw [show lieCorrectionZeroMixedConnectionField (I := I) (M := M) g₀ g₁ gB =
-      (2 : ℝ) • (Oa + Ob') by rfl, htwo]
+  have hInner : lieCorrectionZeroMixedConnectionInnerField (I := I) (M := M) g₀ g₁ = Q := by
+    rw [lieCorrectionZeroMixedConnectionInnerField]
+  have hLifted : lieCorrectionZeroMixedConnectionLiftedField (I := I) (M := M) g₀ g₁ gB = N := by
+    rw [lieCorrectionZeroMixedConnectionLiftedField, hInner]
+  have hOuter : lieCorrectionZeroMixedConnectionOuterField (I := I) (M := M) g₀ g₁ gB = Mid := by
+    rw [lieCorrectionZeroMixedConnectionOuterField, hLifted]
+  have hHalfA : lieCorrectionZeroMixedConnectionHalfField (I := I) (M := M) g₀ g₁ gB
+      lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne = Oa := by
+    rw [lieCorrectionZeroMixedConnectionHalfField, hOuter]
+  have hHalfB : lieCorrectionZeroMixedConnectionHalfField (I := I) (M := M) g₀ g₁ gB
+      (lieCorrectionZeroSwapOutPerm * lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne) = Ob' := by
+    rw [lieCorrectionZeroMixedConnectionHalfField, hOuter]
+  have hfield : lieCorrectionZeroMixedConnectionField (I := I) (M := M) g₀ g₁ gB =
+      (2 : ℝ) • (Oa + Ob') := by
+    rw [lieCorrectionZeroMixedConnectionField, hHalfA, hHalfB]
+  rw [hfield, htwo]
   change 4 * (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g₀ 2 2 i (Oa + Ob')‖ ^ 2) ≤
     (B0 R + B1 R * A) ^ 2

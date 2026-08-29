@@ -6,6 +6,7 @@ import DifferentialGeometry.Topology.Covering.FibreEquiv
 import DifferentialGeometry.Topology.Covering.LocalDiffeomorph
 open DifferentialGeometry.Geometry.Curvature
 
+
 noncomputable section
 
 open Bundle Function Manifold Metric Module
@@ -25,7 +26,7 @@ noncomputable def roundQuotientUC
     [ChartedSpace (EuclideanSpace ℝ (Fin n)) Q]
     [IsManifold (𝓡 n) ∞ Q] [T2Space Q] [SigmaCompactSpace Q]
     [BoundarylessManifold (𝓡 n) Q]
-    [ConnectedSpace Q] [LocPathConnectedSpace Q]
+    [ConnectedSpace Q] [LocallyPathConnectedSpace Q]
     [Riemannian.Topology.SemilocallySimplyConnectedSpace Q] [Inhabited Q]
     (g : SmoothRiemannianMetric (𝓡 n) Q)
     (d : sphere (0 : E) 1 ≃ₘ⟮𝓡 n, 𝓡 n⟯ UniversalCover Q)
@@ -51,7 +52,7 @@ noncomputable def roundQuotientUC
     intro x
     dsimp only [φ]
     change d.symm ((1 : FundamentalGroup Q (default : Q)) • d x) = x
-    simp
+    rw [one_smul, d.symm_apply_apply]
   have hmul : ∀ a b x, φ (a * b) x = φ a (φ b x) := by
     intro a b x
     change d.symm ((a * b) • d x) =
@@ -136,8 +137,8 @@ noncomputable def roundQuotientUC
   let proj : sphere (0 : E) 1 → Q := UniversalCover.proj ∘ d
   have hprojSurj :
       Function.Surjective (UniversalCover.proj : UniversalCover Q → Q) := by
-    letI : PathConnectedSpace Q :=
-      PathConnectedSpace.of_locPathConnectedSpace
+    let : PathConnectedSpace Q :=
+      PathConnectedSpace.of_locallyPathConnectedSpace
     intro x
     let γ : Path (default : Q) x :=
       PathConnectedSpace.somePath default x
@@ -157,7 +158,8 @@ noncomputable def roundQuotientUC
     IsManifold.of_le (I := 𝓡 n) (M := Q) (n := (∞ : WithTop ℕ∞))
       (by simp)
   letI : IsManifold (𝓡 n) ((∞ : WithTop ℕ∞) + 1) Q := by
-    simpa only [top_add] using (inferInstance : IsManifold (𝓡 n) ∞ Q)
+    rw [ENat.coe_top_add_one]
+    infer_instance
   refine
     { Q := Q
       Γ := FundamentalGroup Q (default : Q)
@@ -167,7 +169,7 @@ noncomputable def roundQuotientUC
         (UniversalCover.proj_contMDiff (I := 𝓡 n) (M := Q)).comp d.contMDiff
       proj_smul := ?_
       proj_eq_imp := ?_
-      section_at := fun x => SectionWitness.ofLocal hsurj hloc x }
+      sectionAt := fun x => SectionWitness.ofLocal hsurj hloc x }
   · intro a x
     rw [hρ a]
     simp only [proj, Function.comp_apply]

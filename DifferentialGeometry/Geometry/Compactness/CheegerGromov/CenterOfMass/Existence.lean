@@ -19,8 +19,8 @@ open scoped Topology Manifold ContDiff ENNReal
 open DifferentialGeometry.Geometry.Riemannian
 
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -114,11 +114,11 @@ theorem grad_half_self (q : M)
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
     gradientFun (I := I) g (CenterOfMass.halfSqDist q) q =
       - (show TangentSpace I q from NormalCoordinates.normalChartAt (I := I) g q q) := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   have hlocal : IsLocalMin (CenterOfMass.halfSqDist q) q := by
     unfold IsLocalMin IsMinFilter
     refine Filter.Eventually.of_forall ?_
@@ -143,11 +143,11 @@ theorem mem :
       ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
     centerOfMass (I := I) g μ pts join p r h ∈ Metric.closedBall p (2 * r) := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact (Classical.choose_spec h.exists_cm).1
 
 theorem min :
@@ -160,11 +160,11 @@ theorem min :
       CenterOfMass.centerEnergy (I := I) g μ pts
           (centerOfMass (I := I) g μ pts join p r h) ≤
         CenterOfMass.centerEnergy (I := I) g μ pts y := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact (Classical.choose_spec h.exists_cm).2.1
 
 theorem unique :
@@ -177,11 +177,11 @@ theorem unique :
       (∀ z : M, CenterOfMass.centerEnergy (I := I) g μ pts y ≤
         CenterOfMass.centerEnergy (I := I) g μ pts z) →
       y = centerOfMass (I := I) g μ pts join p r h := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact (Classical.choose_spec h.exists_cm).2.2
 
 theorem dist_le {qstar : M} {ε : ℝ} (hε : 0 ≤ ε)
@@ -198,11 +198,11 @@ theorem dist_le {qstar : M} {ε : ℝ} (hε : 0 ≤ ε)
       ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
     dist (centerOfMass (I := I) g μ pts join p r h) qstar ≤ 2 * ε := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   obtain ⟨q, _hqmem, hqmin, hqdist, _hquniq⟩ :=
     CenterOfMass.exists_unique_curve_dist_le (I := I) g h.complete h.enorm μ pts join
       h.r_pos h.pts_mem hε hnear h.μ_nonneg h.μ_pos h.strict.mid h.strict.zero
@@ -226,11 +226,11 @@ theorem centerEnergy_diff {x : M}
       ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
     MDifferentiableAt I 𝓘(ℝ, ℝ) (CenterOfMass.centerEnergy (I := I) g μ pts) x := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   have hfun :
       CenterOfMass.centerEnergy (I := I) g μ pts =
         (∑ i : ι, μ i • CenterOfMass.halfSqDist (pts i)) := by
@@ -284,11 +284,11 @@ theorem expInv_eqn
       (show TangentSpace I (centerOfMass (I := I) g μ pts join p r h) from
         NormalCoordinates.normalChartAt (I := I) g
           (centerOfMass (I := I) g μ pts join p r h) (pts i)) = 0 := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact CenterOfMass.sum_expInv_eq_zero (I := I) (κ := ι) g μ pts
     (centerOfMass (I := I) g μ pts join p r h) (min h) hdiffEnergy hdiffSummands hgrad
 
@@ -318,11 +318,11 @@ theorem invB_eqn
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
     ∑ i : ι, μ i • invB i = 0 := by
   classical
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   have hsum := CenterOfMass.sum_grad_eq_zero (I := I) (κ := ι) g μ pts
     (centerOfMass (I := I) g μ pts join p r h) (min h)
     (centerEnergy_diff (I := I) (g := g) hdiffSummands) hdiffSummands
@@ -375,13 +375,13 @@ theorem expInv_eqn_local
           (show TangentSpace I (centerOfMass (I := I) g μ pts join p r h) from
             NormalCoordinates.normalChartAt (I := I) g
               (centerOfMass (I := I) g μ pts join p r h) (pts i)) = 0) := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
-  haveI : CompleteSpace M := h.complete
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  have : CompleteSpace M := h.complete
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   set q := centerOfMass (I := I) g μ pts join p r h
   obtain ⟨ρ, hρ, hgradρ⟩ := grad_halfSqDist (I := I) g h.enorm q
   refine ⟨ρ, hρ, ?_⟩
@@ -409,13 +409,13 @@ noncomputable def eqnRadius : ℝ :=
     (centerOfMass (I := I) g μ pts join p r h))
 
 theorem eqnRadius_pos : 0 < eqnRadius (I := I) h := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
-  haveI : CompleteSpace M := h.complete
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  have : CompleteSpace M := h.complete
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact (Classical.choose_spec (grad_halfSqDist (I := I) g h.enorm
     (centerOfMass (I := I) g μ pts join p r h))).1
 
@@ -448,13 +448,13 @@ theorem grad_eq_of_lt {pt : M}
       -(show TangentSpace I (centerOfMass (I := I) g μ pts join p r h) from
         NormalCoordinates.normalChartAt (I := I) g
           (centerOfMass (I := I) g μ pts join p r h) pt) := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
-  haveI : CompleteSpace M := h.complete
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
+  have : CompleteSpace M := h.complete
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact (Classical.choose_spec (grad_halfSqDist (I := I) g h.enorm
     (centerOfMass (I := I) g μ pts join p r h))).2 hsrc hne hsmall hdiff
 
@@ -498,11 +498,11 @@ theorem expInv_eqn_of_lt
       (show TangentSpace I (centerOfMass (I := I) g μ pts join p r h) from
         NormalCoordinates.normalChartAt (I := I) g
           (centerOfMass (I := I) g μ pts join p r h) (pts i)) = 0 := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   refine expInv_eqn h (centerEnergy_diff (I := I) (g := g) hdiffSummands)
     hdiffSummands ?_
   intro i
@@ -529,11 +529,11 @@ theorem centerOfMass_cont {P : Type*} [TopologicalSpace P] [FirstCountableTopolo
     letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
     Filter.Tendsto (fun a : P => centerOfMass (I := I) g (μ a) (pts a) join p r (H a)) (nhds p₀)
       (nhds (centerOfMass (I := I) g (μ p₀) (pts p₀) join p r (H p₀))) := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) := ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) := ⟨g.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
-  haveI : ProperSpace M :=
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  have : ProperSpace M :=
     HopfRinow.properSpace_riemMetric (I := I) (M := M) (H p₀).complete g (H p₀).enorm
   refine CenterOfMass.metricEnergy_argmin_stable (isCompact_closedBall p (2 * r))
     μ pts (fun a => centerOfMass (I := I) g (μ a) (pts a) join p r (H a)) p₀ hμ hpts ?_ ?_ ?_

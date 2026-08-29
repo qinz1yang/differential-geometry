@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
@@ -36,7 +35,7 @@ lemma exists_fiberNormSq_le_factor
   refine ⟨_, ?_, hbound⟩
   refine mul_nonneg (pow_nonneg ?_ _) (pow_nonneg hAb_nonneg _)
   unfold metricInnerOpNorm
-  exact norm_nonneg _
+  exact norm_nonneg (g.inner x)
 
 noncomputable def curvValueFrameScalar
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)

@@ -6,7 +6,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Self
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -159,6 +158,7 @@ theorem firstOrderKernel_jet_bound
             ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2) :=
   firstOrderKernel_jet_bound_background (I := I) (M := M) g g
 
+omit [SigmaCompactSpace M] in
 theorem selfLow_split_bg
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -208,6 +208,7 @@ theorem selfLow_split_bg
   rw [h']
   abel
 
+omit [SigmaCompactSpace M] in
 theorem selfLow_split
     (g : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hT : ∀ (x : M) (u v : TangentSpace I x),
@@ -359,7 +360,7 @@ theorem selfLow_jet
   have hP0 : ∀ x : M, covariantJetFiberNormSqGrid (I := I) (M := M) g P x 0 ≤ Λ := by
     intro x
     refine le_trans ?_ hΛA
-    simpa using hPsup x
+    simpa [covariantJetFiberNormSqGrid] using hPsup x
   have hP1 : ∀ x : M, covariantJetFiberNormSqGrid (I := I) (M := M) g P x 1 ≤ Λ := by
     intro x
     refine le_trans ?_ hΛB
@@ -475,7 +476,7 @@ private theorem ricciGoodMark (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} 
   exact hasMarkedGridWindow_smul (I := I) (M := M) g₀ P (1 / 2 : ℝ)
     (hasMarkedGridWindow_add (I := I) (M := M) g₀ P hLow happ)
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [CompactSpace M] in
 private lemma jetFold (g : SmoothRiemannianMetric I M) {r c : ℕ}
     (X : SmoothCcTensor g r c) (i : ℕ) (A B : ℕ → ℝ) {u v : ℝ}
     (hstep : ∀ q ∈ Finset.range (i + 1),
@@ -491,7 +492,7 @@ private lemma jetFold (g : SmoothRiemannianMetric I M) {r c : ℕ}
   rw [Finset.sum_add_distrib, ← Finset.sum_mul, ← Finset.sum_mul]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [CompactSpace M] in
 private lemma jetTrans (g : SmoothRiemannianMetric I M) {r c : ℕ}
     (X : SmoothCcTensor g r c) (i : ℕ) (A B : ℕ → ℝ)
     (hA : ∀ q, 0 ≤ A q) (hB : ∀ q, 0 ≤ B q)

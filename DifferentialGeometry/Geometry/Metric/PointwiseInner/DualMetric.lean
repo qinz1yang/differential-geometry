@@ -9,6 +9,7 @@ import Mathlib.Algebra.BigOperators.Ring.Finset
 
 noncomputable section
 
+
 open Manifold Set Filter Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
 
@@ -26,26 +27,30 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 def modelInnerAt
     (g : SmoothRiemannianMetric I M) (x : M) :
     E →L[ℝ] E →L[ℝ] ℝ :=
-  g.inner x
+  let e := tangentSpaceModelContinuousLinearEquiv (I := I) x
+  e.arrowCongr (e.arrowCongr (ContinuousLinearEquiv.refl ℝ ℝ)) (g.inner x)
 
 omit [Module.Finite ℝ E] in
 @[simp] lemma modelInnerAt_apply
     (g : SmoothRiemannianMetric I M) (x : M) (v w : E) :
-    modelInnerAt (I := I) (M := M) g x v w = g.inner x v w := rfl
+    modelInnerAt (I := I) (M := M) g x v w =
+      g.inner x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v)
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm w) := rfl
 
 omit [Module.Finite ℝ E] in
 lemma modelInnerAt_symm
     (g : SmoothRiemannianMetric I M) (x : M) (v w : E) :
     modelInnerAt (I := I) (M := M) g x v w =
       modelInnerAt (I := I) (M := M) g x w v :=
-  g.symm x v w
+  g.symm x _ _
 
 omit [Module.Finite ℝ E] in
 lemma modelInnerAt_pos_of_ne_zero
     (g : SmoothRiemannianMetric I M) (x : M)
     {v : E} (hv : v ≠ 0) :
     0 < modelInnerAt (I := I) (M := M) g x v v :=
-  g.pos x v hv
+  g.pos x _ ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm.injective.ne hv)
 
 omit [Module.Finite ℝ E] in
 lemma modelInnerAt_nonneg
@@ -67,12 +72,12 @@ lemma modelInnerAt_eq_zero_iff
 def gramMatrixAt (g : SmoothRiemannianMetric I M) (x : M) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun i j =>
-    g.inner x ((chartModelBasis E) i) ((chartModelBasis E) j)
+    modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i) ((chartModelBasis E) j)
 
 @[simp] lemma gramMatrixAt_apply (g : SmoothRiemannianMetric I M) (x : M)
     (i j : Fin (Module.finrank ℝ E)) :
     gramMatrixAt (I := I) (M := M) g x i j =
-      g.inner x ((chartModelBasis E) i) ((chartModelBasis E) j) := rfl
+      modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i) ((chartModelBasis E) j) := rfl
 
 lemma gramMatrixAt_isHermitian
     (g : SmoothRiemannianMetric I M) (x : M) :
@@ -104,44 +109,44 @@ lemma gramMatrixAt_posDef
     rw [Fintype.linearIndependent_iff] at hlin
     exact hv (funext (hlin v h))
   have hquad : star v ⬝ᵥ (gramMatrixAt (I := I) (M := M) g x) *ᵥ v =
-      g.inner x w w := by
+      modelInnerAt (I := I) (M := M) g x w w := by
     have hbilin :
-        g.inner x w w =
+        modelInnerAt (I := I) (M := M) g x w w =
           ∑ j : Fin (Module.finrank ℝ E),
             v j * ∑ i : Fin (Module.finrank ℝ E),
-              v i * g.inner x ((chartModelBasis E) i)
+              v i * modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i)
                 ((chartModelBasis E) j) := by
-      change g.inner x (∑ i, v i • (chartModelBasis E) i)
+      change modelInnerAt (I := I) (M := M) g x (∑ i, v i • (chartModelBasis E) i)
           (∑ j, v j • (chartModelBasis E) j) = _
       rw [map_sum]
       refine Finset.sum_congr rfl ?_
       intro j _
       have hsm1 :
-          (g.inner x (∑ i, v i • (chartModelBasis E) i))
+          (modelInnerAt (I := I) (M := M) g x (∑ i, v i • (chartModelBasis E) i))
               (v j • (chartModelBasis E) j)
-            = v j * (g.inner x (∑ i, v i • (chartModelBasis E) i))
+            = v j * (modelInnerAt (I := I) (M := M) g x (∑ i, v i • (chartModelBasis E) i))
               ((chartModelBasis E) j) := by
-        have hh : (g.inner x (∑ i, v i • (chartModelBasis E) i))
+        have hh : (modelInnerAt (I := I) (M := M) g x (∑ i, v i • (chartModelBasis E) i))
               (v j • (chartModelBasis E) j)
-            = v j • (g.inner x (∑ i, v i • (chartModelBasis E) i))
+            = v j • (modelInnerAt (I := I) (M := M) g x (∑ i, v i • (chartModelBasis E) i))
               ((chartModelBasis E) j) :=
           ContinuousLinearMap.map_smul
-            (g.inner x (∑ i, v i • (chartModelBasis E) i))
+            (modelInnerAt (I := I) (M := M) g x (∑ i, v i • (chartModelBasis E) i))
             (v j) ((chartModelBasis E) j)
         rw [hh, smul_eq_mul]
       rw [hsm1]
       congr 1
-      rw [map_sum, ContinuousLinearMap.sum_apply]
+      rw [map_sum, sum_apply]
       refine Finset.sum_congr rfl ?_
       intro i _
       have hsm2 :
-          (g.inner x (v i • (chartModelBasis E) i))
+          (modelInnerAt (I := I) (M := M) g x (v i • (chartModelBasis E) i))
               ((chartModelBasis E) j) =
-            v i * (g.inner x ((chartModelBasis E) i)) ((chartModelBasis E) j) := by
-        have hh : g.inner x (v i • (chartModelBasis E) i) =
-            v i • g.inner x ((chartModelBasis E) i) :=
-          ContinuousLinearMap.map_smul (g.inner x) (v i) ((chartModelBasis E) i)
-        rw [hh, ContinuousLinearMap.smul_apply, smul_eq_mul]
+            v i * (modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i)) ((chartModelBasis E) j) := by
+        have hh : modelInnerAt (I := I) (M := M) g x (v i • (chartModelBasis E) i) =
+            v i • modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i) :=
+          ContinuousLinearMap.map_smul (modelInnerAt (I := I) (M := M) g x) (v i) ((chartModelBasis E) i)
+        rw [hh, smul_apply, smul_eq_mul]
       exact hsm2
     rw [hbilin]
     have hLHS :
@@ -149,7 +154,7 @@ lemma gramMatrixAt_posDef
             star (v i) * (gramMatrixAt (I := I) (M := M) g x *ᵥ v) i =
           ∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
-              v i * v j * g.inner x ((chartModelBasis E) i)
+              v i * v j * modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i)
                 ((chartModelBasis E) j) := by
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -167,11 +172,11 @@ lemma gramMatrixAt_posDef
     have hRHS :
         ∑ j : Fin (Module.finrank ℝ E),
             v j * ∑ i : Fin (Module.finrank ℝ E),
-              v i * g.inner x ((chartModelBasis E) i)
+              v i * modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i)
                 ((chartModelBasis E) j) =
           ∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
-              v i * v j * g.inner x ((chartModelBasis E) i)
+              v i * v j * modelInnerAt (I := I) (M := M) g x ((chartModelBasis E) i)
                 ((chartModelBasis E) j) := by
       rw [Finset.sum_comm]
       refine Finset.sum_congr rfl ?_
@@ -213,18 +218,17 @@ noncomputable def separableFormAt
     (g : SmoothRiemannianMetric I M) (x : M) (r : ℕ) (v : Fin r → E) :
     ContinuousMultilinearMap ℝ (fun _ : Fin r => E) ℝ :=
   (ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-    (fun i => g.inner x (v i))
+    (fun i => modelInnerAt (I := I) (M := M) g x (v i))
 
 omit [Module.Finite ℝ E] in
 @[simp]
 lemma separableFormAt_apply
     (g : SmoothRiemannianMetric I M) (x : M) (r : ℕ) (v w : Fin r → E) :
     separableFormAt (I := I) (M := M) g x r v w =
-      ∏ i : Fin r, g.inner x (v i) (w i) := by
+      ∏ i : Fin r, modelInnerAt (I := I) (M := M) g x (v i) (w i) := by
   unfold separableFormAt
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
     ContinuousMultilinearMap.mkPiAlgebra_apply]
-  rfl
 
 private noncomputable def lowerAllUpperIndicesFn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
@@ -304,25 +308,25 @@ private lemma separableFormAt_update_add
   classical
   refine ContinuousMultilinearMap.ext ?_
   intro w
-  simp only [separableFormAt_apply, ContinuousMultilinearMap.add_apply]
-  rw [Finset.prod_eq_mul_prod_diff_singleton_of_mem (Finset.mem_univ i)]
-  rw [Finset.prod_eq_mul_prod_diff_singleton_of_mem (Finset.mem_univ i)]
-  rw [Finset.prod_eq_mul_prod_diff_singleton_of_mem (Finset.mem_univ i)]
+  simp only [separableFormAt_apply, add_apply]
+  rw [Finset.prod_eq_mul_prod_sdiff_singleton_of_mem (Finset.mem_univ i)]
+  rw [Finset.prod_eq_mul_prod_sdiff_singleton_of_mem (Finset.mem_univ i)]
+  rw [Finset.prod_eq_mul_prod_sdiff_singleton_of_mem (Finset.mem_univ i)]
   simp only [Finset.sdiff_singleton_eq_erase, Function.update_self]
   have hrest : ∀ (c : E),
-      ∏ k ∈ Finset.univ.erase i, g.inner x (Function.update v i c k) (w k)
-        = ∏ k ∈ Finset.univ.erase i, g.inner x (v k) (w k) := by
+      ∏ k ∈ Finset.univ.erase i, modelInnerAt (I := I) (M := M) g x (Function.update v i c k) (w k)
+        = ∏ k ∈ Finset.univ.erase i, modelInnerAt (I := I) (M := M) g x (v k) (w k) := by
     intro c
     refine Finset.prod_congr rfl ?_
     intro k hk
     rw [Finset.mem_erase] at hk
     rw [Function.update_of_ne hk.1]
   rw [hrest, hrest, hrest]
-  have h_inner_add : g.inner x (a + b) (w i) =
-      g.inner x a (w i) + g.inner x b (w i) := by
-    have : g.inner x (a + b) = g.inner x a + g.inner x b :=
-      ContinuousLinearMap.map_add (g.inner x) a b
-    rw [this, ContinuousLinearMap.add_apply]
+  have h_inner_add : modelInnerAt (I := I) (M := M) g x (a + b) (w i) =
+      modelInnerAt (I := I) (M := M) g x a (w i) + modelInnerAt (I := I) (M := M) g x b (w i) := by
+    have : modelInnerAt (I := I) (M := M) g x (a + b) = modelInnerAt (I := I) (M := M) g x a + modelInnerAt (I := I) (M := M) g x b :=
+      ContinuousLinearMap.map_add (modelInnerAt (I := I) (M := M) g x) a b
+    rw [this, add_apply]
   rw [h_inner_add]
   ring
 
@@ -336,24 +340,24 @@ private lemma separableFormAt_update_smul
   classical
   refine ContinuousMultilinearMap.ext ?_
   intro w
-  simp only [separableFormAt_apply, ContinuousMultilinearMap.smul_apply,
+  simp only [separableFormAt_apply, smul_apply,
     smul_eq_mul]
-  rw [Finset.prod_eq_mul_prod_diff_singleton_of_mem (Finset.mem_univ i)]
-  rw [Finset.prod_eq_mul_prod_diff_singleton_of_mem (Finset.mem_univ i)]
+  rw [Finset.prod_eq_mul_prod_sdiff_singleton_of_mem (Finset.mem_univ i)]
+  rw [Finset.prod_eq_mul_prod_sdiff_singleton_of_mem (Finset.mem_univ i)]
   simp only [Finset.sdiff_singleton_eq_erase, Function.update_self]
   have hrest : ∀ (c' : E),
-      ∏ k ∈ Finset.univ.erase i, g.inner x (Function.update v i c' k) (w k)
-        = ∏ k ∈ Finset.univ.erase i, g.inner x (v k) (w k) := by
+      ∏ k ∈ Finset.univ.erase i, modelInnerAt (I := I) (M := M) g x (Function.update v i c' k) (w k)
+        = ∏ k ∈ Finset.univ.erase i, modelInnerAt (I := I) (M := M) g x (v k) (w k) := by
     intro c'
     refine Finset.prod_congr rfl ?_
     intro k hk
     rw [Finset.mem_erase] at hk
     rw [Function.update_of_ne hk.1]
   rw [hrest, hrest]
-  have h_inner_smul : g.inner x (c • a) (w i) = c * g.inner x a (w i) := by
-    have : g.inner x (c • a) = c • g.inner x a :=
-      ContinuousLinearMap.map_smul (g.inner x) c a
-    rw [this, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  have h_inner_smul : modelInnerAt (I := I) (M := M) g x (c • a) (w i) = c * modelInnerAt (I := I) (M := M) g x a (w i) := by
+    have : modelInnerAt (I := I) (M := M) g x (c • a) = c • modelInnerAt (I := I) (M := M) g x a :=
+      ContinuousLinearMap.map_smul (modelInnerAt (I := I) (M := M) g x) c a
+    rw [this, smul_apply, smul_eq_mul]
   rw [h_inner_smul]
   ring
 
@@ -376,7 +380,7 @@ private noncomputable def lowerAllUpperIndicesML
           update_castAdd_first]
       rw [separableFormAt_update_add,
           ContinuousLinearMap.map_add,
-          ContinuousMultilinearMap.add_apply]
+          add_apply]
     · intro j'
       simp only [lowerAllUpperIndicesFn]
       rw [update_natAdd_last_noop_first,
@@ -395,7 +399,7 @@ private noncomputable def lowerAllUpperIndicesML
           update_castAdd_first]
       rw [separableFormAt_update_smul,
           ContinuousLinearMap.map_smul,
-          ContinuousMultilinearMap.smul_apply]
+          smul_apply]
     · intro j'
       simp only [lowerAllUpperIndicesFn]
       rw [update_natAdd_last_noop_first,
@@ -420,7 +424,7 @@ private lemma lowerAllUpperIndicesML_norm_bound
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (T : TensorRSModel r s ℝ E) (v : Fin (r + s) → E) :
     ‖lowerAllUpperIndicesML (I := I) (M := M) g r s x T v‖
-      ≤ (‖T‖ * ∏ _i : Fin r, ‖g.inner x‖) *
+      ≤ (‖T‖ * ∏ _i : Fin r, ‖modelInnerAt (I := I) (M := M) g x‖) *
         ∏ j : Fin (r + s), ‖v j‖ := by
   classical
   rw [lowerAllUpperIndicesML_apply]
@@ -431,18 +435,18 @@ private lemma lowerAllUpperIndicesML_norm_bound
   set α := separableFormAt (I := I) (M := M) g x r
       (fun i : Fin r => v (Fin.castAdd s i)) with hα_def
   have hα_bound :
-      ‖α‖ ≤ ∏ i : Fin r, ‖g.inner x‖ * ‖v (Fin.castAdd s i)‖ := by
+      ‖α‖ ≤ ∏ i : Fin r, ‖modelInnerAt (I := I) (M := M) g x‖ * ‖v (Fin.castAdd s i)‖ := by
     rw [hα_def]
     change ‖(ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-            (fun i => g.inner x (v (Fin.castAdd s i)))‖ ≤ _
+            (fun i => modelInnerAt (I := I) (M := M) g x (v (Fin.castAdd s i)))‖ ≤ _
     have h₁ :
         ‖(ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-            (fun i => g.inner x (v (Fin.castAdd s i)))‖
+            (fun i => modelInnerAt (I := I) (M := M) g x (v (Fin.castAdd s i)))‖
           ≤ ‖ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ‖ *
-            ∏ i : Fin r, ‖g.inner x (v (Fin.castAdd s i))‖ :=
+            ∏ i : Fin r, ‖modelInnerAt (I := I) (M := M) g x (v (Fin.castAdd s i))‖ :=
       ContinuousMultilinearMap.norm_compContinuousLinearMap_le
         (ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ)
-        (fun i => g.inner x (v (Fin.castAdd s i)))
+        (fun i => modelInnerAt (I := I) (M := M) g x (v (Fin.castAdd s i)))
     have h_mkPi : ‖ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ‖ = 1 :=
       ContinuousMultilinearMap.norm_mkPiAlgebra
     rw [h_mkPi] at h₁
@@ -450,24 +454,24 @@ private lemma lowerAllUpperIndicesML_norm_bound
     refine h₁.trans ?_
     refine Finset.prod_le_prod (fun _ _ => norm_nonneg _) ?_
     intro i _
-    exact (g.inner x).le_opNorm (v (Fin.castAdd s i))
+    exact (modelInnerAt (I := I) (M := M) g x).le_opNorm (v (Fin.castAdd s i))
   calc ‖T α (fun j : Fin s => v (Fin.natAdd r j))‖
       ≤ ‖T α‖ * ∏ j : Fin s, ‖v (Fin.natAdd r j)‖ :=
         ContinuousMultilinearMap.le_opNorm _ _
     _ ≤ (‖T‖ * ‖α‖) * ∏ j : Fin s, ‖v (Fin.natAdd r j)‖ := by
         gcongr
         exact T.le_opNorm α
-    _ ≤ (‖T‖ * (∏ i : Fin r, ‖g.inner x‖ * ‖v (Fin.castAdd s i)‖)) *
+    _ ≤ (‖T‖ * (∏ i : Fin r, ‖modelInnerAt (I := I) (M := M) g x‖ * ‖v (Fin.castAdd s i)‖)) *
           ∏ j : Fin s, ‖v (Fin.natAdd r j)‖ := by
         gcongr
-    _ = (‖T‖ * (∏ i : Fin r, ‖g.inner x‖) *
+    _ = (‖T‖ * (∏ i : Fin r, ‖modelInnerAt (I := I) (M := M) g x‖) *
             (∏ i : Fin r, ‖v (Fin.castAdd s i)‖)) *
           ∏ j : Fin s, ‖v (Fin.natAdd r j)‖ := by
         rw [Finset.prod_mul_distrib]; ring
-    _ = (‖T‖ * ∏ i : Fin r, ‖g.inner x‖) *
+    _ = (‖T‖ * ∏ i : Fin r, ‖modelInnerAt (I := I) (M := M) g x‖) *
           ((∏ i : Fin r, ‖v (Fin.castAdd s i)‖) *
             ∏ j : Fin s, ‖v (Fin.natAdd r j)‖) := by ring
-    _ = (‖T‖ * ∏ i : Fin r, ‖g.inner x‖) *
+    _ = (‖T‖ * ∏ i : Fin r, ‖modelInnerAt (I := I) (M := M) g x‖) *
           ∏ j : Fin (r + s), ‖v j‖ := by rw [← hsplit]
 
 private noncomputable def lowerAllUpperIndicesCMLM
@@ -475,7 +479,7 @@ private noncomputable def lowerAllUpperIndicesCMLM
     (T : TensorRSModel r s ℝ E) :
     ContinuousMultilinearMap ℝ (fun _ : Fin (r + s) => E) ℝ :=
   (lowerAllUpperIndicesML (I := I) (M := M) g r s x T).mkContinuous
-    (‖T‖ * ∏ _i : Fin r, ‖g.inner x‖)
+    (‖T‖ * ∏ _i : Fin r, ‖modelInnerAt (I := I) (M := M) g x‖)
     (lowerAllUpperIndicesML_norm_bound (I := I) (M := M) g r s x T)
 
 @[simp]
@@ -495,7 +499,7 @@ private lemma lowerAllUpperIndicesCMLM_zero
     lowerAllUpperIndicesCMLM (I := I) (M := M) g r s x 0 = 0 := by
   refine ContinuousMultilinearMap.ext ?_
   intro v
-  rw [lowerAllUpperIndicesCMLM_apply, ContinuousMultilinearMap.zero_apply]
+  rw [lowerAllUpperIndicesCMLM_apply, zero_apply]
   rfl
 
 private lemma lowerAllUpperIndicesCMLM_add
@@ -506,7 +510,7 @@ private lemma lowerAllUpperIndicesCMLM_add
         lowerAllUpperIndicesCMLM (I := I) (M := M) g r s x T₂ := by
   refine ContinuousMultilinearMap.ext ?_
   intro v
-  simp [ContinuousLinearMap.add_apply, ContinuousMultilinearMap.add_apply]
+  simp [add_apply]
 
 private lemma lowerAllUpperIndicesCMLM_smul
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
@@ -515,7 +519,7 @@ private lemma lowerAllUpperIndicesCMLM_smul
       c • lowerAllUpperIndicesCMLM (I := I) (M := M) g r s x T := by
   refine ContinuousMultilinearMap.ext ?_
   intro v
-  simp [ContinuousLinearMap.smul_apply, ContinuousMultilinearMap.smul_apply]
+  simp [smul_apply, smul_apply]
 
 private noncomputable def lowerAllUpperIndicesAddHom
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) :
@@ -531,7 +535,7 @@ private lemma lowerAllUpperIndicesCMLM_norm_bound
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (T : TensorRSModel r s ℝ E) :
     ‖lowerAllUpperIndicesCMLM (I := I) (M := M) g r s x T‖
-      ≤ (∏ _i : Fin r, ‖g.inner x‖) * ‖T‖ := by
+      ≤ (∏ _i : Fin r, ‖modelInnerAt (I := I) (M := M) g x‖) * ‖T‖ := by
   refine ContinuousMultilinearMap.opNorm_le_bound ?_ ?_
   · exact mul_nonneg (Finset.prod_nonneg
       (fun _ _ => norm_nonneg _)) (norm_nonneg _)
@@ -544,9 +548,9 @@ private lemma lowerAllUpperIndicesCMLM_norm_bound
       rw [lowerAllUpperIndicesCMLM_apply, lowerAllUpperIndicesML_apply]
     rw [heval]
     calc ‖lowerAllUpperIndicesML (I := I) (M := M) g r s x T v‖
-        ≤ (‖T‖ * ∏ _i : Fin r, ‖g.inner x‖) *
+        ≤ (‖T‖ * ∏ _i : Fin r, ‖modelInnerAt (I := I) (M := M) g x‖) *
             ∏ j : Fin (r + s), ‖v j‖ := h
-      _ = (∏ _i : Fin r, ‖g.inner x‖) * ‖T‖ *
+      _ = (∏ _i : Fin r, ‖modelInnerAt (I := I) (M := M) g x‖) * ‖T‖ *
             ∏ j : Fin (r + s), ‖v j‖ := by ring
 
 noncomputable def lowerAllUpperIndices
@@ -558,7 +562,7 @@ noncomputable def lowerAllUpperIndices
   map_smul' := lowerAllUpperIndicesCMLM_smul (I := I) (M := M) g r s x
   cont := AddMonoidHomClass.continuous_of_bound
     (lowerAllUpperIndicesAddHom (I := I) (M := M) g r s x)
-    (∏ i : Fin r, ‖g.inner x‖) (fun T =>
+    (∏ i : Fin r, ‖modelInnerAt (I := I) (M := M) g x‖) (fun T =>
       (lowerAllUpperIndicesCMLM_norm_bound
         (I := I) (M := M) g r s x T).trans_eq (by ring))
 
@@ -633,7 +637,7 @@ private lemma cmlm_eq_zero_of_basis_zero
     (e := fun _ : Fin p => chartModelBasis E) ?_
   intro v
   rw [ContinuousMultilinearMap.toMultilinearMap_zero,
-    MultilinearMap.zero_apply]
+    zero_apply]
   exact h v
 
 private lemma tensor0SModel_ext_basis
@@ -684,7 +688,7 @@ theorem lowerAllUpperIndices_injective
           (fun k : Fin r => (chartModelBasis E) (idx k)) := by
     refine tensor0SModel_ext_basis _ _ ?_
     intro kdx'
-    rw [ContinuousMultilinearMap.sum_apply]
+    rw [sum_apply]
     have hRHS_step :
         (∑ idx : Fin r → Fin n,
           (c idx • separableFormAt (I := I) (M := M) g x r
@@ -694,7 +698,7 @@ theorem lowerAllUpperIndices_injective
             c idx * ∏ k : Fin r, G (idx k) (kdx' k) := by
       refine Finset.sum_congr rfl ?_
       intro idx _
-      rw [ContinuousMultilinearMap.smul_apply, smul_eq_mul,
+      rw [smul_apply, smul_eq_mul,
         separableFormAt_basis_apply]
     rw [hRHS_step]
     have hRHS_expand :
@@ -808,10 +812,10 @@ theorem lowerAllUpperIndices_injective
     rw [hsimplify]
   rw [hspan]
   rw [map_sum]
-  rw [ContinuousMultilinearMap.sum_apply]
+  rw [sum_apply]
   refine Finset.sum_eq_zero ?_
   intro idx _
-  rw [ContinuousLinearMap.map_smul, ContinuousMultilinearMap.smul_apply,
+  rw [ContinuousLinearMap.map_smul, smul_apply,
     smul_eq_mul]
   rw [hTβ idx, mul_zero]
 

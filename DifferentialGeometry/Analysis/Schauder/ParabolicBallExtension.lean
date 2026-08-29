@@ -58,11 +58,11 @@ theorem parabolicBallCutoffExtension_holderWith
     (center : V) {r R : Real} (hr : 0 ≤ r) (hrR : r < R)
     (f0 : F) (f : ParabolicPoint V → F)
     (hf : HolderWith Kf alpha
-      ((parabolicCylinder J (Metric.ball center R)).restrict f))
+      ((parabolicCylinder J (Metric.ball center R)).domRestrict f))
     (hfNorm : ∀ p, p ∈ parabolicCylinder J (Metric.ball center R) →
       ‖f p‖ ≤ Mf) :
     HolderWith (parabolicBallCutoffExtensionHolderConst r R Kf Mf f0)
-      alpha ((parabolicCylinder J Set.univ).restrict
+      alpha ((parabolicCylinder J Set.univ).domRestrict
         (parabolicBallCutoffExtension center r R f0 f)) := by
   let Q := parabolicCylinder J (Set.univ : Set V)
   let U := parabolicCylinder J (Metric.ball center R)
@@ -78,14 +78,15 @@ theorem parabolicBallCutoffExtension_holderWith
     have hcomp := (ballCutoff_holderWith (center := center)
       hr hrR halpha0 halpha1).comp
       hspace.holderWith
-    simpa only [chi, NNReal.one_rpow, mul_one, Function.comp_apply] using hcomp
+    intro p q
+    simpa only [chi, NNReal.one_rpow, mul_one, Function.comp_apply] using hcomp p q
   have hchi : HolderWith (ballCutoffHolderConst r R) alpha
-      (Q.restrict chi) := hchiGlobal.holderOnWith Q |>.holderWith
+      (Q.domRestrict chi) := hchiGlobal.holderOnWith Q |>.holderWith
   have hQU : Q ∩ U = U := by
     apply Set.inter_eq_right.mpr
     intro p hp
     exact ⟨hp.1, Set.mem_univ p.space⟩
-  have hf' : HolderWith Kf alpha ((Q ∩ U).restrict f) := by
+  have hf' : HolderWith Kf alpha ((Q ∩ U).domRestrict f) := by
     rw [hQU]
     exact hf
   have hchiNorm : ∀ p, p ∈ Q → p ∈ U → ‖chi p‖ ≤ (1 : NNReal) := by

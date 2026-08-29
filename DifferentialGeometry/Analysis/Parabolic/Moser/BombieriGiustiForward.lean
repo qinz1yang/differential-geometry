@@ -352,7 +352,7 @@ theorem localizedSpacetimeRpowNorm_le_canonicalEarlyBombieriGiustiReverseCost_of
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc A τ, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     ∀ k {p : ℝ}, 0 < p → p < p₀ →
       localizedSpacetimeRpowNorm (I := I) (M := M)
@@ -428,7 +428,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalBombieriGiustiThre
         outer.toFun x ^ 2)
     (hmass : 0 < cutoffMass (I := I) (M := M) averagingCutoff)
     (hpde : ∀ t ∈ Icc A τ, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t)
     (hsummable : Summable (fun k : ℕ =>
       (3 / 4 : ℝ) ^ k *
@@ -448,7 +448,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalBombieriGiustiThre
           (canonicalEarlyBombieriGiustiReverseCost (I := I) (M := M)
             (Module.finrank ℝ E) g hdim p₀ A b τ B lower upper k) / 4)) := by
   let n := Module.finrank ℝ E
-  letI : NeZero n := by
+  let : NeZero n := by
     refine ⟨Nat.ne_of_gt ?_⟩
     exact_mod_cast (by linarith : 0 < (n : ℝ))
   let rate := logCenterDrift (I := I) (M := M) g averagingCutoff
@@ -458,7 +458,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalBombieriGiustiThre
   have hv := contMDiff_exponentialTimeRescale rate center u hu
   have hvpos := exponentialTimeRescale_pos rate center u hpos
   have hvpde : ∀ t ∈ Icc A τ, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g v hv t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g v hv t).toContMDiffMap x ≤
         deriv (fun q => v q x) t := by
     intro t ht x
     exact centered_exponential_time_rescale_supersolution
@@ -532,7 +532,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalBombieriGiustiThre
         outer.toFun x ^ 2)
     (hmass : 0 < cutoffMass (I := I) (M := M) averagingCutoff)
     (hpde : ∀ t ∈ Icc A τ, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     let rate := logCenterDrift (I := I) (M := M) g averagingCutoff
     let center := shiftedLogCenter (I := I) (M := M) g averagingCutoff
@@ -550,7 +550,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalBombieriGiustiThre
       g hdim rho outer averagingCutoff C hC hP u hu hpos hp₀ hp₀_one
         hAb hbτ hB hlowerUpper hrho hmeasure hmeasure_le_one houter hmass hpde
   let n := Module.finrank ℝ E
-  letI : NeZero n := by
+  let : NeZero n := by
     refine ⟨Nat.ne_of_gt ?_⟩
     exact_mod_cast (by linarith : 0 < (n : ℝ))
   have hc₀ : 0 ≤

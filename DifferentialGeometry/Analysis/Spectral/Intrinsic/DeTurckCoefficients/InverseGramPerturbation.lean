@@ -167,23 +167,23 @@ lemma exists_chartInvGramMatrix_entry_bound_on_compact
       |chartInvGramMatrix (I := I) g α x p q| ≤ M_b := by
   classical
   have h_cont : ContinuousOn
-      (chartInvGramMatrix_l1Sum (I := I) (M := M) g α) (chartAt H α).source :=
+      (chartInvGramMatrixL1Sum (I := I) (M := M) g α) (chartAt H α).source :=
     chartInvGramMatrix_l1Sum_continuousOn (I := I) (M := M) g α
   have h_cont_K : ContinuousOn
-      (chartInvGramMatrix_l1Sum (I := I) (M := M) g α) K := h_cont.mono hKsub
+      (chartInvGramMatrixL1Sum (I := I) (M := M) g α) K := h_cont.mono hKsub
   by_cases h_empty : K = ∅
   · exact ⟨0, le_refl 0, fun x hx => absurd (h_empty ▸ hx) (Set.notMem_empty _)⟩
   obtain ⟨C, hC⟩ := hK.bddAbove_image h_cont_K
   refine ⟨max C 0, le_max_right _ _, ?_⟩
   intro x hx p q
-  have h_l1_le : chartInvGramMatrix_l1Sum (I := I) (M := M) g α x ≤ C :=
+  have h_l1_le : chartInvGramMatrixL1Sum (I := I) (M := M) g α x ≤ C :=
     hC ⟨x, hx, rfl⟩
   have h_l1_eq :
-      chartInvGramMatrix_l1Sum (I := I) (M := M) g α x =
+      chartInvGramMatrixL1Sum (I := I) (M := M) g α x =
         matrixEntryL1 (chartInvGramMatrix (I := I) g α x) := rfl
   have h_entry_le :
       |chartInvGramMatrix (I := I) g α x p q| ≤
-        chartInvGramMatrix_l1Sum (I := I) (M := M) g α x := by
+        chartInvGramMatrixL1Sum (I := I) (M := M) g α x := by
     rw [h_l1_eq]
     exact abs_entry_le_matrixEntryL1 (chartInvGramMatrix (I := I) g α x) p q
   exact h_entry_le.trans (h_l1_le.trans (le_max_left _ _))
@@ -237,7 +237,7 @@ theorem chartInvGram_pou_lip
       Λ⁻¹ * gBase.inner b v v ≤ (gSeq k).inner b v v ∧
         (gSeq k).inner b v v ≤ Λ * gBase.inner b v v) :
     ∃ C : ℝ, 0 < C ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k₁ k₂ : ι, ∀ b ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ p q : Fin (Module.finrank ℝ E),

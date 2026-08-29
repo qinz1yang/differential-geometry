@@ -21,7 +21,7 @@ namespace Integral
 namespace DivergenceTheorem
 namespace WithBoundary
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -33,7 +33,6 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-omit [InnerProductSpace ℝ E] in
 theorem integral_localDivergenceWithin_eq_of_interior_overlap_support
     (g : SmoothRiemannianMetric I M) (α β : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -92,7 +91,6 @@ theorem integral_localDivergenceWithin_eq_of_interior_overlap_support
           ∂((chartLocalMeasure (I := I) g β).restrict U) from rfl]
   rw [h_meas_eq]
 
-omit [InnerProductSpace ℝ E] in
 private lemma chartLocalMeasure_open_pos_of_interior_mem
     (g : SmoothRiemannianMetric I M) (α : M)
     {V : Set M} (hVopen : IsOpen V) {x₁ : M} (hx₁V : x₁ ∈ V)
@@ -173,7 +171,7 @@ private lemma chartLocalMeasure_open_pos_of_interior_mem
       ∫⁻ y in W, ENNReal.ofReal (chartDensity g α ((extChartAt I α).symm y)) *
           V.indicator (fun _ => (1 : ℝ≥0∞)) ((extChartAt I α).symm y)
             ∂(modelHaar (E := E)) = 0 :=
-    le_antisymm (not_lt.mp h0') (zero_le _)
+    le_antisymm (not_lt.mp h0') bot_le
   have haem_density_T : AEMeasurable
       (fun y : E => chartDensity g α ((extChartAt I α).symm y))
       ((modelHaar (E := E)).restrict (extChartAt I α).target) := by
@@ -246,7 +244,6 @@ private lemma exists_open_nbhd_positive
   intro y hy
   exact hV₀ y (hW_sub hy.1)
 
-omit [InnerProductSpace ℝ E] in
 private lemma exists_smooth_bump_in_open [T2Space M]
     {V : Set M} (hVopen : IsOpen V) {x : M} (hxV : x ∈ V) :
     ∃ φ : M → ℝ, ContMDiff I 𝓘(ℝ) ∞ φ ∧ HasCompactSupport φ ∧
@@ -259,11 +256,10 @@ private lemma exists_smooth_bump_in_open [T2Space M]
   · intro y; exact f.nonneg
   · rw [f.eq_one]; exact one_pos
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] in
+omit [Module.Finite ℝ E] in
 private lemma isOpen_interior_M : IsOpen (I.interior M) :=
   I.isOpen_interior (M := M) (n := ∞) (by exact (by decide : (∞ : WithTop ℕ∞) ≠ 0))
 
-omit [InnerProductSpace ℝ E] in
 private theorem localDivergenceWithin_chart_invariance_pos [T2Space M]
     (g : SmoothRiemannianMetric I M) (α β : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -576,7 +572,6 @@ private theorem localDivergenceWithin_chart_invariance_pos [T2Space M]
       _ ≤ ∫ y, Δ y * φ y ∂(chartLocalMeasure (I := I) g α) := hLB_total
   linarith
 
-omit [InnerProductSpace ℝ E] in
 theorem localDivergenceWithin_chart_invariance [T2Space M]
     (g : SmoothRiemannianMetric I M) (α β : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)

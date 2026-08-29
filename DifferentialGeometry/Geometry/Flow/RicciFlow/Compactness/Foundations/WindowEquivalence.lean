@@ -97,18 +97,19 @@ theorem metricEquiv_open
       (mul_nonneg (by norm_num) hA)
   refine ⟨A, Bmax, hA, hBmax, hB, ?_⟩
   intro k
-  letI : TopologicalSpace (X.term k).M := (X.term k).topology
-  letI : ChartedSpace H (X.term k).M := (X.term k).charted
-  letI : T2Space (X.term k).M := (X.term k).t2
-  letI : IsManifold I ∞ (X.term k).M := (X.term k).smooth
-  letI : SigmaCompactSpace (X.term k).M := (X.term k).sigmaCompact
+  let : TopologicalSpace (X.term k).M := (X.term k).topology
+  let : ChartedSpace H (X.term k).M := (X.term k).charted
+  let : T2Space (X.term k).M := (X.term k).t2
+  let : IsManifold I ∞ (X.term k).M := (X.term k).smooth
+  let : SigmaCompactSpace (X.term k).M := (X.term k).sigmaCompact
   let Sseq : Nat → PDE.RicciFlow.SolutionOn (I := I) (M := (X.term k).M) X.D :=
     fun _ => (X.term k).S
   have hSseq : ∀ i : Nat, PDE.RicciFlow.IsSolutionOn (I := I) (Sseq i) :=
     fun _ => (X.term k).isSolution
   have hquad := twoTensorQuadBound_of_solutions (I := I) Sseq Set.univ
     beta psi C (fun _ t ht x _ => by
-      simpa only [PointedFlowData.rmNormSq, Sseq] using hcurvC k t ht x)
+      simpa only [PointedFlowData.rmNormSq, Sseq, SolutionOn.family_metric] using
+        hcurvC k t ht x)
   have hequiv0 : ∀ i : Nat,
       MetricUniformEquivalentOn (I := I) Set.univ
         ((X.term k).S.family.metric 0) ((Sseq i).family.metric 0) 1 := by

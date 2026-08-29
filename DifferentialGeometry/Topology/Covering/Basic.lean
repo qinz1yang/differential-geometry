@@ -1,5 +1,5 @@
 import Mathlib.Topology.Bases
-import Mathlib.Topology.Connected.LocPathConnected
+import Mathlib.Topology.Connected.LocallyPathConnected
 import Mathlib.Topology.Connected.PathConnected
 import Mathlib.Topology.Homotopy.Path
 import DifferentialGeometry.Topology.Covering.SemilocallySimplyConnected
@@ -77,7 +77,7 @@ theorem basis_trans_shift
       (_root_.Path.Homotopic.Quotient.mk η'))
 
 theorem basis_intersection
-    [LocPathConnectedSpace X]
+    [LocallyPathConnectedSpace X]
     {p₁ p₂ r : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X}
     {U₁ U₂ : Set X} (hU₁ : IsOpen U₁)
     (hU₂ : IsOpen U₂)
@@ -158,7 +158,7 @@ theorem basis_covers
   exact (_root_.Path.Homotopic.Quotient.trans_refl q.2).symm
 
 theorem basis_assemble
-    [LocPathConnectedSpace X] :
+    [LocallyPathConnectedSpace X] :
     TopologicalSpace.IsTopologicalBasis
       { S : Set (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X) |
           ∃ (p : DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X)

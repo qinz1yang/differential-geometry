@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapLinear
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -12,7 +11,7 @@ open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
-open DifferentialGeometry.Analysis.Elliptic
+open _root_.DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -85,7 +84,7 @@ theorem top_path_h1_uniform
   have hlow' := hlow g hEq hjet U
   rw [top_path_split (I := I) (M := M) g T T'
     hδ_lt hδ hδ'_lt hδ' U, ccTensorToHs_add]
-  simpa only [mul_assoc] using
+  simpa only [mul_assoc, iteratedCovGrad_zero] using
     (norm_add_le _ _).trans (add_le_add htop hlow')
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

@@ -35,7 +35,7 @@ private theorem metric_inner_smul_self
     g.inner x (c • v) (c • v) = c ^ 2 * g.inner x v v := by
   have h1 : ∀ w : TangentSpace I x, g.inner x (c • v) w = c * g.inner x v w := by
     intro w
-    rw [(g.inner x).map_smul c v, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [(g.inner x).map_smul c v, smul_apply, smul_eq_mul]
   rw [h1 (c • v), g.symm x v (c • v), h1 v]
   ring
 
@@ -51,7 +51,7 @@ theorem tensor02_quadForm_le_of_unit_bound
     have hQ0 : Q (vec2 (I := I) (0 : TangentSpace I x) 0) = 0 :=
       Q.map_coord_zero (i := 0) (by simp [vec2])
     have hg0 : g.inner x (0 : TangentSpace I x) 0 = 0 := by
-      rw [(g.inner x).map_zero, ContinuousLinearMap.zero_apply]
+      rw [(g.inner x).map_zero, zero_apply]
     rw [hQ0, hg0, mul_zero]
   · have hpos : 0 < g.inner x v v := g.pos x v hv
     set c := (Real.sqrt (g.inner x v v))⁻¹ with hcdef

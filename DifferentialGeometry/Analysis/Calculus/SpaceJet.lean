@@ -182,7 +182,8 @@ theorem spaceJet_comp
   have hup : ContDiffAt ℝ r (u p.1) p.2 :=
     ((hus p.1 hp.1 p.2 hp.2).contDiffAt (hV.mem_nhds hp.2)).of_le
       (by exact_mod_cast le_top)
-  simpa only [FormalMultilinearSeries.taylorComp, Function.comp_def] using
+  simpa only [FormalMultilinearSeries.taylorComp,
+    FormalMultilinearSeries.compAlongOrderedFinpartition, ftaylorSeries, Function.comp_def] using
     iteratedFDeriv_comp hΦp hup le_rfl
 
 theorem spaceJet_comp_Icc
@@ -261,7 +262,8 @@ theorem spaceJet_comp_Icc
   have hup : ContDiffAt ℝ r (u p.1) p.2 :=
     ((hus p.1 hp.1 p.2 hp.2).contDiffAt (hV.mem_nhds hp.2)).of_le
       (by exact_mod_cast le_top)
-  simpa only [FormalMultilinearSeries.taylorComp, Function.comp_def] using
+  simpa only [FormalMultilinearSeries.taylorComp,
+    FormalMultilinearSeries.compAlongOrderedFinpartition, ftaylorSeries, Function.comp_def] using
     iteratedFDeriv_comp hΦp hup le_rfl
 
 theorem SpaceJetDiff.fderiv
@@ -368,7 +370,7 @@ theorem SpaceJetDiff.jet2
           _root_.fderiv ℝ (fun y => _root_.fderiv ℝ (G t) y) x)) V := by
     intro t ht
     exact (hG₁s t ht).prodMk (hG₂s t ht)
-  simpa only [jet2] using hG.prodMk hV hGs hderivS hderiv
+  simpa only [DifferentialGeometry.Analysis.jet2] using hG.prodMk hV hGs hderivS hderiv
 
 theorem jet2_sub_le
     {f g : E → F} {x : E} {B : ℝ}

@@ -95,7 +95,7 @@ private lemma extendedDensity_eq_density_of_chi_one
   rw [hχ_one]; ring
 
 private theorem exists_smooth_metric_extension_with_density
-    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
+    [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
     {K : Set EuclN}
     (hK : IsCompact K)
@@ -218,15 +218,15 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
         0 < |h| → |h| ≤ R₀ →
           eLpNorm
             (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (D.weak_partial i)) 2
+              (d := Module.finrank ℝ E) k h (D.weakPartial i)) 2
             ((volume : Measure EuclN).restrict Ω'')
           ≤ ENNReal.ofReal (C_geom i k * Real.sqrt (
               (∑ l : Fin (Module.finrank ℝ E),
-                (eLpNorm (D.weak_partial l) 2
+                (eLpNorm (D.weakPartial l) 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)
-              + (eLpNorm D.u_chart 2
+              + (eLpNorm D.uChart 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2
-              + (eLpNorm D.f_chart 2
+              + (eLpNorm D.fChart 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)) := by
   classical
   have hη_tsupp_compact : IsCompact (tsupport η) := hη_supp
@@ -366,12 +366,12 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
     chartBilinear_master_nonsmooth_discharge (I := I) (M := M) D B hη hη_supp
       hΩ'_chart hη_in_Ω' hR₀_pos hh_supp_in_Ω'
       hB_a_match hB_c_match
-  set u_g : EuclN → ℝ := fun x => χ x * D.u_chart x with hu_g_def
+  set u_g : EuclN → ℝ := fun x => χ x * D.uChart x with hu_g_def
   set g_g : Fin (Module.finrank ℝ E) → EuclN → ℝ := fun i x =>
-    (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-    χ x * D.weak_partial i x with hg_g_def
+    (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+    χ x * D.weakPartial i x with hg_g_def
   set f_g : EuclN → ℝ :=
-    fun x => χ x * (densityOnEuclid (I := I) g α x * D.f_chart x) with hf_g_def
+    fun x => χ x * (densityOnEuclid (I := I) g α x * D.fChart x) with hf_g_def
   have hu_g_l2 : MemLp u_g 2 (volume : Measure EuclN) :=
     cutoff_uChart_memLp_two_univ (I := I) (M := M) D hχ_smooth hχ_cs hχ_tsupp_in_chart
   have hg_g_l2 : ∀ i, MemLp (g_g i) 2 (volume : Measure EuclN) := fun i =>
@@ -417,11 +417,11 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
         intro x hx; exact hxMax_max hx
       · refine ⟨0, le_refl _, ?_⟩
         intro x hx; exact absurd ⟨x, hx⟩ hSupp_empty
-    have hf_l2_supp : MemLp D.f_chart 2
+    have hf_l2_supp : MemLp D.fChart 2
         ((volume : Measure EuclN).restrict (tsupport χ)) :=
       memLp_volume_restrict_of_memLp_chartPulledWeightedMeasure (I := I) (M := M)
         D.f_chart_memLp_weighted h_supp_compact h_supp_meas hχ_tsupp_in_chart
-    have h_f_aesm : AEStronglyMeasurable D.f_chart
+    have h_f_aesm : AEStronglyMeasurable D.fChart
         ((volume : Measure EuclN).restrict (tsupport χ)) :=
       hf_l2_supp.aestronglyMeasurable
     have h_density_aesm_supp : AEStronglyMeasurable
@@ -433,18 +433,18 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
       refine (hχ_cont.aestronglyMeasurable.restrict).mul ?_
       exact h_density_aesm_supp.mul h_f_aesm
     have h_pt_le : ∀ᵐ x ∂((volume : Measure EuclN).restrict (tsupport χ)),
-        ‖f_g x‖ ≤ ‖(M_χ * M_d) * D.f_chart x‖ := by
+        ‖f_g x‖ ≤ ‖(M_χ * M_d) * D.fChart x‖ := by
       refine ae_restrict_of_forall_mem h_supp_meas ?_
       intro x hx
-      change ‖χ x * (densityOnEuclid (I := I) g α x * D.f_chart x)‖ ≤ _
+      change ‖χ x * (densityOnEuclid (I := I) g α x * D.fChart x)‖ ≤ _
       rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_mul, abs_mul, abs_mul]
       rw [show |M_χ * M_d| = M_χ * M_d from abs_of_nonneg (mul_nonneg hM_χ_nn hM_d_nn)]
       have h1 : |χ x| ≤ M_χ := hM_χ_bd x
       have h2 : |densityOnEuclid (I := I) g α x| ≤ M_d := hM_d_bd x hx
-      have h3 : 0 ≤ |D.f_chart x| := abs_nonneg _
+      have h3 : 0 ≤ |D.fChart x| := abs_nonneg _
       nlinarith [abs_nonneg (χ x), abs_nonneg (densityOnEuclid (I := I) g α x),
         mul_le_mul h1 h2 (abs_nonneg _) hM_χ_nn]
-    have h_const_lp : MemLp (fun x => (M_χ * M_d) * D.f_chart x) 2
+    have h_const_lp : MemLp (fun x => (M_χ * M_d) * D.fChart x) 2
         ((volume : Measure EuclN).restrict (tsupport χ)) :=
       hf_l2_supp.const_mul (M_χ * M_d)
     have h_restrict_lp : MemLp f_g 2
@@ -456,7 +456,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
       · rw [Set.indicator_of_mem hx]
       · rw [Set.indicator_of_notMem hx]
         have hχx : χ x = 0 := image_eq_zero_of_notMem_tsupport hx
-        have : f_g x = χ x * (densityOnEuclid (I := I) g α x * D.f_chart x) := rfl
+        have : f_g x = χ x * (densityOnEuclid (I := I) g α x * D.fChart x) := rfl
         rw [this, hχx, zero_mul]
     have h_indicator_lp :
         MemLp ((tsupport χ).indicator f_g) 2 (volume : Measure EuclN) :=
@@ -491,21 +491,21 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
     have h_fderiv_eq : fderiv ℝ χ x = fderiv ℝ (fun _ : EuclN => (1 : ℝ)) x :=
       Filter.EventuallyEq.fderiv_eq hχ_eq_one_nhds
     rw [h_fderiv_eq]; simp
-  have hu_g_eq_on_closure : ∀ x ∈ closure Ω', u_g x = D.u_chart x := by
+  have hu_g_eq_on_closure : ∀ x ∈ closure Ω', u_g x = D.uChart x := by
     intro x hx
     have hχx : χ x = 1 := hχ_one_on_closure x hx
-    change χ x * D.u_chart x = D.u_chart x
+    change χ x * D.uChart x = D.uChart x
     rw [hχx, one_mul]
   have hg_g_eq_on_closure : ∀ x ∈ closure Ω',
-      ∀ i : Fin (Module.finrank ℝ E), g_g i x = D.weak_partial i x := by
+      ∀ i : Fin (Module.finrank ℝ E), g_g i x = D.weakPartial i x := by
     intro x hx i
     have hχx : χ x = 1 := hχ_one_on_closure x hx
     have hx_in_thick : x ∈ Metric.thickening (δ / 2) (closure Ω') :=
       h_closure_subset_thick_half_δ hx
     have hdχx : (fderiv ℝ χ x) (EuclideanSpace.single i 1) = 0 :=
       h_fderiv_χ_zero_on_thick x hx_in_thick i
-    change (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-      χ x * D.weak_partial i x = D.weak_partial i x
+    change (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+      χ x * D.weakPartial i x = D.weakPartial i x
     rw [hdχx, hχx, zero_mul, one_mul, zero_add]
   have h_cthick_h_subset_closure : ∀ {h : ℝ}, |h| ≤ R₀ →
       Metric.cthickening |h| (tsupport η) ⊆ closure Ω' := fun {h} hh_le =>
@@ -519,7 +519,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
           DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k h u_g x =
           DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h D.u_chart x := by
+            (d := Module.finrank ℝ E) k h D.uChart x := by
     intro h hh hh_le k x hx
     have hx_in_closure : x ∈ closure Ω' := h_tsupp_subset_closure hx
     have h_shift_in_cthick : x + h • EuclideanSpace.single k 1 ∈
@@ -544,7 +544,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
           DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k h (g_g i) x =
           DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h (D.weak_partial i) x := by
+            (d := Module.finrank ℝ E) k h (D.weakPartial i) x := by
     intro h hh hh_le k i x hx
     have hx_in_closure : x ∈ closure Ω' := h_tsupp_subset_closure hx
     have h_shift_in_cthick : x + h • EuclideanSpace.single k 1 ∈
@@ -582,7 +582,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
           ∂(volume : Measure EuclN) =
         ∫ x in tsupport η,
             (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h D.u_chart x)^2
+              (d := Module.finrank ℝ E) k h D.uChart x)^2
           ∂(volume : Measure EuclN) := by
       refine setIntegral_congr_fun h_tsupp_meas ?_
       intro x hx
@@ -592,7 +592,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
     have h_RHS_eq :
         ∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E), ((g_g l) x) ^ 2
           ∂(volume : Measure EuclN) =
-        ∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E), ((D.weak_partial l) x) ^ 2
+        ∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E), ((D.weakPartial l) x) ^ 2
           ∂(volume : Measure EuclN) := by
       refine setIntegral_congr_fun hΩ'_meas ?_
       intro x hx
@@ -610,14 +610,14 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
           DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
             (d := Module.finrank ℝ E) k h η u_g x =
           DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-            (d := Module.finrank ℝ E) k h η D.u_chart x := by
+            (d := Module.finrank ℝ E) k h η D.uChart x := by
     intro h hh hh_le k x
     have hnh : (-h) ≠ 0 := neg_ne_zero.mpr hh
     have h_pt_inner : ∀ y : EuclN,
         (η y)^2 * DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h u_g y =
         (η y)^2 * DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h D.u_chart y := by
+          (d := Module.finrank ℝ E) k h D.uChart y := by
       intro y
       by_cases hη_y : η y = 0
       · rw [hη_y]; ring
@@ -633,7 +633,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
         (d := Module.finrank ℝ E) k (-h)
         (fun y => (η y)^2 *
           DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h D.u_chart y) x
+            (d := Module.finrank ℝ E) k h D.uChart y) x
     rw [DifferentialGeometry.Analysis.Sobolev.diffQuot_apply_of_ne
         (d := Module.finrank ℝ E) k hnh,
       DifferentialGeometry.Analysis.Sobolev.diffQuot_apply_of_ne
@@ -656,21 +656,21 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
         ∫ x, (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u_g x)^2 ∂(volume : Measure EuclN) =
         ∫ x, (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-              k h η D.u_chart x)^2 ∂(volume : Measure EuclN) := by
+              k h η D.uChart x)^2 ∂(volume : Measure EuclN) := by
       refine integral_congr_ae ?_
       refine Filter.Eventually.of_forall ?_
       intro x
       change (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u_g x)^2 =
         (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-              k h η D.u_chart x)^2
+              k h η D.uChart x)^2
       rw [h_nirenberg_eq hh hh_le k x]
     have h_RHS_1_eq :
         ∫ x in tsupport η,
             (DifferentialGeometry.Analysis.Sobolev.diffQuot k h u_g x)^2
           ∂(volume : Measure EuclN) =
         ∫ x in tsupport η,
-            (DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.u_chart x)^2
+            (DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.uChart x)^2
           ∂(volume : Measure EuclN) := by
       refine setIntegral_congr_fun h_tsupp_meas ?_
       intro x hx
@@ -680,7 +680,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
             (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g k) x)^2
           ∂(volume : Measure EuclN) =
         ∫ x, (η x)^2 *
-            (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weak_partial k) x)^2
+            (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weakPartial k) x)^2
           ∂(volume : Measure EuclN) := by
       refine integral_congr_ae ?_
       refine Filter.Eventually.of_forall ?_
@@ -688,7 +688,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
       change (η x)^2 *
           (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g k) x)^2 =
         (η x)^2 *
-          (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weak_partial k) x)^2
+          (DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weakPartial k) x)^2
       by_cases hη_x : η x = 0
       · rw [hη_x]; ring
       · have hx_in_supp : x ∈ tsupport η :=
@@ -740,7 +740,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
           ∂(volume : Measure EuclN) =
         ∫ x, (η x)^2 *
             ∑ l : Fin (Module.finrank ℝ E),
-              DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weak_partial l) x ^ 2
+              DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weakPartial l) x ^ 2
           ∂(volume : Measure EuclN) := by
       refine integral_congr_ae ?_
       refine Filter.Eventually.of_forall ?_
@@ -750,7 +750,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g l) x ^ 2 =
         (η x)^2 *
             ∑ l : Fin (Module.finrank ℝ E),
-              DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weak_partial l) x ^ 2
+              DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weakPartial l) x ^ 2
       by_cases hη_x : η x = 0
       · rw [hη_x]; ring
       · have hx_in_supp : x ∈ tsupport η :=
@@ -770,8 +770,8 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
         ∫ x, 2 * DifferentialGeometry.Analysis.Sobolev.translate k h
                 (fun y : EuclN => B.a y i j) x * (η x) *
               ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weak_partial i) x *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.u_chart x
+              DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weakPartial i) x *
+              DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.uChart x
             ∂(volume : Measure EuclN) := by
       intro i j
       refine integral_congr_ae ?_
@@ -785,8 +785,8 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
         2 * DifferentialGeometry.Analysis.Sobolev.translate k h
                 (fun y : EuclN => B.a y i j) x * (η x) *
               ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weak_partial i) x *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.u_chart x
+              DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weakPartial i) x *
+              DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.uChart x
       by_cases hη_x : η x = 0
       · rw [hη_x]; ring
       · have hx_in_supp : x ∈ tsupport η :=
@@ -802,8 +802,8 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
             ∂(volume : Measure EuclN) =
         ∫ x, DifferentialGeometry.Analysis.Sobolev.diffQuot k h
                 (fun y : EuclN => B.a y i j) x * (η x)^2 *
-              ((D.weak_partial i) x) *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weak_partial j) x
+              ((D.weakPartial i) x) *
+              DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weakPartial j) x
             ∂(volume : Measure EuclN) := by
       intro i j
       refine integral_congr_ae ?_
@@ -815,8 +815,8 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
             DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g j) x =
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h
               (fun y : EuclN => B.a y i j) x * (η x)^2 *
-            ((D.weak_partial i) x) *
-            DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weak_partial j) x
+            ((D.weakPartial i) x) *
+            DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weakPartial j) x
       by_cases hη_x : η x = 0
       · rw [hη_x]; ring
       · have hx_in_supp : x ∈ tsupport η :=
@@ -835,8 +835,8 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
         ∫ x, 2 * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
                 (fun y : EuclN => B.a y i j) x * (η x) *
               ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-              ((D.weak_partial i) x) *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.u_chart x
+              ((D.weakPartial i) x) *
+              DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.uChart x
             ∂(volume : Measure EuclN) := by
       intro i j
       refine integral_congr_ae ?_
@@ -850,8 +850,8 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
         2 * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
               (fun y : EuclN => B.a y i j) x * (η x) *
             ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-            ((D.weak_partial i) x) *
-            DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.u_chart x
+            ((D.weakPartial i) x) *
+            DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.uChart x
       by_cases hη_x : η x = 0
       · rw [hη_x]; ring
       · have hx_in_supp : x ∈ tsupport η :=
@@ -864,16 +864,16 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u_g x =
         ∫ x in (Set.univ : Set EuclN),
-            (densityOnEuclid (I := I) g α x * D.f_chart x) *
+            (densityOnEuclid (I := I) g α x * D.fChart x) *
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-              k h η D.u_chart x := by
+              k h η D.uChart x := by
       refine setIntegral_congr_ae MeasurableSet.univ ?_
       refine Filter.Eventually.of_forall ?_
       intro x _
       have h_supp_subset :
           Function.support
             (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-              k h η D.u_chart) ⊆
+              k h η D.uChart) ⊆
             Metric.cthickening |h| (tsupport η) := by
         intro y hy
         rw [Function.mem_support] at hy
@@ -882,24 +882,24 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
             (d := Module.finrank ℝ E) k (-h)
             (fun y₁ => (η y₁)^2 *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.u_chart y₁) y ≠ 0 at hy
+                (d := Module.finrank ℝ E) k h D.uChart y₁) y ≠ 0 at hy
         rw [DifferentialGeometry.Analysis.Sobolev.diffQuot_apply_of_ne
             (d := Module.finrank ℝ E) k hnh] at hy
         have h_num_ne :
             (η (y + (-h) • EuclideanSpace.single k 1))^2 *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.u_chart
+                (d := Module.finrank ℝ E) k h D.uChart
                   (y + (-h) • EuclideanSpace.single k 1) -
             (η y)^2 *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.u_chart y ≠ 0 := by
+                (d := Module.finrank ℝ E) k h D.uChart y ≠ 0 := by
           intro h_zero
           apply hy
           rw [h_zero, zero_div]
         by_cases hη_y : η y = 0
         · have h_first_zero : (η y)^2 *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.u_chart y = 0 := by
+                (d := Module.finrank ℝ E) k h D.uChart y = 0 := by
             rw [hη_y]; ring
           rw [h_first_zero, sub_zero] at h_num_ne
           have h_eta_shift_ne : η (y + (-h) • EuclideanSpace.single k 1) ≠ 0 := by
@@ -976,9 +976,9 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
       · have hx_in_closure : x ∈ closure Ω' :=
           h_cthick_h_subset_closure hh_le hx_in
         have hχx : χ x = 1 := hχ_one_on_closure x hx_in_closure
-        have hf_g_eq : f_g x = densityOnEuclid (I := I) g α x * D.f_chart x := by
-          change χ x * (densityOnEuclid (I := I) g α x * D.f_chart x) =
-            densityOnEuclid (I := I) g α x * D.f_chart x
+        have hf_g_eq : f_g x = densityOnEuclid (I := I) g α x * D.fChart x := by
+          change χ x * (densityOnEuclid (I := I) g α x * D.fChart x) =
+            densityOnEuclid (I := I) g α x * D.fChart x
           rw [hχx, one_mul]
         rw [hf_g_eq, h_nirenberg_eq hh hh_le k x]
       · have h_test_u_g_zero :
@@ -988,7 +988,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
           exact hx_in (h_supp_subset_u_g (Function.mem_support.mpr h_ne))
         have h_test_D_zero :
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-              k h η D.u_chart x = 0 := by
+              k h η D.uChart x = 0 := by
           by_contra h_ne
           exact hx_in (h_supp_subset (Function.mem_support.mpr h_ne))
         rw [h_test_u_g_zero, h_test_D_zero, mul_zero, mul_zero]
@@ -996,16 +996,16 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
         ∫ x in (Set.univ : Set EuclN), B.c x * u_g x *
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u_g x ∂(volume : Measure EuclN) =
-        ∫ x in (Set.univ : Set EuclN), B.c x * D.u_chart x *
+        ∫ x in (Set.univ : Set EuclN), B.c x * D.uChart x *
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-              k h η D.u_chart x ∂(volume : Measure EuclN) := by
+              k h η D.uChart x ∂(volume : Measure EuclN) := by
       refine setIntegral_congr_ae MeasurableSet.univ ?_
       refine Filter.Eventually.of_forall ?_
       intro x _
       have h_supp_subset_D :
           Function.support
             (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-              k h η D.u_chart) ⊆
+              k h η D.uChart) ⊆
             Metric.cthickening |h| (tsupport η) := by
         intro y hy
         rw [Function.mem_support] at hy
@@ -1014,22 +1014,22 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
             (d := Module.finrank ℝ E) k (-h)
             (fun y₁ => (η y₁)^2 *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.u_chart y₁) y ≠ 0 at hy
+                (d := Module.finrank ℝ E) k h D.uChart y₁) y ≠ 0 at hy
         rw [DifferentialGeometry.Analysis.Sobolev.diffQuot_apply_of_ne
             (d := Module.finrank ℝ E) k hnh] at hy
         have h_num_ne :
             (η (y + (-h) • EuclideanSpace.single k 1))^2 *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.u_chart
+                (d := Module.finrank ℝ E) k h D.uChart
                   (y + (-h) • EuclideanSpace.single k 1) -
             (η y)^2 *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.u_chart y ≠ 0 := by
+                (d := Module.finrank ℝ E) k h D.uChart y ≠ 0 := by
           intro h_zero; apply hy; rw [h_zero, zero_div]
         by_cases hη_y : η y = 0
         · have h_first_zero : (η y)^2 *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.u_chart y = 0 := by
+                (d := Module.finrank ℝ E) k h D.uChart y = 0 := by
             rw [hη_y]; ring
           rw [h_first_zero, sub_zero] at h_num_ne
           have h_eta_shift_ne : η (y + (-h) • EuclideanSpace.single k 1) ≠ 0 := by
@@ -1103,7 +1103,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
       by_cases hx_in : x ∈ Metric.cthickening |h| (tsupport η)
       · have hx_in_closure : x ∈ closure Ω' :=
           h_cthick_h_subset_closure hh_le hx_in
-        have hu_eq : u_g x = D.u_chart x := hu_g_eq_on_closure x hx_in_closure
+        have hu_eq : u_g x = D.uChart x := hu_g_eq_on_closure x hx_in_closure
         rw [hu_eq, h_nirenberg_eq hh hh_le k x]
       · have h_test_u_g_zero :
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
@@ -1112,7 +1112,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
           exact hx_in (h_supp_subset_u (Function.mem_support.mpr h_ne))
         have h_test_D_zero :
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-              k h η D.u_chart x = 0 := by
+              k h η D.uChart x = 0 := by
           by_contra h_ne
           exact hx_in (h_supp_subset_D (Function.mem_support.mpr h_ne))
         rw [h_test_u_g_zero, h_test_D_zero, mul_zero, mul_zero]
@@ -1131,8 +1131,8 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
               2 * DifferentialGeometry.Analysis.Sobolev.translate k h
                 (fun y : EuclN => B.a y i j) x * (η x) *
               ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weak_partial i) x *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.u_chart x
+              DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weakPartial i) x *
+              DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.uChart x
             ∂(volume : Measure EuclN) := by
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -1151,8 +1151,8 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
           ∑ j : Fin (Module.finrank ℝ E), ∫ x,
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h
                 (fun y : EuclN => B.a y i j) x * (η x)^2 *
-              ((D.weak_partial i) x) *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weak_partial j) x
+              ((D.weakPartial i) x) *
+              DifferentialGeometry.Analysis.Sobolev.diffQuot k h (D.weakPartial j) x
             ∂(volume : Measure EuclN) := by
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -1173,8 +1173,8 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
               2 * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
                 (fun y : EuclN => B.a y i j) x * (η x) *
               ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-              ((D.weak_partial i) x) *
-              DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.u_chart x
+              ((D.weakPartial i) x) *
+              DifferentialGeometry.Analysis.Sobolev.diffQuot k h D.uChart x
             ∂(volume : Measure EuclN) := by
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -1202,22 +1202,22 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
       h_FK h_v_test_sq h_master hh_pos hh_le
   have hΩ'_closure_meas : MeasurableSet (closure Ω') :=
     isClosed_closure.measurableSet
-  have hf_chart_l2_closure : MemLp D.f_chart 2
+  have hf_chart_l2_closure : MemLp D.fChart 2
       ((volume : Measure EuclN).restrict (closure Ω')) :=
     memLp_volume_restrict_of_memLp_chartPulledWeightedMeasure (I := I) (M := M)
       D.f_chart_memLp_weighted hΩ'_compact hΩ'_closure_meas hΩ'_chart
-  set fSrc : EuclN → ℝ := fun x => densityOnEuclid (I := I) g α x * D.f_chart x
+  set fSrc : EuclN → ℝ := fun x => densityOnEuclid (I := I) g α x * D.fChart x
     with hfSrc_def
   have hfSrc_l2_closure : MemLp fSrc 2
       ((volume : Measure EuclN).restrict (closure Ω')) :=
     densityWeightedSource_memLp (I := I) (M := M) (g := g) (α := α)
       hΩ'_compact hΩ'_chart hf_chart_l2_closure
   set Sw : ℝ := ∑ l : Fin (Module.finrank ℝ E),
-      (eLpNorm (D.weak_partial l) 2
+      (eLpNorm (D.weakPartial l) 2
         ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 with hSw_def
-  set Su : ℝ := (eLpNorm D.u_chart 2
+  set Su : ℝ := (eLpNorm D.uChart 2
       ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 with hSu_def
-  set Sf : ℝ := (eLpNorm D.f_chart 2
+  set Sf : ℝ := (eLpNorm D.fChart 2
       ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 with hSf_def
   have hSw_nn : 0 ≤ Sw := by
     rw [hSw_def]; exact Finset.sum_nonneg (fun _ _ => sq_nonneg _)
@@ -1348,13 +1348,13 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h (g_g i) x =
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial i) x := by
+        (d := Module.finrank ℝ E) k h (D.weakPartial i) x := by
     intro x hx
     exact h_diffQuot_g_g_eq_on_tsupport hh_ne hh_le k i x (hΩ''_subset_tsupp hx)
   have h_eLp_eq :
       eLpNorm
         (DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h (D.weak_partial i)) 2
+          (d := Module.finrank ℝ E) k h (D.weakPartial i)) 2
         ((volume : Measure EuclN).restrict Ω'') =
       eLpNorm
         (DifferentialGeometry.Analysis.Sobolev.diffQuot
@@ -1367,11 +1367,11 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
     exact (h_eq_on_Ω'' x hx).symm
   rw [h_eLp_eq]
   rw [show (∑ l : Fin (Module.finrank ℝ E),
-        (eLpNorm (D.weak_partial l) 2
+        (eLpNorm (D.weakPartial l) 2
           ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)
-      + (eLpNorm D.u_chart 2
+      + (eLpNorm D.uChart 2
           ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2
-      + (eLpNorm D.f_chart 2
+      + (eLpNorm D.fChart 2
           ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2
       = Sw + Su + Sf from by rw [hSw_def, hSu_def, hSf_def]]
   exact h_g_g_bd
@@ -1394,15 +1394,15 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data
       Metric.cthickening |h| (tsupport η) ⊆ Ω')
     (hη_one_on_Ω'' : ∀ x ∈ Ω'', η x = 1)
     (hΩ''_meas : MeasurableSet Ω'') :
-    ∃ M_bound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ,
-      (∀ i k, 0 ≤ M_bound i k) ∧
+    ∃ MBound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ,
+      (∀ i k, 0 ≤ MBound i k) ∧
       (∀ (i k : Fin (Module.finrank ℝ E)) (h : ℝ),
         0 < |h| → |h| ≤ R₀ →
           eLpNorm
             (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (D.weak_partial i)) 2
+              (d := Module.finrank ℝ E) k h (D.weakPartial i)) 2
             ((volume : Measure EuclN).restrict Ω'')
-          ≤ ENNReal.ofReal (M_bound i k)) := by
+          ≤ ENNReal.ofReal (MBound i k)) := by
   classical
   obtain ⟨C_geom, hC_geom_nn, hC_geom⟩ :=
     chartBilinearH1Compl_uniform_diffQuot_bound_of_data_quantitative
@@ -1411,11 +1411,11 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound_of_data
       hη_in_Ω' hR₀_pos hh_supp_in_Ω' hη_one_on_Ω'' hΩ''_meas
   refine ⟨fun i k => C_geom i k * Real.sqrt (
       (∑ l : Fin (Module.finrank ℝ E),
-        (eLpNorm (D.weak_partial l) 2
+        (eLpNorm (D.weakPartial l) 2
           ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)
-      + (eLpNorm D.u_chart 2
+      + (eLpNorm D.uChart 2
           ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2
-      + (eLpNorm D.f_chart 2
+      + (eLpNorm D.fChart 2
           ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2),
     fun i k => mul_nonneg (hC_geom_nn i k) (Real.sqrt_nonneg _),
     fun i k h hpos hle => hC_geom D hpos hle⟩

@@ -6,7 +6,6 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix
@@ -30,7 +29,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 lemma chartGramBilin_eq_innerJinv
     (g : SmoothRiemannianMetric I M) (α b : M) (u w : E) :
     chartGramBilin (I := I) (M := M) g α b u w =
-      g.inner b
+      modelInnerAt (I := I) (M := M) g b
         (chartTrivializationLinearMapSymm (I := I) (M := M) α b u)
         (chartTrivializationLinearMapSymm (I := I) (M := M) α b w) := by
   classical
@@ -45,7 +44,7 @@ lemma chartGramBilin_eq_innerJinv
             ∑ k : Fin (Module.finrank ℝ E),
               (chartModelBasis E).equivFun u j *
                 (chartModelBasis E).equivFun w k *
-                g.inner b
+                modelInnerAt (I := I) (M := M) g b
                   (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) j))
                   (chartTrivializationLinearMapSymm (I := I) (M := M) α b
                     ((chartModelBasis E) k)) := by
@@ -60,11 +59,11 @@ lemma chartGramBilin_eq_innerJinv
       (∑ k : Fin (Module.finrank ℝ E),
           (chartModelBasis E).equivFun u j *
             (chartModelBasis E).equivFun w k *
-            g.inner b
+            modelInnerAt (I := I) (M := M) g b
               (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) j))
               (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) k)))
         = (chartModelBasis E).equivFun u j *
-            g.inner b
+            modelInnerAt (I := I) (M := M) g b
               (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) j))
               (∑ k : Fin (Module.finrank ℝ E),
                 (chartModelBasis E).equivFun w k •
@@ -72,14 +71,15 @@ lemma chartGramBilin_eq_innerJinv
                     ((chartModelBasis E) k)) := by
     intro j
     have hRHS_unfold :
-        ((g.inner b (chartTrivializationLinearMapSymm (I := I) (M := M) α b
+        ((modelInnerAt (I := I) (M := M) g b
+          (chartTrivializationLinearMapSymm (I := I) (M := M) α b
           ((chartModelBasis E) j)))
             (∑ k : Fin (Module.finrank ℝ E),
               (chartModelBasis E).equivFun w k •
                 chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) k)))
           = ∑ k : Fin (Module.finrank ℝ E),
               (chartModelBasis E).equivFun w k *
-                g.inner b
+                modelInnerAt (I := I) (M := M) g b
                   (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) j))
                   (chartTrivializationLinearMapSymm (I := I) (M := M) α b
                     ((chartModelBasis E) k)) := by
@@ -96,12 +96,12 @@ lemma chartGramBilin_eq_innerJinv
         ∑ k : Fin (Module.finrank ℝ E),
           (chartModelBasis E).equivFun u j *
             (chartModelBasis E).equivFun w k *
-            g.inner b
+            modelInnerAt (I := I) (M := M) g b
               (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) j))
               (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) k)))
         = ∑ j : Fin (Module.finrank ℝ E),
             (chartModelBasis E).equivFun u j *
-              g.inner b
+              modelInnerAt (I := I) (M := M) g b
                 (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) j))
                 (∑ k : Fin (Module.finrank ℝ E),
                   (chartModelBasis E).equivFun w k •
@@ -129,19 +129,19 @@ lemma chartGramBilin_eq_innerJinv
   have hcollapse_outer :
       (∑ j : Fin (Module.finrank ℝ E),
           (chartModelBasis E).equivFun u j *
-            g.inner b
+            modelInnerAt (I := I) (M := M) g b
               (chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) j))
               (chartTrivializationLinearMapSymm (I := I) (M := M) α b w))
-        = g.inner b
+        = modelInnerAt (I := I) (M := M) g b
             (∑ j : Fin (Module.finrank ℝ E),
               (chartModelBasis E).equivFun u j •
                 chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) j))
             (chartTrivializationLinearMapSymm (I := I) (M := M) α b w) := by
     rw [map_sum]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl ?_
     intro j _
-    rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    rw [ContinuousLinearMap.map_smul, smul_apply, smul_eq_mul]
   rw [hcollapse_outer]
   have husum :
       (∑ j : Fin (Module.finrank ℝ E),
@@ -168,7 +168,7 @@ lemma chartGramBilin_chartJ_chartJ
     chartGramBilin (I := I) (M := M) g α b
         (chartTrivializationLinearMap (I := I) (M := M) α b u)
         (chartTrivializationLinearMap (I := I) (M := M) α b w) =
-      g.inner b u w := by
+      modelInnerAt (I := I) (M := M) g b u w := by
   rw [chartGramBilin_eq_innerJinv (I := I) (M := M) g α b]
   rw [chartJinv_chartJ_self (I := I) (M := M) α hb u]
   rw [chartJinv_chartJ_self (I := I) (M := M) α hb w]
@@ -195,7 +195,7 @@ theorem chartTensorInnerPointwise_0s_eq_tensorInnerPointwise_0s_chartJ
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (s : ℕ) (A B : Tensor0SModel s ℝ E) :
-    chartTensorInnerPointwise_0s (I := I) (M := M) s g α b A B =
+    chartTensorInnerPointwise0s (I := I) (M := M) s g α b A B =
       covariantTensorInnerPointwise (I := I) (M := M) s g b
         (A.compContinuousLinearMap
           (fun _ : Fin s => chartTrivializationLinearMap (I := I) (M := M) α b))
@@ -239,11 +239,11 @@ theorem chartTensorInnerPointwise_rs_model_eq_tensorInnerPointwise_0s_compChartJ
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (T₀ T₁ : TensorRSModel r s ℝ E) :
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T₀ T₁ =
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T₀ T₁ =
       covariantTensorInnerPointwise (I := I) (M := M) (r + s) g b
-        ((chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T₀).compContinuousLinearMap
+        ((chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T₀).compContinuousLinearMap
           (fun _ : Fin (r + s) => chartTrivializationLinearMap (I := I) (M := M) α b))
-        ((chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T₁).compContinuousLinearMap
+        ((chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T₁).compContinuousLinearMap
           (fun _ : Fin (r + s) => chartTrivializationLinearMap (I := I) (M := M) α b)) := by
   rw [chartTensorInnerPointwise_rs_model_def]
   exact chartTensorInnerPointwise_0s_eq_tensorInnerPointwise_0s_chartJ
@@ -273,7 +273,7 @@ lemma chartLowerAllUpperIndices_model_compChartJ
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (T : TensorRSModel r s ℝ E) :
-    (chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T).compContinuousLinearMap
+    (chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T).compContinuousLinearMap
         (fun _ : Fin (r + s) => chartTrivializationLinearMap (I := I) (M := M) α b)
       = lowerAllUpperIndices (I := I) (M := M) g r s b
           (chartRSTwist (I := I) (M := M) α b r s T) := by
@@ -301,7 +301,7 @@ theorem chartTensorInnerPointwise_rs_model_eq_tensorInnerPointwise
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (T₀ T₁ : TensorRSModel r s ℝ E) :
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T₀ T₁ =
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T₀ T₁ =
       tensorInnerPointwise (I := I) (M := M) g r s b
         (chartRSTwist (I := I) (M := M) α b r s T₀)
         (chartRSTwist (I := I) (M := M) α b r s T₁) := by

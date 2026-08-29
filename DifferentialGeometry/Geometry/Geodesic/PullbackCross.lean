@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.PullbackCross
 
+
 set_option autoImplicit false
 
 noncomputable section
@@ -163,11 +164,12 @@ private theorem geoEq_of_covVel_C2
   exact ⟨deriv u t, deriv (deriv u) t, hu_hasDerivAt,
     hu_eventually_hasDerivAt, hderiv_hasDerivAt, hzero⟩
 
-omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
+omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)]
+    [CompleteSpace E] [CompleteSpace F] in
 theorem geoEq_mapCrossAt
-    [I.Boundaryless] [J.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [I.Boundaryless]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
@@ -215,7 +217,10 @@ theorem geoEq_mapCrossAt
       (I := 𝓘(ℝ, ℝ)) (I' := I) (I'' := J)
       (g := (Phi : M → N)) (f := gamma) (x := s)
       hPhi hgammaAt (1 : ℝ)
-    simpa [W, V, delta, Function.comp_def] using hcomp.symm
+    simpa [W, V, delta, Function.comp_def,
+      tangentSpaceModelContinuousLinearEquiv_apply] using
+      congrArg
+        (tangentSpaceModelContinuousLinearEquiv (I := J) (Phi (gamma s))) hcomp.symm
   have hrep : chartRepAt (I := J) delta W t =ᶠ[nhds t]
       chartRepAt (I := J) delta
         (fun s => (mfderiv 𝓘(ℝ, ℝ) J delta s :
@@ -238,11 +243,12 @@ theorem geoEq_mapCrossAt
     (hdelta.of_le
       (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤))) htargetVelZero
 
-omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
+omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)]
+    [CompleteSpace E] [CompleteSpace F] in
 theorem geoEq_of_mapCrossAt
-    [I.Boundaryless] [J.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [I.Boundaryless]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
@@ -282,7 +288,10 @@ theorem geoEq_of_mapCrossAt
       (I := 𝓘(ℝ, ℝ)) (I' := I) (I'' := J)
       (g := (Phi : M → N)) (f := gamma) (x := s)
       hPhi hgammaAt (1 : ℝ)
-    simpa [W, V, delta, Function.comp_def] using hcomp.symm
+    simpa [W, V, delta, Function.comp_def,
+      tangentSpaceModelContinuousLinearEquiv_apply] using
+      congrArg
+        (tangentSpaceModelContinuousLinearEquiv (I := J) (Phi (gamma s))) hcomp.symm
   have hrep : chartRepAt (I := J) delta W t =ᶠ[nhds t]
       chartRepAt (I := J) delta
         (fun s => (mfderiv 𝓘(ℝ, ℝ) J delta s :
@@ -314,9 +323,22 @@ theorem geoEq_of_mapCrossAt
     rw [hnat, htargetZero]
   have hinj :
       Function.Injective (mfderiv I J (Phi : M → N) (gamma t)) := by
-    simpa only [Diffeomorph.mfderivToContinuousLinearEquiv_coe] using
-      (Phi.mfderivToContinuousLinearEquiv
-        (by decide : (∞ : WithTop ℕ∞) ≠ 0) (gamma t)).injective
+    intro v w hvw
+    let hn : (∞ : WithTop ℕ∞) ≠ 0 := by decide
+    let dPhi := Phi.mfderivToContinuousLinearEquiv
+      hn (gamma t)
+    apply dPhi.injective
+    have hcoe := Diffeomorph.mfderivToContinuousLinearEquiv_coe
+      (Φ := Phi) (x := gamma t) hn
+    have hcoev : dPhi v = mfderiv I J (Phi : M → N) (gamma t) v :=
+      congrArg
+        (fun L : TangentSpace I (gamma t) →L[Real]
+          TangentSpace J (Phi (gamma t)) => L v) hcoe
+    have hcoew : dPhi w = mfderiv I J (Phi : M → N) (gamma t) w :=
+      congrArg
+        (fun L : TangentSpace I (gamma t) →L[Real]
+          TangentSpace J (Phi (gamma t)) => L w) hcoe
+    exact hcoev.trans (hvw.trans hcoew.symm)
   have hsourceZero : covDerivAlong (I := I)
       (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi)
       gamma V t = 0 := by
@@ -326,11 +348,12 @@ theorem geoEq_of_mapCrossAt
     (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi)
     gamma t hgamma2 (by simpa [V] using hsourceZero)
 
-omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
+omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)]
+    [CompleteSpace E] [CompleteSpace F] in
 theorem geoEq_mapCross
-    [I.Boundaryless] [J.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [I.Boundaryless]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
@@ -342,11 +365,12 @@ theorem geoEq_mapCross
   geoEq_mapCrossAt (I := I) (J := J) g Phi gamma t
     hgamma.contMDiffAt hgeo
 
-omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
+omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)]
+    [CompleteSpace E] [CompleteSpace F] in
 theorem geodesic_mapCross
-    [I.Boundaryless] [J.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [I.Boundaryless]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
@@ -356,11 +380,12 @@ theorem geodesic_mapCross
     IsGeodesic (I := J) g (fun s => Phi (gamma s)) :=
   fun t => geoEq_mapCross (I := I) (J := J) g Phi gamma t hgamma (hgeo t)
 
-omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
+omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)]
+    [CompleteSpace E] [CompleteSpace F] in
 theorem geodesicOn_mapCross
-    [I.Boundaryless] [J.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [I.Boundaryless]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)
@@ -371,11 +396,12 @@ theorem geodesicOn_mapCross
     IsGeodesicOn (I := J) g (fun t => Phi (gamma t)) s :=
   fun t ht => geoEq_mapCross (I := I) (J := J) g Phi gamma t hgamma (hgeo t ht)
 
-omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)] in
+omit [NeZero (Module.finrank ℝ E)] [NeZero (Module.finrank ℝ F)]
+    [CompleteSpace E] [CompleteSpace F] in
 theorem geodesicOn_mapLocal
-    [I.Boundaryless] [J.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold J N]
+    [I.Boundaryless]
+    [T2Space M] [BoundarylessManifold I M]
+    [T2Space N] [BoundarylessManifold J N]
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric J N) (Phi : M ≃ₘ⟮I, J⟯ N)

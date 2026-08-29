@@ -74,12 +74,12 @@ theorem sqrt_inner_metricComparisonDifferenceEndomorphism_sub_le
       -((ha x (Db + v) z - hb x (Db + v) z)) := by
     have hsub : ga.inner x z z = ga.inner x Da z - ga.inner x Db z := by
       rw [hz]
-      rw [map_sub (ga.inner x) Da Db, ContinuousLinearMap.sub_apply]
+      rw [map_sub (ga.inner x) Da Db, sub_apply]
     rw [hsub, h_ga_Da z, h_ga_Db z]
     have hha : ha x (Db + v) z = ha x Db z + ha x v z := by
-      rw [map_add (ha x) Db v, ContinuousLinearMap.add_apply]
+      rw [map_add (ha x) Db v, add_apply]
     have hhb : hb x (Db + v) z = hb x Db z + hb x v z := by
-      rw [map_add (hb x) Db v, ContinuousLinearMap.add_apply]
+      rw [map_add (hb x) Db v, add_apply]
     rw [hha, hhb]
     ring
   have hraised : Db + v = metricComparisonEndomorphism (I := I) g₀ gb x v := by
@@ -93,7 +93,7 @@ theorem sqrt_inner_metricComparisonDifferenceEndomorphism_sub_le
     have happ : (fun y => ha y - hb y) x (Db + v) z =
         ha x (Db + v) z - hb x (Db + v) z := by
       rw [show (fun y => ha y - hb y) x = ha x - hb x from rfl,
-        ContinuousLinearMap.sub_apply, ContinuousLinearMap.sub_apply]
+        sub_apply, sub_apply]
     rw [happ] at h
     rw [hN]
     exact h

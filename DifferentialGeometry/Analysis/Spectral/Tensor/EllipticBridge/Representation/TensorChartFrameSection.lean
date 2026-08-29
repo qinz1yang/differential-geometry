@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
@@ -205,7 +204,7 @@ theorem tensorChartComponentRaw_tensorBundleSectionOfChartComponents
           u hu hsupp)
         α P.1 P.2 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) =
       u P y := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   classical
   rw [tensorBundleSectionOfChartComponents_eq (I := I) (M := M) g r s α
     u hu hsupp]

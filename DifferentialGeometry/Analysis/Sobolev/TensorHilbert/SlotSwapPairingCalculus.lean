@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -226,6 +225,7 @@ theorem appFullSec_swap_l2Inner_hop (g : SmoothRiemannianMetric I M) (t : ℕ)
   rw [appFullSec_swap_norm_eq (I := I) (M := M) g t F hF B]
 
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem unitModel_covGrad_of_unitModel_domDomCongr
     (g : SmoothRiemannianMetric I M) (s : ℕ) (σ : Equiv.Perm (Fin s))
     (S S' : SmoothCcTensor g 0 s)
@@ -246,16 +246,18 @@ theorem unitModel_covGrad_of_unitModel_domDomCongr
     (unitTensor (I := I) (M := M) y)
     (Fin.cons (w 0) (fun j : Fin s => Matrix.vecTail w (σ j)))]
   rw [show Matrix.vecTail (Fin.cons (w 0) (fun j : Fin s => Matrix.vecTail w (σ j))
-      : Fin (s + 1) → TangentSpace I y) = (fun j : Fin s => Matrix.vecTail w (σ j)) from by
+      : Fin (s + 1) → E) = (fun j : Fin s => Matrix.vecTail w (σ j)) from by
     funext j; simp [Matrix.vecTail, Fin.cons_succ]]
   rw [show (Fin.cons (w 0) (fun j : Fin s => Matrix.vecTail w (σ j))
-      : Fin (s + 1) → TangentSpace I y) 0 = w 0 from rfl]
+      : Fin (s + 1) → E) 0 = w 0 from rfl]
   have h := tensorCovDerivAt_unit_toModel_domDomCongr_of_section (I := I) (M := M)
-    g s σ S S' hSS' y (w 0)
+    g s σ S S' hSS' y
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (w 0))
   have happ := congrArg (fun T : ContinuousMultilinearMap ℝ
     (fun _ : Fin s => TangentSpace I y) ℝ => T (Matrix.vecTail w)) h
   exact happ
 
+omit [SigmaCompactSpace M] in
 theorem appFullSec_swap_rawConnLap_comm (g : SmoothRiemannianMetric I M) (t : ℕ)
     (F : HomTensorRSField (E := E) (M := M) 0 (t + 2) (t + 2) I)
     (hF : ∀ (x : M) (T : TensorRSSpace 0 (t + 2) I x) (D : Tensor0SSpace 0 I x)
@@ -311,13 +313,19 @@ theorem appFullSec_swap_rawConnLap_comm (g : SmoothRiemannianMetric I M) (t : �
   refine Finset.sum_congr rfl (fun i _ => ?_)
   have h2x := congrArg
     (fun T : ContinuousMultilinearMap ℝ (fun _ : Fin (t + 4) => E) ℝ =>
-      T (Fin.cons ((smoothOrthoFrame (I := I) g x i x : TangentSpace I x) : E)
-        (Fin.cons ((smoothOrthoFrame (I := I) g x i x : TangentSpace I x) : E)
+      T (Fin.cons
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (smoothOrthoFrame (I := I) g x i x))
+        (Fin.cons
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (smoothOrthoFrame (I := I) g x i x))
           (fun j => (v j : E))))) (h2 x)
   simp only [ContinuousMultilinearMap.domDomCongr_apply] at h2x
   rw [cons_cons_comp_decomposeFin_double tau
-    ((smoothOrthoFrame (I := I) g x i x : TangentSpace I x) : E)
-    ((smoothOrthoFrame (I := I) g x i x : TangentSpace I x) : E)
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (smoothOrthoFrame (I := I) g x i x))
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x
+      (smoothOrthoFrame (I := I) g x i x))
     (fun j => (v j : E))] at h2x
   exact h2x
 
@@ -327,14 +335,14 @@ theorem unitModel_operatorFieldApplication_slotInsertEndoCc_cons
     (g : SmoothRiemannianMetric I M) (s' : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x))
-    (U : SmoothCcTensor g 0 (s' + 1)) (x : M) (a : TangentSpace I x)
-    (rest : Fin s' → TangentSpace I x) :
+    (U : SmoothCcTensor g 0 (s' + 1)) (x : M) (a : E)
+    (rest : Fin s' → E) :
     unitModel (I := I) (M := M) g (s' + 1)
         (operatorFieldApply (I := I) (M := M) g (s' + 1) (s' + 1)
           (endoSlotZeroCcTensor (I := I) (M := M) g s' Λ) U) x
-        (Fin.cons ((a : TangentSpace I x) : E) (fun j => (rest j : E))) =
+        (Fin.cons a rest) =
       unitModel (I := I) (M := M) g (s' + 1) U x
-        (Fin.cons ((Λ x a : TangentSpace I x) : E) (fun j => (rest j : E))) := by
+        (Fin.cons (tangentLinearMapToModel (I := I) (Λ x) a) rest) := by
   rw [unitModel, operatorFieldApplication_toSection]
   rw [show ((show Tensor0SSpace (s' + 1) I x →L[ℝ] Tensor0SSpace (s' + 1) I x from
         (endoSlotZeroCcTensor (I := I) (M := M) g s' Λ).toSection x).comp
@@ -346,15 +354,10 @@ theorem unitModel_operatorFieldApplication_slotInsertEndoCc_cons
           U.toSection x) (unitTensor (I := I) (M := M) x)) from rfl]
   rw [slotInsertEndoCc_toSection (I := I) (M := M) g s' Λ x]
   rw [slotInsertEndoFib_apply_eval (I := I) (M := M) (s' + 1) 0 x (Λ x)]
-  rw [show Function.update
-      (Fin.cons ((a : TangentSpace I x) : E) (fun j => (rest j : E)) : Fin (s' + 1) → E)
-      0 ((Λ x) ((Fin.cons ((a : TangentSpace I x) : E) (fun j => (rest j : E))
-        : Fin (s' + 1) → E) 0)) =
-      Fin.cons ((Λ x a : TangentSpace I x) : E) (fun j => (rest j : E)) from by
-    rw [show ((Fin.cons ((a : TangentSpace I x) : E) (fun j => (rest j : E))
-      : Fin (s' + 1) → E) 0) = ((a : TangentSpace I x) : E) from rfl]
-    exact Fin.update_cons_zero _ _ _]
-  rfl
+  unfold unitModel
+  congr 1
+  rw [show (Fin.cons a rest : Fin (s' + 1) → E) 0 = a from rfl]
+  exact Fin.update_cons_zero _ _ _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -362,17 +365,15 @@ theorem unitModel_operatorFieldApplication_slotExtend_slotInsertEndoCc_cons
     (g : SmoothRiemannianMetric I M) (s' : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x))
-    (U : SmoothCcTensor g 0 (s' + 2)) (x : M) (a b : TangentSpace I x)
-    (m : Fin s' → TangentSpace I x) :
+    (U : SmoothCcTensor g 0 (s' + 2)) (x : M) (a b : E)
+    (m : Fin s' → E) :
     unitModel (I := I) (M := M) g (s' + 2)
         (operatorFieldApply (I := I) (M := M) g (s' + 2) (s' + 2)
           (slotExtend (I := I) (M := M) g (s' + 1) (s' + 1)
             (endoSlotZeroCcTensor (I := I) (M := M) g s' Λ)) U) x
-        (Fin.cons ((a : TangentSpace I x) : E)
-          (Fin.cons ((b : TangentSpace I x) : E) (fun j => (m j : E)))) =
+        (Fin.cons a (Fin.cons b m)) =
       unitModel (I := I) (M := M) g (s' + 2) U x
-        (Fin.cons ((a : TangentSpace I x) : E)
-          (Fin.cons ((Λ x b : TangentSpace I x) : E) (fun j => (m j : E)))) := by
+        (Fin.cons a (Fin.cons (tangentLinearMapToModel (I := I) (Λ x) b) m)) := by
   rw [unitModel, operatorFieldApplication_toSection]
   rw [show ((show Tensor0SSpace (s' + 2) I x →L[ℝ] Tensor0SSpace (s' + 2) I x from
         (slotExtend (I := I) (M := M) g (s' + 1) (s' + 1)
@@ -386,23 +387,21 @@ theorem unitModel_operatorFieldApplication_slotExtend_slotInsertEndoCc_cons
           U.toSection x) (unitTensor (I := I) (M := M) x)) from rfl]
   rw [slotExtend_toSection]
   rw [slotExtendFib_apply_eval (I := I) (M := M) (s' + 1) (s' + 1) x _ _
-    ((a : TangentSpace I x) : E)
-    (Fin.cons ((b : TangentSpace I x) : E) (fun j => (m j : E)))]
+    a (Fin.cons b m)]
   rw [show (show Tensor0SSpace (s' + 1) I x →L[ℝ] Tensor0SSpace (s' + 1) I x from
       (endoSlotZeroCcTensor (I := I) (M := M) g s' Λ).toSection x) =
       slotInsertEndoFib (I := I) (M := M) (s' + 1) 0 x (Λ x) from
     slotInsertEndoCc_toSection (I := I) (M := M) g s' Λ x]
   rw [slotInsertEndoFib_apply_eval (I := I) (M := M) (s' + 1) 0 x (Λ x)]
-  rw [show Function.update
-      (Fin.cons ((b : TangentSpace I x) : E) (fun j => (m j : E)) : Fin (s' + 1) → E)
-      0 ((Λ x) ((Fin.cons ((b : TangentSpace I x) : E) (fun j => (m j : E))
-        : Fin (s' + 1) → E) 0)) =
-      Fin.cons ((Λ x b : TangentSpace I x) : E) (fun j => (m j : E)) from by
-    rw [show ((Fin.cons ((b : TangentSpace I x) : E) (fun j => (m j : E))
-      : Fin (s' + 1) → E) 0) = ((b : TangentSpace I x) : E) from rfl]
-    exact Fin.update_cons_zero _ _ _]
-  rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)]
-  rfl
+  unfold unitModel
+  rw [← TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
+    (T := (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s' + 2) I x from
+      U.toSection x) (unitTensor (I := I) (M := M) x))
+    (v0 := a)
+    (vs := Fin.cons (tangentLinearMapToModel (I := I) (Λ x) b) m)]
+  congr 1
+  rw [show (Fin.cons b m : Fin (s' + 1) → E) 0 = b from rfl]
+  exact Fin.update_cons_zero _ _ _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
@@ -438,32 +437,27 @@ theorem operatorFieldApplication_slotExtend_slotInsert_appFullSec_swap_conj
     (w 0) (Matrix.vecTail w 0) (Matrix.vecTail (Matrix.vecTail w))]
   rw [show unitModel (I := I) (M := M) g (s' + 2)
       (homTensorRSFieldApply (I := I) (M := M) g 0 (s' + 2) (s' + 2) F U) x
-      (Fin.cons ((w 0 : TangentSpace I x) : E)
-        (Fin.cons ((Λ x (Matrix.vecTail w 0) : TangentSpace I x) : E)
-          (fun j => ((Matrix.vecTail (Matrix.vecTail w) j : TangentSpace I x) : E)))) =
+      (Fin.cons (w 0)
+        (Fin.cons (tangentLinearMapToModel (I := I) (Λ x) (Matrix.vecTail w 0))
+          (Matrix.vecTail (Matrix.vecTail w)))) =
       unitModel (I := I) (M := M) g (s' + 2) U x
-        (Fin.cons ((Λ x (Matrix.vecTail w 0) : TangentSpace I x) : E)
-          (Fin.cons ((w 0 : TangentSpace I x) : E)
-            (fun j => ((Matrix.vecTail (Matrix.vecTail w) j : TangentSpace I x) : E)))) from by
+        (Fin.cons (tangentLinearMapToModel (I := I) (Λ x) (Matrix.vecTail w 0))
+          (Fin.cons (w 0) (Matrix.vecTail (Matrix.vecTail w)))) from by
     rw [unitModel_appFullSec_swap_eq_domDomCongr (I := I) (M := M) g s' F hF U x,
       ContinuousMultilinearMap.domDomCongr_apply,
-      cons_cons_comp_swap01 ((w 0 : TangentSpace I x) : E)
-        ((Λ x (Matrix.vecTail w 0) : TangentSpace I x) : E)
-        (fun j => ((Matrix.vecTail (Matrix.vecTail w) j : TangentSpace I x) : E))]]
+      cons_cons_comp_swap01 (w 0)
+        (tangentLinearMapToModel (I := I) (Λ x) (Matrix.vecTail w 0))
+        (Matrix.vecTail (Matrix.vecTail w))]]
   rw [unitModel_appFullSec_swap_eq_domDomCongr (I := I) (M := M) g s' F hF
     (operatorFieldApply (I := I) (M := M) g (s' + 2) (s' + 2)
       (endoSlotZeroCcTensor (I := I) (M := M) g (s' + 1) Λ) U) x,
     ContinuousMultilinearMap.domDomCongr_apply,
-    cons_cons_comp_swap01 ((w 0 : TangentSpace I x) : E)
-      ((Matrix.vecTail w 0 : TangentSpace I x) : E)
-      (fun j => ((Matrix.vecTail (Matrix.vecTail w) j : TangentSpace I x) : E))]
-  rw [show (Fin.cons ((Matrix.vecTail w 0 : TangentSpace I x) : E)
-      (Fin.cons ((w 0 : TangentSpace I x) : E)
-        (fun j => ((Matrix.vecTail (Matrix.vecTail w) j : TangentSpace I x) : E)))
-      : Fin (s' + 2) → E) =
-      Fin.cons ((Matrix.vecTail w 0 : TangentSpace I x) : E)
-        (fun j => ((Fin.cons (w 0) (Matrix.vecTail (Matrix.vecTail w))
-          : Fin (s' + 1) → TangentSpace I x) j : E)) from by
+    cons_cons_comp_swap01 (w 0) (Matrix.vecTail w 0)
+      (Matrix.vecTail (Matrix.vecTail w))]
+  rw [show (Fin.cons (Matrix.vecTail w 0)
+      (Fin.cons (w 0) (Matrix.vecTail (Matrix.vecTail w))) : Fin (s' + 2) → E) =
+      Fin.cons (Matrix.vecTail w 0)
+        (Fin.cons (w 0) (Matrix.vecTail (Matrix.vecTail w))) from by
     congr 1]
   rw [unitModel_operatorFieldApplication_slotInsertEndoCc_cons (I := I) (M := M) g (s' + 1) Λ U x
     (Matrix.vecTail w 0)

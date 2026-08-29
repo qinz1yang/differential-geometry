@@ -6,7 +6,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.SmoothCcDense
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
@@ -110,8 +109,11 @@ theorem secondOrderAction_sobolev_extension_bounds
           (Cl * B) *
             ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) W‖ := by
     intro W
-    simpa only [secondOrderActionCore, LowerScaleActionCoefficients.secondOrderAction, covariantJetNormSq,
-      Nat.reduceAdd] using hlow A.secondOrderCoefficient W B hB hsup hjet
+    change ‖ccTensorToHs (I := I) (M := M) g 2 (1 : ℝ)
+      (operatorFieldApply (I := I) (M := M) g 4 2 A.secondOrderCoefficient
+        (iteratedCovGrad (I := I) g 0 2 2 W))‖ ≤ _
+    simpa only [covariantJetNormSq, Nat.reduceAdd] using
+      hlow A.secondOrderCoefficient W B hB hsup hjet
   have hHiNorm :
       ‖A.secondOrderActionFourthToSecondOrder (I := I) (M := M)‖ ≤ Ch * B := by
     simpa only [LowerScaleActionCoefficients.secondOrderActionFourthToSecondOrder, covariantJetNormSq] using
@@ -316,7 +318,7 @@ theorem secondOrderAction_sobolev_extension_difference_bound
       hdense4.equalizer L.continuous Q.continuous (by
         funext W
         simp only [Function.comp_apply, L, Q, ccToHsLin_apply,
-          ContinuousLinearMap.sub_apply]
+          sub_apply]
         rw [hDhiCore,
           secondOrderActionFourthToSecondOrder_ccTensorToHs (I := I) (M := M) hDim g A W,
           secondOrderActionFourthToSecondOrder_ccTensorToHs (I := I) (M := M) hDim g B W]
@@ -341,7 +343,7 @@ theorem secondOrderAction_sobolev_extension_difference_bound
       hdense3.equalizer L.continuous Q.continuous (by
         funext W
         simp only [Function.comp_apply, L, Q, ccToHsLin_apply,
-          ContinuousLinearMap.sub_apply]
+          sub_apply]
         rw [hDloCore,
           secondOrderActionThirdToFirstOrder_ccTensorToHs (I := I) (M := M) hDim g A W,
           secondOrderActionThirdToFirstOrder_ccTensorToHs (I := I) (M := M) hDim g B W]

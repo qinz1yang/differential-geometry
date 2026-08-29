@@ -104,7 +104,7 @@ theorem endoCovariantDerivative_g0_self_adjoint
   have hcoeZ : (LeviCivita (I := I) g₀ : (Π x : M, TangentSpace I x) →
       (Π x : M, TangentSpace I x →L[ℝ] TangentSpace I x)) (fun y => Z y) =
       cov (fun y => Z y) := rfl
-  simp only [map_add, ContinuousLinearMap.add_apply, hYx', hZx', hlamYx, hlamZx,
+  simp only [map_add, add_apply, hYx', hZx', hlamYx, hlamZx,
     hcoeY, hcoeZ] at hmfderiv_eq
   have hcancel1 : g₀.inner x ((Λ x) (cov (fun y => Y y) x v)) b =
       g₀.inner x (cov (fun y => Y y) x v) ((Λ x) b) := hΛ x (cov (fun y => Y y) x v) b

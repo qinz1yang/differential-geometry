@@ -83,8 +83,11 @@ theorem dirichletForm_zero_left (g : SmoothRiemannianMetric I M)
       exact hx
     filter_upwards [hzero_fn] with x hx
     rw [hx]
-    rw [show (0 : E) = (0 : TangentSpace I x) from rfl,
-      map_zero, ContinuousLinearMap.zero_apply]
+    let w : TangentSpace I x := (gradL2 g u : M → E) x
+    let h : g.inner x (0 : TangentSpace I x) w = 0 := by
+      rw [map_zero]
+      rfl
+    exact h
   rw [integral_congr_ae h_ae]
   simp
 
@@ -187,7 +190,7 @@ private lemma dirichletForm_integrand_add_left
           exact map_add (g.inner x) _ _
     _ = g.inner x ((gradL2 g u₁ : M → E) x) ((gradL2 g v : M → E) x) +
           g.inner x ((gradL2 g u₂ : M → E) x) ((gradL2 g v : M → E) x) := by
-          rw [ContinuousLinearMap.add_apply]
+          rfl
 
 private lemma dirichletForm_integrand_smul_left
     (g : SmoothRiemannianMetric I M) (c : ℝ)
@@ -218,14 +221,14 @@ private lemma dirichletForm_integrand_smul_left
           congr 1
           exact map_smul (g.inner x) c _
     _ = c * g.inner x ((gradL2 g u : M → E) x) ((gradL2 g v : M → E) x) := by
-          rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+          rfl
 
 theorem dirichletForm_add_left (g : SmoothRiemannianMetric I M)
     (u₁ u₂ v : H1Intrinsic (I := I) (M := M) g) :
     dirichletForm (I := I) (M := M) g (u₁ + u₂) v =
       dirichletForm (I := I) (M := M) g u₁ v +
         dirichletForm (I := I) (M := M) g u₂ v := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   unfold dirichletForm
@@ -317,7 +320,7 @@ theorem shiftedForm_add_left (g : SmoothRiemannianMetric I M)
     shiftedForm (I := I) (M := M) g (u₁ + u₂) v =
       shiftedForm (I := I) (M := M) g u₁ v +
         shiftedForm (I := I) (M := M) g u₂ v := by
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   unfold shiftedForm

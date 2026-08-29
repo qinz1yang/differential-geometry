@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates
 
 import DifferentialGeometry.Geometry.Geodesic.OpenSubtype
 import DifferentialGeometry.Geometry.Geodesic.PullbackCross
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
@@ -41,6 +43,7 @@ def normalQuarter
   exact ⟨Metric.ball (0 : E)
     (expMapC2Radius (I := I) Y.metric x / 4), Metric.isOpen_ball⟩
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalQuarter_sub
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -49,10 +52,10 @@ theorem normalQuarter_sub
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     (normalQuarter (I := I) Y x : Set E) ⊆
       (normalExpPD (I := I) Y x).source := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   rw [normalExpPD_source]
   exact normalInner_sub (I := I) Y x
 
@@ -84,37 +87,39 @@ noncomputable def normalQuarterDiffeo
   letI : ChartedSpace H Y.M := Y.charted
   letI : IsManifold I ∞ Y.M := Y.smooth
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  simpa only [normalQuarterImage] using
-    PartialDiffeomorph.toOpensDiffeoCross (normalExpPD (I := I) Y x)
-      (normalQuarter_sub (I := I) Y x)
+  unfold normalQuarterImage
+  exact PartialDiffeomorph.toOpensDiffeoCross (normalExpPD (I := I) Y x)
+    (normalQuarter_sub (I := I) Y x)
 
-@[implicit_reducible] noncomputable def normalQuarterSigma
+omit [NeZero (Module.finrank ℝ E)] in
+theorem normalQuarterSigma
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     SigmaCompactSpace (normalQuarter (I := I) Y x) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : LocallyCompactSpace (normalQuarter (I := I) Y x) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : LocallyCompactSpace (normalQuarter (I := I) Y x) :=
     (normalQuarter (I := I) Y x).2.locallyCompactSpace
   infer_instance
 
-@[implicit_reducible] noncomputable def normalQuarterImageSigma
+omit [NeZero (Module.finrank ℝ E)] in
+theorem normalQuarterImageSigma
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
     letI : ChartedSpace H Y.M := Y.charted
     letI : IsManifold I ∞ Y.M := Y.smooth
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     SigmaCompactSpace (normalQuarterImage (I := I) Y x) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : SigmaCompactSpace (normalQuarter (I := I) Y x) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : SigmaCompactSpace (normalQuarter (I := I) Y x) :=
     normalQuarterSigma (I := I) Y x
   apply isSigmaCompact_univ_iff.mp
   have hrange : Set.range (normalQuarterDiffeo (I := I) Y x :
@@ -124,6 +129,7 @@ noncomputable def normalQuarterDiffeo
   rw [← hrange]
   exact isSigmaCompact_range (normalQuarterDiffeo (I := I) Y x).continuous
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem quarterDiffeo_apply
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (z : normalQuarter (I := I) Y x) :
@@ -136,6 +142,7 @@ theorem quarterDiffeo_apply
       expMapDiffeo (I := I) Y.metric x (z : E) := by
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem quarterDiffeo_mfd
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (z : normalQuarter (I := I) Y x) (v : E) :
@@ -145,16 +152,22 @@ theorem quarterDiffeo_mfd
     letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     mfderiv 𝓘(Real, E) I
         (normalQuarterDiffeo (I := I) Y x :
-          normalQuarter (I := I) Y x → normalQuarterImage (I := I) Y x) z v =
+          normalQuarter (I := I) Y x → normalQuarterImage (I := I) Y x) z
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := modelWithCornersSelf Real E) z).symm v) =
       mfderiv 𝓘(Real, E) I
-        (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) (z : E) v := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+        (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) (z : E)
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := modelWithCornersSelf Real E) (z : E)).symm v) := by
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   have h := PartialDiffeomorph.mfderiv_toOpensDiffeoCross
-    (normalExpPD (I := I) Y x) (normalQuarter_sub (I := I) Y x) z v
-  simpa only [normalQuarterDiffeo, normalExpPD] using h
+    (normalExpPD (I := I) Y x) (normalQuarter_sub (I := I) Y x) z
+      ((tangentSpaceModelContinuousLinearEquiv
+        (I := modelWithCornersSelf Real E) z).symm v)
+  exact h
 
 omit [FiniteDimensional Real E] [CompleteSpace E]
   [NeZero (Module.finrank Real E)] in
@@ -162,16 +175,31 @@ private theorem metric_ext
     {M : Type*} [TopologicalSpace M] [ChartedSpace E M]
     [IsManifold 𝓘(Real, E) ∞ M]
     {g g' : SmoothRiemannianMetric 𝓘(Real, E) M}
-    (h : ∀ (z : M) (v w : TangentSpace 𝓘(Real, E) z),
-      g.inner z v w = g'.inner z v w) : g = g' := by
+    (h : ∀ (z : M) (v w : E),
+      g.inner z
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real E) z).symm v)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real E) z).symm w) =
+        g'.inner z
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real E) z).symm v)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real E) z).symm w)) : g = g' := by
   obtain ⟨i₁, s₁, p₁, b₁, c₁⟩ := g
   obtain ⟨i₂, s₂, p₂, b₂, c₂⟩ := g'
   have hi : i₁ = i₂ :=
     funext fun z => ContinuousLinearMap.ext fun v =>
-      ContinuousLinearMap.ext fun w => h z v w
+      ContinuousLinearMap.ext fun w => by
+        simpa using h z
+          (tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real E) z v)
+          (tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real E) z w)
   subst hi
   rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalTotal_quarter
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -189,25 +217,58 @@ theorem normalTotal_quarter
       Diffeomorph.pullbackMetricCross
         (Y.metric.restrictOpen (I := I) (normalQuarterImage (I := I) Y x))
         (normalQuarterDiffeo (I := I) Y x) := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : SigmaCompactSpace (normalQuarter (I := I) Y x) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : SigmaCompactSpace (normalQuarter (I := I) Y x) :=
     normalQuarterSigma (I := I) Y x
-  letI : SigmaCompactSpace (normalQuarterImage (I := I) Y x) :=
+  let : SigmaCompactSpace (normalQuarterImage (I := I) Y x) :=
     normalQuarterImageSigma (I := I) Y x
   apply metric_ext (M := normalQuarter (I := I) Y x)
   intro z v w
+  have hv : (show TangentSpace (modelWithCornersSelf Real E) (z : E) from
+      (tangentSpaceModelContinuousLinearEquiv
+        (I := modelWithCornersSelf Real E) z).symm v) =
+        (tangentSpaceModelContinuousLinearEquiv
+          (I := modelWithCornersSelf Real E) (z : E)).symm v := by
+    apply (tangentSpaceModelContinuousLinearEquiv
+      (I := modelWithCornersSelf Real E) (z : E)).injective
+    simp only [      tangentSpaceModelContinuousLinearEquiv_symm_apply]
+  have hw : (show TangentSpace (modelWithCornersSelf Real E) (z : E) from
+      (tangentSpaceModelContinuousLinearEquiv
+        (I := modelWithCornersSelf Real E) z).symm w) =
+        (tangentSpaceModelContinuousLinearEquiv
+          (I := modelWithCornersSelf Real E) (z : E)).symm w := by
+    apply (tangentSpaceModelContinuousLinearEquiv
+      (I := modelWithCornersSelf Real E) (z : E)).injective
+    simp only [      tangentSpaceModelContinuousLinearEquiv_symm_apply]
   rw [SmoothRiemannianMetric.restrictOpen_inner,
     Diffeomorph.pullbackMetricCross_inner,
     SmoothRiemannianMetric.restrictOpen_inner]
   rw [quarterDiffeo_apply, quarterDiffeo_mfd, quarterDiffeo_mfd]
-  rw [normalTotal_inner (I := I) Y x (z : E) z.2 v w]
-  exact normalCoordMetric_apply (I := I) Y x (z : E) v w
+  calc
+    _ = normalCoordMetric (I := I) Y x (z : E) v w := by
+      have hinner :
+          (normalTotal (I := I) Y x).inner (z : E)
+              (show TangentSpace (modelWithCornersSelf Real E) (z : E) from
+                (tangentSpaceModelContinuousLinearEquiv
+                  (I := modelWithCornersSelf Real E) z).symm v)
+              (show TangentSpace (modelWithCornersSelf Real E) (z : E) from
+                (tangentSpaceModelContinuousLinearEquiv
+                  (I := modelWithCornersSelf Real E) z).symm w) =
+            (normalTotal (I := I) Y x).inner (z : E)
+              ((tangentSpaceModelContinuousLinearEquiv
+                (I := modelWithCornersSelf Real E) (z : E)).symm v)
+              ((tangentSpaceModelContinuousLinearEquiv
+                (I := modelWithCornersSelf Real E) (z : E)).symm w) := by
+        rw [hv, hw]
+      exact hinner.trans (normalTotal_inner (I := I) Y x (z : E) z.2 v w)
+    _ = _ := normalCoordMetric_apply (I := I) Y x (z : E) v w
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normal_cov_map
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -239,22 +300,27 @@ theorem normal_cov_map
         (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) (z : E)
         (((DifferentialGeometry.Geometry.Curvature.metricCov (I := 𝓘(Real, E))
           (M := E) (normalTotal (I := I) Y x)).toFun
-          (fun u : E => V u) (z : E)) v) =
+          (fun u : E => V u) (z : E))
+          (show TangentSpace (modelWithCornersSelf Real E) (z : E) from
+            (tangentSpaceModelContinuousLinearEquiv
+              (I := modelWithCornersSelf Real E) z).symm v)) =
       ((DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := Y.M) Y.metric).toFun
         (fun y : Y.M => Z y)
         (expMapDiffeo (I := I) Y.metric x (z : E)))
         (mfderiv 𝓘(Real, E) I
-          (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) (z : E) v) := by
+          (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) (z : E)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real E) (z : E)).symm v)) := by
   classical
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : SigmaCompactSpace (normalQuarter (I := I) Y x) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : SigmaCompactSpace (normalQuarter (I := I) Y x) :=
     normalQuarterSigma (I := I) Y x
-  letI : SigmaCompactSpace (normalQuarterImage (I := I) Y x) :=
+  let : SigmaCompactSpace (normalQuarterImage (I := I) Y x) :=
     normalQuarterImageSigma (I := I) Y x
   intro V Z z v hEq
   let U := normalQuarter (I := I) Y x
@@ -265,11 +331,15 @@ theorem normal_cov_map
   let PW := DifferentialGeometry.Geometry.Curvature.pushFwdSectionCross
     (I := 𝓘(Real, E)) (J := I) Phi VU
   have hres := DifferentialGeometry.Geometry.Curvature.metricCov_restrictOpen_globalSection
-    (I := 𝓘(Real, E)) (normalTotal (I := I) Y x) U V z v
+    (I := 𝓘(Real, E)) (normalTotal (I := I) Y x) U V z
+      ((tangentSpaceModelContinuousLinearEquiv
+        (I := modelWithCornersSelf Real E) z).symm v)
   rw [normalTotal_quarter (I := I) Y x] at hres
   have hpull := DifferentialGeometry.Geometry.Curvature.metricCov_pullbackCross
     (I := 𝓘(Real, E)) (J := I)
-    (Y.metric.restrictOpen (I := I) W) Phi VU z v
+    (Y.metric.restrictOpen (I := I) W) Phi VU z
+      ((tangentSpaceModelContinuousLinearEquiv
+        (I := modelWithCornersSelf Real E) z).symm v)
   have hfield :
       (DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := W)
         (Y.metric.restrictOpen (I := I) W)).toFun
@@ -282,31 +352,77 @@ theorem normal_cov_map
       (I := I) (M := W) (Y.metric.restrictOpen (I := I) W)
       (DifferentialGeometry.Geometry.Curvature.mdiffAt_restrictOpen_section (I := I) W Z (Phi z))
       (PW.contMDiff.contMDiffAt.mdifferentiableAt (by simp))
-    simpa only [DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection] using hEq
+    change (fun y : W =>
+        DifferentialGeometry.Geometry.Curvature.restrictOpenTangentSection
+          (I := I) W Z y) =ᶠ[𝓝 (Phi z)] (fun y : W => PW y) at hEq
+    exact hEq
   have htgt := DifferentialGeometry.Geometry.Curvature.metricCov_restrictOpen_globalSection
     (I := I) Y.metric W Z (Phi z)
-      (mfderiv 𝓘(Real, E) I (Phi : U → W) z v)
+      (mfderiv 𝓘(Real, E) I (Phi : U → W) z
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := modelWithCornersSelf Real E) z).symm v))
   have htoAmbient :
       ((DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := W)
           (Y.metric.restrictOpen (I := I) W)).toFun
         (fun y : W => PW y) (Phi z))
-        (mfderiv 𝓘(Real, E) I (Phi : U → W) z v) =
+        (mfderiv 𝓘(Real, E) I (Phi : U → W) z
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real E) z).symm v)) =
       ((DifferentialGeometry.Geometry.Curvature.metricCov (I := I) (M := Y.M) Y.metric).toFun
         (fun y : Y.M => Z y) (Phi z : Y.M))
-        (mfderiv 𝓘(Real, E) I (Phi : U → W) z v) := by
+        (mfderiv 𝓘(Real, E) I (Phi : U → W) z
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := modelWithCornersSelf Real E) z).symm v)) := by
     rw [← hfield]
     exact htgt
   have hpbAmbient := htoAmbient
   rw [← hpull] at hpbAmbient
-  have hleft := quarterDiffeo_mfd (I := I) Y x z
-    (((DifferentialGeometry.Geometry.Curvature.metricCov (I := 𝓘(Real, E))
+  let c : TangentSpace (modelWithCornersSelf Real E) (z : E) :=
+    ((DifferentialGeometry.Geometry.Curvature.metricCov
+      (I := modelWithCornersSelf Real E)
       (M := E) (normalTotal (I := I) Y x)).toFun
-      (fun u : E => V u) (z : E)) v)
+      (fun u : E => V u) (z : E))
+      (show TangentSpace (modelWithCornersSelf Real E) (z : E) from
+        (tangentSpaceModelContinuousLinearEquiv
+          (I := modelWithCornersSelf Real E) z).symm v)
+  let cm : E := show E from c
+  have hcz :
+      (tangentSpaceModelContinuousLinearEquiv
+        (I := modelWithCornersSelf Real E) z).symm cm =
+        (show TangentSpace (modelWithCornersSelf Real E) z from c) := by
+    apply (tangentSpaceModelContinuousLinearEquiv
+      (I := modelWithCornersSelf Real E) z).injective
+    rw [ContinuousLinearEquiv.apply_symm_apply]
+    change cm = (show E from c)
+    rfl
+  have hcbase :
+      (tangentSpaceModelContinuousLinearEquiv
+        (I := modelWithCornersSelf Real E) (z : E)).symm cm = c := by
+    apply (tangentSpaceModelContinuousLinearEquiv
+      (I := modelWithCornersSelf Real E) (z : E)).injective
+    rw [ContinuousLinearEquiv.apply_symm_apply]
+    change cm = (show E from c)
+    rfl
+  have hresC := hres
+  change _ = (show TangentSpace (modelWithCornersSelf Real E) z from c) at hresC
+  have hleftRaw := quarterDiffeo_mfd (I := I) Y x z cm
+  have hleft :
+      mfderiv (modelWithCornersSelf Real E) I
+          (normalQuarterDiffeo (I := I) Y x :
+            normalQuarter (I := I) Y x → normalQuarterImage (I := I) Y x) z
+          (show TangentSpace (modelWithCornersSelf Real E) z from c) =
+        mfderiv (modelWithCornersSelf Real E) I
+          (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) (z : E) c := by
+    rw [hcz, hcbase] at hleftRaw
+    exact hleftRaw
   have hdir := quarterDiffeo_mfd (I := I) Y x z v
   have hbase := quarterDiffeo_apply (I := I) Y x z
-  rw [← hleft, ← hres, ← hdir, ← hbase]
+  change mfderiv (modelWithCornersSelf Real E) I
+      (fun u : E ↦ expMapDiffeo (I := I) Y.metric x u) (z : E) c = _
+  rw [← hleft, ← hresC, ← hdir, ← hbase]
   exact hpbAmbient
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalGeo_map
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (gamma : Real → E) (s : Set Real) (hs : IsOpen s)
@@ -323,15 +439,15 @@ theorem normalGeo_map
     Geometry.Riemannian.Geodesic.IsGeodesicOn (I := I) Y.metric
       (fun t ↦ expMapDiffeo (I := I) Y.metric x (gamma t)) s := by
   classical
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : SigmaCompactSpace (normalQuarter (I := I) Y x) :=
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : SigmaCompactSpace (normalQuarter (I := I) Y x) :=
     normalQuarterSigma (I := I) Y x
-  letI : SigmaCompactSpace (normalQuarterImage (I := I) Y x) :=
+  let : SigmaCompactSpace (normalQuarterImage (I := I) Y x) :=
     normalQuarterImageSigma (I := I) Y x
   let z0 : normalQuarter (I := I) Y x := ⟨0, by
     change (0 : E) ∈ Metric.ball (0 : E)

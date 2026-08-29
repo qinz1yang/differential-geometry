@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -146,7 +145,7 @@ structure tensorHs (g : SmoothRiemannianMetric I M) (r s : ℕ) (σ : ℝ) where
     Summable (fun i => tensorSobolevWeight (I := I) (M := M) i σ *
       (coeff i) ^ 2)
 
-def tensorHs_of_spectralMass_majorant {g : SmoothRiemannianMetric I M}
+def tensorHsOfSpectralMassMajorant {g : SmoothRiemannianMetric I M}
     {r s : ℕ} {σ : ℝ}
     (c : TensorEigenIdx (I := I) (M := M) g r s → ℝ)
     (B : TensorEigenIdx (I := I) (M := M) g r s → ℝ) (hB : Summable B)
@@ -165,7 +164,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     (c : TensorEigenIdx (I := I) (M := M) g r s → ℝ)
     (B : TensorEigenIdx (I := I) (M := M) g r s → ℝ) (hB : Summable B)
     (hle : ∀ i, tensorSobolevWeight (I := I) (M := M) i σ * (c i) ^ 2 ≤ B i) :
-    (tensorHs_of_spectralMass_majorant (I := I) (M := M) c B hB hle).coeff = c :=
+    (tensorHsOfSpectralMassMajorant (I := I) (M := M) c B hB hle).coeff = c :=
   rfl
 
 namespace tensorHs
@@ -692,7 +691,7 @@ lemma toL2Seq_smul (hσ : 0 ≤ σ) (c : ℝ)
   simp only [toL2Seq_apply, lp.coeFn_smul, Pi.smul_apply, smul_coeff,
     smul_eq_mul]
 
-def toL2Fun_ofCompact
+def toL2FunOfCompact
     (h_compact : IsCompactOperator (tensorResolventL2
       (I := I) (M := M) g r s))
     (hσ : 0 ≤ σ)
@@ -710,8 +709,8 @@ omit [NeZero (Module.finrank ℝ E)] in
     (T : tensorHs (I := I) (M := M) g r s σ)
     (i : TensorEigenIdx (I := I) (M := M) g r s) :
     tensorL2Coeff (I := I) (M := M) h_compact
-        (toL2Fun_ofCompact (I := I) (M := M) h_compact hσ T) i = T.coeff i := by
-  unfold tensorL2Coeff toL2Fun_ofCompact
+        (toL2FunOfCompact (I := I) (M := M) h_compact hσ T) i = T.coeff i := by
+  unfold tensorL2Coeff toL2FunOfCompact
   rw [LinearIsometryEquiv.apply_symm_apply]
   rfl
 
@@ -721,10 +720,10 @@ lemma toL2Fun_ofCompact_add
       (I := I) (M := M) g r s))
     (hσ : 0 ≤ σ)
     (S T : tensorHs (I := I) (M := M) g r s σ) :
-    toL2Fun_ofCompact (I := I) (M := M) h_compact hσ (S + T) =
-      toL2Fun_ofCompact (I := I) (M := M) h_compact hσ S +
-        toL2Fun_ofCompact (I := I) (M := M) h_compact hσ T := by
-  unfold toL2Fun_ofCompact
+    toL2FunOfCompact (I := I) (M := M) h_compact hσ (S + T) =
+      toL2FunOfCompact (I := I) (M := M) h_compact hσ S +
+        toL2FunOfCompact (I := I) (M := M) h_compact hσ T := by
+  unfold toL2FunOfCompact
   rw [toL2Seq_add (I := I) (M := M) hσ S T, map_add]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -733,9 +732,9 @@ lemma toL2Fun_ofCompact_smul
       (I := I) (M := M) g r s))
     (hσ : 0 ≤ σ) (c : ℝ)
     (T : tensorHs (I := I) (M := M) g r s σ) :
-    toL2Fun_ofCompact (I := I) (M := M) h_compact hσ (c • T) =
-      c • toL2Fun_ofCompact (I := I) (M := M) h_compact hσ T := by
-  unfold toL2Fun_ofCompact
+    toL2FunOfCompact (I := I) (M := M) h_compact hσ (c • T) =
+      c • toL2FunOfCompact (I := I) (M := M) h_compact hσ T := by
+  unfold toL2FunOfCompact
   rw [toL2Seq_smul (I := I) (M := M) hσ c T, map_smul]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -744,16 +743,16 @@ lemma norm_toL2Fun_ofCompact_le
       (I := I) (M := M) g r s))
     (hσ : 0 ≤ σ)
     (T : tensorHs (I := I) (M := M) g r s σ) :
-    ‖toL2Fun_ofCompact (I := I) (M := M) h_compact hσ T‖ ≤ ‖T‖ := by
-  have h_l2_sq : ‖toL2Fun_ofCompact (I := I) (M := M) h_compact hσ T‖ ^ 2 =
+    ‖toL2FunOfCompact (I := I) (M := M) h_compact hσ T‖ ≤ ‖T‖ := by
+  have h_l2_sq : ‖toL2FunOfCompact (I := I) (M := M) h_compact hσ T‖ ^ 2 =
       ∑' i, (T.coeff i) ^ 2 := by
     have h_par := tensorParseval_norm_sq (I := I) (M := M) h_compact
-      (toL2Fun_ofCompact (I := I) (M := M) h_compact hσ T)
+      (toL2FunOfCompact (I := I) (M := M) h_compact hσ T)
     have h_eq :
         (fun i : TensorEigenIdx (I := I) (M := M) g r s =>
           ‖⟪tensorResolventHilbertEigenbasisSigma
               (I := I) (M := M) h_compact i,
-            toL2Fun_ofCompact (I := I) (M := M) h_compact hσ T⟫_ℝ‖ ^ 2) =
+            toL2FunOfCompact (I := I) (M := M) h_compact hσ T⟫_ℝ‖ ^ 2) =
         (fun i => (T.coeff i) ^ 2) := by
       funext i
       rw [← tensorL2Coeff_eq_inner,
@@ -781,9 +780,9 @@ lemma norm_toL2Fun_ofCompact_le
           (T.coeff i) ^ 2 :=
     Summable.tsum_le_tsum h_le_terms h_summ_unweighted T.weighted_summable
   have h_sq_le :
-      ‖toL2Fun_ofCompact (I := I) (M := M) h_compact hσ T‖ ^ 2 ≤ ‖T‖ ^ 2 := by
+      ‖toL2FunOfCompact (I := I) (M := M) h_compact hσ T‖ ^ 2 ≤ ‖T‖ ^ 2 := by
     rw [h_l2_sq, h_hs_sq]; exact h_tsum_le
-  have h1 : 0 ≤ ‖toL2Fun_ofCompact (I := I) (M := M) h_compact hσ T‖ :=
+  have h1 : 0 ≤ ‖toL2FunOfCompact (I := I) (M := M) h_compact hσ T‖ :=
     norm_nonneg _
   have h2 : 0 ≤ ‖T‖ := norm_nonneg T
   nlinarith [h_sq_le, h1, h2]
@@ -797,13 +796,13 @@ def tensorHsToL2 {g : SmoothRiemannianMetric I M} {r s : ℕ}
     tensorHs (I := I) (M := M) g r s σ →L[ℝ]
       TensorL2 r s g :=
   LinearMap.mkContinuous
-    { toFun := tensorHs.toL2Fun_ofCompact (I := I) (M := M) h_compact hσ
+    { toFun := tensorHs.toL2FunOfCompact (I := I) (M := M) h_compact hσ
       map_add' := tensorHs.toL2Fun_ofCompact_add (I := I) (M := M) h_compact hσ
       map_smul' := fun c T =>
         tensorHs.toL2Fun_ofCompact_smul (I := I) (M := M) h_compact hσ c T }
     1
     (fun T => by
-      change ‖tensorHs.toL2Fun_ofCompact (I := I) (M := M) h_compact hσ T‖
+      change ‖tensorHs.toL2FunOfCompact (I := I) (M := M) h_compact hσ T‖
           ≤ 1 * ‖T‖
       rw [one_mul]
       exact tensorHs.norm_toL2Fun_ofCompact_le (I := I) (M := M) h_compact hσ T)
@@ -816,7 +815,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     (hσ : 0 ≤ σ) (T : tensorHs (I := I) (M := M) g r s σ) :
     tensorHsToL2 (I := I) (M := M) (g := g) (r := r) (s := s)
         h_compact hσ T =
-      tensorHs.toL2Fun_ofCompact (I := I) (M := M) h_compact hσ T := rfl
+      tensorHs.toL2FunOfCompact (I := I) (M := M) h_compact hσ T := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorHsToL2_opNorm_le_one {g : SmoothRiemannianMetric I M}

@@ -5,6 +5,7 @@ import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 
 noncomputable section
 
+
 open Bundle Manifold Set Metric Module
 open scoped Manifold Topology ContDiff RealInnerProductSpace
 
@@ -74,6 +75,7 @@ private theorem mfderiv_lie_apply (e : E ≃ₗᵢ[ℝ] E) (y w : E) :
   have h : mfderiv 𝓘(ℝ, E) 𝓘(ℝ, E) (⇑e) y = e.toContinuousLinearMap := by
     rw [mfderiv_eq_fderiv, show (⇑e : E → E) = ⇑(e.toContinuousLinearMap) from rfl]
     simp only [ContinuousLinearMap.fderiv]
+    rfl
   rw [h]; rfl
 
 theorem mfderiv_incl_sphereDiffeo (e : E ≃ₗᵢ[ℝ] E) (x : sphere (0 : E) 1)

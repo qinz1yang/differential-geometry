@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -263,7 +262,7 @@ private lemma euclidPartial_eq_zero_of_notMem_tsupport
     Filter.eventually_of_mem (hopen_c.mem_nhds hy)
       (fun z hz => image_eq_zero_of_notMem_tsupport hz)
   rw [euclidPartial_def, Filter.EventuallyEq.fderiv_eq hu_evt,
-    fderiv_const_apply, ContinuousLinearMap.zero_apply]
+    fderiv_const_apply, zero_apply]
 
 omit [CompleteSpace E] [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
 lemma density_scalarPrincipal_eq_principalIntegrand
@@ -684,7 +683,7 @@ theorem tensorComponent_chartBilinIdentity
         densityOnEuclid (I := I) g α y *
           covLowerOrderRotationGradCoeff (I := I) (M := M) g r s T α P₀ l y *
             euclidPartial (E := E) l φ y) (volume : Measure EuclN) := by
-    refine MeasureTheory.integrable_finset_sum _ (fun l _ => ?_)
+    refine MeasureTheory.integrable_finsetSum _ (fun l _ => ?_)
     have heq : (fun y => densityOnEuclid (I := I) g α y *
         covLowerOrderRotationGradCoeff (I := I) (M := M) g r s T α P₀ l y *
           euclidPartial (E := E) l φ y) =
@@ -758,7 +757,7 @@ theorem tensorComponent_chartBilinIdentity
       ∑ l : Fin (Module.finrank ℝ E),
         ∫ y, weightedGradCoeff (I := I) (M := M) g r s T α P₀ l y *
           euclidPartial (E := E) l φ y ∂(volume : Measure EuclN) := by
-    rw [MeasureTheory.integral_finset_sum _ (fun l _ => by
+    rw [MeasureTheory.integral_finsetSum _ (fun l _ => by
       have heq : (fun y => densityOnEuclid (I := I) g α y *
           covLowerOrderRotationGradCoeff (I := I) (M := M) g r s T α P₀ l y *
             euclidPartial (E := E) l φ y) =
@@ -866,7 +865,6 @@ theorem tensorComponent_chartBilinIdentity
         (f := fun y => tensorComponentWeakRHS (I := I) (M := M)
           g r s T F α P₀ y * φ y)
         (fun y hy => by
-          simp only []
           rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hφ_supp h)),
             mul_zero])]
       refine MeasureTheory.setIntegral_congr_fun hcTE_meas (fun y hy => ?_)
@@ -886,7 +884,6 @@ theorem tensorComponent_chartBilinIdentity
             euclidPartial (E := E) l
               (weightedGradCoeff (I := I) (M := M) g r s T α P₀ l) y * φ y)
         (fun y hy => by
-          simp only []
           rw [image_eq_zero_of_notMem_tsupport (fun h => hy (hφ_supp h))]
           simp only [mul_zero, sub_zero, zero_add]
           exact Finset.sum_eq_zero (fun l _ => by ring))]
@@ -895,7 +892,7 @@ theorem tensorComponent_chartBilinIdentity
           euclidPartial (E := E) l
             (weightedGradCoeff (I := I) (M := M) g r s T α P₀ l) y * φ y)
         (volume : Measure EuclN) :=
-      MeasureTheory.integrable_finset_sum _ (fun l _ => hint_ibp l)
+      MeasureTheory.integrable_finsetSum _ (fun l _ => hint_ibp l)
     rw [MeasureTheory.integral_add
         (f := fun y => densityOnEuclid (I := I) g α y *
             sourcePairingCoeff (I := I) (M := M) g r s F α P₀ y * φ y -
@@ -922,7 +919,7 @@ theorem tensorComponent_chartBilinIdentity
         (g := fun y => densityOnEuclid (I := I) g α y *
           covPrincipalRotationCoeff (I := I) (M := M) g r s T α P₀ y * φ y)
         hint_src hint_prc,
-      MeasureTheory.integral_finset_sum _ (fun l _ => hint_ibp l)]
+      MeasureTheory.integral_finsetSum _ (fun l _ => hint_ibp l)]
   rw [hbilin_eq, hWeakRHS_volume]
   linarith [hweak_v]
 
@@ -964,7 +961,7 @@ theorem tensorComponentWeakRHS_tsupport_subset
         g r s T F α P₀ y ∂(volume : Measure EuclN) = 0 := by
     intro φ hφ hφ_cs hφ_supp_V
     have hφ_supp : tsupport φ ⊆ chartTargetEuclid (I := I) (M := M) α :=
-      hφ_supp_V.trans (Set.diff_subset)
+      hφ_supp_V.trans (Set.sdiff_subset)
     have hbilin := tensorComponent_chartBilinIdentity (I := I) (M := M)
       g r s T F α hK hK_target P₀ hT_supp hT_K hweak hφ hφ_cs hφ_supp
     have hbilin_zero :

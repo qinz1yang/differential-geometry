@@ -14,8 +14,8 @@ structure HomotopyEquivUnder {X : Type u} [TopologicalSpace X] {Y : Type v} [Top
   invFun : C(Z, Y)
   map_toBase : toFun.comp toBase = fromBase
   map_fromBase : invFun.comp fromBase = toBase
-  left_inv : ContinuousMap.HomotopyRel (invFun.comp toFun) (ContinuousMap.id Y) (Set.range toBase)
-  right_inv : ContinuousMap.HomotopyRel (toFun.comp invFun) (ContinuousMap.id Z) (Set.range fromBase)
+  leftInv : ContinuousMap.HomotopyRel (invFun.comp toFun) (ContinuousMap.id Y) (Set.range toBase)
+  rightInv : ContinuousMap.HomotopyRel (toFun.comp invFun) (ContinuousMap.id Z) (Set.range fromBase)
 
 namespace HomotopyEquivUnder
 
@@ -36,8 +36,8 @@ noncomputable def toHomotopyEquiv (e : HomotopyEquivUnder toBase fromBase) :
     ContinuousMap.HomotopyEquiv Y Z where
   toFun := e.toFun
   invFun := e.invFun
-  left_inv := ⟨e.left_inv.toHomotopy⟩
-  right_inv := ⟨e.right_inv.toHomotopy⟩
+  left_inv := ⟨e.leftInv.toHomotopy⟩
+  right_inv := ⟨e.rightInv.toHomotopy⟩
 
 @[simp]
 theorem toHomotopyEquiv_toFun (e : HomotopyEquivUnder toBase fromBase) :
@@ -63,9 +63,9 @@ noncomputable def refl {toBase fromBase : C(X, Y)} (h : toBase = fromBase) :
     simp [h]
   map_fromBase := by
     simp [h]
-  left_inv := by
+  leftInv := by
     simpa using (ContinuousMap.HomotopyRel.refl (ContinuousMap.id Y) (Set.range toBase))
-  right_inv := by
+  rightInv := by
     simpa using (ContinuousMap.HomotopyRel.refl (ContinuousMap.id Y) (Set.range fromBase))
 
 noncomputable def symm (e : HomotopyEquivUnder toBase fromBase) :
@@ -74,8 +74,8 @@ noncomputable def symm (e : HomotopyEquivUnder toBase fromBase) :
   invFun := e.toFun
   map_toBase := e.map_fromBase
   map_fromBase := e.map_toBase
-  left_inv := e.right_inv
-  right_inv := e.left_inv
+  leftInv := e.rightInv
+  rightInv := e.leftInv
 
 @[simp]
 theorem symm_toFun (e : HomotopyEquivUnder toBase fromBase) :
@@ -114,7 +114,7 @@ noncomputable def trans {X₁ Y₁ Z₁ W : Type*} [TopologicalSpace X₁] [Topo
         congrArg e₁.invFun (e₂.map_fromBase_apply x)
       _ = e₁.invFun (fromBase₁ x) := by rw [← h]
       _ = toBase₁ x := e₁.map_fromBase_apply x
-  left_inv := by
+  leftInv := by
     have hmap₂ : Set.MapsTo e₁.toFun (Set.range toBase₁) (Set.range toBase₂) := by
       intro y hy
       rcases hy with ⟨x, rfl⟩
@@ -123,7 +123,7 @@ noncomputable def trans {X₁ Y₁ Z₁ W : Type*} [TopologicalSpace X₁] [Topo
     have R₂pre : ContinuousMap.HomotopyRel
         ((e₂.invFun.comp e₂.toFun).comp e₁.toFun) ((ContinuousMap.id Z₁).comp e₁.toFun)
         (Set.range toBase₁) :=
-      precompHomotopyRel (S := Set.range toBase₂) (T := Set.range toBase₁) e₂.left_inv e₁.toFun hmap₂
+      precompHomotopyRel (S := Set.range toBase₂) (T := Set.range toBase₁) e₂.leftInv e₁.toFun hmap₂
     have R₂post : ContinuousMap.HomotopyRel
         (e₁.invFun.comp ((e₂.invFun.comp e₂.toFun).comp e₁.toFun))
         (e₁.invFun.comp ((ContinuousMap.id Z₁).comp e₁.toFun)) (Set.range toBase₁) :=
@@ -136,8 +136,8 @@ noncomputable def trans {X₁ Y₁ Z₁ W : Type*} [TopologicalSpace X₁] [Topo
         ((e₁.invFun.comp e₂.invFun).comp (e₂.toFun.comp e₁.toFun))
         (e₁.invFun.comp e₁.toFun) (Set.range toBase₁) := by
       exact R₂post'.cast (by ext x; rfl) (by ext x; rfl)
-    exact R₂post''.trans e₁.left_inv
-  right_inv := by
+    exact R₂post''.trans e₁.leftInv
+  rightInv := by
     have hmap₁ : Set.MapsTo e₂.invFun (Set.range fromBase₂) (Set.range fromBase₁) := by
       intro y hy
       rcases hy with ⟨x, rfl⟩
@@ -146,7 +146,7 @@ noncomputable def trans {X₁ Y₁ Z₁ W : Type*} [TopologicalSpace X₁] [Topo
     have R₁pre : ContinuousMap.HomotopyRel
         ((e₁.toFun.comp e₁.invFun).comp e₂.invFun) ((ContinuousMap.id Z₁).comp e₂.invFun)
         (Set.range fromBase₂) :=
-      precompHomotopyRel (S := Set.range fromBase₁) (T := Set.range fromBase₂) e₁.right_inv e₂.invFun
+      precompHomotopyRel (S := Set.range fromBase₁) (T := Set.range fromBase₂) e₁.rightInv e₂.invFun
         hmap₁
     have R₁post : ContinuousMap.HomotopyRel
         (e₂.toFun.comp ((e₁.toFun.comp e₁.invFun).comp e₂.invFun))
@@ -160,7 +160,7 @@ noncomputable def trans {X₁ Y₁ Z₁ W : Type*} [TopologicalSpace X₁] [Topo
         ((e₂.toFun.comp e₁.toFun).comp (e₁.invFun.comp e₂.invFun))
         (e₂.toFun.comp e₂.invFun) (Set.range fromBase₂) := by
       exact R₁post'.cast (by ext x; rfl) (by ext x; rfl)
-    exact R₁post''.trans e₂.right_inv
+    exact R₁post''.trans e₂.rightInv
 
 @[simp]
 theorem trans_toFun (e₁ : HomotopyEquivUnder toBase fromBase) {W : Type*} [TopologicalSpace W]
@@ -178,7 +178,7 @@ theorem trans_invFun (e₁ : HomotopyEquivUnder toBase fromBase) {W : Type*} [To
 theorem toHomotopyEquiv_symm (e : HomotopyEquivUnder toBase fromBase) :
     e.symm.toHomotopyEquiv = e.toHomotopyEquiv.symm := by
   cases e with
-  | mk toFun invFun map_toBase map_fromBase left_inv right_inv =>
+  | mk toFun invFun map_toBase map_fromBase leftInv rightInv =>
     rfl
 
 @[simp]

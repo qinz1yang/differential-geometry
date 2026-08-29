@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff
@@ -36,28 +35,26 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
 private lemma tensor0S_curry_symm_apply_cons (s : ℕ) {b : M}
     (Φ : TangentSpace I b →L[ℝ] Tensor0SSpace s I b)
     (v : TangentSpace I b) (m : Fin s → TangentSpace I b) :
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-      (tensor0S_curry (I := I) (M := M) s b).symm Φ)
-        (Fin.cons v m) =
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin s => TangentSpace I b) ℝ from Φ v) m := by
+    Tensor0SSpace.eval
+        ((tensor0SCurry (I := I) (M := M) s b).symm Φ) (Fin.cons v m) =
+      Tensor0SSpace.eval (Φ v) m := by
   classical
   set P : Tensor0SSpace (s + 1) I b :=
-    (tensor0S_curry (I := I) (M := M) s b).symm Φ
+    (tensor0SCurry (I := I) (M := M) s b).symm Φ
   have hroundtrip :
-      tensor0S_curry (I := I) (M := M) s b P = Φ :=
-    (tensor0S_curry (I := I) (M := M) s b).apply_symm_apply Φ
+      tensor0SCurry (I := I) (M := M) s b P = Φ :=
+    (tensor0SCurry (I := I) (M := M) s b).apply_symm_apply Φ
   have hev := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
     (T := P) (v0 := v) (vs := m)
-  have : (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin s => TangentSpace I b) ℝ from
-      tensor0S_curry (I := I) (M := M) s b P v) m =
+  have hraw :
       (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from P)
-        (Fin.cons v m) := hev.symm
-  rw [hroundtrip] at this
-  exact this.symm
+          (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from P) (Fin.cons v m) =
+        (show ContinuousMultilinearMap ℝ
+          (fun _ : Fin s => TangentSpace I b) ℝ from Φ v) m := by
+    rw [← hroundtrip]
+    exact hev
+  exact (Tensor0SSpace.eval_eq _ _).trans
+    (hraw.trans (Tensor0SSpace.eval_eq _ _).symm)
 
 omit [BoundarylessManifold I M] in
 omit [CompleteSpace E] in
@@ -101,8 +98,13 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_aux
   induction s with
   | zero =>
     intro T X b hb hT_at hX_at
-    apply ContinuousMultilinearMap.ext
+    apply tensor0SSpace_ext
     intro m
+    change Tensor0SSpace.eval
+        (chartTensor0SCovariantDerivative (I := I) (0 + 1) g α T X b) m =
+      Tensor0SSpace.eval
+        (Tensor0SNabla.tensor0SCovariantDerivative I M (0 + 1)
+          (LeviCivita (I := I) g) T b (X b)) m
     set v : TangentSpace I b := m 0 with hv_def
     have hm_decomp : m = Fin.cons v (Fin.tail m) := by
       rw [hv_def]; exact (Fin.cons_self_tail m).symm
@@ -179,39 +181,19 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_aux
       funext y
       rfl
     rw [hpair_eq]
-    rw [show ((show ContinuousMultilinearMap ℝ
-            (fun _ : Fin 0 => TangentSpace I b) ℝ from
-          (tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g))
-            (tensor0SPartialEval I M T
-              (chartParallelExtend (I := I) α b v)) b (X b) -
-          curriedSection I M T b
-            ((LeviCivita (I := I) g)
-              (chartParallelExtend (I := I) α b v) b (X b)))) m₀ =
-        (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin 0 => TangentSpace I b) ℝ from
-          (tensor0SCovariantDerivative I M 0 (LeviCivita (I := I) g))
-            (tensor0SPartialEval I M T
-              (chartParallelExtend (I := I) α b v)) b (X b)) m₀ -
-        (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin 0 => TangentSpace I b) ℝ from
-          curriedSection I M T b
-            ((LeviCivita (I := I) g)
-              (chartParallelExtend (I := I) α b v) b (X b))) m₀ from
-      ContinuousMultilinearMap.sub_apply _ _ _]
+    rw [Tensor0SSpace.eval_sub]
     have hslot_sum :
         (∑ k : Fin (0 + 1),
             chartTensor0SSlotCorrection (I := I) (0 + 1) g α T X b k) =
           chartTensor0SSlotCorrection (I := I) (0 + 1) g α T X b 0 := by
       simp
     rw [show ∑ k : Fin (0 + 1),
-            (show ContinuousMultilinearMap ℝ
-                (fun _ : Fin (0 + 1) => TangentSpace I b) ℝ from
-              chartTensor0SSlotCorrection (I := I) (0 + 1) g α T X b k)
-              (Fin.cons v m₀) =
-        (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin (0 + 1) => TangentSpace I b) ℝ from
-          chartTensor0SSlotCorrection (I := I) (0 + 1) g α T X b 0)
-            (Fin.cons v m₀) from by simp]
+          Tensor0SSpace.eval
+            (chartTensor0SSlotCorrection (I := I) (0 + 1) g α T X b k)
+            (Fin.cons v m₀) =
+        Tensor0SSpace.eval
+          (chartTensor0SSlotCorrection (I := I) (0 + 1) g α T X b 0)
+          (Fin.cons v m₀) from by simp]
     rw [chartTensor0SSlotCorrection_apply_localSlotCLM (I := I) (0 + 1) g α
         T X b 0 (Fin.cons v m₀)]
     have hSlot0_tuple :
@@ -230,24 +212,16 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_aux
         chartLeviCivitaParallelCLM (I := I) g α b X v :=
       LeviCivita_chartParallelExtend_eq_parallelCLM (I := I) g α hb v X
     have h_curry_eval_slot0 :
-        (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin (0 + 1) => TangentSpace I b) ℝ from T b)
+        Tensor0SSpace.eval (T b)
           (Fin.cons (chartLeviCivitaParallelCLM (I := I) g α b X v) m₀) =
-          (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin 0 => TangentSpace I b) ℝ from
-            curriedSection I M T b
-              (chartLeviCivitaParallelCLM (I := I) g α b X v))
-            m₀ := by
-      change (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin (0 + 1) => TangentSpace I b) ℝ from T b)
-          (Fin.cons (chartLeviCivitaParallelCLM (I := I) g α b X v) m₀) =
-        (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin 0 => TangentSpace I b) ℝ from
-          tensor0S_curry (I := I) (M := M) 0 b (T b)
-            (chartLeviCivitaParallelCLM (I := I) g α b X v)) m₀
-      exact (TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-        (T := T b)
-        (v0 := chartLeviCivitaParallelCLM (I := I) g α b X v) (vs := m₀)).symm
+          Tensor0SSpace.eval
+            (curriedSection I M T b
+              (chartLeviCivitaParallelCLM (I := I) g α b X v)) m₀ := by
+      exact (Tensor0SSpace.eval_eq _ _).trans
+        ((TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+          (T := T b)
+          (v0 := chartLeviCivitaParallelCLM (I := I) g α b X v) (vs := m₀)).symm.trans
+            (Tensor0SSpace.eval_eq _ _).symm)
     rw [hSlot0_tuple]
     rw [h_curry_eval_slot0]
     rw [show (LeviCivita (I := I) g) (chartParallelExtend (I := I) α b v) b
@@ -271,7 +245,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_aux
     rw [← hRank0_bridge]
     have hT_pull :
         DifferentiableAt ℝ
-          (tensor0SChartE_section_repr (I := I) (0 + 1) α T ∘
+          (tensor0SChartESectionRepr (I := I) (0 + 1) α T ∘
             (extChartAt I α).symm) (extChartAt I α b) :=
       differentiableAt_tensor0SChartE_pullback_of_mdifferentiableAt
         (I := I) (0 + 1) α T hb hT_at
@@ -287,8 +261,13 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_aux
     rw [hCurryFactor]
   | succ s ih =>
     intro T X b hb hT_at hX_at
-    apply ContinuousMultilinearMap.ext
+    apply tensor0SSpace_ext
     intro m
+    change Tensor0SSpace.eval
+        (chartTensor0SCovariantDerivative (I := I) (s + 1 + 1) g α T X b) m =
+      Tensor0SSpace.eval
+        (Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1 + 1)
+          (LeviCivita (I := I) g) T b (X b)) m
     set v : TangentSpace I b := m 0 with hv_def
     have hm_decomp : m = Fin.cons v (Fin.tail m) := by
       rw [hv_def]; exact (Fin.cons_self_tail m).symm
@@ -365,38 +344,17 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_aux
       funext y
       rfl
     rw [hpair_eq]
-    rw [show ((show ContinuousMultilinearMap ℝ
-            (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-          (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
-            (tensor0SPartialEval I M T
-              (chartParallelExtend (I := I) α b v)) b (X b) -
-          curriedSection I M T b
-            ((LeviCivita (I := I) g)
-              (chartParallelExtend (I := I) α b v) b (X b)))) mt =
-        (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-          (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
-            (tensor0SPartialEval I M T
-              (chartParallelExtend (I := I) α b v)) b (X b)) mt -
-        (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-          curriedSection I M T b
-            ((LeviCivita (I := I) g)
-              (chartParallelExtend (I := I) α b v) b (X b))) mt from
-      ContinuousMultilinearMap.sub_apply _ _ _]
+    rw [Tensor0SSpace.eval_sub]
     rw [show ∑ k : Fin (s + 1 + 1),
-            (show ContinuousMultilinearMap ℝ
-                (fun _ : Fin (s + 1 + 1) => TangentSpace I b) ℝ from
-              chartTensor0SSlotCorrection (I := I) (s + 1 + 1) g α T X b k)
-              (Fin.cons v mt) =
-        (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin (s + 1 + 1) => TangentSpace I b) ℝ from
-          chartTensor0SSlotCorrection (I := I) (s + 1 + 1) g α T X b 0)
-            (Fin.cons v mt) +
+          Tensor0SSpace.eval
+            (chartTensor0SSlotCorrection (I := I) (s + 1 + 1) g α T X b k)
+            (Fin.cons v mt) =
+        Tensor0SSpace.eval
+          (chartTensor0SSlotCorrection (I := I) (s + 1 + 1) g α T X b 0)
+          (Fin.cons v mt) +
           ∑ k : Fin (s + 1),
-            (show ContinuousMultilinearMap ℝ
-                (fun _ : Fin (s + 1 + 1) => TangentSpace I b) ℝ from
-              chartTensor0SSlotCorrection (I := I) (s + 1 + 1) g α T X b
+            Tensor0SSpace.eval
+              (chartTensor0SSlotCorrection (I := I) (s + 1 + 1) g α T X b
                 k.succ) (Fin.cons v mt) from
       Fin.sum_univ_succ _]
     rw [chartTensor0SSlotCorrection_apply_localSlotCLM (I := I) (s + 1 + 1) g α
@@ -417,14 +375,12 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_aux
     rw [hSlot0_tuple]
     have hSlotSucc_sum :
         (∑ k : Fin (s + 1),
-            (show ContinuousMultilinearMap ℝ
-                (fun _ : Fin (s + 1 + 1) => TangentSpace I b) ℝ from
-              chartTensor0SSlotCorrection (I := I) (s + 1 + 1) g α T X b
+            Tensor0SSpace.eval
+              (chartTensor0SSlotCorrection (I := I) (s + 1 + 1) g α T X b
                 k.succ) (Fin.cons v mt)) =
           ∑ k : Fin (s + 1),
-            (show ContinuousMultilinearMap ℝ
-                (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-              chartTensor0SSlotCorrection (I := I) (s + 1) g α
+            Tensor0SSpace.eval
+              (chartTensor0SSlotCorrection (I := I) (s + 1) g α
                 (tensor0SPartialEval I M T
                   (chartParallelExtend (I := I) α b v)) X b k) mt := by
       refine Finset.sum_congr rfl (fun k _ => ?_)
@@ -448,7 +404,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_aux
       LeviCivita_chartParallelExtend_eq_parallelCLM (I := I) g α hb v X
     have hT_pull :
         DifferentiableAt ℝ
-          (tensor0SChartE_section_repr (I := I) (s + 1 + 1) α T ∘
+          (tensor0SChartESectionRepr (I := I) (s + 1 + 1) α T ∘
             (extChartAt I α).symm) (extChartAt I α b) :=
       differentiableAt_tensor0SChartE_pullback_of_mdifferentiableAt
         (I := I) (s + 1 + 1) α T hb hT_at
@@ -462,24 +418,16 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_aux
       rw [hYb_eq]
     rw [hCons_eq] at hCurryFactor
     have h_curry_eval_slot0 :
-        (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin (s + 1 + 1) => TangentSpace I b) ℝ from T b)
+        Tensor0SSpace.eval (T b)
           (Fin.cons (chartLeviCivitaParallelCLM (I := I) g α b X v) mt) =
-          (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-            curriedSection I M T b
-              (chartLeviCivitaParallelCLM (I := I) g α b X v))
-            mt := by
-      change (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin (s + 1 + 1) => TangentSpace I b) ℝ from T b)
-          (Fin.cons (chartLeviCivitaParallelCLM (I := I) g α b X v) mt) =
-        (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-          tensor0S_curry (I := I) (M := M) (s + 1) b (T b)
-            (chartLeviCivitaParallelCLM (I := I) g α b X v)) mt
-      exact (TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-        (T := T b)
-        (v0 := chartLeviCivitaParallelCLM (I := I) g α b X v) (vs := mt)).symm
+          Tensor0SSpace.eval
+            (curriedSection I M T b
+              (chartLeviCivitaParallelCLM (I := I) g α b X v)) mt := by
+      exact (Tensor0SSpace.eval_eq _ _).trans
+        ((TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
+          (T := T b)
+          (v0 := chartLeviCivitaParallelCLM (I := I) g α b X v) (vs := mt)).symm.trans
+            (Tensor0SSpace.eval_eq _ _).symm)
     rw [h_curry_eval_slot0]
     rw [h_cov_TM_eq]
     rw [hCurryFactor]
@@ -493,10 +441,10 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ
     (T :
       letI _h_top : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
           (fun x : M => Tensor0SSpace (s + 1) I x)) :=
-        tensor0SBundle_topology (s + 1)
+        tensor0SBundleTopology (s + 1)
       letI _h_fib : FiberBundle (Tensor0SModel (s + 1) ℝ E)
           (fun x : M => Tensor0SSpace (s + 1) I x) :=
-        tensor0SBundle_fiber (s + 1)
+        tensor0SBundleFiber (s + 1)
       Cₛ^∞⟮I; Tensor0SModel (s + 1) ℝ E,
         fun b => Tensor0SSpace (s + 1) I b⟯)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -505,12 +453,12 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ
       Tensor0SNabla.tensor0SCovariantDerivative I M (s + 1)
           (LeviCivita (I := I) g) T.toFun b (X.toFun b) := by
   classical
-  letI _h_top : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
+  let _h_top : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
       (fun x : M => Tensor0SSpace (s + 1) I x)) :=
-    tensor0SBundle_topology (s + 1)
-  letI _h_fib : FiberBundle (Tensor0SModel (s + 1) ℝ E)
+    tensor0SBundleTopology (s + 1)
+  let _h_fib : FiberBundle (Tensor0SModel (s + 1) ℝ E)
       (fun x : M => Tensor0SSpace (s + 1) I x) :=
-    tensor0SBundle_fiber (s + 1)
+    tensor0SBundleFiber (s + 1)
   have hT_at : TensorSectionMDiffAt (I := I) (s + 1) T.toFun b := by
     unfold TensorSectionMDiffAt
     exact T.contMDiff.contMDiffAt.mdifferentiableAt (by simp)

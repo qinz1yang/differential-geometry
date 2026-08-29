@@ -213,7 +213,7 @@ theorem exists_galerkin_projected_forcing_sequence_with_mode_convergence_backgro
       atTop (𝓝 (timeModeCoeff (I := I) (M := M) fLo i)) := by
     have hcl := ((tensorHsCoeffL (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
       (a := ((1 : ℕ) : ℝ)) i).compLpL 2 (timeMeasure T)).continuous.tendsto fLo
-    simpa only [timeModeCoeff] using hcl.comp hconv
+    exact Tendsto.congr' (Filter.Eventually.of_forall fun _ => rfl) (hcl.comp hconv)
   exact tendsto_perModeConv_of_tendsto_timeL2
     (TensorEigenIdx.lambda (I := I) (M := M) i)
     (tensor_lambda_nonneg (I := I) (M := M) i) hmode ht

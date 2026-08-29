@@ -23,8 +23,8 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] in
 private lemma exists_W_and_constant_tangent_symmL
     (g : SmoothRiemannianMetric I M)
@@ -37,9 +37,9 @@ private lemma exists_W_and_constant_tangent_symmL
     ∃ W : Set M, IsOpen W ∧ y₀ ∈ W ∧ ∃ N : ℝ, 0 < N ∧ ∀ b ∈ W,
       ‖(trivializationAt E (TangentSpace I) α).symmL ℝ b‖ ≤ N := by
   classical
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
   obtain ⟨C₁, hC₁_pos, hC₁_ev⟩ :=
     eventually_norm_symmL_trivializationAt_lt E (fun b : M => TangentSpace I b) y₀
@@ -105,7 +105,7 @@ private lemma exists_W_and_constant_tangent_symmL
     change (eα.coordChangeL ℝ ey₀ b) w = _
     rw [Trivialization.coordChangeL_apply _ _ hboth_αy₀]
     have h_symm_eq : eα.symm b w = eα.symmL ℝ b w := by
-      rw [Trivialization.symmL_apply]
+      rw [eα.symmL_apply hb_α w]
     rw [h_symm_eq]
     rw [Trivialization.apply_eq_prod_continuousLinearEquivAt ℝ ey₀ b hb_y₀,
       Trivialization.coe_continuousLinearEquivAt_eq ey₀ hb_y₀]
@@ -130,8 +130,8 @@ private lemma exists_W_and_constant_tangent_symmL
       _ = C₁ * C₂ * ‖w‖ := by ring
   exact ContinuousLinearMap.opNorm_le_bound _ (by positivity) h_norm_w
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] in
 theorem chartTrivInv_opNorm_isBounded_on_compact
     (g : SmoothRiemannianMetric I M) (α : M) {K : Set M} (hK : IsCompact K)
@@ -143,9 +143,9 @@ theorem chartTrivInv_opNorm_isBounded_on_compact
     ∃ C : ℝ, 0 ≤ C ∧ ∀ b ∈ K,
       ‖(trivializationAt E (TangentSpace I) α).symmL ℝ b‖ ≤ C := by
   classical
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
   let W : M → Set M := fun y₀ =>
     if hy : y₀ ∈ (trivializationAt E (TangentSpace I) α).baseSet then
@@ -275,10 +275,9 @@ private lemma norm_basis_le_modelBasisVecSup
     (f := fun k => ‖(chartModelBasis E) k‖)
     (Finset.mem_univ _)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma christoffelCorrection_summand_opNorm_le_unconditional
-    [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) (b : M) (Y : E)
     (i j k : Fin (Module.finrank ℝ E))
     (C_J : ℝ)
@@ -304,9 +303,9 @@ private lemma christoffelCorrection_summand_opNorm_le_unconditional
         (modelBasisCoordSup (E := E) * ‖Y‖ * C_Γ) *
         modelBasisVecSup (E := E) := by
   classical
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
   set L_i : E →L[ℝ] ℝ := ((chartModelBasis E).coord i).toContinuousLinearMap
   set L_j : E →L[ℝ] ℝ := ((chartModelBasis E).coord j).toContinuousLinearMap
@@ -421,8 +420,8 @@ private lemma christoffelCorrection_summand_opNorm_le_unconditional
         modelBasisVecSup (E := E) := by ring
   linarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport
     [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
@@ -435,9 +434,9 @@ theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
         ∀ Y : E, ‖christoffelCorrection (I := I) g α b Y‖ ≤ C * ‖Y‖ := by
   classical
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
   set K : Set M := tsupport (fun x : M =>
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) with hK_def
@@ -550,8 +549,8 @@ theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport
   rw [h_C_eq] at h_outer_norm
   exact h_outer_norm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem chartLeviCivitaParallelCLM_general_X_opNorm_isBounded_on_pouTsupport
     [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
@@ -565,9 +564,9 @@ theorem chartLeviCivitaParallelCLM_general_X_opNorm_isBounded_on_pouTsupport
         ∀ X : Π b' : M, TangentSpace I b',
           ‖chartLeviCivitaParallelCLM (I := I) g α b X‖ ≤ C * ‖X b‖ := by
   classical
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
   set K : Set M := tsupport (fun x : M =>
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) with hK_def

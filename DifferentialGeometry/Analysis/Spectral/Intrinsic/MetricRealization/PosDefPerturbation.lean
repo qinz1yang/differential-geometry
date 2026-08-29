@@ -52,7 +52,7 @@ omit [Module.Finite ℝ E] in
     (h : ∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ)
     (x : M) (v w : TangentSpace I x) :
     perturbedInner g h x v w = g.inner x v w + h x v w := by
-  simp only [perturbedInner, ContinuousLinearMap.add_apply]
+  simp only [perturbedInner, add_apply]
 
 omit [Module.Finite ℝ E] in
 theorem perturbedInner_symm
@@ -135,13 +135,13 @@ private lemma gSublevel_isVonNBounded
         = (L : TangentSpace I x → TangentSpace I x) ''
             {w : TangentSpace I x | g.inner x w w < 1} := by
     ext v
-    simp only [Set.mem_setOf_eq, Set.mem_image]
+    simp only [Set.mem_ofPred_eq, Set.mem_image]
     constructor
     · intro hv
       refine ⟨sr⁻¹ • v, ?_, ?_⟩
       · have hscale : g.inner x (sr⁻¹ • v) (sr⁻¹ • v)
             = sr⁻¹ * (sr⁻¹ * g.inner x v v) := by
-          simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+          simp only [map_smul, smul_apply, smul_eq_mul]
         rw [hscale]
         have hsr_ne : sr ≠ 0 := ne_of_gt hsr_pos
         have : sr⁻¹ * (sr⁻¹ * g.inner x v v) = g.inner x v v / r := by
@@ -153,7 +153,7 @@ private lemma gSublevel_isVonNBounded
     · rintro ⟨w, hw, rfl⟩
       rw [hL_apply]
       have hscale : g.inner x (sr • w) (sr • w) = sr * (sr * g.inner x w w) := by
-        simp only [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+        simp only [map_smul, smul_apply, smul_eq_mul]
       rw [hscale]
       have hrw : sr * (sr * g.inner x w w) = r * g.inner x w w := by
         rw [← mul_assoc, hsr_sq]
@@ -178,7 +178,7 @@ theorem perturbedInner_isVonNBounded
   have hsub : {v : TangentSpace I x | perturbedInner g h x v v < 1}
       ⊆ {v : TangentSpace I x | g.inner x v v < r} := by
     intro v hv
-    rw [Set.mem_setOf_eq] at hv ⊢
+    rw [Set.mem_ofPred_eq] at hv ⊢
     have hlb := perturbedInner_self_lower_bound (I := I) (M := M) g h hδ x v
     have h1 : (1 - δ) * g.inner x v v < 1 := lt_of_le_of_lt hlb hv
     rw [hr_def, ← one_div]

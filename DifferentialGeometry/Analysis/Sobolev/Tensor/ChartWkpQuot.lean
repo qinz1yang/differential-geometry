@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -519,7 +518,7 @@ theorem qnorm_eq_zero
       have hcomp : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
           (secChartComp (I := I) (M := M) r s S.1 α Idx Jdx)
           (chartTargetEuclid (I := I) (M := M) α) = 0 :=
-        le_antisymm hcomp_le (zero_le _)
+        le_antisymm hcomp_le (zero_le)
       have heLp_le := eLpNorm_le_wkpNorm (d := Module.finrank ℝ E) k p
         (chartTargetEuclid (I := I) (M := M) α)
         (secChartComp (I := I) (M := M) r s S.1 α Idx Jdx)
@@ -529,7 +528,7 @@ theorem qnorm_eq_zero
           ((volume : Measure (EuclideanSpace ℝ
             (Fin (Module.finrank ℝ E)))).restrict
               (chartTargetEuclid (I := I) (M := M) α)) = 0 :=
-        le_antisymm heLp_le (zero_le _)
+        le_antisymm heLp_le (zero_le)
       have hae : secChartComp (I := I) (M := M) r s S.1 α Idx Jdx
           =ᵐ[(volume : Measure (EuclideanSpace ℝ
             (Fin (Module.finrank ℝ E)))).restrict
@@ -747,7 +746,11 @@ theorem qdist_limit
     qCauchy_limit (I := I) (M := M) r s k hp hp_top u hq_cauchy
   refine ⟨v, ?_⟩
   have hreal := (ENNReal.tendsto_toReal ENNReal.zero_ne_top).comp hv
-  simpa only [qdist, Function.comp_apply, ENNReal.toReal_zero] using hreal
+  change Filter.Tendsto
+      (fun n => (wkpTensorQNorm (I := I) (M := M) r s k p hp
+        (qsub (I := I) (M := M) r s k p hp (u n) v)).toReal)
+      Filter.atTop _ at hreal
+  exact hreal
 
 end Tensor
 end Sobolev

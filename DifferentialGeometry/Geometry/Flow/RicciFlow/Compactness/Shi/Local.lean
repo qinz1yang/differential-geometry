@@ -50,7 +50,7 @@ private theorem tensor_eval_cont
     (hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K A)
     (x : M) (v w : TangentSpace I x) :
     ContinuousOn (fun s : Real ↦ A s x (vec2 v w)) K := by
-  rw [continuousOn_iff_continuous_restrict]
+  rw [continuousOn_iff_continuous_domRestrict]
   exact hA.eval_continuous (P := {s : Real // s ∈ K}) (τ := Subtype.val)
     (b := fun _ ↦ x) continuous_subtype_val (fun p ↦ p.2) continuous_const
     (v := fun i _ ↦ vec2 v w i) (fun _ ↦ continuous_const)
@@ -229,8 +229,8 @@ variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
   [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
   [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem exists_trunc_tower
     {D : RealTimeInterval}
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -456,8 +456,8 @@ private theorem exists_trunc_tower
 omit [NeZero (Module.finrank ℝ E)]
   [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
   [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem complete_of_cutoff
     {D : RealTimeInterval}
@@ -526,8 +526,8 @@ private theorem complete_of_cutoff
 omit [NeZero (Module.finrank ℝ E)]
   [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
   [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem complete_of_barrier
     {D : RealTimeInterval}
@@ -622,8 +622,8 @@ noncomputable def rmOpenBound
   (towerConst c (K * (psi - alpha)) k) ^ 2 * K ^ 2 /
     ((beta - alpha) / 2) ^ k
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem movingRm_of_bound
     {D : RealTimeInterval}
     (F : PointedFlowData.{u, uE, uH} (I := I) D)
@@ -653,18 +653,18 @@ theorem movingRm_of_bound
       nablaKRm04NormSqIntrinsic (I := I) F.S k t x ≤
         rmOpenBound (Module.finrank Real E) C alpha beta psi N k := by
   classical
-  letI : TopologicalSpace F.M := F.topology
-  letI : ChartedSpace H F.M := F.charted
-  letI : IsManifold I ∞ F.M := F.smooth
-  letI : IsManifold I 1 F.M :=
+  let : TopologicalSpace F.M := F.topology
+  let : ChartedSpace H F.M := F.charted
+  let : IsManifold I ∞ F.M := F.smooth
+  let : IsManifold I 1 F.M :=
     IsManifold.of_le (I := I) (M := F.M) (n := ∞) (by decide)
-  letI : IsManifold I 2 F.M :=
+  let : IsManifold I 2 F.M :=
     IsManifold.of_le (I := I) (M := F.M) (n := ∞) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) F.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) F.M := by
     change IsManifold I ∞ F.M
     infer_instance
-  letI : SigmaCompactSpace F.M := F.sigmaCompact
-  letI : T2Space F.M := F.t2
+  let : SigmaCompactSpace F.M := F.sigmaCompact
+  let : T2Space F.M := F.t2
   have halphaPsi : alpha < psi := halphaBeta.trans_le hbetaPsi
   let t0 : Real := (alpha + beta) / 2
   have halphaT0 : alpha < t0 := by
@@ -759,22 +759,22 @@ theorem movingRm_of_bound
     intro s hs x v
     simpa only [A, d] using
       (ricci_quadratic_form_bound_of_solution_curvature_bound (I := I) F.S x v
-        (by simpa only [PointedFlowData.rmNormSq] using hcurv s hs x))
+        (by with_unfolding_all exact hcurv s hs x))
   have hpde := metric_pde_start (I := I) F.S F.isSolution
     halphaPsi hslab hreg
   have hmetric := metric_equiv_start (I := I)
     (fun s ↦ F.S.base.metric s) hpde hquad
-  letI : TopologicalSpace.MetrizableSpace F.M := Manifold.metrizableSpace I F.M
-  letI : T3Space F.M := inferInstance
-  letI : RiemannianBundle (fun x : F.M ↦ TangentSpace I x) :=
+  let : TopologicalSpace.MetrizableSpace F.M := Manifold.metrizableSpace I F.M
+  let : T3Space F.M := inferInstance
+  let : RiemannianBundle (fun x : F.M ↦ TangentSpace I x) :=
     ⟨(F.S.base.metric alpha).toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun x : F.M ↦ TangentSpace I x) :=
     ⟨⟨(F.S.base.metric alpha).inner,
       (F.S.base.metric alpha).contMDiff.continuous,
       by intro x v w; rfl⟩⟩
-  letI : EMetricSpace F.M := EMetricSpace.ofRiemannianMetric I F.M
-  letI : CompleteSpace F.M :=
+  let : EMetricSpace F.M := EMetricSpace.ofRiemannianMetric I F.M
+  let : CompleteSpace F.M :=
     MetricComplete.complete (I := I) (F.atTime (I := I) alpha) hcomplete
   let T : Real := psi - t0
   have hT : 0 < T := by
@@ -796,9 +796,7 @@ theorem movingRm_of_bound
       exact ⟨by linarith [halphaT0, hs.1], by linarith [hs.2]⟩
     have hraw := hcurv (s + t0) hu y
     have hraw' : nablaKRm04NormSqIntrinsic (I := I) S0 0 s y ≤ C := by
-      simpa [PointedFlowData.rmNormSq, nablaKRm04NormSqIntrinsic,
-        nablaKRm04Field_zero, S0, SShift, Sco, SolutionOn.timeRestrict,
-        SolutionOn.timeShift, SolutionFamily.timeShift] using hraw
+      with_unfolding_all exact hraw
     nlinarith [hCK, hKOne]
   have hTK : T ≤ aScale / K := by
     calc
@@ -849,7 +847,6 @@ theorem movingRm_of_bound
   have hCeq : 1 ≤ Ceq := by
     rw [show (1 : Real) = Real.exp 0 by simp]
     apply Real.exp_le_exp.mpr
-    dsimp only [Ceq]
     exact mul_nonneg (mul_nonneg (by norm_num) hA) (sub_nonneg.mpr halphaPsi.le)
   have hanchor_inner (x : F.M) (v : TangentSpace I x) :
       (F.S.base.metric alpha).inner x v v = ‖v‖ ^ 2 := by
@@ -909,8 +906,8 @@ theorem movingRm_of_bound
   have hRiemannAlpha :
       RiemannianMetricComplete (I := I) (F.S.base.metric alpha) := by
     refine ⟨?complete⟩
-    simpa [MetricComplete] using
-      (MetricComplete.complete (I := I) (F.atTime (I := I) alpha) hcomplete)
+    with_unfolding_all exact
+      MetricComplete.complete (I := I) (F.atTime (I := I) alpha) hcomplete
   have ht0mem : t0 ∈ Set.Icc alpha psi := ⟨halphaT0.le, hT0Psi.le⟩
   have hRiemannT0 :
       RiemannianMetricComplete (I := I) (S0.base.metric 0) := by
@@ -933,9 +930,7 @@ theorem movingRm_of_bound
       exact ⟨by linarith [halphaT0, hs.1], by linarith [hs.2]⟩
     have hraw := hcurv (s + t0) hu y
     have hraw' : nablaKRm04NormSqIntrinsic (I := I) S0 0 s y ≤ C := by
-      simpa [PointedFlowData.rmNormSq, nablaKRm04NormSqIntrinsic,
-        nablaKRm04Field_zero, S0, SShift, Sco, SolutionOn.timeRestrict,
-        SolutionOn.timeShift, SolutionFamily.timeShift] using hraw
+      with_unfolding_all exact hraw
     exact hraw'.trans hCK
   have hcut : ∀ O : F.M,
       Nonempty (ShiBarrierCutoffData (I := I) (flowG (I := I) S0) T O) := by
@@ -994,8 +989,8 @@ theorem movingRm_of_bound
       SolutionFamily.timeShift] using hUniform
   simpa [rmOpenBound, delta, aScale, c, levelC, K, d] using hUniformS
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem movingShi_of_bound
     {D : RealTimeInterval}
     (F : PointedFlowData.{u, uE, uH} (I := I) D)
@@ -1025,18 +1020,18 @@ theorem movingShi_of_bound
       (fun _ t => F.S.family.metric t) N
       (shiOpenConst (Module.finrank Real E) C alpha beta psi N) := by
   classical
-  letI : TopologicalSpace F.M := F.topology
-  letI : ChartedSpace H F.M := F.charted
-  letI : IsManifold I ∞ F.M := F.smooth
-  letI : IsManifold I 1 F.M :=
+  let : TopologicalSpace F.M := F.topology
+  let : ChartedSpace H F.M := F.charted
+  let : IsManifold I ∞ F.M := F.smooth
+  let : IsManifold I 1 F.M :=
     IsManifold.of_le (I := I) (M := F.M) (n := ∞) (by decide)
-  letI : IsManifold I 2 F.M :=
+  let : IsManifold I 2 F.M :=
     IsManifold.of_le (I := I) (M := F.M) (n := ∞) (by decide)
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) F.M := by
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) F.M := by
     change IsManifold I ∞ F.M
     infer_instance
-  letI : SigmaCompactSpace F.M := F.sigmaCompact
-  letI : T2Space F.M := F.t2
+  let : SigmaCompactSpace F.M := F.sigmaCompact
+  let : T2Space F.M := F.t2
   have halphaPsi : alpha < psi := halphaBeta.trans_le hbetaPsi
   let t0 : Real := (alpha + beta) / 2
   have halphaT0 : alpha < t0 := by
@@ -1131,22 +1126,22 @@ theorem movingShi_of_bound
     intro s hs x v
     simpa only [A, d] using
       (ricci_quadratic_form_bound_of_solution_curvature_bound (I := I) F.S x v
-        (by simpa only [PointedFlowData.rmNormSq] using hcurv s hs x))
+        (by with_unfolding_all exact hcurv s hs x))
   have hpde := metric_pde_start (I := I) F.S F.isSolution
     halphaPsi hslab hreg
   have hmetric := metric_equiv_start (I := I)
     (fun s ↦ F.S.base.metric s) hpde hquad
-  letI : TopologicalSpace.MetrizableSpace F.M := Manifold.metrizableSpace I F.M
-  letI : T3Space F.M := inferInstance
-  letI : RiemannianBundle (fun x : F.M ↦ TangentSpace I x) :=
+  let : TopologicalSpace.MetrizableSpace F.M := Manifold.metrizableSpace I F.M
+  let : T3Space F.M := inferInstance
+  let : RiemannianBundle (fun x : F.M ↦ TangentSpace I x) :=
     ⟨(F.S.base.metric alpha).toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun x : F.M ↦ TangentSpace I x) :=
     ⟨⟨(F.S.base.metric alpha).inner,
       (F.S.base.metric alpha).contMDiff.continuous,
       by intro x v w; rfl⟩⟩
-  letI : EMetricSpace F.M := EMetricSpace.ofRiemannianMetric I F.M
-  letI : CompleteSpace F.M :=
+  let : EMetricSpace F.M := EMetricSpace.ofRiemannianMetric I F.M
+  let : CompleteSpace F.M :=
     MetricComplete.complete (I := I) (F.atTime (I := I) alpha) hcomplete
   let T : Real := psi - t0
   have hT : 0 < T := by
@@ -1168,9 +1163,7 @@ theorem movingShi_of_bound
       exact ⟨by linarith [halphaT0, hs.1], by linarith [hs.2]⟩
     have hraw := hcurv (s + t0) hu y
     have hraw' : nablaKRm04NormSqIntrinsic (I := I) S0 0 s y ≤ C := by
-      simpa [PointedFlowData.rmNormSq, nablaKRm04NormSqIntrinsic,
-        nablaKRm04Field_zero, S0, SShift, Sco, SolutionOn.timeRestrict,
-        SolutionOn.timeShift, SolutionFamily.timeShift] using hraw
+      with_unfolding_all exact hraw
     nlinarith [hCK, hKOne]
   have hTK : T ≤ aScale / K := by
     calc
@@ -1221,7 +1214,6 @@ theorem movingShi_of_bound
   have hCeq : 1 ≤ Ceq := by
     rw [show (1 : Real) = Real.exp 0 by simp]
     apply Real.exp_le_exp.mpr
-    dsimp only [Ceq]
     exact mul_nonneg (mul_nonneg (by norm_num) hA) (sub_nonneg.mpr halphaPsi.le)
   have hanchor_inner (x : F.M) (v : TangentSpace I x) :
       (F.S.base.metric alpha).inner x v v = ‖v‖ ^ 2 := by
@@ -1281,8 +1273,8 @@ theorem movingShi_of_bound
   have hRiemannAlpha :
       RiemannianMetricComplete (I := I) (F.S.base.metric alpha) := by
     refine ⟨?complete⟩
-    simpa [MetricComplete] using
-      (MetricComplete.complete (I := I) (F.atTime (I := I) alpha) hcomplete)
+    with_unfolding_all exact
+      MetricComplete.complete (I := I) (F.atTime (I := I) alpha) hcomplete
   have ht0mem : t0 ∈ Set.Icc alpha psi := ⟨halphaT0.le, hT0Psi.le⟩
   have hRiemannT0 :
       RiemannianMetricComplete (I := I) (S0.base.metric 0) := by
@@ -1305,9 +1297,7 @@ theorem movingShi_of_bound
       exact ⟨by linarith [halphaT0, hs.1], by linarith [hs.2]⟩
     have hraw := hcurv (s + t0) hu y
     have hraw' : nablaKRm04NormSqIntrinsic (I := I) S0 0 s y ≤ C := by
-      simpa [PointedFlowData.rmNormSq, nablaKRm04NormSqIntrinsic,
-        nablaKRm04Field_zero, S0, SShift, Sco, SolutionOn.timeRestrict,
-        SolutionOn.timeShift, SolutionFamily.timeShift] using hraw
+      with_unfolding_all exact hraw
     exact hraw'.trans hCK
   have hcut : ∀ O : F.M,
       Nonempty (ShiBarrierCutoffData (I := I) (flowG (I := I) S0) T O) := by
@@ -1375,7 +1365,7 @@ theorem movingShi_of_bound
     calc
       _ ≤ (d : Real) ^ ((2 + k) + 2) *
           nablaKRm04NormSqIntrinsic (I := I) F.S k t x := by
-        simpa only [d] using hRic
+        with_unfolding_all exact hRic
       _ ≤ (d : Real) ^ ((2 + k) + 2) *
           ((towerConst c aScale k) ^ 2 * K ^ 2 / delta ^ k) :=
         mul_le_mul_of_nonneg_left hUniformS (by positivity)
@@ -1543,14 +1533,14 @@ noncomputable def atZeroGeomOpen
       nonneg := fun k => Real.sqrt_nonneg _
       bound := ?_ }
   intro i k
-  letI : TopologicalSpace (X.term i).M := (X.term i).topology
-  letI : ChartedSpace H (X.term i).M := (X.term i).charted
-  letI : IsManifold I ∞ (X.term i).M := (X.term i).smooth
-  letI : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term i).M := by
+  let : TopologicalSpace (X.term i).M := (X.term i).topology
+  let : ChartedSpace H (X.term i).M := (X.term i).charted
+  let : IsManifold I ∞ (X.term i).M := (X.term i).smooth
+  let : IsManifold I ((∞ : WithTop ℕ∞) + 1) (X.term i).M := by
     change IsManifold I ∞ (X.term i).M
     infer_instance
-  letI : SigmaCompactSpace (X.term i).M := (X.term i).sigmaCompact
-  letI : T2Space (X.term i).M := (X.term i).t2
+  let : SigmaCompactSpace (X.term i).M := (X.term i).sigmaCompact
+  let : T2Space (X.term i).M := (X.term i).t2
   unfold HasCurvDerivBound
   intro x
   have hsq := movingRm_of_bound (I := I) (X.term i) halphaBeta hbetaPsi
@@ -1562,8 +1552,23 @@ noncomputable def atZeroGeomOpen
         (curvDerivNormSq (I := I) (M := (X.term i).M) k
           ((X.term i).S.base.metric 0) x) ≤
       Real.sqrt (rmOpenBound (Module.finrank Real E) C alpha beta psi k k)
-  rw [curvNormSq_eq (I := I) (S := (X.term i).S)]
-  exact Real.sqrt_le_sqrt hsq
+  let x' : (X.term i).M := by
+    with_unfolding_all
+      exact x
+  have hsq' :
+      nablaKRm04NormSqIntrinsic (I := I) (X.term i).S k 0 x' ≤
+        rmOpenBound (Module.finrank Real E) C alpha beta psi k k := by
+    with_unfolding_all
+      exact hsq
+  have hbound :
+      Real.sqrt
+          (curvDerivNormSq (I := I) (M := (X.term i).M) k
+            ((X.term i).S.base.metric 0) x') ≤
+        Real.sqrt (rmOpenBound (Module.finrank Real E) C alpha beta psi k k) := by
+    rw [curvNormSq_eq (I := I) (S := (X.term i).S)]
+    exact Real.sqrt_le_sqrt hsq'
+  with_unfolding_all
+    exact hbound
 
 end CurvBoundInput
 end HCGCompactness

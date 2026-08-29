@@ -18,8 +18,8 @@ open scoped ContDiff Manifold Topology
 
 open DifferentialGeometry.Geometry.Riemannian
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -137,17 +137,17 @@ theorem stageTarget_local
         ((chart (L.φ k)
           (seqCenterD inp.decay P L k (alpha : Nat))).hom z) gamma
         (chart := chart) := by
-  letI : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
-  letI : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
-  letI : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
+  let : TopologicalSpace (X.obj (L.φ k)).M := (X.obj (L.φ k)).topology
+  let : ChartedSpace H (X.obj (L.φ k)).M := (X.obj (L.φ k)).charted
+  let : IsManifold I ∞ (X.obj (L.φ k)).M := (X.obj (L.φ k)).smooth
+  let : T2Space (X.obj (L.φ k)).M := (X.obj (L.φ k)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ k)).M) :=
     (X.obj (L.φ k)).t2TangentBundle
-  letI : TopologicalSpace (X.obj (L.φ l)).M := (X.obj (L.φ l)).topology
-  letI : ChartedSpace H (X.obj (L.φ l)).M := (X.obj (L.φ l)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ l)).M := (X.obj (L.φ l)).smooth
-  letI : T2Space (X.obj (L.φ l)).M := (X.obj (L.φ l)).t2
-  letI : T2Space (TangentBundle I (X.obj (L.φ l)).M) :=
+  let : TopologicalSpace (X.obj (L.φ l)).M := (X.obj (L.φ l)).topology
+  let : ChartedSpace H (X.obj (L.φ l)).M := (X.obj (L.φ l)).charted
+  let : IsManifold I ∞ (X.obj (L.φ l)).M := (X.obj (L.φ l)).smooth
+  let : T2Space (X.obj (L.φ l)).M := (X.obj (L.φ l)).t2
+  let : T2Space (TangentBundle I (X.obj (L.φ l)).M) :=
     (X.obj (L.φ l)).t2TangentBundle
   dsimp only
   rw [← stageTarget_chart (I := I) inp P L s k l alpha gamma z
@@ -166,6 +166,44 @@ theorem stageTarget_subseq
       stageTarget inp P L s (ψ k) (ψ l) (chart := chart) := by
   rfl
 
+noncomputable def stageCenterEnergy
+    (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
+    {ι : Type*} [Fintype ι] (mu : ι → Real) (pts : ι → Y.M)
+    (y : Y.M) : Real :=
+  letI : TopologicalSpace Y.M := Y.topology
+  letI : ChartedSpace H Y.M := Y.charted
+  letI : IsManifold I ∞ Y.M := Y.smooth
+  letI : T2Space Y.M := Y.t2
+  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
+  CenterOfMass.centerEnergy (I := I) Y.metric mu pts y
+
+def IsStageCenter
+    (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
+    {ι : Type*} [Fintype ι] (mu : ι → Real) (pts : ι → Y.M)
+    (y : Y.M) : Prop :=
+  ∀ z : Y.M,
+    stageCenterEnergy (I := I) Y mu pts y ≤
+      stageCenterEnergy (I := I) Y mu pts z
+
+omit [FiniteDimensional Real E] [CompleteSpace E] [NeZero (Module.finrank Real E)]
+    [I.Boundaryless] in
+private theorem stageCenterChoice_heq
+    {Y Y' : PointedRiemannianManifold.{u, uE, uH} (I := I)}
+    {ι : Type*} [Fintype ι]
+    {mu mu' : ι → Real} {pts : ι → Y.M} {pts' : ι → Y'.M}
+    (hY : Y = Y') (hmu : mu = mu') (hpts : HEq pts pts')
+    (h : ∃! y : Y.M, IsStageCenter (I := I) Y mu pts y)
+    (h' : ∃! y : Y'.M, IsStageCenter (I := I) Y' mu' pts' y) :
+    HEq (Classical.choose h.exists) (Classical.choose h'.exists) := by
+  subst Y'
+  subst mu'
+  have hpts' : pts = pts' := eq_of_heq hpts
+  subst pts'
+  exact heq_of_eq
+    (h.unique (Classical.choose_spec h.exists)
+      (Classical.choose_spec h'.exists))
+
 def HasUniqueStageCenter
     (inp : MetricCompactCore (I := I) X)
     (P : ∀ j : Nat, ProperMetricOn (I := I) (X.obj j))
@@ -174,28 +212,15 @@ def HasUniqueStageCenter
     (chart : NormalChartFamily (I := I) X :=
       legacyChartFamily (I := I) X) : Prop :=
   let Y := X.obj (L.φ l)
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
   let i0 := baseIndex inp.decay inp.realizes inp.pack hs
-  ∃! y : Y.M, ∀ z : Y.M,
-    CenterOfMass.centerEnergy (I := I) Y.metric
-        (fun gamma => rawWeights
-          (cutRaw
-            (seqAtom inp.decay inp.hD P L inp.pack s k i0)
-            (seqAtom inp.decay inp.hD P L inp.pack s k) i0)
-          x gamma)
-        (stageTarget inp P L s k l x (chart := chart)) y ≤
-      CenterOfMass.centerEnergy (I := I) Y.metric
-        (fun gamma => rawWeights
-          (cutRaw
-            (seqAtom inp.decay inp.hD P L inp.pack s k i0)
-            (seqAtom inp.decay inp.hD P L inp.pack s k) i0)
-          x gamma)
-        (stageTarget inp P L s k l x (chart := chart)) z
+  ∃! y : Y.M,
+    IsStageCenter (I := I) Y
+      (fun gamma => rawWeights
+        (cutRaw
+          (seqAtom inp.decay inp.hD P L inp.pack s k i0)
+          (seqAtom inp.decay inp.hD P L inp.pack s k) i0)
+        x gamma)
+      (stageTarget inp P L s k l x (chart := chart)) y
 
 theorem uniqueCenter_subseq
     (inp : MetricCompactCore (I := I) X)
@@ -288,18 +313,35 @@ theorem stageCompare_subseq
     exact seqAtom_subseq inp.decay inp.hD P L inp.pack s hψ k gamma
   by_cases hx : x ∈ L.hatSourceBall inp.decay P s (ψ k)
   · have hx' : x ∈ (L.subseq hψ).hatSourceBall inp.decay P s k := by
-      simpa only [NetLimitData.hatSourceBall_subseq] using hx
+      change x ∈ (L.subseq hψ).hatSourceBall inp.decay P s k at hx
+      exact hx
     by_cases hu : HasUniqueStageCenter inp P L s hs (ψ k) (ψ l) x
         (chart := chart)
     · have hu' : HasUniqueStageCenter inp P (L.subseq hψ) s hs k l x
-          (chart := chart) :=
-        hcenter.mpr hu
+          (chart := chart) := hcenter.mpr hu
       rw [stageCompare_choose (I := I) inp P (L.subseq hψ) s hs k l x hx' hu',
         stageCompare_choose (I := I) inp P L s hs (ψ k) (ψ l) x hx hu]
-      apply hu.unique
-      · simpa only [stageTarget_subseq, hseq, NetLimitData.subseq_phi,
-          Function.comp_apply] using Classical.choose_spec hu'.exists
-      · exact Classical.choose_spec hu.exists
+      let mu : Fin (inp.pack.A s) → Real := fun gamma => rawWeights
+        (cutRaw
+          (seqAtom inp.decay inp.hD P (L.subseq hψ) inp.pack s k
+            (baseIndex inp.decay inp.realizes inp.pack hs))
+          (seqAtom inp.decay inp.hD P (L.subseq hψ) inp.pack s k)
+          (baseIndex inp.decay inp.realizes inp.pack hs)) x gamma
+      let mu' : Fin (inp.pack.A s) → Real := fun gamma => rawWeights
+        (cutRaw
+          (seqAtom inp.decay inp.hD P L inp.pack s (ψ k)
+            (baseIndex inp.decay inp.realizes inp.pack hs))
+          (seqAtom inp.decay inp.hD P L inp.pack s (ψ k))
+          (baseIndex inp.decay inp.realizes inp.pack hs)) x gamma
+      have hmu : mu = mu' := by
+        simp only [mu, mu', hseq]
+        rfl
+      have hobj : X.obj ((L.subseq hψ).φ l) = X.obj (L.φ (ψ l)) := by
+        rfl
+      have htarget := congrFun
+        (stageTarget_subseq (I := I) inp P L s hψ k l chart) x
+      exact eq_of_heq
+        (stageCenterChoice_heq (I := I) hobj hmu (heq_of_eq htarget) hu' hu)
     · have hu' : ¬ HasUniqueStageCenter inp P (L.subseq hψ) s hs k l x
           (chart := chart) :=
         fun h => hu (hcenter.mp h)
@@ -309,7 +351,8 @@ theorem stageCompare_subseq
           (Or.inr hu)]
       simp only [NetLimitData.subseq_phi, Function.comp_apply]
   · have hx' : x ∉ (L.subseq hψ).hatSourceBall inp.decay P s k := by
-      simpa only [NetLimitData.hatSourceBall_subseq] using hx
+      change x ∉ (L.subseq hψ).hatSourceBall inp.decay P s k at hx
+      exact hx
     rw [stageCompare_default (I := I) inp P (L.subseq hψ) s hs k l x
         (Or.inl hx'),
       stageCompare_default (I := I) inp P L s hs (ψ k) (ψ l) x
@@ -329,21 +372,21 @@ theorem stageCmp_base_raw
   classical
   let Yk := X.obj (L.φ k)
   let Yl := X.obj (L.φ l)
-  letI : TopologicalSpace Yk.M := Yk.topology
-  letI : ChartedSpace H Yk.M := Yk.charted
-  letI : IsManifold I ∞ Yk.M := Yk.smooth
-  letI : T2Space Yk.M := Yk.t2
-  letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-  letI : TopologicalSpace Yl.M := Yl.topology
-  letI : ChartedSpace H Yl.M := Yl.charted
-  letI : IsManifold I ∞ Yl.M := Yl.smooth
-  letI : T2Space Yl.M := Yl.t2
-  letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
-  letI : SigmaCompactSpace Yl.M := Yl.sigmaCompact
-  letI : MetricSpace Yk.M := (P (L.φ k)).ms
-  letI : RiemannianBundle (fun x : Yl.M => TangentSpace I x) :=
+  let : TopologicalSpace Yk.M := Yk.topology
+  let : ChartedSpace H Yk.M := Yk.charted
+  let : IsManifold I ∞ Yk.M := Yk.smooth
+  let : T2Space Yk.M := Yk.t2
+  let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+  let : TopologicalSpace Yl.M := Yl.topology
+  let : ChartedSpace H Yl.M := Yl.charted
+  let : IsManifold I ∞ Yl.M := Yl.smooth
+  let : T2Space Yl.M := Yl.t2
+  let : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
+  let : SigmaCompactSpace Yl.M := Yl.sigmaCompact
+  let : MetricSpace Yk.M := (P (L.φ k)).ms
+  let : RiemannianBundle (fun x : Yl.M => TangentSpace I x) :=
     ⟨Yl.metric.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : Yl.M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : Yl.M => TangentSpace I x) :=
     ⟨Yl.metric.inner, Yl.metric.contMDiff.continuous, fun _ _ _ => rfl⟩
   have hx : (X.obj (L.φ k)).basepoint ∈
       L.hatSourceBall inp.decay P s k := by

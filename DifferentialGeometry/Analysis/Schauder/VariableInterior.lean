@@ -56,7 +56,7 @@ theorem variable_coefficient_interior_schauder_estimate_of_cutoffJet2_control_on
     (hsource : ∀ x, chi x ≠ 0 → variableMatrixLap a d2u x = f x)
     (A Ka omega : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      (coefficientSet.restrict (a i j : Euc n → Real)))
+      (coefficientSet.domRestrict (a i j : Euc n → Real)))
     (homega : ∀ i j x, x ∈ coefficientSet →
       ‖a i j x0 - a i j x‖ ≤ omega i j)
     (haNorm : ∀ i j x, x ∈ coefficientSet → ‖a i j x‖ ≤ A i j)

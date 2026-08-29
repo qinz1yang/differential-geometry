@@ -135,7 +135,11 @@ theorem scalar_diag_le
   obtain ⟨C, hC, hpoint⟩ := scalar0_abs_le_hs (I := I) (M := M) g
   refine ⟨2 * k, C ^ 2, sq_nonneg C, count, ?_, ?_⟩
   · intro Λ i hi
-    simpa only [count, Set.Finite.mem_toFinset] using hi
+    change i ∈ (tensorEigenIdx_one_add_lambda_lt_finite
+      (I := I) (M := M) g 0 0 Λ).toFinset
+    rw [(tensorEigenIdx_one_add_lambda_lt_finite
+      (I := I) (M := M) g 0 0 Λ).mem_toFinset]
+    exact hi
   · intro Λ x
     by_cases hΛ : 1 < Λ
     · let F := count Λ
@@ -191,7 +195,11 @@ theorem scalar_diag_le
             refine Finset.sum_le_sum (fun i hi => ?_)
             have hi_lt :
                 1 + TensorEigenIdx.lambda (I := I) (M := M) i < Λ := by
-              simpa only [F, count, Set.Finite.mem_toFinset] using hi
+              change i ∈ (tensorEigenIdx_one_add_lambda_lt_finite
+                (I := I) (M := M) g 0 0 Λ).toFinset at hi
+              rw [(tensorEigenIdx_one_add_lambda_lt_finite
+                (I := I) (M := M) g 0 0 Λ).mem_toFinset] at hi
+              exact hi
             have hbase :
                 0 ≤ 1 + TensorEigenIdx.lambda (I := I) (M := M) i := by
               linarith [tensor_lambda_nonneg (I := I) (M := M) i]
@@ -226,7 +234,7 @@ theorem scalar_diag_le
         intro i hi
         have hi_lt :
             1 + TensorEigenIdx.lambda (I := I) (M := M) i < Λ := by
-          simpa only [count, Set.Finite.mem_toFinset, Set.mem_setOf_eq] using hi
+          simpa only [count, Set.Finite.mem_toFinset, Set.mem_ofPred_eq] using hi
         exact (not_lt_of_ge
           (by linarith [tensor_lambda_nonneg (I := I) (M := M) i])) hi_lt
       have hpow : 0 ≤ Λ ^ (2 * k) := by

@@ -22,8 +22,8 @@ variable [FiniteDimensional Real E] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 
 omit [CompleteSpace E] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem complete_of_lower
     {I : ModelWithCorners Real E H}
     (X : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -53,28 +53,28 @@ theorem complete_of_lower
       Y.riemBundle_cont (I := I)
     letI : EMetricSpace X.M := EMetricSpace.ofRiemannianMetric I X.M
     CompleteSpace X.M := by
-  letI : TopologicalSpace X.M := X.topology
-  letI : ChartedSpace H X.M := X.charted
-  letI : IsManifold I ∞ X.M := X.smooth
-  letI : IsManifold I 1 X.M :=
+  let : TopologicalSpace X.M := X.topology
+  let : ChartedSpace H X.M := X.charted
+  let : IsManifold I ∞ X.M := X.smooth
+  let : IsManifold I 1 X.M :=
     IsManifold.of_le (I := I) (M := X.M) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
-  letI : SigmaCompactSpace X.M := X.sigmaCompact
-  letI : T2Space X.M := X.t2
-  letI : TopologicalSpace.MetrizableSpace X.M :=
+  let : SigmaCompactSpace X.M := X.sigmaCompact
+  let : T2Space X.M := X.t2
+  let : TopologicalSpace.MetrizableSpace X.M :=
     Manifold.metrizableSpace I X.M
-  letI : T3Space X.M := inferInstance
+  let : T3Space X.M := inferInstance
   intro h c hc hlower
   let Y : PointedRiemannianManifold.{u, uE, uH} (I := I) :=
     { X with metric := h }
-  letI : RiemannianBundle (fun x : X.M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : X.M => TangentSpace I x) :=
     Y.riemBundle (I := I)
-  letI : (x : X.M) → InnerProductSpace Real (TangentSpace I x) :=
+  let : (x : X.M) → InnerProductSpace Real (TangentSpace I x) :=
     Y.riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun x : X.M => TangentSpace I x) :=
     Y.riemBundle_cont (I := I)
-  letI : EMetricSpace X.M := EMetricSpace.ofRiemannianMetric I X.M
+  let : EMetricSpace X.M := EMetricSpace.ofRiemannianMetric I X.M
   let a : ENNReal := ENNReal.ofReal (Real.sqrt c)
   have ha0 : a ≠ 0 := by
     exact ne_of_gt (ENNReal.ofReal_pos.mpr (Real.sqrt_pos.2 hc))
@@ -94,17 +94,20 @@ theorem complete_of_lower
     intro ε hε
     obtain ⟨N, hN⟩ := EMetric.cauchySeq_iff.mp hs ε hε
     refine ⟨N, fun m hm n hn => ?_⟩
-    simpa only [Y] using hN m hm n hn
+    change Manifold.riemannianEDist I (s m) (s n) < ε
+    have hmn := hN m hm n hn
+    change Manifold.riemannianEDist I (s m) (s n) < ε at hmn
+    exact hmn
   change ∃ x, Filter.Tendsto s Filter.atTop (@nhds X.M X.topology x)
-  letI : RiemannianBundle (fun x : X.M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : X.M => TangentSpace I x) :=
     X.riemBundle (I := I)
-  letI : (x : X.M) → InnerProductSpace Real (TangentSpace I x) :=
+  let : (x : X.M) → InnerProductSpace Real (TangentSpace I x) :=
     X.riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun x : X.M => TangentSpace I x) :=
     X.riemBundle_cont (I := I)
-  letI : EMetricSpace X.M := EMetricSpace.ofRiemannianMetric I X.M
-  letI : CompleteSpace X.M := by
+  let : EMetricSpace X.M := EMetricSpace.ofRiemannianMetric I X.M
+  let : CompleteSpace X.M := by
     simpa [MetricComplete] using hX
   have hsSource : CauchySeq s := EMetric.cauchySeq_iff.mpr (by
     intro ε hε

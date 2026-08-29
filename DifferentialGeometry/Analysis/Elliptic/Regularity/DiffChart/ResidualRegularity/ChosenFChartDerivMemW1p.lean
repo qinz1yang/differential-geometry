@@ -45,9 +45,9 @@ theorem chosenFChartDeriv_memW1p_of_base_memWkp22
     (h_base_f_chart_memWkp22 :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) 2 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α)) :
     DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
       (chosenFChartDeriv (I := I) (M := M) g α hu_h direction)
@@ -68,9 +68,9 @@ theorem chosenFChartDeriv_memW1p
     (h_base_f_chart_memWkp22 :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) 2 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α)) :
     DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
       (chosenFChartDeriv (I := I) (M := M) g α hu_h l₁)
@@ -87,9 +87,9 @@ theorem chosenFChartDeriv_memW1p_of_base_f_chart_memWkp22
     (h_base_f_chart_memWkp22 :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
         (d := Module.finrank ℝ E) 2 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α)) :
     DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
       (chosenFChartDeriv (I := I) (M := M) g α hu_h l₁)

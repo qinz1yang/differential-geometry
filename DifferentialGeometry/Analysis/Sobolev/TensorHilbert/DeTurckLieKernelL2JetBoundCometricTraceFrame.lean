@@ -20,7 +20,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -82,14 +81,13 @@ private lemma tensor0S_zero_rank_decomp_deTurckLieConnectionDifferenceDerivative
   rw [show m = (fun i : Fin 0 => i.elim0 : Fin 0 → E) from by
     funext k
     exact k.elim0]
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply]
+  rw [Tensor0SSpace.toModel_smul, smul_apply]
   rw [show Tensor0SSpace.toModel (unitTensor (I := I) (M := M) x)
       (fun i : Fin 0 => i.elim0) = 1 from by
     rw [unitTensor, Tensor0SSpace.toModel_ofModel]
     rfl]
   rw [smul_eq_mul, mul_one]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 lemma slotExtendIter_two_toModel_deTurckLieConnectionDifferenceDerivative (g₀ : SmoothRiemannianMetric I M)
@@ -97,20 +95,26 @@ lemma slotExtendIter_two_toModel_deTurckLieConnectionDifferenceDerivative (g₀ 
     (u : Fin 6 → TangentSpace I x) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-          (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x) D) u =
-      Tensor0SSpace.toModel D ![u 0, u 1] *
-        unitModel (I := I) (M := M) g₀ 4 X x (fun k : Fin 4 => u (Fin.natAdd 2 k)) := by
+          (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x) D)
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (u i)) =
+      Tensor0SSpace.toModel D
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x (u 0),
+            tangentSpaceModelContinuousLinearEquiv (I := I) x (u 1)] *
+        unitModel (I := I) (M := M) g₀ 4 X x
+          (fun k : Fin 4 => tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (u (Fin.natAdd 2 k))) := by
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x) D) =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 5 x).symm
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 5 x).symm
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 5 I x from
           (slotExtendIter (I := I) (M := M) g₀ 0 4 1 X).toSection x).comp
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D)) from rfl]
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D)) from rfl]
+  rw [Tensor0SSpace.toModel_apply_tangent]
   have hkey1 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 5)
-    (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 5 x).symm
+    (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 5 x).symm
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 5 I x from
         (slotExtendIter (I := I) (M := M) g₀ 0 4 1 X).toSection x).comp
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D)))
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D)))
     (v0 := u 0) (vs := Matrix.vecTail u)
   rw [ContinuousLinearEquiv.apply_symm_apply] at hkey1
   rw [show (Fin.cons (u 0) (Matrix.vecTail u) : Fin 6 → TangentSpace I x) = u from by
@@ -119,11 +123,11 @@ lemma slotExtendIter_two_toModel_deTurckLieConnectionDifferenceDerivative (g₀ 
   rw [← hkey1]
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 5 I x from
         (slotExtendIter (I := I) (M := M) g₀ 0 4 1 X).toSection x).comp
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D) (u 0)) =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 4 x).symm
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D) (u 0)) =
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 4 x).symm
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from X.toSection x).comp
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)))) from rfl]
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)))) from rfl]
   rw [show (Matrix.vecTail u : Fin 5 → TangentSpace I x) =
       Fin.cons (u 1) (fun k : Fin 4 => u (Fin.natAdd 2 k)) from by
     funext k
@@ -133,32 +137,39 @@ lemma slotExtendIter_two_toModel_deTurckLieConnectionDifferenceDerivative (g₀ 
       congr 1
       exact Fin.ext (by simp [Fin.succ, Fin.natAdd]; omega)]
   have hkey2 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 4)
-    (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 4 x).symm
+    (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 4 x).symm
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from X.toSection x).comp
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)))))
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)))))
     (v0 := u 1) (vs := fun k : Fin 4 => u (Fin.natAdd 2 k))
   rw [ContinuousLinearEquiv.apply_symm_apply] at hkey2
   rw [← hkey2]
   rw [show ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from X.toSection x).comp
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0))) (u 1)) =
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0))) (u 1)) =
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from X.toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)) (u 1)) from rfl]
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)) (u 1)) from rfl]
   set t : Tensor0SSpace 0 I x :=
-    tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)) (u 1) with ht_def
+    tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)) (u 1) with ht_def
   have htval : Tensor0SSpace.toModel t (fun i : Fin 0 => i.elim0) =
-      Tensor0SSpace.toModel D ![u 0, u 1] := by
+      Tensor0SSpace.toModel D
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x (u 0),
+          tangentSpaceModelContinuousLinearEquiv (I := I) x (u 1)] := by
+    rw [show (fun i : Fin 0 => i.elim0 : Fin 0 → E) =
+        (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((fun j : Fin 0 => j.elim0) i)) from Subsingleton.elim _ _]
+    rw [Tensor0SSpace.toModel_apply_tangent]
     rw [ht_def]
     have h1 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 0)
-      (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)) (v0 := u 1)
+      (T := tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)) (v0 := u 1)
       (vs := fun i : Fin 0 => i.elim0)
     rw [h1]
     have h2 := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 1)
       (T := D) (v0 := u 0) (vs := Fin.cons (u 1) (fun i : Fin 0 => i.elim0))
     rw [h2]
+    rw [← Tensor0SSpace.toModel_apply_tangent]
     refine congrArg _ ?_
     funext k
     refine Fin.cases rfl (fun i => ?_) k
@@ -166,7 +177,7 @@ lemma slotExtendIter_two_toModel_deTurckLieConnectionDifferenceDerivative (g₀ 
   have hdecomp := tensor0S_zero_rank_decomp_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) x t
   rw [htval] at hdecomp
   rw [hdecomp, map_smul]
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  rw [Tensor0SSpace.eval_smul, smul_eq_mul, ← Tensor0SSpace.toModel_apply_tangent]
   rfl
 
 def cometricDoubleTraceSmoothCcTensor (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
@@ -254,8 +265,8 @@ lemma smoothOrthoFrame_center_repr (g : SmoothRiemannianMetric I M) (x : M)
     v = ∑ i : Fin (Module.finrank ℝ E),
       g.inner x (smoothOrthoFrame (I := I) g x i x) v • smoothOrthoFrame (I := I) g x i x := by
   classical
-  haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
-  haveI : Nonempty (Fin (Module.finrank ℝ E)) :=
+  have : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
+  have : Nonempty (Fin (Module.finrank ℝ E)) :=
     ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne (Module.finrank ℝ E))⟩⟩
   set B : Fin (Module.finrank ℝ E) → TangentSpace I x :=
     fun i => smoothOrthoFrame (I := I) g x i x with hB_def
@@ -267,10 +278,10 @@ lemma smoothOrthoFrame_center_repr (g : SmoothRiemannianMetric I M) (x : M)
     have hpair : g.inner x (∑ i, c i • B i) (B j) = 0 := by
       rw [hc]
       simp
-    rw [map_sum, ContinuousLinearMap.sum_apply] at hpair
+    rw [map_sum, sum_apply] at hpair
     have hsimp : ∀ i, g.inner x (c i • B i) (B j) = c i * (if i = j then (1 : ℝ) else 0) := by
       intro i
-      rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul, horth i j]
+      rw [map_smul, smul_apply, smul_eq_mul, horth i j]
     rw [Finset.sum_congr rfl (fun i _ => hsimp i)] at hpair
     have hcol : (∑ i, c i * (if i = j then (1 : ℝ) else 0)) = c j := by simp
     rw [hcol] at hpair

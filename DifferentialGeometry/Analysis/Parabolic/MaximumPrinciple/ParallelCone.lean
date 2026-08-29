@@ -59,7 +59,7 @@ variable [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 omit [CompleteSpace E] in
 theorem parallelProperCone_heat_pot_supersolution_mem_of_potential_le
     [∀ x, CompleteSpace (F x)]
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)
@@ -90,7 +90,7 @@ theorem parallelProperCone_heat_pot_supersolution_mem_of_potential_le
 omit [CompleteSpace E] in
 theorem parallelProperCone_heat_supersolution_mem
     [∀ x, CompleteSpace (F x)]
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)
@@ -112,7 +112,6 @@ theorem parallelProperCone_heat_reaction_mem_of_tangent
     [∀ x, CompleteSpace (F x)]
     [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)
     (P : LinearIsometricTransport F)
@@ -138,9 +137,17 @@ theorem parallelProperCone_heat_reaction_mem_of_tangent
       (I := I) G hT (C x₀) (transportedReactionFamily F P x₀ reaction)
         (transportedSectionFamily F P x₀ u) hsol L
     · intro t ht x
-      simpa [transportedReactionFamily, Function.comp_def] using
-        (P.transport x x₀).lipschitz.comp
-          ((hL t ht x).comp (P.transport x₀ x).lipschitz)
+      change LipschitzWith L
+        (fun p => P.transport x x₀ (reaction t x (P.transport x₀ x p)))
+      intro p q
+      calc
+        edist (P.transport x x₀ (reaction t x (P.transport x₀ x p)))
+            (P.transport x x₀ (reaction t x (P.transport x₀ x q))) =
+            edist (reaction t x (P.transport x₀ x p))
+              (reaction t x (P.transport x₀ x q)) :=
+          (P.transport x x₀).edist_map _ _
+        _ ≤ L * edist (P.transport x₀ x p) (P.transport x₀ x q) := hL t ht x _ _
+        _ = L * edist p q := by rw [(P.transport x₀ x).edist_map]
     · intro t ht x p hp
       let q : F x := P.transport x₀ x p
       have hq : q ∈ C x := (hC.transport_mem_iff F x₀ x p).2 hp
@@ -149,7 +156,9 @@ theorem parallelProperCone_heat_reaction_mem_of_tangent
         (P.transport x x₀).toContinuousLinearEquiv htangentq
       have himage : (P.transport x x₀).toContinuousLinearEquiv ''
           (C x : Set (F x)) = (C x₀ : Set (F x₀)) := by
-        simpa only using hC.image_transport F x x₀
+        change (⇑(P.transport x x₀) : F x → F x₀) '' (C x : Set (F x)) =
+          (C x₀ : Set (F x₀))
+        exact hC.image_transport F x x₀
       rw [himage] at hmapped
       simpa [transportedReactionFamily, q] using hmapped
     · intro x
@@ -163,7 +172,6 @@ theorem parallelProperCone_heat_reaction_mem_of_mapsTo
     [∀ x, CompleteSpace (F x)]
     [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)
     (P : LinearIsometricTransport F)
@@ -196,7 +204,6 @@ theorem parallelProperCone_heat_reaction_mem_of_dualZeroFace_nonneg
     [∀ x, CompleteSpace (F x)]
     [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M → Type _) I]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)
     (P : LinearIsometricTransport F)
@@ -223,9 +230,17 @@ theorem parallelProperCone_heat_reaction_mem_of_dualZeroFace_nonneg
       (I := I) G hT (C x₀) (transportedReactionFamily F P x₀ reaction)
         (transportedSectionFamily F P x₀ u) hsol L
     · intro t ht x
-      simpa [transportedReactionFamily, Function.comp_def] using
-        (P.transport x x₀).lipschitz.comp
-          ((hL t ht x).comp (P.transport x₀ x).lipschitz)
+      change LipschitzWith L
+        (fun p => P.transport x x₀ (reaction t x (P.transport x₀ x p)))
+      intro p q
+      calc
+        edist (P.transport x x₀ (reaction t x (P.transport x₀ x p)))
+            (P.transport x x₀ (reaction t x (P.transport x₀ x q))) =
+            edist (reaction t x (P.transport x₀ x p))
+              (reaction t x (P.transport x₀ x q)) :=
+          (P.transport x x₀).edist_map _ _
+        _ ≤ L * edist (P.transport x₀ x p) (P.transport x₀ x q) := hL t ht x _ _
+        _ = L * edist p q := by rw [(P.transport x₀ x).edist_map]
     · intro t ht x φ hφ p hp
       let e := (P.transport x₀ x).toContinuousLinearEquiv
       let ψ : StrongDual Real (F x) := φ.comp e.symm.toContinuousLinearMap

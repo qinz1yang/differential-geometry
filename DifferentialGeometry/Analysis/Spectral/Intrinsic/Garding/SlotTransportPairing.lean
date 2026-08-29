@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.BalancedPairing
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldApplicationDropIteratedGrid
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ParametricOperatorFieldApplicationJetBound
+
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -31,20 +33,20 @@ local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 private local instance slotPairTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance slotPairTensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance slotPairTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance slotPairTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 theorem slot_pair_step (g : SmoothRiemannianMetric I M) (σ k : ℕ)
     (C : SmoothCcTensor g σ σ) (V : SmoothCcTensor g 0 σ) :
@@ -170,6 +172,7 @@ private theorem slot_step_exp (g : SmoothRiemannianMetric I M) (σ k : ℕ)
   unfold slotEnergy
   ring
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem jet_comp_norm (g : SmoothRiemannianMetric I M) (σ m p : ℕ)
@@ -205,6 +208,7 @@ private theorem jet_comp_norm (g : SmoothRiemannianMetric I M) (σ m p : ℕ)
   have hright_nn : 0 ≤ ‖iteratedCovGrad (I := I) g 0 σ (m + p) V‖ := norm_nonneg _
   rw [← Real.sqrt_sq hleft_nn, ← Real.sqrt_sq hright_nn, hsq]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem jet_shift_le (g : SmoothRiemannianMetric I M) (σ m c : ℕ)
@@ -235,6 +239,7 @@ private theorem jet_shift_le (g : SmoothRiemannianMetric I M) (σ m c : ℕ)
   rw [Finset.mem_range]
   omega
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem jet_one_win (g : SmoothRiemannianMetric I M) (σ m : ℕ)
@@ -294,6 +299,7 @@ private theorem shift_win_of_bdd (g : SmoothRiemannianMetric I M)
   rw [show p + 1 + m = p + m + 1 from by omega] at hshift
   exact hshift
 
+omit [SigmaCompactSpace M] in
 private theorem slot_iter_bdd (g : SmoothRiemannianMetric I M) (sigma : ℕ)
     {α : Type*} (C : α → SmoothCcTensor g sigma sigma) (A : Set α)
     (B : ℕ → ℝ)
@@ -329,7 +335,7 @@ private theorem slot_iter_bdd (g : SmoothRiemannianMetric I M) (sigma : ℕ)
                 ((iteratedCovGrad (I := I) g (sigma + m) (sigma + m) i
                   (slotExtendIter (I := I) (M := M) g sigma sigma m
                     (C t))).toSection x) := by
-              simpa only [slotExtendIter, Nat.succ_eq_add_one, Nat.add_assoc] using hslot
+              simpa only [slotExtendIter, Nat.add_succ] using hslot
         _ ≤ (Module.finrank ℝ E : ℝ) *
               ((Module.finrank ℝ E : ℝ) ^ m * B i) :=
             mul_le_mul_of_nonneg_left hprev (by positivity)
@@ -755,8 +761,15 @@ private theorem slot_main_bdd (g : SmoothRiemannianMetric I M)
               (slotExtendIter (I := I) (M := M) g sigma sigma m (C t)))).toSection x) ≤
           BE i := by
       intro i t ht x
-      simpa only [slotExtendIter, Nat.add_assoc] using
-        (slot_iter_bdd (I := I) (M := M) g sigma C A B hB (m + 1) i t ht x)
+      change riemannianFiberNormSq (I := I) (M := M) g ((sigma + m) + 1)
+          (((sigma + m) + 1) + i) x
+          ((iteratedCovGrad (I := I) g ((sigma + m) + 1) ((sigma + m) + 1) i
+            (slotExtend (I := I) (M := M) g (sigma + m) (sigma + m)
+              (slotExtendIter (I := I) (M := M) g sigma sigma m (C t)))).toSection x) ≤
+        (Module.finrank ℝ E : ℝ) ^ (m + 1) * B i
+      have h := slot_iter_bdd (I := I) (M := M) g sigma C A B hB
+        (m + 1) i t ht x
+      simpa only [slotExtendIter, Nat.add_succ] using h
     obtain ⟨cE, hcE_nn, hcE⟩ := shift_win_of_bdd (I := I) (M := M) g
       sigma (m + 1) ((sigma + m) + 1)
       (fun t => slotExtend (I := I) (M := M) g (sigma + m) (sigma + m)
@@ -869,7 +882,7 @@ theorem slot_iterL_pair (g : SmoothRiemannianMetric I M) (s n : ℕ)
             cZ p * ∑ j ∈ Finset.range (p + 1 + 1),
               ‖iteratedCovGrad (I := I) g 0 s j U‖ := by
         intro p
-        simpa only [iteratedCovGrad_succ, iteratedCovGrad_zero] using hcZ U p
+        simpa only [iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.add_zero] using hcZ U p
       have h := hKi U U
         (ccOperatorFieldComp (I := I) (M := M) g 0 (s + 1) (s + 1) C₀
           (covGrad (I := I) (M := M) g 0 s U))
@@ -1022,7 +1035,7 @@ theorem slot_iterL_unif (g : SmoothRiemannianMetric I M) (s n : ℕ)
             cZ p * ∑ j ∈ Finset.range (p + 1 + 1),
               ‖iteratedCovGrad (I := I) g 0 s j U‖ := by
         intro p
-        simpa only [iteratedCovGrad_succ, iteratedCovGrad_zero] using hcZ t ht U p
+        simpa only [iteratedCovGrad_succ, iteratedCovGrad_zero, Nat.add_zero] using hcZ t ht U p
       have h := hKi U U
         (ccOperatorFieldComp (I := I) (M := M) g 0 (s + 1) (s + 1) (C t)
           (covGrad (I := I) (M := M) g 0 s U))

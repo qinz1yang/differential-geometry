@@ -47,7 +47,7 @@ private lemma differentiableAt_chartTrivRepr_of_contMDiff_section
     DifferentiableAt ℝ (fun y : E => chartTrivRepr (I := I) α (X t) y) z := by
   have hz : z ∈ (extChartAt I α).target := interior_subset hz_int
   have hpull : ContDiffOn ℝ ∞
-      (chartE_section_repr (I := I) α (X t) ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α (X t) ∘ (extChartAt I α).symm)
       ((extChartAt I α) ''
         ((chartAt H α).source ∩ (trivializationAt E (TangentSpace I) α).baseSet) ∩
         (extChartAt I α).target) :=
@@ -64,7 +64,7 @@ private lemma differentiableAt_chartTrivRepr_of_contMDiff_section
   have hSnhds : S ∈ 𝓝 z :=
     Filter.mem_of_superset (isOpen_interior.mem_nhds hz_int) hsubset
   have hdw : DifferentiableWithinAt ℝ
-      (chartE_section_repr (I := I) α (X t) ∘ (extChartAt I α).symm) S z :=
+      (chartESectionRepr (I := I) α (X t) ∘ (extChartAt I α).symm) S z :=
     (hpull z (hsubset hz_int)).differentiableWithinAt (by simp)
   exact hdw.differentiableAt hSnhds
 
@@ -187,7 +187,7 @@ theorem corrected_chart_field_lipschitz_of_data
     intro t ht
     rcases eq_or_lt_of_le ht.1 with h0 | h0
     · subst h0
-      haveI : (nhdsWithin (0:ℝ) (Set.Ioo (0:ℝ) L)).NeBot := left_nhdsWithin_Ioo_neBot hL_pos
+      have : (nhdsWithin (0:ℝ) (Set.Ioo (0:ℝ) L)).NeBot := left_nhdsWithin_Ioo_neBot hL_pos
       refine lipschitzOnWith_of_tendsto_aux
         (fun s => fun y : E => chartTrivRepr (I := I) α (X s) y)
         (fun y : E => chartTrivRepr (I := I) α (X 0) y) (Real.toNNReal C)

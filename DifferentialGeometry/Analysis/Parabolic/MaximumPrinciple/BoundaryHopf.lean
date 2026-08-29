@@ -15,9 +15,13 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 open scoped Manifold ContDiff Topology
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
-  [FiniteDimensional Real E]
+variable {E : Type*}
 variable {H : Type*} [TopologicalSpace H]
+
+section Barrier
+
+variable [NormedAddCommGroup E] [NormedSpace Real E]
+  [FiniteDimensional Real E]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
@@ -36,12 +40,14 @@ private theorem boundaryHopf_hasDerivWithinAt_comp_mfderivWithin
   have hcomp := hf.hasMFDerivAt.comp_hasMFDerivWithinAt t
     hgamma.hasMFDerivWithinAt
   have hcomp' := hcomp.hasFDerivWithinAt
-  convert hcomp' using 1
-  change ContinuousLinearMap.toSpanSingleton Real
-      (((mfderiv I (modelWithCornersSelf Real Real) f (gamma t)).comp
-        (mfderivWithin (modelWithCornersSelf Real Real) I gamma s t)) 1) = _
-  exact ContinuousLinearMap.toSpanSingleton_apply_map_one
-    (R₁ := Real) (M₂ := Real) _
+  refine hcomp'.congr_fderiv ?_
+  ext
+  let z : Real :=
+    mfderiv I (modelWithCornersSelf Real Real) f (gamma t)
+      (mfderivWithin (modelWithCornersSelf Real Real) I gamma s t 1)
+  change z = (ContinuousLinearMap.toSpanSingleton Real z) 1
+  change z = 1 * z
+  rw [one_mul]
 
 private theorem boundaryHopf_derivWithin_nonpos_at_Icc_min_of_pos
     {phi : Real → Real} {T t : Real}
@@ -78,7 +84,7 @@ private theorem boundaryHopf_derivWithin_add_eps_mul_time
   have hlinear : DifferentiableWithinAt Real (fun s => epsilon * s)
       (Set.Icc 0 T) t := by
     simpa using
-      (differentiableWithinAt_id' (s := Set.Icc 0 T) (x := t)).const_mul epsilon
+      (differentiableWithinAt_fun_id (s := Set.Icc 0 T) (x := t)).const_mul epsilon
   have hderiv_linear : derivWithin (fun s => epsilon * s)
       (Set.Icc 0 T) t = epsilon := by
     rw [derivWithin_const_mul epsilon (d := fun s : Real => s)
@@ -90,7 +96,6 @@ private theorem boundaryHopf_derivWithin_add_eps_mul_time
 omit hI in
 theorem strict_barrier_on_compact_manifold_with_boundary
     [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
     (X : Real → (x : M) → TangentSpace I x)
@@ -158,7 +163,7 @@ theorem strict_barrier_on_compact_manifold_with_boundary
     have htime_diff : DifferentiableWithinAt Real
         (fun s => w s x0 + epsilon * s) (Set.Icc 0 T) t0 :=
       (hw_time t0 ht0 ht0pos x0 hx0int).add
-        ((differentiableWithinAt_id' (s := Set.Icc 0 T) (x := t0)).const_mul epsilon)
+        ((differentiableWithinAt_fun_id (s := Set.Icc 0 T) (x := t0)).const_mul epsilon)
     have hderiv_nonpos : derivWithin
         (fun s => w s x0 + epsilon * s) (Set.Icc 0 T) t0 ≤ 0 :=
       boundaryHopf_derivWithin_nonpos_at_Icc_min_of_pos
@@ -216,6 +221,8 @@ theorem strict_barrier_on_compact_manifold_with_boundary
     rw [hepsilon_mul] at hnonneg
     linarith
 
+end Barrier
+
 private theorem boundaryHopf_deriv_nonneg_at_right_endpoint
     {f : Real → Real} {a d : Real} (ha : 0 < a)
     (hmin : IsMinOn f (Set.Icc 0 a) 0)
@@ -242,8 +249,16 @@ private theorem boundaryHopf_deriv_nonneg_at_right_endpoint
   rw [hlin, hderivWithin] at hnonneg
   exact nonneg_of_mul_nonneg_left (by simpa [mul_comm] using hnonneg) ha
 
+section BoundaryPoint
+
+variable [NormedAddCommGroup E] [InnerProductSpace Real E]
+  [FiniteDimensional Real E]
+variable {I : ModelWithCorners Real E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
+
 theorem scalar_hopf_boundary_point_of_barrier_with_boundary
-    [CompactSpace M] [VectorBundle Real E (TangentSpace I : M → Type _)]
+    [CompactSpace M]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (hT : 0 ≤ T)
     (X : Real → (x : M) → TangentSpace I x)
@@ -273,7 +288,8 @@ theorem scalar_hopf_boundary_point_of_barrier_with_boundary
       (inwardCoord (M := M) p))
     (hmin : IsLocalMin
       (fun q : BoundaryManifold I M => u T (q : M)) p) :
-    outwardNormalDerivative (M := M) (G.metric T) (u T) p < 0 := by
+    outwardNormalDerivative (E := E) (H := H) (I := I) (M := M)
+      (G.metric T) (u T) p < 0 := by
   obtain ⟨gamma, hgamma0, hgamma_mdiff, hgamma_velocity, a, ha, _⟩ :=
     exists_inward_curve (I := I) (M := M) p
   have hu_deriv : HasDerivWithinAt (fun s => u T (gamma s))
@@ -339,7 +355,10 @@ theorem scalar_hopf_boundary_point_of_barrier_with_boundary
     linarith [hv_inward]
   exact
     outwardNormalDerivative_neg_of_inner_gradient_inwardCoord_pos_at_local_min
-      (M := M) (G.metric T) hmin hu_mdiff hinward
+      (E := E) (H := H) (I := I) (M := M)
+      (G.metric T) hmin hu_mdiff hinward
+
+end BoundaryPoint
 
 end
 

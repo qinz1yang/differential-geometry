@@ -26,8 +26,8 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
   [T2Space (TangentBundle I M)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [PseudoEMetricSpace M]
   [RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -104,8 +104,15 @@ theorem framed_eq_intr
       B.framed.source := by
   intro z hz
   change intrFrameCLE (I := I) g p z ∈ B.hom.source at hz
-  simpa only [intrFrame_apply, framed_apply, intrFrameCLE_apply] using
-    B.hom_eq hz
+  have hframe :
+      (tangentSpaceModelContinuousLinearEquiv (I := I) p).symm
+          (intrFrameCLE (I := I) g p z) =
+        normalFrame (I := I) g p z := by
+    exact (tangentSpaceModelContinuousLinearEquiv_symm_apply
+      (I := I) p (intrFrameCLE (I := I) g p z)).trans rfl
+  rw [intrFrame_apply, framed_apply]
+  exact (congrArg (expMapIntrinsic (I := I) g hEnorm p) hframe.symm).trans
+    (B.hom_eq hz)
 
 end ExpInvBranch
 end Exponential
@@ -125,7 +132,8 @@ theorem intrFrame_localAt
       (intrinsicFramedExp (I := I) g hEnorm p) z := by
   refine ⟨B.framed, ?_, B.framed_eq_intr⟩
   change intrFrameCLE (I := I) g p z ∈ B.hom.source
-  simpa only [intrFrameCLE_apply] using hz
+  convert hz using 1
+  rfl
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 theorem intrFrame_localOn

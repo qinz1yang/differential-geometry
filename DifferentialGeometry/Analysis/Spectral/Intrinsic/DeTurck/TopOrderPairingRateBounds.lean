@@ -36,20 +36,20 @@ private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
 private local instance edgeRateTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance edgeRateTensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance edgeRateTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance edgeRateTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 def ricciDeTurckPairingZeroOrderCoefficient (g gm g_bg : SmoothRiemannianMetric I M)
     (C0 : SmoothCcTensor g 2 2) : SmoothCcTensor g 2 2 :=
@@ -217,11 +217,12 @@ omit [NeZero (Module.finrank Real E)] [CompactSpace M] [SigmaCompactSpace M]
 private theorem edge_unit_smul
     (g : SmoothRiemannianMetric I M) (c : Real)
     (A : SmoothCcTensor g 0 2) (x : M)
-    (v : Fin 2 → TangentSpace I x) :
+    (v : Fin 2 → E) :
     unitModel (I := I) (M := M) g 2 (c • A) x v =
       c * unitModel (I := I) (M := M) g 2 A x v := by
-  rw [unitModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  rw [unitModel_smul, smul_apply, smul_eq_mul]
 
+omit [SigmaCompactSpace M] in
 private theorem edge_lap_smul
     (g : SmoothRiemannianMetric I M) (c : Real)
     (W : SmoothCcTensor g 0 2) :
@@ -231,18 +232,26 @@ private theorem edge_lap_smul
   intro x
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [rawTensorConnLapSmooth_eq_operatorFieldApplication_cometricDoubleTrace
-      (I := I) (M := M) g (c • W) x v,
+  let v' : Fin 2 → TangentSpace I x := fun j =>
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v j)
+  have hleft :=
+    rawTensorConnLapSmooth_eq_operatorFieldApplication_cometricDoubleTrace
+      (I := I) (M := M) g (c • W) x v'
+  have hright :=
+    rawTensorConnLapSmooth_eq_operatorFieldApplication_cometricDoubleTrace
+      (I := I) (M := M) g W x v'
+  simp only [v', ContinuousLinearEquiv.apply_symm_apply] at hleft hright
+  rw [hleft,
     edge_unit_smul (I := I) (M := M) g c
       (rawTensorConnLapSmooth (I := I) g 0 2 W) x v,
-    rawTensorConnLapSmooth_eq_operatorFieldApplication_cometricDoubleTrace
-      (I := I) (M := M) g W x v,
+    hright,
     iteratedCovGrad_smul, operatorFieldApplication_smul_right,
     edge_unit_smul (I := I) (M := M) g c
       (operatorFieldApply (I := I) (M := M) g 4 2
         (cometricDoubleTraceCoefficient (I := I) (M := M) g g)
         (iteratedCovGrad (I := I) g 0 2 2 W)) x v]
 
+omit [SigmaCompactSpace M] in
 private theorem edge_core_smul
     (g gm : SmoothRiemannianMetric I M)
     (C0 : SmoothCcTensor g 2 2) (C1 : SmoothCcTensor g 3 2)
@@ -267,7 +276,7 @@ private lemma edge_bound_mono
     (mul_le_mul_of_nonneg_right hab (Real.sqrt_nonneg _))
     (Real.sqrt_nonneg _))
 
-theorem ricciDeTurckLowOrderAction_pairing_upper_bound [Nonempty M]
+theorem ricciDeTurckLowOrderAction_pairing_upper_bound
     (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (C0 : SmoothCcTensor g 2 2) (C1 : SmoothCcTensor g 3 2)
@@ -570,7 +579,7 @@ theorem ricciDeTurckTopOrderPairing_upper_bound
           ‖iteratedCovGrad (I := I) g 0 2 1 W‖ ^ 2 +
         K * ‖W‖ ^ 2 := by linarith
 
-theorem ricciDeTurckRhsSlope_pairing_upper_bound [Nonempty M]
+theorem ricciDeTurckRhsSlope_pairing_upper_bound
     (g : SmoothRiemannianMetric I M) :
     ∃ C delta0 K : Real,
       0 ≤ C ∧ 0 < delta0 ∧ delta0 < 1 / 2 ∧ 0 ≤ K ∧

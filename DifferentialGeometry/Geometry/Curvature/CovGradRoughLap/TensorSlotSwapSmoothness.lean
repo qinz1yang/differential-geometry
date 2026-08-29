@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -31,17 +30,16 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 omit [T2Space M] in
 private theorem tangentBilinFlip_curry_apply_apply_contMDiff (r t : ℕ) :
     letI : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
-      tensorRSModel_normedAddCommGroup r (t + 2)
+      tensorRSModelNormedAddCommGroup r (t + 2)
     letI : NormedSpace ℝ (TensorRSModel r (t + 2) ℝ E) :=
-      tensorRSModel_normedSpace r (t + 2)
-    letI := tensorRSBundle_topology (I := I) (M := M) r (t + 2)
-    letI := tensorRSBundle_fiber (I := I) (M := M) r (t + 2)
+      tensorRSModelNormedSpace r (t + 2)
+    letI := tensorRSBundleTopology (I := I) (M := M) r (t + 2)
+    letI := tensorRSBundleFiber (I := I) (M := M) r (t + 2)
     letI := tensorRSBundle_vector (I := I) (M := M) r (t + 2)
     letI := tensorRSBundle_smooth (I := I) (M := M) ∞ r (t + 2)
     ∀ (Z : Cₛ^∞⟮I; TensorRSModel r (t + 2) ℝ E,
@@ -52,20 +50,20 @@ private theorem tangentBilinFlip_curry_apply_apply_contMDiff (r t : ℕ) :
         (E := fun z : M => TensorRSSpace r t I z) x
         (tangentBilinFlip (I := I) (M := M)
           (curryLastTwoTensorSlots (I := I) (M := M) r t x (Z x)) (Yv x) (Yu x))) := by
-  letI : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
-    tensorRSModel_normedAddCommGroup r (t + 2)
-  letI : NormedSpace ℝ (TensorRSModel r (t + 2) ℝ E) :=
-    tensorRSModel_normedSpace r (t + 2)
-  letI : TopologicalSpace (TotalSpace (TensorRSModel r (t + 2) ℝ E)
+  let : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
+    tensorRSModelNormedAddCommGroup r (t + 2)
+  let : NormedSpace ℝ (TensorRSModel r (t + 2) ℝ E) :=
+    tensorRSModelNormedSpace r (t + 2)
+  let : TopologicalSpace (TotalSpace (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y)) :=
-    tensorRSBundle_topology r (t + 2)
-  letI : FiberBundle (TensorRSModel r (t + 2) ℝ E)
+    tensorRSBundleTopology r (t + 2)
+  let : FiberBundle (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y) :=
-    tensorRSBundle_fiber r (t + 2)
-  letI : VectorBundle ℝ (TensorRSModel r (t + 2) ℝ E)
+    tensorRSBundleFiber r (t + 2)
+  let : VectorBundle ℝ (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y) :=
     tensorRSBundle_vector r (t + 2)
-  letI : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel r (t + 2) ℝ E)
+  let : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y) I := tensorRSBundle_smooth ∞ r (t + 2)
   intro Z Yv Yu
   have hA :=
@@ -78,21 +76,20 @@ private theorem tangentBilinFlip_curry_apply_apply_contMDiff (r t : ℕ) :
   intro x
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private theorem tangentBilinFlip_curry_apply_contMDiff (r t : ℕ)
     :
     letI : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
-      tensorRSModel_normedAddCommGroup r (t + 2)
+      tensorRSModelNormedAddCommGroup r (t + 2)
     letI : NormedSpace ℝ (TensorRSModel r (t + 2) ℝ E) :=
-      tensorRSModel_normedSpace r (t + 2)
+      tensorRSModelNormedSpace r (t + 2)
     letI : TopologicalSpace (TotalSpace (TensorRSModel r (t + 2) ℝ E)
         (fun y : M => TensorRSSpace r (t + 2) I y)) :=
-      tensorRSBundle_topology r (t + 2)
+      tensorRSBundleTopology r (t + 2)
     letI : FiberBundle (TensorRSModel r (t + 2) ℝ E)
         (fun y : M => TensorRSSpace r (t + 2) I y) :=
-      tensorRSBundle_fiber r (t + 2)
+      tensorRSBundleFiber r (t + 2)
     letI : VectorBundle ℝ (TensorRSModel r (t + 2) ℝ E)
         (fun y : M => TensorRSSpace r (t + 2) I y) :=
       tensorRSBundle_vector r (t + 2)
@@ -106,20 +103,20 @@ private theorem tangentBilinFlip_curry_apply_contMDiff (r t : ℕ)
         (E := fun z : M => TangentSpace I z →L[ℝ] TensorRSSpace r t I z) x
         (tangentBilinFlip (I := I) (M := M)
           (curryLastTwoTensorSlots (I := I) (M := M) r t x (Z x)) (Yv x))) := by
-  letI : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
-    tensorRSModel_normedAddCommGroup r (t + 2)
-  letI : NormedSpace ℝ (TensorRSModel r (t + 2) ℝ E) :=
-    tensorRSModel_normedSpace r (t + 2)
-  letI : TopologicalSpace (TotalSpace (TensorRSModel r (t + 2) ℝ E)
+  let : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
+    tensorRSModelNormedAddCommGroup r (t + 2)
+  let : NormedSpace ℝ (TensorRSModel r (t + 2) ℝ E) :=
+    tensorRSModelNormedSpace r (t + 2)
+  let : TopologicalSpace (TotalSpace (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y)) :=
-    tensorRSBundle_topology r (t + 2)
-  letI : FiberBundle (TensorRSModel r (t + 2) ℝ E)
+    tensorRSBundleTopology r (t + 2)
+  let : FiberBundle (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y) :=
-    tensorRSBundle_fiber r (t + 2)
-  letI : VectorBundle ℝ (TensorRSModel r (t + 2) ℝ E)
+    tensorRSBundleFiber r (t + 2)
+  let : VectorBundle ℝ (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y) :=
     tensorRSBundle_vector r (t + 2)
-  letI : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel r (t + 2) ℝ E)
+  let : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y) I := tensorRSBundle_smooth ∞ r (t + 2)
   intro Z Yv
   apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
@@ -129,20 +126,19 @@ private theorem tangentBilinFlip_curry_apply_contMDiff (r t : ℕ)
   intro Yu
   exact tangentBilinFlip_curry_apply_apply_contMDiff (I := I) (M := M) r t Z Yv Yu
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem swapTwoCurryFib_apply_contMDiff (r t : ℕ) :
     letI : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
-      tensorRSModel_normedAddCommGroup r (t + 2)
+      tensorRSModelNormedAddCommGroup r (t + 2)
     letI : NormedSpace ℝ (TensorRSModel r (t + 2) ℝ E) :=
-      tensorRSModel_normedSpace r (t + 2)
+      tensorRSModelNormedSpace r (t + 2)
     letI : TopologicalSpace (TotalSpace (TensorRSModel r (t + 2) ℝ E)
         (fun y : M => TensorRSSpace r (t + 2) I y)) :=
-      tensorRSBundle_topology r (t + 2)
+      tensorRSBundleTopology r (t + 2)
     letI : FiberBundle (TensorRSModel r (t + 2) ℝ E)
         (fun y : M => TensorRSSpace r (t + 2) I y) :=
-      tensorRSBundle_fiber r (t + 2)
+      tensorRSBundleFiber r (t + 2)
     letI : VectorBundle ℝ (TensorRSModel r (t + 2) ℝ E)
         (fun y : M => TensorRSSpace r (t + 2) I y) :=
       tensorRSBundle_vector r (t + 2)
@@ -155,31 +151,31 @@ private theorem swapTwoCurryFib_apply_contMDiff (r t : ℕ) :
       (fun x : M => TotalSpace.mk' (TensorRSModel r (t + 1) ℝ E)
         (E := fun z : M => TensorRSSpace r (t + 1) I z) x
         (swapTwoCurryFib (I := I) (M := M) r t x (Z x) (Yv x))) := by
-  letI : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
-    tensorRSModel_normedAddCommGroup r (t + 2)
-  letI : NormedSpace ℝ (TensorRSModel r (t + 2) ℝ E) :=
-    tensorRSModel_normedSpace r (t + 2)
-  letI : TopologicalSpace (TotalSpace (TensorRSModel r (t + 2) ℝ E)
+  let : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
+    tensorRSModelNormedAddCommGroup r (t + 2)
+  let : NormedSpace ℝ (TensorRSModel r (t + 2) ℝ E) :=
+    tensorRSModelNormedSpace r (t + 2)
+  let : TopologicalSpace (TotalSpace (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y)) :=
-    tensorRSBundle_topology r (t + 2)
-  letI : FiberBundle (TensorRSModel r (t + 2) ℝ E)
+    tensorRSBundleTopology r (t + 2)
+  let : FiberBundle (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y) :=
-    tensorRSBundle_fiber r (t + 2)
-  letI : VectorBundle ℝ (TensorRSModel r (t + 2) ℝ E)
+    tensorRSBundleFiber r (t + 2)
+  let : VectorBundle ℝ (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y) :=
     tensorRSBundle_vector r (t + 2)
-  letI : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel r (t + 2) ℝ E)
+  let : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y) I := tensorRSBundle_smooth ∞ r (t + 2)
   intro Z Yv
   have hflip := tangentBilinFlip_curry_apply_contMDiff (I := I) (M := M) r t Z Yv
-  letI : NormedAddCommGroup (TensorRSModel r (t + 1) ℝ E) :=
-    tensorRSModel_normedAddCommGroup r (t + 1)
-  letI : NormedSpace ℝ (TensorRSModel r (t + 1) ℝ E) :=
-    tensorRSModel_normedSpace r (t + 1)
-  letI := tensorRSBundle_topology (I := I) (M := M) r (t + 1)
-  letI := tensorRSBundle_fiber (I := I) (M := M) r (t + 1)
-  letI := tensorRSBundle_vector (I := I) (M := M) r (t + 1)
-  letI := tensorRSBundle_smooth (I := I) (M := M) ∞ r (t + 1)
+  let : NormedAddCommGroup (TensorRSModel r (t + 1) ℝ E) :=
+    tensorRSModelNormedAddCommGroup r (t + 1)
+  let : NormedSpace ℝ (TensorRSModel r (t + 1) ℝ E) :=
+    tensorRSModelNormedSpace r (t + 1)
+  let := tensorRSBundleTopology (I := I) (M := M) r (t + 1)
+  let := tensorRSBundleFiber (I := I) (M := M) r (t + 1)
+  let := tensorRSBundle_vector (I := I) (M := M) r (t + 1)
+  let := tensorRSBundle_smooth (I := I) (M := M) ∞ r (t + 1)
   have hcomp : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r (t + 1) ℝ E)) ∞
       ((covGradBundleSmoothEquiv (I := I) (M := M) r t).toDiffeomorph ∘
         (fun x : M => (⟨x, tangentBilinFlip (I := I) (M := M)
@@ -195,20 +191,19 @@ private theorem swapTwoCurryFib_apply_contMDiff (r t : ℕ) :
           (curryLastTwoTensorSlots (I := I) (M := M) r t x (Z x)) (Yv x)),
     swapTwoCurryFib_apply (I := I) (M := M) r t x (Z x) (Yv x)]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem swapTwoCurryFib_contMDiff (r t : ℕ) :
     letI : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
-      tensorRSModel_normedAddCommGroup r (t + 2)
+      tensorRSModelNormedAddCommGroup r (t + 2)
     letI : NormedSpace ℝ (TensorRSModel r (t + 2) ℝ E) :=
-      tensorRSModel_normedSpace r (t + 2)
+      tensorRSModelNormedSpace r (t + 2)
     letI : TopologicalSpace (TotalSpace (TensorRSModel r (t + 2) ℝ E)
         (fun y : M => TensorRSSpace r (t + 2) I y)) :=
-      tensorRSBundle_topology r (t + 2)
+      tensorRSBundleTopology r (t + 2)
     letI : FiberBundle (TensorRSModel r (t + 2) ℝ E)
         (fun y : M => TensorRSSpace r (t + 2) I y) :=
-      tensorRSBundle_fiber r (t + 2)
+      tensorRSBundleFiber r (t + 2)
     letI : VectorBundle ℝ (TensorRSModel r (t + 2) ℝ E)
         (fun y : M => TensorRSSpace r (t + 2) I y) :=
       tensorRSBundle_vector r (t + 2)
@@ -220,20 +215,20 @@ private theorem swapTwoCurryFib_contMDiff (r t : ℕ) :
       (fun x : M => TotalSpace.mk' (E →L[ℝ] TensorRSModel r (t + 1) ℝ E)
         (E := fun z : M => TangentSpace I z →L[ℝ] TensorRSSpace r (t + 1) I z) x
         (swapTwoCurryFib (I := I) (M := M) r t x (Z x))) := by
-  letI : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
-    tensorRSModel_normedAddCommGroup r (t + 2)
-  letI : NormedSpace ℝ (TensorRSModel r (t + 2) ℝ E) :=
-    tensorRSModel_normedSpace r (t + 2)
-  letI : TopologicalSpace (TotalSpace (TensorRSModel r (t + 2) ℝ E)
+  let : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
+    tensorRSModelNormedAddCommGroup r (t + 2)
+  let : NormedSpace ℝ (TensorRSModel r (t + 2) ℝ E) :=
+    tensorRSModelNormedSpace r (t + 2)
+  let : TopologicalSpace (TotalSpace (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y)) :=
-    tensorRSBundle_topology r (t + 2)
-  letI : FiberBundle (TensorRSModel r (t + 2) ℝ E)
+    tensorRSBundleTopology r (t + 2)
+  let : FiberBundle (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y) :=
-    tensorRSBundle_fiber r (t + 2)
-  letI : VectorBundle ℝ (TensorRSModel r (t + 2) ℝ E)
+    tensorRSBundleFiber r (t + 2)
+  let : VectorBundle ℝ (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y) :=
     tensorRSBundle_vector r (t + 2)
-  letI : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel r (t + 2) ℝ E)
+  let : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y) I := tensorRSBundle_smooth ∞ r (t + 2)
   intro Z
   apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
@@ -242,7 +237,6 @@ private theorem swapTwoCurryFib_contMDiff (r t : ℕ) :
   intro Yv
   exact swapTwoCurryFib_apply_contMDiff (I := I) (M := M) r t Z Yv
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 omit [T2Space M] in
@@ -253,16 +247,15 @@ private lemma swapTwoFib_fromCurry (r t : ℕ) (x : M)
       swapTwoFib (I := I) (M := M) r t x T :=
   (swapTwoFib_apply (I := I) (M := M) r t x T).symm
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private theorem swapTwoFib_apply_contMDiff (r t : ℕ) :
     letI : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
-      tensorRSModel_normedAddCommGroup r (t + 2)
+      tensorRSModelNormedAddCommGroup r (t + 2)
     letI : NormedSpace ℝ (TensorRSModel r (t + 2) ℝ E) :=
-      tensorRSModel_normedSpace r (t + 2)
-    letI := tensorRSBundle_topology (I := I) (M := M) r (t + 2)
-    letI := tensorRSBundle_fiber (I := I) (M := M) r (t + 2)
+      tensorRSModelNormedSpace r (t + 2)
+    letI := tensorRSBundleTopology (I := I) (M := M) r (t + 2)
+    letI := tensorRSBundleFiber (I := I) (M := M) r (t + 2)
     letI := tensorRSBundle_vector (I := I) (M := M) r (t + 2)
     letI := tensorRSBundle_smooth (I := I) (M := M) ∞ r (t + 2)
     ∀ Z : Cₛ^∞⟮I; TensorRSModel r (t + 2) ℝ E,
@@ -271,31 +264,31 @@ private theorem swapTwoFib_apply_contMDiff (r t : ℕ) :
       (fun x : M => TotalSpace.mk' (TensorRSModel r (t + 2) ℝ E)
         (E := fun z : M => TensorRSSpace r (t + 2) I z) x
         (swapTwoFib (I := I) (M := M) r t x (Z x))) := by
-  letI : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
-    tensorRSModel_normedAddCommGroup r (t + 2)
-  letI : NormedSpace ℝ (TensorRSModel r (t + 2) ℝ E) :=
-    tensorRSModel_normedSpace r (t + 2)
-  letI : TopologicalSpace (TotalSpace (TensorRSModel r (t + 2) ℝ E)
+  let : NormedAddCommGroup (TensorRSModel r (t + 2) ℝ E) :=
+    tensorRSModelNormedAddCommGroup r (t + 2)
+  let : NormedSpace ℝ (TensorRSModel r (t + 2) ℝ E) :=
+    tensorRSModelNormedSpace r (t + 2)
+  let : TopologicalSpace (TotalSpace (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y)) :=
-    tensorRSBundle_topology r (t + 2)
-  letI : FiberBundle (TensorRSModel r (t + 2) ℝ E)
+    tensorRSBundleTopology r (t + 2)
+  let : FiberBundle (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y) :=
-    tensorRSBundle_fiber r (t + 2)
-  letI : VectorBundle ℝ (TensorRSModel r (t + 2) ℝ E)
+    tensorRSBundleFiber r (t + 2)
+  let : VectorBundle ℝ (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y) :=
     tensorRSBundle_vector r (t + 2)
-  letI : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel r (t + 2) ℝ E)
+  let : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel r (t + 2) ℝ E)
       (fun y : M => TensorRSSpace r (t + 2) I y) I := tensorRSBundle_smooth ∞ r (t + 2)
   intro Z
   have hΨ := swapTwoCurryFib_contMDiff (I := I) (M := M) r t Z
-  letI : NormedAddCommGroup (TensorRSModel r (t + 1) ℝ E) :=
-    tensorRSModel_normedAddCommGroup r (t + 1)
-  letI : NormedSpace ℝ (TensorRSModel r (t + 1) ℝ E) :=
-    tensorRSModel_normedSpace r (t + 1)
-  letI := tensorRSBundle_topology (I := I) (M := M) r (t + 1)
-  letI := tensorRSBundle_fiber (I := I) (M := M) r (t + 1)
-  letI := tensorRSBundle_vector (I := I) (M := M) r (t + 1)
-  letI := tensorRSBundle_smooth (I := I) (M := M) ∞ r (t + 1)
+  let : NormedAddCommGroup (TensorRSModel r (t + 1) ℝ E) :=
+    tensorRSModelNormedAddCommGroup r (t + 1)
+  let : NormedSpace ℝ (TensorRSModel r (t + 1) ℝ E) :=
+    tensorRSModelNormedSpace r (t + 1)
+  let := tensorRSBundleTopology (I := I) (M := M) r (t + 1)
+  let := tensorRSBundleFiber (I := I) (M := M) r (t + 1)
+  let := tensorRSBundle_vector (I := I) (M := M) r (t + 1)
+  let := tensorRSBundle_smooth (I := I) (M := M) ∞ r (t + 1)
   have hcomp : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r (t + 2) ℝ E)) ∞
       ((covGradBundleSmoothEquiv (I := I) (M := M) r (t + 1)).toDiffeomorph ∘
         (fun x : M => (⟨x,
@@ -310,7 +303,6 @@ private theorem swapTwoFib_apply_contMDiff (r t : ℕ) :
   exact congrArg (TotalSpace.mk' (TensorRSModel r (t + 2) ℝ E) x)
     (swapTwoFib_fromCurry (I := I) (M := M) r t x (Z x))
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 private theorem swapTwoFib_contMDiff (r t : ℕ) :
@@ -325,13 +317,11 @@ private theorem swapTwoFib_contMDiff (r t : ℕ) :
   intro Z
   exact swapTwoFib_apply_contMDiff (I := I) (M := M) r t Z
 
-set_option backward.isDefEq.respectTransparency false in
 noncomputable def swapTwoSec (r t : ℕ) :
     HomTensorRSField (E := E) (M := M) r (t + 2) (t + 2) I where
   toFun := fun x : M => swapTwoFib (I := I) (M := M) r t x
   contMDiff_toFun := swapTwoFib_contMDiff (I := I) (M := M) r t
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
 lemma swapTwoSec_apply (r t : ℕ) (x : M) :

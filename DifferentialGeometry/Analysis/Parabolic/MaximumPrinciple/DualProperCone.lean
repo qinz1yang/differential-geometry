@@ -45,7 +45,7 @@ abbrev IsDualHeatSupersolutionOn
 
 omit [CompleteSpace E] in
 theorem properCone_mem_of_dual_heat_pot_supersolution_of_potential_le
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)
@@ -73,7 +73,7 @@ theorem properCone_mem_of_dual_heat_pot_supersolution_of_potential_le
 
 omit [CompleteSpace E] in
 theorem properCone_mem_of_dual_heat_supersolution
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T)

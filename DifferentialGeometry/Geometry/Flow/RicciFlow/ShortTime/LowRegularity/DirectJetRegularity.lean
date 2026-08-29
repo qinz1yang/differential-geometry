@@ -72,7 +72,7 @@ private theorem force_step_one
         =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)] ψ i) := by
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2 with hhc
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g) (r := 0) (s := 2) hc
   have hmass0 : ∀ σ : ℝ, 0 ≤ σ →
       ∃ B : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ, Summable B ∧
@@ -136,7 +136,8 @@ private theorem force_step_one
       refine tensorHs.ext (funext fun j => ?_)
       rw [hF_hs2 t htmem j, tensorHsInclusion_coeff_apply, htall j]
     rw [heq]
-    simpa only [lowerState, lowerBall] using hst
+    change field t ∈ lowerState (I := I) (M := M) g 1 R
+    exact hst
   have hball_pt : ∀ t ∈ Set.Icc (0 : ℝ) T,
       ‖smoothCcToTensorHs (I := I) (M := M) g
         (((1 : ℕ) : ℝ) + 1) (F t)‖ ≤ R := by
@@ -291,7 +292,7 @@ private theorem force_driver_one
         =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)] f i) := by
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2 with hhc
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g) (r := 0) (s := 2) hc
   set field : timeL2 (tensorHs (I := I) (M := M) g 0 2
       (((1 : ℕ) : ℝ) + 2)) T :=
@@ -313,7 +314,7 @@ private theorem force_driver_one
       perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
         (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) p.1) with hc_def
   have hc_cont : ∀ i, Continuous (c i) := fun i =>
-    Continuous.Icc_extend' ((hpmc_contOn i).restrict)
+    Continuous.Icc_extend' ((hpmc_contOn i).domRestrict)
   have hc_eqOn : ∀ i, Set.EqOn (c i)
       (perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
         (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u))
@@ -360,7 +361,7 @@ private theorem force_driver_one
       =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)]
         perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i)
           (fun u => (timeModeCoeff (I := I) (M := M) fLo i) u) := fun i => by
-    simpa only [field] using
+    simpa only [field, timeMeasure] using
       (timeModeCoeff_eq_perModeConv_forcing (I := I) (M := M) hT hc fLo i)
   have hfLo_tmc : ∀ i, (fun t => (fLo t).coeff i)
       =ᵐ[MeasureTheory.volume.restrict (Set.Icc (0 : ℝ) T)]
@@ -545,7 +546,7 @@ private theorem force_promote_two
         tensorHsInclusion (I := I) (M := M) (g := g) (r := 0) (s := 2)
           (show ((1 : ℕ) : ℝ) ≤ (2 : ℝ) by norm_num) (fHi t) = fLo t := by
   classical
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g) (r := 0) (s := 2)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
   obtain ⟨B₂, hB₂_sum, hB₂_le'⟩ := hfc.2 0 (2 : ℝ) (by norm_num)
@@ -564,7 +565,7 @@ private theorem force_promote_two
     simp only [Set.projIcc_of_mem hT.le ht]
   have hpr_cont : Continuous pr := continuous_subtype_val.comp continuous_projIcc
   set W : ℝ → tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) := fun t =>
-    tensorHs_of_spectralMass_majorant (I := I) (M := M)
+    tensorHsOfSpectralMassMajorant (I := I) (M := M)
       (fun i => fc i (pr t)) B₂ hB₂_sum
       (fun i => hB₂_le i (pr t) (hpr_mem t)) with hW_def
   set σ' : ℝ := (2 : ℝ) + (((weylSobolevExp (E := E) : ℕ) : ℝ) + 1)
@@ -627,7 +628,7 @@ private theorem carrier_one_coeff
           perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (fc i) t := by
   classical
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2 with hhc
-  haveI : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
+  have : Countable (TensorEigenIdx (I := I) (M := M) g 0 2) :=
     countable_tensorEigenIdx (I := I) (M := M) (g := g) (r := 0) (s := 2) hc
   obtain ⟨B0, hB0_sum, hB0_le⟩ := hf_mass0
   set pr : ℝ → ℝ := fun t =>
@@ -640,7 +641,7 @@ private theorem carrier_one_coeff
     simp only [Set.projIcc_of_mem hT.le ht]
   have hpr_cont : Continuous pr := continuous_subtype_val.comp continuous_projIcc
   set Frep : ℝ → tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) := fun t =>
-    tensorHs_of_spectralMass_majorant (I := I) (M := M)
+    tensorHsOfSpectralMassMajorant (I := I) (M := M)
       (fun i => fc i (pr t)) B0 hB0_sum
       (fun i => hB0_le i (pr t) (hpr_mem t)) with hFrep_def
   have hFrep_coeff : ∀ t i, (Frep t).coeff i = fc i (pr t) := fun _ _ => rfl
@@ -731,7 +732,10 @@ private theorem direct_state_bound
           (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo).hiL2 t)‖ ≤
           R := by
     filter_upwards [hmem] with t ht
-    simpa only [duhamelCross, lowerState, lowerBall] using ht
+    change maxRegDuhamelSolField (I := I) (M := M) ((1 : ℕ) : ℝ) hT
+        (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo t ∈
+      lowerState (I := I) (M := M) g 1 R
+    exact ht
   have hrepr := crossRepr_ball (I := I) (M := M)
     (duhamelCross (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) hT
       (0 : tensorHs (I := I) (M := M) g 0 2 (((1 : ℕ) : ℝ) + 2)) fLo)

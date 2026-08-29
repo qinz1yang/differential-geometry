@@ -38,8 +38,10 @@ theorem trivToE_mfderiv_eq_chartFderiv_apply
         = (mfderiv I 𝓘(ℝ, E) (extChartAt I α) (F x)).comp (mfderiv I I F x) :=
     mfderiv_comp x hext hF
   rw [htriv]
-  have happ := congrArg (fun L : TangentSpace I x →L[ℝ] _ => L v) hchain
-  simpa [ContinuousLinearMap.comp_apply, Function.comp] using happ.symm
+  have hchainApply := mfderiv_comp_apply x hext hF v
+  have hfun : (fun y => extChartAt I α (F y)) = extChartAt I α ∘ F := rfl
+  rw [hfun]
+  exact hchainApply.symm
 
 omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
     [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in

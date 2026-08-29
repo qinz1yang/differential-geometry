@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -38,6 +37,7 @@ noncomputable def pointwiseTensorCurv
   rawTensorConnLapSmooth (I := I) g 0 (s + 1) (covGrad (I := I) (M := M) g 0 s S) -
     covGrad (I := I) (M := M) g 0 s (rawTensorConnLapSmooth (I := I) g 0 s S)
 
+omit [CompactSpace M] in
 theorem pointwiseTensorCurv_commutator_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     rawTensorConnLapSmooth (I := I) g 0 (s + 1) (covGrad (I := I) (M := M) g 0 s S) =
@@ -50,6 +50,7 @@ theorem pointwiseTensorCurv_commutator_eq
   change A = B + (A - B)
   abel
 
+omit [CompactSpace M] in
 theorem pointwiseTensorCurv_toSection_eq_sub
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M) :
     (pointwiseTensorCurv (I := I) (M := M) g s S).toSection x =
@@ -63,6 +64,7 @@ theorem pointwiseTensorCurv_toSection_eq_sub
   rw [hdef, SmoothCcTensor.toSection_sub]
   rfl
 
+omit [CompactSpace M] in
 theorem rawTensorConnLap_gradTensor_toSection_eq_frame_trace_gen
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M) :
     (rawTensorConnLapSmooth (I := I) g 0 (s + 1)
@@ -75,6 +77,7 @@ theorem rawTensorConnLap_gradTensor_toSection_eq_frame_trace_gen
   exact rawTensorConnLap_eq_frame_trace_secondCovDeriv (I := I) g 0 (s + 1)
     (fun y : M => (covGrad (I := I) (M := M) g 0 s S).toSection y) x
 
+omit [CompactSpace M] in
 theorem covGrad_rawConnLap_toSection_eq_frame_sum_gen
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M) :
     (covGrad (I := I) (M := M) g 0 s
@@ -96,6 +99,7 @@ theorem covGrad_rawConnLap_toSection_eq_frame_sum_gen
     funext y; rw [rawTensorConnLapSmooth_toSection_apply]]
   exact covGradBundleEquiv_covDeriv_rawConnLap_eq_sum (I := I) g 0 s hS x
 
+omit [CompactSpace M] in
 theorem pointwiseTensorCurv_toSection_eq_frame_sum
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M) :
     (pointwiseTensorCurv (I := I) (M := M) g s S).toSection x =
@@ -122,6 +126,7 @@ noncomputable def pointwiseTensorCurvPairing
     (TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M) (r := 0) (s := s + 1) (x := x)
       ((covGrad (I := I) (M := M) g 0 s S).toSection x))
 
+omit [CompactSpace M] in
 lemma pointwiseTensorCurvPairing_eq_toFun
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M) :
     pointwiseTensorCurvPairing (I := I) (M := M) g s S x =
@@ -130,6 +135,7 @@ lemma pointwiseTensorCurvPairing_eq_toFun
         ((covGrad (I := I) (M := M) g 0 s S).toFun x) := by
   rfl
 
+omit [CompactSpace M] in
 theorem abs_pointwiseTensorCurvPairing_le
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M) :
     |pointwiseTensorCurvPairing (I := I) (M := M) g s S x| ≤
@@ -151,6 +157,7 @@ theorem abs_pointwiseTensorCurvPairing_le
       ((covGrad (I := I) (M := M) g 0 s S).toSection x)] at hcs
   exact hcs
 
+omit [CompactSpace M] in
 theorem pointwiseTensorCurv_pairing_bound
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (K_R K_dR : ℝ)

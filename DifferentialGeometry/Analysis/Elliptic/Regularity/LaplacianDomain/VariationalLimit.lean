@@ -123,7 +123,7 @@ private theorem smooth_principal_identity
       ∂(volume : Measure EuclN) =
     -∫ y in chartTargetEuclid (I := I) (M := M) α,
       densityOnEuclid (I := I) g α y *
-        (Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+        (ΔG (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
           (pouScalar (I := I) (M := M) α v).smooth⟩)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
         ψ y
@@ -185,7 +185,7 @@ private theorem smooth_principal_identity
     rw [h_fderiv_zero]
     change B.a y i j * (0 : EuclN →L[ℝ] ℝ) (EuclideanSpace.single i 1) *
         (fderiv ℝ ψ y) (EuclideanSpace.single j 1) = 0
-    rw [ContinuousLinearMap.zero_apply]; ring
+    rw [zero_apply]; ring
   have h_negDens_zero_off : ∀ y, y ∉ chartTargetEuclid (I := I) (M := M) α →
       negDensityLaplacianPullback (I := I) g hf_smooth α y * ψ y = 0 := by
     intro y hy
@@ -292,12 +292,12 @@ private theorem smooth_principal_identity
       change weightedInvGramOnEuclid g α i j y *
           (0 : EuclN →L[ℝ] ℝ) (EuclideanSpace.single i 1) *
           (fderiv ℝ ψ y) (EuclideanSpace.single j 1) = 0
-      rw [ContinuousLinearMap.zero_apply]; ring
+      rw [zero_apply]; ring
   have h_negDens_eq :
       ∀ y ∈ chartTargetEuclid (I := I) (M := M) α,
         negDensityLaplacianPullback (I := I) g hf_smooth α y * ψ y =
         - (densityOnEuclid (I := I) g α y *
-          (Δ_g (I := I) g ⟨_, hf_smooth⟩)
+          (ΔG (I := I) g ⟨_, hf_smooth⟩)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y) := by
     intro y hy
     rw [negDensityLaplacianPullback_apply_of_mem (I := I) g hf_smooth α hy]
@@ -316,7 +316,7 @@ private theorem smooth_principal_identity
       ∫ y, negDensityLaplacianPullback (I := I) g hf_smooth α y * ψ y =
       -∫ y in chartTargetEuclid (I := I) (M := M) α,
         densityOnEuclid (I := I) g α y *
-          (Δ_g (I := I) g ⟨_, hf_smooth⟩)
+          (ΔG (I := I) g ⟨_, hf_smooth⟩)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
           ψ y := by
     rw [h_RHS_set]
@@ -324,7 +324,7 @@ private theorem smooth_principal_identity
               negDensityLaplacianPullback (I := I) g hf_smooth α y * ψ y) =
             ∫ y in chartTargetEuclid (I := I) (M := M) α,
               -(densityOnEuclid (I := I) g α y *
-                (Δ_g (I := I) g ⟨_, hf_smooth⟩)
+                (ΔG (I := I) g ⟨_, hf_smooth⟩)
                   ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) *
                 ψ y) from ?_]
     · rw [MeasureTheory.integral_neg]
@@ -346,7 +346,7 @@ lemma pouScalar_oneSubLapClassical_eq
     {g : SmoothRiemannianMetric I M} (α : M) (v : SmoothScalar g) :
     (pouScalar (I := I) (M := M) α v).oneSubLapClassical.toFun =
       (pouScalar (I := I) (M := M) α v).toFun -
-        Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+        ΔG (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
           (pouScalar (I := I) (M := M) α v).smooth⟩ := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
@@ -484,7 +484,7 @@ private theorem smooth_full_identity
     smooth_principal_identity (I := I) (M := M) α v hψ hψ_cs hψ_supp
   set f_pou : M → ℝ := (pouScalar (I := I) (M := M) α v).toFun with hf_pou_def
   set H : M → ℝ := f_pou -
-      Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+      ΔG (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
         (pouScalar (I := I) (M := M) α v).smooth⟩ with hH_def
   have h_chartTarget_meas :
       MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
@@ -514,13 +514,13 @@ private theorem smooth_full_identity
         (chartTargetEuclid (I := I) (M := M) α) :=
     hf_pou_cont.continuousOn.comp h_symm_cont (Set.mapsTo_univ _ _)
   have h_Δ_cont : Continuous
-      (Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+      (ΔG (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
         (pouScalar (I := I) (M := M) α v).smooth⟩) :=
     (Δ_g_contMDiff (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
       (pouScalar (I := I) (M := M) α v).smooth⟩).continuous
   have h_pull_Δ_cont :
       ContinuousOn (fun y : EuclN =>
-        (Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+        (ΔG (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
           (pouScalar (I := I) (M := M) α v).smooth⟩)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)))
         (chartTargetEuclid (I := I) (M := M) α) :=
@@ -533,7 +533,7 @@ private theorem smooth_full_identity
       hf_pou_cont hψ_cont hψ_cs hψ_supp
   have hint_Δ : IntegrableOn (fun y : EuclN =>
       densityOnEuclid (I := I) g α y *
-        (Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+        (ΔG (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
           (pouScalar (I := I) (M := M) α v).smooth⟩)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y)
       (chartTargetEuclid (I := I) (M := M) α) volume :=
@@ -549,7 +549,7 @@ private theorem smooth_full_identity
           f_pou ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y) -
       ∫ y in chartTargetEuclid (I := I) (M := M) α,
         densityOnEuclid (I := I) g α y *
-          (Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+          (ΔG (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
             (pouScalar (I := I) (M := M) α v).smooth⟩)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y := by
     rw [← MeasureTheory.integral_sub hint_f hint_Δ]
@@ -557,13 +557,13 @@ private theorem smooth_full_identity
     intro y _hy
     change densityOnEuclid (I := I) g α y *
         (f_pou ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) -
-          (Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+          (ΔG (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
             (pouScalar (I := I) (M := M) α v).smooth⟩)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) * ψ y =
       densityOnEuclid (I := I) g α y *
         f_pou ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y -
       densityOnEuclid (I := I) g α y *
-        (Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+        (ΔG (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
           (pouScalar (I := I) (M := M) α v).smooth⟩)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) * ψ y
     ring
@@ -616,7 +616,7 @@ private lemma exists_bound_for_invGram_mul_fderiv_psi
     have h_zero : (fderiv ℝ ψ y) (EuclideanSpace.single j 1) = 0 := by
       rw [h_fderiv_zero]
       change (0 : EuclN →L[ℝ] ℝ) (EuclideanSpace.single j 1) = 0
-      rw [ContinuousLinearMap.zero_apply]
+      rw [zero_apply]
     rw [h_zero, mul_zero, abs_zero]
     exact le_max_right _ _
 
@@ -656,7 +656,7 @@ private lemma tendsto_inner_integral
       Tendsto (fun n => (m, g n)) atTop (𝓝 (m, g_lim)) :=
     Filter.Tendsto.prodMk_nhds tendsto_const_nhds h_g_tendsto
   have h_comp := h_pair_tendsto.comp h_input_tendsto
-  simpa only [Function.comp_apply] using h_comp
+  exact h_comp.congr' (Filter.Eventually.of_forall fun _ ↦ rfl)
 
 theorem laplacianDomain_variational_identity_smooth_case
     (g : SmoothRiemannianMetric I M) (α : M) (v : SmoothScalar g)

@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -36,11 +35,11 @@ private lemma tensorRSIntrinsicChartCLM_pointwise_opNorm_le_factors
     (X : TangentSpace I b) :
     ‖tensorRSIntrinsicChartCLM (I := I) r s α T b X‖ ≤
       C_fib * C_J *
-        ‖fderiv ℝ (tensorRSChartE_section_repr (I := I) r s α T ∘
+        ‖fderiv ℝ (tensorRSChartESectionRepr (I := I) r s α T ∘
           (extChartAt I α).symm) (extChartAt I α b)‖ * ‖X‖ := by
   classical
   set F : E → TensorRSModel r s ℝ E :=
-    tensorRSChartE_section_repr (I := I) r s α T ∘ (extChartAt I α).symm with hF_def
+    tensorRSChartESectionRepr (I := I) r s α T ∘ (extChartAt I α).symm with hF_def
   set p : E := extChartAt I α b with hp_def
   set D : TensorRSModel r s ℝ E := fderiv ℝ F p (trivToE (I := I) α b X) with hD_def
   have h_apply :

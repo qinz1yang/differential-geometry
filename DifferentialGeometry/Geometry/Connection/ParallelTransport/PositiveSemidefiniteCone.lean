@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Connection.ParallelTransport.Endpoint
 import Mathlib.LinearAlgebra.Dimension.Finrank
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -25,11 +24,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance parallelTensor02NormedAddCommGroup (x : M) :
     NormedAddCommGroup (Tensor0SSpace 2 I x) :=
-  Tensor0SBundle.tensor0SSpace_normedAddCommGroup 2 x
+  Tensor0SBundle.tensor0SSpaceNormedAddCommGroup 2 x
 
 private local instance parallelTensor02NormedSpace (x : M) :
     NormedSpace ℝ (Tensor0SSpace 2 I x) :=
-  Tensor0SBundle.tensor0SSpace_normedSpace 2 x
+  Tensor0SBundle.tensor0SSpaceNormedSpace 2 x
 
 private local instance parallelTensor02AddCommGroup (x : M) :
     AddCommGroup (Tensor0SSpace 2 I x) :=
@@ -55,6 +54,7 @@ noncomputable def parallelTransportTensor02CLEOnIcc [I.Boundaryless]
   tensor02PullbackCLE (I := I) (M := M)
     (parallelTransportLinearEquivOnIcc (I := I) g γ hγ hL).symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp]
 theorem parallelTransportTensor02CLEOnIcc_eval [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -72,6 +72,7 @@ theorem parallelTransportTensor02CLEOnIcc_eval [I.Boundaryless]
   rw [tensor02PullbackCLE_apply, tensor02PullbackCLM_eval]
   simp only [LinearEquiv.symm_apply_apply]
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp]
 theorem parallelTransportTensor02CLEOnIcc_quad [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -84,6 +85,7 @@ theorem parallelTransportTensor02CLEOnIcc_quad [I.Boundaryless]
       quad02 (I := I) (M := M) A v := by
   rw [← eval02_self, parallelTransportTensor02CLEOnIcc_eval, eval02_self]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportTensor02CLEOnIcc_mem_positiveSemidefiniteCone_iff
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -96,6 +98,7 @@ theorem parallelTransportTensor02CLEOnIcc_mem_positiveSemidefiniteCone_iff
     (I := I) (M := M)
       (parallelTransportLinearEquivOnIcc (I := I) g γ hγ hL).symm A
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor02PositiveSemidefiniteCone_map_parallelTransportOnIcc
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -109,6 +112,7 @@ theorem tensor02PositiveSemidefiniteCone_map_parallelTransportOnIcc
   exact tensor02PositiveSemidefiniteCone_map_pullback (I := I) (M := M)
     (parallelTransportLinearEquivOnIcc (I := I) g γ hγ hL).symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor02PositiveSemidefinite_dualZeroFace_map_parallelTransportOnIcc
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -135,6 +139,7 @@ theorem tensor02PositiveSemidefinite_dualZeroFace_map_parallelTransportOnIcc
     tensor02PositiveSemidefinite_dualZeroFace_map_pullback (I := I) (M := M)
       e.symm (e v)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportTensor02CLEOnIcc_mem_dualZeroFace_iff
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -183,6 +188,7 @@ noncomputable def parallelTransportTensor02CLEBetween [I.Boundaryless]
   tensor02PullbackCLE (I := I) (M := M)
     (parallelTransportLinearEquivBetween (I := I) g γ hγ hab).symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp]
 theorem parallelTransportTensor02CLEBetween_eval [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -200,6 +206,7 @@ theorem parallelTransportTensor02CLEBetween_eval [I.Boundaryless]
   rw [tensor02PullbackCLE_apply, tensor02PullbackCLM_eval]
   simp only [LinearEquiv.symm_apply_apply]
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp]
 theorem parallelTransportTensor02CLEBetween_quad [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -212,6 +219,7 @@ theorem parallelTransportTensor02CLEBetween_quad [I.Boundaryless]
       quad02 (I := I) (M := M) A v := by
   rw [← eval02_self, parallelTransportTensor02CLEBetween_eval, eval02_self]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransportTensor02CLEBetween_mem_positiveSemidefiniteCone_iff
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -223,6 +231,7 @@ theorem parallelTransportTensor02CLEBetween_mem_positiveSemidefiniteCone_iff
   tensor02PullbackCLE_mem_positiveSemidefiniteCone_iff (I := I) (M := M)
     (parallelTransportLinearEquivBetween (I := I) g γ hγ hab).symm A
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor02PositiveSemidefiniteCone_map_parallelTransportBetween
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -237,6 +246,7 @@ theorem tensor02PositiveSemidefiniteCone_map_parallelTransportBetween
   tensor02PositiveSemidefiniteCone_map_pullback (I := I) (M := M)
     (parallelTransportLinearEquivBetween (I := I) g γ hγ hab).symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem twoTensorLeftKernel_map_parallelTransportBetween [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -275,6 +285,7 @@ theorem twoTensorLeftKernel_map_parallelTransportBetween [I.Boundaryless]
       simpa only [e.apply_symm_apply] using heval
     exact heval'.symm.trans h
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem twoTensorNullSpace_finrank_eq_parallelTransportBetween [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I (2 : ℕ∞) γ)
@@ -288,6 +299,7 @@ theorem twoTensorNullSpace_finrank_eq_parallelTransportBetween [I.Boundaryless]
   rw [← hmap]
   exact LinearEquiv.finrank_map_eq e (twoTensorLeftKernel (I := I) (M := M) A)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor02PositiveSemidefinite_dualZeroFace_map_parallelTransportBetween
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)

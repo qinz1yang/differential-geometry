@@ -4,6 +4,7 @@ set_option autoImplicit false
 
 noncomputable section
 
+
 open Filter Function Set Topology TopologicalSpace
 open scoped ContDiff Manifold
 
@@ -157,15 +158,15 @@ theorem eqOn_of_eq
   let ζU : Set.Icc a b → Uo :=
     fun s ↦ ⟨ζ s, hζ.mapsTo s.property⟩
   have hηU : Continuous ηU := by
-    exact (continuousOn_iff_continuous_restrict.mp hη.continuousOn).codRestrict
+    exact (continuousOn_iff_continuous_domRestrict.mp hη.continuousOn).codRestrict
       (fun s ↦ hη.mapsTo s.property)
   have hζU : Continuous ζU := by
-    exact (continuousOn_iff_continuous_restrict.mp hζ.continuousOn).codRestrict
+    exact (continuousOn_iff_continuous_domRestrict.mp hζ.continuousOn).codRestrict
       (fun s ↦ hζ.mapsTo s.property)
   have hcomp : fU ∘ ηU = fU ∘ ζU := by
     funext s
     exact (hη.2.2 s s.property).2.trans (hζ.2.2 s s.property).2.symm
-  letI : PreconnectedSpace (Set.Icc a b) :=
+  let : PreconnectedSpace (Set.Icc a b) :=
     isPreconnected_iff_preconnectedSpace.mp isPreconnected_Icc
   have hpoint : ηU ⟨t₀, ht₀⟩ = ζU ⟨t₀, ht₀⟩ := by
     apply Subtype.ext
@@ -262,7 +263,8 @@ theorem exists_of_compact
         · change φ.symm (γ t₀) ∈ U
           rw [← hFz, hφeq hzφ]
           have hleft : φ.symm (φ z) = z := by
-            simpa only using φ.left_inv hzφ
+            change φ.toPartialEquiv.symm (φ.toPartialEquiv z) = z
+            exact φ.toPartialEquiv.left_inv hzφ
           rw [hleft]
           exact hzU
       have hpre : γ ⁻¹' V ∈ 𝓝[Set.Icc a b] t₀ :=
@@ -315,7 +317,8 @@ theorem exists_of_compact
       · change φ.symm (γ t₀) ∈ U
         rw [← (hη₀.2.2 t₀ ⟨hat₀, le_rfl⟩).2, hφeq hzφ]
         have hleft : φ.symm (φ (η₀ t₀)) = η₀ t₀ := by
-          simpa only using φ.left_inv hzφ
+          change φ.toPartialEquiv.symm (φ.toPartialEquiv (η₀ t₀)) = η₀ t₀
+          exact φ.toPartialEquiv.left_inv hzφ
         rw [hleft]
         exact hzU
     have hpre : γ ⁻¹' V ∈ 𝓝[Set.Icc a b] t₀ :=

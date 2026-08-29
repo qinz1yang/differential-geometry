@@ -39,14 +39,14 @@ theorem perelmanDensityPrefactor_hasDerivAt {n : Nat}
           (4 * Real.pi * tauPath s0) ^ (-(n : Real) / 2 - 1))
         s0 :=
     hbase.rpow_const (Or.inl hbase_ne)
-  convert hderiv using 1
-  unfold perelmanDensityPrefactor
-  rw [htau]
-  have hbase_tau_ne : 4 * Real.pi * tau ≠ 0 := by positivity
-  rw [Real.rpow_sub_one hbase_tau_ne]
-  field_simp [htau_pos.ne', hbase_tau_ne]
-  ring_nf
-  rfl
+  refine (hderiv.congr_of_eventuallyEq ?_).congr_deriv ?_
+  · filter_upwards with s
+    exact (Real.rpow_eq_pow _ _)
+  · unfold perelmanDensityPrefactor
+    rw [Real.rpow_eq_pow, htau]
+    have hbase_tau_ne : 4 * Real.pi * tau ≠ 0 := by positivity
+    rw [Real.rpow_sub_one hbase_tau_ne]
+    field_simp [htau_pos.ne', hbase_tau_ne]
 
 theorem perelmanDensity_hasDerivAt {n : Nat}
     {tauPath : Real -> Real} {potentialPath : Real -> M -> Real}
@@ -76,10 +76,12 @@ theorem perelmanDensity_hasDerivAt {n : Nat}
         s0 := by
     simpa using (hpotential_deriv x).neg.exp
   have hmul := hpref.mul hexp
-  convert hmul using 1
-  unfold perelmanDensity
-  rw [htau]
-  ring_nf
+  refine (hmul.congr_of_eventuallyEq ?_).congr_deriv ?_
+  · filter_upwards with s
+    rfl
+  · unfold perelmanDensity
+    rw [htau]
+    ring_nf
 
 def wEntropyBracketVariation (tau tauVariation : Real)
     (scalarCurvature scalarCurvatureVariation gradPotentialNormSq
@@ -123,10 +125,12 @@ theorem wEntropyBracket_hasDerivAt {n : Nat}
   have hsum := (hscalar_deriv x).add (hgrad_deriv x)
   have hprod := htau_deriv.mul hsum
   have hmain := (hprod.add (hpotential_deriv x)).sub_const (n : Real)
-  convert hmain using 1
-  unfold wEntropyBracketVariation
-  rw [htau]
-  simp only [Pi.add_apply]
+  refine (hmain.congr_of_eventuallyEq ?_).congr_deriv ?_
+  · filter_upwards with s
+    rfl
+  · unfold wEntropyBracketVariation
+    rw [htau]
+    simp only [Pi.add_apply]
 
 def wEntropyWeightedMeasureVariationFactor (n : Nat) (tau tauVariation : Real)
     (potentialVariation metricVariationTrace : M -> Real) : M -> Real :=

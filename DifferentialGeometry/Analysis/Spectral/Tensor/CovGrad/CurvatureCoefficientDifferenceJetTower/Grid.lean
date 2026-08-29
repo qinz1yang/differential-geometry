@@ -59,11 +59,20 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 namespace CurvatureCoefficientDifferenceJetTower
+
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
+    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+    [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
+private lemma tangentLinearMapToModel_sub_apply
+    (x : M) (A B : TangentSpace I x →L[ℝ] TangentSpace I x) (v : E) :
+    tangentLinearMapToModel (A - B) v =
+      tangentLinearMapToModel A v - tangentLinearMapToModel B v := by
+  rw [tangentLinearMapToModel_apply, sub_apply, map_sub]
+  rfl
 end CurvatureCoefficientDifferenceJetTower
 
 open CurvatureCoefficientDifferenceJetTower
 
-set_option backward.isDefEq.respectTransparency false in
 def ricEndoRaisedField (g : SmoothRiemannianMetric I M) :
     ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x) where
@@ -75,13 +84,11 @@ abbrev ricciEndomorphismField (g : SmoothRiemannianMetric I M) :
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x) :=
   ricEndoRaisedField (I := I) (M := M) g
 
-set_option backward.isDefEq.respectTransparency false in
 def ricEndoBackgroundDifferenceField (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x) :=
   ricEndoRaisedField (I := I) (M := M) g₁ - ricEndoRaisedField (I := I) (M := M) g₀
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma ricEndoBackgroundDifferenceField_apply (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
@@ -97,7 +104,6 @@ lemma ricEndoBackgroundDifferenceField_apply (g₀ g₁ : SmoothRiemannianMetric
 
 namespace CurvatureCoefficientDifferenceJetTower
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma curvCoeffSlot_zero_backgroundDifference_eq
@@ -116,11 +122,11 @@ lemma curvCoeffSlot_zero_backgroundDifference_eq
     rw [SmoothCcTensor.toSection_sub]; rfl]
   apply ContinuousLinearMap.ext
   intro D
-  rw [ContinuousLinearMap.sub_apply]
+  rw [sub_apply]
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro m
-  simp only [Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
+  simp only [Tensor0SSpace.toModel_sub, sub_apply]
   rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 0).toSection x) D =
       ricciArmOrder0CurvCoeffFibSlot (I := I) g₁ 0 x D from rfl]
   rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 0).toSection x) D =
@@ -132,9 +138,9 @@ lemma curvCoeffSlot_zero_backgroundDifference_eq
         (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁ x) D from rfl]
   rw [slotInsertEndoFib_apply_eval]
   rw [ricEndoBackgroundDifferenceField_apply (I := I) (M := M) g₀ g₁ x]
-  rw [ContinuousLinearMap.sub_apply, ContinuousMultilinearMap.map_update_sub]
+  rw [tangentLinearMapToModel_sub_apply (I := I) x,
+    ContinuousMultilinearMap.map_update_sub]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 lemma curvCoeffSlot_one_backgroundDifference_eq
@@ -157,11 +163,11 @@ lemma curvCoeffSlot_one_backgroundDifference_eq
     rw [SmoothCcTensor.toSection_sub]; rfl]
   apply ContinuousLinearMap.ext
   intro D
-  rw [ContinuousLinearMap.sub_apply]
+  rw [sub_apply]
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro m
-  simp only [Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
+  simp only [Tensor0SSpace.toModel_sub, sub_apply]
   rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₁ 1).toSection x) D =
       ricciArmOrder0CurvCoeffFibSlot (I := I) g₁ 1 x D from rfl]
   rw [show ((ricciArmOrder0CurvCoeffSlot (I := I) (M := M) g₀ g₀ 1).toSection x) D =
@@ -185,21 +191,23 @@ lemma curvCoeffSlot_one_backgroundDifference_eq
     ContinuousMultilinearMap.domDomCongr_apply]
   rw [show (fun i : Fin 2 =>
         Function.update (fun i : Fin 2 => m ((Equiv.swap (0 : Fin 2) 1) i)) 0
-          ((ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁ x)
-            (m ((Equiv.swap (0 : Fin 2) 1) 0))) ((Equiv.swap (0 : Fin 2) 1) i)) =
+          (tangentLinearMapToModel
+            (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁ x)
+              (m ((Equiv.swap (0 : Fin 2) 1) 0))) ((Equiv.swap (0 : Fin 2) 1) i)) =
       Function.update m 1
-        ((ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁ x) (m 1)) from by
+        (tangentLinearMapToModel
+          (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁ x) (m 1)) from by
     funext j
     fin_cases j <;>
       simp [Function.update]]
   rw [ricEndoBackgroundDifferenceField_apply (I := I) (M := M) g₀ g₁ x]
-  rw [ContinuousLinearMap.sub_apply, ContinuousMultilinearMap.map_update_sub]
+  rw [tangentLinearMapToModel_sub_apply (I := I) x,
+    ContinuousMultilinearMap.map_update_sub]
 
 end CurvatureCoefficientDifferenceJetTower
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ricciArmOrder0CurvCoeff_backgroundDifference_decomp
     (g₀ g₁ : SmoothRiemannianMetric I M) :
     ricciArmOrder0CurvCoeff (I := I) (M := M) g₀ g₁ -
@@ -245,14 +253,14 @@ theorem curvDiffGrid_productTerm_integral_le
           ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤
         (i : ℝ) * (max Λ (max R (max C 1))) ^ (7 * i) := by
   classical
-  letI : MeasurableSpace E := borel E
-  haveI : BorelSpace E := ⟨rfl⟩
-  letI : MeasurableSpace M := borel M
-  haveI : BorelSpace M := ⟨rfl⟩
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  let : MeasurableSpace E := borel E
+  have : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  have : BorelSpace M := ⟨rfl⟩
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   set μ : MeasureTheory.Measure M := riemannianVolumeMeasure (I := I) (M := M) g₀ with hμ
-  haveI : IsFiniteMeasure μ := by rw [hμ]; infer_instance
+  have : IsFiniteMeasure μ := by rw [hμ]; infer_instance
   have hi_pos : 0 < i := hi1
   have hiR_pos : (0 : ℝ) < (i : ℝ) := by exact_mod_cast hi_pos
   have hiR_ne : (i : ℝ) ≠ 0 := ne_of_gt hiR_pos
@@ -291,7 +299,7 @@ theorem curvDiffGrid_productTerm_integral_le
     have hcp : Continuous (fun x => ∏ m : Fin n,
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
           ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x)) :=
-      continuous_finset_prod Finset.univ (fun m _ => hcont (e m))
+      continuous_finsetProd Finset.univ (fun m _ => hcont (e m))
     exact hcp.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   refine ⟨hint_prod, ?_⟩
   set Mbar : ℝ := max Λ (max R (max C 1)) with hMbar
@@ -569,7 +577,7 @@ theorem curvDiffGrid_productTerm_integral_le
         (fun x => ∑ m ∈ Sset, ((e m : ℝ) / i) *
           (riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x)) ^ ((i : ℝ) / (e m : ℝ))) μ := by
-      apply MeasureTheory.integrable_finset_sum
+      apply MeasureTheory.integrable_finsetSum
       intro m _
       exact (hint_rpow (e m) ((i : ℝ) / (e m : ℝ)) (by positivity)).const_mul _
     have hint_eq : (∫ x, ∑ m ∈ Sset, ((e m : ℝ) / i) *
@@ -578,7 +586,7 @@ theorem curvDiffGrid_productTerm_integral_le
         ∑ m ∈ Sset, ((e m : ℝ) / i) *
           (∫ x, (riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x)) ^ ((i : ℝ) / (e m : ℝ)) ∂μ) := by
-      rw [MeasureTheory.integral_finset_sum]
+      rw [MeasureTheory.integral_finsetSum]
       · apply Finset.sum_congr rfl
         intro m _; rw [MeasureTheory.integral_const_mul]
       · intro m _
@@ -633,7 +641,7 @@ theorem curvDiffGrid_integral_ballUniform_window
                         ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x)
                 ∂(riemannianVolumeMeasure (I := I) (M := M) g₀)) ≤ K i := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Cemb, hCemb_nn, hCemb⟩ :=
     DifferentialGeometry.Analysis.Spectral.deTurckSmoothRemainderDiff_supercritical_pointwise_jet_le_fixedWindow
@@ -760,14 +768,14 @@ theorem curvDiffGrid_integral_ballUniform_window
             riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
               ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))
           (riemannianVolumeMeasure (I := I) (M := M) g₀) := by
-        apply MeasureTheory.integrable_finset_sum
+        apply MeasureTheory.integrable_finsetSum
         intro n hn
-        apply MeasureTheory.integrable_finset_sum
+        apply MeasureTheory.integrable_finsetSum
         intro e he
         exact (hPT n hn e he).1
       refine ⟨hgrid_int, ?_⟩
-      rw [MeasureTheory.integral_finset_sum _
-        (fun n hn => MeasureTheory.integrable_finset_sum _ (fun e he => (hPT n hn e he).1))]
+      rw [MeasureTheory.integral_finsetSum _
+        (fun n hn => MeasureTheory.integrable_finsetSum _ (fun e he => (hPT n hn e he).1))]
       have hinner : ∀ n ∈ Finset.range (i + 1),
           (∫ x, ∑ e ∈ Finset.Nat.antidiagonalTuple n i, ∏ m : Fin n,
               riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
@@ -778,7 +786,7 @@ theorem curvDiffGrid_integral_ballUniform_window
                 ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x)
             ∂(riemannianVolumeMeasure (I := I) (M := M) g₀) := by
         intro n hn
-        exact MeasureTheory.integral_finset_sum _ (fun e he => (hPT n hn e he).1)
+        exact MeasureTheory.integral_finsetSum _ (fun e he => (hPT n hn e he).1)
       rw [Finset.sum_congr rfl hinner]
       have hle1 : ∑ n ∈ Finset.range (i + 1), ∑ e ∈ Finset.Nat.antidiagonalTuple n i,
             (∫ x, ∏ m : Fin n, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
@@ -927,7 +935,8 @@ lemma tWindow_mul_antidiagonalTupleGrid_le (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ 
     _ = tWindowMulConst j l * tWindow b (j + l) := by
         rw [tWindowMulConst, ← Finset.sum_mul]
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 lemma tWindow_eq_tripleSum (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (x : M) (i : ℕ) :
     tWindow (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
@@ -939,7 +948,8 @@ lemma tWindow_eq_tripleSum (g₀ : SmoothRiemannianMetric I M)
               riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                 ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
+    [SigmaCompactSpace M] in
 lemma antidiagonalTupleGrid_eq_doubleSum (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (x : M) (l : ℕ) :
     Combinatorics.antidiagonalTupleGrid
@@ -973,7 +983,6 @@ alias exists_iteratedCovGrad_fiberNormSq_bound :=
 section MixedSharpRicci
 
 
-set_option backward.isDefEq.respectTransparency false in
 def ricMixedSharpEndoFib (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     TangentSpace I x →L[ℝ] TangentSpace I x :=
   LinearMap.toContinuousLinearMap
@@ -1005,10 +1014,9 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCom
     (v : TangentSpace I x) :
     ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x v =
       metricSharp (I := I) g₀ x (ricciTensor (I := I) g₁ x v).toLinearMap := by
-  rw [ricMixedSharpEndoFib, LinearMap.coe_toContinuousLinearMap']
+  rw [ricMixedSharpEndoFib]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem ricMixedSharpEndoFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
@@ -1059,7 +1067,6 @@ theorem ricMixedSharpEndoFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) 
     TotalSpace.mk' E x (ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x (Y x))
   rw [ricMixedSharpEndoFib_apply]
 
-set_option backward.isDefEq.respectTransparency false in
 def ricMixedSharpEndoField (g₀ g₁ : SmoothRiemannianMetric I M) :
     ContMDiffSection I (E →L[ℝ] E) ∞
       (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x) where
@@ -1103,7 +1110,6 @@ lemma ricEndoRaisedFib_eq_mixed_add_gInvDiffRaised
 
 end CurvatureCoefficientDifferenceJetTower
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [SigmaCompactSpace M] in
 theorem slotInsertEndoCc_zero_ricEndoBackgroundDifference_telescope
@@ -1145,12 +1151,12 @@ theorem slotInsertEndoCc_zero_ricEndoBackgroundDifference_telescope
     rfl]
   apply ContinuousLinearMap.ext
   intro A
-  rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.sub_apply]
+  rw [add_apply, sub_apply]
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro m
   simp only [Tensor0SSpace.toModel_add, Tensor0SSpace.toModel_sub,
-    ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.sub_apply]
+    add_apply, sub_apply]
   rw [show ((slotInsertEndoCc (I := I) (M := M) g₀ 0
         (ricEndoBackgroundDifferenceField (I := I) (M := M) g₀ g₁)).toSection x) A =
       slotInsertEndoFib (I := I) (M := M) 1 0 x
@@ -1177,8 +1183,19 @@ theorem slotInsertEndoCc_zero_ricEndoBackgroundDifference_telescope
     slotInsertEndoFib_apply_eval]
   rw [Function.update_self, Function.update_idem]
   rw [ricEndoBackgroundDifferenceField_apply (I := I) (M := M) g₀ g₁ x]
-  rw [ContinuousLinearMap.sub_apply, ContinuousMultilinearMap.map_update_sub]
-  rw [ricEndoRaisedFib_eq_mixed_add_gInvDiffRaised (I := I) (M := M) g₀ g₁ x (m 0)]
+  rw [tangentLinearMapToModel_sub_apply (I := I) x,
+    ContinuousMultilinearMap.map_update_sub]
+  have hraised : tangentLinearMapToModel (ricEndoRaisedFib (I := I) g₁ x) (m 0) =
+      tangentLinearMapToModel (ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x) (m 0) +
+        tangentLinearMapToModel (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)
+          (tangentLinearMapToModel
+            (ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x) (m 0)) := by
+    simpa only [tangentLinearMapToModel_apply, map_add,
+      ContinuousLinearEquiv.symm_apply_apply] using
+        congrArg (tangentSpaceModelContinuousLinearEquiv (I := I) x)
+          (ricEndoRaisedFib_eq_mixed_add_gInvDiffRaised (I := I) (M := M) g₀ g₁ x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)))
+  rw [hraised]
   rw [ContinuousMultilinearMap.map_update_add]
   ring
 

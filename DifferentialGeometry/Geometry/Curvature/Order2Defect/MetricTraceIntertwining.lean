@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
     CovariantDerivative
@@ -73,7 +72,7 @@ theorem metricTrace2_covDeriv_comm_map
             (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
             (fun z : M => T.toSection z) y) x := by
   refine ContinuousLinearMap.ext (fun w => ?_)
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   exact metricTrace2_covDeriv_comm (I := I) g r s T x w
 
 end Curvature

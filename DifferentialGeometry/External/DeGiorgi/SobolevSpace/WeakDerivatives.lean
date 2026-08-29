@@ -156,7 +156,7 @@ theorem HasWeakPartialDeriv.mul_smooth {Ω : Set E} (hΩ : IsOpen Ω)
       η x * (fderiv ℝ φ x) ei + φ x * (fderiv ℝ η x) ei := by
     intro x
     rw [fderiv_fun_mul hη_diff.differentiableAt hφ_diff.differentiableAt]
-    simp [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp [add_apply, smul_apply, smul_eq_mul]
   have key :
       ∫ x in Ω, f x * (η x * (fderiv ℝ φ x) ei + φ x * (fderiv ℝ η x) ei) =
         -∫ x in Ω, g x * (η x * φ x) := by
@@ -329,7 +329,7 @@ theorem HasWeakPartialDeriv.of_eLpNormApprox_p
   have hpqR : p.HolderConjugate q := Real.HolderConjugate.conjExponent hp
   have hpq : p⁻¹ + q⁻¹ = 1 := (Real.holderConjugate_iff.mp hpqR).2
   have hq : 1 < q := (Real.holderConjugate_iff.mp hpqR.symm).1
-  letI : (ENNReal.ofReal p).HolderTriple (ENNReal.ofReal q) 1 :=
+  let : (ENNReal.ofReal p).HolderTriple (ENNReal.ofReal q) 1 :=
     ENNReal.HolderConjugate.of_toReal <| by
       simpa [ENNReal.toReal_ofReal (by linarith : 0 ≤ p),
         ENNReal.toReal_ofReal (by linarith : 0 ≤ q)] using hpqR
@@ -357,7 +357,8 @@ theorem HasWeakPartialDeriv.of_eLpNormApprox_p
           fun n => (∫ x in Ω, f x * dφ x) + ∫ x, dφ x * (ψ n x - f x) ∂μ := by
       funext n
       have hfi : Integrable (fun x => f x * dφ x) μ := by
-        simpa [mul_comm] using hdφ_memLp.integrable_mul hf_memLp
+        exact (hdφ_memLp.integrable_mul hf_memLp).congr <|
+          Filter.Eventually.of_forall fun x => by simp [mul_comm]
       have hdi : Integrable (fun x => dφ x * (ψ n x - f x)) μ :=
         hdφ_memLp.integrable_mul (hψ_fun_memLp n)
       calc
@@ -377,7 +378,8 @@ theorem HasWeakPartialDeriv.of_eLpNormApprox_p
           fun n => -(∫ x in Ω, g x * φ x) - ∫ x, φ x * (gψ n x - g x) ∂μ := by
       funext n
       have hgi : Integrable (fun x => g x * φ x) μ := by
-        simpa [mul_comm] using hφ_memLp.integrable_mul hg_memLp
+        exact (hφ_memLp.integrable_mul hg_memLp).congr <|
+          Filter.Eventually.of_forall fun x => by simp [mul_comm]
       have hdi : Integrable (fun x => φ x * (gψ n x - g x)) μ :=
         hφ_memLp.integrable_mul (hψ_grad_memLp n)
       have : ∫ x, gψ n x * φ x ∂μ =

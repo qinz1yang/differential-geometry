@@ -5,7 +5,6 @@ open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -46,15 +45,15 @@ theorem barrierDerivs
     (nabla2S : TensorNabla2SecFamily (I := I) (M := M))
     (epsilon delta t0 : Real)
     (hmc : ∀ t : Real,
-      DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (cov t) (G t))
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (cov t) (G t))
     (hS : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S) :
     TensorSpatialDerivs (I := I) (M := M) cov
       (tensorBarrierSecFamily (I := I) (M := M) G S epsilon delta t0)
       nablaS nabla2S := by
   constructor
   · intro t
-    letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2
-    letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3
+    let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2
+    let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3
     have hmetric :
         TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           2 (cov t) (Tensor0SBundle.metricTensorField (I := I) (G t))
@@ -423,33 +422,25 @@ theorem hasDerivWithinAt_barrier_quad
     {x : M} {v : TangentSpace I x}
     (hS : HasDerivWithinAt (fun s : Real => S s x v v) dS U t)
     (hG : HasDerivWithinAt (fun s : Real => (G s).inner x v v) dg U t) :
-    HasDerivWithinAt
+    @HasDerivWithinAt Real _ Real
+      Real.normedAddCommGroup.toAddCommGroup
+      RCLike.toInnerProductSpaceReal.toNormedSpace.toModule
+      _ _
       (fun s : Real =>
         tensorBarrierFamily (I := I) (M := M) G S epsilon delta t0 s x v v)
       (dS + epsilon * ((G t).inner x v v + (delta + t - t0) * dg))
       U t := by
-  have hid : HasDerivWithinAt (fun s : Real => s) 1 U t := by
-    simpa using (hasDerivWithinAt_id t U)
-  have hlin : HasDerivWithinAt (fun s : Real => delta + s - t0) 1 U t := by
-    simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using
-      ((hid.const_add delta).sub_const t0)
-  have hprod :
-      HasDerivWithinAt
-        (fun s : Real => (delta + s - t0) * (G s).inner x v v)
-        ((G t).inner x v v + (delta + t - t0) * dg)
-        U t := by
-    have h := hlin.mul hG
-    simpa [one_mul, add_comm, add_left_comm, add_assoc,
-      mul_comm, mul_left_comm, mul_assoc] using h
-  have hmetric :
-      HasDerivWithinAt
-        (fun s : Real => epsilon * ((delta + s - t0) * (G s).inner x v v))
-        (epsilon * ((G t).inner x v v + (delta + t - t0) * dg))
-        U t := by
-    exact hprod.const_mul epsilon
+  have hid := hasDerivWithinAt_id t U
+  have hlin := (hid.const_add delta).sub_const t0
+  have hprod := hlin.mul hG
+  have hmetric := hprod.const_mul epsilon
   have htotal := hS.add hmetric
-  simpa [tensorBarrierFamily, add_comm, add_left_comm, add_assoc,
-    mul_comm, mul_left_comm, mul_assoc] using htotal
+  unfold tensorBarrierFamily
+  convert htotal using 1
+  · funext s
+    simp only [Pi.add_apply, Pi.mul_apply, id_eq]
+    ring
+  · simp only [id_eq, one_mul]
 
 omit [FiniteDimensional ℝ E] [IsManifold I 1 M] [IsManifold I 2 M] in
 theorem barrierCore_deriv

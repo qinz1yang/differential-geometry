@@ -34,6 +34,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
+omit [CompactSpace M] in
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma covDerivLowerOrderTerm_pouSmul_eqOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -70,7 +71,7 @@ theorem covDerivLowerOrderTerm_pouSmul_memLp
             g r s i n).toCcTensor) α k P₀.1 P₀.2) 2
       (chartL2Measure (I := I) (M := M) α) := by
   classical
-  refine (memLp_finset_sum (μ := chartL2Measure (I := I) (M := M) α)
+  refine (memLp_finsetSum (μ := chartL2Measure (I := I) (M := M) α)
     (Finset.univ : Finset (TensorCompIdx (E := E) r s))
     (fun p _ =>
       memLp_factor_mul_componentAtom (I := I) (M := M) g r s i α p n
@@ -114,7 +115,7 @@ theorem covGradChristoffelLimit_memLp
       (chartL2Measure (I := I) (M := M) α) := by
   classical
   unfold covGradChristoffelLimit
-  exact memLp_finset_sum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
+  exact memLp_finsetSum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
     (fun p _ => memLp_indicatorFactor_mul_lp (I := I) (M := M) α
       (covDerivLowerOrderCoeff_contDiffOn (I := I) (M := M)
         g r s α k P₀.1 p.1 P₀.2 p.2)
@@ -147,7 +148,7 @@ private theorem covGradChristoffelUnscaledLimit_memLp
       (chartL2Measure (I := I) (M := M) α) := by
   classical
   unfold covGradChristoffelUnscaledLimit
-  exact memLp_finset_sum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
+  exact memLp_finsetSum (Finset.univ : Finset (TensorCompIdx (E := E) r s))
     (fun p _ => memLp_indicatorFactor_mul_lp (I := I) (M := M) α
       (covDerivLowerOrderCoeff_contDiffOn (I := I) (M := M)
         g r s α k P₀.1 p.1 P₀.2 p.2)

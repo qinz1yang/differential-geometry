@@ -90,7 +90,7 @@ theorem quadDiffWt {K T A₁ A₂ AΔ : ℝ}
         (fun z ↦ Q z (d₁ z - d₂ z) (d₁ z) +
           Q z (d₂ z) (d₁ z - d₂ z)) := by
     funext z
-    simp only [map_sub, ContinuousLinearMap.sub_apply]
+    simp only [map_sub, sub_apply]
     abel
   rw [hsplit]
   exact hadd
@@ -118,7 +118,7 @@ theorem quadDiffCarl {K T : ℝ} {C₁ C₂ CΔ : ℝ≥0∞}
         (fun z ↦ Q z (d₁ z - d₂ z) (d₁ z) +
           Q z (d₂ z) (d₁ z - d₂ z)) := by
     funext z
-    simp only [map_sub, ContinuousLinearMap.sub_apply]
+    simp only [map_sub, sub_apply]
     abel
   rw [hsplit]
   exact hadd

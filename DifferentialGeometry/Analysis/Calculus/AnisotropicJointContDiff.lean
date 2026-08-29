@@ -134,7 +134,7 @@ lemma pdDir_mul_eqOn {V : Set X} (hV : IsOpen V) {u₁ u₂ : X → ℝ}
   unfold dirDeriv
   rw [fderiv_fun_mul (differentiableAt_of_contDiffOn_isOpen hV hu₁ hy)
     (differentiableAt_of_contDiffOn_isOpen hV hu₂ hy)]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+  simp only [add_apply, smul_apply, smul_eq_mul]
   ring
 
 lemma pdDir_inv_eqOn {V : Set X} (hV : IsOpen V) {u : X → ℝ}
@@ -150,7 +150,7 @@ lemma pdDir_inv_eqOn {V : Set X} (hV : IsOpen V) {u : X → ℝ}
     hinv.comp_hasFDerivAt y hdu
   unfold dirDeriv
   rw [hcomp.fderiv]
-  simp only [ContinuousLinearMap.smul_apply, smul_eq_mul]
+  simp only [smul_apply, smul_eq_mul]
 
 end PdIter
 

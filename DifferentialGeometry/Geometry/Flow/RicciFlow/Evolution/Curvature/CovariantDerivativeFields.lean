@@ -190,7 +190,7 @@ theorem iteratedRmComp_two_eq_nabla2Rm04Field
           (frameComp0S (I := I) (nablaRm04Field (I := I) S t) frame) x₀ := by
     funext m d
     simp only [frameExtData]
-    refine extDerivFun_eventuallyEq_congr (I := I) _ ?_
+    refine mvfderiv_eventuallyEq_congr (I := I) _ ?_
     exact hlevel1.mono fun y hy => congrFun hy m
   have hbase :
       iteratedRmComp (I := I) frame

@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Set Function MeasureTheory intervalIntegral Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Topology Manifold BigOperators ContDiff Matrix
@@ -46,14 +45,14 @@ lemma contMDiffAt_clm_of_pointwise_jointSource
     {A : X → (F₁ →L[ℝ] F₂)} {x : X}
     (h : ∀ v, ContMDiffAt IX 𝓘(ℝ, F₂) n (fun q => A q v) x) :
     ContMDiffAt IX 𝓘(ℝ, F₁ →L[ℝ] F₂) n A x := by
-  haveI : FiniteDimensional ℝ (F₁ →L[ℝ] F₂) := ContinuousLinearMap.finiteDimensional
+  have : FiniteDimensional ℝ (F₁ →L[ℝ] F₂) := ContinuousLinearMap.finiteDimensional
   let bF₁ := Module.finBasis ℝ F₁
   let evalBasis : (F₁ →L[ℝ] F₂) →L[ℝ] (Fin (Module.finrank ℝ F₁) → F₂) :=
     ContinuousLinearMap.pi (fun i => ContinuousLinearMap.apply ℝ F₂ (bF₁ i))
   have evalBasis_inj : Function.Injective evalBasis := fun L₁ L₂ heq => by
     ext v; rw [← bF₁.sum_equivFun v]; simp only [map_sum, map_smul]
     congr 1; ext i; exact congrArg _ (congrFun heq i)
-  haveI : FiniteDimensional ℝ (Fin (Module.finrank ℝ F₁) → F₂) := inferInstance
+  have : FiniteDimensional ℝ (Fin (Module.finrank ℝ F₁) → F₂) := inferInstance
   obtain ⟨gLM, hgLM⟩ := evalBasis.toLinearMap.exists_leftInverse_of_injective
     (evalBasis.ker_eq_bot_of_injective evalBasis_inj)
   let gCLM : (Fin (Module.finrank ℝ F₁) → F₂) →L[ℝ] (F₁ →L[ℝ] F₂) :=
@@ -107,7 +106,9 @@ theorem contMDiff_clm_section_of_pointwise_joint_manifold_time
       (fun p : M × ℝ => ∑ i, b.repr v i • (e₂ ⟨p.1, φ p (Y i p.1)⟩).2) p₀ := by
     apply ContMDiffAt.sum
     intro i _
-    exact (contMDiffAt_const (c := (b.repr v i : ℝ))).smul (hφY_fiber i)
+    exact
+      (contMDiffAt_const (I := I.prod 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))
+        (c := (b.repr v i : ℝ))).smul (hφY_fiber i)
   refine hsum.congr_of_eventuallyEq ?_
   have h_base₁ : ∀ᶠ p : M × ℝ in 𝓝 p₀, p.1 ∈ e₁.baseSet :=
     continuousAt_fst (e₁.open_baseSet.mem_nhds he₁)
@@ -136,7 +137,7 @@ theorem contMDiff_clm_section_of_pointwise_joint_manifold_time
   have h_lf : e₁.symmL ℝ p.1 (b i) = (Y i) p.1 := by
     rw [hYp i]
     rw [Trivialization.localFrame_apply_of_mem_baseSet (hx := hx₁)]
-    simp [Trivialization.basisAt]
+    exact e₁.symmL_apply hx₁ (b i)
   rw [h_lf]
   rw [Trivialization.continuousLinearMapAt_apply]
   exact congrFun (Trivialization.coe_linearMapAt_of_mem (R := ℝ) (e := e₂) hx₂) _
@@ -151,14 +152,14 @@ lemma contMDiffWithinAt_clm_of_pointwise_jointSource
     {A : X → (F₁ →L[ℝ] F₂)} {sX : Set X} {x : X}
     (h : ∀ v, ContMDiffWithinAt IX 𝓘(ℝ, F₂) n (fun q => A q v) sX x) :
     ContMDiffWithinAt IX 𝓘(ℝ, F₁ →L[ℝ] F₂) n A sX x := by
-  haveI : FiniteDimensional ℝ (F₁ →L[ℝ] F₂) := ContinuousLinearMap.finiteDimensional
+  have : FiniteDimensional ℝ (F₁ →L[ℝ] F₂) := ContinuousLinearMap.finiteDimensional
   let bF₁ := Module.finBasis ℝ F₁
   let evalBasis : (F₁ →L[ℝ] F₂) →L[ℝ] (Fin (Module.finrank ℝ F₁) → F₂) :=
     ContinuousLinearMap.pi (fun i => ContinuousLinearMap.apply ℝ F₂ (bF₁ i))
   have evalBasis_inj : Function.Injective evalBasis := fun L₁ L₂ heq => by
     ext v; rw [← bF₁.sum_equivFun v]; simp only [map_sum, map_smul]
     congr 1; ext i; exact congrArg _ (congrFun heq i)
-  haveI : FiniteDimensional ℝ (Fin (Module.finrank ℝ F₁) → F₂) := inferInstance
+  have : FiniteDimensional ℝ (Fin (Module.finrank ℝ F₁) → F₂) := inferInstance
   obtain ⟨gLM, hgLM⟩ := evalBasis.toLinearMap.exists_leftInverse_of_injective
     (evalBasis.ker_eq_bot_of_injective evalBasis_inj)
   let gCLM : (Fin (Module.finrank ℝ F₁) → F₂) →L[ℝ] (F₁ →L[ℝ] F₂) :=
@@ -217,7 +218,9 @@ theorem contMDiffOn_clm_section_of_pointwise_joint_manifold_time
       ((Set.univ : Set M) ×ˢ S) p₀ := by
     apply ContMDiffWithinAt.sum
     intro i _
-    exact (contMDiffWithinAt_const (c := (b.repr v i : ℝ))).smul (hφY_fiber i)
+    exact
+      (contMDiffWithinAt_const (I := I.prod 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))
+        (c := (b.repr v i : ℝ))).smul (hφY_fiber i)
   refine hsum.congr_of_eventuallyEq ?_ ?_
   · have h_base₁ : ∀ᶠ p : M × ℝ in nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S), p.1 ∈ e₁.baseSet :=
       (continuousWithinAt_fst (s := (Set.univ : Set M) ×ˢ S) (p := p₀))
@@ -249,7 +252,7 @@ theorem contMDiffOn_clm_section_of_pointwise_joint_manifold_time
     have h_lf : e₁.symmL ℝ p.1 (b i) = (Y i) p.1 := by
       rw [hYp i]
       rw [Trivialization.localFrame_apply_of_mem_baseSet (hx := hx₁)]
-      simp [Trivialization.basisAt]
+      exact e₁.symmL_apply hx₁ (b i)
     rw [h_lf]
     rw [Trivialization.continuousLinearMapAt_apply]
     exact congrFun (Trivialization.coe_linearMapAt_of_mem (R := ℝ) (e := e₂) hx₂) _
@@ -276,7 +279,7 @@ theorem contMDiffOn_clm_section_of_pointwise_joint_manifold_time
     have h_lf : e₁.symmL ℝ p₀.1 (b i) = (Y i) p₀.1 := by
       rw [← hx₀, hY0 i]
       rw [Trivialization.localFrame_apply_of_mem_baseSet (hx := hx₁)]
-      simp [Trivialization.basisAt]
+      exact e₁.symmL_apply hx₁ (b i)
     rw [h_lf]
     rw [Trivialization.continuousLinearMapAt_apply]
     exact congrFun (Trivialization.coe_linearMapAt_of_mem (R := ℝ) (e := e₂) hx₂) _

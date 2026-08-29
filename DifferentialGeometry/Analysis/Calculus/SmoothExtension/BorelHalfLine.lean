@@ -158,7 +158,7 @@ private theorem borelTerm_iteratedDeriv (c : ℕ → F) (n k : ℕ) (t : ℝ) :
     have := iteratedDeriv_const_smul
       (𝕜 := ℝ) (R := ℝ) (n := k) (x := t)
       (f := fun s => borelBumpMono n (borelScale c n * s)) hcd ((borelScale c n)⁻¹ ^ n)
-    simpa only [Pi.smul_apply, smul_eq_mul] using this
+    simpa only [Pi.smul_apply, smul_eq_mul] using! this
   rw [hconst]
   have hcomp : iteratedDeriv k (fun s => borelBumpMono n (borelScale c n * s)) t =
       (borelScale c n) ^ k • iteratedDeriv k (borelBumpMono n) (borelScale c n * t) := by

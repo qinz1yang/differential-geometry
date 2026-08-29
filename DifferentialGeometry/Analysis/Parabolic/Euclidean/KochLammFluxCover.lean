@@ -31,7 +31,7 @@ theorem klFluxPiece_int {T R : ℝ} {A₂ Aₚ : ℝ≥0}
   have hf : MemLp f (ENNReal.ofReal (klPReal V)) μ := by
     simpa only [klPReal_ofReal] using
       (klFluxPiece_mem (V := V) h c hR hRT hS)
-  letI : ENNReal.HolderConjugate
+  let : ENNReal.HolderConjugate
       (ENNReal.ofReal (klPDual V)) (ENNReal.ofReal (klPReal V)) :=
     (klPDual_holder (V := V)).ennrealOfReal
   exact memLp_one_iff_integrable.mp (hf.smul hk)
@@ -72,11 +72,11 @@ theorem klFluxCover_est {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
         have hy₀' : y ∈ S ∧ y ∈ Metric.ball c R := by
           simpa only [S₀, Set.mem_inter_iff] using hy₀
         have hy₁' : y ∈ S ∧ y ∉ Metric.ball c R := by
-          simpa only [S₁, Set.mem_diff] using hy₁
+          simpa only [S₁, Set.mem_sdiff] using hy₁
         exact hy₁'.2 hy₀'.2
       have hsplit : S₀ ∪ S₁ = S := by
         ext y
-        simp only [S₀, S₁, Set.mem_union, Set.mem_inter_iff, Set.mem_diff]
+        simp only [S₀, S₁, Set.mem_union, Set.mem_inter_iff, Set.mem_sdiff]
         tauto
       have hS₀ball : S₀ ⊆ Metric.ball c R := by
         intro y hy
@@ -90,7 +90,7 @@ theorem klFluxCover_est {T R k : ℝ} {A₂ Aₚ : ℝ≥0}
       have hcover₁ : S₁ ⊆ ⋃ d ∈ s, Metric.ball d R := by
         intro y hy
         have hy' : y ∈ S ∧ y ∉ Metric.ball c R := by
-          simpa only [S₁, Set.mem_diff] using hy
+          simpa only [S₁, Set.mem_sdiff] using hy
         exact (hcover' hy'.1).resolve_left hy'.2
       have hfar₁ : ∀ y ∈ S₁, k * R ≤ ‖x - y‖ := by
         intro y hy

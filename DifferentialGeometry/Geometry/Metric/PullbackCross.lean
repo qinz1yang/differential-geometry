@@ -105,7 +105,7 @@ theorem Diffeomorph.pullbackInnerCross_isVonNBounded
         = ((hΦeq.symm : TangentSpace J (Φ x) →L[ℝ] TangentSpace I x) : _ → _)
             '' {w : TangentSpace J (Φ x) | g.inner (Φ x) w w < 1} := by
     ext v
-    simp only [Set.mem_setOf_eq, Set.mem_image]
+    simp only [Set.mem_ofPred_eq, Set.mem_image]
     refine ⟨fun hv => ⟨hΦeq v, ?_, ?_⟩, ?_⟩
     · have h1 := pullbackInnerCross_eval (g := g) (Φ := Φ) x v v
       rw [h1] at hv
@@ -188,8 +188,7 @@ noncomputable def Diffeomorph.pullbackMetricCross
       intro x
       have h_at := h_total x
       rw [contMDiffAt_totalSpace] at h_at
-      have := h_at.2
-      convert this using 1
+      simpa using h_at.2
     have h_pullback_smooth : ContMDiff I 𝓘(ℝ, ℝ) ∞
         (fun x : M => Diffeomorph.pullbackInnerCross g Φ x (Y x) (W x)) := by
       have h_eq : (fun x : M => Diffeomorph.pullbackInnerCross g Φ x (Y x) (W x))

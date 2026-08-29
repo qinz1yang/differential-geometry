@@ -194,7 +194,7 @@ theorem abs_perModeConv_timeL2_le (lam : ℝ) (hlam : 0 ≤ lam) (f : timeL2 ℝ
     have hintT : IntegrableOn (fun s => ‖f s‖) (Set.Icc (0 : ℝ) T) volume :=
       (TimeSobolev.integrableOn f).norm
     refine setIntegral_mono_set hintT (Eventually.of_forall fun s => norm_nonneg _) ?_
-    exact HasSubset.Subset.eventuallyLE
+    exact LE.le.eventuallyLE
       (Set.Ioc_subset_Icc_self.trans (Set.Icc_subset_Icc le_rfl htT))
   calc |perModeConv lam (fun s => f s) t|
       ≤ ∫ s in Set.Ioc (0 : ℝ) t, ‖f s‖ := hconv_le

@@ -137,9 +137,9 @@ theorem existsRootExtension
     have hST : S ⊆ T := fun x hx => ⟨hST₀ hx, hSR hx⟩
     have hTinj : Set.InjOn F T := hT₀inj.mono inter_subset_left
     have hlocalT : IsLocalHomeomorphOn F T := hlocalR.mono inter_subset_right
-    have hFopen : IsOpenMap (T.restrict F) := by
+    have hFopen : IsOpenMap (T.domRestrict F) := by
       intro W hW
-      rw [Set.restrict_eq, Set.image_comp]
+      rw [Set.domRestrict_eq, Set.image_comp]
       let W₀ : Set (E × P₀) := ((↑) : T -> E × P₀) '' W
       have hW₀open : IsOpen W₀ := hTopen.isOpenMap_subtype_val W hW
       have hW₀T : W₀ ⊆ T := by
@@ -156,22 +156,22 @@ theorem existsRootExtension
       · exact e.isOpen_image_of_subset_source
           (hW₀open.inter e.open_source) inter_subset_right
       · exact ⟨x, ⟨hxW, hxe⟩, (congrFun he x).symm⟩
-    have hFembed : Topology.IsOpenEmbedding (T.restrict F) :=
-      .of_continuous_injective_isOpenMap hlocalT.continuousOn.restrict
+    have hFembed : Topology.IsOpenEmbedding (T.domRestrict F) :=
+      .of_continuous_injective_isOpenMap hlocalT.continuousOn.domRestrict
         hTinj.injective hFopen
     obtain ⟨p₀, hp₀⟩ := hAne
     have hx₀ : graph p₀ ∈ T := hST ⟨p₀, hp₀, rfl⟩
-    letI : Nonempty T := ⟨⟨graph p₀, hx₀⟩⟩
+    let : Nonempty T := ⟨⟨graph p₀, hx₀⟩⟩
     let eT : OpenPartialHomeomorph T (E × P₀) :=
-      hFembed.toOpenPartialHomeomorph (T.restrict F)
-    have heT_coe : (eT : T -> E × P₀) = T.restrict F := by rfl
+      hFembed.toOpenPartialHomeomorph (T.domRestrict F)
+    have heT_coe : (eT : T -> E × P₀) = T.domRestrict F := by rfl
     let pair : P₀ -> E × P₀ := fun p => (0, p)
     let V₀ : Set P₀ := pair ⁻¹' eT.target
     have hpair : Continuous pair := continuous_const.prodMk continuous_id
     have hV₀open : IsOpen V₀ := eT.open_target.preimage hpair
     have hAV₀ : A ⊆ V₀ := by
       intro p hp
-      change pair p ∈ (hFembed.toOpenPartialHomeomorph (T.restrict F)).target
+      change pair p ∈ (hFembed.toOpenPartialHomeomorph (T.domRestrict F)).target
       rw [Topology.IsOpenEmbedding.toOpenPartialHomeomorph_target]
       refine ⟨⟨graph p, hST ⟨p, hp, rfl⟩⟩, ?_⟩
       change F (graph p) = pair p
@@ -235,8 +235,8 @@ section SmoothDomain
 variable [hRiemannianBundle : RiemannianBundle (fun x : M => TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem centerReadoutB_zero
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -336,7 +336,7 @@ theorem centerReadoutB_zero
     join p r h
   obtain ⟨i₀, _⟩ := h.μ_pos
   have hbase : c ∈ (trivializationAt E (TangentSpace I) p).baseSet := by
-    simpa only [c] using (hread i₀).2
+    with_unfolding_all exact (hread i₀).2
   have hpt (i : ι) :
       B.inv (c, (NormalCoordinates.normalChartAt (I := I) g p).symm (xi i)) =
         (⟨c, (show TangentSpace I c from
@@ -355,8 +355,8 @@ theorem centerReadoutB_zero
   rw [hdecode]
   exact hreadout
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem centerReadout_zero
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -486,8 +486,8 @@ theorem centerReadout_zero
   exact hreadout
 
 omit [T3Space M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 theorem existsCmExtensionB
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -526,8 +526,8 @@ theorem existsCmExtensionB
     (c params) params one_ne_zero (hjoint params hparams) (hinv params hparams)
 
 omit [T3Space M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 theorem existsCmExtension
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -565,8 +565,8 @@ theorem existsCmExtension
     (c params) params one_ne_zero (hjoint params hparams) (hinv params hparams)
 
 omit [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem chartCenterOn_cont
     (g : SmoothRiemannianMetric I M) (p : M) {ι : Type} [Fintype ι]
     (join : M -> M -> Real -> M) (r : Real)
@@ -584,7 +584,7 @@ theorem chartCenterOn_cont
           (NormalCoordinates.normalChartAt (I := I) g p).source) :
     ContinuousOn (chartCenterOn (I := I) g p join r V h) V := by
   let _ := hRiemannianBundle
-  rw [continuousOn_iff_continuous_restrict]
+  rw [continuousOn_iff_continuous_domRestrict]
   let H : ∀ params : V,
       CenterInput (I := I) g params.1.1
         (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.1.2 i))
@@ -613,7 +613,7 @@ theorem chartCenterOn_cont
         ((NormalCoordinates.normalChartAt (I := I) g p).open_source.mem_nhds
           (hsrc params))
     exact hchart.tendsto.comp hcm
-  have heq : V.restrict (chartCenterOn (I := I) g p join r V h) = f := by
+  have heq : V.domRestrict (chartCenterOn (I := I) g p join r V h) = f := by
     funext params
     change NormalCoordinates.normalChartAt (I := I) g p
       (centerCfgOn (I := I) g p join r V h params) = f params
@@ -621,8 +621,8 @@ theorem chartCenterOn_cont
   rw [heq]
   exact hf
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem cmExtB_contDiffOn
@@ -674,8 +674,8 @@ theorem cmExtB_contDiffOn
   exact ((hfcd.congr_of_eventuallyEq hid).of_le
     (by exact_mod_cast le_max_right 1 n)).contDiffWithinAt
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem cmExt_contDiffOn
@@ -740,8 +740,8 @@ open scoped Topology Manifold ContDiff
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -809,30 +809,30 @@ theorem centerReadoutB_min
         (NormalCoordinates.normalChartAt (I := I) (X.obj k).metric x c)
         (mu, xi) = 0 := by
   classical
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-  letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-  letI : IsManifold I 1 (X.obj k).M := IsManifold.of_le
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : IsManifold I 1 (X.obj k).M := IsManifold.of_le
     (I := I) (M := (X.obj k).M) (n := ∞) (by decide)
-  letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
-  letI : T2Space (X.obj k).M := (X.obj k).t2
-  letI : ConnectedSpace (X.obj k).M := hconn
-  letI : T2Space (TangentBundle I (X.obj k).M) :=
+  let : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+  let : T2Space (X.obj k).M := (X.obj k).t2
+  let : ConnectedSpace (X.obj k).M := hconn
+  let : T2Space (TangentBundle I (X.obj k).M) :=
     (X.obj k).t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace (X.obj k).M :=
+  let : TopologicalSpace.MetrizableSpace (X.obj k).M :=
     Manifold.metrizableSpace I (X.obj k).M
-  letI : T3Space (X.obj k).M := inferInstance
-  letI : RiemannianBundle (fun z : (X.obj k).M ↦ TangentSpace I z) :=
+  let : T3Space (X.obj k).M := inferInstance
+  let : RiemannianBundle (fun z : (X.obj k).M ↦ TangentSpace I z) :=
     (X.obj k).riemBundle (I := I)
-  letI : (z : (X.obj k).M) → InnerProductSpace Real (TangentSpace I z) :=
+  let : (z : (X.obj k).M) → InnerProductSpace Real (TangentSpace I z) :=
     (X.obj k).riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : (X.obj k).M ↦ TangentSpace I z) :=
     (X.obj k).riemBundle_cont (I := I)
-  letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
-  letI : CompleteSpace (X.obj k).M :=
+  let : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
+  let : CompleteSpace (X.obj k).M :=
     MetricComplete.complete (I := I) (X.obj k) hcomplete
-  letI : MetricSpace (X.obj k).M :=
+  let : MetricSpace (X.obj k).M :=
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj k).M)
   dsimp only
   intro h hρ hρq hρmetric hρexp hpairs
@@ -858,7 +858,7 @@ theorem centerReadoutB_min
         IsNormalDiag.halfSq_inf (I := I) hb k hcomplete hconn x hq he hf
           hρ hρq hρmetric hρexp
     have hcS : c ∈ S := by
-      simpa only [S] using hpairs i
+      with_unfolding_all exact hpairs i
     exact (hsmooth.contMDiffAt (hSopen.mem_nhds hcS)).mdifferentiableAt (by simp)
   have hgrad (i : ι) :
       gradientFun (I := I) (X.obj k).metric

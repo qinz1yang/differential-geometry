@@ -14,7 +14,7 @@ open DifferentialGeometry.Integral.Measure
 section Decomposition
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
@@ -23,29 +23,36 @@ def movingTrivCorrection (α : M) (X : Π y : M, TangentSpace I y) (w : E) : E :
   (fderiv ℝ (fun z => chartMovingTriv (I := I) α z) (extChartAt I α α) w)
     (chartRawRepr (I := I) α X (extChartAt I α α))
 
-omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
+    [T2Space M] [BoundarylessManifold I M] in
+private lemma trivToE_basepoint_apply (α : M) (v : TangentSpace I α) :
+    trivToE (I := I) α α v = v := by
+  have hcore : trivToE (I := I) α α =
+      (tangentBundleCore I M).coordChange (achart H α) (achart H α) α :=
+    TangentBundle.continuousLinearMapAt_trivializationAt_eq_core (I := I) (M := M)
+      (b₀ := α) (b := α) (mem_chart_source H α)
+  rw [hcore]
+  exact (tangentBundleCore I M).coordChange_self (achart H α) α
+    (by rw [tangentBundleCore_baseSet]; exact mem_chart_source H α) v
+
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 theorem chartLeviCivitaInnerCLM_basepoint_eq_rawFderiv_add_corrections
     (g : SmoothRiemannianMetric I M) (α : M)
-    (X : Π y : M, TangentSpace I y) (w : E)
+    (X : Π y : M, TangentSpace I y) (w : TangentSpace I α)
     (hRdiff : DifferentiableAt ℝ (chartRawRepr (I := I) α X) (extChartAt I α α))
     (hCdiff : DifferentiableAt ℝ
       (fun z => chartMovingTriv (I := I) α z) (extChartAt I α α)) :
     chartLeviCivitaInnerCLM (I := I) g α X α w
-      = fderiv ℝ (chartRawRepr (I := I) α X) (extChartAt I α α) w
-        + movingTrivCorrection (I := I) α X w
+      = fderiv ℝ (chartRawRepr (I := I) α X) (extChartAt I α α)
+          (trivToE (I := I) α α w)
+        + movingTrivCorrection (I := I) α X (trivToE (I := I) α α w)
         + christoffelCorrection (I := I) g α α
-            (chartE_section_repr (I := I) α X α) w := by
+            (chartESectionRepr (I := I) α X α) w := by
   classical
   rw [chartLeviCivitaInnerCLM_apply]
-  have htriv_id : trivToE (I := I) α α w = w := by
-    have hbase := chartMovingTriv_basepoint (I := I) α w
-    have hself : (extChartAt I α).symm (extChartAt I α α) = α :=
-      (extChartAt I α).left_inv (mem_extChartAt_source (I := I) α)
-    rw [chartMovingTriv, hself] at hbase
-    exact hbase
-  rw [htriv_id]
-  rw [chartLeviCivita_flat_summand_eq_rawRepr (I := I) α X w hRdiff hCdiff]
+  rw [chartLeviCivita_flat_summand_eq_rawRepr (I := I) α X
+    (trivToE (I := I) α α w) hRdiff hCdiff]
   rw [movingTrivCorrection]
 
 end Decomposition
@@ -83,7 +90,7 @@ theorem hQinner_of_flat_value_and_corrections
               (mfderiv I I (Φ_fam t : M → M) x v))
         - trivFromE (I := I) (Φ_fam t x) (Φ_fam t x)
             (christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x v))) :
     Q (Dchart' d)
@@ -93,16 +100,18 @@ theorem hQinner_of_flat_value_and_corrections
             (mfderiv I I (Φ_fam t : M → M) x v)) := by
   classical
   set α := Φ_fam t x with hα
-  set w : E := mfderiv I I (Φ_fam t : M → M) x v with hw
+  set w : TangentSpace I α := mfderiv I I (Φ_fam t : M → M) x v with hw
   have hdecomp :
       chartLeviCivitaInnerCLM (I := I) g α (X : ∀ y : M, TangentSpace I y) α w
         = fderiv ℝ (chartRawRepr (I := I) α (X : ∀ y : M, TangentSpace I y))
-            (extChartAt I α α) w
-          + movingTrivCorrection (I := I) α (X : ∀ y : M, TangentSpace I y) w
+            (extChartAt I α α) (trivToE (I := I) α α w)
+          + movingTrivCorrection (I := I) α (X : ∀ y : M, TangentSpace I y)
+              (trivToE (I := I) α α w)
           + christoffelCorrection (I := I) g α α
-              (chartE_section_repr (I := I) α (X : ∀ y : M, TangentSpace I y) α) w :=
+              (chartESectionRepr (I := I) α (X : ∀ y : M, TangentSpace I y) α) w :=
     chartLeviCivitaInnerCLM_basepoint_eq_rawFderiv_add_corrections (I := I) g α
       (X : ∀ y : M, TangentSpace I y) w hRdiff hCdiff
+  rw [trivToE_basepoint_apply (I := I) α w] at hdecomp
   rw [hcov, hdecomp, map_add, map_add, neg_add, neg_add]
   abel
 
@@ -150,7 +159,7 @@ theorem rawVariationalIdentity_of_flatChartFderiv_witness
               (mfderiv I I (Φ_fam t : M → M) x v))
         - trivFromE (I := I) (Φ_fam t x) (Φ_fam t x)
             (christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x v))) :
     RawVariationalIdentity (I := I) g X Φ_fam t x v := by

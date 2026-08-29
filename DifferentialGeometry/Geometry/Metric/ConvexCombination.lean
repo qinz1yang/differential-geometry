@@ -24,7 +24,7 @@ private lemma convexCombForm_apply (g₁ g₂ : SmoothRiemannianMetric I M) (χ 
     (x : M) (v w : TangentSpace I x) :
     convexCombForm (I := I) g₁ g₂ χ x v w =
       χ x • g₁.inner x v w + (1 - χ x) • g₂.inner x v w := by
-  simp [convexCombForm, ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply]
+  simp [convexCombForm, add_apply, smul_apply]
 
 omit [FiniteDimensional ℝ E] in
 private lemma convexCombForm_symm (g₁ g₂ : SmoothRiemannianMetric I M) (χ : M → ℝ)
@@ -60,10 +60,11 @@ private lemma frameVec_contMDiffAt (x₀ : M) (i : Fin (Module.finrank ℝ E)) {
   set b := Module.finBasis ℝ E with hb
   have hfr : frameVec (I := I) x₀ i =ᶠ[𝓝 x] e.localFrame b i := by
     filter_upwards [e.open_baseSet.mem_nhds hx] with y hy
-    rw [e.localFrame_apply_of_mem_baseSet b hy]
-    change (e.symmL ℝ y) (b i) = e.basisAt b hy i
+    change (e.symmL ℝ y) (b i) = e.localFrame b i y
+    rw [Bundle.Trivialization.localFrame, dif_pos hy]
     rw [Bundle.Trivialization.basisAt, Module.Basis.map_apply,
-      Bundle.Trivialization.symmL_apply, Bundle.Trivialization.linearEquivAt_symm_apply]
+      Bundle.Trivialization.linearEquivAt_symm_apply]
+    exact e.symmL_apply hy (b i)
   refine (contMDiffAt_localFrame_of_mem (I := I) (n := (∞ : WithTop ℕ∞)) (e := e) (b := b)
     (i := i) hx).congr_of_eventuallyEq ?_
   exact hfr.mono (fun y hy => congrArg (TotalSpace.mk' E y) hy)

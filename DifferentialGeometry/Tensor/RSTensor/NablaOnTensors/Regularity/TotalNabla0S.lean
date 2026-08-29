@@ -20,7 +20,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [T2Space M]
 variable [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem totalNabla0S_eval_tangentConstInChart_contMDiffAt
     {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -67,7 +66,9 @@ theorem totalNabla0S_eval_tangentConstInChart_contMDiffAt
     calc
       X p = e.localFrame b (slots 0) p := hXeq (slots 0)
       _ = e.symmL Real p (b (slots 0)) := by
-        exact e.localFrame_apply_of_mem_baseSet (b := b) hp
+        rw [e.localFrame_apply_of_mem_baseSet (b := b) (i := slots 0) hp]
+        change e.symm p (b (slots 0)) = e.symmL Real p (b (slots 0))
+        exact (e.symmL_apply hp (b (slots 0))).symm
       _ = tangentConstInChart (𝕜 := Real) (I := I) x₀
           (b (slots 0)) p := by
         rfl
@@ -93,7 +94,6 @@ theorem totalNabla0S_eval_tangentConstInChart_contMDiffAt
       tangentConstInChart (𝕜 := Real) (I := I) x₀
         (b (slots a.succ)) p)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem totalNabla0S_reg (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
@@ -102,7 +102,7 @@ theorem totalNabla0S_reg (s : ℕ)
       (n := (∞ : WithTop ℕ∞)) s) :
     TotalNabla0SRegular (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       s cov α := by
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) (s + 1)
   let F : (p : M) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) (s + 1) p :=
@@ -131,25 +131,26 @@ theorem totalNabla0S_reg (s : ℕ)
     filter_upwards [e.open_baseSet.mem_nhds hx₀] with p hp
     rw [continuousMultilinearMap_basis_repr]
     change ((trivializationAt (Tensor0SModel (s + 1) Real E)
-        (Bundle.continuousMultilinearMap Real (s + 1) E
-          (TangentSpace I : M -> Type _)) x₀
+        (fun p : M => Tensor0SSpace (s + 1) I p) x₀
         ⟨p, F p⟩).2)
         (fun a : Fin (s + 1) => b (σ a)) =
       F p
         (fun a : Fin (s + 1) =>
           tangentConstInChart (𝕜 := Real) (I := I) x₀ (b (σ a)) p)
-    change (F p).compContinuousLinearMap
+    change (tensor0SSpaceFiberContinuousLinearEquiv (I := I) (s + 1) p
+        (F p)).compContinuousLinearMap
         (fun _ : Fin (s + 1) =>
           (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real p)
         (fun a : Fin (s + 1) => b (σ a)) =
       F p
         (fun a : Fin (s + 1) =>
           tangentConstInChart (𝕜 := Real) (I := I) x₀ (b (σ a)) p)
-    rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
+    rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
+      tensor0SSpaceFiberContinuousLinearEquiv_apply_apply]
     congr
   exact hsec
 
-noncomputable def CanonicalSpatialDerivs0S.of_smooth_connection {s : ℕ}
+noncomputable def CanonicalSpatialDerivs0S.ofSmoothConnection {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))

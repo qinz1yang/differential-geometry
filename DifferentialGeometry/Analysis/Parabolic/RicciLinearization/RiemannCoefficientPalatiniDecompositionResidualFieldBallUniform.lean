@@ -25,7 +25,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
 open scoped Manifold Topology ContDiff BigOperators
@@ -75,6 +74,7 @@ private lemma real_quarter_ten_bound {S R2 : ℝ} (hS : S ≤ 10 * R2) (hS0 : 0 
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma bdRiemannianFiberNormSq_iteratedCovGrad_koszulCovecCc_le (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (i : ℕ) (x : M) :
@@ -157,6 +157,7 @@ lemma bdRiemannianFiberNormSq_iteratedCovGrad_koszulCovecCc_le (g₀ : SmoothRie
   exact real_quarter_ten_bound hsum
     (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (3 + i) x (PA + PB - PC))
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 lemma riemannianFiberNormSq_iteratedCovGrad_bdKRaw_le (g₀ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) (i : ℕ) (x : M) :
@@ -237,8 +238,8 @@ lemma riemannianFiberNormSq_iteratedCovGrad_bdKRaw_le (g₀ : SmoothRiemannianMe
   exact real_quarter_ten_bound hsum
     (riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (3 + i) x (PA + PB - PC))
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem exists_sobolevConst_riemannianFiberNormSq_covGrad_T_le_sq (g₀ : SmoothRiemannianMetric I M)
     (a : ℕ)
@@ -265,21 +266,21 @@ theorem exists_sobolevConst_riemannianFiberNormSq_covGrad_T_le_sq (g₀ : Smooth
   have hterms : ∀ k ∈ Finset.range 3, 0 ≤
       (letI : Bundle.RiemannianBundle
           (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
       ‖(iteratedCovGrad (I := I) g₀ 0 2 k
           (convexPerturbation (I := I) g₀ T 0 1)).toSection x‖) := by
     intro k _
-    letI : Bundle.RiemannianBundle
+    let : Bundle.RiemannianBundle
         (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
     exact norm_nonneg _
   have h0 := le_trans (Finset.single_le_sum hterms
     (show (1 : ℕ) ∈ Finset.range 3 from Finset.mem_range.mpr (by norm_num))) hsum
   have hcp1 : convexPerturbation (I := I) g₀ T 0 1 = T := by
     rw [convexPerturbation, smul_zero, zero_add, one_smul]
   rw [hcp1] at h0
-  letI : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + 1) I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
+  let : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + 1) I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
   have h0' : ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
       Tensor0SBundle.TensorRSSpace 0 (2 + 1) I x)‖ ≤ Csob * R := h0
   have hb : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x
@@ -920,8 +921,8 @@ theorem exists_ricciArmSharpGradKoszulResidualField_metricPerturbationPath_riema
         refine mul_le_mul_of_nonneg_left ?_ (by norm_num)
         exact mul_le_mul hPTO hXi hcompnn (hCP_nn 0)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem exists_sobolevConst_riemannianFiberNormSq_T_le_sq (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) :
@@ -946,21 +947,21 @@ theorem exists_sobolevConst_riemannianFiberNormSq_T_le_sq (g₀ : SmoothRiemanni
   have hterms : ∀ k ∈ Finset.range 3, 0 ≤
       (letI : Bundle.RiemannianBundle
           (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
       ‖(iteratedCovGrad (I := I) g₀ 0 2 k
           (convexPerturbation (I := I) g₀ T 0 1)).toSection x‖) := by
     intro k _
-    letI : Bundle.RiemannianBundle
+    let : Bundle.RiemannianBundle
         (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
     exact norm_nonneg _
   have h0 := le_trans (Finset.single_le_sum hterms
     (show (0 : ℕ) ∈ Finset.range 3 from Finset.mem_range.mpr (by norm_num))) hsum
   have hcp1 : convexPerturbation (I := I) g₀ T 0 1 = T := by
     rw [convexPerturbation, smul_zero, zero_add, one_smul]
   rw [hcp1, iteratedCovGrad_zero] at h0
-  letI : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 2
+  let : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 2
   have h0' : ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ≤ Csob * R := h0
   have hb : riemannianFiberNormSq (I := I) (M := M) g₀ 0 2 x (T.toSection x) =
       ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ ^ 2 :=

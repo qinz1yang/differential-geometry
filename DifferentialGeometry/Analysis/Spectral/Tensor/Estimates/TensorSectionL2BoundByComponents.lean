@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -177,10 +176,10 @@ private lemma tensorInner_le_const_mul_sum_scalar_sq
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g r s) (b : M),
         tensorInnerPointwise g r s b (S.toFun b) (S.toFun b) ≤
-          C * ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+          C * ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
             sumScalarSq g r s S α b := by
   classical
-  set Sf : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  set Sf : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   set N : ℝ := (Sf.card : ℝ)
   have hN_nn : 0 ≤ N := Nat.cast_nonneg _
   choose Cα hCα_nn hCα_bound using fun α (_ : α ∈ Sf) =>
@@ -238,7 +237,7 @@ theorem fiber_sq_le_comps
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (S : SmoothCcTensor g r s) (b : M),
       tensorInnerPointwise g r s b (S.toFun b) (S.toFun b) ≤
-        C * ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        C * ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ∑ Idx : MIdxC E r, ∑ Jdx : MIdxC E s,
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S α Idx Jdx b) ^ 2 := by
@@ -255,9 +254,9 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma tensorChartComponentScalar_memLp_two :
     MemLp (tensorChartComponentScalar g r s S α Idx Jdx) 2
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  let _ : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  let _ : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   exact (tensorChartComponentScalar_contMDiff (I := I) (M := M)
       g r s S α Idx Jdx).continuous.memLp_of_hasCompactSupport (p := 2)
@@ -268,14 +267,11 @@ private lemma tensorChartComponentScalar_sq_integrable :
     Integrable (fun b : M =>
       (tensorChartComponentScalar g r s S α Idx Jdx b) ^ 2)
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
-    riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
-    riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
-  exact ((tensorChartComponentScalar_contMDiff (I := I) (M := M)
-      g r s S α Idx Jdx).continuous.pow 2).integrable_of_hasCompactSupport
-    ((tensorChartComponentScalar_hasCompactSupport g r s S α Idx Jdx).comp_left
-      (g := fun y : ℝ => y ^ 2) (by simp))
+  have hnorm := (tensorChartComponentScalar_memLp_two (E := E) g r s S α Idx Jdx
+    ).integrable_norm_pow (by norm_num : (2 : ℕ) ≠ 0)
+  convert hnorm using 1
+  funext b
+  rw [Real.norm_eq_abs, sq_abs]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma tensorChartComponentScalar_integral_sq_eq_eLpNorm_toReal_sq :
@@ -309,7 +305,7 @@ theorem tensorL2Norm_sq_le_const_mul_sum_componentL2Norm_sq
       ∀ (S : SmoothCcTensor g r s),
         (tensorL2Norm g r s S.toFun) ^ 2 ≤
           C *
-            ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+            ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
               ∑ Idx : MIdxC E r, ∑ Jdx : MIdxC E s,
                 ((eLpNorm
                     (tensorChartComponentScalar (I := I) (M := M)
@@ -328,20 +324,20 @@ theorem tensorL2Norm_sq_le_const_mul_sum_componentL2Norm_sq
   have h_scalar_sq_int : ∀ α : M,
       Integrable (fun b : M => sumScalarSq g r s S α b) μ := fun α => by
     unfold sumScalarSq
-    exact MeasureTheory.integrable_finset_sum _ (fun Idx _ =>
-      MeasureTheory.integrable_finset_sum _ (fun Jdx _ =>
+    exact MeasureTheory.integrable_finsetSum _ (fun Idx _ =>
+      MeasureTheory.integrable_finsetSum _ (fun Jdx _ =>
         tensorChartComponentScalar_sq_integrable g r s S α Idx Jdx))
   have h_int_mono :
       ∫ b, tensorInnerPointwise g r s b (S.toFun b) (S.toFun b) ∂μ ≤
       ∫ b, C *
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           sumScalarSq g r s S α b ∂μ :=
     integral_mono_of_nonneg
       (Filter.Eventually.of_forall (fun b => tensorInnerPointwise_nonneg g r s b _))
-      ((MeasureTheory.integrable_finset_sum _ (fun α _ => h_scalar_sq_int α)).const_mul C)
+      ((MeasureTheory.integrable_finsetSum _ (fun α _ => h_scalar_sq_int α)).const_mul C)
       (Filter.Eventually.of_forall (fun b => h_pt S b))
   rw [integral_const_mul,
-    MeasureTheory.integral_finset_sum _ (fun α _ => h_scalar_sq_int α)]
+    MeasureTheory.integral_finsetSum _ (fun α _ => h_scalar_sq_int α)]
     at h_int_mono
   have h_int_sumScalarSq : ∀ α : M,
       ∫ b, sumScalarSq g r s S α b ∂μ =
@@ -349,11 +345,11 @@ theorem tensorL2Norm_sq_le_const_mul_sum_componentL2Norm_sq
           ((eLpNorm (tensorChartComponentScalar (I := I) (M := M)
                 g r s S α Idx Jdx) 2 μ).toReal) ^ 2 := fun α => by
     unfold sumScalarSq
-    rw [MeasureTheory.integral_finset_sum _ (fun Idx _ =>
-      MeasureTheory.integrable_finset_sum _ (fun Jdx _ =>
+    rw [MeasureTheory.integral_finsetSum _ (fun Idx _ =>
+      MeasureTheory.integrable_finsetSum _ (fun Jdx _ =>
         tensorChartComponentScalar_sq_integrable g r s S α Idx Jdx))]
     refine Finset.sum_congr rfl (fun Idx _ => ?_)
-    rw [MeasureTheory.integral_finset_sum _ (fun Jdx _ =>
+    rw [MeasureTheory.integral_finsetSum _ (fun Jdx _ =>
       tensorChartComponentScalar_sq_integrable g r s S α Idx Jdx)]
     exact Finset.sum_congr rfl (fun Jdx _ =>
       tensorChartComponentScalar_integral_sq_eq_eLpNorm_toReal_sq

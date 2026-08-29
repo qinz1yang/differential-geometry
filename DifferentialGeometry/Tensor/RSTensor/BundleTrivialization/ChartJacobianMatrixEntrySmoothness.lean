@@ -12,7 +12,6 @@ import Mathlib.LinearAlgebra.Dimension.Free
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff
@@ -81,7 +80,7 @@ private lemma coordChangeL_apply_eq_clmAt_symmL
   rw [Trivialization.coordChangeL_apply _ _ ⟨hbα', hbβ'⟩]
   rw [Bundle.Trivialization.continuousLinearMapAt_apply,
       Bundle.Trivialization.coe_linearMapAt_of_mem _ hbβ',
-      Bundle.Trivialization.symmL_apply]
+      Bundle.Trivialization.symmL_apply _ hbα']
 
 omit [Module.Finite ℝ E] in
 theorem tangentCoordChangeL_entry_contMDiffOn

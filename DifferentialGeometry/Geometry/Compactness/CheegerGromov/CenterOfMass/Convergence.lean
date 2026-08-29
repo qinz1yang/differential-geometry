@@ -16,8 +16,8 @@ open Set Bundle Manifold
 open scoped Topology Manifold ContDiff ENNReal
 open DifferentialGeometry.Geometry.Riemannian
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -56,11 +56,11 @@ theorem unif_tendsto {s : Set X} {qstar : X → M}
     TendstoUniformlyOn
       (fun n x => centerAverage (I := I) g (μSeq n) (ptsSeq n) join (pSeq n) (rSeq n)
         (hSeq n) x) qstar Filter.atTop s := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   rw [Metric.tendstoUniformlyOn_iff]
   intro ε hε
   have hquarter : 0 < ε / 4 := by positivity
@@ -102,11 +102,11 @@ theorem unif_tendsto_i {s : Set X} {qstar : X → M}
     TendstoUniformlyOn
       (fun n x => centerAverage (I := I) g (μSeq n) (ptsSeq n) join (pSeq n) (rSeq n)
         (hSeq n) x) qstar Filter.atTop s := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   refine unif_tendsto (I := I) (g := g) (join := join) hSeq ?_
   intro ε hε
   have hfin :
@@ -141,11 +141,11 @@ theorem unif_tendsto_id {s : Set M}
     TendstoUniformlyOn
       (fun n x => centerAverage (I := I) g (μSeq n) (ptsSeq n) join (pSeq n) (rSeq n)
         (hSeq n) x) (fun x : M => x) Filter.atTop s := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact unif_tendsto_i (I := I) (g := g) (join := join) hSeq hpts
 
 theorem unif_two_index {s : Set X} {qstar : X → M}
@@ -171,11 +171,11 @@ theorem unif_two_index {s : Set X} {qstar : X → M}
       dist (qstar x)
         (centerAverage (I := I) g (μSeq k l) (ptsSeq k l) join (pSeq k l)
           (rSeq k l) (hSeq k l) x) < ε := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro ε hε
   have hquarter : 0 < ε / 4 := by positivity
   obtain ⟨N, hN⟩ := hpts (ε / 4) hquarter
@@ -222,11 +222,11 @@ theorem unif_two_index_i {s : Set X} {qstar : X → M}
       dist (qstar x)
         (centerAverage (I := I) g (μSeq k l) (ptsSeq k l) join (pSeq k l)
           (rSeq k l) (hSeq k l) x) < ε := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   refine unif_two_index (I := I) (g := g) (join := join) hSeq ?_
   intro ε hε
   classical
@@ -260,11 +260,11 @@ theorem unif_two_index_id {s : Set M}
       dist x
         (centerAverage (I := I) g (μSeq k l) (ptsSeq k l) join (pSeq k l)
           (rSeq k l) (hSeq k l) x) < ε := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact unif_two_index_i (I := I) (g := g) (join := join) hSeq hpts
 
 theorem unif_two_id_fill {s : Set M}
@@ -292,11 +292,11 @@ theorem unif_two_id_fill {s : Set M}
         (centerAverage (I := I) g (μSeq k l)
           (activeFill (μSeq k l) (ptsSeq k l) (fun x : M => x)) join
           (pSeq k l) (rSeq k l) (hSeq k l) x) < ε := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   refine unif_two_index_id (I := I) (g := g) (join := join) hSeq ?_
   intro i ε hε
   obtain ⟨N, hN⟩ := hpts i ε hε
@@ -330,11 +330,11 @@ theorem unif_two_id_fill_on {s : Set M}
         (centerAverageOn (I := I) g s (μSeq k l)
           (activeFill (μSeq k l) (ptsSeq k l) (fun x : M => x)) join
           (pSeq k l) (rSeq k l) (fun x : M => x) (hSeq k l) x) < ε := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   intro ε hε
   have hquarter : 0 < ε / 4 := by positivity
   classical
@@ -422,11 +422,11 @@ theorem unifTwoIdOfFill {s : Set M}
             (r := rSeq k l) (qstar := fun x : M => x) x hcomplete (hr k l x)
             (hqstar k l x) (hactive_mem k l x) (hμ_nonneg k l x) (hμ_pos k l x)
             (hstrict k l x)) x) < ε := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact unif_two_id_fill (I := I) (g := g) (join := join)
     (fun k l x => inputOfFill (I := I) (g := g) (μ := μSeq k l)
       (pts := ptsSeq k l) (join := join) (p := pSeq k l)
@@ -490,11 +490,11 @@ theorem unifTwoIdOfFillOn {s : Set M}
             (r := rSeq k l) (qstar := fun x : M => x) x hcomplete (hr k l x hx)
             (hqstar k l x hx) (hactive_mem k l x hx) (hμ_nonneg k l x hx)
             (hμ_pos k l x hx) (hstrict k l x hx)) x) < ε := by
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact unif_two_id_fill_on (I := I) (g := g) (join := join)
     (fun k l x hx => inputOfFill (I := I) (g := g) (μ := μSeq k l)
       (pts := ptsSeq k l) (join := join) (p := pSeq k l)

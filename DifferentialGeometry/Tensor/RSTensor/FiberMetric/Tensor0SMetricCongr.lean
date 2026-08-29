@@ -15,10 +15,10 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 theorem inner0S_identity_eq_sum {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M) (s : Nat)
+    (g : SmoothMetricGen I M) (x : M) (s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A B : Tensor0SSpace s I x) :
     inner0S (I := I) g x s A B =
       ∑ slots : Fin s -> Idx,
@@ -30,10 +30,10 @@ theorem inner0S_identity_eq_sum {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
   rfl
 
 theorem inner0S_domDomCongr {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M) {s s' : Nat}
+    (g : SmoothMetricGen I M) (x : M) {s s' : Nat}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (e : Fin s ≃ Fin s') (A B : Tensor0SSpace s I x) :
     inner0S (I := I) g x s' (A.domDomCongr e) (B.domDomCongr e) =
       inner0S (I := I) g x s A B := by

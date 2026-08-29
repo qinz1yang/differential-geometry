@@ -14,12 +14,12 @@ variable {d : ℕ} [NeZero d]
 
 local notation "E" => EuclideanSpace ℝ (Fin d)
 
-noncomputable def C_poinc_val (d : ℕ) : ℝ :=
+noncomputable def CPoincVal (d : ℕ) : ℝ :=
   2 ^ (d + 1) * d
 
 omit [NeZero d] in
-theorem C_poinc_val_pos (hd : 0 < d) : 0 < C_poinc_val d := by
-  unfold C_poinc_val
+theorem C_poinc_val_pos (hd : 0 < d) : 0 < CPoincVal d := by
+  unfold CPoincVal
   positivity
 
 /-- Pointwise Euclidean norm of the classical gradient of a smooth scalar
@@ -892,8 +892,8 @@ theorem representation_formula_smooth
       (hu.continuous.continuousOn.integrableOn_compact (isCompact_closedBall 0 R)).mono_set
         Metric.ball_subset_closedBall
     set μ := volume.restrict B
-    haveI : IsFiniteMeasure μ := ⟨by rw [Measure.restrict_apply_univ]; exact hB_fin.lt_top⟩
-    haveI : NeZero μ := ⟨by rwa [ne_eq, Measure.restrict_eq_zero]⟩
+    have : IsFiniteMeasure μ := ⟨by rw [Measure.restrict_apply_univ]; exact hB_fin.lt_top⟩
+    have : NeZero μ := ⟨by rwa [ne_eq, Measure.restrict_eq_zero]⟩
     have havg_eq : u x - ubar = ⨍ y, (u x - u y) ∂μ := by
       change u x - ⨍ y, u y ∂μ = ⨍ y, (u x - u y) ∂μ
       rw [average_eq, average_eq,
@@ -1212,8 +1212,7 @@ theorem representation_formula_smooth
 -- Local copy of lintegral_rpow_norm_eq_eLpNorm_pow (defined in BallExtension, not imported here)
 private theorem lintegral_rpow_norm_eq_eLpNorm_pow'
     {α F : Type*} [MeasurableSpace α] [NormedAddCommGroup F]
-    [MeasurableSpace F] [BorelSpace F] {μ : Measure α}
-    {p : ℝ} (hp : 0 < p) {f : α → F} :
+    {μ : Measure α} {p : ℝ} (hp : 0 < p) {f : α → F} :
     ∫⁻ x, (ENNReal.ofReal ‖f x‖) ^ p ∂μ = eLpNorm f (ENNReal.ofReal p) μ ^ p := by
   let pnn : ℝ≥0 := Real.toNNReal p
   have hpnn0 : pnn ≠ 0 := by
@@ -1257,7 +1256,7 @@ theorem weighted_power_mean_setIntegral
   have hρ_lint_ne_top : ∫⁻ x, ρ x ∂μs ≠ ∞ := by
     rw [← ofReal_integral_eq_lintegral_ofReal hwi (ae_of_all _ fun x => hw x)]
     simp
-  haveI : IsFiniteMeasure ν := isFiniteMeasure_withDensity hρ_lint_ne_top
+  have : IsFiniteMeasure ν := isFiniteMeasure_withDensity hρ_lint_ne_top
   have hf_meas_ν : AEMeasurable f ν := by
     exact hf_meas.mono_ac (withDensity_absolutelyContinuous _ _)
   have hpow_int_base : Integrable (fun x => (ρ x).toReal • (‖f x‖ ^ p)) μs := by
@@ -1369,7 +1368,7 @@ theorem poincare_smooth_unitBall
     {u : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) :
     eLpNorm (fun x => u x - ⨍ y in Metric.ball (0 : E) 1, u y ∂volume)
       (ENNReal.ofReal p) (volume.restrict (Metric.ball (0 : E) 1)) ≤
-    ENNReal.ofReal (C_poinc_val d) *
+    ENNReal.ofReal (CPoincVal d) *
       eLpNorm (fun x => ‖fderiv ℝ u x‖) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball (0 : E) 1)) := by
   set B := Metric.ball (0 : E) 1
@@ -1408,7 +1407,7 @@ theorem poincare_smooth_unitBall
     have h1 : ContDiff ℝ 1 u := hu.of_le (by norm_num)
     have hcont_fderiv : Continuous (fderiv ℝ u) := h1.continuous_fderiv (by norm_num)
     have hg_cont : Continuous g := by
-      simpa [g] using (continuous_norm.comp hcont_fderiv)
+      exact (continuous_norm.comp hcont_fderiv).congr fun x => by rfl
     obtain ⟨z₀, hz₀_mem, hz₀_max⟩ :=
       (isCompact_closedBall (0 : E) 1).exists_isMaxOn
         (Metric.nonempty_closedBall.mpr (le_of_lt one_pos)) hg_cont.continuousOn
@@ -1548,16 +1547,20 @@ theorem poincare_smooth_unitBall
       rw [integrable_prod_iff hF_aesm]
       constructor
       · filter_upwards [ae_restrict_mem measurableSet_ball] with x hx
-        simpa [mul_comm] using
-          (hK_int x hx).mul_continuousOn_of_subset hgpow_cont.continuousOn
-            measurableSet_ball (isCompact_closedBall (0 : E) 1)
-            Metric.ball_subset_closedBall
+        change IntegrableOn (fun y => |g y| ^ p * K (x - y)) B volume
+        exact ((hK_int x hx).mul_continuousOn_of_subset hgpow_cont.continuousOn
+          measurableSet_ball (isCompact_closedBall (0 : E) 1)
+          Metric.ball_subset_closedBall).congr <|
+            Filter.Eventually.of_forall fun y => by
+              change K (x - y) * |g y| ^ p = |g y| ^ p * K (x - y)
+              exact mul_comm _ _
       · have houter_bdd :
             ∀ᵐ x ∂(volume.restrict B).restrict Set.univ,
               ‖∫ y in B, ‖|g y| ^ p * K (x - y)‖ ∂volume‖ ≤ Cg ^ p * M := by
-          filter_upwards [show ∀ᵐ x ∂(volume.restrict B).restrict Set.univ, x ∈ B by
-            simpa [Measure.restrict_univ] using
-              (ae_restrict_mem (μ := volume) measurableSet_ball)] with x hx
+          have hmem : ∀ᵐ x ∂(volume.restrict B).restrict Set.univ, x ∈ B := by
+            rw [Measure.restrict_univ]
+            exact ae_restrict_mem measurableSet_ball
+          filter_upwards [hmem] with x hx
           have hslice_int : IntegrableOn (fun y => |g y| ^ p * K (x - y)) B volume := by
             simpa [mul_comm] using
               (hK_int x hx).mul_continuousOn_of_subset hgpow_cont.continuousOn
@@ -1634,9 +1637,10 @@ theorem poincare_smooth_unitBall
           hh_aesm.aemeasurable.abs).aestronglyMeasurable
       have hhpow_bdd :
           ∀ᵐ x ∂(volume.restrict B).restrict Set.univ, ‖|h x| ^ p‖ ≤ (Cg * M) ^ p := by
-        filter_upwards [show ∀ᵐ x ∂(volume.restrict B).restrict Set.univ, x ∈ B by
-          simpa [Measure.restrict_univ] using
-            (ae_restrict_mem (μ := volume) measurableSet_ball)] with x hx
+        have hmem : ∀ᵐ x ∂(volume.restrict B).restrict Set.univ, x ∈ B := by
+          rw [Measure.restrict_univ]
+          exact ae_restrict_mem measurableSet_ball
+        filter_upwards [hmem] with x hx
         rw [Real.norm_eq_abs, abs_of_nonneg (Real.rpow_nonneg (abs_nonneg _) _),
           abs_of_nonneg (hh_nonneg x)]
         exact Real.rpow_le_rpow (hh_nonneg x) (hh_bound x hx) hp_nonneg
@@ -1694,7 +1698,8 @@ theorem poincare_smooth_unitBall
           refine hinner_int.congr ?_
           filter_upwards with y
           exact hpull y
-        · simpa [mul_comm] using hgpow_int.mul_const M
+        · change Integrable (fun y => |g y| ^ p * M) (volume.restrict B)
+          exact hgpow_int.mul_const M
         · exact measurableSet_ball
         · intro y hy
           apply mul_le_mul_of_nonneg_left (hK_L1_swap y hy)
@@ -1760,9 +1765,9 @@ theorem poincare_smooth_unitBall
         gcongr
     _ = ENNReal.ofReal (C_rep * M) * eLpNorm g (ENNReal.ofReal p) μ := by
         rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
-    _ ≤ ENNReal.ofReal (C_poinc_val d) * eLpNorm g (ENNReal.ofReal p) μ := by
+    _ ≤ ENNReal.ofReal (CPoincVal d) * eLpNorm g (ENNReal.ofReal p) μ := by
         gcongr
-        simp only [C_rep, M, C_poinc_val]
+        simp only [C_rep, M, CPoincVal]
         have hd_pos : (0 : ℝ) < d := Nat.cast_pos.mpr (NeZero.pos d)
         have hvol_pos : (0 : ℝ) < (volume (Metric.ball (0 : E) 1)).toReal :=
           ENNReal.toReal_pos (measure_ball_pos volume 0 one_pos).ne' measure_ball_lt_top.ne

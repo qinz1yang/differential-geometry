@@ -95,7 +95,7 @@ private lemma memW1p_chartPushedRaw_rhoAlpha_mul_preimage
     DifferentialGeometry.Analysis.Sobolev.Chart.memW1p_chartPushedRaw_pou_mul_of_memWkpChart
       (I := I) (M := M) (p := 2) (u := preimageFun (I := I) (M := M) g hu_h)
       h_preimage_h1 α
-  convert h_bridge using 1
+  simpa only [rhoAlphaFun] using h_bridge
 
 private lemma memW1p_chartPushedRaw_rhoAlpha_mul_preimage_smoothMulH1Compl
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -130,7 +130,7 @@ private lemma memW1p_chartPushedRaw_rhoAlpha_mul_preimage_smoothMulH1Compl
     DifferentialGeometry.Analysis.Sobolev.Chart.memW1p_chartPushedRaw_pou_mul_of_memWkpChart
       (I := I) (M := M) (p := 2)
       (u := preimageSmoothMulH1ComplFun (I := I) (M := M) g α hu_h) h_smHC_h1 α
-  convert h_bridge using 1
+  simpa only [rhoAlphaFun] using h_bridge
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma fChartResidual_aeEq_chartPushedRaw_diff

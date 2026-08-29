@@ -35,7 +35,6 @@ theorem derivShuffleLeftFwd_sign
   simp only [derivShuffleLeftFwd, Equiv.Perm.sign_permCongr, Equiv.Perm.sign_mul,
     Equiv.Perm.sign_inv, Fin.sign_cycleRange, Equiv.Perm.decomposeFin.symm_sign,
     if_true, one_mul, permFinOfSum]
-  rfl
 
 private theorem decomposeFin_symm_zero_mul (e₁ e₂ : Equiv.Perm (Fin (m + n))) :
     Equiv.Perm.decomposeFin.symm ((0 : Fin (m + n + 1)), e₁) *
@@ -559,7 +558,6 @@ theorem derivShuffleLeftFwdRanked_sign
   rw [derivShuffleLeftFwdRanked, Equiv.Perm.sign_mul, Equiv.Perm.sign_sumCongr,
     derivShuffleLeftFwd_sign, Fin.sign_cycleRange]
   simp [mul_assoc]
-  rfl
 
 theorem derivShuffleLeftFwdRanked_inl_j
     (k : Fin (m + n + 1)) (σ : Equiv.Perm (Fin m ⊕ Fin n)) :

@@ -172,21 +172,21 @@ lemma chartAtlasPOU_finite_support
   LocallyFinite.finite_nonempty_of_compact
     (chartAtlasPOU I M).locallyFinite
 
-noncomputable def chartAtlasPOU_finset
+noncomputable def chartAtlasPOUFinset
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] : Finset M :=
   (chartAtlasPOU_finite_support (I := I) (M := M)).toFinset
 
 lemma chartAtlasPOU_finset_mem
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] {α : M} :
-    α ∈ chartAtlasPOU_finset (I := I) (M := M) ↔
+    α ∈ chartAtlasPOUFinset (I := I) (M := M) ↔
       (Function.support ((chartAtlasPOU I M) α)).Nonempty := by
-  unfold chartAtlasPOU_finset
+  unfold chartAtlasPOUFinset
   rw [Set.Finite.mem_toFinset]
   rfl
 
 lemma chartAtlasPOU_weight_zero_of_notMem
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
-    {α : M} (hα : α ∉ chartAtlasPOU_finset (I := I) (M := M)) (x : M) :
+    {α : M} (hα : α ∉ chartAtlasPOUFinset (I := I) (M := M)) (x : M) :
     (chartAtlasPOU I M) α x = 0 := by
   rw [chartAtlasPOU_finset_mem] at hα
   rw [Set.not_nonempty_iff_eq_empty] at hα
@@ -198,7 +198,7 @@ lemma chartAtlasPOU_weight_zero_of_notMem
 lemma chartAtlasPOU_withDensity_zero_of_notMem
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
-    {α : M} (hα : α ∉ chartAtlasPOU_finset (I := I) (M := M)) :
+    {α : M} (hα : α ∉ chartAtlasPOUFinset (I := I) (M := M)) :
     (chartLocalMeasure (I := I) g α).withDensity
         (fun x : M => ENNReal.ofReal ((chartAtlasPOU I M) α x)) = 0 := by
   have hzero : (fun x : M => ENNReal.ofReal ((chartAtlasPOU I M) α x)) = 0 := by
@@ -369,7 +369,7 @@ lemma transitionMatrix_mul_reverse
         = (chartModelBasis E) j := by
     rw [← hlin, ← hexp]; exact heval
   have happ := congrArg ((chartModelBasis E).repr · i) heval'
-  simp only [map_sum, Finsupp.coe_finset_sum, Finset.sum_apply,
+  simp only [map_sum, Finsupp.coe_finsetSum, Finset.sum_apply,
     map_smul, Finsupp.smul_apply, smul_eq_mul] at happ
   have hrhs : ((chartModelBasis E).repr ((chartModelBasis E) j)) i
                 = if i = j then (1 : ℝ) else 0 := by
@@ -480,11 +480,11 @@ theorem riemannianVolumeMeasure_eq_finset_sum
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) :
     riemannianVolumeMeasure (I := I) (M := M) g =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartLocalMeasure (I := I) g α).withDensity
           (fun x : M => ENNReal.ofReal ((chartAtlasPOU I M) α x)) := by
   rw [riemannianVolumeMeasure_def, riemannianMeasure_def]
-  set S : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hS
+  set S : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hS
   set f : M → MeasureTheory.Measure M := fun α =>
       (chartLocalMeasure (I := I) g α).withDensity
         (fun x : M => ENNReal.ofReal ((chartAtlasPOU I M) α x)) with hf
@@ -509,14 +509,14 @@ theorem integral_riemannianVolumeMeasure_eq_finset_sum
     (h : M → ℝ)
     (hh_cont : Continuous h) :
     ∫ x, h x ∂(riemannianVolumeMeasure (I := I) (M := M) g)
-      = ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      = ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ∫ x, h x
             ∂((chartLocalMeasure (I := I) g α).withDensity
               (fun y : M => ENNReal.ofReal ((chartAtlasPOU I M) α y))) := by
   classical
   have hVol_eq :=
     riemannianVolumeMeasure_eq_finset_sum (I := I) (M := M) g
-  haveI hFin :
+  have hFin :
       MeasureTheory.IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   obtain ⟨C, hC⟩ : ∃ C, ∀ x, ‖h x‖ ≤ C := by
@@ -526,7 +526,7 @@ theorem integral_riemannianVolumeMeasure_eq_finset_sum
   have hh_int : Integrable h (riemannianVolumeMeasure (I := I) (M := M) g) :=
     (integrable_const C).mono' hh_cont.aestronglyMeasurable
       (Filter.Eventually.of_forall hC)
-  have hsummand_int : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hsummand_int : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       Integrable h
         ((chartLocalMeasure (I := I) g α).withDensity
           (fun y : M => ENNReal.ofReal ((chartAtlasPOU I M) α y))) := by
@@ -536,22 +536,22 @@ theorem integral_riemannianVolumeMeasure_eq_finset_sum
     exact Finset.single_le_sum
       (f := fun β : M => (chartLocalMeasure (I := I) g β).withDensity
         (fun y : M => ENNReal.ofReal ((chartAtlasPOU I M) β y)))
-      (s := chartAtlasPOU_finset (I := I) (M := M))
+      (s := chartAtlasPOUFinset (I := I) (M := M))
       (fun _ _ => Measure.zero_le _) hα
   conv_lhs => rw [hVol_eq]
-  exact integral_finset_sum_measure hsummand_int
+  exact integral_finsetSum_measure hsummand_int
 
 theorem chart_sum_integral
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (h : M → ℝ)
     (hh_int : Integrable h (riemannianVolumeMeasure (I := I) (M := M) g)) :
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∫ x, h x * (chartAtlasPOU I M) α x
           ∂(chartLocalMeasure (I := I) g α) =
       ∫ x, h x ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   have hVol_eq := riemannianVolumeMeasure_eq_finset_sum (I := I) (M := M) g
-  have hsummand_int : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hsummand_int : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       Integrable h ((chartLocalMeasure (I := I) g α).withDensity
         (fun y : M => ENNReal.ofReal ((chartAtlasPOU I M) α y))) := by
     intro α hα
@@ -560,15 +560,15 @@ theorem chart_sum_integral
     exact Finset.single_le_sum
       (f := fun β : M => (chartLocalMeasure (I := I) g β).withDensity
         (fun y : M => ENNReal.ofReal ((chartAtlasPOU I M) β y)))
-      (s := chartAtlasPOU_finset (I := I) (M := M))
+      (s := chartAtlasPOUFinset (I := I) (M := M))
       (fun _ _ => Measure.zero_le _) hα
   have hglobal :
       ∫ x, h x ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ∫ x, h x ∂((chartLocalMeasure (I := I) g α).withDensity
             (fun y : M => ENNReal.ofReal ((chartAtlasPOU I M) α y))) := by
     conv_lhs => rw [hVol_eq]
-    exact integral_finset_sum_measure hsummand_int
+    exact integral_finsetSum_measure hsummand_int
   rw [hglobal]
   refine Finset.sum_congr rfl (fun α _ => ?_)
   let ρ : M → ℝ := fun x => (chartAtlasPOU I M) α x
@@ -590,15 +590,15 @@ theorem volume_variation_formula_from_chart_derivs
     (f : ℝ → M → ℝ) (t : ℝ)
     (Iα : M → ℝ)
     (Iglobal : ℝ)
-    (hα_deriv : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hα_deriv : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       HasDerivAt
         (fun s : ℝ => ∫ x, f s x
           ∂((chartLocalMeasure (I := I) (g_fam s) α).withDensity
               (fun y : M => ENNReal.ofReal ((chartAtlasPOU I M) α y))))
         (Iα α) t)
-    (hα_sum_val : ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), Iα α = Iglobal) :
+    (hα_sum_val : ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Iα α = Iglobal) :
     HasDerivAt
-      (fun s : ℝ => ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (fun s : ℝ => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∫ x, f s x
           ∂((chartLocalMeasure (I := I) (g_fam s) α).withDensity
               (fun y : M => ENNReal.ofReal ((chartAtlasPOU I M) α y))))
@@ -613,7 +613,7 @@ theorem integral_riemannianMeasureFamily_eq_finset_sum
     (f : P → M → ℝ) (t : P)
     (hf_cont : Continuous (f t)) :
     ∫ x, f t x ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t)
-      = ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      = ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ∫ x, f t x
             ∂((chartLocalMeasure (I := I) (g_fam t) α).withDensity
               (fun y : M => ENNReal.ofReal ((chartAtlasPOU I M) α y))) := by
@@ -627,13 +627,13 @@ theorem volume_variation_formula_of_chart_integrals
     (f : ℝ → M → ℝ) (t : ℝ)
     (Iα : M → ℝ) (Iglobal : ℝ)
     (hf_cont : ∀ᶠ s in 𝓝 t, Continuous (f s))
-    (hα_deriv : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hα_deriv : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       HasDerivAt
         (fun s : ℝ => ∫ x, f s x
           ∂((chartLocalMeasure (I := I) (g_fam s) α).withDensity
               (fun y : M => ENNReal.ofReal ((chartAtlasPOU I M) α y))))
         (Iα α) t)
-    (hα_sum_val : ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), Iα α = Iglobal) :
+    (hα_sum_val : ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Iα α = Iglobal) :
     HasDerivAt
       (fun s : ℝ =>
         ∫ x, f s x ∂(riemannianMeasureFamily (I := I) (M := M) g_fam s))
@@ -642,7 +642,7 @@ theorem volume_variation_formula_of_chart_integrals
       (fun s : ℝ =>
           ∫ x, f s x ∂(riemannianMeasureFamily (I := I) (M := M) g_fam s))
         =ᶠ[𝓝 t]
-      (fun s : ℝ => ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (fun s : ℝ => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∫ x, f s x
           ∂((chartLocalMeasure (I := I) (g_fam s) α).withDensity
               (fun y : M => ENNReal.ofReal ((chartAtlasPOU I M) α y)))) := by

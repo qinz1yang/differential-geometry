@@ -43,7 +43,7 @@ theorem metricScalar_chartTrace_eq
     intro k l
     rw [chartBasisFamily_apply, chartBasisFamily_apply]
     exact (chartGramMatrix_apply (I := I) g α x k l).symm
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) g x
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x
       (chartBasisFamily (I := I) α hbase)
       (fun k l => chartInvGramMatrix (I := I) g α x k l) := by
     intro i j

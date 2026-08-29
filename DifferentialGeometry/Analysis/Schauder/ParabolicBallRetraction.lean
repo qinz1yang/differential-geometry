@@ -145,7 +145,8 @@ theorem parabolicTimeCenteredBallRetraction_mem_ball
   rw [Metric.mem_ball, ← parabolicPoint_time_space p,
     parabolicTimeCenteredBallRetraction_apply, dist_parabolicPoint]
   apply max_lt
-  · simpa only [sub_zero] using htime
+  · rw [parabolicPoint_time, sub_zero]
+    exact htime
   · rw [dist_zero_right]
     exact (ballRetraction_mem_closedBall hR p.space).trans_lt hRS
 
@@ -211,9 +212,9 @@ theorem parabolicTimeCenteredBallRetractionExtension_holderWith
     (htime : ∀ t ∈ J, |t - tau| ^ (1 / 2 : Real) < S)
     {alpha K : NNReal} (f : ParabolicPoint V → F)
     (hf : HolderWith K alpha
-      ((Metric.ball (parabolicPoint 0 0) S).restrict f)) :
+      ((Metric.ball (parabolicPoint 0 0) S).domRestrict f)) :
     HolderWith K alpha
-      ((parabolicCylinder J Set.univ).restrict
+      ((parabolicCylinder J Set.univ).domRestrict
         (parabolicTimeCenteredBallRetractionExtension tau R f)) := by
   have hresult := holderWith_restrict_comp_of_lipschitzWith
     (parabolicTimeCenteredBallRetraction tau R) f
@@ -227,9 +228,9 @@ theorem parabolicBallRetractionExtension_holderWith
     (htime : ∀ t ∈ J, |t| ^ (1 / 2 : Real) < S)
     {alpha K : NNReal} (f : ParabolicPoint V → F)
     (hf : HolderWith K alpha
-      ((Metric.ball (parabolicPoint 0 0) S).restrict f)) :
+      ((Metric.ball (parabolicPoint 0 0) S).domRestrict f)) :
     HolderWith K alpha
-      ((parabolicCylinder J Set.univ).restrict
+      ((parabolicCylinder J Set.univ).domRestrict
         (parabolicBallRetractionExtension R f)) := by
   have htime' : ∀ t ∈ J, |t - 0| ^ (1 / 2 : Real) < S := by
     intro t ht

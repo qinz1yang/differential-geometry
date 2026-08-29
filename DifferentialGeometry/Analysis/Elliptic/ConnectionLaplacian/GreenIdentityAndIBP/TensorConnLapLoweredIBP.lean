@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle MeasureTheory
     CovariantDerivative
@@ -157,6 +156,7 @@ lemma loweredCovDerivAlongVFraw_eq_zero_off_tsupport
 omit [I.Boundaryless] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma loweredCovDerivAlongVFraw_hasCompactSupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯)
@@ -218,7 +218,7 @@ theorem integral_tensorInner_covDeriv_combined_eq_zero
             (Tensor0SSpace.toModel
               (loweredCovDerivAlongVF (I := I) (M := M) g r s S V x))
           + tensorInnerScalar (I := I) (M := M) g r s W S x
-            * divergence_g (I := I) g V x)
+            * divergenceG (I := I) g V x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 :=
   integral_tensorInner_tangentAction_add_smul_divergence_eq_zero
     (I := I) (M := M) g r s W S V
@@ -256,7 +256,7 @@ theorem integral_tensorInner_covDeriv_split_eq
               (liftedTensorSection (I := I) (M := M) g r s S x))
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)
         - ∫ x, tensorInnerScalar (I := I) (M := M) g r s W S x
-              * divergence_g (I := I) g V x
+              * divergenceG (I := I) g V x
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
   integral_tensorInner_covDeriv_integrationByParts (I := I) (M := M) g r s W S V
     (tensorInnerScalar_contMDiff (I := I) (M := M) g r s W S)

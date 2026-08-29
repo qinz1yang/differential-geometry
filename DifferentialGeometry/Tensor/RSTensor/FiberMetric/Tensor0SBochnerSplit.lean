@@ -139,7 +139,7 @@ private theorem tensor0S_curry_comp {s : Nat} {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (i : Idx) (J0 : Fin s -> Idx) :
     tensor0SComponent (I := I)
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x nablaT (basis i))
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x nablaT (basis i))
         (fun k => basis k) J0 =
       freezeFirst1Comp (s := s)
         (fun K0 => tensor0SComponent (I := I) nablaT (fun k => basis k) K0) i J0 := by
@@ -219,8 +219,8 @@ def TensorNormHessianProductInBasis {s : Nat} {x : M}
         (coordInner0S (I := I) (x := x) s gInv
             (freezeFirstTwoArgs0S (I := I) nabla2T (basis i) (basis j)) T basis +
           coordInner0S (I := I) (x := x) s gInv
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x nablaT (basis i))
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x nablaT (basis j))
+            (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x nablaT (basis i))
+            (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x nablaT (basis j))
             basis)
 
 omit [DecidableEq Idx] in
@@ -282,14 +282,14 @@ theorem tensorNormBochnerSplit_coord {s : Nat} {x : M}
       rw [freezeFirstTwoArgs0S_comp (I := I) nabla2T basis i j K0]
     have hNab :
         coordInner0S (I := I) (x := x) s gInv
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x nablaT (basis i))
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x nablaT (basis j))
+            (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x nablaT (basis i))
+            (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x nablaT (basis j))
             basis =
           coordContract (s := s) gInv
             (freezeFirst1Comp cH1 i) (freezeFirst1Comp cH1 j) := by
       rw [← coordContract_eq_coordInner0S (I := I) gInv
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x nablaT (basis i))
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x nablaT (basis j)) basis]
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x nablaT (basis i))
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x nablaT (basis j)) basis]
       refine congrArg₂ (fun f g => coordContract (s := s) gInv f g) ?_ ?_
       · funext K0; rw [tensor0S_curry_comp (I := I) nablaT basis i K0]
       · funext K0; rw [tensor0S_curry_comp (I := I) nablaT basis j K0]

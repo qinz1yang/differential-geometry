@@ -130,7 +130,7 @@ theorem memW1p_of_lip
     intro x hx
     have hline :=
       ((HasFDerivAt.of_notMem_tsupport ℝ hx).hasLineDerivAt ei).lineDeriv
-    simpa only [gi, ContinuousLinearMap.zero_apply] using hline
+    simpa only [gi, zero_apply] using hline
   have hgi_mem : MemLp gi p volume :=
     hgi_top.mono_exponent_of_measure_support_ne_top
       hgi_zero hf_supp.measure_lt_top.ne le_top
@@ -264,7 +264,7 @@ theorem partials_l2_le_wkp
           simp only [iterWeakPartial_zero]
           rfl
       rw [wkpNorm_eq_sum, Finset.sum_range_succ, Finset.sum_range_one, hblock]
-      exact le_add_of_nonneg_left (zero_le _)
+      exact le_add_of_nonneg_left bot_le
 
 theorem memWkp_one_of_lip
     {p : ℝ≥0∞} {C : ℝ≥0} {f : E → ℝ} {Omega : Set E}

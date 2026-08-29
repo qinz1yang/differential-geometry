@@ -11,7 +11,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -43,7 +42,7 @@ private lemma coe_nnnorm_eq_ofReal_norm
     {X : Type*} [SeminormedAddCommGroup X] (x : X) :
     (‖x‖₊ : ℝ≥0∞) = ENNReal.ofReal ‖x‖ := by
   rw [show ((‖x‖₊ : ℝ≥0∞)) = ‖x‖ₑ from (enorm_eq_nnnorm x).symm,
-    ← ofReal_norm_eq_enorm x]
+    ← ofReal_norm x]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorChartComponentScalar_eLpNorm_le_h1Norm_uniform
@@ -126,7 +125,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_h1Norm_of_grad_l2
       tensorChartComponentScalar_wkpNormChart_le_const_mul_h1Norm
         (I := I) (M := M) g r s α hC_grad_nn
         (fun T Idx Jdx => hGrad_le' T α Idx Jdx)
-  set S : Finset M := chartAtlasPOU_activeFinset (I := I) (M := M)
+  set S : Finset M := chartAtlasPOUActiveFinset (I := I) (M := M)
     with hS_def
   set Cα : M → ℝ := fun α => Classical.choose (hper_α α) with hCα_def
   have hCα_nn : ∀ α : M, 0 ≤ Cα α :=
@@ -158,7 +157,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_h1Norm_of_grad_l2
     have h_envelope :
         ENNReal.ofReal (Cα α) * (‖T‖₊ : ℝ≥0∞) ≤
           ENNReal.ofReal (∑ α ∈ S, Cα α) * (‖T‖₊ : ℝ≥0∞) :=
-      mul_le_mul_of_nonneg_right h_const_le (zero_le _)
+      mul_le_mul_of_nonneg_right h_const_le (zero_le)
     have h_coe : (‖T‖₊ : ℝ≥0∞) = ENNReal.ofReal ‖T‖ :=
       coe_nnnorm_eq_ofReal_norm T
     rw [h_coe] at h_per h_envelope
@@ -179,7 +178,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_h1Norm_of_grad_l2
     have h_zero_fun_eq :
         (0 : M → ℝ) = (fun _ : M => (0 : ℝ)) := by rfl
     rw [h_zero_fun_eq, h_wkp_zero]
-    exact zero_le _
+    exact zero_le
 
 end HebeyBlock
 end Sobolev

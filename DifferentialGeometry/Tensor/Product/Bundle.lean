@@ -90,7 +90,7 @@ section
 universe u𝕜 uB uF₁ uF₂ uE₁ uE₂
 namespace Bundle.TensorProduct
 
-open Pretrivialization
+open _root_.Bundle.Pretrivialization
 open scoped Manifold
 
 class TensorFiberTopologies
@@ -114,7 +114,7 @@ variable [∀ x, TopologicalSpace (E₁ x)] [FiberBundle F₁ E₁] [VectorBundl
 variable [∀ x, TopologicalSpace (E₂ x)] [FiberBundle F₂ E₂]
     [VectorBundle 𝕜 F₂ E₂] [∀ (x : B), ContinuousAdd (E₂ x)] [∀ x, ContinuousSMul 𝕜 (E₂ x)]
 
-noncomputable instance instNormedAddCommGroup_tensor :
+noncomputable instance instNormedAddCommGroupTensor :
     NormedAddCommGroup (F₁ ⊗[𝕜] F₂) :=
 by
   classical
@@ -127,7 +127,7 @@ by
     ?_
   exact e.injective
 
-noncomputable instance instNormedSpace_model_tensor :
+noncomputable instance instNormedSpaceModelTensor :
     NormedSpace 𝕜 (F₁ ⊗[𝕜] F₂) :=
 by
   classical
@@ -163,8 +163,8 @@ noncomputable def vectorPrebundle :
       _
       _
       _
-      instNormedAddCommGroup_tensor
-      instNormedSpace_model_tensor
+      instNormedAddCommGroupTensor
+      instNormedSpaceModelTensor
       _
       (fun x => tensorFiberTopology (𝕜:=𝕜) (F₁:=F₁) (F₂:=F₂) (E₁:=E₁) (E₂:=E₂) x)
       :=
@@ -189,12 +189,13 @@ noncomputable def vectorPrebundle :
                 (e₂ := e₂) (e₂' := e₂'),
               ?_, Pretrivialization.tensorProductCoordChange_apply (𝕜 := 𝕜)
                 (e₁ := e₁) (e₁' := e₁') (e₂ := e₂) (e₂' := e₂')⟩
-      simpa using
-        (Pretrivialization.continuousOn_tensorProductCoordChange (𝕜 := 𝕜)
-          (e₁ := e₁) (e₁' := e₁') (e₂ := e₂) (e₂' := e₂'))
+      change ContinuousOn
+        (Pretrivialization.tensorProductCoordChange (𝕜 := 𝕜) e₁ e₁' e₂ e₂')
+        (e₁.baseSet ∩ e₂.baseSet ∩ (e₁'.baseSet ∩ e₂'.baseSet))
+      exact Pretrivialization.continuousOn_tensorProductCoordChange (𝕜 := 𝕜)
     totalSpaceMk_isInducing := by
       intro b
-      letI : TopologicalSpace (E₁ b ⊗[𝕜] E₂ b) :=
+      let : TopologicalSpace (E₁ b ⊗[𝕜] E₂ b) :=
          tensorFiberTopology (𝕜:=𝕜) (F₁:=F₁) (F₂:=F₂) (E₁:=E₁) (E₂:=E₂) b
       let L₁ : E₁ b ≃L[𝕜] F₁ :=
         (trivializationAt F₁ E₁ b).continuousLinearEquivAt 𝕜 b
@@ -232,7 +233,7 @@ noncomputable def vectorPrebundle :
       simp [hL1, hL2]
   }
 
-noncomputable instance Bundle.TensorProduct.topologicalSpaceTotalSpace :
+noncomputable instance topologicalSpaceTotalSpace :
     TopologicalSpace
       (TotalSpace (F₁ ⊗[𝕜] F₂) (fun x ↦ E₁ x ⊗[𝕜] E₂ x)) := by
   classical
@@ -283,7 +284,7 @@ noncomputable instance vectorBundle :
         (𝕜 := 𝕜) (B := B) (F₁ := F₁) (F₂ := F₂) (E₁ := E₁) (E₂ := E₂)
     VectorBundle 𝕜 (F₁ ⊗[𝕜] F₂) (fun x ↦ E₁ x ⊗[𝕜] E₂ x) := by
   classical
-  letI : (x : B) → TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) :=
+  let : (x : B) → TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) :=
     tensorFiberTop
       (𝕜 := 𝕜) (B := B) (F₁ := F₁) (F₂ := F₂) (E₁ := E₁) (E₂ := E₂)
   exact
@@ -310,8 +311,7 @@ noncomputable instance memTrivializationAtlas :
     MemTrivializationAtlas
       (e₁.tensorProduct (𝕜 := 𝕜) e₂ :
         Trivialization (F₁ ⊗[𝕜] F₂) (π (F₁ ⊗[𝕜] F₂) (fun x ↦ E₁ x ⊗[𝕜] E₂ x))) := by
-  set_option backward.isDefEq.respectTransparency false in
-  letI : (b : B) → TopologicalSpace (E₁ b ⊗[𝕜] E₂ b) := fun b ↦ inferInstance
+  let : (b : B) → TopologicalSpace (E₁ b ⊗[𝕜] E₂ b) := fun b ↦ inferInstance
   exact ⟨_, ⟨e₁, e₂, he₁, he₂, rfl⟩, rfl⟩
 
 omit [∀ x, ContinuousAdd (E₁ x)] [∀ x, ContinuousSMul 𝕜 (E₁ x)]
@@ -404,12 +404,12 @@ instance Bundle.TensorProduct.vectorPrebundle.isContMDiff :
       Bundle.TensorProduct.tensorFiberTopology 𝕜 F₁ F₂ E₁ E₂ x
     (Bundle.TensorProduct.vectorPrebundle
       (𝕜 := 𝕜) (B := B) (F₁ := F₁) (F₂ := F₂) (E₁ := E₁) (E₂ := E₂)).IsContMDiff IB n := by
-  letI (x : B) : TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) :=
+  let (x : B) : TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) :=
     Bundle.TensorProduct.tensorFiberTopology 𝕜 F₁ F₂ E₁ E₂ x
   exact {
     exists_contMDiffCoordChange := by
       rintro _ ⟨e₁, e₂, he₁, he₂, rfl⟩ _ ⟨e₁', e₂', he₁', he₂', rfl⟩
-      haveI := he₁; haveI := he₂; haveI := he₁'; haveI := he₂'
+      have := he₁; have := he₂; have := he₁'; have := he₂'
       refine ⟨tensorProductCoordChange (𝕜 := 𝕜) e₁ e₁' e₂ e₂',
         contMDiffOn_tensorProductCoordChange IB n, ?_⟩
       rintro b hb v
@@ -420,7 +420,7 @@ instance ContMDiffVectorBundle.tensorProduct :
     letI (x : B) : TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) :=
       Bundle.TensorProduct.tensorFiberTopology 𝕜 F₁ F₂ E₁ E₂ x
     ContMDiffVectorBundle n (F₁ ⊗[𝕜] F₂) (fun x => E₁ x ⊗[𝕜] E₂ x) IB := by
-  letI (x : B) : TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) :=
+  let (x : B) : TopologicalSpace (E₁ x ⊗[𝕜] E₂ x) :=
     Bundle.TensorProduct.tensorFiberTopology 𝕜 F₁ F₂ E₁ E₂ x
   exact (Bundle.TensorProduct.vectorPrebundle
     (𝕜 := 𝕜) (B := B) (F₁ := F₁) (F₂ := F₂)

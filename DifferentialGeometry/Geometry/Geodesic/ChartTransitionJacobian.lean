@@ -74,7 +74,7 @@ theorem chartTransitionJacEntry_mul_sum [I.Boundaryless]
         chartTransitionJacEntry (I := I) β α
           (chartTransitionMap (I := I) α β y) c a := by
     rw [map_sum]
-    rw [Finsupp.finset_sum_apply]
+    rw [Finsupp.finsetSum_apply]
     refine Finset.sum_congr rfl ?_
     intro a _
     rw [map_smul, map_smul]
@@ -131,7 +131,7 @@ theorem chartTransitionJacEntry_mul_sum' [I.Boundaryless]
       ∑ m, chartTransitionJacEntry (I := I) α β y b m *
         chartTransitionJacEntry (I := I) β α
           (chartTransitionMap (I := I) α β y) m i := by
-    rw [map_sum, Finsupp.finset_sum_apply]
+    rw [map_sum, Finsupp.finsetSum_apply]
     refine Finset.sum_congr rfl ?_
     intro m _
     rw [map_smul, map_smul]

@@ -6,7 +6,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators InnerProductSpace
@@ -73,7 +72,7 @@ private theorem lapDiff_rho
   have hshift :
       Tendsto (fun s : Real => (T : Real) - s)
         (𝓝 0) (𝓝 (T : Real)) := by
-    simpa only [sub_zero] using
+    simpa only [id_eq, sub_zero] using
       (tendsto_const_nhds.sub
         (tendsto_id : Tendsto (fun s : Real => s) (𝓝 0) (𝓝 0)))
   exact (HCGCompactness.metric_c1_tendsto
@@ -117,7 +116,7 @@ theorem lapDiff_fibreSmall
     heval.trans (mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_right (hnorm.trans hs.le) (Real.sqrt_nonneg _))
         (Real.sqrt_nonneg _))
-  simpa only [q, ContinuousLinearMap.sub_apply] using hfinal
+  simpa only [q, sub_apply] using hfinal
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
@@ -138,7 +137,7 @@ theorem lapDiff_short
   have hshift :
       Tendsto (fun s : Real => (T : Real) - s)
         (𝓝 0) (𝓝 (T : Real)) := by
-    simpa only [sub_zero] using
+    simpa only [id_eq, sub_zero] using
       (tendsto_const_nhds.sub
         (tendsto_id : Tendsto (fun s : Real => s) (𝓝 0) (𝓝 0)))
   have hreg :
@@ -175,7 +174,8 @@ theorem lapDiff_short
   have hsball : s ∈ Metric.ball (0 : Real) delta := by
     rw [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_nonneg hs.1]
     exact hs.2.trans_lt htau_delta
-  simpa only [U] using hball hsball
+  change s ∈ U
+  exact hball hsball
 
 end MetricShortTime
 

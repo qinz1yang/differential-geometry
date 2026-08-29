@@ -53,7 +53,7 @@ theorem exists_pullbackField
           (mfderiv I I (Φ : M → N) x v) (mfderiv I I (Φ : M → N) x w))
         + (1 - χ x) * gM.inner x v w := by
     intro x v w
-    simp only [hG, hP₀def x, ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [hG, hP₀def x, add_apply, smul_apply,
       ContinuousLinearMap.comp_apply, ContinuousLinearMap.precomp_apply, smul_eq_mul]
   have hGpos : ∀ (x : M) (v : TangentSpace I x), v ≠ 0 → 0 < G x v v := by
     intro x v hv

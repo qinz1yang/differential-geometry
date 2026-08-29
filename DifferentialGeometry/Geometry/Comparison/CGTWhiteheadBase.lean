@@ -30,8 +30,8 @@ variable {H : Type*} [TopologicalSpace H]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -71,7 +71,7 @@ theorem intrCut_support (R : Real) (hR : 0 < R) :
 omit [NeZero (Module.finrank Real E)] in
 theorem intrCut_compact (R : Real) (hR : 0 < R) :
     IsCompact (tsupport (intrCut (E := E) R hR : E → Real)) := by
-  letI : ProperSpace E := FiniteDimensional.proper Real E
+  let _ : ProperSpace E := FiniteDimensional.proper Real E
   rw [(intrCut (E := E) R hR).tsupport_eq]
   exact isCompact_closedBall (0 : E) (7 * R / 8)
 
@@ -156,6 +156,36 @@ theorem intrExt_inner
       (fun z hz => intrCut_one_closed (E := E) R hR hz)
       (intrClosed_subset (E := E) R hR) z hz v w
 
+omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] in
+private theorem enorm_eq_sqrt_inner_self
+    (q : SmoothRiemannianMetric 𝓘(Real, E) E)
+    (z : E) (v : TangentSpace 𝓘(Real, E) z) :
+    letI : RiemannianBundle
+        (fun x : E ↦ TangentSpace 𝓘(Real, E) x) :=
+      ⟨q.toRiemannianMetric⟩
+    ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (q.inner z v v)) := by
+  let _ : RiemannianBundle
+      (fun x : E ↦ TangentSpace 𝓘(Real, E) x) :=
+    ⟨q.toRiemannianMetric⟩
+  rw [← ofReal_norm, norm_eq_sqrt_real_inner]
+  rfl
+
+omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] in
+private theorem tangent_eq_zero_model_self
+    {z : E} {v : TangentSpace 𝓘(Real, E) z} (hv : v = 0) :
+    tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z v = 0 := by
+  rw [hv, map_zero]
+
+omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] in
+private theorem tangent_eq_zero_of_model_self
+    {z : E} {v : TangentSpace 𝓘(Real, E) z}
+    (hv : tangentSpaceModelContinuousLinearEquiv
+      (I := 𝓘(Real, E)) z v = 0) :
+    v = 0 := by
+  apply (tangentSpaceModelContinuousLinearEquiv
+    (I := 𝓘(Real, E)) z).injective
+  simpa only [map_zero] using hv
+
 theorem intrExt_restrict
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (x : M) (v : TangentSpace I x),
@@ -177,8 +207,37 @@ theorem intrExt_restrict
       ((z : intrPullBall (E := E) R) : E) ∈
         Metric.closedBall (0 : E) (3 * R / 4) :=
     Metric.ball_subset_closedBall z.2
-  simpa only using
-    intrExt_inner (I := I) g hEnorm p hR hloc hz v w
+  let zU : intrPullBall (E := E) R := z
+  let vU : TangentSpace 𝓘(Real, E) zU :=
+    (tangentSpaceModelContinuousLinearEquiv
+      (I := 𝓘(Real, E)) zU).symm
+      (tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(Real, E)) z v)
+  let wU : TangentSpace 𝓘(Real, E) zU :=
+    (tangentSpaceModelContinuousLinearEquiv
+      (I := 𝓘(Real, E)) zU).symm
+      (tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(Real, E)) z w)
+  calc
+    ((intrExtMetric (I := I) g hEnorm p hR hloc).restrictOpen
+        (I := 𝓘(Real, E)) (intrPullBall (E := E) R)).inner zU vU wU =
+      (intrExtMetric (I := I) g hEnorm p hR hloc).inner
+        (zU : E) vU wU := by
+      simpa only [mfderiv_subtype_val_apply,
+        tangentSpaceModelContinuousLinearEquiv_apply,
+        tangentSpaceModelContinuousLinearEquiv_symm_apply] using
+        SmoothRiemannianMetric.restrictOpen_inner
+          (intrExtMetric (I := I) g hEnorm p hR hloc)
+          (intrPullBall (E := E) R) zU vU wU
+    _ = (intrPullMetric (I := I) g hEnorm p hloc).inner zU vU wU := by
+      simpa only [zU, vU, wU,
+        tangentSpaceModelContinuousLinearEquiv_apply,
+        tangentSpaceModelContinuousLinearEquiv_symm_apply] using
+        intrExt_inner (I := I) g hEnorm p hR hloc hz
+          (tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) z v)
+          (tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) z w)
 
 theorem intrPull_geo_of_ext
     (g : SmoothRiemannianMetric I M)
@@ -366,7 +425,7 @@ theorem intrExt_pathLen
       Manifold.pathELength I
         ((intrinsicFramedExp (I := I) g hEnorm p) ∘ γ) a b := by
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
   change Manifold.pathELength 𝓘(Real, E) γ a b =
@@ -405,9 +464,7 @@ theorem intrExt_pathLen
     mfderiv 𝓘(Real, Real) 𝓘(Real, E) γ t 1
   have hExtNorm :
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner (γ t) v v)) := by
-    simpa only using
-      (tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := 𝓘(Real, E)) gExt (γ t) v)
+    exact enorm_eq_sqrt_inner_self (E := E) gExt (γ t) v
   have hBaseNorm :
       ‖mfderiv 𝓘(Real, E) I
           (intrinsicFramedExp (I := I) g hEnorm p) (γ t) v‖ₑ =
@@ -437,7 +494,12 @@ theorem intrExt_pathLen
           (intrinsicFramedExp (I := I) g hEnorm p) (γ t) v)
         (mfderiv 𝓘(Real, E) I
           (intrinsicFramedExp (I := I) g hEnorm p) (γ t) v) := by
-      rw [intrFrameMetric_apply]
+      simpa only [tangentSpaceModelContinuousLinearEquiv_apply] using
+        intrFrameMetric_apply (I := I) g hEnorm p (γ t)
+          (tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) (γ t) v)
+          (tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) (γ t) v)
 
 theorem intrExt_radial_len
     (g : SmoothRiemannianMetric I M)
@@ -457,7 +519,7 @@ theorem intrExt_radial_len
         (fun t : Real => Real.smoothTransition t • z) 0 1 =
       ENNReal.ofReal ‖z‖ := by
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun y : E ↦ TangentSpace 𝓘(Real, E) y) :=
     ⟨gExt.toRiemannianMetric⟩
   let γ : Real → E := fun t => Real.smoothTransition t • z
@@ -487,7 +549,7 @@ theorem intrExt_radial_len
   let zU : intrPullBall (E := E) R :=
     ⟨z, intrClosed_subset (E := E) R hR (by
       simpa only [Metric.mem_closedBall, dist_zero_right] using hz)⟩
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun y : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) y) :=
     ⟨(intrPullMetric (I := I) g hEnorm p hloc).toRiemannianMetric⟩
@@ -505,7 +567,12 @@ theorem intrExt_radial_len
           ((intrinsicFramedExp (I := I) g hEnorm p) ∘ γ) 0 1 := hext
     _ = Manifold.pathELength 𝓘(Real, E)
         (intrRadial (E := E) zU) 0 1 := by
-      simpa only [γ, zU, intrRadial, intrExpOn, Function.comp_apply] using hpull
+      rw [show
+        (intrinsicFramedExp (I := I) g hEnorm p) ∘ γ =
+          intrExpOn (I := I) g hEnorm p R ∘ intrRadial (E := E) zU by
+        funext t
+        rfl]
+      exact hpull
     _ = ENNReal.ofReal ‖z‖ := by
       simpa only [zU] using hrad
 
@@ -524,15 +591,15 @@ theorem intrExt_edist_le
         (intrExtMetric (I := I) g hEnorm p hR hloc) x y ≤
       ENNReal.ofReal (2 * a) := by
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : PseudoEMetricSpace E :=
+  let _ : PseudoEMetricSpace E :=
     PseudoEMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  letI : IsRiemannianManifold 𝓘(Real, E) E :=
+  let _ : IsRiemannianManifold 𝓘(Real, E) E :=
     ⟨fun _ _ => rfl⟩
   change Manifold.riemannianEDist 𝓘(Real, E) x y ≤
     ENNReal.ofReal (2 * a)
@@ -627,9 +694,7 @@ noncomputable def intrExtJoin
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
-    fun z v =>
-      tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := 𝓘(Real, E)) gExt z v
+    fun z v => enorm_eq_sqrt_inner_self (E := E) gExt z v
   exact minJoin (I := 𝓘(Real, E)) gExt hExt x y
 
 @[simp] theorem intrExtJoin_zero
@@ -643,7 +708,24 @@ noncomputable def intrExtJoin
         (Metric.ball (0 : E) R))
     (x y : E) :
     intrExtJoin (I := I) g hEnorm p hR hloc x y 0 = x := by
-  simp only [intrExtJoin, minJoin_zero]
+  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+  let _ : RiemannianBundle
+      (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
+    ⟨gExt.toRiemannianMetric⟩
+  let _ : IsContinuousRiemannianBundle E
+      (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
+    ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
+  let _ : EMetricSpace E :=
+    EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
+  let _ : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let _ : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let _ : CompleteSpace E :=
+    (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+  let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
+    fun z v => enorm_eq_sqrt_inner_self (E := E) gExt z v
+  change minJoin (I := 𝓘(Real, E)) gExt hExt x y 0 = x
+  exact minJoin_zero (I := 𝓘(Real, E)) gExt hExt x y
 
 @[simp] theorem intrExtJoin_one
     (g : SmoothRiemannianMetric I M)
@@ -656,7 +738,24 @@ noncomputable def intrExtJoin
         (Metric.ball (0 : E) R))
     (x y : E) :
     intrExtJoin (I := I) g hEnorm p hR hloc x y 1 = y := by
-  simp only [intrExtJoin, minJoin_one]
+  let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
+  let _ : RiemannianBundle
+      (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
+    ⟨gExt.toRiemannianMetric⟩
+  let _ : IsContinuousRiemannianBundle E
+      (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
+    ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
+  let _ : EMetricSpace E :=
+    EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
+  let _ : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let _ : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let _ : CompleteSpace E :=
+    (intrExt_complete (I := I) g hEnorm p hR hloc).complete
+  let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
+      ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
+    fun z v => enorm_eq_sqrt_inner_self (E := E) gExt z v
+  change minJoin (I := 𝓘(Real, E)) gExt hExt x y 1 = y
+  exact minJoin_one (I := 𝓘(Real, E)) gExt hExt x y
 
 theorem intrExtJoin_smooth
     (g : SmoothRiemannianMetric I M)
@@ -671,27 +770,24 @@ theorem intrExtJoin_smooth
     ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞
       (intrExtJoin (I := I) g hEnorm p hR hloc x y) := by
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : EMetricSpace E :=
+  let _ : EMetricSpace E :=
     EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
-  letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
-  letI : CompleteSpace E :=
+  let _ : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let _ : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let _ : CompleteSpace E :=
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
-    fun z v =>
-      tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := 𝓘(Real, E)) gExt z v
-  simpa only [intrExtJoin, gExt] using
-    intrinsicGeodesic_contMDiff
-      (I := 𝓘(Real, E)) gExt hExt x
-        (minimizingVec (I := 𝓘(Real, E)) gExt hExt x y)
+    fun z v => enorm_eq_sqrt_inner_self (E := E) gExt z v
+  exact intrinsicGeodesic_contMDiff
+    (I := 𝓘(Real, E)) gExt hExt x
+      (minimizingVec (I := 𝓘(Real, E)) gExt hExt x y)
 
 theorem intrExtJoin_geo
     (g : SmoothRiemannianMetric I M)
@@ -707,27 +803,24 @@ theorem intrExtJoin_geo
       (intrExtMetric (I := I) g hEnorm p hR hloc)
       (intrExtJoin (I := I) g hEnorm p hR hloc x y) := by
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : EMetricSpace E :=
+  let _ : EMetricSpace E :=
     EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
-  letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
-  letI : CompleteSpace E :=
+  let _ : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let _ : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let _ : CompleteSpace E :=
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
-    fun z v =>
-      tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := 𝓘(Real, E)) gExt z v
-  simpa only [intrExtJoin, gExt, minJoin] using
-    intrinsicGeodesic_isGeodesic
-      (I := 𝓘(Real, E)) gExt hExt x
-        (minimizingVec (I := 𝓘(Real, E)) gExt hExt x y)
+    fun z v => enorm_eq_sqrt_inner_self (E := E) gExt z v
+  exact intrinsicGeodesic_isGeodesic
+    (I := 𝓘(Real, E)) gExt hExt x
+      (minimizingVec (I := 𝓘(Real, E)) gExt hExt x y)
 
 private theorem intrExtJoin_budget
     (g : SmoothRiemannianMetric I M)
@@ -748,25 +841,26 @@ private theorem intrExtJoin_budget
       ‖intrExtJoin (I := I) g hEnorm p hR hloc x y t‖ <
         3 * R / 4 := by
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : EMetricSpace E :=
+  let _ : EMetricSpace E :=
     EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
-  letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
-  letI : CompleteSpace E :=
+  let _ : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let _ : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let _ : CompleteSpace E :=
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
-    fun z v =>
-      tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := 𝓘(Real, E)) gExt z v
+    fun z v => enorm_eq_sqrt_inner_self (E := E) gExt z v
   let γ : Real → E :=
     minJoin (I := 𝓘(Real, E)) gExt hExt x y
+  have hγzero : γ 0 = x := by
+    dsimp only [γ]
+    exact minJoin_zero (I := 𝓘(Real, E)) gExt hExt x y
   have hγinf :
       ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ γ := by
     exact intrinsicGeodesic_contMDiff
@@ -796,7 +890,8 @@ private theorem intrExtJoin_budget
       3 * R / 4 ≤ ‖γ t‖ := by
     simpa only [γ, intrExtJoin] using (not_lt.mp hnot)
   have hstart : ‖γ 0‖ < 3 * R / 4 := by
-    simpa only [γ, minJoin_zero] using hx.trans_lt haB
+    rw [hγzero]
+    exact hx.trans_lt haB
   obtain ⟨τ, hτ, hτeq, hbefore⟩ :=
     DifferentialGeometry.Analysis.ODE.exists_first_hit_Icc
       zero_le_one hγcont.norm.continuousOn hstart ⟨t, ht, hcross⟩
@@ -846,9 +941,8 @@ private theorem intrExtJoin_budget
     ⟨γ τ, intrClosed_subset (E := E) R hR (by
       rw [Metric.mem_closedBall, dist_zero_right, hτeq])⟩
   have hη0 : η 0 = x := by
-    simp only [η, f, Function.comp_apply,
-      Real.smoothTransition.zero_of_nonpos le_rfl, mul_zero, γ,
-      minJoin_zero]
+    dsimp only [η, f, Function.comp_apply]
+    rw [Real.smoothTransition.zero_of_nonpos le_rfl, mul_zero, hγzero]
   have hη1 : η 1 = γ τ := by
     simp only [η, f, Function.comp_apply,
       Real.smoothTransition.one_of_one_le le_rfl, mul_one]
@@ -858,12 +952,12 @@ private theorem intrExtJoin_budget
   have hηU1 : ηU 1 = zU := by
     apply Subtype.ext
     exact hη1
-  letI : SigmaCompactSpace (intrPullBall (E := E) R) :=
+  let _ : SigmaCompactSpace (intrPullBall (E := E) R) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen
         𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
@@ -871,8 +965,12 @@ private theorem intrExtJoin_budget
       Manifold.pathELength 𝓘(Real, E) ηU 0 1 =
         Manifold.pathELength I
           ((intrinsicFramedExp (I := I) g hEnorm p) ∘ η) 0 1 := by
-    simpa only [ηU, intrExpOn, Function.comp_apply] using
-      (intrPull_pathLen (I := I) g hEnorm p hloc hηUC1).symm
+    rw [show
+      (intrinsicFramedExp (I := I) g hEnorm p) ∘ η =
+        intrExpOn (I := I) g hEnorm p R ∘ ηU by
+      funext t
+      rfl]
+    exact (intrPull_pathLen (I := I) g hEnorm p hloc hηUC1).symm
   have hextLen :
       Manifold.pathELength 𝓘(Real, E) η 0 1 =
         Manifold.pathELength I
@@ -1042,9 +1140,17 @@ private theorem exists_join_curve
       ‖γ t‖ < 3 * R / 4 := by
     simpa only [γ] using hγfence
   have hγ0_ball : γ 0 ∈ Metric.ball (0 : E) R := by
-    simpa only [γ, intrExtJoin_zero] using x.property
+    have hx := x.property
+    change (x : E) ∈ Metric.ball (0 : E) R at hx
+    rw [show γ 0 = (x : E) by
+      exact intrExtJoin_zero (I := I) g hEnorm p hR hloc x y]
+    exact hx
   have hγ1_ball : γ 1 ∈ Metric.ball (0 : E) R := by
-    simpa only [γ, intrExtJoin_one] using y.property
+    have hy := y.property
+    change (y : E) ∈ Metric.ball (0 : E) R at hy
+    rw [show γ 1 = (y : E) by
+      exact intrExtJoin_one (I := I) g hEnorm p hR hloc x y]
+    exact hy
   have hpre0 : γ ⁻¹' Metric.ball (0 : E) R ∈ 𝓝 (0 : Real) :=
     hγinf.continuous.continuousAt.preimage_mem_nhds
       (Metric.isOpen_ball.mem_nhds hγ0_ball)
@@ -1230,54 +1336,46 @@ theorem intrPull_edist_eq_ext_of_budget
         (intrExtMetric (I := I) g hEnorm p hR hloc) (x : E) (y : E) := by
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
-  letI (z : E) : NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
-    inferInstance
-  letI (z : E) : NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
-    inferInstance
-  letI : ∀ z : E, ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
-    fun _ => inferInstance
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : EMetricSpace E :=
+  let _ : EMetricSpace E :=
     EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
-  letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
-  letI : CompleteSpace E :=
+  let _ : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let _ : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let _ : CompleteSpace E :=
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
-    fun z v =>
-      tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := 𝓘(Real, E)) gExt z v
-  letI : SigmaCompactSpace (intrPullBall (E := E) R) :=
+    fun z v => enorm_eq_sqrt_inner_self (E := E) gExt z v
+  let _ : SigmaCompactSpace (intrPullBall (E := E) R) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen
         𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
-  letI (z : intrPullBall (E := E) R) :
+  let _ (z : intrPullBall (E := E) R) :
       NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
     inferInstance
-  letI (z : intrPullBall (E := E) R) :
+  let _ (z : intrPullBall (E := E) R) :
       NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
     inferInstance
-  letI : ∀ z : intrPullBall (E := E) R,
+  let _ : ∀ z : intrPullBall (E := E) R,
       ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
     fun _ => inferInstance
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : PseudoEMetricSpace (intrPullBall (E := E) R) :=
+  let _ : PseudoEMetricSpace (intrPullBall (E := E) R) :=
     PseudoEMetricSpace.ofRiemannianMetric 𝓘(Real, E)
       (intrPullBall (E := E) R)
-  letI : IsRiemannianManifold 𝓘(Real, E)
+  let _ : IsRiemannianManifold 𝓘(Real, E)
       (intrPullBall (E := E) R) :=
     ⟨fun _ _ => rfl⟩
   change
@@ -1321,8 +1419,12 @@ theorem intrPull_edist_eq_ext_of_budget
         Manifold.pathELength 𝓘(Real, E) γ s t =
           Manifold.pathELength I
             ((intrinsicFramedExp (I := I) g hEnorm p) ∘ η) s t := by
-      simpa only [η, intrExpOn, Function.comp_apply] using
-        (intrPull_pathLen (I := I) g hEnorm p hloc hγ).symm
+      rw [show
+        (intrinsicFramedExp (I := I) g hEnorm p) ∘ η =
+          intrExpOn (I := I) g hEnorm p R ∘ γ by
+        funext u
+        rfl]
+      exact (intrPull_pathLen (I := I) g hEnorm p hloc hγ).symm
     have hext :
         Manifold.pathELength 𝓘(Real, E) η s t =
           Manifold.pathELength I
@@ -1538,9 +1640,7 @@ noncomputable def intrExtLaunch
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (w : TangentSpace 𝓘(Real, E) z),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z w w)) :=
-    fun z w =>
-      tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := 𝓘(Real, E)) gExt z w
+    fun z w => enorm_eq_sqrt_inner_self (E := E) gExt z w
   exact intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x v
 
 theorem intrExt_shortLaunch_fenced
@@ -1563,31 +1663,26 @@ theorem intrExt_shortLaunch_fenced
       ‖intrExtLaunch (I := I) g hEnorm p hR hloc x v t‖ <
         3 * R / 4 := by
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
-  letI (z : E) : NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
-    inferInstance
-  letI (z : E) : NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
-    inferInstance
-  letI : ∀ z : E, ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
-    fun _ => inferInstance
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.inner, gExt.contMDiff.continuous, by intro z w u; rfl⟩
-  letI : EMetricSpace E :=
+  let _ : EMetricSpace E :=
     EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
-  letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
-  letI : CompleteSpace E :=
+  let _ : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let _ : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let _ : CompleteSpace E :=
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (w : TangentSpace 𝓘(Real, E) z),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z w w)) :=
-    fun z w =>
-      tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := 𝓘(Real, E)) gExt z w
+    fun z w => enorm_eq_sqrt_inner_self (E := E) gExt z w
   let γ : Real → E :=
     intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x v
+  have hγzero : γ 0 = x := by
+    dsimp only [γ]
+    exact intrinsicGeodesic_zero (I := 𝓘(Real, E)) gExt hExt x v
   have hγinf : ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ γ := by
     simpa only [γ] using
       intrinsicGeodesic_contMDiff (I := 𝓘(Real, E)) gExt hExt x v
@@ -1618,7 +1713,8 @@ theorem intrExt_shortLaunch_fenced
   have hcross : 3 * R / 4 ≤ ‖γ t‖ := by
     simpa only [γ, gExt, hExt, intrExtLaunch] using (not_lt.mp hnot)
   have hstart : ‖γ 0‖ < 3 * R / 4 := by
-    simpa only [γ, intrinsicGeodesic_zero] using hx.trans_lt haB
+    rw [hγzero]
+    exact hx.trans_lt haB
   obtain ⟨τ, hτ, hτeq, hbefore⟩ :=
     DifferentialGeometry.Analysis.ODE.exists_first_hit_Icc
       zero_le_one hγcont.norm.continuousOn hstart ⟨t, ht, hcross⟩
@@ -1630,7 +1726,10 @@ theorem intrExt_shortLaunch_fenced
       intrinsicGeodesic_riemannianEDist_le
         (I := 𝓘(Real, E)) gExt hExt x v
         (s := 0) (t := τ) hτ.1
-    simpa only [γ, intrinsicGeodesic_zero, sub_zero] using h
+    change Manifold.riemannianEDist 𝓘(Real, E) (γ 0) (γ τ) ≤
+      ENNReal.ofReal (Real.sqrt (gExt.inner x v v) * (τ - 0)) at h
+    rw [hγzero, sub_zero] at h
+    exact h
   have hspeed : Real.sqrt (gExt.inner x v v) ≤ L := by
     simpa only [gExt] using hv
   have hmul : Real.sqrt (gExt.inner x v v) * τ ≤ L := by
@@ -1658,7 +1757,7 @@ theorem intrExt_shortLaunch_fenced
     · simpa only [gExt, riemannianEDistOf] using hdistLt
     · exact hbudgetStar
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
@@ -1734,31 +1833,26 @@ theorem intrExt_scale_bound
       ‖intrExtLaunch (I := I) g hEnorm p hR hloc x v t‖ ≤
         a + L / 2 := by
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
-  letI (z : E) : NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
-    inferInstance
-  letI (z : E) : NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
-    inferInstance
-  letI : ∀ z : E, ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
-    fun _ => inferInstance
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.inner, gExt.contMDiff.continuous, by intro z w u; rfl⟩
-  letI : EMetricSpace E :=
+  let _ : EMetricSpace E :=
     EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
-  letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
-  letI : CompleteSpace E :=
+  let _ : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let _ : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let _ : CompleteSpace E :=
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (w : TangentSpace 𝓘(Real, E) z),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z w w)) :=
-    fun z w =>
-      tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := 𝓘(Real, E)) gExt z w
+    fun z w => enorm_eq_sqrt_inner_self (E := E) gExt z w
   let γ : Real → E :=
     intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x v
+  have hγzero : γ 0 = x := by
+    dsimp only [γ]
+    exact intrinsicGeodesic_zero (I := 𝓘(Real, E)) gExt hExt x v
   let ell : Real := Real.sqrt (gExt.inner x v v)
   have hγ1 : γ 1 = y := by
     simpa only [γ, gExt, hExt, intrExtLaunch] using hend
@@ -1796,7 +1890,7 @@ theorem intrExt_scale_bound
       rw [Metric.mem_closedBall, dist_zero_right]
       exact (hfence t ht).le)⟩
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
@@ -1847,7 +1941,10 @@ theorem intrExt_scale_bound
       intrinsicGeodesic_riemannianEDist_le
         (I := 𝓘(Real, E)) gExt hExt x v
         (s := 0) (t := t) ht.1
-    simpa only [γ, ell, intrinsicGeodesic_zero, sub_zero] using h
+    change Manifold.riemannianEDist 𝓘(Real, E) (γ 0) (γ t) ≤
+      ENNReal.ofReal (ell * (t - 0)) at h
+    rw [hγzero, sub_zero] at h
+    exact h
   have hsuf :
       riemannianEDistOf (I := 𝓘(Real, E)) gExt y (γ t) ≤
         ENNReal.ofReal (ell * (1 - t)) := by
@@ -1966,33 +2063,68 @@ private theorem intrExt_quad_le
             z J V V) := gExt.symm _ _ _
     _ = Geometry.Curvature.metricRm04StdAt
           (I := 𝓘(Real, E)) (M := E) gExt z J V V J := by
-      rw [Integral.Connection.rm04_eq_inner]
+      exact (Integral.Connection.rm04_eq_inner
+        (I := 𝓘(Real, E)) gExt z J V J).symm
     _ = Geometry.Curvature.metricRm04StdAt
           (I := 𝓘(Real, E)) (M := U)
           (gExt.restrictOpen (I := 𝓘(Real, E)) U) zU J V V J :=
-      (Geometry.Curvature.metricRm04StdAt_restrictOpen
-        (I := 𝓘(Real, E)) gExt U zU J V V J).symm
+      by
+        have h := Geometry.Curvature.metricRm04StdAt_restrictOpen
+          (I := 𝓘(Real, E)) gExt U zU
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) zU).symm J)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) zU).symm V)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) zU).symm V)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) zU).symm J)
+        simp only [mfderiv_subtype_val_apply] at h
+        simpa only [tangentSpaceModelContinuousLinearEquiv_symm_apply] using h.symm
     _ = Geometry.Curvature.metricRm04StdAt
           (I := 𝓘(Real, E)) (M := Vopen)
           ((gExt.restrictOpen (I := 𝓘(Real, E)) U).restrictOpen
             (I := 𝓘(Real, E)) Vopen) zV J V V J :=
-      (Geometry.Curvature.metricRm04StdAt_restrictOpen
-        (I := 𝓘(Real, E))
-        (gExt.restrictOpen (I := 𝓘(Real, E)) U)
-        Vopen zV J V V J).symm
+      by
+        have h := Geometry.Curvature.metricRm04StdAt_restrictOpen
+          (I := 𝓘(Real, E))
+          (gExt.restrictOpen (I := 𝓘(Real, E)) U)
+          Vopen zV
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) zV).symm J)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) zV).symm V)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) zV).symm V)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) zV).symm J)
+        simp only [mfderiv_subtype_val_apply] at h
+        simpa only [tangentSpaceModelContinuousLinearEquiv_symm_apply] using h.symm
     _ = Geometry.Curvature.metricRm04StdAt
           (I := 𝓘(Real, E)) (M := Vopen)
           (gPull.restrictOpen (I := 𝓘(Real, E)) Vopen)
           zV J V V J := by rw [hmetric]
     _ = Geometry.Curvature.metricRm04StdAt
           (I := 𝓘(Real, E)) (M := U) gPull zU J V V J :=
-      Geometry.Curvature.metricRm04StdAt_restrictOpen
-        (I := 𝓘(Real, E)) gPull Vopen zV J V V J
+      by
+        have h := Geometry.Curvature.metricRm04StdAt_restrictOpen
+          (I := 𝓘(Real, E)) gPull Vopen zV
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) zV).symm J)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) zV).symm V)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) zV).symm V)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) zV).symm J)
+        simp only [mfderiv_subtype_val_apply] at h
+        simpa only [tangentSpaceModelContinuousLinearEquiv_symm_apply] using h
     _ = gPull.inner zU J
           (Geometry.Curvature.riemannOp
             (Geometry.Connection.LeviCivita (I := 𝓘(Real, E)) gPull)
             zU J V V) := by
-      rw [Integral.Connection.rm04_eq_inner]
+      exact Integral.Connection.rm04_eq_inner
+        (I := 𝓘(Real, E)) gPull zU J V J
     _ = gPull.inner zU
           (Geometry.Curvature.riemannOp
             (Geometry.Connection.LeviCivita (I := 𝓘(Real, E)) gPull)
@@ -2045,49 +2177,76 @@ theorem intrExt_not_conj_of_shortLaunch
       (intrExt_complete (I := I) g hEnorm p hR hloc).complete
     let hExt : ∀ (z : E) (w : TangentSpace 𝓘(Real, E) z),
         ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z w w)) :=
-      fun z w =>
-        tensor0SBundle_enorm_eq_riemannianBundle_enorm
-          (I := 𝓘(Real, E)) gExt z w
+      fun z w => enorm_eq_sqrt_inner_self (E := E) gExt z w
     ¬ IsConjVec (I := 𝓘(Real, E)) gExt hExt x (v : E) := by
   classical
+  let eNormedAddCommGroup : NormedAddCommGroup E := inferInstance
+  let eNormedSpace : NormedSpace Real E := inferInstance
+  let eENormSMulClass : ENormSMulClass Real E := inferInstance
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
-  letI (z : E) : NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
-    inferInstance
-  letI (z : E) : NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
-    inferInstance
-  letI : ∀ z : E, ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
-    fun _ => inferInstance
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.inner, gExt.contMDiff.continuous, by intro z w u; rfl⟩
-  letI : EMetricSpace E :=
+  let _ : EMetricSpace E :=
     EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
-  letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
-  letI : CompleteSpace E :=
+  let _ : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let _ : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let _ : CompleteSpace E :=
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (w : TangentSpace 𝓘(Real, E) z),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z w w)) :=
-    fun z w =>
-      tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := 𝓘(Real, E)) gExt z w
-  change ¬ IsConjVec (I := 𝓘(Real, E)) gExt hExt x (v : E)
+    fun z w => enorm_eq_sqrt_inner_self (E := E) gExt z w
+  let _ (z : E) : NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
+    eNormedAddCommGroup
+  let _ (z : E) : NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
+    eNormedSpace
+  let _ (z : E) : ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
+    eENormSMulClass
+  let vModel : E :=
+    tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) x v
+  have hvModelT :
+      (show TangentSpace 𝓘(Real, E) x from vModel) = v := by
+    apply (tangentSpaceModelContinuousLinearEquiv
+      (I := 𝓘(Real, E)) x).injective
+    simp only [vModel, tangentSpaceModelContinuousLinearEquiv_apply]
+    rfl
+  change ¬ IsConjVec (I := 𝓘(Real, E)) gExt hExt x vModel
   have hzero :
       ¬ IsConjVec (I := 𝓘(Real, E)) gExt hExt x (0 : E) := by
-    simpa only [IsConjVec, not_not,
-      mfderiv_expMapIntrinsic_at_zero (I := 𝓘(Real, E)) gExt hExt x] using
-      (Function.injective_id : Function.Injective (fun z : E => z))
+    unfold IsConjVec
+    simp only [not_not]
+    have hfun :
+        (fun b : E => expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt x
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) x).symm b)) =
+          fun b : E => expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt x
+            (show TangentSpace 𝓘(Real, E) x from b) := by
+      funext b
+      rw [tangentSpaceModelContinuousLinearEquiv_symm_apply]
+    rw [hfun, mfderiv_expMapIntrinsic_at_zero
+      (I := 𝓘(Real, E)) gExt hExt x]
+    intro a b hab
+    have habModel := congrArg
+      (tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(Real, E))
+        (expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt x
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) x).symm (0 : E)))) hab
+    change a = b at habModel
+    exact habModel
   intro hconj
-  have hvne : (v : E) ≠ 0 := by
+  have hvne : vModel ≠ 0 := by
     intro hv0
     apply hzero
-    simpa only [hv0] using hconj
-  rw [isConjVec_iff_jacobi
-    (I := 𝓘(Real, E)) gExt hExt x (v : E)] at hconj
-  obtain ⟨w, hw, hwend⟩ := hconj
+    exact (congrArg
+      (fun u : E => IsConjVec (I := 𝓘(Real, E)) gExt hExt x u)
+      hv0).mp hconj
+  obtain ⟨w, hw, hwend⟩ :=
+    (isConjVec_iff_jacobi
+      (I := 𝓘(Real, E)) gExt hExt x vModel).mp hconj
   let γ : Real → E :=
     intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x v
   let J : Real → E :=
@@ -2102,23 +2261,31 @@ theorem intrExt_not_conj_of_shortLaunch
       intrinsicGeodesic_contMDiff
         (I := 𝓘(Real, E)) gExt hExt x v
   have hJ0 : J 0 = 0 := by
-    simpa only [J] using
-      intrinsicJacobi_zero
-        (I := 𝓘(Real, E)) gExt hExt x v w
+    simpa only [J, tangentSpaceModelContinuousLinearEquiv_apply] using
+      tangent_eq_zero_model_self (E := E)
+        (intrinsicJacobi_zero
+          (I := 𝓘(Real, E)) gExt hExt x v w)
   have hJ1 : J 1 = 0 := by
-    simpa only [J, intrinsicJacobi] using hwend
+    have hwend' := hwend
+    rw [hvModelT] at hwend'
+    have hwendModel := tangent_eq_zero_model_self (E := E) hwend'
+    convert hwendModel using 1; rfl
   obtain ⟨B0, hB0⟩ :=
     branch_of_not_conj (I := 𝓘(Real, E)) gExt hExt hzero
   have hline :
-      Continuous (fun t : Real => t • (v : E)) :=
+      Continuous (fun t : Real => t • vModel) :=
     continuous_id.smul continuous_const
   have hsrc_ev :
-      ∀ᶠ t in 𝓝 (0 : Real), t • (v : E) ∈ B0.hom.source := by
-    have hsrc0 : (0 : Real) • (v : E) ∈ B0.hom.source := by
-      simpa only [zero_smul] using hB0
-    exact hline.continuousAt (B0.hom.open_source.mem_nhds hsrc0)
+      ∀ᶠ t in 𝓝 (0 : Real), t • vModel ∈ B0.hom.source := by
+    have hsrc0 : (0 : E) ∈ B0.hom.source := by
+      rw [← (tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(Real, E)) x).map_zero]
+      exact hB0
+    have hsrcAtZero : (0 : Real) • vModel ∈ B0.hom.source := by
+      simpa only [zero_smul] using hsrc0
+    exact hline.continuousAt (B0.hom.open_source.mem_nhds hsrcAtZero)
   have hsrc_gt :
-      ∀ᶠ t in 𝓝[>] (0 : Real), t • (v : E) ∈ B0.hom.source :=
+      ∀ᶠ t in 𝓝[>] (0 : Real), t • vModel ∈ B0.hom.source :=
     hsrc_ev.filter_mono inf_le_left
   have hIoo :
       ∀ᶠ t in 𝓝[>] (0 : Real), t ∈ Set.Ioo (0 : Real) 1 :=
@@ -2126,36 +2293,59 @@ theorem intrExt_not_conj_of_shortLaunch
   obtain ⟨t0, ht0src, ht0⟩ := (hsrc_gt.and hIoo).exists
   have ht0inj :
       Function.Injective
-        (mfderiv 𝓘(Real, E) 𝓘(Real, E)
-          (fun z : E =>
-            expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt x
-              (show TangentSpace 𝓘(Real, E) x from z))
-          (t0 • (v : E))) := by
-    simpa only [IsConjVec, not_not] using B0.not_conj ht0src
-  have hJt0 : J t0 ≠ 0 := by
-    intro hJt0
-    have hjat :
-        J t0 =
+        (fun a : E =>
           mfderiv 𝓘(Real, E) 𝓘(Real, E)
             (fun z : E =>
               expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt x
-                (show TangentSpace 𝓘(Real, E) x from z))
-            (t0 • (v : E)) (t0 • w) := by
-      simpa only [J, intrinsicJacobi] using
-        intrinsic_jacobi_at
-          (I := 𝓘(Real, E)) gExt hExt x (v : E) w t0
-    have hker :
-        mfderiv 𝓘(Real, E) 𝓘(Real, E)
-            (fun z : E =>
-              expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt x
-                (show TangentSpace 𝓘(Real, E) x from z))
-            (t0 • (v : E)) (t0 • w) = 0 := by
-      rw [← hjat]
-      exact hJt0
+                ((tangentSpaceModelContinuousLinearEquiv
+                  (I := 𝓘(Real, E)) x).symm z))
+            (t0 • vModel)
+            ((tangentSpaceModelContinuousLinearEquiv
+              (I := 𝓘(Real, E)) (t0 • vModel)).symm a)) := by
+    let uT : TangentSpace 𝓘(Real, E) x :=
+      (tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(Real, E)) x).symm (t0 • vModel)
+    let uModel : E :=
+      tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) x uT
+    have huModel : uModel = t0 • vModel := by
+      simp only [uModel, uT, ContinuousLinearEquiv.apply_symm_apply]
+    have hu : uModel ∈ B0.hom.source := by
+      rw [huModel]
+      exact ht0src
+    have hnot := B0.not_conj
+      (u := uT) hu
+    change ¬ IsConjVec (I := 𝓘(Real, E)) gExt hExt x uModel at hnot
+    rw [huModel] at hnot
+    unfold IsConjVec at hnot
+    simpa only [not_not] using hnot
+  have hJt0 : J t0 ≠ 0 := by
+    intro hJt0
+    have hjat := intrinsic_jacobi_at
+      (I := 𝓘(Real, E)) gExt hExt x vModel w t0
+    have hleftZero :
+        mfderiv 𝓘(Real, Real) 𝓘(Real, E)
+          (fun s : Real =>
+            intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x
+              (show TangentSpace 𝓘(Real, E) x from vModel + s • w) t0)
+          0 1 = 0 := by
+      apply tangent_eq_zero_of_model_self (E := E)
+      rw [hvModelT]
+      convert hJt0 using 1; rfl
+    have hker := hjat.symm.trans hleftZero
     have htw : t0 • w = 0 := by
       apply ht0inj
-      rw [hker]
-      exact (map_zero _).symm
+      have hExpFun :
+          (fun z : E => expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt x
+            ((tangentSpaceModelContinuousLinearEquiv
+              (I := 𝓘(Real, E)) x).symm z)) =
+            fun z : E => expMapIntrinsic
+              (I := 𝓘(Real, E)) gExt hExt x
+                (show TangentSpace 𝓘(Real, E) x from z) := by
+        funext z
+        rw [tangentSpaceModelContinuousLinearEquiv_symm_apply]
+      simp only [tangentSpaceModelContinuousLinearEquiv_symm_apply]
+      rw [hExpFun]
+      exact hker.trans (map_zero _).symm
     exact hw ((smul_eq_zero.mp htw).resolve_left ht0.1.ne')
   have hJdiff (t : Real) :
       DifferentiableAt Real
@@ -2220,7 +2410,8 @@ theorem intrExt_not_conj_of_shortLaunch
     have hJ1' :
         intrinsicJacobi
             (I := 𝓘(Real, E)) gExt hExt x v w 1 = 0 := by
-      simpa only [J] using hJ1
+      apply tangent_eq_zero_of_model_self (E := E)
+      simpa only [J, tangentSpaceModelContinuousLinearEquiv_apply] using hJ1
     rw [hJ1'] at hp
     have hz :
         gExt.inner
@@ -2272,7 +2463,8 @@ theorem intrExt_not_conj_of_shortLaunch
               expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt x
                 (show TangentSpace 𝓘(Real, E) x from z))
             (t • (c • (v : E))) (t • (c • w)) := by
-      simpa only [Jc, intrinsicJacobi] using hleft
+      have hleftModel := congrArg (fun q => (q : E)) hleft
+      convert hleftModel using 1; rfl
     have hright' :
         J (c * t) =
           mfderiv 𝓘(Real, E) 𝓘(Real, E)
@@ -2280,7 +2472,8 @@ theorem intrExt_not_conj_of_shortLaunch
               expMapIntrinsic (I := 𝓘(Real, E)) gExt hExt x
                 (show TangentSpace 𝓘(Real, E) x from z))
             ((c * t) • (v : E)) ((c * t) • w) := by
-      simpa only [J, intrinsicJacobi] using hright
+      have hrightModel := congrArg (fun q => (q : E)) hright
+      convert hrightModel using 1; rfl
     have hbase :
         t • (c • (v : E)) = (c * t) • (v : E) := by
       module
@@ -2322,15 +2515,15 @@ theorem intrExt_not_conj_of_shortLaunch
   have hJacc :
       Variation.IsJacobiAlong
         (I := 𝓘(Real, E)) gExt γc Jc := by
-    simpa only [γc, Jc, intrinsicJacobi] using
-      intrinsic_jacobi
-        (I := 𝓘(Real, E)) gExt hExt x
-        (c • (v : E)) (c • w)
+    exact intrinsic_jacobi
+      (I := 𝓘(Real, E)) gExt hExt x
+      (c • (v : E)) (c • w)
   have hJc0 : Jc 0 = 0 := by
-    simpa only [Jc] using
-      intrinsicJacobi_zero
-        (I := 𝓘(Real, E)) gExt hExt x
-        (c • v) (c • w)
+    simpa only [Jc, tangentSpaceModelContinuousLinearEquiv_apply] using
+      tangent_eq_zero_model_self (E := E)
+        (intrinsicJacobi_zero
+          (I := 𝓘(Real, E)) gExt hExt x
+          (c • v) (c • w))
   have hJc1 : Jc 1 ≠ 0 := by
     intro hz
     apply hJc
@@ -2338,19 +2531,25 @@ theorem intrExt_not_conj_of_shortLaunch
       J c = J (c * 1) := by rw [mul_one]
       _ = Jc 1 := (hJacScale 1).symm
       _ = 0 := hz
+  let wT : TangentSpace 𝓘(Real, E) x :=
+    (tangentSpaceModelContinuousLinearEquiv
+      (I := 𝓘(Real, E)) x).symm w
+  have hperpT : gExt.inner x v wT = 0 := by
+    simpa only [wT, tangentSpaceModelContinuousLinearEquiv_symm_apply] using hperp
   have hscaledPerp :
       gExt.inner x (c • v) (c • w) = 0 := by
+    change gExt.inner x (c • v) (c • wT) = 0
     calc
-      gExt.inner x (c • v) (c • w) =
-          c * gExt.inner x v (c • w) := by
-        rw [map_smul (gExt.inner x), ContinuousLinearMap.smul_apply,
+      gExt.inner x (c • v) (c • wT) =
+          c * gExt.inner x v (c • wT) := by
+        rw [map_smul (gExt.inner x), smul_apply,
           smul_eq_mul]
-      _ = c * (c * gExt.inner x v w) := by
+      _ = c * (c * gExt.inner x v wT) := by
         exact congrArg (fun r : Real => c * r)
           (by
             simpa only [smul_eq_mul] using
-              (gExt.inner x v).map_smul c w)
-      _ = 0 := by rw [hperp]; ring
+              (gExt.inner x v).map_smul c wT)
+      _ = 0 := by rw [hperpT]; ring
   have hJperpc :
       ∀ t ∈ Set.Icc (0 : Real) 1,
         gExt.inner (γc t) (Jc t)
@@ -2358,7 +2557,16 @@ theorem intrExt_not_conj_of_shortLaunch
     intro t ht
     by_cases ht0 : t = 0
     · subst t
-      rw [hJc0, gExt.symm]
+      let J0T : TangentSpace 𝓘(Real, E) (γc 0) :=
+        (tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(Real, E)) (γc 0)).symm (Jc 0)
+      have hJ0T : J0T = 0 := by
+        apply (tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(Real, E)) (γc 0)).injective
+        simp only [J0T, hJc0, map_zero]
+      change gExt.inner (γc 0) J0T
+        (Variation.curveVelocity (I := 𝓘(Real, E)) γc 0) = 0
+      rw [hJ0T, gExt.symm]
       exact
         (gExt.inner (γc 0)
           (Variation.curveVelocity (I := 𝓘(Real, E)) γc 0)).map_zero
@@ -2409,7 +2617,7 @@ theorem intrExt_not_conj_of_shortLaunch
     calc
       gExt.inner x (c • v) (c • v) =
           c * gExt.inner x v (c • v) := by
-        rw [map_smul (gExt.inner x), ContinuousLinearMap.smul_apply,
+        rw [map_smul (gExt.inner x), smul_apply,
           smul_eq_mul]
       _ = c * (c * gExt.inner x v v) := by
         exact congrArg (fun r : Real => c * r)
@@ -2458,9 +2666,15 @@ theorem intrExt_not_conj_of_shortLaunch
             (Variation.curveVelocity (I := 𝓘(Real, E)) γc t)
             (Variation.curveVelocity (I := 𝓘(Real, E)) γc t) =
           gExt.inner x (c • v) (c • v) := by
-      simpa only [γc, Variation.curveVelocity] using
-        intrinsicGeodesic_speedSq_eq
-          (I := 𝓘(Real, E)) gExt hExt x (c • v) t
+      change gExt.inner
+          (intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x (c • v) t)
+          (mfderiv 𝓘(Real, Real) 𝓘(Real, E)
+            (intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x (c • v)) t 1)
+          (mfderiv 𝓘(Real, Real) 𝓘(Real, E)
+            (intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x (c • v)) t 1) =
+        gExt.inner x (c • v) (c • v)
+      convert intrinsicGeodesic_speedSq_eq
+        (I := 𝓘(Real, E)) gExt hExt x (c • v) t using 1
     calc
       _ ≤ K * gExt.inner (γc t) (Jc t) (Jc t) *
           gExt.inner (γc t)
@@ -2490,12 +2704,18 @@ theorem intrExt_not_conj_of_shortLaunch
           (I := 𝓘(Real, E)) gExt γc Jc 1 =
         c • DJ c := by
     rw [hγcfun, hJcfun]
-    have haff :=
-      covDeriv_comp_affine
-        (I := 𝓘(Real, E)) gExt γ J c 0 1
-    have hc10 : c * 1 + 0 = c := by ring
-    rw [hc10] at haff
-    simpa only [DJ] using haff
+    change
+      CovariantDerivativeAlong.covDerivAlong
+          (I := 𝓘(Real, E)) gExt
+          (fun t : Real => γ (c * t + 0))
+          (fun t : Real => J (c * t + 0)) 1 =
+        c • CovariantDerivativeAlong.covDerivAlong
+          (I := 𝓘(Real, E)) gExt γ J c
+    have h := covDeriv_comp_affine
+      (I := 𝓘(Real, E)) gExt γ J c 0 1
+    have hc1 : c * 1 + 0 = c := by ring
+    rw [hc1] at h
+    exact h
   have hγc1 : γc 1 = γ c := by
     simpa only [mul_one] using hGeoScale 1
   have hJc1eq : Jc 1 = J c := by
@@ -2515,7 +2735,7 @@ theorem intrExt_not_conj_of_shortLaunch
             exact congrArg (fun A : E →L[Real] Real => A (J c))
               ((gExt.inner (γ c)).map_smul c (DJ c))
           _ = c * gExt.inner (γ c) (DJ c) (J c) := by
-            rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+            rw [smul_apply, smul_eq_mul]
   have hpairpos :
       0 < gExt.inner (γ c) (DJ c) (J c) := by
     nlinarith [hcIoo.1]
@@ -2566,9 +2786,7 @@ theorem intrExt_pair_pos
       (intrExt_complete (I := I) g hEnorm p hR hloc).complete
     let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
         ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
-      fun z v =>
-        tensor0SBundle_enorm_eq_riemannianBundle_enorm
-          (I := 𝓘(Real, E)) gExt z v
+      fun z v => enorm_eq_sqrt_inner_self (E := E) gExt z v
     let γ : Real → E :=
       intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x u
     let J : Real → E :=
@@ -2577,30 +2795,31 @@ theorem intrExt_pair_pos
       (CovariantDerivativeAlong.covDerivAlong
         (I := 𝓘(Real, E)) gExt γ J 1) (J 1) := by
   classical
+  let eNormedAddCommGroup : NormedAddCommGroup E := inferInstance
+  let eNormedSpace : NormedSpace Real E := inferInstance
+  let eENormSMulClass : ENormSMulClass Real E := inferInstance
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
-  letI (z : E) : NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
-    inferInstance
-  letI (z : E) : NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
-    inferInstance
-  letI : ∀ z : E, ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
-    fun _ => inferInstance
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v₁ v₂; rfl⟩
-  letI : EMetricSpace E :=
+  let _ : EMetricSpace E :=
     EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
-  letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
-  letI : CompleteSpace E :=
+  let _ : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let _ : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let _ : CompleteSpace E :=
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
-    fun z v =>
-      tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := 𝓘(Real, E)) gExt z v
+    fun z v => enorm_eq_sqrt_inner_self (E := E) gExt z v
+  let _ (z : E) : NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) :=
+    eNormedAddCommGroup
+  let _ (z : E) : NormedSpace Real (TangentSpace 𝓘(Real, E) z) :=
+    eNormedSpace
+  let _ (z : E) : ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
+    eENormSMulClass
   let γ : Real → E :=
     intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x u
   let J : Real → E :=
@@ -2613,10 +2832,16 @@ theorem intrExt_pair_pos
   have hJ1 : J 1 ≠ 0 := by
     intro hzero
     apply hnot
-    rw [isConjVec_iff_jacobi
-      (I := 𝓘(Real, E)) gExt hExt x (u : E)]
+    apply (isConjVec_iff_jacobi
+      (I := 𝓘(Real, E)) gExt hExt x (u : E)).mpr
     refine ⟨w, hwne, ?_⟩
-    simpa only [J, intrinsicJacobi] using hzero
+    have hzeroT :
+        intrinsicJacobi (I := 𝓘(Real, E)) gExt hExt x u w 1 = 0 := by
+      apply tangent_eq_zero_of_model_self (E := E)
+      convert hzero using 1; rfl
+    change intrinsicJacobi
+      (I := 𝓘(Real, E)) gExt hExt x u w 1 = 0
+    exact hzeroT
   have hγ :
       ContMDiff 𝓘(Real, Real) 𝓘(Real, E) ∞ γ := by
     simpa only [γ] using
@@ -2647,13 +2872,13 @@ theorem intrExt_pair_pos
         (I := 𝓘(Real, E)) gExt hExt x u w t).2
   have hJac :
       Variation.IsJacobiAlong (I := 𝓘(Real, E)) gExt γ J := by
-    simpa only [γ, J, intrinsicJacobi] using
-      intrinsic_jacobi
-        (I := 𝓘(Real, E)) gExt hExt x (u : E) (w : E)
+    exact intrinsic_jacobi
+      (I := 𝓘(Real, E)) gExt hExt x (u : E) (w : E)
   have hJ0 : J 0 = 0 := by
-    simpa only [J] using
-      intrinsicJacobi_zero
-        (I := 𝓘(Real, E)) gExt hExt x u w
+    simpa only [J, tangentSpaceModelContinuousLinearEquiv_apply] using
+      tangent_eq_zero_model_self (E := E)
+        (intrinsicJacobi_zero
+          (I := 𝓘(Real, E)) gExt hExt x u w)
   have hJperp :
       ∀ t ∈ Set.Icc (0 : Real) 1,
         gExt.inner (γ t) (J t)
@@ -2661,7 +2886,16 @@ theorem intrExt_pair_pos
     intro t ht
     by_cases ht0 : t = 0
     · subst t
-      rw [hJ0, gExt.symm]
+      let J0T : TangentSpace 𝓘(Real, E) (γ 0) :=
+        (tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(Real, E)) (γ 0)).symm (J 0)
+      have hJ0T : J0T = 0 := by
+        apply (tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(Real, E)) (γ 0)).injective
+        simp only [J0T, hJ0, map_zero]
+      change gExt.inner (γ 0) J0T
+        (Variation.curveVelocity (I := 𝓘(Real, E)) γ 0) = 0
+      rw [hJ0T, gExt.symm]
       exact
         (gExt.inner (γ 0)
           (Variation.curveVelocity (I := 𝓘(Real, E)) γ 0)).map_zero
@@ -2726,9 +2960,15 @@ theorem intrExt_pair_pos
             (Variation.curveVelocity (I := 𝓘(Real, E)) γ t)
             (Variation.curveVelocity (I := 𝓘(Real, E)) γ t) =
           gExt.inner x u u := by
-      simpa only [γ, Variation.curveVelocity] using
-        intrinsicGeodesic_speedSq_eq
-          (I := 𝓘(Real, E)) gExt hExt x u t
+      change gExt.inner
+          (intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x u t)
+          (mfderiv 𝓘(Real, Real) 𝓘(Real, E)
+            (intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x u) t 1)
+          (mfderiv 𝓘(Real, Real) 𝓘(Real, E)
+            (intrinsicGeodesic (I := 𝓘(Real, E)) gExt hExt x u) t 1) =
+        gExt.inner x u u
+      convert intrinsicGeodesic_speedSq_eq
+        (I := 𝓘(Real, E)) gExt hExt x u t using 1
     calc
       _ ≤ K * gExt.inner (γ t) (J t) (J t) *
           gExt.inner (γ t)
@@ -2765,33 +3005,30 @@ theorem exists_fenced_ext
         (riemannianEDistOf (I := 𝓘(Real, E))
           (intrExtMetric (I := I) g hEnorm p hR hloc) x y).toReal := by
   let gExt := intrExtMetric (I := I) g hEnorm p hR hloc
-  letI : RiemannianBundle
+  let _ : RiemannianBundle
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun z : E ↦ TangentSpace 𝓘(Real, E) z) :=
     ⟨gExt.inner, gExt.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : EMetricSpace E :=
+  let _ : EMetricSpace E :=
     EMetricSpace.ofRiemannianMetric 𝓘(Real, E) E
-  letI : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
-  letI : UniformSpace E := PseudoEMetricSpace.toUniformSpace
-  letI : CompleteSpace E :=
+  let _ : IsRiemannianManifold 𝓘(Real, E) E := ⟨fun _ _ => rfl⟩
+  let _ : UniformSpace E := PseudoEMetricSpace.toUniformSpace
+  let _ : CompleteSpace E :=
     (intrExt_complete (I := I) g hEnorm p hR hloc).complete
   let hExt : ∀ (z : E) (v : TangentSpace 𝓘(Real, E) z),
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (gExt.inner z v v)) :=
-    fun z v =>
-      tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := 𝓘(Real, E)) gExt z v
+    fun z v => enorm_eq_sqrt_inner_self (E := E) gExt z v
   let γ : Real → E :=
     minJoin (I := 𝓘(Real, E)) gExt hExt x y
   refine ⟨γ, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · exact intrinsicGeodesic_contMDiff
       (I := 𝓘(Real, E)) gExt hExt x
         (minimizingVec (I := 𝓘(Real, E)) gExt hExt x y)
-  · simpa only [γ, minJoin] using
-      intrinsicGeodesic_isGeodesic
-        (I := 𝓘(Real, E)) gExt hExt x
-          (minimizingVec (I := 𝓘(Real, E)) gExt hExt x y)
+  · exact intrinsicGeodesic_isGeodesic
+      (I := 𝓘(Real, E)) gExt hExt x
+        (minimizingVec (I := 𝓘(Real, E)) gExt hExt x y)
   · exact minJoin_zero (I := 𝓘(Real, E)) gExt hExt x y
   · exact minJoin_one (I := 𝓘(Real, E)) gExt hExt x y
   · simpa only [γ, gExt, intrExtJoin] using

@@ -25,7 +25,7 @@ variable [IsManifold I ∞ M]
 
 omit [CompleteSpace E] in
 theorem heat_pot_pos_of_barrier
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [CompactSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     {T : Real} (hT : 0 ≤ T) (V u : Real -> M -> Real)
@@ -111,8 +111,9 @@ theorem heat_pot_pos_of_barrier
     hgrad_lower hheat_upper hkappa hbarrier_init hbarrier_time
     halpha hdom hy
 
+omit [CompleteSpace E] in
 theorem heat_pot_pos_of_initial_pos
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -189,8 +190,9 @@ theorem heat_pot_pos_of_initial_pos
     hu_nonneg hu_time hu_mdiff hu_grad hu_super hV_lower
     (t := 0) ⟨le_rfl, htau.1.le⟩ hc y
 
+omit [CompleteSpace E] in
 theorem heat_pot_pos_of_initial_pos_of_metricFamilySmoothOn
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -215,8 +217,9 @@ theorem heat_pot_pos_of_initial_pos_of_metricFamilySmoothOn
       hG hslab (uniqueDiffOn_Icc htau.1) hconn hρ)
     L hV_lower y
 
+omit [CompleteSpace E] in
 theorem heat_pos_of_initial_pos_of_metricFamilySmoothOn
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M] [CompactSpace M]
+    [I.Boundaryless] [T2Space M] [CompactSpace M]
     [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)

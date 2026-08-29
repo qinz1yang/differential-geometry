@@ -2,7 +2,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantDerivativePo
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle ContinuousLinearMap
 open scoped ENNReal NNReal BigOperators Manifold ContDiff
@@ -34,6 +33,7 @@ def HasCapWin (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
       K i * Combinatorics.antidiagonalTupleGridWindow
         (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ (iteratedCovGrad (I := I) g₀ 0 2 1 P) x) (i + 1)
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma oneLeCapW (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (x : M) (i : ℕ) :
@@ -42,6 +42,7 @@ private lemma oneLeCapW (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor 
   Combinatorics.one_le_antidiagonalTupleGridWindow _
     (covariantJetFiberNormSqGrid_nonneg (I := I) (M := M) g₀ _ x) (by omega)
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma nnCapW (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (x : M) (i : ℕ) :
@@ -49,6 +50,7 @@ private lemma nnCapW (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g�
       (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ (iteratedCovGrad (I := I) g₀ 0 2 1 P) x) (i + 1) :=
   le_trans zero_le_one (oneLeCapW (I := I) (M := M) g₀ P x i)
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem capOfArm (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {Λ : ℝ} (hΛ1 : 1 ≤ Λ)
@@ -65,6 +67,7 @@ theorem capOfArm (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 
   simpa using antidiagonalTupleGridWindow_covariantDerivative_shift (I := I) (M := M) g₀ P hΛ1 hP0 hP1 X hK 0
     (fun j y => by simpa using hX j y) i x
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem capOfBnd (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c : ℕ} (X : SmoothCcTensor g₀ r c) {S : ℕ → ℝ} (hS : ∀ i, 0 ≤ S i)
@@ -76,6 +79,7 @@ theorem capOfBnd (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 
   exact le_trans (hX i x)
     (le_mul_of_one_le_right (hS i) (oneLeCapW (I := I) (M := M) g₀ P x i))
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private lemma capBaseLe (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (x : M) {i j : ℕ} (hj : 1 ≤ j) (hji : j ≤ i) :
@@ -93,6 +97,7 @@ private lemma capBaseLe (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor 
   rw [← covariantDerivative_grid (I := I) (M := M) g₀ P x]
   exact Combinatorics.antidiagonalTupleGrid_le_window _ hb' (by omega)
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem capOfP (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {Λ : ℝ} (hΛ1 : 1 ≤ Λ)
@@ -116,6 +121,7 @@ theorem capOfP (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
         nlinarith [h, hnn]
   exact hgoal
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem capOfDP (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {Λ : ℝ} (hΛ1 : 1 ≤ Λ)
@@ -138,6 +144,7 @@ theorem capOfDP (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2
         nlinarith [h, hnn]
   exact hgoal
 
+omit [SigmaCompactSpace M] in
 theorem capApp (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {p a b : ℕ} (Φ : SmoothCcTensor g₀ a b) (W : SmoothCcTensor g₀ p a)
     {KΦ KW : ℕ → ℝ} (hKΦ : ∀ i, 0 ≤ KΦ i) (hKW : ∀ l, 0 ≤ KW l)
@@ -150,6 +157,7 @@ theorem capApp (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (iteratedCovGrad (I := I) g₀ 0 2 1 P) hKΦ hKW
     (fun i' y => by simpa using hΦ i' y) (fun l y => by simpa using hW l y) n x
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem capMono (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c : ℕ} {X : SmoothCcTensor g₀ r c} {K K' : ℕ → ℝ}
@@ -159,13 +167,15 @@ theorem capMono (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2
   exact le_trans (hX i x)
     (mul_le_mul_of_nonneg_right (hKK i) (nnCapW (I := I) (M := M) g₀ P x i))
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [CompactSpace M]
+    [SigmaCompactSpace M] in
 theorem capCongr (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c : ℕ} {X Y : SmoothCcTensor g₀ r c} {K : ℕ → ℝ} (hXY : Y = X)
     (hX : HasCapWin (I := I) (M := M) g₀ P X K) :
     HasCapWin (I := I) (M := M) g₀ P Y K := by
   rw [hXY]; exact hX
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem capAdd (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c : ℕ} {X Y : SmoothCcTensor g₀ r c} {KX KY : ℕ → ℝ}
@@ -187,6 +197,7 @@ theorem capAdd (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
   have h2 := hY i x
   nlinarith [h1, h2, nnCapW (I := I) (M := M) g₀ P x i]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem capSmul (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c : ℕ} {X : SmoothCcTensor g₀ r c} {K : ℕ → ℝ} (t : ℝ)
@@ -204,6 +215,7 @@ theorem capSmul (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2
   rw [heq, mul_assoc]
   exact mul_le_mul_of_nonneg_left (hX i x) (sq_nonneg t)
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem capNeg (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c : ℕ} {X : SmoothCcTensor g₀ r c} {K : ℕ → ℝ}
@@ -215,6 +227,7 @@ theorem capNeg (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (capSmul (I := I) (M := M) g₀ P (-1 : ℝ) hX)
   norm_num
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem capSub (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c : ℕ} {X Y : SmoothCcTensor g₀ r c} {KX KY : ℕ → ℝ}
@@ -224,6 +237,7 @@ theorem capSub (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
   have h := capAdd (I := I) (M := M) g₀ P hX (capNeg (I := I) (M := M) g₀ P hY)
   rwa [← sub_eq_add_neg] at h
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem capReindex (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c : ℕ} {X : SmoothCcTensor g₀ r c} {K : ℕ → ℝ} (ρ : Equiv.Perm (Fin r))
@@ -234,6 +248,7 @@ theorem capReindex (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 
   rw [riemannianFiberNormSq_iteratedCovGrad_reindexCoeffGen_eq (I := I) (M := M) g₀ r c X ρ i x]
   exact hX i x
 
+omit [SigmaCompactSpace M] in
 theorem capDdc (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c : ℕ} {X : SmoothCcTensor g₀ r c} {K : ℕ → ℝ} (σ : Equiv.Perm (Fin c))
     (hX : HasCapWin (I := I) (M := M) g₀ P X K) :
@@ -245,7 +260,7 @@ theorem capDdc (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (fun y d => by rw [rsDomDomCongrSection_toSection, toModel_rsDomDomCongr_apply]) i x]
   exact hX i x
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem capDdc0 (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {c : ℕ} {X : SmoothCcTensor g₀ 0 c} {K : ℕ → ℝ} (σ : Equiv.Perm (Fin c))
     (hX : HasCapWin (I := I) (M := M) g₀ P X K) :
@@ -254,6 +269,7 @@ theorem capDdc0 (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2
   rw [riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀ σ X i x]
   exact hX i x
 
+omit [SigmaCompactSpace M] in
 theorem capSlotExt (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c : ℕ} {X : SmoothCcTensor g₀ r c} {K : ℕ → ℝ}
     (hX : HasCapWin (I := I) (M := M) g₀ P X K) :
@@ -265,13 +281,18 @@ theorem capSlotExt (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 
   rw [mul_assoc]
   exact mul_le_mul_of_nonneg_left (hX i x) hfr
 
+omit [SigmaCompactSpace M] in
 theorem capIter (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     {r c : ℕ} {X : SmoothCcTensor g₀ r c} {K : ℕ → ℝ} (w : ℕ)
     (hX : HasCapWin (I := I) (M := M) g₀ P X K) :
     HasCapWin (I := I) (M := M) g₀ P (slotExtendIter (I := I) (M := M) g₀ r c w X)
       (fun i => (Module.finrank ℝ E : ℝ) ^ w * K i) := by
   induction w with
-  | zero => simpa using hX
+  | zero =>
+      have hzero : slotExtendIter (I := I) (M := M) g₀ r c 0 X = X := by
+        rfl
+      rw [hzero]
+      simpa only [pow_zero, one_mul] using hX
   | succ w ih =>
       have hrec : slotExtendIter (I := I) (M := M) g₀ r c (w + 1) X =
           slotExtend (I := I) (M := M) g₀ (r + w) (c + w)
@@ -303,7 +324,10 @@ theorem capJet (g₀ : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ0 : 0 ≤ Λ) 
       ((iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x) ≤ Real.sqrt Λ ^ 2 := by
     intro x
     rw [Real.sq_sqrt hΛ0]
-    simpa using hP1 x
+    have h := hP1 x
+    change riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x
+      ((iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x) ≤ Λ at h
+    exact h
   exact hint P hcap r c n 1 X (K n) (hK n) (fun x => by simpa using hX n x)
 
 end DifferentialGeometry.Integral.Connection

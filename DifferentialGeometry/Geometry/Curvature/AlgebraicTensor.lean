@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Curvature.Tensor
 import DifferentialGeometry.Tensor.RSTensor.Pullback
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -18,31 +17,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
-
-private local instance algebraicTensor04NormedAddCommGroup (x : M) :
-    NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
-  Tensor0SBundle.tensor0SSpace_normedAddCommGroup 4 x
-
-private local instance algebraicTensor04NormedSpace (x : M) :
-    NormedSpace Real (Tensor04At (I := I) (M := M) x) :=
-  Tensor0SBundle.tensor0SSpace_normedSpace 4 x
-
-private local instance algebraicTensor04AddCommGroup (x : M) :
-    AddCommGroup (Tensor04At (I := I) (M := M) x) :=
-  @NormedAddCommGroup.toAddCommGroup _
-    (algebraicTensor04NormedAddCommGroup (I := I) x)
-
-private local instance algebraicTensor04Module (x : M) :
-    Module Real (Tensor04At (I := I) (M := M) x) :=
-  @NormedSpace.toModule _ _ _ _ (algebraicTensor04NormedSpace (I := I) x)
-
-private local instance algebraicTensor04TopologicalSpace (x : M) :
-    TopologicalSpace (Tensor04At (I := I) (M := M) x) :=
-  @UniformSpace.toTopologicalSpace _
-    (@PseudoMetricSpace.toUniformSpace _
-      (@MetricSpace.toPseudoMetricSpace _
-        (@NormedAddCommGroup.toMetricSpace _
-          (algebraicTensor04NormedAddCommGroup (I := I) x))))
 
 omit [FiniteDimensional Real E] in
 private theorem tensor04StdAt_add_left {x : M}
@@ -73,20 +47,25 @@ private theorem tensor04StdAt_smul_left {x : M}
     funext i
     fin_cases i <;> simp [vec4]
   rw [hupdate (a • v), hupdate v] at h
-  simpa only [smul_eq_mul] using h
+  change A (vec4 (I := I) (a • v) y z w) =
+    a * A (vec4 (I := I) v y z w)
+  exact h
 
 noncomputable def algebraicCurvatureTensorSubmodule (x : M) :
     Submodule Real (Tensor04At (I := I) (M := M) x) where
   carrier := {A | IsAlgCurvForm (tensor04StdAt (I := I) (M := M) A)}
   zero_mem' := by
-    simpa only [tensor04StdAt, Tensor0SSpace.zero_apply] using
-      (IsAlgCurvForm.zero (V := TangentSpace I x))
+    change IsAlgCurvForm (fun _ _ _ _ : TangentSpace I x => 0)
+    exact IsAlgCurvForm.zero
   add_mem' := by
     intro A B hA hB
-    simpa only [tensor04StdAt, Tensor0SSpace.add_apply] using hA.add hB
+    change IsAlgCurvForm (fun x y z w =>
+      tensor04StdAt A x y z w + tensor04StdAt B x y z w)
+    exact hA.add hB
   smul_mem' := by
     intro c A hA
-    simpa only [tensor04StdAt, Tensor0SSpace.smul_apply, smul_eq_mul] using hA.smul c
+    change IsAlgCurvForm (fun x y z w => c * tensor04StdAt A x y z w)
+    exact hA.smul c
 
 omit [FiniteDimensional Real E] in
 @[simp]
@@ -150,7 +129,6 @@ theorem compContinuousLinearMap_mem_algebraicCurvatureTensorSubmodule
       (tensor04StdAt (I := I) (M := M)
         (A : Tensor04At (I := I) (M := M) x)) :=
     mem_algebraicCurvatureTensorSubmodule.mp A.2
-  rw [mem_algebraicCurvatureTensorSubmodule]
   change IsAlgCurvForm (fun X Y Z W =>
     tensor04StdAt (I := I) (M := M)
       ((A : Tensor04At (I := I) (M := M) x).compContinuousLinearMap

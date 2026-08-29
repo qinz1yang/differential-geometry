@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
@@ -32,6 +31,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricDiff_span
     {D : RealTimeInterval}
@@ -89,7 +89,8 @@ theorem metricDiff_span
   refine ⟨B, hB, ?_⟩
   intro s hs
   have htK : (T : ℝ) - s ∈ K := by
-    constructor <;> dsimp only [K] <;> linarith [hs.1, hs.2]
+    change (T : ℝ) - h ≤ (T : ℝ) - s ∧ (T : ℝ) - s ≤ T
+    constructor <;> linarith [hs.1, hs.2]
   have hvar : (T : ℝ) - s ∈ Set.Icc a b := by
     exact ⟨hleft.trans htK.1, htK.2.trans hT.2⟩
   have hdist : |((T : ℝ) - s) - (T : ℝ)| ≤ ρ₀ := by
@@ -117,12 +118,13 @@ theorem metricDiff_span
       heval.trans (mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_right hnorm (Real.sqrt_nonneg _))
         (Real.sqrt_nonneg _))
-    simpa only [q, P, ContinuousLinearMap.sub_apply] using hfinal
+    simpa only [q, P, sub_apply] using hfinal
   refine ⟨hab hvar, ?_, ?_⟩
   · simpa only [q, P] using hbound
   · intro i x
     simpa only [q, P] using hjet i ((T : ℝ) - s) htK x
 
+omit [SigmaCompactSpace M] in
 theorem scalarFlux_span
     {D : RealTimeInterval}
     (g_fam : ℝ → SmoothRiemannianMetric I M)
@@ -270,7 +272,8 @@ theorem cc_comm_span
     (∑ j ∈ Finset.range (n + 2),
       ‖iteratedCovGrad (I := I) q 0 0 j U‖)
   have htrans : |G₀ - Htop| ≤ Ct * J := by
-    simpa only [G₀, Htop, J] using hCt s hs U
+    with_unfolding_all
+      exact hCt s hs U
   have hder : |R| ≤ Cd * J := by
     simpa only [R, J] using hCd s hs U
   have hgrad : iteratedCovGrad (I := I) q 0 0 1 U =
@@ -358,7 +361,8 @@ theorem cc_conn_span
       iterL_pair_jet_of (I := I) (M := M) q 0 n Φ A CG hCG_nn hCG
     refine ⟨C, hC_nn, ?_⟩
     intro s hs U
-    simpa only [q, A, Φ, Q] using hC s hs U
+    with_unfolding_all
+      exact hC s hs U
 
 theorem cc_lap_span
     {D : RealTimeInterval}

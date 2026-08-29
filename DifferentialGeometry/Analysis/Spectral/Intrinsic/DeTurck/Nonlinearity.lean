@@ -8,7 +8,6 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartFiberTriv
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry.Analysis.Spectral
 
@@ -79,10 +78,10 @@ private theorem bddAbove_gNorm_range (g_bg g g' g₀ : SmoothRiemannianMetric I 
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem rhsDiffSection_toModel_apply
+private theorem rhsDiffSection_eval
     (g_bg g g' g₀ : SmoothRiemannianMetric I M) (y : M)
     (v : Fin 2 → TangentSpace I y) :
-    Tensor0SSpace.toModel
+    Tensor0SSpace.eval
         ((rhsDiffSection (I := I) g_bg g g' g₀).toSection y
           (ContinuousMultilinearMap.constOfIsEmpty ℝ
             (fun _ : Fin 0 => TangentSpace I y) (1 : ℝ))) v =
@@ -93,10 +92,24 @@ private theorem rhsDiffSection_toModel_apply
         (deTurckRHSSection (I := I) g_bg g).toSection y -
           (deTurckRHSSection (I := I) g_bg g').toSection y := rfl
   rw [h_sec]
-  rw [ContinuousLinearMap.sub_apply, Tensor0SSpace.toModel_sub,
-    ContinuousMultilinearMap.sub_apply]
-  rw [deTurckRHSSection_toModel_apply (I := I) g_bg g y v,
-    deTurckRHSSection_toModel_apply (I := I) g_bg g' y v]
+  change Tensor0SSpace.eval
+    ((deTurckRHSSection (I := I) g_bg g).toSection y
+        (ContinuousMultilinearMap.constOfIsEmpty ℝ
+          (fun _ : Fin 0 => TangentSpace I y) (1 : ℝ)) -
+      (deTurckRHSSection (I := I) g_bg g').toSection y
+        (ContinuousMultilinearMap.constOfIsEmpty ℝ
+          (fun _ : Fin 0 => TangentSpace I y) (1 : ℝ))) v = _
+  rw [Tensor0SSpace.eval_sub]
+  change Tensor0SSpace.eval
+      ((deTurckRHSSection (I := I) g_bg g).toSection y
+        (ContinuousMultilinearMap.constOfIsEmpty ℝ
+          (fun _ : Fin 0 => TangentSpace I y) (1 : ℝ))) v -
+    Tensor0SSpace.eval
+      ((deTurckRHSSection (I := I) g_bg g').toSection y
+        (ContinuousMultilinearMap.constOfIsEmpty ℝ
+          (fun _ : Fin 0 => TangentSpace I y) (1 : ℝ))) v = _
+  rw [deTurckRHSSection_eval (I := I) g_bg g y v,
+    deTurckRHSSection_eval (I := I) g_bg g' y v]
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem deturck_ricci_rhs_nonlinearity_locally_lipschitz

@@ -4,7 +4,6 @@ import DifferentialGeometry.Geometry.Metric.SmoothMetricFromCoeff
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -156,8 +155,8 @@ lemma exists_chart_cover (hne : Nonempty M) :
     ∃ (c : ℕ → M) (K : ℕ → Set M),
       (∀ k, IsCompact (K k)) ∧ (∀ k, K k ⊆ (chartAt H (c k)).source) ∧
       (∀ x : M, ∃ k, x ∈ K k) := by
-  haveI : LocallyCompactSpace H := I.locallyCompactSpace
-  haveI : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  have : LocallyCompactSpace H := I.locallyCompactSpace
+  have : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
   have hcov : ∀ x : M, ∃ S, IsCompact S ∧ x ∈ interior S ∧ S ⊆ (chartAt H x).source :=
     fun x => exists_compact_subset (chartAt H x).open_source (mem_chart_source H x)
   choose Kf hKc hKint hKsub using hcov
@@ -452,7 +451,8 @@ lemma exists_frameVec_basis (x₀ : M) {x : M}
     ((trivializationAt E (TangentSpace I : M → Type _) x₀).continuousLinearEquivAt Real x
       hx).symm.toLinearEquiv, fun i => ?_⟩
   rw [Module.Basis.map_apply]
-  rfl
+  exact ((trivializationAt E (TangentSpace I : M → Type _) x₀).symmL_apply hx
+    (Module.finBasis Real E i)).symm
 
 include I in
 omit [IsManifold I 2 M] in
@@ -632,8 +632,8 @@ lemma frameComp_contMDiffOn
     ContMDiffOn I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
       (fun x => gm x (Geometry.frameVec (I := I) x₀ i x) (Geometry.frameVec (I := I) x₀ j x))
       (trivializationAt E (TangentSpace I : M → Type _) x₀).baseSet := by
-  haveI : LocallyCompactSpace H := I.locallyCompactSpace
-  haveI : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  have : LocallyCompactSpace H := I.locallyCompactSpace
+  have : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
   intro z hz
   have hzsrc : z ∈ (chartAt H x₀).source := by
     have hz' := hz; rwa [TangentBundle.trivializationAt_baseSet] at hz'
@@ -675,8 +675,8 @@ lemma frame_smooth_refs
     ContMDiffOn I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
       (fun x => gm x (Geometry.frameVec (I := I) x₀ i x) (Geometry.frameVec (I := I) x₀ j x))
       (trivializationAt E (TangentSpace I : M → Type _) x₀).baseSet := by
-  haveI : LocallyCompactSpace H := I.locallyCompactSpace
-  haveI : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  have : LocallyCompactSpace H := I.locallyCompactSpace
+  have : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
   intro z hz
   have hzsrc : z ∈ (chartAt H x₀).source := by
     have hz' := hz

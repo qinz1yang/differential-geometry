@@ -232,10 +232,10 @@ lemma riemannSec_eq_of_Z_eventuallyEq
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
-private lemma extDerivFun_apply_contMDiff
+private lemma mvfderiv_apply_contMDiff
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {Y : Π b : M, TangentSpace I b} (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y)) :
-    ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b => extDerivFun f b (Y b)) := by
+    ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b => mvfderiv (I := I) f b (Y b)) := by
   classical
   have htan : ContMDiff I.tangent (𝓘(ℝ, ℝ).tangent) ∞ (tangentMap I 𝓘(ℝ, ℝ) f) := by
     have h₁ : ContMDiff I 𝓘(ℝ, ℝ) ((∞ : WithTop ℕ∞) + 1) f := by
@@ -252,7 +252,8 @@ private lemma extDerivFun_apply_contMDiff
       (fun b => (tangentMap I 𝓘(ℝ, ℝ) f (TotalSpace.mk' E b (Y b))).2) :=
     hsnd.comp hcomp
   refine hresult.congr fun b => ?_
-  simp [extDerivFun, tangentMap_snd, NormedSpace.fromTangentSpace]
+  simp only [tangentMap_snd, directionalDeriv_eq]
+  with_unfolding_all rfl
 
 omit [CompleteSpace E] [FiniteDimensional ℝ E] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] [ContMDiffVectorBundle ∞ F V I] [FiniteDimensional ℝ F] in
@@ -314,13 +315,13 @@ private lemma riemannSec_smul_third_smooth
   have hcYZ_at := covApply_mdifferentiableAt_local (cov := cov) hY_at hZ_le
   have hcXfZ_at := covApply_mdifferentiableAt_local (cov := cov) hX_at hfZ_le
   have hcYfZ_at := covApply_mdifferentiableAt_local (cov := cov) hY_at hfZ_le
-  have hYf : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b => extDerivFun f b (Y b)) :=
-    extDerivFun_apply_contMDiff hf hY
-  have hXf : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b => extDerivFun f b (X b)) :=
-    extDerivFun_apply_contMDiff hf hX
-  have hYf_at : MDiffAt (fun b => extDerivFun f b (Y b)) x :=
+  have hYf : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b => mvfderiv (I := I) f b (Y b)) :=
+    mvfderiv_apply_contMDiff hf hY
+  have hXf : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b => mvfderiv (I := I) f b (X b)) :=
+    mvfderiv_apply_contMDiff hf hX
+  have hYf_at : MDiffAt (fun b => mvfderiv (I := I) f b (Y b)) x :=
     (hYf x).mdifferentiableAt (by simp)
-  have hXf_at : MDiffAt (fun b => extDerivFun f b (X b)) x :=
+  have hXf_at : MDiffAt (fun b => mvfderiv (I := I) f b (X b)) x :=
     (hXf x).mdifferentiableAt (by simp)
   have hcYZ : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞ (T% (covApply cov Y Z)) := by
     have hop : ContMDiffOn I (I.prod 𝓘(ℝ, F)) ∞ (T% (covApply cov Y Z)) Set.univ :=
@@ -337,16 +338,16 @@ private lemma riemannSec_smul_third_smooth
   have hf_smul_cXZ : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞ (T% (f • covApply cov X Z)) :=
     hf.smul_section hcXZ
   have hYf_smul_Z : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞
-      (T% ((fun b => extDerivFun f b (Y b)) • Z)) := hYf.smul_section hZ
+      (T% ((fun b => mvfderiv (I := I) f b (Y b)) • Z)) := hYf.smul_section hZ
   have hXf_smul_Z : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞
-      (T% ((fun b => extDerivFun f b (X b)) • Z)) := hXf.smul_section hZ
+      (T% ((fun b => mvfderiv (I := I) f b (X b)) • Z)) := hXf.smul_section hZ
   have hf_smul_cYZ_at : MDiffAt (T% (f • covApply cov Y Z)) x :=
     (hf_smul_cYZ x).mdifferentiableAt (by simp)
   have hf_smul_cXZ_at : MDiffAt (T% (f • covApply cov X Z)) x :=
     (hf_smul_cXZ x).mdifferentiableAt (by simp)
-  have hYf_smul_Z_at : MDiffAt (T% ((fun b => extDerivFun f b (Y b)) • Z)) x :=
+  have hYf_smul_Z_at : MDiffAt (T% ((fun b => mvfderiv (I := I) f b (Y b)) • Z)) x :=
     (hYf_smul_Z x).mdifferentiableAt (by simp)
-  have hXf_smul_Z_at : MDiffAt (T% ((fun b => extDerivFun f b (X b)) • Z)) x :=
+  have hXf_smul_Z_at : MDiffAt (T% ((fun b => mvfderiv (I := I) f b (X b)) • Z)) x :=
     (hXf_smul_Z x).mdifferentiableAt (by simp)
   have hx_int : extChartAt I x x ∈ interior ((extChartAt I x).target : Set E) :=
     (I.isInteriorPoint_iff (x := x)).mp BoundarylessManifold.isInteriorPoint
@@ -383,11 +384,11 @@ private lemma riemannSec_eq_zero_of_Z_eq_zero
       (fun b => χ b • hframe.coeff i b (Z b)) := by
     intro i
     have hsmooth_lfc : ContMDiff I 𝓘(ℝ, ℝ) ∞
-        (fun b => χ b • e.localFrame_coeff I basisF i b (Z b)) := by
+        (fun b => χ b • e.localFrameCoeff I basisF i b (Z b)) := by
       intro b
       by_cases hb : b ∈ tsupport (χ : M → ℝ)
       · exact (χ.contMDiff.of_le (by exact_mod_cast le_top)).contMDiffAt.smul
-          (contMDiffAt_localFrame_coeff basisF (hχsupp hb) hZ.contMDiffAt i)
+          (contMDiffAt_localFrameCoeff basisF (hχsupp hb) hZ.contMDiffAt i)
       · have hχ_zero : ∀ᶠ y in nhds b, (χ : M → ℝ) y = 0 := by
           apply Filter.Eventually.mono
             ((isClosed_tsupport (χ : M → ℝ)).isOpen_compl.mem_nhds hb)
@@ -401,9 +402,9 @@ private lemma riemannSec_eq_zero_of_Z_eq_zero
         ext j
         simp [IsLocalFrameOn.toBasisAt, Trivialization.localFrame, Trivialization.basisAt, hb]
       simp only [hframe.coeff_apply_of_mem hb,
-        e.localFrame_coeff_apply_of_mem_baseSet basisF hb, hbasis]
+        e.localFrameCoeff_apply_of_mem_baseSet basisF hb, hbasis]
     · simp [hframe.coeff_apply_of_notMem hb,
-        e.localFrame_coeff_apply_of_notMem_baseSet basisF hb]
+        e.localFrameCoeff_apply_of_notMem_baseSet basisF hb]
   let g : Fin (Module.finrank ℝ F) → M → ℝ := fun i b => χ b • hframe.coeff i b (Z b)
   have hg_zero : ∀ i, g i x = 0 := by
     intro i
@@ -755,15 +756,15 @@ private def riemannOp_Yslot
     (x : M) (v : TangentSpace I x) : TangentSpace I x →ₗ[ℝ] V x →L[ℝ] V x where
   toFun w := riemannOp_Zslot_clm (cov := cov) x v w
   map_add' w w' := by
-    haveI : T2Space (V x) := FiberBundle.t2Space F V x
-    haveI : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
+    have : T2Space (V x) := FiberBundle.t2Space F V x
+    have : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
     ext u
     change riemannOpFun cov x v (w + w') u =
       riemannOpFun cov x v w u + riemannOpFun cov x v w' u
     exact riemannOpFun_add_right (cov := cov) x v w w' u
   map_smul' c w := by
-    haveI : T2Space (V x) := FiberBundle.t2Space F V x
-    haveI : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
+    have : T2Space (V x) := FiberBundle.t2Space F V x
+    have : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
     ext u
     change riemannOpFun cov x v (c • w) u = c • riemannOpFun cov x v w u
     exact riemannOpFun_smul_right (cov := cov) x v c w u
@@ -781,19 +782,19 @@ private def riemannOp_Xslot
     TangentSpace I x →ₗ[ℝ] TangentSpace I x →L[ℝ] V x →L[ℝ] V x where
   toFun v := riemannOp_Yslot_clm (cov := cov) x v
   map_add' v v' := by
-    haveI : T2Space (V x) := FiberBundle.t2Space F V x
-    haveI : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
-    haveI : T2Space (TangentSpace I x) := inferInstanceAs (T2Space E)
-    haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
+    have : T2Space (V x) := FiberBundle.t2Space F V x
+    have : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
+    have : T2Space (TangentSpace I x) := inferInstanceAs (T2Space E)
+    have : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
     ext w u
     change riemannOpFun cov x (v + v') w u =
       riemannOpFun cov x v w u + riemannOpFun cov x v' w u
     exact riemannOpFun_add_left (cov := cov) x v v' w u
   map_smul' c v := by
-    haveI : T2Space (V x) := FiberBundle.t2Space F V x
-    haveI : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
-    haveI : T2Space (TangentSpace I x) := inferInstanceAs (T2Space E)
-    haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
+    have : T2Space (V x) := FiberBundle.t2Space F V x
+    have : FiniteDimensional ℝ (V x) := VectorBundle.finiteDimensional ℝ F V x
+    have : T2Space (TangentSpace I x) := inferInstanceAs (T2Space E)
+    have : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
     ext w u
     change riemannOpFun cov x (c • v) w u = c • riemannOpFun cov x v w u
     exact riemannOpFun_smul_left (cov := cov) x c v w u

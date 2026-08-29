@@ -54,14 +54,14 @@ private local instance tensorRSRiemannianNormedAddCommGroup
   (h.g.toCore b).toNormedAddCommGroupOfTopology
     (h.g.continuousAt b) (h.g.isVonNBounded b)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
 theorem exists_zeroContentR_le_fiberNorm_on_pouKernel
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g r s) {y : EuclN},
         y ∈ chartPouKernel (I := I) (M := M) α →
@@ -69,8 +69,8 @@ theorem exists_zeroContentR_le_fiberNorm_on_pouKernel
           C * ‖S.toSection
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))‖ := by
   classical
-  letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+  let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   set Tα : Set M := tsupport
     (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) with hTα_def
   have hTα_src : Tα ⊆ (chartAt H α).source :=
@@ -134,8 +134,8 @@ theorem exists_zeroContentR_le_fiberNorm_on_pouKernel
     _ = Npair * Real.sqrt Craw * ‖S.toSection b‖ := by
         rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, hNpair_def]; ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 private theorem exists_iteratedFDeriv_chartComponent_le_fiberNorm_sum
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -146,7 +146,7 @@ private theorem exists_iteratedFDeriv_chartComponent_le_fiberNorm_sum
             (tensorChartComponent (I := I) (M := M) g r s D α P.1 P.2) y‖ ≤
           C * ∑ i ∈ Finset.range (j + 1),
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + i)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + i)
             ‖(iteratedCovGrad g r s i D).toSection
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))‖) := by
   classical
@@ -165,7 +165,7 @@ private theorem exists_iteratedFDeriv_chartComponent_le_fiberNorm_sum
         z ∈ chartPouKernel (I := I) (M := M) α →
         tensorComponentAbsSum (I := I) (M := M) g r (s + i) T α z ≤
           Ci * (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + i)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + i)
             ‖T.toSection ((extChartAt I α).symm ((toEuclidean (E := E)).symm z))‖) :=
     fun i => exists_zeroContentR_le_fiberNorm_on_pouKernel (I := I) (M := M) g r (s + i) α
   choose Cfib hCfib_nn hCfib using h_fib
@@ -176,14 +176,14 @@ private theorem exists_iteratedFDeriv_chartComponent_le_fiberNorm_sum
   intro D y
   set fibSum : ℝ := ∑ i ∈ Finset.range (j + 1),
     (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + i)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + i)
     ‖(iteratedCovGrad g r s i D).toSection
       ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))‖) with hfibSum_def
   have hfibSum_nn : 0 ≤ fibSum := by
     rw [hfibSum_def]
     refine Finset.sum_nonneg (fun i _ => ?_)
-    letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + i)
+    let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + i)
     exact norm_nonneg _
   by_cases hyK : y ∈ chartPouKernel (I := I) (M := M) α
   · have hyT : y ∈ chartTargetEuclid (I := I) (M := M) α :=
@@ -252,7 +252,7 @@ private theorem exists_iteratedFDeriv_chartComponent_le_fiberNorm_sum
               (iteratedCovGrad g r s i D) α y ≤
               Cfibmax *
                 (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
-                  Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + i)
+                  Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + i)
                 ‖(iteratedCovGrad g r s i D).toSection
                   ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))‖) := by
           intro i hi
@@ -260,8 +260,8 @@ private theorem exists_iteratedFDeriv_chartComponent_le_fiberNorm_sum
             have := Finset.mem_range.mp hi; omega
           have hib := hCfib i (iteratedCovGrad g r s i D) hyK
           refine le_trans hib ?_
-          letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
-            Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + i)
+          let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
+            Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + i)
           exact mul_le_mul_of_nonneg_right
             (Finset.le_sup' Cfib (Finset.mem_range.mpr (by omega))) (norm_nonneg _)
         calc (∑ i ∈ Finset.range ((j - l) + 1),
@@ -270,13 +270,13 @@ private theorem exists_iteratedFDeriv_chartComponent_le_fiberNorm_sum
             ≤ ∑ i ∈ Finset.range ((j - l) + 1),
                 Cfibmax *
                   (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
-                    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + i)
+                    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + i)
                   ‖(iteratedCovGrad g r s i D).toSection
                     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))‖) :=
               Finset.sum_le_sum hstep
           _ = Cfibmax * ∑ i ∈ Finset.range ((j - l) + 1),
                 (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
-                  Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + i)
+                  Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + i)
                 ‖(iteratedCovGrad g r s i D).toSection
                   ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))‖) := by
               rw [Finset.mul_sum]
@@ -288,8 +288,8 @@ private theorem exists_iteratedFDeriv_chartComponent_le_fiberNorm_sum
                 exact Finset.mem_range.mpr
                   (lt_of_lt_of_le (Finset.mem_range.mp hi)
                     (Nat.succ_le_succ (Nat.sub_le j l)))
-              · letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
-                  Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + i)
+              · let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
+                  Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + i)
                 exact norm_nonneg _
       have hchoose_nn : 0 ≤ (j.choose l : ℝ) := by positivity
       have hraw_l_nn : 0 ≤ ‖iteratedFDerivWithin ℝ (j - l) raw
@@ -334,8 +334,8 @@ private theorem exists_iteratedFDeriv_chartComponent_le_fiberNorm_sum
     simp only [Pi.zero_apply, norm_zero]
     positivity
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem tensorChartComponent_allOrder_uniformCauchy
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -404,13 +404,13 @@ theorem tensorChartComponent_allOrder_uniformCauchy
   have h_fibSum_le :
       (∑ i ∈ Finset.range (j + 1),
         (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + i)
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + i)
         ‖(iteratedCovGrad g r s i D).toSection
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))‖)) ≤ Cemb * N2k :=
     hemb
   calc Cder * (∑ i ∈ Finset.range (j + 1),
           (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + i) I b) :=
-            Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + i)
+            Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + i)
           ‖(iteratedCovGrad g r s i D).toSection
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))‖))
       ≤ Cder * (Cemb * N2k) :=
@@ -523,7 +523,7 @@ def globalLimitSection
     (hF_cauchy : ∀ k : ℕ,
       CauchySeq (fun n => SmoothCcTensor.toHs (g := g) (r := r) (s := s) (2 * k) (F n))) :
     SmoothCcTensor g r s :=
-  ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
     chartLimitSection (I := I) (M := M) g r s F hF_cauchy α
 
 private def chartLimitComp
@@ -636,7 +636,7 @@ private lemma chartLimitComp_memLp
     (α : M) (P : TensorCompIdx (E := E) r s) :
     MemLp (chartLimitComp (I := I) (M := M) g r s F hF_cauchy α P) 2
       (chartL2Measure (I := I) (M := M) α) := by
-  haveI : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
+  have : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
     rw [chartL2Measure]; infer_instance
   exact Continuous.memLp_of_hasCompactSupport
     (chartLimitComp_continuous (I := I) (M := M) g r s F hF_cauchy α P)
@@ -655,7 +655,7 @@ private lemma chartComponent_toLp_tendsto
       atTop (𝓝 ((chartLimitComp_memLp (I := I) (M := M) g r s F hF_cauchy α P).toLp
         (chartLimitComp (I := I) (M := M) g r s F hF_cauchy α P))) := by
   classical
-  haveI : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
+  have : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
     rw [chartL2Measure]; infer_instance
   set μ : Measure EuclN := chartL2Measure (I := I) (M := M) α with hμ_def
   set K : Set EuclN := chartPouKernel (I := I) (M := M) α ∪
@@ -706,11 +706,11 @@ private lemma chartComponent_toLp_tendsto
     rcases eq_or_ne ε ⊤ with hεtop | hεtop
     · obtain ⟨N, hN⟩ := heLp_le 1 one_pos
       exact ⟨N, fun n hn => hεtop ▸ le_top⟩
-    rcases eq_or_lt_of_le (zero_le c) with hc0 | hc0
+    rcases eq_or_lt_of_le (bot_le : 0 ≤ c) with hc0 | hc0
     · obtain ⟨N, hN⟩ := heLp_le 1 one_pos
       refine ⟨N, fun n hn => le_trans (hN n hn) ?_⟩
-      rw [← hc0, zero_mul]
-      exact zero_le _
+      rw [← hc0, ENNReal.bot_eq_zero, zero_mul]
+      exact bot_le
     · have hc_ne : c ≠ ⊤ := hc_lt.ne
       have hdiv_ne_top : ε / c ≠ ⊤ := by
         rw [Ne, ENNReal.div_eq_top]; push Not
@@ -820,10 +820,10 @@ private lemma tensorChartComponentRaw_chartLimitSection_eq_zero_off_source
     tensorChartComponentRaw (I := I) (M := M) g r s
         (chartLimitSection (I := I) (M := M) g r s F hF_cauchy α)
         β P.1 P.2 x = 0 := by
-  letI : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedAddCommGroup r s
-  letI : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedSpace r s
+  let : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
+    tensorRSModelNormedAddCommGroup r s
+  let : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
+    tensorRSModelNormedSpace r s
   have hsec : (chartLimitSection (I := I) (M := M) g r s F hF_cauchy α).toSection x = 0 :=
     chartLimitSection_toSection_eq_zero_off_source (I := I) (M := M) g r s F hF_cauchy α hx
   rw [tensorChartComponentRaw_def, tensorTrivProj, hsec,
@@ -934,7 +934,7 @@ private lemma ae_eq_of_ae_eq_restrict_of_eqOn_compl
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private lemma transportChartCenters_subset_chartAtlasPOU_finset' (β : M) :
     transportChartCenters (I := I) (M := M) β ⊆
-      chartAtlasPOU_finset (I := I) (M := M) := by
+      chartAtlasPOUFinset (I := I) (M := M) := by
   intro γ hγ
   rw [mem_transportChartCenters] at hγ
   rw [chartAtlasPOU_finset_mem]
@@ -1510,7 +1510,7 @@ theorem globalLimitSection_toL2_eq
   apply Lp.ext
   have h_coe_sum :
       (globalLimitSection (I := I) (M := M) g r s F hF_cauchy : TensorL2 r s g) =
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           (chartLimitSection (I := I) (M := M) g r s F hF_cauchy α :
             TensorL2 r s g) := by
     rw [globalLimitSection, ← smoothToTensorL2_apply (I := I) (M := M) g r s,
@@ -1521,7 +1521,7 @@ theorem globalLimitSection_toL2_eq
       tensorL2ChartComponent (I := I) (M := M) g r s
           (globalLimitSection (I := I) (M := M) g r s F hF_cauchy :
             TensorL2 r s g) β P₀ =
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           tensorL2ChartComponent (I := I) (M := M) g r s
             (chartLimitSection (I := I) (M := M) g r s F hF_cauchy α :
               TensorL2 r s g) β P₀ := by
@@ -1531,18 +1531,18 @@ theorem globalLimitSection_toL2_eq
     rw [tensorL2ChartComponentCLM_apply]
   rw [h_lhs_sum]
   refine (coeFn_finsetSum_chartL2 (I := I) (M := M) β
-    (chartAtlasPOU_finset (I := I) (M := M))
+    (chartAtlasPOUFinset (I := I) (M := M))
     (fun α => tensorL2ChartComponent (I := I) (M := M) g r s
       (chartLimitSection (I := I) (M := M) g r s F hF_cauchy α :
         TensorL2 r s g) β P₀)).trans ?_
   have h_lhs_terms :
-      (fun y => ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (fun y => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ((tensorL2ChartComponent (I := I) (M := M) g r s
             (chartLimitSection (I := I) (M := M) g r s F hF_cauchy α :
               TensorL2 r s g) β P₀ :
             Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
         =ᵐ[chartL2Measure (I := I) (M := M) β]
-      (fun y => ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (fun y => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartPushedRaw I β
             (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
           ∑ Q : TensorCompIdx (E := E) r s,
@@ -1551,7 +1551,7 @@ theorem globalLimitSection_toL2_eq
                 Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
               EuclN → ℝ) y)) :=
     finsetSum_ae_eq (I := I) (M := M) β
-      (chartAtlasPOU_finset (I := I) (M := M))
+      (chartAtlasPOUFinset (I := I) (M := M))
       (fun α _ => chartLimitSection_tensorL2ChartComponent_eq_transport_sum
         (I := I) (M := M) g r s u F hF_cauchy hF_L2 α β P₀)
   refine h_lhs_terms.trans ?_
@@ -1559,7 +1559,7 @@ theorem globalLimitSection_toL2_eq
     ((tensorL2ChartComponent_ae_eq_pou_transport_sum (I := I) (M := M)
       g r s u β P₀).trans ?_)
   have h_subset : transportChartCenters (I := I) (M := M) β ⊆
-      chartAtlasPOU_finset (I := I) (M := M) :=
+      chartAtlasPOUFinset (I := I) (M := M) :=
     transportChartCenters_subset_chartAtlasPOU_finset' (I := I) (M := M) β
   set G : M → EuclN → ℝ := fun α y =>
     chartPushedRaw I β
@@ -1582,28 +1582,28 @@ theorem globalLimitSection_toL2_eq
     funext y
     rw [Finset.mul_sum]
   rw [h_rhs_eq]
-  have h_union : chartAtlasPOU_finset (I := I) (M := M) =
+  have h_union : chartAtlasPOUFinset (I := I) (M := M) =
       transportChartCenters (I := I) (M := M) β ∪
-        (chartAtlasPOU_finset (I := I) (M := M) \
+        (chartAtlasPOUFinset (I := I) (M := M) \
           transportChartCenters (I := I) (M := M) β) :=
     (Finset.union_sdiff_of_subset h_subset).symm
   have h_disjoint : Disjoint (transportChartCenters (I := I) (M := M) β)
-      (chartAtlasPOU_finset (I := I) (M := M) \
+      (chartAtlasPOUFinset (I := I) (M := M) \
         transportChartCenters (I := I) (M := M) β) :=
     Finset.disjoint_sdiff
-  have h_split : (fun y => ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have h_split : (fun y => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         G α y) =
       fun y => (∑ γ ∈ transportChartCenters (I := I) (M := M) β, G γ y) +
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M) \
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M) \
             transportChartCenters (I := I) (M := M) β, G α y := by
     funext y
     conv_lhs => rw [h_union]
     rw [Finset.sum_union h_disjoint]
   rw [h_split]
-  have h_extra : (fun y => ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M) \
+  have h_extra : (fun y => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M) \
           transportChartCenters (I := I) (M := M) β, G α y)
         =ᵐ[chartL2Measure (I := I) (M := M) β] (fun _ : EuclN => (0 : ℝ)) := by
-    have h_each : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M) \
+    have h_each : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M) \
         transportChartCenters (I := I) (M := M) β,
         G α =ᵐ[chartL2Measure (I := I) (M := M) β] (fun _ : EuclN => (0 : ℝ)) := by
       intro α hα
@@ -1622,14 +1622,14 @@ theorem globalLimitSection_toL2_eq
         (0 : ℝ)
       rw [hy, mul_zero]
     have h_sum := finsetSum_ae_eq (I := I) (M := M) β
-      (chartAtlasPOU_finset (I := I) (M := M) \
+      (chartAtlasPOUFinset (I := I) (M := M) \
         transportChartCenters (I := I) (M := M) β)
       (fun α hα => h_each α hα)
     refine h_sum.trans (Filter.EventuallyEq.of_eq ?_)
     funext y
     rw [Finset.sum_const_zero]
   filter_upwards [h_extra] with y hy
-  rw [show (∑ α ∈ chartAtlasPOU_finset (I := I) (M := M) \
+  rw [show (∑ α ∈ chartAtlasPOUFinset (I := I) (M := M) \
         transportChartCenters (I := I) (M := M) β, G α y) = 0 from hy,
     add_zero]
 

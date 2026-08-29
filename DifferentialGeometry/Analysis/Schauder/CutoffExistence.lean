@@ -137,8 +137,16 @@ theorem exists_schauder_cutoff_with_hessian
     hchiHolder, hdchiHolder, hd2chiHolder, hlapHolder⟩
   · intro x hx
     exact hUone hx
-  · simpa only [chi, compactSupportBcf_apply] using hchiSupp
-  · simpa only [chi, compactSupportBcf_apply] using hchiRange
+  · have hchi : (chi : V → Real) = chiRaw := by
+      funext x
+      rfl
+    rw [hchi]
+    exact hchiSupp
+  · have hchi : (chi : V → Real) = chiRaw := by
+      funext x
+      rfl
+    rw [hchi]
+    exact hchiRange
 
 theorem exists_schauder_cutoff
     {K Omega : Set V} (hK : IsCompact K) (hOmega : IsOpen Omega)

@@ -24,8 +24,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
   [T2Space (TangentBundle I M)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+private local instance : MeasurableSpace E := borel E
+private local instance : BorelSpace E := ⟨rfl⟩
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem framedBall_eq_small
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -55,8 +58,11 @@ theorem framedBall_eq_small
         (g.inner p (normalFrame (I := I) g p z)
           (normalFrame (I := I) g p z)) < expRadiusGp (I := I) g p :=
       hvExp.trans_le (min_le_right _ _)
-    rw [mem_smallNormalBall, framedExp_apply,
-      expMapDiffeo_apply_eq (I := I) g p hvSrc,
+    have hzFramedSrc : z ∈ (framedExpDiffeo (I := I) g p).source := by
+      rw [framedExp_source]
+      exact hvSrc
+    rw [mem_smallNormalBall, framedExp_eq_expMap (I := I) g p hzFramedSrc,
+      framedExpMap_apply,
       edist_exp_eq_radius (I := I) g p hEnorm hvGp,
       normalFrame_sqrt]
     exact (ENNReal.ofReal_lt_ofReal_iff_of_nonneg (norm_nonneg z)).2 hzNorm
@@ -82,11 +88,17 @@ theorem framedBall_eq_small
       rw [mem_ball, dist_zero_right, hzNorm, hvLen]
       exact hdist
     refine ⟨z, hzBall, ?_⟩
-    rw [framedExp_apply, hzFrame,
-      expDiffeo_eq_intr (I := I) g hEnorm p hvSmall, hvExp]
+    rw [framedExp_apply, hzFrame]
+    calc
+      expMapDiffeo (I := I) g p
+          (tangentSpaceModelContinuousLinearEquiv (I := I) p v) =
+          expMapIntrinsic (I := I) g hEnorm p v := by
+        with_unfolding_all
+          exact expDiffeo_eq_intr (I := I) g hEnorm p hvSmall
+      _ = q := hvExp
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 def localBallVolume
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [T3Space M] [ConnectedSpace M]
@@ -95,8 +107,8 @@ def localBallVolume
   letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   riemannianVolumeMeasure (I := I) (M := M) g (ball p R)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem localBall_eq_normal
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -107,7 +119,7 @@ theorem localBall_eq_normal
     (p : M) {R : Real} (hR : 0 < R)
     (hRexp : R < expDiffeoRadius (I := I) g hEnorm p) :
     localBallVolume (I := I) g p R = normalBallVolume (I := I) g p R := by
-  letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
+  let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   have hball : ball p R = smallNormalBall (I := I) p R :=
     Set.Subset.antisymm
       (metricBall_subset_smallNormalBall (I := I) (M := M))
@@ -116,8 +128,163 @@ theorem localBall_eq_normal
   congr 1
   exact (framedBall_eq_small (I := I) g hEnorm p hR hRexp).symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_ball_ratio
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [T3Space M] [ConnectedSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) (ε : Real) (hε : 0 < ε) :
+    ∃ c : Real,
+      c = paramDensity (I := I) g (framedExpDiffeo (I := I) g p) 0 ∧
+      0 < c ∧ ∃ ρ : Real, 0 < ρ ∧ ∀ {r : Real}, 0 < r → r < ρ →
+        ENNReal.ofReal ((1 - ε) * c) *
+            (ENNReal.ofReal (r ^ Module.finrank Real E) *
+              (modelHaar (E := E)) (ball (0 : E) 1)) ≤
+          localBallVolume (I := I) g p r ∧
+        localBallVolume (I := I) g p r ≤
+          ENNReal.ofReal ((1 + ε) * c) *
+            (ENNReal.ofReal (r ^ Module.finrank Real E) *
+              (modelHaar (E := E)) (ball (0 : E) 1)) := by
+  let : MeasurableSpace E := borel E
+  let : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  let : BorelSpace M := ⟨rfl⟩
+  let Ψ := framedExpDiffeo (I := I) g p
+  let f : E → Real := paramDensity (I := I) g Ψ
+  have hzero : (0 : E) ∈ Ψ.source := by
+    simpa only [Ψ] using zero_mem_framedExp_source (I := I) g p
+  have hfpos : 0 < f 0 := by
+    exact paramDensity_pos (I := I) g Ψ hzero
+  refine ⟨f 0, by rfl, hfpos, ?_⟩
+  have hcont : ContinuousWithinAt f Ψ.source 0 := by
+    exact (paramDensity_contOn (I := I) g Ψ) 0 hzero
+  obtain ⟨δ, hδ, hclose⟩ :=
+    (Metric.continuousWithinAt_iff.mp hcont) (ε * f 0) (mul_pos hε hfpos)
+  obtain ⟨s, hs, hsource⟩ := exists_framed_ball (I := I) g p
+  let e : Real := expDiffeoRadius (I := I) g hEnorm p
+  let ρ : Real := min δ (min s e)
+  have he : 0 < e := by
+    simpa only [e] using expDiffeoRadius_pos (I := I) g hEnorm p
+  have hρ : 0 < ρ := by
+    simpa only [ρ] using lt_min hδ (lt_min hs he)
+  refine ⟨ρ, hρ, ?_⟩
+  intro r hr hrρ
+  have hrδ : r < δ := hrρ.trans_le (min_le_left _ _)
+  have hrs : r < s :=
+    hrρ.trans_le ((min_le_right _ _).trans (min_le_left _ _))
+  have hre : r < expDiffeoRadius (I := I) g hEnorm p := by
+    simpa only [e] using
+      hrρ.trans_le ((min_le_right _ _).trans (min_le_right _ _))
+  have hrsource : ball (0 : E) r ⊆ Ψ.source := by
+    simpa only [Ψ] using (Metric.ball_subset_ball hrs.le).trans hsource
+  have hdens (z : E) (hz : z ∈ ball (0 : E) r) :
+      (1 - ε) * f 0 ≤ f z ∧ f z ≤ (1 + ε) * f 0 := by
+    have hzδ : dist z (0 : E) < δ :=
+      (Metric.mem_ball.mp hz).trans hrδ
+    have hzclose := hclose (hrsource hz) hzδ
+    rw [Real.dist_eq] at hzclose
+    exact ⟨by nlinarith [neg_lt_of_abs_lt hzclose],
+      by nlinarith [lt_of_abs_lt hzclose]⟩
+  have hlow :
+      ENNReal.ofReal ((1 - ε) * f 0) *
+          (modelHaar (E := E)) (ball (0 : E) r) ≤
+        riemannianVolumeMeasure (I := I) (M := M) g
+          (Ψ '' ball (0 : E) r) := by
+    exact param_vol_ge (I := I) g Ψ measurableSet_ball hrsource
+      (fun z hz => (hdens z hz).1)
+  have hupp :
+      riemannianVolumeMeasure (I := I) (M := M) g
+          (Ψ '' ball (0 : E) r) ≤
+        ENNReal.ofReal ((1 + ε) * f 0) *
+          (modelHaar (E := E)) (ball (0 : E) r) := by
+    rw [riemannianVolumeMeasure_image_param_eq
+      (I := I) g Ψ measurableSet_ball hrsource]
+    calc
+      (∫⁻ z in ball (0 : E) r, ENNReal.ofReal (f z)
+          ∂(modelHaar (E := E))) ≤
+          ∫⁻ _z in ball (0 : E) r, ENNReal.ofReal ((1 + ε) * f 0)
+            ∂(modelHaar (E := E)) := by
+        refine MeasureTheory.setLIntegral_mono' measurableSet_ball ?_
+        intro z hz
+        exact ENNReal.ofReal_le_ofReal (hdens z hz).2
+      _ = ENNReal.ofReal ((1 + ε) * f 0) *
+          (modelHaar (E := E)) (ball (0 : E) r) := by
+        rw [MeasureTheory.setLIntegral_const]
+  have hball : localBallVolume (I := I) g p r =
+      riemannianVolumeMeasure (I := I) (M := M) g
+        (Ψ '' ball (0 : E) r) := by
+    rw [localBall_eq_normal (I := I) g hEnorm p hr hre]
+    rfl
+  constructor
+  · rw [hball]
+    simpa only [f, Ψ, modelHaar_ball (E := E) hr] using hlow
+  · rw [hball]
+    simpa only [f, Ψ, modelHaar_ball (E := E) hr] using hupp
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_euclid_ratio
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [T3Space M] [ConnectedSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) (ε : Real) (hε : 0 < ε) (hε1 : ε < 1) :
+    ∃ ρ : Real, 0 < ρ ∧ ∀ {r : Real}, 0 < r → r < ρ →
+      ENNReal.ofReal (1 - ε) *
+          (ENNReal.ofReal (r ^ Module.finrank Real E) *
+            (MeasureTheory.volume : MeasureTheory.Measure E) (ball (0 : E) 1)) ≤
+        localBallVolume (I := I) g p r ∧
+      localBallVolume (I := I) g p r ≤
+        ENNReal.ofReal (1 + ε) *
+          (ENNReal.ofReal (r ^ Module.finrank Real E) *
+            (MeasureTheory.volume : MeasureTheory.Measure E) (ball (0 : E) 1)) := by
+  obtain ⟨c, hc, _hcpos, ρ, hρ, hratio⟩ :=
+    exists_ball_ratio (I := I) g hEnorm p ε hε
+  have hhaar :
+      ENNReal.ofReal c * (modelHaar (E := E)) (ball (0 : E) 1) =
+        (MeasureTheory.volume : MeasureTheory.Measure E) (ball (0 : E) 1) := by
+    have h := congrArg (fun μ : MeasureTheory.Measure E => μ (ball (0 : E) 1))
+      (framedDens_haar (I := I) g p)
+    simpa only [MeasureTheory.Measure.smul_apply, smul_eq_mul, hc] using h
+  have hoflow : ENNReal.ofReal ((1 - ε) * c) =
+      ENNReal.ofReal (1 - ε) * ENNReal.ofReal c :=
+    ENNReal.ofReal_mul (sub_nonneg.mpr hε1.le)
+  have hofupp : ENNReal.ofReal ((1 + ε) * c) =
+      ENNReal.ofReal (1 + ε) * ENNReal.ofReal c :=
+    ENNReal.ofReal_mul (by positivity)
+  refine ⟨ρ, hρ, ?_⟩
+  intro r hr hrρ
+  obtain ⟨hlow, hupp⟩ := hratio hr hrρ
+  constructor
+  · calc
+      ENNReal.ofReal (1 - ε) *
+          (ENNReal.ofReal (r ^ Module.finrank Real E) *
+            (MeasureTheory.volume : MeasureTheory.Measure E) (ball (0 : E) 1)) =
+          ENNReal.ofReal ((1 - ε) * c) *
+            (ENNReal.ofReal (r ^ Module.finrank Real E) *
+              (modelHaar (E := E)) (ball (0 : E) 1)) := by
+        rw [hoflow, ← hhaar]
+        simp only [mul_assoc, mul_comm, mul_left_comm]
+      _ ≤ localBallVolume (I := I) g p r := hlow
+  · calc
+      localBallVolume (I := I) g p r ≤
+          ENNReal.ofReal ((1 + ε) * c) *
+            (ENNReal.ofReal (r ^ Module.finrank Real E) *
+              (modelHaar (E := E)) (ball (0 : E) 1)) := hupp
+      _ = ENNReal.ofReal (1 + ε) *
+          (ENNReal.ofReal (r ^ Module.finrank Real E) *
+            (MeasureTheory.volume : MeasureTheory.Measure E) (ball (0 : E) 1)) := by
+        rw [hofupp, ← hhaar]
+        simp only [mul_assoc, mul_comm, mul_left_comm]
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem localBall_cross
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -175,8 +342,8 @@ theorem localBall_cross
     localBall_eq_normal (I := I) g hEnorm p hr hrexp]
   exact hcross hr hrR (hRρ.trans hρc')
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem localBall_cross_of_complete_metric
     [ConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -205,26 +372,26 @@ theorem localBall_cross_of_complete_metric
             ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) r) ≤
           localBallVolume (I := I) g p r *
             ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R) := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M := inferInstance
-  letI : CompleteSpace M := hcomplete.complete
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := inferInstance
+  let : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
   exact localBall_cross (I := I) (M := M) g hEnorm p q hq hd hRic
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem localBall_ratio
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -263,8 +430,8 @@ theorem localBall_ratio
   rw [ENNReal.le_div_iff_mul_le (Or.inl hmr0) (Or.inl ENNReal.ofReal_ne_top)]
   exact hcross hr.1 hrR hR.2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem localBall_ratio_of_complete_metric
     [ConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -294,19 +461,19 @@ theorem localBall_ratio_of_complete_metric
         (fun R => riemannianVolumeMeasure (I := I) (M := M) g (ball p R) /
           ENNReal.ofReal (hypRadVol q (Module.finrank Real E - 1) R))
         (Ioo (0 : Real) ρ) := by
-  letI : IsManifold I 1 M :=
+  let : IsManifold I 1 M :=
     IsManifold.of_le (I := I) (M := M) (n := (⊤ : WithTop ℕ∞))
       (by decide : (1 : WithTop ℕ∞) ≤ (⊤ : WithTop ℕ∞))
-  letI : TopologicalSpace.MetrizableSpace M :=
+  let : TopologicalSpace.MetrizableSpace M :=
     Manifold.metrizableSpace I M
-  letI : T3Space M := inferInstance
-  letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
+  let : T3Space M := inferInstance
+  let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+  let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
-  letI : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  letI : PseudoEMetricSpace M := inferInstance
-  letI : CompleteSpace M := hcomplete.complete
+  let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let : PseudoEMetricSpace M := inferInstance
+  let : CompleteSpace M := hcomplete.complete
   have hEnorm : IsMetricNorm (I := I) (M := M) g := by
     intro x v
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v

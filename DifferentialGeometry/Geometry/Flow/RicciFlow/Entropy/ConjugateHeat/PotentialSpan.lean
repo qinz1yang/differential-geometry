@@ -35,7 +35,7 @@ theorem conjA1_on
         (Set.Icc (0 : Real) h) ∧
       ∀ s ∈ Set.Icc (0 : Real) h,
         ‖conjA1 (I := I) (M := M) S T s‖ ≤ (C1 : Real) := by
-  letI : SeminormedAddCommGroup
+  let : SeminormedAddCommGroup
       (tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 1 →L[Real]
         tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup

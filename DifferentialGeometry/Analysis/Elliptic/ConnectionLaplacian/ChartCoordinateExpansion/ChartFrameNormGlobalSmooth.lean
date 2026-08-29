@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -33,15 +32,15 @@ omit [NeZero (Module.finrank ℝ E)] [ChartedSpace H M] [CompactSpace M] [T2Spac
     [SigmaCompactSpace M] in
 private lemma locallyCompactSpace_M (I : ModelWithCorners ℝ E H)
     [ChartedSpace H M] : LocallyCompactSpace M := by
-  haveI : LocallyCompactSpace H := I.locallyCompactSpace
+  have : LocallyCompactSpace H := I.locallyCompactSpace
   exact ChartedSpace.locallyCompactSpace H M
 
 omit [NeZero (Module.finrank ℝ E)] [ChartedSpace H M] [CompactSpace M] [T2Space M] in
 private lemma regularSpace_M (I : ModelWithCorners ℝ E H)
     [ChartedSpace H M] [T2Space M] : RegularSpace M := by
-  haveI : LocallyCompactSpace M := locallyCompactSpace_M (E := E) (H := H) (M := M) I
-  haveI : WeaklyLocallyCompactSpace M := inferInstance
-  haveI : R1Space M := T2Space.r1Space
+  have : LocallyCompactSpace M := locallyCompactSpace_M (E := E) (H := H) (M := M) I
+  have : WeaklyLocallyCompactSpace M := inferInstance
+  have : R1Space M := T2Space.r1Space
   infer_instance
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
@@ -58,7 +57,7 @@ private lemma exists_open_closure_subset_open_of_isCompact
     {K U : Set M} (hK : IsCompact K) (hU_open : IsOpen U)
     (hKU : K ⊆ U) :
     ∃ V : Set M, IsOpen V ∧ K ⊆ V ∧ closure V ⊆ U := by
-  haveI : RegularSpace M := regularSpace_M (E := E) (H := H) (M := M) I
+  have : RegularSpace M := regularSpace_M (E := E) (H := H) (M := M) I
   have hU_nhdsSet : U ∈ 𝓝ˢ K := hU_open.mem_nhdsSet.mpr hKU
   exact hK.exists_isOpen_closure_subset hU_nhdsSet
 

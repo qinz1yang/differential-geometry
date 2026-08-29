@@ -1307,7 +1307,7 @@ theorem exists_rawConnLapComp_iteratedFDeriv_norm_sq_le_rawConnLapRhsHsContent
     exists_rawConnLapComp_iteratedFDeriv_norm_sq_le_rawConnLapRhsHsContent_perAlpha
       (I := I) (M := M) g r s k w.1 w.2.1 w.2.2
   choose Bfun hBfun_nn hBfun using hperα
-  set actF : Finset M := chartAtlasPOU_activeFinset I M with hactF_def
+  set actF : Finset M := chartAtlasPOUActiveFinset I M with hactF_def
   refine ⟨∑ α ∈ actF, ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
       ∑ Jdx : Fin s → Fin (Module.finrank ℝ E), Bfun ⟨α, Idx, Jdx⟩,
     Finset.sum_nonneg (fun α _ => Finset.sum_nonneg (fun Idx _ =>
@@ -1348,7 +1348,7 @@ theorem exists_rawConnLapComp_iteratedFDeriv_norm_sq_le_rawConnLapRhsHsContent
     have h_tsupp_empty : tsupport (fun x : M =>
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) = ∅ := by
       rw [tsupport, Function.support]
-      simp only [hρ0, ne_eq, not_true_eq_false, Set.setOf_false, closure_empty]
+      simp only [hρ0, ne_eq, not_true_eq_false, Set.ofPred_false, closure_empty]
     have hyK' : y ∈ chartImagePOUTsupport (I := I) (M := M) α := hyK
     rw [chartImagePOUTsupport] at hyK'
     obtain ⟨z, ⟨x, hx_supp, _⟩, _⟩ := hyK'
@@ -1491,7 +1491,7 @@ private lemma rawConnLapSumIntegrals_eq_integral_sum
                     (Fin (Module.finrank ℝ E)) ℝ (bIdx i))| ^ 2))
         ∂(volume : Measure EuclN) := by
     intro IJ j
-    rw [MeasureTheory.lintegral_finset_sum' _
+    rw [MeasureTheory.lintegral_finsetSum' _
       (fun bIdx _ => rawConnLapPullIntegrand_aemeasurable (I := I) (M := M) g r' s' S α IJ j bIdx)]
   have h_j : ∀ (IJ : (Fin r' → Fin (Module.finrank ℝ E)) ×
         (Fin s' → Fin (Module.finrank ℝ E))),
@@ -1535,7 +1535,7 @@ private lemma rawConnLapSumIntegrals_eq_integral_sum
           rawConnLapPullIntegrand_aemeasurable (I := I) (M := M) g r' s' S α IJ j bIdx)
       refine h.congr (Filter.EventuallyEq.of_eq (funext (fun y => ?_)))
       rw [Finset.sum_apply]
-    rw [MeasureTheory.lintegral_finset_sum' _ hmeas]
+    rw [MeasureTheory.lintegral_finsetSum' _ hmeas]
   calc (∑ IJ : (Fin r' → Fin (Module.finrank ℝ E)) ×
           (Fin s' → Fin (Module.finrank ℝ E)),
         ∑ j ∈ Finset.range K,
@@ -1603,7 +1603,7 @@ private lemma rawConnLapSumIntegrals_eq_integral_sum
                 (Filter.EventuallyEq.of_eq (funext (fun y => by rw [Finset.sum_apply]))))
           refine h.congr (Filter.EventuallyEq.of_eq (funext (fun y => ?_)))
           rw [Finset.sum_apply]
-        rw [MeasureTheory.lintegral_finset_sum' _ hmeas2]
+        rw [MeasureTheory.lintegral_finsetSum' _ hmeas2]
     _ = ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
           ENNReal.ofReal
             (((chartAtlasPOU I M α : M → ℝ)
@@ -2092,7 +2092,6 @@ variable
 
 open DifferentialGeometry.Tensor0SBundle
 
-set_option backward.isDefEq.respectTransparency false
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
@@ -2106,7 +2105,7 @@ private lemma rawConnLap_smooth_witness (g : SmoothRiemannianMetric I M) {r s : 
   rawTensorConnLap_contMDiff (I := I) g r s
     (fun z : M => T.toSection z) T.toSection.contMDiff_toFun
 
-omit [CompactSpace M] [I.Boundaryless] in
+omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem rawTensorConnLapSmooth_sub (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T T' : Integral.L2.SmoothCcTensor g r s) :
     rawTensorConnLapSmooth (I := I) g r s (T - T')
@@ -2121,10 +2120,10 @@ theorem rawTensorConnLapSmooth_sub (g : SmoothRiemannianMetric I M) (r s : ℕ)
       (rawConnLap_smooth_witness (I := I) g T')
       (rawConnLap_smooth_witness (I := I) g ((-1 : ℝ) • T')) x
     have hLHS : (rawTensorConnLapSmooth (I := I) g r s ((-1 : ℝ) • T')).toSection x =
-        (tensorConnLaplacian_of_contMDiff (I := I) g r s ((-1 : ℝ) • T')
+        (tensorConnLaplacianOfContMDiff (I := I) g r s ((-1 : ℝ) • T')
           (rawConnLap_smooth_witness (I := I) g ((-1 : ℝ) • T'))).toSection x := rfl
     have hRHS : (rawTensorConnLapSmooth (I := I) g r s T').toSection x =
-        (tensorConnLaplacian_of_contMDiff (I := I) g r s T'
+        (tensorConnLaplacianOfContMDiff (I := I) g r s T'
           (rawConnLap_smooth_witness (I := I) g T')).toSection x := rfl
     rw [hLHS, Integral.L2.SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul,
       Pi.smul_apply, hRHS, hsmul]
@@ -2138,13 +2137,13 @@ theorem rawTensorConnLapSmooth_sub (g : SmoothRiemannianMetric I M) (r s : ℕ)
       (rawConnLap_smooth_witness (I := I) g ((-1 : ℝ) • T'))
       (rawConnLap_smooth_witness (I := I) g (T + (-1 : ℝ) • T')) x
     have hLHS : (rawTensorConnLapSmooth (I := I) g r s (T + (-1 : ℝ) • T')).toSection x =
-        (tensorConnLaplacian_of_contMDiff (I := I) g r s (T + (-1 : ℝ) • T')
+        (tensorConnLaplacianOfContMDiff (I := I) g r s (T + (-1 : ℝ) • T')
           (rawConnLap_smooth_witness (I := I) g (T + (-1 : ℝ) • T'))).toSection x := rfl
     have hRHS₁ : (rawTensorConnLapSmooth (I := I) g r s T).toSection x =
-        (tensorConnLaplacian_of_contMDiff (I := I) g r s T
+        (tensorConnLaplacianOfContMDiff (I := I) g r s T
           (rawConnLap_smooth_witness (I := I) g T)).toSection x := rfl
     have hRHS₂ : (rawTensorConnLapSmooth (I := I) g r s ((-1 : ℝ) • T')).toSection x =
-        (tensorConnLaplacian_of_contMDiff (I := I) g r s ((-1 : ℝ) • T')
+        (tensorConnLaplacianOfContMDiff (I := I) g r s ((-1 : ℝ) • T')
           (rawConnLap_smooth_witness (I := I) g ((-1 : ℝ) • T'))).toSection x := rfl
     rw [hLHS, Integral.L2.SmoothCcTensor.toSection_add, ContMDiffSection.coe_add,
       Pi.add_apply, hRHS₁, hRHS₂, hsum]
@@ -2184,7 +2183,7 @@ theorem exists_l2Norm_le_tensorPouSobolevHsNorm_zero
   have hNormSq_toReal : (tensorPouSobolevHsNormSq (I := I) (M := M) g 0 T).toReal = N ^ 2 := by
     unfold tensorPouSobolevHsNormSq
     rw [ENNReal.toReal_pow]
-  set S : ℝ := ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
+  set S : ℝ := ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M),
       ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
         ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
           ((MeasureTheory.eLpNorm

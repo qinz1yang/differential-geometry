@@ -6,7 +6,6 @@ import DifferentialGeometry.Tensor.Product.Bundle
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set
 

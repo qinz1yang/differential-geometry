@@ -14,7 +14,7 @@ import Mathlib.Analysis.Normed.Module.Alternating.Basic
 import Mathlib.RingTheory.Finiteness.Defs
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Data.Bundle
 import DifferentialGeometry.Tensor.Multilinear.Basis
@@ -27,7 +27,6 @@ import Mathlib.Geometry.Manifold.VectorBundle.Tensoriality
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold Topology ContDiff
 
@@ -54,10 +53,9 @@ theorem tensorialAt_apply_linearMap {x : M} (L : V x →ₗ[K] A) :
     TensorialAt I F (fun σ : (p : M) -> V p => L (σ x)) x := by
   refine ⟨?_, ?_⟩
   · intro f σ _ _
-    change L ((f • σ) x) = f x • L (σ x)
-    simpa only [Pi.smul_apply] using L.map_smul (f x) (σ x)
+    exact (congrArg L (show (f • σ) x = f x • σ x from rfl)).trans
+      (L.map_smul (f x) (σ x))
   · intro σ τ _ _
-    change L ((σ + τ) x) = L (σ x) + L (τ x)
     simpa only [Pi.add_apply] using L.map_add (σ x) (τ x)
 
 end LinearMap
@@ -77,8 +75,9 @@ theorem tensorialAt_evalSlot {s : ℕ} {x : M}
     change
       A (Function.update (fun j => slots j x) i ((f • X) x)) =
         f x • A (Function.update (fun j => slots j x) i (X x))
-    simpa only [Pi.smul_apply] using
-      A.map_update_smul (fun j => slots j x) i (f x) (X x)
+    exact (congrArg (fun v => A (Function.update (fun j => slots j x) i v))
+      (show (f • X) x = f x • X x from rfl)).trans
+      (A.map_update_smul (fun j => slots j x) i (f x) (X x))
   · intro X Y _ _
     change
       A (Function.update (fun j => slots j x) i ((X + Y) x)) =

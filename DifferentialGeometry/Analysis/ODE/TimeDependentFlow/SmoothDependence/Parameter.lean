@@ -39,7 +39,9 @@ theorem orbit_param_invariant
     have horbit := hΨ.hasDerivWithinAt z hz s hs
     have hcomp :=
       (ContinuousLinearMap.snd ℝ E P).hasFDerivAt.comp_hasDerivWithinAt s horbit
-    simpa [g, Function.comp, ContinuousLinearMap.coe_snd'] using hcomp
+    let hcomp' : HasDerivWithinAt (fun u : ℝ => (Ψ (z, u)).2) (0 : P)
+        (Set.Icc (t₀ - ε) (t₀ + ε)) s := hcomp
+    simpa [g] using hcomp'
   have hB : ∀ s ∈ Set.Ico (t₀ - ε) (t₀ + ε),
       HasDerivWithinAt g (0 : P) (Set.Ici s) s := by
     intro s hs
@@ -86,7 +88,12 @@ theorem projected_ode_initial
     have hpar : (Ψ (z, t)).2 = lam := by
       have := hinv z hz t htIcc
       simpa [hzdef] using this
-    simpa [Function.comp, ContinuousLinearMap.coe_fst', hpar] using hfst
+    let hfst' : HasDerivAt (fun s => (Ψ (z, s)).1)
+        (f t lam (Ψ (z, t)).1) t := by
+      change HasDerivAt (Prod.fst ∘ fun s => Ψ (z, s))
+        (f t lam (Ψ (z, t)).1) t
+      simpa [hpar] using hfst
+    simpa [hzdef] using hfst'
 
 theorem reindex_contDiff_top
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

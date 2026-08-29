@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.CurvatureTimeDerivative
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -63,7 +62,7 @@ theorem raiseAt_lower (g : SmoothRiemannianMetric I M) (x : M)
         basis.repr V p := by
     intro p
     set S : TangentSpace I x :=
-      (tangentFlatEquiv_gen (I := I) g x).symm (basis.coord p) with hS
+      (tangentFlatEquivGen (I := I) g x).symm (basis.coord p) with hS
     have hb : ∀ l : Idx, basisInvMetric (I := I) g x basis p l = basis.repr S l := by
       intro l
       rw [hS]
@@ -74,11 +73,11 @@ theorem raiseAt_lower (g : SmoothRiemannianMetric I M) (x : M)
       exact Finset.sum_congr rfl fun l _ => by rw [map_smul, smul_eq_mul]
     have hflat : g.inner x V S = basis.repr V p := by
       have h1 : g.inner x V S = g.inner x S V := g.symm x V S
-      have h2 : g.inner x S V = tangentFlatEquiv_gen (I := I) g x S V :=
+      have h2 : g.inner x S V = tangentFlatEquivGen (I := I) g x S V :=
         (tangentFlatEquiv_apply_gen (I := I) g x S V).symm
-      have h3 : tangentFlatEquiv_gen (I := I) g x S = basis.coord p := by
+      have h3 : tangentFlatEquivGen (I := I) g x S = basis.coord p := by
         rw [hS]
-        exact (tangentFlatEquiv_gen (I := I) g x).apply_symm_apply _
+        exact (tangentFlatEquivGen (I := I) g x).apply_symm_apply _
       rw [h1, h2, h3]
       exact basis.coord_apply p V
     calc (∑ l : Idx, basisInvMetric (I := I) g x basis p l * g.inner x V (basis l))
@@ -103,7 +102,7 @@ private theorem mulVanish_deriv {f A : Real -> Real} {A' : Real} {s : Set Real} 
     simp only [slope_def_field, hA0]
     ring
   refine Filter.Tendsto.congr (fun r => (hslope r).symm) ?_
-  exact Filter.Tendsto.mul (hf.mono Set.diff_subset) hA
+  exact Filter.Tendsto.mul (hf.mono Set.sdiff_subset) hA
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 theorem vecCurve_deriv
@@ -362,7 +361,7 @@ theorem metricNabla0S_self (g : SmoothRiemannianMetric I M) :
       (0 : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (n := (∞ : WithTop ℕ∞)) 3) := by
   classical
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
       (I := I) (metricCov (I := I) g) g :=
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
       (I := I) g
@@ -380,8 +379,10 @@ theorem metricNabla0S_self (g : SmoothRiemannianMetric I M) :
       (Fin.tail v)
     rw [hv] at hsec
     have hzero := nabla_metric_zero (I := I) (metricCov (I := I) g) g hmc Xsec x
-    rw [metricNabla0S_apply, hsec, hzero]
-    simp
+    rw [metricNabla0S_apply]
+    exact hsec.trans (by
+      rw [hzero]
+      rfl)
   rw [hfib]
   rfl
 
@@ -400,16 +401,16 @@ variable {x : M}
 
 def sharpFlat (g₁ g₂ : SmoothRiemannianMetric I M) (x : M) :
     TangentSpace I x →ₗ[Real] TangentSpace I x :=
-  (tangentFlatEquiv_gen (I := I) g₂ x).symm.toLinearMap ∘ₗ
-    (tangentFlatEquiv_gen (I := I) g₁ x).toLinearMap
+  (tangentFlatEquivGen (I := I) g₂ x).symm.toLinearMap ∘ₗ
+    (tangentFlatEquivGen (I := I) g₁ x).toLinearMap
 
 omit [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
 @[simp]
 theorem sharpFlat_self (g : SmoothRiemannianMetric I M) (x : M) (W : TangentSpace I x) :
     sharpFlat (I := I) g g x W = W := by
-  change (tangentFlatEquiv_gen (I := I) g x).symm
-    ((tangentFlatEquiv_gen (I := I) g x) W) = W
-  exact (tangentFlatEquiv_gen (I := I) g x).symm_apply_apply W
+  change (tangentFlatEquivGen (I := I) g x).symm
+    ((tangentFlatEquivGen (I := I) g x) W) = W
+  exact (tangentFlatEquivGen (I := I) g x).symm_apply_apply W
 
 omit [SigmaCompactSpace M] in
 theorem mixLow_eq_rm04 (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
@@ -423,19 +424,19 @@ theorem mixLow_eq_rm04 (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
   set V : TangentSpace I x :=
     DifferentialGeometry.Geometry.Curvature.riemannOp (metricCov (I := I) g₂) x X Y Z with hV
   set S : TangentSpace I x := sharpFlat (I := I) g₁ g₂ x W with hSdef
-  have hflat : tangentFlatEquiv_gen (I := I) g₂ x S = tangentFlatEquiv_gen (I := I) g₁ x W := by
+  have hflat : tangentFlatEquivGen (I := I) g₂ x S = tangentFlatEquivGen (I := I) g₁ x W := by
     rw [hSdef]
-    change tangentFlatEquiv_gen (I := I) g₂ x
-      ((tangentFlatEquiv_gen (I := I) g₂ x).symm
-        ((tangentFlatEquiv_gen (I := I) g₁ x) W)) = _
-    exact (tangentFlatEquiv_gen (I := I) g₂ x).apply_symm_apply _
+    change tangentFlatEquivGen (I := I) g₂ x
+      ((tangentFlatEquivGen (I := I) g₂ x).symm
+        ((tangentFlatEquivGen (I := I) g₁ x) W)) = _
+    exact (tangentFlatEquivGen (I := I) g₂ x).apply_symm_apply _
   calc metricRm04At (I := I) g₂ x
         (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) X Y Z S)
       = g₂.inner x V S := metricRm04At_inner (I := I) g₂ x X Y Z S
     _ = g₂.inner x S V := g₂.symm x V S
-    _ = tangentFlatEquiv_gen (I := I) g₂ x S V :=
+    _ = tangentFlatEquivGen (I := I) g₂ x S V :=
         (tangentFlatEquiv_apply_gen (I := I) g₂ x S V).symm
-    _ = tangentFlatEquiv_gen (I := I) g₁ x W V := by rw [hflat]
+    _ = tangentFlatEquivGen (I := I) g₁ x W V := by rw [hflat]
     _ = g₁.inner x W V := tangentFlatEquiv_apply_gen (I := I) g₁ x W V
     _ = g₁.inner x V W := g₁.symm x W V
 

@@ -29,7 +29,7 @@ theorem exists_normal_q
       PhaseFlow.phaseErr (normalPhaseK h (2 * q)) <
         ‖((PhaseFlow.freeDiagCLE (E := E)).symm :
           (E × E) →L[Real] (E × E))‖₊⁻¹ := by
-  letI : Nontrivial E := Module.nontrivial_of_finrank_pos
+  let : Nontrivial E := Module.nontrivial_of_finrank_pos
     (Nat.pos_of_ne_zero (NeZero.ne (Module.finrank Real E)))
   let threshold : NNReal :=
     ‖((PhaseFlow.freeDiagCLE (E := E)).symm :
@@ -80,7 +80,8 @@ theorem exists_normal_q
     mul_nonneg hqReal.le (sub_nonneg.mpr hlinear)
   refine ⟨q, ?_, ?_, ?_, ?_⟩
   · exact_mod_cast hqReal
-  · simpa only [q, NNReal.coe_mk] using hqRadius'
+  · change 4 * qReal < r
+    exact hqRadius'
   · change 3 * C * (2 * qReal) ^ 2 ≤ qReal
     nlinarith
   · simpa only [threshold] using herrQ

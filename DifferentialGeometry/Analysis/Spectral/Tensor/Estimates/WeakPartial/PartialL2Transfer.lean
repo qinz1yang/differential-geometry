@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -93,7 +92,7 @@ theorem exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices
   have h_envelope_le :
       ENNReal.ofReal (CIJ (Idx, Jdx)) * (‖S‖₊ + 1) ≤
         ENNReal.ofReal Csum * (‖S‖₊ + 1) :=
-    mul_le_mul_of_nonneg_right h_ofReal_le (by exact zero_le _)
+    mul_le_mul_of_nonneg_right h_ofReal_le (by exact zero_le)
   exact (hCIJ_le (Idx, Jdx)).trans h_envelope_le
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -159,7 +158,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indic
       ∑ k : Fin (Module.finrank ℝ E), ENNReal.ofReal (Ck k) ≤
         ENNReal.ofReal (∑ k : Fin (Module.finrank ℝ E), Ck k) := by
     rw [ENNReal.ofReal_sum_of_nonneg (fun k _ => hCk_nn k)]
-  exact mul_le_mul_of_nonneg_right h_ofReal_sum (by exact zero_le _)
+  exact mul_le_mul_of_nonneg_right h_ofReal_sum (by exact zero_le)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices_S

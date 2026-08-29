@@ -123,7 +123,7 @@ theorem iteratedRmComp_eq_nablaKRm04Field
               (frameComp0S (I := I) (nablaKRm04Field (I := I) S t k) frame) x := by
         funext m d
         simp only [frameExtData]
-        refine extDerivFun_eventuallyEq_congr (I := I) _ ?_
+        refine mvfderiv_eventuallyEq_congr (I := I) _ ?_
         exact hlevelk.mono fun y hy => congrFun hy m
       have hbase :
           iteratedRmComp (I := I) frame
@@ -197,7 +197,7 @@ theorem iterRmLF_eq_nabla
               (frameComp0S (I := I) (nablaKRm04Field (I := I) S t k) frame) x := by
         funext m d
         simp only [frameExtData]
-        refine extDerivFun_eventuallyEq_congr (I := I) _ ?_
+        refine mvfderiv_eventuallyEq_congr (I := I) _ ?_
         exact hlevelk.mono fun y hy => congrFun hy m
       have hbase :
           iteratedRmComp (I := I) frame

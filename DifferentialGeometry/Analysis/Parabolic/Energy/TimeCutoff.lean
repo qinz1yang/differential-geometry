@@ -35,7 +35,7 @@ theorem contDiff_timeCutoffDeriv (a b : ℝ) :
       (Real.smoothTransition.contDiff (n := (⊤ : ℕ∞)))).2
   have haffine : ContDiff ℝ ∞ (fun t : ℝ => (t - a) / (b - a)) :=
     (contDiff_id.sub contDiff_const).div_const _
-  simpa only [timeCutoffDeriv, Function.comp_apply] using
+  simpa only [timeCutoffDeriv, Function.comp_apply] using!
     (hsmooth.comp haffine).div_const (b - a)
 
 theorem hasDerivAt_timeCutoff (a b t : ℝ) :
@@ -48,7 +48,7 @@ theorem hasDerivAt_timeCutoff (a b t : ℝ) :
       ((t - a) / (b - a)) :=
     ((Real.smoothTransition.contDiff (n := (1 : ℕ∞))).differentiable
       (by norm_num) _).hasDerivAt
-  simpa only [timeCutoff, timeCutoffDeriv, div_eq_mul_inv, one_mul] using
+  simpa only [timeCutoff, timeCutoffDeriv, div_eq_mul_inv, one_mul] using!
     houter.comp t hinner
 
 theorem contDiff_backwardTimeCutoff (a b : ℝ) :
@@ -61,7 +61,7 @@ theorem contDiff_backwardTimeCutoffDeriv (a b : ℝ) :
 
 theorem hasDerivAt_backwardTimeCutoff (a b t : ℝ) :
     HasDerivAt (backwardTimeCutoff a b) (backwardTimeCutoffDeriv a b t) t := by
-  simpa only [backwardTimeCutoff, backwardTimeCutoffDeriv, zero_sub] using
+  simpa only [backwardTimeCutoff, backwardTimeCutoffDeriv, zero_sub] using!
     (hasDerivAt_const t 1).sub (hasDerivAt_timeCutoff a b t)
 
 theorem timeCutoff_mem_Icc (a b t : ℝ) :

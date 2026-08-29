@@ -46,10 +46,10 @@ theorem continuousWithinAt_infDist_of_seqClosedGraph_of_approx
     hu.mono_right (nhdsWithin_le_nhds (a := x₀) (s := Set.Icc a b ×ˢ (Set.univ : Set F)))
   have hτn : Tendsto τn atTop (𝓝 τ₀) := by
     have hfst := (continuousAt_fst (p := x₀)).tendsto.comp huamb
-    simpa [τn, τ₀] using hfst
+    simpa [τn, τ₀] using! hfst
   have hpn : Tendsto pn atTop (𝓝 p₀) := by
     have hsnd := (continuousAt_snd (p := x₀)).tendsto.comp huamb
-    simpa [pn, p₀] using hsnd
+    simpa [pn, p₀] using! hsnd
   have hmem : ∀ᶠ n in atTop, τn n ∈ Set.Icc a b := by
     have h := hu (U := Set.Icc a b ×ˢ (Set.univ : Set F)) self_mem_nhdsWithin
     filter_upwards [h] with n hn
@@ -188,7 +188,7 @@ theorem continuousWithinAt_infDist_of_seqClosedGraph_of_approx
         by
           have h := Tendsto.prodMk hpsub' hφq
           simpa [nhds_prod_eq] using h
-      simpa using continuous_dist.continuousAt.tendsto.comp hpair'
+      simpa using! continuous_dist.continuousAt.tendsto.comp hpair'
     have hdistLe : ∀ᶠ m in atTop, dist (pn (ns (φ m))) (qn (φ m)) ≤ d₀ - ε / 2 := by
       filter_upwards [hφ.tendsto_atTop.eventually hqndist] with m hm
       exact le_of_lt hm

@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -47,8 +46,7 @@ theorem covDerivOfField_eq_iterCov
     (A0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2) (m : ℕ) :
     covDerivOfField (I := I) gRef A0 m =
-      MultilinearSection.domDomCongr (𝕜 := Real) (F := E) (IB := I)
-        (E := TangentSpace I) (∞ : WithTop ℕ∞) (acEquiv m)
+      Tensor0SBundle.Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (acEquiv m)
         (iterCov (I := I) gRef 2 A0 m) := by
   induction m with
   | zero =>
@@ -67,18 +65,14 @@ theorem metricCovDerivNorm_eq_iterCov
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (h gRef : SmoothRiemannianMetric I M) (N : ℕ) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gRef x basis
+    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric (Idx := Idx))) :
     metricCovDerivNorm (I := I) N h gRef x =
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + N)
         (iterCov (I := I) gRef 2 (Tensor0SBundle.metricTensorField (I := I) h) N x)) := by
   unfold metricCovDerivNorm
   rw [metricCovDeriv_eq_covDerivOfField, covDerivOfField_eq_iterCov]
-  change Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (N + 2)
-      (ContinuousMultilinearMap.domDomCongr (acEquiv N)
-        (iterCov (I := I) gRef 2 (Tensor0SBundle.metricTensorField (I := I) h) N x))) =
-    Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + N)
-      (iterCov (I := I) gRef 2 (Tensor0SBundle.metricTensorField (I := I) h) N x))
+  rw [Tensor0SBundle.Tensor0SField.domDomCongr_apply]
   rw [normSq0S_domDomCongr (I := I) gRef x basis hinv (acEquiv N)
       (iterCov (I := I) gRef 2 (Tensor0SBundle.metricTensorField (I := I) h) N x)]
 
@@ -90,7 +84,7 @@ theorem metricDerivNorm_eq_iterCov
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (gk gInf gRef : SmoothRiemannianMetric I M) (N : ℕ) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gRef x basis
+    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric (Idx := Idx))) :
     metricDerivNorm (I := I) N gk gInf gRef x =
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + N)
@@ -106,15 +100,7 @@ theorem metricDerivNorm_eq_iterCov
       metricCovDeriv_eq_covDerivOfField (I := I) gInf gRef N]
     rfl
   rw [hsub, covDerivOfField_eq_iterCov]
-  change Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (N + 2)
-      (ContinuousMultilinearMap.domDomCongr (acEquiv N)
-        (iterCov (I := I) gRef 2
-          (Tensor0SBundle.metricTensorField (I := I) gk
-            - Tensor0SBundle.metricTensorField (I := I) gInf) N x))) =
-    Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + N)
-      (iterCov (I := I) gRef 2
-        (Tensor0SBundle.metricTensorField (I := I) gk
-          - Tensor0SBundle.metricTensorField (I := I) gInf) N x))
+  rw [Tensor0SBundle.Tensor0SField.domDomCongr_apply]
   rw [normSq0S_domDomCongr (I := I) gRef x basis hinv (acEquiv N)
       (iterCov (I := I) gRef 2
         (Tensor0SBundle.metricTensorField (I := I) gk
@@ -153,7 +139,7 @@ theorem metricDerivNorm_self
   have h0 : metricDiffCovDerivAt (I := I) a g g gRef x = 0 := sub_self _
   rw [h0]
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gRef x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gRef x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) gRef basis hON

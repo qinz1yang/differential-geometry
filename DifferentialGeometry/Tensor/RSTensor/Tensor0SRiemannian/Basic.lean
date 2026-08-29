@@ -14,7 +14,11 @@ import Mathlib.Analysis.InnerProductSpace.Trace
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.LinearAlgebra.Trace
 import Mathlib.Topology.Algebra.Module.FiniteDimension
-import Mathlib.Topology.Algebra.Module.LinearMap
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Idempotent
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Restrict
+import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.RestrictScalars
 import DifferentialGeometry.Tensor.RSTensor.FiberMetric.Tensor0SMetric
 open DifferentialGeometry.Geometry.Curvature
 
@@ -183,15 +187,15 @@ theorem metric_adjoint_eq_adjoint
     letI : InnerProductSpace Real W :=
       @InnerProductSpace.ofCore Real W _ _ _ DW.toCore.toCore
     MetricFiberData.adjoint DV DW A = LinearMap.adjoint A := by
-  letI : InnerProductSpace.Core Real V := DV.toCore
-  letI : NormedAddCommGroup V :=
+  let : InnerProductSpace.Core Real V := DV.toCore
+  let : NormedAddCommGroup V :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real V _ _ _ DV.toCore
-  letI : InnerProductSpace Real V :=
+  let : InnerProductSpace Real V :=
     @InnerProductSpace.ofCore Real V _ _ _ DV.toCore.toCore
-  letI : InnerProductSpace.Core Real W := DW.toCore
-  letI : NormedAddCommGroup W :=
+  let : InnerProductSpace.Core Real W := DW.toCore
+  let : NormedAddCommGroup W :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real W _ _ _ DW.toCore
-  letI : InnerProductSpace Real W :=
+  let : InnerProductSpace Real W :=
     @InnerProductSpace.ofCore Real W _ _ _ DW.toCore.toCore
   apply LinearMap.ext
   intro y
@@ -209,15 +213,15 @@ theorem homFlatLinear_comm [AddCommGroup V] [Module Real V]
     (DV : MetricFiberData V) (DW : MetricFiberData W)
     (A B : V →ₗ[Real] W) :
     homFlatLinear DV DW A B = homFlatLinear DV DW B A := by
-  letI : InnerProductSpace.Core Real V := DV.toCore
-  letI : NormedAddCommGroup V :=
+  let : InnerProductSpace.Core Real V := DV.toCore
+  let : NormedAddCommGroup V :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real V _ _ _ DV.toCore
-  letI : InnerProductSpace Real V :=
+  let : InnerProductSpace Real V :=
     @InnerProductSpace.ofCore Real V _ _ _ DV.toCore.toCore
-  letI : InnerProductSpace.Core Real W := DW.toCore
-  letI : NormedAddCommGroup W :=
+  let : InnerProductSpace.Core Real W := DW.toCore
+  let : NormedAddCommGroup W :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real W _ _ _ DW.toCore
-  letI : InnerProductSpace Real W :=
+  let : InnerProductSpace Real W :=
     @InnerProductSpace.ofCore Real W _ _ _ DW.toCore.toCore
   have hA := metric_adjoint_eq_adjoint DV DW A
   have hB := metric_adjoint_eq_adjoint DV DW B
@@ -232,15 +236,15 @@ theorem homFlatLinear_nonneg [AddCommGroup V] [Module Real V]
     (DV : MetricFiberData V) (DW : MetricFiberData W)
     (A : V →ₗ[Real] W) :
     0 <= homFlatLinear DV DW A A := by
-  letI : InnerProductSpace.Core Real V := DV.toCore
-  letI : NormedAddCommGroup V :=
+  let : InnerProductSpace.Core Real V := DV.toCore
+  let : NormedAddCommGroup V :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real V _ _ _ DV.toCore
-  letI : InnerProductSpace Real V :=
+  let : InnerProductSpace Real V :=
     @InnerProductSpace.ofCore Real V _ _ _ DV.toCore.toCore
-  letI : InnerProductSpace.Core Real W := DW.toCore
-  letI : NormedAddCommGroup W :=
+  let : InnerProductSpace.Core Real W := DW.toCore
+  let : NormedAddCommGroup W :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real W _ _ _ DW.toCore
-  letI : InnerProductSpace Real W :=
+  let : InnerProductSpace Real W :=
     @InnerProductSpace.ofCore Real W _ _ _ DW.toCore.toCore
   have hA := metric_adjoint_eq_adjoint DV DW A
   change 0 <= LinearMap.trace Real V ((MetricFiberData.adjoint DV DW A).comp A)
@@ -253,15 +257,15 @@ theorem homFlatLinear_self_eq_zero_iff [AddCommGroup V] [Module Real V]
     (DV : MetricFiberData V) (DW : MetricFiberData W)
     (A : V →ₗ[Real] W) :
     homFlatLinear DV DW A A = 0 ↔ A = 0 := by
-  letI : InnerProductSpace.Core Real V := DV.toCore
-  letI : NormedAddCommGroup V :=
+  let : InnerProductSpace.Core Real V := DV.toCore
+  let : NormedAddCommGroup V :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real V _ _ _ DV.toCore
-  letI : InnerProductSpace Real V :=
+  let : InnerProductSpace Real V :=
     @InnerProductSpace.ofCore Real V _ _ _ DV.toCore.toCore
-  letI : InnerProductSpace.Core Real W := DW.toCore
-  letI : NormedAddCommGroup W :=
+  let : InnerProductSpace.Core Real W := DW.toCore
+  let : NormedAddCommGroup W :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real W _ _ _ DW.toCore
-  letI : InnerProductSpace Real W :=
+  let : InnerProductSpace Real W :=
     @InnerProductSpace.ofCore Real W _ _ _ DW.toCore.toCore
   have hA := metric_adjoint_eq_adjoint DV DW A
   change LinearMap.trace Real V ((MetricFiberData.adjoint DV DW A).comp A) = 0 ↔ A = 0

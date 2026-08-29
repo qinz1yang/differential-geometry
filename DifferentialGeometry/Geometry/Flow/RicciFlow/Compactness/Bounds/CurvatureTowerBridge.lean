@@ -7,7 +7,6 @@ import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -125,7 +124,7 @@ theorem curvCovDeriv_normSq_eq
     exact curv_apply_iterCov (I := I) (M := M) g m x v
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
   have hinv :
-      MetricInverseInBasis_gen (I := I) g x basis
+      MetricInverseInBasisGen (I := I) g x basis
         (identityInvMetric
           (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) g basis hON

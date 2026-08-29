@@ -5,6 +5,7 @@ set_option autoImplicit false
 
 noncomputable section
 
+
 namespace DifferentialGeometry
 namespace MetricKoszul
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -25,7 +26,7 @@ theorem koszulCov_sub
     (D F : E →L[Real] E →L[Real] E →L[Real] Real) (v w : E) :
     koszulCov (D - F) v w = koszulCov D v w - koszulCov F v w := by
   ext u
-  simp only [koszulCov_apply, ContinuousLinearMap.sub_apply]
+  simp only [koszulCov_apply, sub_apply]
   ring
 
 theorem koszulCov_diag_sub
@@ -33,7 +34,7 @@ theorem koszulCov_diag_sub
     koszulCov D v v - koszulCov D w w =
       koszulCov D (v - w) v + koszulCov D w (v - w) := by
   ext u
-  simp only [ContinuousLinearMap.sub_apply, ContinuousLinearMap.add_apply,
+  simp only [sub_apply, add_apply,
     koszulCov_apply, map_sub]
   ring
 
@@ -142,7 +143,7 @@ private noncomputable def koszulCovBilin
 @[simp] private theorem koszulCovBilin_apply
     (D : E →L[Real] E →L[Real] E →L[Real] Real) (v w : E) :
     koszulCovBilin D v w = koszulCov D v w := by
-  simp [koszulCovBilin]
+  rfl
 
 private theorem koszulCovBilin_le
     (D : E →L[Real] E →L[Real] E →L[Real] Real) :

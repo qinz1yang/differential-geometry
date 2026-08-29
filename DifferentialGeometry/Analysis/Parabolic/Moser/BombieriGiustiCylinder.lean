@@ -288,11 +288,16 @@ theorem gradFun_bombieriGiustiReciprocalLocalizer
         (bombieriGiustiDescendingLevel lower upper (2 * k + 1))).div_const
           (bombieriGiustiDescendingLevel lower upper (2 * k + 1) -
             bombieriGiustiDescendingLevel lower upper (2 * k + 2)))
-    simpa only [affine, zero_add, one_div] using h
+    convert h using 1 <;> try rfl
+    simp only [zero_add, one_div]
   have hgradient := gradientFun_comp (I := I) g haffine.differentiableAt
     (rho.smooth.mdifferentiable (by simp) x)
-  simpa only [affine, bombieriGiustiReciprocalLocalizer, haffine.deriv,
-    gradientFun] using hgradient
+  change gradientFun (I := I) g (fun y ↦ affine (rho.toFun y)) x =
+    (bombieriGiustiDescendingLevel lower upper (2 * k + 1) -
+      bombieriGiustiDescendingLevel lower upper (2 * k + 2))⁻¹ •
+        gradFun (I := I) g rho.toFun x
+  rw [← haffine.deriv]
+  exact hgradient
 
 theorem bombieriGiustiReciprocalLocalizer_inner_grad_self_le
     (g : SmoothRiemannianMetric I M) {q : SmoothRiemannianMetric I M}
@@ -437,6 +442,8 @@ theorem reciprocalLocalizer_le_bombieriGiustiSpatialCutoff_succ
       apply spatialCutoffBetween_eq_one_of_outer_le
       · exact bombieriGiustiDescendingLevel_strictAnti hlowerUpper (by omega)
       · convert hrho.le using 1
+        · rfl
+        · congr
     rw [hone, one_pow]
     have hmem := spatialMoserCutoff_mem_Icc localizer 0 x
     simpa only [localizer, one_pow] using
@@ -509,7 +516,8 @@ theorem forward_initial_spatialCutoffBetween_le_bombieriGiustiSpatialCutoff_succ
   have hlocal : level (2 * k + 2) < level (2 * k + 1) := hlevel (by omega)
   apply spatialCutoffBetween_sq_le_of_nested_levels rho
   · exact hlevel (by omega)
-  · simpa only [moserCutoffLevelBetween_zero] using le_rfl
+  · rw [moserCutoffLevelBetween_zero,
+      show 2 * (k + 1) = 2 * k + 2 by omega]
   · exact moserCutoffLevelBetween_strictMono hlocal (by norm_num)
 
 end DifferentialGeometry.Analysis.Parabolic.Moser

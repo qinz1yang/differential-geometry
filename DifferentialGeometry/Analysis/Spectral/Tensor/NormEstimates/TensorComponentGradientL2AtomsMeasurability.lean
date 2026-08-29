@@ -21,7 +21,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -290,12 +289,12 @@ private lemma christoffelAtomIntegrand_continuousOn_chartSource
   have h_input : ContinuousOn
       (fun b : M => ∑ k : Fin r, ‖trivInput (I := I) g r s α j S.toSection b k‖ ^ 2)
       ((chartAt H α).source) :=
-    continuousOn_finset_sum _ (fun k _ =>
+    continuousOn_finsetSum _ (fun k _ =>
       (trivInput_continuousOn_chartSource (I := I) S k).norm.pow 2)
   have h_output : ContinuousOn
       (fun b : M => ∑ l : Fin s, ‖trivOutput (I := I) g r s α j S.toSection b l‖ ^ 2)
       ((chartAt H α).source) :=
-    continuousOn_finset_sum _ (fun l _ =>
+    continuousOn_finsetSum _ (fun l _ =>
       (trivOutput_continuousOn_chartSource (I := I) S l).norm.pow 2)
   have h_sumsq := h_input.add h_output
   have h_sqrt := Real.continuous_sqrt.comp_continuousOn h_sumsq

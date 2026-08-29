@@ -204,7 +204,9 @@ theorem variable_coefficient_ball_interior_schauder_estimate_of_global_small_coe
       abs_of_nonneg (ballCutoff_mem_Icc center r R x).1]
     exact_mod_cast (ballCutoff_mem_Icc center r R x).2
   have hdchiNorm : ∀ x, ‖dchi x‖ ≤ Mdchi :=
-    fun x ↦ by simpa only [Mdchi] using dchi.norm_coe_le_norm x
+    fun x ↦ by
+      change ‖dchi x‖ ≤ (‖dchi‖₊ : ℝ)
+      exact dchi.norm_coe_le_norm x
   have hd2chiNorm : ∀ x, ‖d2chi x‖ ≤ Md2chi := by
     intro x
     change ‖ballCutoffFDeriv2 center r R x‖ ≤
@@ -250,7 +252,7 @@ theorem variable_coefficient_ball_interior_schauder_estimate_of_coefficient_osci
       variableMatrixLap a d2u x = f x)
     (A Ka omega : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((Metric.ball center R).restrict (a i j : Euc n → Real)))
+      ((Metric.ball center R).domRestrict (a i j : Euc n → Real)))
     (homega : ∀ i j x, x ∈ Metric.ball center R →
       ‖a i j center - a i j x‖ ≤ omega i j)
     (haNorm : ∀ i j x, x ∈ Metric.ball center R →
@@ -308,7 +310,9 @@ theorem variable_coefficient_ball_interior_schauder_estimate_of_coefficient_osci
       abs_of_nonneg (ballCutoff_mem_Icc center r R x).1]
     exact_mod_cast (ballCutoff_mem_Icc center r R x).2
   have hdchiNorm : ∀ x, ‖dchi x‖ ≤ Mdchi :=
-    fun x ↦ by simpa only [Mdchi] using dchi.norm_coe_le_norm x
+    fun x ↦ by
+      change ‖dchi x‖ ≤ (‖dchi‖₊ : ℝ)
+      exact dchi.norm_coe_le_norm x
   have hd2chiNorm : ∀ x, ‖d2chi x‖ ≤ Md2chi := by
     intro x
     change ‖ballCutoffFDeriv2 center r R x‖ ≤
@@ -378,7 +382,7 @@ theorem variable_coefficient_ball_interior_schauder_estimate_of_small_coefficien
       variableMatrixLap a d2u x = f x)
     (A Ka : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((Metric.ball center R).restrict (a i j : Euc n → Real)))
+      ((Metric.ball center R).domRestrict (a i j : Euc n → Real)))
     (haNorm : ∀ i j x, x ∈ Metric.ball center R →
       ‖a i j x‖ ≤ A i j)
     (hfHolder : HolderWith Kf alpha (f : Euc n → F))

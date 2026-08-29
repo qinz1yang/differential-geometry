@@ -99,12 +99,12 @@ theorem scalar_conv
   have htWin : t ∈ RealTimeInterval.openWindow a b t₀ n :=
     mem_of_mem_nhds hn
   simpa only [Function.comp_apply, PointedCGHMaps.compSubseq, PointedCGHMaps.map,
-    OpenConvOut.at_window] using
+    OpenConvOut.atWindow] using
     ConvOut.scalar_conv_at (I := I) Φ R bf hsrc htgt
       (RealTimeInterval.openWindowLeft a t₀ n)
       (RealTimeInterval.openWindowRight b t₀ n) (cLow n) (hcLow n)
       (fun k s hs ↦ hbound n k s hs) (fun q ↦ hcovTail n q)
-      (OpenConvOut.at_window Φ co n) htWin x
+      (OpenConvOut.atWindow Φ co n) htWin x
 
 theorem ricNorm_conv
     {R : letI : TopologicalSpace P.M := P.topology
@@ -181,12 +181,12 @@ theorem ricNorm_conv
   have htWin : t ∈ RealTimeInterval.openWindow a b t₀ n :=
     mem_of_mem_nhds hn
   simpa only [Function.comp_apply, PointedCGHMaps.compSubseq, PointedCGHMaps.map,
-    OpenConvOut.at_window] using
+    OpenConvOut.atWindow] using
     ConvOut.ricNorm_conv_at (I := I) Φ R bf hsrc htgt
       (RealTimeInterval.openWindowLeft a t₀ n)
       (RealTimeInterval.openWindowRight b t₀ n) (cLow n) (hcLow n)
       (fun k s hs ↦ hbound n k s hs) (fun q ↦ hcovTail n q)
-      (OpenConvOut.at_window Φ co n) htWin x
+      (OpenConvOut.atWindow Φ co n) htWin x
 
 end OpenConvOut
 

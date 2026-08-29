@@ -40,10 +40,10 @@ theorem parabolic_variable_coefficient_ball_interior_schauder_estimate_of_lower_
       HasFDerivAt (du s : Euc n → Euc n →L[Real] F) (d2u s x) x)
     (huCont : Continuous u)
     (hsourceHolder : HolderWith Ksource alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (parabolicNondivergenceOperator a b c (fun t x ↦ u t x))))
     (hlowerHolder : HolderWith Klo alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (parabolicLowerOrderTerm b c (fun t x ↦ u t x))))
     (hsourceNorm : ∀ p,
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
@@ -54,7 +54,7 @@ theorem parabolic_variable_coefficient_ball_interior_schauder_estimate_of_lower_
         ‖parabolicLowerOrderTerm b c (fun t x ↦ u t x) p‖ ≤ Blo)
     (A Ka omega : n → n → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict (a i j)))
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict (a i j)))
     (homega : ∀ i j p,
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
         ‖a i j p0 - a i j p‖ ≤ omega i j)
@@ -62,10 +62,10 @@ theorem parabolic_variable_coefficient_ball_interior_schauder_estimate_of_lower_
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
         ‖a i j p‖ ≤ A i j)
     (hduHolder : HolderWith Kdu alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ du p.time p.space)))
     (huHolder : HolderWith Ku alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ u p.time p.space)))
     (hduNorm : ∀ p,
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
@@ -132,7 +132,7 @@ theorem parabolic_nondivergence_ball_interior_schauder_estimate
       HasFDerivAt (du s : Euc n → Euc n →L[Real] F) (d2u s x) x)
     (huCont : Continuous u)
     (hsourceHolder : HolderWith Ksource alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (parabolicNondivergenceOperator a b c (fun t x ↦ u t x))))
     (hsourceNorm : ∀ p,
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
@@ -140,16 +140,16 @@ theorem parabolic_nondivergence_ball_interior_schauder_estimate
           Bsource)
     (Kb Bb : n → NNReal) (A Ka omega : n → n → NNReal)
     (hb : ∀ i, HolderWith (Kb i) alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict (b i)))
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict (b i)))
     (hc : HolderWith Kc alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict c))
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict c))
     (hbNorm : ∀ i p,
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
         ‖b i p‖ ≤ Bb i)
     (hcNorm : ∀ p,
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ → ‖c p‖ ≤ Bc)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict (a i j)))
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict (a i j)))
     (homega : ∀ i j p,
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
         ‖a i j p0 - a i j p‖ ≤ omega i j)
@@ -157,10 +157,10 @@ theorem parabolic_nondivergence_ball_interior_schauder_estimate
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
         ‖a i j p‖ ≤ A i j)
     (hduHolder : HolderWith Kdu alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ du p.time p.space)))
     (huHolder : HolderWith Ku alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ u p.time p.space)))
     (hduNorm : ∀ p,
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
@@ -198,10 +198,10 @@ theorem parabolic_nondivergence_ball_interior_schauder_estimate
     rw [(hu p.time hp.1 p.space).fderiv]
     rfl
   have hjetHolder : HolderWith Kdu alpha
-      (Q.restrict (parabolicSpatialJet 1 (fun t x ↦ u t x))) := by
+      (Q.domRestrict (parabolicSpatialJet 1 (fun t x ↦ u t x))) := by
     have hcomp := e.symm.lipschitz.holderWith.comp hduHolder
-    have hfun : e.symm ∘ Q.restrict (fun p ↦ du p.time p.space) =
-        Q.restrict (parabolicSpatialJet 1 (fun t x ↦ u t x)) := by
+    have hfun : e.symm ∘ Q.domRestrict (fun p ↦ du p.time p.space) =
+        Q.domRestrict (parabolicSpatialJet 1 (fun t x ↦ u t x)) := by
       funext p
       change e.symm (du p.1.time p.1.space) =
         parabolicSpatialJet 1 (fun t x ↦ u t x) p.1
@@ -215,7 +215,7 @@ theorem parabolic_nondivergence_ball_interior_schauder_estimate
     exact hduNorm p hp
   have hlowerHolder : HolderWith
       (parabolicLowerOrderHolderConst Kb Bb Kc Kdu Ku Mdu Bc Mu) alpha
-      (Q.restrict (parabolicLowerOrderTerm b c (fun t x ↦ u t x))) :=
+      (Q.domRestrict (parabolicLowerOrderTerm b c (fun t x ↦ u t x))) :=
     parabolicLowerOrderTerm_holderWith_restrict
       b c (fun t x ↦ u t x) Kb Bb Mdu Bc Mu hb hc hjetHolder huHolder
         hbNorm hcNorm hjetNorm huNorm

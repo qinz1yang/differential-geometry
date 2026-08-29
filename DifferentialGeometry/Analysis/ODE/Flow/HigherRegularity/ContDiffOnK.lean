@@ -34,7 +34,7 @@ theorem contDiffOn_orbit_composition
   have hg : ContDiffOn ℝ k g U := contDiffOn_graphMap_of_contDiffOn_flow hΦ_Ck
   have hmaps : MapsTo g U (Set.univ : Set (ℝ × E)) := fun _ _ => mem_univ _
   have hcomp : ContDiffOn ℝ k (uncurry f ∘ g) U := hf_Ck.comp hg hmaps
-  convert hcomp using 1
+  exact hcomp.congr (by intro q hq; rfl)
 
 omit [CompleteSpace E] in
 theorem contDiffOn_timePiece_CLM
@@ -204,7 +204,7 @@ theorem contDiffOn_flow_succ_of_spatial_smooth
   have hk_one : (1 : WithTop ℕ∞) ≤ ((k + 1 : ℕ∞) : WithTop ℕ∞) := by
     have hone_le : (1 : ℕ∞) ≤ k + 1 := by
       calc (1 : ℕ∞) = 0 + 1 := by simp
-        _ ≤ k + 1 := by gcongr; exact zero_le _
+        _ ≤ k + 1 := by gcongr; exact bot_le
     exact_mod_cast hone_le
   have hf_C1 : ContDiffOn ℝ 1 (uncurry f) (Set.univ : Set (ℝ × E)) := by
     have h := hf_Csucc.of_le hk_one

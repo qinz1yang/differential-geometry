@@ -221,27 +221,27 @@ theorem hasWeakPartialDeriv_of_strong_L2_limit
     {w_i_func g : E → ℝ}
     (hw_i_l2 : MemLp w_i_func 2 (volume.restrict Ω''))
     (hg_l2 : MemLp g 2 (volume.restrict Ω''))
-    {u_seq : ℕ → E → ℝ}
-    (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (u_seq n))
-    (hu_seq_supp : ∀ n, HasCompactSupport (u_seq n))
+    {uSeq : ℕ → E → ℝ}
+    (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (uSeq n))
+    (hu_seq_supp : ∀ n, HasCompactSupport (uSeq n))
     (h_partial_converges_Ω'' : Tendsto
       (fun n => eLpNorm
-        (fun x : E => (fderiv ℝ (u_seq n) x) (EuclideanSpace.single i 1) -
+        (fun x : E => (fderiv ℝ (uSeq n) x) (EuclideanSpace.single i 1) -
           w_i_func x) 2 (volume.restrict Ω''))
       atTop (𝓝 0))
     (h_kdi_converges_Ω'' : Tendsto
       (fun n => eLpNorm
         (fun x : E =>
           (fderiv ℝ (fun z : E =>
-            (fderiv ℝ (u_seq n) z) (EuclideanSpace.single i 1)) x)
+            (fderiv ℝ (uSeq n) z) (EuclideanSpace.single i 1)) x)
             (EuclideanSpace.single k 1) - g x) 2 (volume.restrict Ω''))
       atTop (𝓝 0)) :
     DeGiorgi.HasWeakPartialDeriv (d := d) k g w_i_func Ω'' := by
   classical
   set ψ : ℕ → E → ℝ := fun n y =>
-    (fderiv ℝ (u_seq n) y) (EuclideanSpace.single i 1) with hψ_def
+    (fderiv ℝ (uSeq n) y) (EuclideanSpace.single i 1) with hψ_def
   set gψ : ℕ → E → ℝ := fun n y =>
-    (fderiv ℝ (fun z : E => (fderiv ℝ (u_seq n) z) (EuclideanSpace.single i 1)) y)
+    (fderiv ℝ (fun z : E => (fderiv ℝ (uSeq n) z) (EuclideanSpace.single i 1)) y)
       (EuclideanSpace.single k 1) with hgψ_def
   have hψ_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (ψ n) :=
     fun n => contDiff_partial_aux (hu_seq_smooth n) i

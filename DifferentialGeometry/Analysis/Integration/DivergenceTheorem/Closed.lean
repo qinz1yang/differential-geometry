@@ -98,7 +98,7 @@ lemma integral_riemannianVolumeMeasure_eq_chartLocal_of_support_in_chart
       ∫ x, f x ∂(chartLocalMeasure (I := I) g α₀) := by
   classical
   set ρ : SmoothPartitionOfUnity M I M (univ : Set M) := chartAtlasPOU I M with hρ_def
-  set S : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hS_def
+  set S : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have hρsub : ρ.IsSubordinate (fun α : M => (chartAt H α).source) :=
     chartAtlasPOU_isSubordinate I M
   have h_step1 : ∫ x, f x ∂(riemannianVolumeMeasure (I := I) (M := M) g)
@@ -117,7 +117,6 @@ lemma integral_riemannianVolumeMeasure_eq_chartLocal_of_support_in_chart
     refine chartLocalMeasure_integral_eq_of_support_in_overlap (I := I) g α α₀
       (fun x => f x * ρ α x) ?_
     intro x hx
-    simp only
     by_cases hxα : x ∈ (chartAt H α).source
     · have hxα₀ : x ∉ (chartAt H α₀).source := fun hxα₀' => hx ⟨hxα, hxα₀'⟩
       have hxnotin : x ∉ tsupport f := fun h => hxα₀ (hf_supp h)
@@ -149,7 +148,7 @@ lemma integral_riemannianVolumeMeasure_eq_chartLocal_of_support_in_chart
       hcont (hsupp_sub.trans hf_supp)
   rw [show (∑ α ∈ S, ∫ x, f x * ρ α x ∂(chartLocalMeasure (I := I) g α₀))
       = ∫ x, ∑ α ∈ S, f x * ρ α x ∂(chartLocalMeasure (I := I) g α₀) from
-        (integral_finset_sum (μ := chartLocalMeasure (I := I) g α₀) S h_each_int).symm]
+        (integral_finsetSum (μ := chartLocalMeasure (I := I) g α₀) S h_each_int).symm]
   refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
   simp only
   rw [← Finset.mul_sum]
@@ -166,30 +165,30 @@ theorem integral_divergence_eq_zero_of_compact
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    ∫ x, divergence_g (I := I) g X x ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
+    ∫ x, divergenceG (I := I) g X x ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
   classical
   set ρ : SmoothPartitionOfUnity M I M (univ : Set M) := chartAtlasPOU I M with hρ_def
-  set S : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hS_def
+  set S : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have hρsub : ρ.IsSubordinate (fun α : M => (chartAt H α).source) :=
     chartAtlasPOU_isSubordinate I M
-  have hdiv_smooth : ContMDiff I 𝓘(ℝ) ∞ (divergence_g (I := I) g X) :=
+  have hdiv_smooth : ContMDiff I 𝓘(ℝ) ∞ (divergenceG (I := I) g X) :=
     divergence_g_contMDiff (I := I) g X
-  have hdiv_cont : Continuous (divergence_g (I := I) g X) := hdiv_smooth.continuous
+  have hdiv_cont : Continuous (divergenceG (I := I) g X) := hdiv_smooth.continuous
   have hρα_compactSupp : ∀ α : M, HasCompactSupport (ρ α : M → ℝ) := fun α =>
     HasCompactSupport.of_compactSpace _
-  have h_step_a : ∫ x, divergence_g (I := I) g X x
+  have h_step_a : ∫ x, divergenceG (I := I) g X x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)
-      = ∑ α ∈ S, ∫ x, divergence_g (I := I) g X x * ρ α x
+      = ∑ α ∈ S, ∫ x, divergenceG (I := I) g X x * ρ α x
           ∂(chartLocalMeasure (I := I) g α) := by
     have hKey :=
       chartLocal_weighted_finset_sum_eq_riemannianMeasure_integral
         (I := I) (M := M) (g_fam := fun _ : ℝ => g) (t := 0)
-        (h := divergence_g (I := I) g X) hdiv_cont
+        (h := divergenceG (I := I) g X) hdiv_cont
     simp only [riemannianMeasureFamily_def] at hKey
     exact hKey.symm
   rw [h_step_a]
   have h_step_b : ∀ α ∈ S,
-      ∫ x, divergence_g (I := I) g X x * ρ α x ∂(chartLocalMeasure (I := I) g α) =
+      ∫ x, divergenceG (I := I) g X x * ρ α x ∂(chartLocalMeasure (I := I) g α) =
         ∫ x, localDivergence (I := I) g α X x * ρ α x
           ∂(chartLocalMeasure (I := I) g α) := by
     intro α _
@@ -251,7 +250,7 @@ theorem integral_divergence_eq_zero_of_compact
     exact (integral_riemannianVolumeMeasure_eq_chartLocal_of_support_in_chart
       (I := I) g α (hAct_cont α) (hAct_supp α)).symm
   rw [Finset.sum_congr rfl h_step_d]
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have h_each_int : ∀ α ∈ S, Integrable
       (fun x : M => tangentSectionAction (I := I) X (ρ α : M → ℝ) x)
@@ -267,7 +266,7 @@ theorem integral_divergence_eq_zero_of_compact
             ∂(riemannianVolumeMeasure (I := I) (M := M) g))
       = ∫ x, ∑ α ∈ S, tangentSectionAction (I := I) X (ρ α : M → ℝ) x
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) from
-        (integral_finset_sum (μ := riemannianVolumeMeasure (I := I) (M := M) g)
+        (integral_finsetSum (μ := riemannianVolumeMeasure (I := I) (M := M) g)
           S h_each_int).symm]
   have h_pt : ∀ x : M,
       ∑ α ∈ S, tangentSectionAction (I := I) X (ρ α : M → ℝ) x = 0 := by

@@ -72,7 +72,7 @@ theorem eigenvectorResolvent_h1NormSq_eq
         ‖tensorResolventEigenbasisVec (I := I) (M := M)
           (tensorResolventL2_isCompactOperator (I := I) (M := M)
             g r s) i‖ ^ 2 := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   set φ := tensorResolventEigenbasisVec (I := I) (M := M)
     (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s) i
     with hφ
@@ -198,7 +198,7 @@ theorem eigenvectorChartWeakPartial_eLpNorm_le
               (tensorResolventL2_isCompactOperator (I := I) (M := M)
                 g r s) i‖ := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   refine ⟨‖eigenvectorChartPartialCLM (I := I) (M := M) g r s α P₀ k‖,
     norm_nonneg (eigenvectorChartPartialCLM (I := I) (M := M) g r s α P₀ k),
     fun i => ?_⟩

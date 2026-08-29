@@ -34,6 +34,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [SigmaCompactSpace M] in
 theorem ricciDeTurckTopOrderBilinearPairingCoefficient_eq_six_term_sum
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -79,6 +80,7 @@ theorem ricciDeTurckTopOrderBilinearPairingCoefficient_eq_six_term_sum
   simp [lieDecompositionEps]
   module
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [I.Boundaryless] in
 theorem ricciDeTurckTopOrderPairingCoefficientForJet_apply_eq_secondOrderDecomposition
@@ -99,6 +101,7 @@ theorem ricciDeTurckTopOrderPairingCoefficientForJet_apply_eq_secondOrderDecompo
     ricciDeTurckTopOrderPairingCoefficientForJet_apply (I := I) (M := M) g T G hdelta hdeltaZ
       ricciDecompositionQA ricciDecompositionQB lieDecompositionQ lieDecompositionEps s
 
+omit [SigmaCompactSpace M] in
 theorem ricciDeTurckTopOrderPairingCoefficientForJet_connLaplacian_identity
     (g : SmoothRiemannianMetric I M) (T U : SmoothCcTensor g 0 2)
     {delta : Real}
@@ -124,6 +127,7 @@ theorem ricciDeTurckTopOrderPairingCoefficientForJet_connLaplacian_identity
         hdelta hdeltaZ qA qB q epsilon s := by
   rw [rawConnLap_iteratedCovGrad_two_comm (I := I) (M := M) g 2 U]
 
+omit [SigmaCompactSpace M] in
 theorem deTurckMetricPrincipalDefect_cometricDoubleTrace_commutator
     (g₀ g : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) :
@@ -167,6 +171,7 @@ theorem deTurckMetricPrincipalDefect_cometricDoubleTrace_commutator
   rw [hS, hLS]
   simp only [iteratedCovGrad_zero]
 
+omit [SigmaCompactSpace M] in
 theorem ricciDeTurck_remainder_centered_operator_decomposition
     (g g_bg : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     (hTsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -217,44 +222,11 @@ theorem ricciDeTurck_remainder_centered_operator_decomposition
       oneMinusConnLapSmooth (I := I) g 0 2
           (operatorFieldApply (I := I) (M := M) g 2 2 E0 T) +
         (oneMinusConnLapSmooth (I := I) g 0 2 (Ds T) - Ds LT) -
-        operatorFieldApply (I := I) (M := M) g 2 2 (Ks - K0) LT - Cross := by
+      operatorFieldApply (I := I) (M := M) g 2 2 (Ks - K0) LT - Cross := by
   classical
-  let gs : SmoothRiemannianMetric I M :=
-    metricPerturbationPathFromZero (I := I) (M := M) g T hdelta s
+  intro gs R0 K0 Ks E0 Ds LT Q Z Cross PairComm C J
   let A0 : SmoothCcTensor g 2 2 := DeTurckCoefficients.ricciDeTurckRemainderZeroOrderCoefficient
     (I := I) (M := M) g g_bg T 0 hdelta hdeltaZ s
-  let R0 : SmoothCcTensor g 2 2 :=
-    rhsDecomposition0 (I := I) (M := M) g g_bg T hdelta hdeltaZ s
-  let K0 : SmoothCcTensor g 2 2 := metricPrincipalDefectCurvCoeff (I := I) g g
-  let Ks : SmoothCcTensor g 2 2 := metricPrincipalDefectCurvCoeff (I := I) g gs
-  let E0 : SmoothCcTensor g 2 2 := backgroundZeroOrderCoefficient (I := I) (M := M) g g_bg +
-    metricDependentZeroOrderCoefficient (I := I) (M := M) g gs g_bg
-  let Ds : SmoothCcTensor g 0 2 → SmoothCcTensor g 0 2 := fun W =>
-    deTurckPrincipalCometricArm (I := I) (M := M) g gs W
-  let LT : SmoothCcTensor g 0 2 := oneMinusConnLapSmooth (I := I) g 0 2 T
-  let Q : SmoothCcTensor g 0 2 → SmoothCcTensor g 2 2 := fun U =>
-    ricciDeTurckTopOrderBilinearPairingCoefficient (I := I) (M := M) g T U hdelta hdeltaZ
-      ricciDecompositionQA ricciDecompositionQB lieDecompositionQ lieDecompositionEps s
-  let Z : SmoothCcTensor g 0 2 := operatorFieldApply (I := I) (M := M) g 2 2 (Q T) T
-  let Cross : SmoothCcTensor g 0 2 :=
-    operatorFieldApply (I := I) (M := M) g 2 2 (Q LT) T +
-      operatorFieldApply (I := I) (M := M) g 2 2 (Q T) LT
-  let PairComm : SmoothCcTensor g 0 2 :=
-    oneMinusConnLapSmooth (I := I) g 0 2 Z -
-      operatorFieldApply (I := I) (M := M) g 2 2 (Q LT) T -
-      operatorFieldApply (I := I) (M := M) g 2 2 (Q T) LT + Z
-  let C : SmoothCcTensor g 4 2 :=
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g gs -
-    deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g
-  let J : SmoothCcTensor g 0 2 :=
-    oneMinusConnLapSmooth (I := I) g 0 2
-        (operatorFieldApply (I := I) (M := M) g 2 2 (R0 + K0) T) +
-      PairComm +
-      (oneMinusConnLapSmooth (I := I) g 0 2
-          (operatorFieldApply (I := I) (M := M) g 4 2 C
-            (iteratedCovGrad (I := I) g 0 2 2 T)) -
-        operatorFieldApply (I := I) (M := M) g 4 2 C
-          (iteratedCovGrad (I := I) g 0 2 2 LT)) - Z
   have hQdiag :
       Z = operatorFieldApply (I := I) (M := M) g 4 2
         (rhsDecomposition2 (I := I) (M := M) g T hdelta hdeltaZ s)
@@ -319,11 +291,6 @@ theorem ricciDeTurck_remainder_centered_operator_decomposition
     simp only [operatorFieldApplication_add_left, operatorFieldApplication_sub_left]
     rw [← hlowApp, hdecomposition]
     module
-  change J =
-    oneMinusConnLapSmooth (I := I) g 0 2
-        (operatorFieldApply (I := I) (M := M) g 2 2 E0 T) +
-      (oneMinusConnLapSmooth (I := I) g 0 2 (Ds T) - Ds LT) -
-      operatorFieldApply (I := I) (M := M) g 2 2 (Ks - K0) LT - Cross
   dsimp only [J, PairComm]
   calc
     oneMinusConnLapSmooth (I := I) g 0 2

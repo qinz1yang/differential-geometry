@@ -305,7 +305,7 @@ private lemma smoothCutoffChartPartialLpLin_norm_le
             (chartTargetEuclid (I := I) (M := M) α)) 2
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α)))
-      (fun j _ => zero_le _) (Finset.mem_univ k)
+      (fun j _ => zero_le) (Finset.mem_univ k)
   have h_eLp :
       eLpNorm (chosenWeakPartial' (d := Module.finrank ℝ E) 2 k
           (cutoffComponentEuclid (I := I) (M := M)

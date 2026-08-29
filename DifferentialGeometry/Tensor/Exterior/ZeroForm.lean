@@ -1,8 +1,10 @@
 import DifferentialGeometry.Tensor.Exterior.Basic
+import DifferentialGeometry.Bundle.TangentSpace
 import Mathlib.Geometry.Manifold.ContMDiffMap
 import Mathlib.Geometry.Manifold.Algebra.SmoothFunctions
 
 noncomputable section
+
 
 open Bundle Set ContinuousAlternatingMap Function Filter
 open scoped Topology Manifold ContDiff Bundle
@@ -74,6 +76,8 @@ theorem toFunction_ofFunction (f : M → ℝ) (hf : ContMDiff IM 𝓘(ℝ, ℝ) 
     toFunction (ofFunction f hf) = f := by
   funext x
   dsimp [toFunction, ofFunction]
+  exact ContinuousMultilinearMap.constOfIsEmpty_apply ℝ
+    (fun _ : Fin 0 => TangentSpace IM x) (f x) 0
 
 theorem contMDiff_toFunction (α : DifferentialForm IM M 0) :
     ContMDiff IM 𝓘(ℝ, ℝ) ⊤ (toFunction α) := by
@@ -112,7 +116,8 @@ theorem contMDiff_toFunction (α : DifferentialForm IM M 0) :
 
 theorem ofFunction_toFunction (α : DifferentialForm IM M 0) :
     ofFunction (toFunction α) (contMDiff_toFunction α) = α := by
-  ext x
+  apply ContMDiffSection.ext
+  intro x
   dsimp [ofFunction, toFunction]
   exact (ContinuousAlternatingMap.constOfIsEmptyLIE ℝ (TangentSpace IM x) ℝ (Fin 0)).right_inv (α x)
 
@@ -125,8 +130,9 @@ theorem toFunctionMap_apply (α : DifferentialForm IM M 0) (x : M) :
 
 theorem toFunctionMap_ofFunctionMap (f : C^⊤⟮IM, M; ℝ⟯) :
     toFunctionMap (ofFunctionMap f) = f := by
-  ext x
-  simp [toFunctionMap, ofFunctionMap]
+  apply ContMDiffMap.ext
+  intro x
+  exact congrFun (toFunction_ofFunction f.1 f.2) x
 
 theorem ofFunctionMap_toFunctionMap (α : DifferentialForm IM M 0) :
     ofFunctionMap (toFunctionMap α) = α := by
@@ -154,17 +160,21 @@ noncomputable def zeroFormLinearEquiv : DifferentialForm IM M 0 ≃ₗ[ℝ] C^�
   right_inv := toFunctionMap_ofFunctionMap
   map_add' := by
     intro α β
-    ext x
-    simp [toFunctionMap, toFunction_add]
+    apply ContMDiffMap.ext
+    intro x
+    change toFunction (α + β) x = (toFunction α + toFunction β) x
+    exact congrFun (toFunction_add α β) x
   map_smul' := by
     intro c α
-    ext x
-    simp [toFunctionMap, toFunction_smul]
+    apply ContMDiffMap.ext
+    intro x
+    change toFunction (c • α) x = (c • toFunction α) x
+    exact congrFun (toFunction_smul c α) x
 
 private theorem exteriorDerivativeAt_ofFunction_apply [BoundarylessManifold IM M]
     (f : M → ℝ) (hf : ContMDiff IM 𝓘(ℝ, ℝ) ⊤ f) (x : M) (v : TangentSpace IM x) :
     (exteriorDerivativeAt (ofFunction f hf) x).toFun (fun _ : Fin 1 => v) =
-      mfderiv IM 𝓘(ℝ, ℝ) f x v := by
+      mvfderiv IM f x v := by
   let e₀ := trivializationAt (EM [⋀^Fin 0]→L[ℝ] ℝ)
     (Bundle.continuousAlternatingMap ℝ (Fin 0) EM (TangentSpace IM) ℝ (Bundle.Trivial M ℝ)) x
   let e₁' := trivializationAt (EM [⋀^Fin 1]→L[ℝ] ℝ)
@@ -241,12 +251,12 @@ private theorem exteriorDerivativeAt_ofFunction_apply [BoundarylessManifold IM M
         (fun y : EM => f ((extChartAt IM x).symm y)) ((extChartAt IM x) x) :=
       ContMDiffAt.comp ((extChartAt IM x) x) (hf.contMDiffAt) hs
     exact (contMDiffAt_iff_contDiffAt.mp hcomp).differentiableAt (by simp)
-  have hmfd : mfderiv IM 𝓘(ℝ, ℝ) f x =
+  have hmfd : mvfderiv IM f x v =
       fderivWithin ℝ (fun y : EM => f ((extChartAt IM x).symm y)) (range IM)
-        ((extChartAt IM x) x) := by
+        ((extChartAt IM x) x)
+          (tangentSpaceModelContinuousLinearEquiv (I := IM) x v) := by
     have hmd : MDifferentiableAt IM 𝓘(ℝ, ℝ) f x := hf.mdifferentiableAt (by simp)
-    rw [mfderiv, if_pos hmd]
-    ext y
+    rw [mvfderiv_apply_eq_fderivWithin_writtenInExtChartAt hmd]
     rfl
   have hfder : fderivWithin ℝ (fun y : EM => f ((extChartAt IM x).symm y)) (range IM)
         ((extChartAt IM x) x) =
@@ -261,7 +271,7 @@ private theorem exteriorDerivativeAt_ofFunction_apply [BoundarylessManifold IM M
 theorem exteriorDerivative_ofFunction_apply [BoundarylessManifold IM M] (f : M → ℝ)
     (hf : ContMDiff IM 𝓘(ℝ, ℝ) ⊤ f) (x : M) (v : TangentSpace IM x) :
     (exteriorDerivative (ofFunction f hf) x).toFun (fun _ : Fin 1 => v) =
-      mfderiv IM 𝓘(ℝ, ℝ) f x v := by
+      mvfderiv IM f x v := by
   rw [exteriorDerivative_apply]
   exact exteriorDerivativeAt_ofFunction_apply f hf x v
 

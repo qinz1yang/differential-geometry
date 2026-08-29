@@ -60,7 +60,7 @@ theorem evolving_positive_rpow_reverse_holder_step
     (htrace : ∀ t ∈ Icc a b, ∀ x : M,
       -traceTimeDerivMetric (I := I) g t x ≤ B)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hcutoff_le : ∀ x : M, cutoff x ^ 2 ≤ outer x ^ 2)
     (hgrad : ∀ t ∈ Icc a b, ∀ x : M,

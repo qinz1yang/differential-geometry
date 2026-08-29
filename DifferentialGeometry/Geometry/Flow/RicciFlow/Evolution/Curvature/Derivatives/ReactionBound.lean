@@ -34,14 +34,13 @@ omit [SigmaCompactSpace M] [T2Space M] in
 theorem solution_isMetricCompatible
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
       (S.family.connection t) (S.base.metric t) := by
   simpa [SolutionFamily.connection, metricCov] using
     leviCivitaConnectionOfMetric_isMetricCompatible (I := I) (S.base.metric t)
 
 open DifferentialGeometry.Integral.DivergenceTheorem
   DifferentialGeometry.Integral.Measure in
-set_option backward.isDefEq.respectTransparency false in
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] in
 theorem rmFrozenSlot_chartBasis_contMDiffOn
@@ -80,7 +79,11 @@ theorem rmFrozenSlot_chartBasis_contMDiffOn
     ((freezeAllBut04Field (I := I) (M := M) (S.base.rm04 t) q Y).contMDiff x₀)
     (v := fun _ : Fin 1 => fun b : M => chartBasisVecFiber (I := I) α j b)
     (fun _ => hv_at)
-  simpa [Tensor0SSpace.toModel, tensor0SSpace_continuousLinearEquiv_apply] using h_eval
+  change ContMDiffAt I 𝓘(Real, Real) ∞
+    (fun b : M =>
+      ((freezeAllBut04Field (I := I) (M := M) (S.base.rm04 t) q Y) b).toModel
+        (fun _ : Fin 1 => chartBasisVecFiber (I := I) α j b)) x₀
+  exact h_eval
 
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [Module.Finite ℝ E] in
@@ -96,7 +99,7 @@ theorem rmFrozenSlotSharp_mdiffAt
     (x : M) :
     MDiffAt
       (T% (fun y : M =>
-        cotangentSharp_gen (I := I) (S.base.metric t) y
+        cotangentSharpGen (I := I) (S.base.metric t) y
           (rmFrozenSlotField (I := I) S t q Y y))) x :=
   cotangentSharp_gen_mdiffAt (I := I) (S.base.metric t)
     (β := fun y : M => rmFrozenSlotField (I := I) S t q Y y)
@@ -111,7 +114,7 @@ def rmFrozenSlotSharpSection
     ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
   ContMDiffSection.mk
     (fun y : M =>
-      cotangentSharp_gen (I := I) (S.base.metric t) y
+      cotangentSharpGen (I := I) (S.base.metric t) y
         (rmFrozenSlotField (I := I) S t q Y y))
     (cotangentSharp_gen_contMDiff_total (I := I) (S.base.metric t)
       (β := fun y : M => rmFrozenSlotField (I := I) S t q Y y)
@@ -128,7 +131,7 @@ omit [I.Boundaryless] in
       (TangentSpace I : M → Type _))
     (y : M) :
     rmFrozenSlotSharpSection (I := I) S t q Y y =
-      cotangentSharp_gen (I := I) (S.base.metric t) y
+      cotangentSharpGen (I := I) (S.base.metric t) y
         (rmFrozenSlotField (I := I) S t q Y y) :=
   rfl
 
@@ -158,21 +161,21 @@ theorem rmRaise_summand_covDeriv
     (hVc : ((S.family.connection (t : Real) (fun p : M => Vc p) x₀) (X x₀)) = 0)
     (hVm : ∀ i : Fin 4,
       ((S.family.connection (t : Real) (fun p : M => Vm i p) x₀) (X x₀)) = 0) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M =>
           S.base.rm04 (t : Real) y
             (vec4 (I := I) (Vb y) (Vc y) (Vm q y)
-              (cotangentSharp_gen (I := I) (S.base.metric (t : Real)) y
+              (cotangentSharpGen (I := I) (S.base.metric (t : Real)) y
                 (rmFrozenSlotField (I := I) S (t : Real) q Vm y))))
         x₀ (X x₀) =
       nablaRm04Field (I := I) S (t : Real) x₀
           (vec5 (I := I) (X x₀) (Vb x₀) (Vc x₀) (Vm q x₀)
-            (cotangentSharp_gen (I := I) (S.base.metric (t : Real)) x₀
+            (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x₀
               (rmFrozenSlotField (I := I) S (t : Real) q Vm x₀))) +
         S.base.rm04 (t : Real) x₀
           (vec4 (I := I) (Vb x₀) (Vc x₀) (Vm q x₀)
-            (cotangentSharp_gen (I := I) (S.base.metric (t : Real)) x₀
-              (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x₀
+            (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x₀
+              (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
                 (nablaRmFrozenSlotField (I := I) S (t : Real) q Vm x₀) (X x₀)))) := by
   classical
   set cov := S.family.connection (t : Real) with hcov_def
@@ -190,7 +193,7 @@ theorem rmRaise_summand_covDeriv
         fun y : M =>
           S.base.rm04 (t : Real) y
             (vec4 (I := I) (Vb y) (Vc y) (Vm q y)
-              (cotangentSharp_gen (I := I) (S.base.metric (t : Real)) y
+              (cotangentSharpGen (I := I) (S.base.metric (t : Real)) y
                 (rmFrozenSlotField (I := I) S (t : Real) q Vm y))) := by
     funext y
     congr 1
@@ -201,7 +204,7 @@ theorem rmRaise_summand_covDeriv
   have hcons :
       (Fin.cons (X x₀) (fun a : Fin 4 => W a x₀) : Fin 5 → TangentSpace I x₀) =
         vec5 (I := I) (X x₀) (Vb x₀) (Vc x₀) (Vm q x₀)
-          (cotangentSharp_gen (I := I) (S.base.metric (t : Real)) x₀
+          (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x₀
             (rmFrozenSlotField (I := I) S (t : Real) q Vm x₀)) := by
     funext a
     refine Fin.cases ?_ (fun j => ?_) a
@@ -217,8 +220,8 @@ theorem rmRaise_summand_covDeriv
               ((cov (fun p : M => W a p) x₀) (X x₀)))) =
         S.base.rm04 (t : Real) x₀
           (vec4 (I := I) (Vb x₀) (Vc x₀) (Vm q x₀)
-            (cotangentSharp_gen (I := I) (S.base.metric (t : Real)) x₀
-              (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x₀
+            (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x₀
+              (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
                 (nablaRmFrozenSlotField (I := I) S (t : Real) q Vm x₀) (X x₀)))) := by
     rw [Fin.sum_univ_four]
     have hc0 : (cov (fun p : M => W 0 p) x₀) (X x₀) = 0 := by rw [hW0]; exact hVb
@@ -226,8 +229,8 @@ theorem rmRaise_summand_covDeriv
     have hc2 : (cov (fun p : M => W 2 p) x₀) (X x₀) = 0 := by rw [hW2]; exact hVm q
     have hc3 :
         (cov (fun p : M => W 3 p) x₀) (X x₀) =
-          cotangentSharp_gen (I := I) (S.base.metric (t : Real)) x₀
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x₀
+          cotangentSharpGen (I := I) (S.base.metric (t : Real)) x₀
+            (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
               (nablaRmFrozenSlotField (I := I) S (t : Real) q Vm x₀) (X x₀)) := by
       have hsharp :=
         cotangentSharp_cov_eq_sharp_curry_of_mdiffAt (I := I)
@@ -309,7 +312,7 @@ theorem nabla3_antisym_eq_covDeriv_curvatureAction_covConst
       nabla3Rm04Field (I := I) S (t : Real) x₀
         (Fin.cons (X x₀)
           (metricTraceInput (I := I) (Vc x₀) (Vb x₀) (fun i : Fin 4 => Vm i x₀))) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun y : M =>
           curvatureAction0SAt (I := I) (S.base.rm13 (t : Real))
             (S.base.rm04 (t : Real) y) (Vb y) (Vc y) (fun i : Fin 4 => Vm i y))
@@ -377,7 +380,7 @@ theorem nabla3_antisym_eq_covDeriv_curvatureAction_covConst
     (tensor0SField_eval_smooth_slots_contMDiffAt
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (nabla2Rm04Field (I := I) S (t : Real)) Wcb x₀).mdifferentiableAt (by simp)
-  rw [← extDerivFun_sub_at (I := I) (X x₀) hmdiff_bc hmdiff_cb]
+  rw [← mvfderiv_sub_at (I := I) (X x₀) hmdiff_bc hmdiff_cb]
   have hfield :
       (fun y : M =>
           nabla2Rm04Field (I := I) S (t : Real) y (fun a : Fin 6 => Wbc a y) -
@@ -418,12 +421,12 @@ theorem nablaLapComm_T1_eq_rm04_raise_leibniz
       -∑ q : Fin 4,
         (nablaRm04Field (I := I) S (t : Real) x₀
             (vec5 (I := I) (X x₀) (Vb x₀) (Vc x₀) (Vm q x₀)
-              (cotangentSharp_gen (I := I) (S.base.metric (t : Real)) x₀
+              (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x₀
                 (rmFrozenSlotField (I := I) S (t : Real) q Vm x₀))) +
           S.base.rm04 (t : Real) x₀
             (vec4 (I := I) (Vb x₀) (Vc x₀) (Vm q x₀)
-              (cotangentSharp_gen (I := I) (S.base.metric (t : Real)) x₀
-                (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x₀
+              (cotangentSharpGen (I := I) (S.base.metric (t : Real)) x₀
+                (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
                   (nablaRmFrozenSlotField (I := I) S (t : Real) q Vm x₀) (X x₀))))) := by
   classical
   rw [nabla3_antisym_eq_covDeriv_curvatureAction_covConst (I := I) S t x₀
@@ -436,7 +439,7 @@ theorem nablaLapComm_T1_eq_rm04_raise_leibniz
           -∑ q : Fin 4,
             S.base.rm04 (t : Real) y
               (vec4 (I := I) (Vb y) (Vc y) (Vm q y)
-                (cotangentSharp_gen (I := I) (S.base.metric (t : Real)) y
+                (cotangentSharpGen (I := I) (S.base.metric (t : Real)) y
                   (rmFrozenSlotField (I := I) S (t : Real) q Vm y))) := by
     funext y
     rw [curvatureAction0SAt_eq_rm04_raise (I := I) (S.base.metric (t : Real))
@@ -448,7 +451,7 @@ theorem nablaLapComm_T1_eq_rm04_raise_leibniz
   set g : Fin 4 → M → Real := fun q y =>
     S.base.rm04 (t : Real) y
       (vec4 (I := I) (Vb y) (Vc y) (Vm q y)
-        (cotangentSharp_gen (I := I) (S.base.metric (t : Real)) y
+        (cotangentSharpGen (I := I) (S.base.metric (t : Real)) y
           (rmFrozenSlotField (I := I) S (t : Real) q Vm y))) with hg_def
   have hmdiff_q : ∀ q : Fin 4,
       MDifferentiableAt I 𝓘(Real, Real) (g q) x₀ := by
@@ -467,21 +470,21 @@ theorem nablaLapComm_T1_eq_rm04_raise_leibniz
       simp [rmRaiseSlotSections, vec4, rmFrozenSlotSharpSection_apply,
         Matrix.cons_val_zero, Matrix.cons_val_one]
   have hstep3 :
-      extDerivFun (I := I) (fun y : M => -∑ q : Fin 4, g q y) x₀ (X x₀) =
-        -∑ q : Fin 4, extDerivFun (I := I) (g q) x₀ (X x₀) := by
+      mvfderiv (I := I) (fun y : M => -∑ q : Fin 4, g q y) x₀ (X x₀) =
+        -∑ q : Fin 4, mvfderiv (I := I) (g q) x₀ (X x₀) := by
     have hsumfun : (fun y : M => ∑ q : Fin 4, g q y) =
         (Finset.univ : Finset (Fin 4)).sum g := by
       funext y; simp [Finset.sum_apply]
     have hneg :
-        extDerivFun (I := I) (fun y : M => -∑ q : Fin 4, g q y) x₀ (X x₀) =
-          -extDerivFun (I := I) (fun y : M => ∑ q : Fin 4, g q y) x₀ (X x₀) :=
-      extDerivFun_neg_at (I := I) (f := fun y : M => ∑ q : Fin 4, g q y) (X x₀)
+        mvfderiv (I := I) (fun y : M => -∑ q : Fin 4, g q y) x₀ (X x₀) =
+          -mvfderiv (I := I) (fun y : M => ∑ q : Fin 4, g q y) x₀ (X x₀) :=
+      mvfderiv_neg_at (I := I) (f := fun y : M => ∑ q : Fin 4, g q y) (X x₀)
         (by
           rw [hsumfun]
           exact MDifferentiableAt.sum (𝕜 := Real) (I := I)
             (t := (Finset.univ : Finset (Fin 4))) (fun q _ => hmdiff_q q))
     rw [hneg, hsumfun]
-    rw [DifferentialGeometry.Tensor.Coordinates.extDerivFun_finset_sum_real (I := I)
+    rw [DifferentialGeometry.Tensor.Coordinates.mvfderiv_finset_sum_real (I := I)
       (t := (Finset.univ : Finset (Fin 4))) g (X x₀) (fun q _ => hmdiff_q q)]
   rw [hstep3]
   congr 1
@@ -501,14 +504,14 @@ theorem cotangent_sharp_orthonormal_basis_expand
     (horth : ∀ i j : Fin n,
       g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
     (β : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
-    cotangentSharp_gen (I := I) g x β =
+    cotangentSharpGen (I := I) g x β =
       ∑ e : Fin n, (β (fun _ : Fin 1 => basis e)) • basis e := by
   classical
   set gInv : Fin n → Fin n → Real := fun i j => if i = j then 1 else 0 with hgInv
   have hdiag : ∀ i : Fin n, gInv i i = 1 := by intro i; simp [hgInv]
   have hoff : ∀ i k : Fin n, i ≠ k → gInv i k = 0 := by
     intro i k hk; simp [hgInv, hk]
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis gInv := by
+  have hinv : MetricInverseInBasisGen (I := I) g x basis gInv := by
     intro i j
     refine ⟨?_, ?_⟩
     · rw [Finset.sum_eq_single i]
@@ -597,7 +600,7 @@ theorem abs_tensor05_sharp_last_le
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5 x)
     (A B C D : TangentSpace I x)
     (β : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
-    |T (vec5 (I := I) A B C D (cotangentSharp_gen (I := I) g x β))| ≤
+    |T (vec5 (I := I) A B C D (cotangentSharpGen (I := I) g x β))| ≤
       (Fintype.card (Fin n) : Real) *
         (Real.sqrt (∑ e : Fin n, (T (vec5 (I := I) A B C D (basis e))) ^ 2) *
           Real.sqrt (∑ e : Fin n, (β (fun _ : Fin 1 => basis e)) ^ 2)) := by
@@ -640,7 +643,7 @@ theorem abs_tensor04_sharp_last_le
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x)
     (A B C : TangentSpace I x)
     (β : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
-    |T (vec4 (I := I) A B C (cotangentSharp_gen (I := I) g x β))| ≤
+    |T (vec4 (I := I) A B C (cotangentSharpGen (I := I) g x β))| ≤
       (Fintype.card (Fin n) : Real) *
         (Real.sqrt (∑ e : Fin n, (T (vec4 (I := I) A B C (basis e))) ^ 2) *
           Real.sqrt (∑ e : Fin n, (β (fun _ : Fin 1 => basis e)) ^ 2)) := by
@@ -717,6 +720,7 @@ theorem rmFrozenSlot_basis_component
   rmFrozenSlotField_apply_vec (I := I) S t q Vm x₀ e
 
 open DifferentialGeometry.TensorLieDeriv in
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem abs_nablaLapComm_T1_covConst_le
@@ -767,12 +771,12 @@ theorem abs_nablaLapComm_T1_covConst_le
   have hper : ∀ q : Fin 4,
       |nablaRm04Field (I := I) S (t : Real) x₀
             (vec5 (I := I) (X x₀) (Vb x₀) (Vc x₀) (Vm q x₀)
-              (cotangentSharp_gen (I := I) g x₀
+              (cotangentSharpGen (I := I) g x₀
                 (rmFrozenSlotField (I := I) S (t : Real) q Vm x₀))) +
           S.base.rm04 (t : Real) x₀
             (vec4 (I := I) (Vb x₀) (Vc x₀) (Vm q x₀)
-              (cotangentSharp_gen (I := I) g x₀
-                (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x₀
+              (cotangentSharpGen (I := I) g x₀
+                (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
                   (nablaRmFrozenSlotField (I := I) S (t : Real) q Vm x₀) (X x₀))))| ≤
         (2 : Real) * (Fintype.card (Fin n) : Real) * (Nnab * NRm) := by
     intro q
@@ -780,7 +784,7 @@ theorem abs_nablaLapComm_T1_covConst_le
     have hT1a :
         |nablaRm04Field (I := I) S (t : Real) x₀
             (vec5 (I := I) (X x₀) (Vb x₀) (Vc x₀) (Vm q x₀)
-              (cotangentSharp_gen (I := I) g x₀
+              (cotangentSharpGen (I := I) g x₀
                 (rmFrozenSlotField (I := I) S (t : Real) q Vm x₀)))| ≤
           (Fintype.card (Fin n) : Real) * (Nnab * NRm) := by
       have hCS := abs_tensor05_sharp_last_le (I := I) g basis horth
@@ -828,14 +832,14 @@ theorem abs_nablaLapComm_T1_covConst_le
     have hT1b :
         |S.base.rm04 (t : Real) x₀
             (vec4 (I := I) (Vb x₀) (Vc x₀) (Vm q x₀)
-              (cotangentSharp_gen (I := I) g x₀
-                (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x₀
+              (cotangentSharpGen (I := I) g x₀
+                (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
                   (nablaRmFrozenSlotField (I := I) S (t : Real) q Vm x₀) (X x₀))))| ≤
           (Fintype.card (Fin n) : Real) * (Nnab * NRm) := by
       have hCS := abs_tensor04_sharp_last_le (I := I) g basis horth
         (S.base.rm04 (t : Real) x₀)
         (Vb x₀) (Vc x₀) (Vm q x₀)
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x₀
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
           (nablaRmFrozenSlotField (I := I) S (t : Real) q Vm x₀) (X x₀))
       refine le_trans hCS ?_
       have hf1 :
@@ -854,11 +858,11 @@ theorem abs_nablaLapComm_T1_covConst_le
           (S.base.rm04 (t : Real) x₀) basis ![b, c, m q, b] 3
       have hf2 :
           Real.sqrt (∑ e : Fin n,
-              (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x₀
+              (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
                 (nablaRmFrozenSlotField (I := I) S (t : Real) q Vm x₀) (X x₀)
                 (fun _ : Fin 1 => basis e)) ^ 2) ≤ Nnab := by
         have hcomb : ∀ e : Fin n,
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x₀
+            (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
                 (nablaRmFrozenSlotField (I := I) S (t : Real) q Vm x₀) (X x₀)
                 (fun _ : Fin 1 => basis e)) ^ 2 =
               (nablaRm04Field (I := I) S (t : Real) x₀
@@ -900,12 +904,12 @@ theorem abs_nablaLapComm_T1_covConst_le
     calc
       |nablaRm04Field (I := I) S (t : Real) x₀
             (vec5 (I := I) (X x₀) (Vb x₀) (Vc x₀) (Vm q x₀)
-              (cotangentSharp_gen (I := I) g x₀
+              (cotangentSharpGen (I := I) g x₀
                 (rmFrozenSlotField (I := I) S (t : Real) q Vm x₀)))| +
           |S.base.rm04 (t : Real) x₀
             (vec4 (I := I) (Vb x₀) (Vc x₀) (Vm q x₀)
-              (cotangentSharp_gen (I := I) g x₀
-                (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x₀
+              (cotangentSharpGen (I := I) g x₀
+                (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x₀
                   (nablaRmFrozenSlotField (I := I) S (t : Real) q Vm x₀) (X x₀))))|
           ≤ (Fintype.card (Fin n) : Real) * (Nnab * NRm) +
               (Fintype.card (Fin n) : Real) * (Nnab * NRm) := add_le_add hT1a hT1b
@@ -917,6 +921,7 @@ theorem abs_nablaLapComm_T1_covConst_le
   rfl
 
 open DifferentialGeometry.TensorLieDeriv in
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem abs_nablaLapComm_T1_orthoBasis_le
@@ -1025,6 +1030,7 @@ theorem compNormSqMulti_eq_compNormSq4_basis
   · intro y _ hy; exact absurd (Subsingleton.elim y default) hy
   · intro h; exact absurd (Finset.mem_univ _) h
 
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem abs_nablaLapCommReactionTermF_orthoBasis_le
@@ -1061,6 +1067,7 @@ theorem abs_nablaLapCommReactionTermF_orthoBasis_le
   refine le_trans hsum (le_of_eq ?_)
   ring
 
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem abs_nablaLapCommReactionTerm_diag_orthoBasis_le
@@ -1102,6 +1109,7 @@ theorem abs_nablaLapCommReactionTerm_diag_orthoBasis_le
   apply le_of_eq
   ring
 
+omit [I.Boundaryless] in
 omit [Module.Finite ℝ E] in
 omit [SigmaCompactSpace M] in
 theorem abs_spatialCommNablaRm_orthoFrame_le

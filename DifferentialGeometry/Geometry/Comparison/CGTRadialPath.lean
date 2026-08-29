@@ -22,8 +22,8 @@ variable {H : Type*} [TopologicalSpace H]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -151,8 +151,13 @@ theorem radialFlat_len
       γ = intrinsicGeodesic (I := I) g hEnorm p v := by
     funext t
     dsimp only [γ, v]
-    rw [intrFrame_apply, map_smul, expMapIntrinsic_def,
-      intrinsicGeodesic_smul]
+    rw [intrFrame_apply, map_smul]
+    change intrinsicGeodesic (I := I) g hEnorm p
+        (t • normalFrame (I := I) g p u) 1 =
+      intrinsicGeodesic (I := I) g hEnorm p
+        (normalFrame (I := I) g p u) t
+    exact intrinsicGeodesic_smul (I := I) g hEnorm p
+      (normalFrame (I := I) g p u) t
   have hγC1 :
       ContMDiffOn 𝓘(Real, Real) I 1 γ (Set.Icc 0 1) := by
     rw [hγ]

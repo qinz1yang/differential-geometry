@@ -17,6 +17,7 @@ set_option autoImplicit false
 
 noncomputable section
 
+
 namespace DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 open DifferentialGeometry.Analysis.Convex
@@ -612,7 +613,6 @@ theorem hamiltonIveyBarrier_reaction_derivative_ge_on_boundary
           (-l3) * (Real.log ((-l3) / K) + Real.log (1 + 2 * K * τ) - 3) := by
         simpa [sectionalSum3] using hboundary.symm
       have hdiv := congrArg (fun t : Real => t / (-l3)) hb'
-      dsimp only at hdiv
       have hshow :
           (-l3) * (Real.log ((-l3) / K) + Real.log (1 + 2 * K * τ) - 3) / (-l3) =
             Real.log ((-l3) / K) + Real.log (1 + 2 * K * τ) - 3 := by
@@ -624,7 +624,6 @@ theorem hamiltonIveyBarrier_reaction_derivative_ge_on_boundary
   have hquot' : sectionalSum3 l1 l2 l3 + (-l3) =
       (-l3) * (Real.log ((-l3) / K) + Real.log (1 + 2 * K * τ) - 2) := by
     have hmul := congrArg (fun t : Real => t * (-l3)) hquot
-    dsimp only at hmul
     rw [add_mul, div_mul_cancel₀ _ hXpos.ne', one_mul] at hmul
     convert hmul using 1; ring
   have hquotX' :
@@ -643,7 +642,9 @@ theorem hamiltonIveyBarrier_reaction_derivative_ge_on_boundary
       field_simp [hXpos.ne']
     rw [hd]
     exact (div_le_iff₀ hXpos).mpr (by
-      convert hderiv2 using 1 <;> ring)
+      field_simp [hXpos.ne']
+      rw [show -(l3 / K) = -l3 / K by ring]
+      nlinarith [hderiv2])
   have hfinal := sub_le_sub_right hbase ((-l3) * (2 * K / (1 + 2 * K * τ)))
   have hfinal' : 2 * (-l3) * ((-l3) - K / (1 + 2 * K * τ)) ≤
       reactionSectionalSum3 l1 l2 l3
@@ -1130,8 +1131,10 @@ def sectionalReactionMatrix3 (l : Fin 3 → Real) : Matrix (Fin 3) (Fin 3) Real 
 theorem sectionalReactionMatrix3_trace
     (l : Fin 3 → Real) :
     (sectionalReactionMatrix3 l).trace = reactionSectionalSum3 (l 0) (l 1) (l 2) := by
-  unfold sectionalReactionMatrix3 reactionSectionalSum3
-  simp [Matrix.trace, Fin.sum_univ_three]
+  rw [Matrix.trace, Fin.sum_univ_three]
+  change sectionalReactionMatrix3 l 0 0 + sectionalReactionMatrix3 l 1 1 +
+    sectionalReactionMatrix3 l 2 2 = reactionSectionalSum3 (l 0) (l 1) (l 2)
+  simp [sectionalReactionMatrix3, reactionSectionalSum3]
 
 def sectionalReactionPinchMatrix3 (l : Fin 3 → Real) : Matrix (Fin 3) (Fin 3) Real :=
   fun i j =>
@@ -1142,8 +1145,10 @@ def sectionalReactionPinchMatrix3 (l : Fin 3 → Real) : Matrix (Fin 3) (Fin 3) 
 theorem sectionalReactionPinchMatrix3_trace
     (l : Fin 3 → Real) :
     (sectionalReactionPinchMatrix3 l).trace = reactionPinchHeight3 (l 0) (l 1) (l 2) := by
-  unfold sectionalReactionPinchMatrix3
-  simp [Matrix.trace]
+  rw [Matrix.trace, Fin.sum_univ_three]
+  change sectionalReactionPinchMatrix3 l 0 0 + sectionalReactionPinchMatrix3 l 1 1 +
+    sectionalReactionPinchMatrix3 l 2 2 = reactionPinchHeight3 (l 0) (l 1) (l 2)
+  simp [sectionalReactionPinchMatrix3]
 
 theorem sectionalReactionMatrix3_trace_sub_coef_pinch_trace_pos_on_barrier
     {l : Fin 3 → Real} {K τ : Real}
@@ -1620,7 +1625,8 @@ theorem convex_hamiltonIveyConvexMatrixRegionEuclidean {K τ : Real}
       map_smul' := euclideanToMatrix_smul }
   have hpre : Convex Real (f ⁻¹' hamiltonIveyConvexMatrixRegion K τ) :=
     Convex.linear_preimage (convex_hamiltonIveyConvexMatrixRegion hK hτ) f
-  simpa [hamiltonIveyConvexMatrixRegionEuclidean, f] using hpre
+  change Convex Real (f ⁻¹' hamiltonIveyConvexMatrixRegion K τ)
+  exact hpre
 
 
 lemma continuousOn_hamiltonIveyBarrier_nonneg_time
@@ -1630,14 +1636,16 @@ lemma continuousOn_hamiltonIveyBarrier_nonneg_time
   let s : Set (ℝ × ℝ) := Set.Icc 0 T ×ˢ Set.Ici 0
   have hX : ContinuousOn (fun p : ℝ × ℝ => p.2) s := continuousOn_snd
   have hlogX : ContinuousOn (fun p : ℝ × ℝ => p.2 * Real.log p.2) s := by
-    simpa using (Real.continuous_mul_log.comp_continuousOn (s := s) (f := fun p : ℝ × ℝ => p.2) continuousOn_snd)
+    change ContinuousOn ((fun x : ℝ => x * Real.log x) ∘ Prod.snd) s
+    exact Real.continuous_mul_log.comp_continuousOn continuousOn_snd
   have hlogK : ContinuousOn (fun p : ℝ × ℝ => p.2 * Real.log K) s := by
-    simpa [mul_comm] using (continuousOn_snd.mul (continuousOn_const (s := s) (c := Real.log K)))
+    change ContinuousOn (Prod.snd * fun _ : ℝ × ℝ => Real.log K) s
+    exact continuousOn_snd.mul continuousOn_const
   have hlogD : ContinuousOn (fun p : ℝ × ℝ => p.2 * Real.log (1 + 2 * K * p.1)) s := by
     have hD : ContinuousOn (fun p : ℝ × ℝ => 1 + 2 * K * p.1) s := by
-      simpa [add_comm] using
-        ((continuousOn_const (s := s) (c := (1 : ℝ))).add
-          ((continuousOn_const (s := s) (c := (2 * K : ℝ))).mul (continuousOn_fst (s := s))))
+      change ContinuousOn
+        ((fun _ : ℝ × ℝ => (1 : ℝ)) + (fun _ => 2 * K) * Prod.fst) s
+      exact continuousOn_const.add (continuousOn_const.mul continuousOn_fst)
     have hlog : ContinuousOn (fun p : ℝ × ℝ => Real.log (1 + 2 * K * p.1)) s := by
       refine ContinuousOn.log (α := ℝ × ℝ) hD ?_
       intro p hp
@@ -1645,7 +1653,8 @@ lemma continuousOn_hamiltonIveyBarrier_nonneg_time
       nlinarith [mul_nonneg (mul_pos two_pos hK).le hτ]
     exact continuousOn_snd.mul hlog
   have hlin : ContinuousOn (fun p : ℝ × ℝ => 3 * p.2) s := by
-    simpa [mul_comm] using (continuousOn_snd.mul (continuousOn_const (s := s) (c := (3 : ℝ))))
+    change ContinuousOn ((fun _ : ℝ × ℝ => (3 : ℝ)) * Prod.snd) s
+    exact continuousOn_const.mul continuousOn_snd
   have hsum1 : ContinuousOn (fun p : ℝ × ℝ =>
       p.2 * Real.log p.2 - p.2 * Real.log K + p.2 * Real.log (1 + 2 * K * p.1) - 3 * p.2) s := by
     exact (((hlogX.sub hlogK).add hlogD).sub hlin)
@@ -1673,9 +1682,9 @@ lemma continuousOn_hamiltonIveyConvexBarrier_time_nonneg
   · unfold scalarSectionalLowerBarrier3
     have hnum : ContinuousOn (fun p : ℝ × ℝ => -3 * K) s := continuousOn_const
     have hden : ContinuousOn (fun p : ℝ × ℝ => 1 + 4 * K * p.1) s := by
-      simpa [add_comm] using
-        ((continuousOn_const (s := s) (c := (1 : ℝ))).add
-          ((continuousOn_const (s := s) (c := (4 * K : ℝ))).mul (continuousOn_fst (s := s))))
+      change ContinuousOn
+        ((fun _ : ℝ × ℝ => (1 : ℝ)) + (fun _ => 4 * K) * Prod.fst) s
+      exact continuousOn_const.add (continuousOn_const.mul continuousOn_fst)
     refine hnum.div hden ?_
     intro p hp
     have hτ : 0 ≤ p.1 := hp.1.1

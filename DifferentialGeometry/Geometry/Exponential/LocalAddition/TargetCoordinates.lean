@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.LocalAddition
 
+
 noncomputable section
 
 open Bundle Manifold
@@ -34,8 +35,17 @@ lemma localAddTarget_fd
       ((ContinuousLinearMap.snd ℝ E E).comp
         (unipotentCLE (E := E) : (E × E) →L[ℝ] (E × E)))
       (localAddZeroCoord (I := I) p) := by
-  simpa only [localAddTarget, localAddZeroCoord] using
-    (connAdd_fderiv (I := I) g p n hn).snd
+  let : NormedAddCommGroup (E × E) := Prod.normedAddCommGroup
+  let : NormedSpace ℝ (E × E) := Prod.normedSpace
+  change HasFDerivAt (fun z : E × E => (connAddChart (I := I) g p z).2)
+    ((ContinuousLinearMap.snd ℝ E E).comp
+      (unipotentCLE (E := E) : (E × E) →L[ℝ] (E × E)))
+    (extChartAt I.tangent
+      (⟨connCompPt (I := I) p, (0 : E)⟩ :
+        TangentBundle I (connCompOpen (I := I) p))
+      (⟨connCompPt (I := I) p, (0 : E)⟩ :
+        TangentBundle I (connCompOpen (I := I) p)))
+  exact (connAdd_fderiv (I := I) g p n hn).snd
 
 lemma localAddTarget_vert
     (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) (hn : 1 ≤ n) (v : E) :

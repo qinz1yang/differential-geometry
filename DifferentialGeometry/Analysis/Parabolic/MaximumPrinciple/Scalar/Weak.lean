@@ -171,7 +171,10 @@ theorem parabolic_smul
       heatOperatorWithDrift (I := I) G t (X t)
           (fun y : M => a * u t y) x =
         a * heatOperatorWithDrift (I := I) G t (X t) (u t) x := by
-    simpa [smul_eq_mul] using hheat
+    change heatOperatorWithDrift (I := I) G t (X t)
+        (fun y : M => a * u t y) x =
+      a * heatOperatorWithDrift (I := I) G t (X t) (u t) x at hheat
+    exact hheat
   rw [hheat']
   ring
 
@@ -226,8 +229,11 @@ theorem parabolic_sum
     clear hplain hsection
     induction r using Finset.induction_on with
     | empty =>
-        simpa using mdifferentiableAt_zeroSection
-          (𝕜 := Real) (F := E) (E := (TangentSpace I : M -> Type _)) (x := y)
+        refine (mdifferentiableAt_zeroSection
+          (𝕜 := Real) (F := E) (E := (TangentSpace I : M -> Type _))
+          (IB := I) (x := y)).congr_of_eventuallyEq ?_
+        filter_upwards with z
+        rfl
     | @insert a r ha ih =>
         have ha_grad := hr_grad a (Finset.mem_insert_self a r) y
         have htail := ih
@@ -424,12 +430,14 @@ theorem parabolic_comp_nhds
       derivWithin (fun s : Real => φ (u s x)) (Set.Icc 0 T) t =
         deriv φ (u t x) *
           derivWithin (fun s : Real => u s x) (Set.Icc 0 T) t := by
-    simpa only [Function.comp_apply, derivWithin_univ] using
-      (derivWithin_comp (x := t)
-        (h := fun s : Real => u s x) (h₂ := φ)
-        (s := Set.Icc 0 T) (s' := Set.univ)
-        (hφ (u t x)).differentiableWithinAt hu_time
-        (Set.mapsTo_univ _ _))
+    have hcomp := derivWithin_comp (x := t)
+      (h := fun s : Real => u s x) (h₂ := φ)
+      (s := Set.Icc 0 T) (s' := Set.univ)
+      (hφ (u t x)).differentiableWithinAt hu_time
+      (Set.mapsTo_univ _ _)
+    have hfun : (φ ∘ fun s : Real => u s x) = fun s : Real => φ (u s x) := rfl
+    rw [hfun, derivWithin_univ] at hcomp
+    exact hcomp
   have hlap :=
     lap_comp_nhds (I := I) (G.connection t) (G.metric t)
       hφ hφ' hu_space hu_grad
@@ -467,12 +475,14 @@ theorem parabolic_comp
       derivWithin (fun s : Real => φ (u s x)) (Set.Icc 0 T) t =
         deriv φ (u t x) *
           derivWithin (fun s : Real => u s x) (Set.Icc 0 T) t := by
-    simpa only [Function.comp_apply, derivWithin_univ] using
-      (derivWithin_comp (x := t)
-        (h := fun s : Real => u s x) (h₂ := φ)
-        (s := Set.Icc 0 T) (s' := Set.univ)
-        (hφ (u t x)).differentiableWithinAt hu_time
-        (Set.mapsTo_univ _ _))
+    have hcomp := derivWithin_comp (x := t)
+      (h := fun s : Real => u s x) (h₂ := φ)
+      (s := Set.Icc 0 T) (s' := Set.univ)
+      (hφ (u t x)).differentiableWithinAt hu_time
+      (Set.mapsTo_univ _ _)
+    have hfun : (φ ∘ fun s : Real => u s x) = fun s : Real => φ (u s x) := rfl
+    rw [hfun, derivWithin_univ] at hcomp
+    exact hcomp
   unfold parabolicOperatorWithDrift
   rw [htime]
   rw [heatDrift_comp (I := I) G t (X t)
@@ -560,7 +570,7 @@ theorem parabolic_exp_rescale_identity
   have hlinear_diff :
       DifferentiableWithinAt Real (fun s : Real => -L * s) (Set.Icc 0 T) t := by
     simpa using
-      (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-L)
+      (differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-L)
   have hlinear_deriv :
       derivWithin (fun s : Real => -L * s) (Set.Icc 0 T) t = -L := by
     have hid :
@@ -586,9 +596,13 @@ theorem parabolic_exp_rescale_identity
       heatOperatorWithDrift (I := I) G t (X t)
           (fun y : M => Real.exp (-L * t) * v t y) x =
         Real.exp (-L * t) * heatOperatorWithDrift (I := I) G t (X t) (v t) x := by
-    simpa [Pi.smul_apply, smul_eq_mul] using
-      heatOperatorWithDrift_const_smul (I := I) G t (X t) (Real.exp (-L * t))
-        (f := v t) hv_space hv_grad
+    have h := heatOperatorWithDrift_const_smul
+      (I := I) G t (X t) (Real.exp (-L * t))
+      (f := v t) hv_space hv_grad
+    change heatOperatorWithDrift (I := I) G t (X t)
+        (fun y : M => Real.exp (-L * t) * v t y) x =
+      Real.exp (-L * t) * heatOperatorWithDrift (I := I) G t (X t) (v t) x at h
+    exact h
   rw [htime, hheat]
   ring
 
@@ -656,7 +670,7 @@ private theorem derivWithin_add_eps_mul_time
   have hlinear :
       DifferentiableWithinAt Real (fun s : Real => ε * s) (Set.Icc 0 T) t := by
     simpa using
-      (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul ε
+      (differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul ε
   have hderiv_linear :
       derivWithin (fun s : Real => ε * s) (Set.Icc 0 T) t = ε := by
     rw [derivWithin_const_mul ε
@@ -669,7 +683,6 @@ private theorem derivWithin_add_eps_mul_time
 theorem strict_barrier_nonnegative_of_positive_time
     [I.Boundaryless]
     [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
@@ -729,7 +742,7 @@ theorem strict_barrier_nonnegative_of_positive_time
         DifferentiableWithinAt Real (fun s : Real => w s x0 + ε * s)
           (Set.Icc 0 T) t0 := by
       exact (hw_time t0 hp0_time x0).add
-        ((differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t0)).const_mul ε)
+        ((differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t0)).const_mul ε)
     have hbarrier_deriv_nonpos :
         derivWithin (fun s : Real => w s x0 + ε * s) (Set.Icc 0 T) t0 <= 0 :=
       derivWithin_nonpos_at_Icc_min_of_pos htime_min.localize hp0_time ht0_pos htime_diff
@@ -781,7 +794,6 @@ theorem strict_barrier_nonnegative_of_positive_time
 theorem strict_barrier_posReg
     [I.Boundaryless]
     [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
@@ -841,7 +853,7 @@ theorem strict_barrier_posReg
         DifferentiableWithinAt Real (fun s : Real => w s x0 + ε * s)
           (Set.Icc 0 T) t0 := by
       exact (hw_time t0 hp0_time ht0_pos x0).add
-        ((differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t0)).const_mul ε)
+        ((differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t0)).const_mul ε)
     have hbarrier_deriv_nonpos :
         derivWithin (fun s : Real => w s x0 + ε * s) (Set.Icc 0 T) t0 <= 0 :=
       derivWithin_nonpos_at_Icc_min_of_pos htime_min.localize hp0_time ht0_pos htime_diff
@@ -892,7 +904,6 @@ theorem strict_barrier_posReg
 
 theorem strict_barrier_cpt
     [I.Boundaryless]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
@@ -960,7 +971,7 @@ theorem strict_barrier_cpt
         DifferentiableWithinAt Real (fun s : Real => w s x0 + ε * s)
           (Set.Icc 0 T) t0 := by
       exact (hw_time t0 hp0_time ht0_pos x0).add
-        ((differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t0)).const_mul ε)
+        ((differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t0)).const_mul ε)
     have hbarrier_deriv_nonpos :
         derivWithin (fun s : Real => w s x0 + ε * s) (Set.Icc 0 T) t0 <= 0 :=
       derivWithin_nonpos_at_Icc_min_of_pos htime_min.localize hp0_time ht0_pos htime_diff
@@ -1013,7 +1024,6 @@ theorem strict_barrier_cpt
 
 theorem strict_barrier_cpt_of_upperSupport
     [I.Boundaryless]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
@@ -1104,12 +1114,14 @@ theorem strict_barrier_cpt_of_upperSupport
           intro s hs
           exact ⟨hs, Set.mem_univ x0⟩)
         (continuous_id.prodMk continuous_const).continuousOn hp0_time
-      simpa only [Function.comp_apply, Ψ] using hcomp
+      change IsLocalMinOn (fun s : Real => support.v s x0 + ε * s)
+        (Set.Icc 0 T) t0 at hcomp
+      exact hcomp
     have htime_diff :
         DifferentiableWithinAt Real
           (fun s : Real => support.v s x0 + ε * s) (Set.Icc 0 T) t0 :=
       support.time_diff.add
-        ((differentiableWithinAt_id'
+        ((differentiableWithinAt_fun_id
           (𝕜 := Real) (s := Set.Icc 0 T) (x := t0)).const_mul ε)
     have hbarrier_deriv_nonpos :
         derivWithin (fun s : Real => support.v s x0 + ε * s)
@@ -1135,7 +1147,9 @@ theorem strict_barrier_cpt_of_upperSupport
           intro y _
           exact ⟨hp0_time, Set.mem_univ y⟩)
         (continuous_const.prodMk continuous_id).continuousOn (Set.mem_univ x0)
-      simpa only [Function.comp_apply, Ψ] using hcomp
+      change IsLocalMinOn (fun y : M => support.v t0 y + ε * t0)
+        Set.univ x0 at hcomp
+      exact hcomp
     have hspatial_min : IsLocalMin (support.v t0) x0 := by
       unfold IsLocalMin IsMinFilter at hspace_min_shift ⊢
       filter_upwards [hspace_min_shift] with y hy
@@ -1173,7 +1187,6 @@ theorem strict_barrier_cpt_of_upperSupport
 theorem strict_barrier_nonnegative
     [I.Boundaryless]
     [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
@@ -1198,7 +1211,6 @@ theorem strict_barrier_nonnegative
 theorem scalar_wmp_sub_const_of_parabolic_nonpos
     [I.Boundaryless]
     [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
@@ -1249,7 +1261,6 @@ theorem scalar_wmp_sub_const_of_parabolic_nonpos
 theorem scalar_sub_const_posReg
     [I.Boundaryless]
     [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
@@ -1301,7 +1312,6 @@ theorem scalar_sub_const_posReg
 theorem scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values
     [I.Boundaryless]
     [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
@@ -1394,7 +1404,6 @@ theorem scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values
 theorem scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values_of_positive_time
     [I.Boundaryless]
     [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
@@ -1487,7 +1496,6 @@ theorem scalar_weak_maximum_principle_supersolutions_of_lipschitz_on_values_of_p
 theorem msm110_ch4_scalar_supersolutions
     [I.Boundaryless]
     [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
@@ -1531,7 +1539,6 @@ theorem msm110_ch4_scalar_supersolutions
 theorem msm110_ch4_scalar_pointwise_bounds
     [I.Boundaryless]
     [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
@@ -1592,7 +1599,6 @@ theorem msm110_ch4_scalar_pointwise_bounds
 theorem msm110_ch4_scalar_linear_reaction
     [I.Boundaryless]
     [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real)
     (X : Real -> (x : M) -> TangentSpace I x)
@@ -1681,7 +1687,7 @@ theorem linear_react_nonneg
           DifferentiableWithinAt Real (fun s : Real => -C * s)
             (Set.Icc 0 T) t := by
         simpa using
-          (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-C)
+          (differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-C)
       exact hlinear.exp
     rw [parabolic_exp_rescale_identity (I := I) G T C X u t huniq
       (hu_space t ht) x (hu_grad t ht x) (hu_time t ht x) hscale]
@@ -1707,7 +1713,6 @@ theorem linear_react_nonneg
 theorem scalar_weak_maximum_principle_supersolutions_of_weighted_lipschitz_on_values
     [I.Boundaryless]
     [CompactSpace M]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
     (T : Real) (hT : 0 <= T)
     (X : Real -> (x : M) -> TangentSpace I x)
@@ -1867,7 +1872,7 @@ theorem scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular
         have hlinear :
             DifferentiableWithinAt Real (fun s : Real => -L * s) (Set.Icc 0 T) t := by
           simpa using
-            (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-L)
+            (differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-L)
         exact hlinear.exp
       exact hscale.mul hv_time
     · intro t ht x
@@ -1886,7 +1891,7 @@ theorem scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular
         have hlinear :
             DifferentiableWithinAt Real (fun s : Real => -L * s) (Set.Icc 0 T) t := by
           simpa using
-            (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-L)
+            (differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-L)
         exact hlinear.exp
       exact parabolic_exp_rescale_identity (I := I) G T L X
         (fun s y => u s y - c s) t huniq (hv_space t ht) x
@@ -1954,7 +1959,7 @@ theorem scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular_positive_tim
         have hlinear :
             DifferentiableWithinAt Real (fun s : Real => -L * s) (Set.Icc 0 T) t := by
           simpa using
-            (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-L)
+            (differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-L)
         exact hlinear.exp
       exact hscale.mul hv_time
     · intro t ht x
@@ -1973,7 +1978,7 @@ theorem scalar_wmp_supersolutions_of_lipschitz_on_values_of_regular_positive_tim
         have hlinear :
             DifferentiableWithinAt Real (fun s : Real => -L * s) (Set.Icc 0 T) t := by
           simpa using
-            (differentiableWithinAt_id' (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-L)
+            (differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul (-L)
         exact hlinear.exp
       exact parabolic_exp_rescale_identity (I := I) G T L X
         (fun s y => u s y - c s) t huniq (hv_space t ht) x

@@ -34,10 +34,10 @@ theorem oneStepConst_nonneg
     (k m : Nat) :
     0 <= oneStepConst B k m := by
   unfold oneStepConst
-  refine mul_nonneg (by exact_mod_cast Nat.zero_le m) ?_
+  refine mul_nonneg (by exact_mod_cast Nat.zero_le (n := m)) ?_
   refine Finset.sum_nonneg ?_
   intro a _ha
-  exact mul_nonneg (by exact_mod_cast Nat.zero_le (k.choose a)) (hB a)
+  exact mul_nonneg (by exact_mod_cast Nat.zero_le (n := k.choose a)) (hB a)
 
 theorem iterated_recurrence_constant_pos
     {B : Nat -> Real} (hB : forall i : Nat, 0 <= B i)
@@ -100,7 +100,7 @@ theorem compApproxConst_pos
     (p : Nat) :
     0 < compApproxConst C p := by
   have hpow : 0 < (2 : Real) ^ (p + 3) := pow_pos (by norm_num) _
-  have hp : 0 <= (p : Real) := by exact_mod_cast Nat.zero_le p
+  have hp : 0 <= (p : Real) := by exact_mod_cast Nat.zero_le (n := p)
   have hfactor : 0 < 1 + (p : Real) * C p := by
     nlinarith [mul_nonneg hp (hC p)]
   exact mul_pos hpow hfactor

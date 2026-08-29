@@ -5,7 +5,7 @@ import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Equiv
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
@@ -34,11 +34,11 @@ def metricFlatLinear (g : SmoothRiemannianMetric I M) (x : M) :
   map_add' v w := by
     ext u
     change g.inner x (v + w) u = g.inner x v u + g.inner x w u
-    rw [map_add, ContinuousLinearMap.add_apply]
+    rw [map_add, add_apply]
   map_smul' c v := by
     ext u
     change g.inner x (c • v) u = c • g.inner x v u
-    rw [map_smul, ContinuousLinearMap.smul_apply]
+    rw [map_smul, smul_apply]
 
 omit [Module.Finite ℝ E] in
 @[simp] lemma metricFlatLinear_apply (g : SmoothRiemannianMetric I M) (x : M)
@@ -54,7 +54,7 @@ lemma metricFlatLinear_injective (g : SmoothRiemannianMetric I M) (x : M) :
     have h := congrArg (fun L : TangentSpace I x →ₗ[ℝ] ℝ => L z) hvw
     simp only [metricFlatLinear_apply] at h
     have hsub : g.inner x (v - w) z = g.inner x v z - g.inner x w z := by
-      rw [map_sub, ContinuousLinearMap.sub_apply]
+      rw [map_sub, sub_apply]
     rw [hsub, sub_eq_zero]
     exact h
   by_contra hne
@@ -135,11 +135,7 @@ lemma gradFun_eq_zero_of_mfderiv_eq_zero
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) {x : M}
     (hf : mfderiv I 𝓘(ℝ, ℝ) f x = 0) :
     gradFun (I := I) g f x = (0 : TangentSpace I x) := by
-  rw [gradFun_def, metricSharp_def]
-  have htoLM : (mfderiv I 𝓘(ℝ, ℝ) f x).toLinearMap =
-      (0 : TangentSpace I x →ₗ[ℝ] ℝ) := by
-    rw [hf]; rfl
-  rw [htoLM]
+  rw [gradFun_def, hf]
   exact LinearEquiv.map_zero _
 
 def chartInvGramMatrix (g : SmoothRiemannianMetric I M) (α : M) (x : M) :
@@ -189,9 +185,9 @@ lemma chartGramMatrix_adjugate_entry_contMDiffOn
     rw [Matrix.det_apply]
     simp [Units.smul_def]
   rw [hexp2]
-  refine contMDiffOn_finset_sum (fun σ _ => ?_)
+  refine contMDiffOn_finsetSum (fun σ _ => ?_)
   refine ContMDiffOn.mul (contMDiffOn_const (c := ((Equiv.Perm.sign σ : ℤ) : ℝ))) ?_
-  refine contMDiffOn_finset_prod (fun k _ => ?_)
+  refine contMDiffOn_finsetProd (fun k _ => ?_)
   by_cases hσk : σ k = j
   · have heq : (fun x : M => (chartGramMatrix (I := I) g α x).updateRow j
         (Pi.single i (1 : ℝ)) (σ k) k) =
@@ -247,24 +243,24 @@ lemma chartInvGramMatrix_entry_contMDiffOn
     exact hsmooth_inv.contMDiffAt.comp_contMDiffWithinAt x h_at
   · exact chartGramMatrix_adjugate_entry_contMDiffOn (I := I) g α i j
 
-noncomputable def chartInvGramMatrix_l1Sum
+noncomputable def chartInvGramMatrixL1Sum
     (g : SmoothRiemannianMetric I M) (α : M) (x : M) : ℝ :=
   ∑ ij : (Fin (Module.finrank ℝ E)) × (Fin (Module.finrank ℝ E)),
     |chartInvGramMatrix (I := I) g α x ij.1 ij.2|
 
 lemma chartInvGramMatrix_l1Sum_nonneg
     (g : SmoothRiemannianMetric I M) (α : M) (x : M) :
-    0 ≤ chartInvGramMatrix_l1Sum (I := I) (M := M) g α x := by
-  unfold chartInvGramMatrix_l1Sum
+    0 ≤ chartInvGramMatrixL1Sum (I := I) (M := M) g α x := by
+  unfold chartInvGramMatrixL1Sum
   exact Finset.sum_nonneg (fun _ _ => abs_nonneg _)
 
 lemma chartInvGramMatrix_l1Sum_continuousOn
     (g : SmoothRiemannianMetric I M) (α : M) :
-    ContinuousOn (chartInvGramMatrix_l1Sum (I := I) (M := M) g α)
+    ContinuousOn (chartInvGramMatrixL1Sum (I := I) (M := M) g α)
       (chartAt H α).source := by
   classical
-  unfold chartInvGramMatrix_l1Sum
-  refine continuousOn_finset_sum _ (fun ij _ => ?_)
+  unfold chartInvGramMatrixL1Sum
+  refine continuousOn_finsetSum _ (fun ij _ => ?_)
   have h_base_eq :
       (trivializationAt E (TangentSpace I) α).baseSet = (chartAt H α).source := rfl
   have h1 :
@@ -368,14 +364,14 @@ lemma mfderiv_chartBasisVecFiber_of_mdifferentiableAt
     set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
       trivializationAt E (TangentSpace I) α
     have heq : chartBasisVecFiber (I := I) α i x = T.symm x ((chartModelBasis E) i) :=
-      rfl
+      by rw [chartBasisVecFiber, T.symmL_apply hbase]
     rw [heq]
     have h_apply :
         T.continuousLinearMapAt ℝ x (T.symm x ((chartModelBasis E) i))
           = (chartModelBasis E) i := by
       have heqsymm : T.symm x ((chartModelBasis E) i)
             = T.symmL ℝ x ((chartModelBasis E) i) := by
-        rw [Trivialization.symmL_apply]
+        exact (Trivialization.symmL_apply T hbase _).symm
       rw [heqsymm, Trivialization.continuousLinearMapAt_symmL T (b := x) hbase]
     exact h_apply
   change fderiv ℝ (scalarOnE (I := I) α f) (φ x)
@@ -404,10 +400,10 @@ lemma inner_gradChartLocal_chartBasis
               chartBasisVecFiber (I := I) α i x)) =
           (∑ i, gradChartCoeff (I := I) g α f i x •
               g.inner x (chartBasisVecFiber (I := I) α i x)) from ?_]
-    · rw [ContinuousLinearMap.sum_apply]
+    · rw [sum_apply]
       refine Finset.sum_congr rfl ?_
       intro i _
-      rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+      rw [smul_apply, smul_eq_mul]
     · rw [map_sum]
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -579,7 +575,7 @@ theorem g_inner_gradFun_le_chartInvGramMatrix_l1Sum_mul_sum_sq_partials
     (hf : MDifferentiableAt I 𝓘(ℝ, ℝ) f x)
     (hx : x ∈ (chartAt H α).source) :
     g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g f x) ≤
-      chartInvGramMatrix_l1Sum (I := I) (M := M) g α x *
+      chartInvGramMatrixL1Sum (I := I) (M := M) g α x *
         ∑ k : Fin (Module.finrank ℝ E),
           (partialDeriv (E := E) k (scalarOnE (I := I) α f)
             (extChartAt I α x)) ^ 2 := by
@@ -723,8 +719,8 @@ theorem g_inner_gradFun_le_chartInvGramMatrix_l1Sum_mul_sum_sq_partials
     exact h
   have h_main_le :
       (∑ j, ∑ k, Ginv j k * d j * d k) ≤
-        chartInvGramMatrix_l1Sum (I := I) (M := M) g α x * D := by
-    unfold chartInvGramMatrix_l1Sum
+        chartInvGramMatrixL1Sum (I := I) (M := M) g α x * D := by
+    unfold chartInvGramMatrixL1Sum
     rw [Finset.sum_mul]
     rw [show (∑ ij : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
             |chartInvGramMatrix (I := I) g α x ij.1 ij.2| * D) =
@@ -752,7 +748,7 @@ private lemma gradChartCoeff_contMDiffOn
       ((extChartAt I α).source ∩
         (extChartAt I α) ⁻¹' interior (extChartAt I α).target) := by
   classical
-  refine contMDiffOn_finset_sum (fun j _ => ?_)
+  refine contMDiffOn_finsetSum (fun j _ => ?_)
   refine ContMDiffOn.mul ?_ ?_
   · have h1 : ContMDiffOn I 𝓘(ℝ) ∞
         (fun x => chartInvGramMatrix (I := I) g α x i j)
@@ -890,14 +886,14 @@ lemma gradFun_contMDiff_total [I.Boundaryless]
     rw [h]
   exact (hsmooth_local2 x hx_src).contMDiffAt (hsrc_open.mem_nhds hx_src)
 
-def grad_g [I.Boundaryless]
+def gradG [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯) :
     Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
   ⟨fun x : M => gradFun (I := I) g f x, gradFun_contMDiff_total (I := I) g f.contMDiff⟩
 
 @[simp] lemma grad_g_apply [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯) (x : M) :
-    (grad_g (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
+    (gradG (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
       gradFun (I := I) g f x := rfl
 
 theorem tangentSectionAction_eq_inner_grad_g [I.Boundaryless]
@@ -906,7 +902,7 @@ theorem tangentSectionAction_eq_inner_grad_g [I.Boundaryless]
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     tangentSectionAction (I := I) X f x =
       g.inner x (X x)
-        ((grad_g (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
+        ((gradG (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
   rw [grad_g_apply]
   rw [inner_gradFun_right (I := I) g f x (X x)]
   rfl
@@ -915,10 +911,10 @@ theorem inner_grad_g_symm [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (f h : C^∞⟮I, M; ℝ⟯)
     (x : M) :
-    g.inner x ((grad_g (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g h : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
-      g.inner x ((grad_g (I := I) g h : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) :=
+    g.inner x ((gradG (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
+        ((gradG (I := I) g h : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
+      g.inner x ((gradG (I := I) g h : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
+        ((gradG (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) :=
   g.symm x _ _
 
 lemma gradFun_eq_zero_of_eventuallyEq_zero
@@ -945,7 +941,7 @@ lemma support_gradFun_subset
 lemma hasCompactSupport_grad_g [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (f : C^∞⟮I, M; ℝ⟯) (hf_cs : HasCompactSupport f) :
-    HasCompactSupport ((grad_g (I := I) g f :
+    HasCompactSupport ((gradG (I := I) g f :
       Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)) := by
   refine HasCompactSupport.of_support_subset_isCompact (hf_cs : IsCompact (tsupport f)) ?_
   intro x hx

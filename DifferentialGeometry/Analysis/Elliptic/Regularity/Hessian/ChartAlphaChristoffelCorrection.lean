@@ -47,7 +47,7 @@ def christoffelDischargeSmoothCase
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
     Prop :=
   ∀ x : M,
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartAtlasPOU I M α : M → ℝ) x *
           smoothPairingChristoffelDiff (I := I) (M := M) g α φ v
             ((toEuclidean (E := E)) (extChartAt I α x)) = 0
@@ -57,7 +57,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
     christoffelDischargeSmoothCase (I := I) (M := M) g φ v ↔
       ∀ x : M,
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
             (chartAtlasPOU I M α : M → ℝ) x *
               smoothPairingChristoffelDiff (I := I) (M := M) g α φ v
                 ((toEuclidean (E := E)) (extChartAt I α x)) = 0 := Iff.rfl
@@ -78,18 +78,18 @@ theorem smoothEuclidHessianPairingChart_at_chartAt_eq_tensor_plus_diff
 theorem pou_weighted_euclid_pairing_decompose
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     (v : SmoothScalar g) (x : M) :
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartAtlasPOU I M α : M → ℝ) x *
           smoothEuclidHessianPairingChart (I := I) (M := M) g α φ v
             ((toEuclidean (E := E)) (extChartAt I α x)) =
       hessPairingChart (I := I) g φ
         (smoothScalarToContMDiffMap (I := I) (g := g) v) x +
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartAtlasPOU I M α : M → ℝ) x *
           smoothPairingChristoffelDiff (I := I) (M := M) g α φ v
             ((toEuclidean (E := E)) (extChartAt I α x)) := by
   classical
-  have h_per_term : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have h_per_term : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       (chartAtlasPOU I M α : M → ℝ) x *
           smoothEuclidHessianPairingChart (I := I) (M := M) g α φ v
             ((toEuclidean (E := E)) (extChartAt I α x)) =
@@ -113,7 +113,7 @@ theorem pou_weighted_euclid_pairing_eq_hessPairingChart_pointwise_of_discharge
     (v : SmoothScalar g)
     (h_discharge : christoffelDischargeSmoothCase (I := I) (M := M) g φ v)
     (x : M) :
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartAtlasPOU I M α : M → ℝ) x *
           smoothEuclidHessianPairingChart (I := I) (M := M) g α φ v
             ((toEuclidean (E := E)) (extChartAt I α x)) =

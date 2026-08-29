@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Operator.WithBoundary.Gradient
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.PartialDerivWithin
 import DifferentialGeometry.Geometry.Boundary.EuclideanHalfSpaceInstance
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import DifferentialGeometry.Geometry.Operator.Gradient
 
@@ -21,14 +21,13 @@ namespace WithBoundary
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 open DifferentialGeometry.Integral.Measure
 
-omit [InnerProductSpace ℝ E] in
 private lemma partialDerivWithin_scalarOnE_contMDiffOn_target
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     (j : Fin (Module.finrank ℝ E)) :
@@ -48,12 +47,12 @@ private lemma partialDerivWithin_scalarOnE_contMDiffOn_target
     partialDerivWithin_contDiffOn_top_of_uniqueDiffOn (i := j) hbase hUD
   exact hpartial.contMDiffOn
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] in
+omit [Module.Finite ℝ E] in
 private lemma extChartAt_contMDiffOn_chart_source (α : M) :
     ContMDiffOn I 𝓘(ℝ, E) ∞ (extChartAt I α : M → E) (chartAt H α).source :=
   contMDiffOn_extChartAt
 
-omit [InnerProductSpace ℝ E] [Module.Finite ℝ E] [IsManifold I ∞ M] in
+omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 private lemma chart_source_subset_preimage_target (α : M) :
     (chartAt H α).source ⊆
       (extChartAt I α : M → E) ⁻¹' (extChartAt I α).target := by
@@ -62,7 +61,6 @@ private lemma chart_source_subset_preimage_target (α : M) :
     rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hx
   exact (extChartAt I α).map_source hxsrc
 
-omit [InnerProductSpace ℝ E] in
 lemma gradChartCoeffWithin_contMDiffOn_full
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
@@ -70,7 +68,7 @@ lemma gradChartCoeffWithin_contMDiffOn_full
     ContMDiffOn I 𝓘(ℝ) ∞ (gradChartCoeffWithin (I := I) g α f i)
       (chartAt H α).source := by
   classical
-  refine contMDiffOn_finset_sum (fun j _ => ?_)
+  refine contMDiffOn_finsetSum (fun j _ => ?_)
   refine ContMDiffOn.mul ?_ ?_
   · have h1 : ContMDiffOn I 𝓘(ℝ) ∞
         (fun x => chartInvGramMatrix (I := I) g α x i j)
@@ -93,7 +91,6 @@ lemma gradChartCoeffWithin_contMDiffOn_full
       chart_source_subset_preimage_target (I := I) α
     exact hpartialM.comp hchart hsubset
 
-omit [InnerProductSpace ℝ E] in
 lemma gradChartLocalWithin_contMDiffOn_total_full
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
@@ -122,7 +119,6 @@ lemma gradChartLocalWithin_contMDiffOn_total_full
     exact (hcoeff i).smul_section (hbasis i)
   exact ContMDiffOn.sum_section (fun i _ => hsmul i)
 
-omit [InnerProductSpace ℝ E] in
 private lemma gradFun_eq_gradChartLocalWithin_on_chart_source
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
@@ -131,7 +127,6 @@ private lemma gradFun_eq_gradChartLocalWithin_on_chart_source
   intro y hy
   exact (gradChartLocalWithin_eq_gradFun (I := I) g α hf hy).symm
 
-omit [InnerProductSpace ℝ E] in
 lemma gradFun_contMDiffOn_chart_source_full
     (g : SmoothRiemannianMetric I M) (α : M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
@@ -149,7 +144,6 @@ lemma gradFun_contMDiffOn_chart_source_full
     TotalSpace.mk' E y (gradChartLocalWithin (I := I) g α f y)
   rw [h]
 
-omit [InnerProductSpace ℝ E] in
 theorem gradFun_contMDiff_total_full
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
@@ -194,7 +188,7 @@ theorem grad_g_smooth_section_full
   gradFun_contMDiff_total_full
     (I := modelWithCornersEuclideanHalfSpace n) (M := M) g hf
 
-def grad_g_full_section
+def gradGFullSection
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f : M → ℝ} (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f) :
     Cₛ^∞⟮(modelWithCornersEuclideanHalfSpace n);
@@ -207,7 +201,7 @@ def grad_g_full_section
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f : M → ℝ} (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f)
     (x : M) :
-    (grad_g_full_section (M := M) (n := n) g hf :
+    (gradGFullSection (M := M) (n := n) g hf :
       Cₛ^∞⟮(modelWithCornersEuclideanHalfSpace n);
         EuclideanSpace ℝ (Fin n),
         (TangentSpace (modelWithCornersEuclideanHalfSpace n) : M → Type _)⟯) x =
@@ -217,11 +211,11 @@ def grad_g_full_section
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f : M → ℝ} (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f)
     (x : M) :
-    (grad_g_full_section (M := M) (n := n) g hf :
+    (gradGFullSection (M := M) (n := n) g hf :
       Cₛ^∞⟮(modelWithCornersEuclideanHalfSpace n);
         EuclideanSpace ℝ (Fin n),
         (TangentSpace (modelWithCornersEuclideanHalfSpace n) : M → Type _)⟯) x =
-      grad_g_with_boundary (I := modelWithCornersEuclideanHalfSpace n) g f x := rfl
+      gradGWithBoundary (I := modelWithCornersEuclideanHalfSpace n) g f x := rfl
 
 end WithBoundary
 end Operator

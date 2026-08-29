@@ -7,7 +7,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.TopOrderCoefficientH3Bounds
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -219,6 +218,7 @@ theorem bcD2_pair_abs_uniform
     _ ≤ η * ‖ccTensorToHs (I := I) (M := M) g 2 (4 : ℝ) U‖ ^ 2 :=
       mul_le_mul_of_nonneg_right hcoef (sq_nonneg _)
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iterated_covgrad_comp_l2_sq
     (g : SmoothRiemannianMetric I M) (r s l m : ℕ)
@@ -236,6 +236,7 @@ private theorem iterated_covgrad_comp_l2_sq
     riemannianFiberNormSq_iteratedCovGrad_comp
       (I := I) (M := M) g r s l m S x
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem covgrad_jet_three_le_four
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

@@ -236,7 +236,7 @@ theorem exists_uniform_galerkin_energy_three_dissipation_four_bound_background_o
     intro N
     exact Continuous.Icc_extend'
       (galerkinEnergy_continuousOn (I := I) (M := M)
-        (eigenIdxFinset (I := I) (M := M) g N) (U N) 3 (hUcont N)).restrict
+        (eigenIdxFinset (I := I) (M := M) g N) (U N) 3 (hUcont N)).domRestrict
   have hEEnn : ∀ N, ∀ s : ℝ, 0 ≤ EE N s := fun N s =>
     galerkinEnergy_nonneg (I := I) (M := M) _ _ _ _
   have hEEeq : ∀ N, ∀ s ∈ Set.Icc (0 : ℝ) T,
@@ -292,7 +292,7 @@ theorem exists_uniform_galerkin_energy_three_dissipation_four_bound_background_o
     intro N
     exact Continuous.Icc_extend'
       (galerkinEnergy_continuousOn (I := I) (M := M)
-        (eigenIdxFinset (I := I) (M := M) g N) (U N) 4 (hUcont N)).restrict
+        (eigenIdxFinset (I := I) (M := M) g N) (U N) 4 (hUcont N)).domRestrict
   have hEE4nn : ∀ N, ∀ s : ℝ, 0 ≤ EE4 N s := fun N s =>
     galerkinEnergy_nonneg (I := I) (M := M) _ _ _ _
   have hEE4eq : ∀ N, ∀ s ∈ Set.Icc (0 : ℝ) T,
@@ -322,8 +322,8 @@ theorem exists_uniform_galerkin_energy_three_dissipation_four_bound_background_o
     intro N t ht
     have h := hD4Has N t
     rw [hEE4eq N t ⟨ht.1, ht.2.le⟩] at h
-    convert h.hasDerivWithinAt using 1
-    all_goals norm_num
+    rw [show (3 + 1 : ℝ) = 4 by norm_num]
+    exact h.hasDerivWithinAt
   have hRpos : 0 < lowRegularityStateRadius Ctop B1 ρ P :=
     lowRegularityStateRadius_pos hCtop hB1 hρ hP
   let hrealR := lowRegularityMetricRealization (I := I) (M := M) g
@@ -357,14 +357,15 @@ theorem exists_uniform_galerkin_energy_three_dissipation_four_bound_background_o
       dsimp only [force, arm, seed]
       rw [galForceArmBackground (I := I) (M := M) g gBase hδ hδ0 hδ3 hCtop hB1 hρ hP
         hreal hcore F (U N t) i, if_pos hi]
-      exact add_comm _ _
+      simp only [galerkinActionVectorBackground]
+      module
     have harm := hpair F (U N t) (by
       simpa only [F] using hstate N t ⟨ht.1, ht.2.le⟩)
     have hstat : ∑ i ∈ F,
         tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) * (seed.coeff i) ^ 2 ≤
           Cseed 3 ^ 2 := by
       have h := hseed 3 F
-      simpa only [seed, Nat.cast_ofNat] using h
+      simpa only [seed, boundedDeTurckRemainderOnLowerState, Nat.cast_ofNat] using h
     have hstatPair := abs_sum_sameScale_le (I := I) (M := M) F (3 : ℝ)
       (U N t) (fun i => seed.coeff i)
     have hsqrtstat : Real.sqrt (∑ i ∈ F,
@@ -407,33 +408,35 @@ theorem exists_uniform_galerkin_energy_three_dissipation_four_bound_background_o
         le_abs_self (∑ i ∈ F,
           tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) *
             (U N t i * seed.coeff i))]
+    generalize hArmPair : (2 * |∑ i ∈ F,
+      tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) *
+        (U N t i * arm.coeff i)|) = armPair at harm hsigned
+    generalize hSeedPair : (2 * |∑ i ∈ F,
+      tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) *
+        (U N t i * seed.coeff i)|) = seedPair at hstatPair' hsigned
+    generalize hArmBound :
+      (∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (4 : ℝ) *
+          (U N t i) ^ 2) +
+        G * ((∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) *
+            (U N t i) ^ 2) +
+          (∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) *
+            (U N t i) ^ 2) ^ 2) = armBound at harm
+    generalize hSeedBound : (2 * Cseed 3 * Real.sqrt (∑ i ∈ F,
+      tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) *
+        (U N t i) ^ 2)) = seedBound at hstatPair'
+    have hbound : armPair + seedPair ≤ armBound + seedBound :=
+      add_le_add harm hstatPair'
     unfold galerkinEnergy
-    dsimp only [F, force] at hsigned ⊢
-    dsimp only [arm] at harm hsigned
-    dsimp only [seed] at hstatPair' hsigned
-    norm_num only [one_mul, zero_add, add_zero, Nat.cast_ofNat] at harm hstatPair' hsigned ⊢
+    norm_num only [one_mul, zero_add, add_zero, Nat.cast_ofNat] at ⊢
     calc
-      _ ≤ 2 * |∑ i ∈ eigenIdxFinset (I := I) (M := M) g N,
-            tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) *
-              (U N t i * (galerkinActionVectorBackground (I := I) (M := M) g gBase hRpos.le hδ
-                hrealR (eigenIdxFinset (I := I) (M := M) g N)
-                (U N t)).coeff i)| +
-          2 * |∑ i ∈ eigenIdxFinset (I := I) (M := M) g N,
-            tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) *
-              (U N t i * (boundedDeTurckRemainderOnLowerState (I := I) (M := M) g gBase hδ hCtop hB1
-                hρ hP hreal ⟨0, zero_mem_lowerState (I := I) (M := M) g 1
-                  hRpos.le⟩).coeff i)| := hsigned
-      _ ≤ ((∑ i ∈ eigenIdxFinset (I := I) (M := M) g N,
-            tensorSobolevWeight (I := I) (M := M) i (4 : ℝ) * (U N t i) ^ 2) +
-          G * ((∑ i ∈ eigenIdxFinset (I := I) (M := M) g N,
-            tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) * (U N t i) ^ 2) +
-            (∑ i ∈ eigenIdxFinset (I := I) (M := M) g N,
-              tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) *
-                (U N t i) ^ 2) ^ 2)) +
-          2 * Cseed 3 * Real.sqrt (∑ i ∈ eigenIdxFinset (I := I) (M := M) g N,
-            tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) *
-              (U N t i) ^ 2) := add_le_add harm hstatPair'
-      _ = _ := by ring
+      _ ≤ armPair + seedPair := by
+        dsimp only [F, force] at hsigned ⊢
+        exact hsigned
+      _ ≤ armBound + seedBound := hbound
+      _ = _ := by
+        rw [← hArmBound, ← hSeedBound]
+        dsimp only [F]
+        ring
   have hinit : ∀ N, galerkinEnergy (I := I) (M := M)
       (eigenIdxFinset (I := I) (M := M) g N) (U N) 3 0 ≤ 0 := by
     intro N

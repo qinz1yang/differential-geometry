@@ -44,11 +44,11 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 private local instance tensorRSModelNormedAddCommGroup_local :
     NormedAddCommGroup (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup 0 2
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup 0 2
 
 private local instance tensorRSModelNormedSpace_local :
     NormedSpace ℝ (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace 0 2
+  Tensor0SBundle.tensorRSModelNormedSpace 0 2
 
 private lemma continuousLinearMap_map_fintype_sum
     {ι V W : Type*} [Fintype ι]
@@ -74,7 +74,6 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (eigenvectorSmooth
   tensorChartComponentRaw tensorChartComponentProjection tensorChartBasisElement
   toEuclidean_extChartAt_mem_chartTargetEuclid)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem smoothCcTensor_rawChartComponent_eigenSeries_tsum_eq_local
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 2)
     (d : TensorEigenIdx (I := I) (M := M) g 0 2 → ℝ)
@@ -90,7 +89,7 @@ theorem smoothCcTensor_rawChartComponent_eigenSeries_tsum_eq_local
       ∑' i, d i * tensorChartComponentRaw (I := I) (M := M) g 0 2
         (eigenvectorSmooth (I := I) (M := M) g 0 2 i) α ![] Jdx x := by
   classical
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) 0 2
   set u : TensorL2 0 2 g := SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2) S with hu_def
   have hcoeff_u : ∀ i, tensorL2Coeff (I := I) (M := M)
@@ -114,11 +113,11 @@ theorem smoothCcTensor_rawChartComponent_eigenSeries_tsum_eq_local
     spectralPartialSum_toL2_tendsto (I := I) (M := M) g u
   have hTrep : (S : TensorL2 0 2 g) = u := rfl
   have hsum := chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x
-  have hexists : ∃ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hexists : ∃ β ∈ chartAtlasPOUFinset (I := I) (M := M),
       0 < ((chartAtlasPOU I M) β : C^∞⟮I, M; ℝ⟯) x := by
     by_contra hcon
     push Not at hcon
-    have hzero : ∀ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+    have hzero : ∀ β ∈ chartAtlasPOUFinset (I := I) (M := M),
         ((chartAtlasPOU I M) β : M → ℝ) x = 0 := by
       intro β hβ
       have hle := hcon β hβ
@@ -168,7 +167,7 @@ theorem smoothCcTensor_rawChartComponent_eigenSeries_tsum_eq_local
             chartBasisFiberSection (I := I) (M := M) 0 2 β Q x :=
       fun Z => toSection_eq_sum_chartBasisFiberSection (I := I) (M := M) g 0 2 Z β hx_src
     simp only [hexpand]
-    exact tendsto_finset_sum _ (fun Q _ => (hraw_tendsto Q).smul_const _)
+    exact tendsto_finsetSum _ (fun Q _ => (hraw_tendsto Q).smul_const _)
   have hLval : ∀ Z : SmoothCcTensor g 0 2,
       tensorChartComponentRaw (I := I) (M := M) g 0 2 Z α ![] Jdx x =
         (tensorChartComponentProjection (E := E) 0 2 ![] Jdx)
@@ -442,7 +441,6 @@ private theorem spectralPathFO_rawChartComponent_fibre_contDiffWithinAt_local
   rw [contMDiffOn_iff_contDiffOn] at hcomp
   exact hcomp t ht
 
-set_option backward.isDefEq.respectTransparency false in
 theorem spectralPathFO_section_jointContMDiffOn_local
     (g : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (kk : ℕ)
     (T_rep : ℝ → SmoothCcTensor g 0 2)
@@ -465,7 +463,7 @@ theorem spectralPathFO_section_jointContMDiffOn_local
         ((T_rep p.2).toSection p.1))
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) := by
   classical
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) 0 2
   refine contMDiffOn_of_locally_contMDiffOn ?_
   rintro ⟨x₀, s₀⟩ ⟨-, hs₀⟩
@@ -486,7 +484,7 @@ theorem spectralPathFO_section_jointContMDiffOn_local
         tensorChartComponentRaw (I := I) (M := M) g 0 2 (T_rep p.2) α Q.1 Q.2 p.1 •
           tensorChartBasisElement (E := E) 0 2 Q.1 Q.2)
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
-    refine contMDiffOn_finset_sum (fun Q _ => ?_)
+    refine contMDiffOn_finsetSum (fun Q _ => ?_)
     have hQ1 : Q.1 = (![] : Fin 0 → Fin (Module.finrank ℝ E)) := funext fun i0 => i0.elim0
     have hraw := spectralPathFO_rawChartComponent_jointContMDiffOn_local (I := I) (M := M)
       g hT kk T_rep φ hφ_smooth hcoeff hmodemass α Q.2
@@ -575,7 +573,6 @@ theorem spectralPathFO_section_jointContMDiffOn_local
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α) hsource).mpr
     ⟨contMDiffWithinAt_fst, hfib⟩)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem spectralPathFO_toFun_timeJet_eq_of_coeff_jets_local
     (g : SmoothRiemannianMetric I M) {T : ℝ} (hT : 0 < T) (kk : ℕ)
     (T_rep : ℝ → SmoothCcTensor g 0 2)
@@ -618,7 +615,7 @@ theorem spectralPathFO_toFun_timeJet_eq_of_coeff_jets_local
       (φ := fun _ : CompIdx E 0 2 => ℝ) Q).smulRight (w Q) with hA_def
   have hAapply : ∀ c : CompIdx E 0 2 → ℝ, A c = ∑ Q : CompIdx E 0 2, c Q • w Q := by
     intro c
-    rw [hA_def, ContinuousLinearMap.sum_apply]
+    rw [hA_def, sum_apply]
     exact Finset.sum_congr rfl (fun Q _ => by
       rw [ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.proj_apply])
   have hexp : ∀ Z : SmoothCcTensor g 0 2,

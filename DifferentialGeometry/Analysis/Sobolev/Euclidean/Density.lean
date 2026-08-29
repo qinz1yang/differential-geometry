@@ -183,25 +183,25 @@ theorem chosenWeakPartial'_ae_zero_on_sdiff_tsupport
   have hu_V : DeGiorgi.MemW1p p u V := by
     refine ⟨?_, ?_⟩
     · refine hu.1.mono_measure ?_
-      exact Measure.restrict_mono_set volume (Set.diff_subset : V ⊆ Ω)
+      exact Measure.restrict_mono_set volume (Set.sdiff_subset : V ⊆ Ω)
     · intro j
       obtain ⟨g, hg_memLp, hg_weak⟩ := hu.2 j
       refine ⟨g, ?_, ?_⟩
-      · exact hg_memLp.mono_measure (Measure.restrict_mono_set volume (Set.diff_subset : V ⊆ Ω))
-      · exact DeGiorgi.HasWeakPartialDeriv.restrict hV_open (Set.diff_subset : V ⊆ Ω) hg_weak
+      · exact hg_memLp.mono_measure (Measure.restrict_mono_set volume (Set.sdiff_subset : V ⊆ Ω))
+      · exact DeGiorgi.HasWeakPartialDeriv.restrict hV_open (Set.sdiff_subset : V ⊆ Ω) hg_weak
   have h_partial_V : DeGiorgi.HasWeakPartialDeriv i (chosenWeakPartial' p i u V) u V :=
     chosenWeakPartial'_isWeakPartial_of_mem hu_V i
   have h_partial_Ω : DeGiorgi.HasWeakPartialDeriv i (chosenWeakPartial' p i u Ω) u Ω :=
     chosenWeakPartial'_isWeakPartial_of_mem hu i
   have h_partial_Ω_V : DeGiorgi.HasWeakPartialDeriv i (chosenWeakPartial' p i u Ω) u V :=
-    DeGiorgi.HasWeakPartialDeriv.restrict hV_open (Set.diff_subset : V ⊆ Ω) h_partial_Ω
+    DeGiorgi.HasWeakPartialDeriv.restrict hV_open (Set.sdiff_subset : V ⊆ Ω) h_partial_Ω
   have h_chosen_V_zero : chosenWeakPartial' p i u V
       =ᵐ[volume.restrict V] (fun _ : E => (0 : ℝ)) :=
     chosenWeakPartial'_ae_zero_of_ae_zero (d := d) hp hV_open hu_ae_zero_V i
   have hg_lp_Ω : MemLp (chosenWeakPartial' p i u Ω) p (volume.restrict Ω) :=
     chosenWeakPartial'_memLp_of_mem hu i
   have hg_lp_Ω_V : MemLp (chosenWeakPartial' p i u Ω) p (volume.restrict V) :=
-    hg_lp_Ω.mono_measure (Measure.restrict_mono_set volume (Set.diff_subset : V ⊆ Ω))
+    hg_lp_Ω.mono_measure (Measure.restrict_mono_set volume (Set.sdiff_subset : V ⊆ Ω))
   have hg_loc_Ω_V : LocallyIntegrable (chosenWeakPartial' p i u Ω) (volume.restrict V) :=
     hg_lp_Ω_V.locallyIntegrable hp
   have hgV_lp : MemLp (chosenWeakPartial' p i u V) p (volume.restrict V) :=
@@ -247,7 +247,7 @@ theorem hasWeakPartialDeriv_indicator_chosenWeakPartial_univ
         χ x * (fderiv ℝ ψ x) ei + ψ x * (fderiv ℝ χ x) ei := by
     intro x
     rw [fderiv_fun_mul hχ_diff.differentiableAt hψ_diff.differentiableAt]
-    simp [ei, ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+    simp [ei, add_apply, smul_apply, smul_eq_mul]
   have h_u_ψ_dχ_zero : ∀ x : E, u x * ψ x * (fderiv ℝ χ x) ei = 0 := by
     intro x
     by_cases hx : x ∈ tsupport u
@@ -496,7 +496,7 @@ theorem MemWkp.extend_zero {k : ℕ} {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω V : Set
                 (fun _ : E => (0 : ℝ)) :=
               chosenWeakPartial'_ae_zero_on_sdiff_tsupport hp hV hu_W_V i
             have h_subset : V \ Ω ⊆ V \ tsupport u :=
-              Set.diff_subset_diff_right hu_supp
+              Set.sdiff_subset_sdiff_right hu_supp
             have h_g_V_zero' : g_V =ᵐ[volume.restrict (V \ Ω)]
                 (fun _ : E => (0 : ℝ)) :=
               ae_restrict_of_ae_restrict_of_subset h_subset h_g_V_zero
@@ -540,8 +540,9 @@ theorem convolution_fderiv_eq_convolution_weakPartial_univ
   let T : Homeomorph E E := (Homeomorph.neg E).trans (Homeomorph.addLeft x)
   let ψ : E → ℝ := φ ∘ T
   have hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ := by
-    simpa [ψ, T, Function.comp, sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using
+    let h : ContDiff ℝ (⊤ : ℕ∞) ψ :=
       hφ_smooth.comp (contDiff_const.add contDiff_id.neg)
+    exact h
   have hψ_compact : HasCompactSupport ψ := by
     simpa [ψ, T, Function.comp] using hφ_compact.comp_homeomorph T
   have key := hweak ψ hψ_smooth hψ_compact (by simp)
@@ -550,25 +551,16 @@ theorem convolution_fderiv_eq_convolution_weakPartial_univ
         (fderiv ℝ ψ t) (EuclideanSpace.single i 1) =
           - (fderiv ℝ φ (x + -t)) (EuclideanSpace.single i 1) := by
     intro t
-    have hfd :
-        HasFDerivAt ψ
-          (((fderiv ℝ φ (x + -t)).comp ((0 : E →L[ℝ] E) - 1)) : E →L[ℝ] ℝ) t := by
-      simpa [ψ, T, Function.comp, sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using
-        ((hφ_smooth.differentiable
-            (show (((⊤ : ℕ∞) : WithTop ℕ∞)) ≠ 0 by simp) (x + -t)).hasFDerivAt.comp t
-          ((hasFDerivAt_const x t).add (hasFDerivAt_id t).neg))
-    calc
-      (fderiv ℝ ψ t) (EuclideanSpace.single i 1)
-        = (((fderiv ℝ φ (x + -t)).comp ((0 : E →L[ℝ] E) - 1))
-            (EuclideanSpace.single i 1)) := by
-              rw [hfd.fderiv]
-      _ = (fderiv ℝ φ (x + -t))
-            (((0 : E →L[ℝ] E) - 1) (EuclideanSpace.single i 1)) := by
-              rfl
-      _ = (fderiv ℝ φ (x + -t)) (- EuclideanSpace.single i 1) := by
-            simp
-      _ = - (fderiv ℝ φ (x + -t)) (EuclideanSpace.single i 1) := by
-            simp
+    have hraw :=
+      (hφ_smooth.differentiable
+        (show (((⊤ : ℕ∞) : WithTop ℕ∞)) ≠ 0 by simp) (x + -t)).hasFDerivAt.comp t
+          ((hasFDerivAt_const x t).add (hasFDerivAt_id t).neg)
+    have heq : ψ = φ ∘ ((fun _ : E => x) + -id) := by
+      funext y
+      simp [ψ, T]
+    rw [← heq] at hraw
+    rw [hraw.fderiv]
+    simp
   have hkey :
       ∫ t, g t * ψ t ∂volume =
         ∫ t, u t * (fderiv ℝ φ (x + -t)) (EuclideanSpace.single i 1) ∂volume := by
@@ -1003,7 +995,7 @@ private lemma K_indicator_ae_eq_Ω_indicator
     rw [Set.indicator_of_notMem hxK, Set.indicator_of_mem hxΩ, hx]
   have hE_eq_union : (Set.univ : Set E) = K ∪ (Ω \ K) ∪ Ωᶜ := by
     ext x
-    simp only [Set.mem_univ, Set.mem_union, Set.mem_diff, Set.mem_compl_iff, true_iff]
+    simp only [Set.mem_univ, Set.mem_union, Set.mem_sdiff, Set.mem_compl_iff, true_iff]
     by_cases hxK : x ∈ K
     · left; left; exact hxK
     · by_cases hxΩ : x ∈ Ω
@@ -1545,7 +1537,9 @@ theorem MemWkp.exists_smooth_compactSupport_approx
     exact exists_eLpNorm_convolution_mollifierEps_sub_le (d := d) hp_one hp_top
       h_memLp (ENNReal.ofReal_pos.mpr hεPer_pos)
   let Idx : Type := Σ j : Fin (k + 1), Fin (j.val) → Fin d
-  haveI : Fintype Idx := inferInstance
+  have : Fintype Idx := inferInstance
+  let i₀ : Idx := ⟨⟨0, Nat.zero_lt_succ k⟩, fun i => i.elim0⟩
+  have huniv : (Finset.univ : Finset Idx).Nonempty := ⟨i₀, Finset.mem_univ _⟩
   let δ_fun : Idx → ℝ := fun i =>
     Classical.choose (h_pick i.1.val (Nat.le_of_lt_succ i.1.isLt) i.2)
   have hδ_fun_pos : ∀ i, 0 < δ_fun i := fun i =>
@@ -1557,14 +1551,13 @@ theorem MemWkp.exists_smooth_compactSupport_approx
           - iteratedZeroExtension (d := d) p Ω K i.1.val i.2 u x) p volume
         ≤ ENNReal.ofReal εPer := fun i δ hδ h_le =>
     (Classical.choose_spec (h_pick i.1.val (Nat.le_of_lt_succ i.1.isLt) i.2)).2 δ hδ h_le
-  let δ : ℝ := (Finset.univ : Finset Idx).inf'
-    ⟨⟨⟨0, Nat.zero_lt_succ k⟩, fun i => i.elim0⟩, Finset.mem_univ _⟩
+  let δ : ℝ := (Finset.univ : Finset Idx).inf' huniv
     (fun i => min (δ_fun i) (δ_max / 2))
   have hδ_pos : 0 < δ := by
     rw [show δ = (Finset.univ : Finset Idx).inf'
-      ⟨⟨⟨0, Nat.zero_lt_succ k⟩, fun i => i.elim0⟩, Finset.mem_univ _⟩
+      huniv
       (fun i => min (δ_fun i) (δ_max / 2)) from rfl]
-    rw [Finset.lt_inf'_iff]
+    apply (Finset.lt_inf'_iff huniv).2
     intro i _
     exact lt_min (hδ_fun_pos i) (by linarith)
   have hδ_le_fun : ∀ i : Idx, δ ≤ δ_fun i := by

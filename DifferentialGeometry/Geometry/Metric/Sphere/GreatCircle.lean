@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Metric.Sphere.RoundProjConnLC
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Gradient
 import DifferentialGeometry.Geometry.Comparison.Variation.CovariantChainRule
 import Mathlib.Analysis.InnerProductSpace.LinearMap
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -88,7 +90,7 @@ private noncomputable def rotCLM (p v : E) : E →L[ℝ] E :=
 omit [FiniteDimensional ℝ E] in
 @[simp] private theorem rotCLM_apply (p v x : E) :
     rotCLM p v x = ⟪p, x⟫ • v - ⟪v, x⟫ • p := by
-  simp only [rotCLM, ContinuousLinearMap.sub_apply, InnerProductSpace.rankOne_apply]
+  simp only [rotCLM, sub_apply, InnerProductSpace.rankOne_apply]
 
 variable [NeZero n]
 
@@ -116,9 +118,9 @@ private noncomputable def rotField (p v : E) :
 
 omit [FiniteDimensional ℝ E] in
 private theorem sphere_proj (x : sphere (0 : E) 1) (w : E) :
-    (↑(((ℝ ∙ (x : E))ᗮ).orthogonalProjection w) : E) =
+    (↑(((ℝ ∙ (x : E))ᗮ).orthogonalProjectionOnto w) : E) =
       w - ⟪(x : E), w⟫ • (x : E) := by
-  rw [Submodule.coe_orthogonalProjection_apply]
+  rw [Submodule.coe_orthogonalProjectionOnto_apply]
   have hsing :
       (ℝ ∙ (x : E)).starProjection w = ⟪(x : E), w⟫ • (x : E) := by
     exact Submodule.starProjection_unit_singleton ℝ
@@ -132,9 +134,9 @@ omit [FiniteDimensional ℝ E] [NeZero n] in
 private theorem dIncl_coordGrad
     (x : sphere (0 : E) 1) (w : E) :
     dIncl (n := n) x (coordGrad (E := E) (n := n) w x) =
-      (↑(((ℝ ∙ (x : E))ᗮ).orthogonalProjection w) : E) := by
+      (↑(((ℝ ∙ (x : E))ᗮ).orthogonalProjectionOnto w) : E) := by
   let u : ((ℝ ∙ (x : E))ᗮ) :=
-    ((ℝ ∙ (x : E))ᗮ).orthogonalProjection w
+    ((ℝ ∙ (x : E))ᗮ).orthogonalProjectionOnto w
   let z : TangentSpace (𝓡 n) x := (dInclEquiv (n := n) x).symm u
   have hz :
       dIncl (n := n) x z = (u : E) := by
@@ -152,7 +154,7 @@ private theorem dIncl_coordGrad
           ((ℝ ∙ (x : E))ᗮ)) : E) = dIncl (n := n) x a :=
       dInclEquiv_coe (n := n) x a
     rw [← ha]
-    exact ((ℝ ∙ (x : E))ᗮ).inner_orthogonalProjection_eq_of_mem_right
+    exact ((ℝ ∙ (x : E))ᗮ).inner_orthogonalProjectionOnto_eq_of_mem_right
       (dInclEquiv (n := n) x a) w
   change dIncl (n := n) x
       (DifferentialGeometry.Geometry.Operator.gradFun
@@ -189,7 +191,7 @@ private theorem ambDeriv_rot (p v : E)
       HasMFDerivAt (𝓡 n) 𝓘(ℝ, E)
         ((↑) : sphere (0 : E) 1 → E) x (dIncl (n := n) x) :=
     (contMDiff_coe_sphere.contMDiffAt.mdifferentiableAt one_ne_zero).hasMFDerivAt
-  letI : InnerProductSpace ℝ (TangentSpace 𝓘(ℝ, E) (x : E)) :=
+  let _ : InnerProductSpace ℝ (TangentSpace 𝓘(ℝ, E) (x : E)) :=
     inferInstanceAs (InnerProductSpace ℝ E)
   have hA :
       HasMFDerivAt 𝓘(ℝ, E) 𝓘(ℝ, E) (rotCLM p v) (x : E) (rotCLM p v) :=
@@ -240,7 +242,8 @@ theorem greatCircle_vel
     (hv : ‖v‖ = 1) (hpv : ⟪(p : E), v⟫ = 0) (t : ℝ) :
     dIncl (n := n) (greatCircle p v hv hpv t)
         ((mfderiv 𝓘(ℝ, ℝ) (𝓡 n)
-          (greatCircle p v hv hpv) t) (1 : ℝ)) =
+          (greatCircle p v hv hpv) t)
+            (constantModelVectorField (𝕜 := ℝ) 1 t)) =
       -Real.sin t • (p : E) + Real.cos t • v := by
   let γ := greatCircle p v hv hpv
   have hcoe :
@@ -253,35 +256,63 @@ theorem greatCircle_vel
   have hcomp := mfderiv_comp_apply
     (I := 𝓘(ℝ, ℝ)) (I' := 𝓡 n) (I'' := 𝓘(ℝ, E))
     (g := ((↑) : sphere (0 : E) 1 → E)) (f := γ) (x := t)
-    hcoe hγ (1 : ℝ)
+    hcoe hγ (constantModelVectorField (𝕜 := ℝ) 1 t)
+  have hcomp' := congrArg
+    (NormedSpace.fromTangentSpace (𝕜 := ℝ) (↑(γ t) : E)) hcomp
+  have hfun : ((↑) : sphere (0 : E) 1 → E) ∘ γ =
+      fun s : ℝ => Real.cos s • (p : E) + Real.sin s • v := by
+    funext s
+    rfl
+  rw [hfun] at hcomp'
   have hamb :
-      mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E)
-          (fun s : ℝ => Real.cos s • (p : E) + Real.sin s • v) t (1 : ℝ) =
+      mvfderiv 𝓘(ℝ, ℝ)
+          (fun s : ℝ => Real.cos s • (p : E) + Real.sin s • v) t
+            (constantModelVectorField (𝕜 := ℝ) 1 t) =
         -Real.sin t • (p : E) + Real.cos t • v := by
     have hd :
         HasDerivAt (fun s : ℝ => Real.cos s • (p : E) + Real.sin s • v)
           (-Real.sin t • (p : E) + Real.cos t • v) t :=
       ((Real.hasDerivAt_cos t).smul_const (p : E)).add
         ((Real.hasDerivAt_sin t).smul_const v)
-    rw [mfderiv_eq_fderiv]
+    rw [DifferentialGeometry.mvfderiv_model_apply_eq_fderiv,
+      tangentSpaceModelContinuousLinearEquiv_apply]
+    change (fderiv ℝ
+      (fun s : ℝ => Real.cos s • (p : E) + Real.sin s • v) t) 1 = _
     simpa only [ContinuousLinearMap.toSpanSingleton_apply, one_smul] using
       congrArg (fun L : ℝ →L[ℝ] E => L 1) hd.hasFDerivAt.fderiv
   change dIncl (n := n) (γ t)
-      ((mfderiv 𝓘(ℝ, ℝ) (𝓡 n) γ t) (1 : ℝ)) = _
-  rw [← hamb]
-  simpa [γ, Function.comp_def] using hcomp.symm
+      ((mfderiv 𝓘(ℝ, ℝ) (𝓡 n) γ t)
+        (constantModelVectorField (𝕜 := ℝ) 1 t)) = _
+  have hcomp'' :
+      dIncl (n := n) (γ t) ((mfderiv 𝓘(ℝ, ℝ) (𝓡 n) γ t)
+          (constantModelVectorField (𝕜 := ℝ) 1 t)) =
+        mvfderiv 𝓘(ℝ, ℝ)
+          (fun s : ℝ => Real.cos s • (p : E) + Real.sin s • v) t
+            (constantModelVectorField (𝕜 := ℝ) 1 t) := by
+    change NormedSpace.fromTangentSpace (𝕜 := ℝ) (↑(γ t) : E)
+          (mfderiv (𝓡 n) 𝓘(ℝ, E) ((↑) : sphere (0 : E) 1 → E) (γ t)
+            (mfderiv 𝓘(ℝ, ℝ) (𝓡 n) γ t
+              (constantModelVectorField (𝕜 := ℝ) 1 t))) =
+        NormedSpace.fromTangentSpace (𝕜 := ℝ) (↑(γ t) : E)
+          (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E)
+            (fun s : ℝ => Real.cos s • (p : E) + Real.sin s • v) t
+              (constantModelVectorField (𝕜 := ℝ) 1 t))
+    exact hcomp'.symm
+  exact hcomp''.trans hamb
 
 omit [FiniteDimensional ℝ E] [NeZero n] in
 private theorem velocity_eq_rot
     (p : sphere (0 : E) 1) (v : E)
     (hv : ‖v‖ = 1) (hpv : ⟪(p : E), v⟫ = 0) (t : ℝ) :
-    (mfderiv 𝓘(ℝ, ℝ) (𝓡 n) (greatCircle p v hv hpv) t) (1 : ℝ) =
+    (mfderiv 𝓘(ℝ, ℝ) (𝓡 n) (greatCircle p v hv hpv) t)
+        (constantModelVectorField (𝕜 := ℝ) 1 t) =
       rotField (E := E) (n := n) (p : E) v
         (greatCircle p v hv hpv t) := by
-  apply mfderiv_coe_sphere_injective
+  apply injective_mvfderiv_subtypeVal_sphere
   change dIncl (n := n) (greatCircle p v hv hpv t)
       ((mfderiv 𝓘(ℝ, ℝ) (𝓡 n)
-        (greatCircle p v hv hpv) t) (1 : ℝ)) =
+        (greatCircle p v hv hpv) t)
+          (constantModelVectorField (𝕜 := ℝ) 1 t)) =
     dIncl (n := n) (greatCircle p v hv hpv t)
       (rotField (E := E) (n := n) (p : E) v
         (greatCircle p v hv hpv t))
@@ -294,14 +325,17 @@ theorem greatCircle_speed
     (roundMetric (E := E) (n := n)).inner
         (greatCircle p v hv hpv t)
         ((mfderiv 𝓘(ℝ, ℝ) (𝓡 n)
-          (greatCircle p v hv hpv) t) (1 : ℝ))
+          (greatCircle p v hv hpv) t)
+            (constantModelVectorField (𝕜 := ℝ) 1 t))
         ((mfderiv 𝓘(ℝ, ℝ) (𝓡 n)
-          (greatCircle p v hv hpv) t) (1 : ℝ)) = 1 := by
+          (greatCircle p v hv hpv) t)
+            (constantModelVectorField (𝕜 := ℝ) 1 t)) = 1 := by
   rw [roundMetric_inner, greatCircle_vel, real_inner_self_eq_norm_sq]
   rw [norm_sq_orth_comb (norm_eq_of_mem_sphere p) hv hpv]
   rw [neg_sq]
   exact Real.sin_sq_add_cos_sq t
 
+omit [FiniteDimensional ℝ E] in
 omit [NeZero n] in
 theorem greatCircle_geodesic
     (p : sphere (0 : E) 1) (v : E)
@@ -320,7 +354,7 @@ theorem greatCircle_geodesic
       (DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E) (n := n)))
           (fun y => Y y) (γ t)
           ((mfderiv 𝓘(ℝ, ℝ) (𝓡 n) γ t) (1 : ℝ)) = 0 := by
-    apply mfderiv_coe_sphere_injective
+    apply injective_mvfderiv_subtypeVal_sphere
     change dIncl (n := n) (γ t)
         ((DifferentialGeometry.Geometry.Curvature.metricCov (roundMetric (E := E) (n := n)))
           (fun y => Y y) (γ t)
@@ -331,13 +365,16 @@ theorem greatCircle_geodesic
         dIncl (n := n) (γ t)
             ((mfderiv 𝓘(ℝ, ℝ) (𝓡 n) γ t) (1 : ℝ)) =
           rotCLM (p : E) v (γ t : E) := by
+      change dIncl (n := n) (γ t)
+          ((mfderiv 𝓘(ℝ, ℝ) (𝓡 n) γ t)
+            (constantModelVectorField (𝕜 := ℝ) 1 t)) = _
       rw [greatCircle_vel, rot_on_circle]
     rw [hvel, rot_sq_circle]
     change
-      (↑(((ℝ ∙ (γ t : E))ᗮ).orthogonalProjection (-(γ t : E))) : E) =
+      (↑(((ℝ ∙ (γ t : E))ᗮ).orthogonalProjectionOnto (-(γ t : E))) : E) =
         dIncl (n := n) (γ t) 0
     rw [map_zero, map_neg,
-      Submodule.orthogonalProjection_orthogonalComplement_singleton_eq_zero,
+      Submodule.orthogonalProjectionOnto_orthogonalComplement_singleton_eq_zero,
       neg_zero, Submodule.coe_zero]
   have hchain :=
     covDerivAlong_restrict_eq_leviCivita
@@ -346,11 +383,15 @@ theorem greatCircle_geodesic
   have halong :
       covDerivAlong (I := 𝓡 n) (roundMetric (E := E) (n := n)) γ
           (fun r => (mfderiv 𝓘(ℝ, ℝ) (𝓡 n) γ r) (1 : ℝ)) t = 0 := by
-    rw [show (fun r => (mfderiv 𝓘(ℝ, ℝ) (𝓡 n) γ r) (1 : ℝ)) =
-        fun r => Y (γ r) from funext fun r =>
-          velocity_eq_rot (n := n) p v hv hpv r]
+    have hvelocity : (fun r => (mfderiv 𝓘(ℝ, ℝ) (𝓡 n) γ r) (1 : ℝ)) =
+        fun r => Y (γ r) := by
+      funext r
+      change (mfderiv 𝓘(ℝ, ℝ) (𝓡 n) γ r)
+          (constantModelVectorField (𝕜 := ℝ) 1 r) = _
+      exact velocity_eq_rot (n := n) p v hv hpv r
+    rw [hvelocity]
     rw [hchain]
-    simpa [LeviCivita] using hcov
+    simpa [LeviCivita, DifferentialGeometry.Geometry.Curvature.metricCov] using hcov
   exact
     (covDerivAlong_velocity_eq_zero_iff_hasGeodesicEquationAt
       (I := 𝓡 n) (roundMetric (E := E) (n := n)) γ t hγ).mp halong

@@ -6,7 +6,6 @@ import DifferentialGeometry.Analysis.Sobolev.Chart.Defs
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -188,7 +187,7 @@ theorem tensorChartComponent_wkpNormChart_le_per_section
     calc ENNReal.ofReal (a + 1)
         = ENNReal.ofReal (a + 1) * 1 := by rw [mul_one]
       _ ≤ ENNReal.ofReal (a + 1) * (‖S‖₊ + 1) :=
-          mul_le_mul_of_nonneg_left h_one_le (by exact zero_le _)
+          mul_le_mul_of_nonneg_left h_one_le (by exact zero_le)
   exact h1.trans h2
 
 omit [NeZero (Module.finrank ℝ E)] in

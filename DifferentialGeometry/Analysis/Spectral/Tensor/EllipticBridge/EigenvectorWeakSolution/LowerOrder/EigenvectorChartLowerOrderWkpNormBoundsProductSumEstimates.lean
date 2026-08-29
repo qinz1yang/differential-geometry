@@ -126,7 +126,7 @@ private lemma wkpNorm_coef_mul_factor_le
         (fun y => coef y * factor y) := by
       have h_diff_in_Ω : (volume : Measure EuclN).restrict (Ω \ Cδ) ≤
           (volume : Measure EuclN).restrict Ω :=
-        Measure.restrict_mono Set.diff_subset le_rfl
+        Measure.restrict_mono Set.sdiff_subset le_rfl
       have h_factor_diff : ∀ᵐ y ∂((volume : Measure EuclN).restrict (Ω \ Cδ)),
           factor y = 0 := by
         have h_lift : ∀ᵐ y ∂((volume : Measure EuclN).restrict (Ω \ Cδ)),
@@ -274,11 +274,11 @@ lemma wkpNorm_finsetSum_le_const_mul_atomSum
             (chartTargetEuclid (I := I) (M := M) α) := by
     refine Finset.sum_le_sum (fun j hj => ?_)
     refine (h_bd j hj).trans ?_
-    refine mul_le_mul_of_nonneg_left ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     exact Finset.single_le_sum
       (f := fun p => iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (atom p)
         (chartTargetEuclid (I := I) (M := M) α))
-      (fun p _ => zero_le _) (hproj j hj)
+      (fun p _ => zero_le) (hproj j hj)
   have h_const : ∑ _j ∈ S, ENNReal.ofReal C
         * ∑ p ∈ T, iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (atom p)
             (chartTargetEuclid (I := I) (M := M) α)
@@ -356,7 +356,7 @@ lemma hasWeakPartialDeriv_ae_zero_off_of_ae_zero_off
   classical
   set V : Set EuclN := Ω \ Kc with hV_def
   have hV_open : IsOpen V := hΩ_open.sdiff hKc_closed
-  have hV_sub : V ⊆ Ω := Set.diff_subset
+  have hV_sub : V ⊆ Ω := Set.sdiff_subset
   have hV_meas : MeasurableSet V := hV_open.measurableSet
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
   have hu_zero_V : u =ᵐ[(volume : Measure EuclN).restrict V]
@@ -422,12 +422,12 @@ lemma exists_uniform_const_of_finite_wkpNorm_bounds
           iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K 2 (atom (proj j))
             (chartTargetEuclid (I := I) (M := M) α) := by
   classical
-  letI : Fintype ι := Fintype.ofFinite ι
+  let : Fintype ι := Fintype.ofFinite ι
   refine ⟨∑ j : ι, (h_data j).choose, ?_, ?_⟩
   · exact Finset.sum_nonneg (fun j _ => (h_data j).choose_spec.1)
   · intro j
     refine (h_data j).choose_spec.2.trans ?_
-    refine mul_le_mul_of_nonneg_right ?_ (zero_le _)
+    refine mul_le_mul_of_nonneg_right ?_ (zero_le)
     refine ENNReal.ofReal_le_ofReal ?_
     exact Finset.single_le_sum
       (f := fun j' => (h_data j').choose)

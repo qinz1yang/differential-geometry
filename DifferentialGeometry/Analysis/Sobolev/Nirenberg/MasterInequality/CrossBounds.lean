@@ -288,7 +288,7 @@ theorem translated_coeff_cutoff_deriv_diffQuot_cross_bound
             ∑ i : Fin d, (diffQuot k h
               (fun y => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)^2
           ∂(volume : Measure E) := by
-      rw [← integral_finset_sum _ (fun i _ => h_first_int_per i)]
+      rw [← integral_finsetSum _ (fun i _ => h_first_int_per i)]
       refine integral_congr_ae ?_
       filter_upwards with x
       rw [Finset.mul_sum]
@@ -584,7 +584,7 @@ theorem coeff_diffQuot_cutoff_sq_gradient_cross_bound
               (diffQuot k h
                 (fun y => (fderiv ℝ u y) (EuclideanSpace.single j 1)) x)^2)
             ∂(volume : Measure E)
-          from (integral_finset_sum _ (fun j _ => h_eta_sq_diffQuot_int j)).symm]
+          from (integral_finsetSum _ (fun j _ => h_eta_sq_diffQuot_int j)).symm]
       have h_swap : (fun x : E => ∑ j : Fin d, ((η x)^2 *
               (diffQuot k h
                 (fun y => (fderiv ℝ u y) (EuclideanSpace.single j 1)) x)^2)) =
@@ -643,7 +643,7 @@ theorem coeff_diffQuot_cutoff_sq_gradient_cross_bound
         ∫ x, ∑ i : Fin d, ((η x)^2 *
               (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
               ((fderiv ℝ u x) (EuclideanSpace.single i 1))^2) ∂(volume : Measure E) from
-        (integral_finset_sum _ (fun i _ => h_inner_int i)).symm]
+        (integral_finsetSum _ (fun i _ => h_inner_int i)).symm]
     have h_swap : (fun x : E => ∑ i : Fin d, ((η x)^2 *
               (Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
               ((fderiv ℝ u x) (EuclideanSpace.single i 1))^2)) =
@@ -750,7 +750,7 @@ theorem coeff_diffQuot_cutoff_sq_gradient_cross_bound
       have h_sum_int : Integrable (fun x : E => ∑ i : Fin d, (η x)^2 *
             ((Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
             ((fderiv ℝ u x) (EuclideanSpace.single i 1))^2)) volume :=
-        integrable_finset_sum (Finset.univ : Finset (Fin d)) (fun i _ => h_each_int i)
+        integrable_finsetSum (Finset.univ : Finset (Fin d)) (fun i _ => h_each_int i)
       have h_eq : (fun x : E => ∑ i : Fin d, (η x)^2 *
             ((Set.indicator (tsupport η) (fun _ : E => (1 : ℝ)) x) *
             ((fderiv ℝ u x) (EuclideanSpace.single i 1))^2)) =
@@ -767,7 +767,7 @@ theorem coeff_diffQuot_cutoff_sq_gradient_cross_bound
         fun i => (continuous_partial_u (d := d) hu i).pow 2
       have h_sum_cont : Continuous (fun x : E =>
           ∑ i : Fin d, ((fderiv ℝ u x) (EuclideanSpace.single i 1))^2) :=
-        continuous_finset_sum _ (fun i _ => h_partial_sq_cont i)
+        continuous_finsetSum _ (fun i _ => h_partial_sq_cont i)
       have h_int_clΩ' : IntegrableOn (fun x : E =>
           ∑ i : Fin d, ((fderiv ℝ u x) (EuclideanSpace.single i 1))^2) (closure Ω') volume :=
         ContinuousOn.integrableOn_compact hΩ'_compact h_sum_cont.continuousOn
@@ -1156,7 +1156,7 @@ theorem coeff_diffQuot_cutoff_deriv_cross_bound
             ∂(volume : Measure E) =
           ∑ i : Fin d, ∫ x in Ω',
               ((fderiv ℝ u x) (EuclideanSpace.single i 1))^2 ∂(volume : Measure E) := by
-        exact integral_finset_sum (Finset.univ : Finset (Fin d)) (fun i _ => h_int_Ω' i)
+        exact integral_finsetSum (Finset.univ : Finset (Fin d)) (fun i _ => h_int_Ω' i)
       rw [h_sum_eq]
       exact Finset.sum_le_sum (fun i _ => h_part_bound i)
     have h_diff_bound :
@@ -1278,8 +1278,6 @@ private theorem nirenbergTestFunction_sq_integral_le
         k h η u x)^2) =
       fun x : E => (diffQuot k (-h) g x)^2 := by
     funext x
-    change (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-        k h η u x)^2 = _
     unfold DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
     rfl
   rw [h_v_test_eq]
@@ -1456,9 +1454,14 @@ theorem c_term_bound
     have h_ε_eq : ε * (v_test x)^2 = 2 * ((ε / 2) * (v_test x)^2) := by ring
     linarith [h_y, h_div_eq, h_ε_eq]
   have h_v_test_sq_int_Ω' : IntegrableOn (fun x : E => (v_test x)^2) Ω' volume := by
+    have h_square_supp : HasCompactSupport (fun x : E => (v_test x) ^ 2) := by
+      exact HasCompactSupport.intro' h_v_test_supp_cmp (isClosed_tsupport v_test)
+        (fun x hx => by
+          rw [image_eq_zero_of_notMem_tsupport hx]
+          norm_num)
     have h_int : Integrable (fun x : E => (v_test x)^2) volume :=
       (h_v_test_cont.pow 2).integrable_of_hasCompactSupport
-        (h_v_test_supp_cmp.comp_left (g := fun x : ℝ => x^2) (by simp : (0 : ℝ)^2 = 0))
+        h_square_supp
     exact h_int.integrableOn
   have h_cu_sq_int_Ω' : IntegrableOn (fun x : E => (B.c x * u x)^2) Ω' volume := by
     have h_cont : Continuous (fun x : E => (B.c x * u x)^2) :=
@@ -1493,9 +1496,14 @@ theorem c_term_bound
   have h_v_test_sq_Ω'_le_E :
       ∫ x in Ω', (v_test x)^2 ∂(volume : Measure E) ≤
       ∫ x, (v_test x)^2 ∂(volume : Measure E) := by
+    have h_square_supp : HasCompactSupport (fun x : E => (v_test x) ^ 2) := by
+      exact HasCompactSupport.intro' h_v_test_supp_cmp (isClosed_tsupport v_test)
+        (fun x hx => by
+          rw [image_eq_zero_of_notMem_tsupport hx]
+          norm_num)
     have h_int_E : Integrable (fun x : E => (v_test x)^2) volume :=
       (h_v_test_cont.pow 2).integrable_of_hasCompactSupport
-        (h_v_test_supp_cmp.comp_left (g := fun x : ℝ => x^2) (by simp : (0 : ℝ)^2 = 0))
+        h_square_supp
     have h_v_test_sq_eq : ∫ x, (v_test x)^2 ∂(volume : Measure E) =
         ∫ x in Ω', (v_test x)^2 ∂(volume : Measure E) := by
       have h_eq_zero : ∀ x, x ∉ Ω' → (v_test x)^2 = 0 := by
@@ -1741,9 +1749,14 @@ theorem f_term_bound
     have h_ε_eq : ε * (v_test x)^2 = 2 * ((ε / 2) * (v_test x)^2) := by ring
     linarith [h_y, h_div_eq, h_ε_eq]
   have h_v_test_sq_int_Ω' : IntegrableOn (fun x : E => (v_test x)^2) Ω' volume := by
+    have h_square_supp : HasCompactSupport (fun x : E => (v_test x) ^ 2) := by
+      exact HasCompactSupport.intro' h_v_test_supp_cmp (isClosed_tsupport v_test)
+        (fun x hx => by
+          rw [image_eq_zero_of_notMem_tsupport hx]
+          norm_num)
     have h_int : Integrable (fun x : E => (v_test x)^2) volume :=
       (h_v_test_cont.pow 2).integrable_of_hasCompactSupport
-        (h_v_test_supp_cmp.comp_left (g := fun x : ℝ => x^2) (by simp : (0 : ℝ)^2 = 0))
+        h_square_supp
     exact h_int.integrableOn
   have h_f_v_int_Ω' : IntegrableOn (fun x : E => f x * v_test x) Ω' volume := by
     have h_pointwise_abs : ∀ x : E,

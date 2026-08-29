@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.JacobiFormula
 import DifferentialGeometry.Geometry.Comparison.Variation.JacobiField
+
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -77,9 +78,9 @@ theorem curveGram_rect
       rw [map_sum]
       exact Finset.sum_congr rfl fun k _ =>
         ContinuousLinearMap.map_smul _ _ _
-    rw [hL, ContinuousLinearMap.sum_apply]
+    rw [hL, _root_.sum_apply]
     refine Finset.sum_congr rfl fun k _ => ?_
-    rw [ContinuousLinearMap.smul_apply]
+    rw [_root_.smul_apply]
     have hR :
         g.inner (γ t) (V k t) (∑ l, C l j • V l t) =
           ∑ l, C l j * g.inner (γ t) (V k t) (V l t) := by
@@ -123,9 +124,9 @@ theorem curveGram_dotVec
           ∑ i, c i • g.inner (γ t) (V i t) := by
       rw [map_sum]
       exact Finset.sum_congr rfl fun i _ => ContinuousLinearMap.map_smul _ _ _
-    rw [hleft, ContinuousLinearMap.sum_apply]
+    rw [hleft, _root_.sum_apply]
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [ContinuousLinearMap.smul_apply, map_sum, smul_eq_mul, Finset.mul_sum]
+    rw [_root_.smul_apply, map_sum, smul_eq_mul, Finset.mul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
     rw [ContinuousLinearMap.map_smul, smul_eq_mul]
     ring
@@ -147,7 +148,7 @@ theorem curveGram_posDef
     (hLI : LinearIndependent ℝ fun i => V i t) :
     (curveGram (I := I) g γ V t).PosDef := by
   classical
-  letI := Fintype.ofFinite ι
+  let := Fintype.ofFinite ι
   refine Matrix.PosDef.of_dotProduct_mulVec_pos
     (curveGram_herm (I := I) g γ V t) ?_
   intro c hc

@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Curvature.DimensionThree.RiemannFromRicci
 import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.LinearAlgebra.Matrix.Trace
 
+
 set_option autoImplicit false
 
 noncomputable section
@@ -116,12 +117,8 @@ theorem curvatureOperatorMatrixAt_trace_eq_sum_orderedSectionalCurvaturesAt
           (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues i := by
     unfold orderedSectionalCurvaturesAt Matrix.IsHermitian.eigenvalues
     let e : Fin 3 ≃ Fin 3 := Fintype.equivOfCardEq (Fintype.card_fin 3)
-    have hsum := Fintype.sum_equiv e.symm
-      (f := fun i => (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues₀
-        (e.symm i))
-      (g := fun i => (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues₀ i)
-      (by intro i; rfl)
-    simpa [e, Matrix.IsHermitian.eigenvalues] using hsum.symm
+    exact (e.symm.sum_comp
+      (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A).eigenvalues₀).symm
   calc
     (curvatureOperatorMatrixAt (I := I) x basis A).trace =
         ∑ i : Fin 3,
@@ -525,7 +522,7 @@ theorem curvatureOperatorMatrixAt_rayleigh_lower
   let M : Matrix (Fin 3) (Fin 3) Real := curvatureOperatorMatrixAt (I := I) x basis A
   let hM : M.IsHermitian := curvatureOperatorMatrixAt_isHermitian (I := I) x basis A
   let T : EuclideanSpace Real (Fin 3) →ₗ[Real] EuclideanSpace Real (Fin 3) := M.toEuclideanLin
-  let hT : T.IsSymmetric := (Matrix.isHermitian_iff_isSymmetric (A := M)).1 hM
+  let hT : T.IsSymmetric := Matrix.isSymmetric_toEuclideanLin_iff.mpr hM
   let hn : Module.finrank Real (EuclideanSpace Real (Fin 3)) = 3 := finrank_euclideanSpace
   let b : OrthonormalBasis (Fin 3) Real (EuclideanSpace Real (Fin 3)) :=
     hT.eigenvectorBasis hn
@@ -594,10 +591,13 @@ theorem curvatureOperatorMatrixAt_rayleigh_lower
       intro i _
       rw [hrepr i, real_inner_comm, sq]
     rw [hparseval', real_inner_self_eq_norm_sq]
-    dsimp [xES]
     rw [EuclideanSpace.norm_eq]
     simp only [Real.norm_eq_abs, sq_abs]
-    rw [Real.sq_sqrt (Finset.sum_nonneg (fun i _ => sq_nonneg (c i)))]
+    rw [Real.sq_sqrt (Finset.sum_nonneg (fun i _ => sq_nonneg (xES.ofLp i)))]
+    apply Finset.sum_congr rfl
+    intro i _
+    have hxES := (EuclideanSpace.equiv (Fin 3) Real).apply_symm_apply c
+    exact congrArg (fun z : Real => z ^ 2) (congrFun hxES i)
   have hbridge :
       hT.eigenvalues hn 2 * ∑ i : Fin 3, c i ^ 2 ≤
         ∑ i : Fin 3, ∑ j : Fin 3, c i * c j * curvatureOperatorMatrixAt (I := I) x basis A i j := by
@@ -803,10 +803,6 @@ private theorem tensor04StdAt_bivectorQuad_expand {x : M}
     tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
       (basis s) (basis t))
     (hanti := fun s t => by
-      change tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
-          (basis t) (basis s) =
-        -tensor04StdAt (I := I) (M := M) A (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
-          (basis s) (basis t)
       rw [hForm.anti_last (basis (bivectorIndex3 i).1) (basis (bivectorIndex3 i).2)
         (basis s) (basis t)]
       ring)
@@ -1138,7 +1134,7 @@ theorem curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le
     let M : Matrix (Fin 3) (Fin 3) Real := curvatureOperatorMatrixAt (I := I) x basis A
     let hM : M.IsHermitian := curvatureOperatorMatrixAt_isHermitian (I := I) x basis A
     let T : EuclideanSpace Real (Fin 3) →ₗ[Real] EuclideanSpace Real (Fin 3) := M.toEuclideanLin
-    let hT : T.IsSymmetric := (Matrix.isHermitian_iff_isSymmetric).1 hM
+    let hT : T.IsSymmetric := Matrix.isSymmetric_toEuclideanLin_iff.mpr hM
     let hn : Module.finrank Real (EuclideanSpace Real (Fin 3)) = 3 := finrank_euclideanSpace
     let b : OrthonormalBasis (Fin 3) Real (EuclideanSpace Real (Fin 3)) :=
       hT.eigenvectorBasis hn
@@ -1152,7 +1148,11 @@ theorem curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le
       rw [algebraicCurvatureOperatorQuadraticEval_eq_matrixQuad (I := I) x basis A c]
       rw [curvatureOperatorMatrixAt_quad_eq_inner (I := I) x basis A c]
       have hx : (EuclideanSpace.equiv (Fin 3) Real).symm c = bvec := by
-        dsimp [c, bvec]
+        have hc : c = (EuclideanSpace.equiv (Fin 3) Real) bvec := by
+          funext i
+          rfl
+        rw [hc]
+        exact (EuclideanSpace.equiv (Fin 3) Real).symm_apply_apply bvec
       rw [hx]
       rw [real_inner_comm]
       have heig := hT.apply_eigenvectorBasis hn 2
@@ -1210,7 +1210,7 @@ theorem leastCurvatureOperatorEigenvalueAt_eq_sectionalMin
   have hext : {K : Real | curvatureOperatorLowerBoundAt (I := I) g x A K} =
       Set.Ici (-orderedSectionalCurvaturesAt (I := I) x basis A 2) := by
     ext K
-    rw [Set.mem_setOf, Set.mem_Ici]
+    rw [Set.mem_ofPred, Set.mem_Ici]
     exact curvatureOperatorLowerBoundAt_iff_neg_sectionalMin_le (I := I) g x basis horth A K
   rw [hext, csInf_Ici]
   ring

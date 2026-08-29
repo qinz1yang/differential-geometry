@@ -118,7 +118,7 @@ theorem chartLocal_weighted_finset_sum_eq_riemannianMeasure_integral
     [T2Space M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M) (t : ℝ)
     (h : M → ℝ) (hh_cont : Continuous h) :
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∫ x, h x * (chartAtlasPOU I M) α x
           ∂(chartLocalMeasure (I := I) (g_fam t) α)
       = ∫ x, h x ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) := by
@@ -164,7 +164,7 @@ theorem volume_variation_formula_of_chart_derivs
     (hh_cont : Continuous
       (fun x : M => deriv (fun s : ℝ => f s x) t +
         (1/2) * traceTimeDerivMetric (I := I) g_fam t x * f t x))
-    (hα_deriv_explicit : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hα_deriv_explicit : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       HasDerivAt
         (fun s : ℝ => ∫ x, f s x
           ∂((chartLocalMeasure (I := I) (g_fam s) α).withDensity
@@ -189,7 +189,7 @@ theorem volume_variation_formula_of_chart_derivs
   set Iglobal : ℝ :=
       ∫ x, h x
           ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) with hIglobal_def
-  have hSum : ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), Iα α = Iglobal := by
+  have hSum : ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Iα α = Iglobal := by
     exact chartLocal_weighted_finset_sum_eq_riemannianMeasure_integral
       (I := I) (M := M) g_fam t h hh_cont
   refine volume_variation_formula_of_chart_integrals (I := I) (M := M)
@@ -232,9 +232,9 @@ lemma continuousOn_traceTimeDerivMetric_on_base
       simp [Units.smul_def]
       rfl
     rw [hexp]
-    refine continuousOn_finset_sum _ (fun σ _ => ?_)
+    refine continuousOn_finsetSum _ (fun σ _ => ?_)
     refine ContinuousOn.mul continuousOn_const ?_
-    refine continuousOn_finset_prod _ (fun i _ => ?_)
+    refine continuousOn_finsetProd _ (fun i _ => ?_)
     exact hG_joint (σ i) i
   have h_adj_cont : ∀ k v : n, ContinuousOn
       (fun p : ℝ × M => (chartGramMatrix (I := I) (g_fam p.1) α p.2).adjugate k v)
@@ -265,9 +265,9 @@ lemma continuousOn_traceTimeDerivMetric_on_base
                   (Pi.single k 1)) (σ i) i := by
       funext p; rw [hform p, hexp p]
     rw [hfn_eq]
-    refine continuousOn_finset_sum _ (fun σ _ => ?_)
+    refine continuousOn_finsetSum _ (fun σ _ => ?_)
     refine ContinuousOn.mul continuousOn_const ?_
-    refine continuousOn_finset_prod _ (fun i _ => ?_)
+    refine continuousOn_finsetProd _ (fun i _ => ?_)
     by_cases hiv : σ i = v
     · have hconst :
           (fun p : ℝ × M =>
@@ -332,7 +332,7 @@ lemma continuousOn_traceTimeDerivMetric_on_base
       rw [Matrix.mul_apply]
       rfl
     rw [hfun]
-    refine continuousOn_finset_sum _ (fun k _ => ?_)
+    refine continuousOn_finsetSum _ (fun k _ => ?_)
     exact (h_inv_cont i k).mul (hdG_joint k j)
   have htrace_eq : ∀ p : ℝ × M,
       Matrix.trace ((chartGramMatrix (I := I) (g_fam p.1) α p.2)⁻¹ *
@@ -354,7 +354,7 @@ lemma continuousOn_traceTimeDerivMetric_on_base
               deriv (fun s => chartGramMatrix (I := I) (g_fam s) α p.2 i j) p.1) i i := by
     funext p; exact htrace_eq p
   rw [hfun]
-  refine continuousOn_finset_sum _ (fun i _ => h_prod_cont i i)
+  refine continuousOn_finsetSum _ (fun i _ => h_prod_cont i i)
 
 lemma traceTimeDerivMetric_continuous
     {g_fam : ℝ → SmoothRiemannianMetric I M} {t : ℝ}
@@ -467,9 +467,9 @@ lemma continuousOn_chartDensity_family
       simp [Units.smul_def]
       rfl
     rw [hexp]
-    refine continuousOn_finset_sum _ (fun σ _ => ?_)
+    refine continuousOn_finsetSum _ (fun σ _ => ?_)
     refine ContinuousOn.mul continuousOn_const ?_
-    refine continuousOn_finset_prod _ (fun i _ => ?_)
+    refine continuousOn_finsetProd _ (fun i _ => ?_)
     exact hG_joint (σ i) i
   have h_sqrtdet_cont : ContinuousOn
       (fun p : ℝ × M =>
@@ -618,7 +618,9 @@ lemma per_chart_hasDerivAt
   have hballs_nhd : ball_s ∈ 𝓝 t := Metric.ball_mem_nhds _ one_pos
   have hballs_sub_I₁ : ball_s ⊆ I₁ := by
     intro s hs
-    have hs' : |s - t| < 1 := by simpa [Real.dist_eq, Real.norm_eq_abs] using hs
+    have hs' : |s - t| < 1 := by
+      change dist s t < 1 at hs
+      simpa [Real.dist_eq, Real.norm_eq_abs] using hs
     refine ⟨?_, ?_⟩
     · have := (abs_lt.mp hs').1; linarith
     · have := (abs_lt.mp hs').2; linarith

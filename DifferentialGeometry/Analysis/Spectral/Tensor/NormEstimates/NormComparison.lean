@@ -15,7 +15,6 @@ import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Set IsManifold ContinuousLinearMap
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix
@@ -78,20 +77,27 @@ theorem separableFormAt_chartBasisFibers_eval_continuousOn
     ContinuousOn
       (fun b : M =>
         separableFormAt (I := I) (M := M) g b r
-          (fun k : Fin r => chartBasisVecFiber (I := I) α (Idx k) b)
-          (fun k : Fin r => chartBasisVecFiber (I := I) α (Jdx k) b))
+          (fun k : Fin r => tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (chartBasisVecFiber (I := I) α (Idx k) b))
+          (fun k : Fin r => tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (chartBasisVecFiber (I := I) α (Jdx k) b)))
       (trivializationAt E (TangentSpace I) α).baseSet := by
   have heq : ∀ b : M,
       separableFormAt (I := I) (M := M) g b r
-          (fun k : Fin r => chartBasisVecFiber (I := I) α (Idx k) b)
-          (fun k : Fin r => chartBasisVecFiber (I := I) α (Jdx k) b) =
+          (fun k : Fin r => tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (chartBasisVecFiber (I := I) α (Idx k) b))
+          (fun k : Fin r => tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (chartBasisVecFiber (I := I) α (Jdx k) b)) =
         ∏ k : Fin r, g.inner b
           (chartBasisVecFiber (I := I) α (Idx k) b)
           (chartBasisVecFiber (I := I) α (Jdx k) b) := by
     intro b
     rw [separableFormAt_apply]
+    apply Finset.prod_congr rfl
+    intro k _
+    simp
   refine ContinuousOn.congr ?_ (fun b _ => heq b)
-  refine continuousOn_finset_prod _ (fun k _ => ?_)
+  refine continuousOn_finsetProd _ (fun k _ => ?_)
   exact metric_inner_chartBasisFibers_continuousOn (I := I) (M := M) g α
     (Idx k) (Jdx k)
 
@@ -123,11 +129,19 @@ theorem chartBasisVec_continuousOn_baseSet
     ContinuousOn (chartBasisVec (I := I) α k)
       (trivializationAt E (TangentSpace I) α).baseSet := by
   unfold chartBasisVec chartBasisVecFiber
-  exact triv_symm_apply_const_continuousOn_baseSet (I := I) (M := M) α
-    ((chartModelBasis E) k)
+  refine ContinuousOn.congr
+    (triv_symm_apply_const_continuousOn_baseSet (I := I) (M := M) α
+      ((chartModelBasis E) k)) ?_
+  intro x hx
+  change TotalSpace.mk' E x
+      ((Trivialization.symmL ℝ (trivializationAt E (TangentSpace I) α) x)
+        ((chartModelBasis E) k)) =
+    TotalSpace.mk' E x
+      ((trivializationAt E (TangentSpace I) α).symm x ((chartModelBasis E) k))
+  rw [Trivialization.symmL_apply _ hx]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private lemma continuousOn_g_inner_aux
     (g : SmoothRiemannianMetric I M)
@@ -137,9 +151,9 @@ private lemma continuousOn_g_inner_aux
     (hw : ContinuousOn (fun x : M => TotalSpace.mk' E
       (E := (TangentSpace I : M → Type _)) x (w x)) s) :
     ContinuousOn (fun b : M => g.inner b (v b) (w b)) s := by
-  letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
+  let cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
     g.toContinuousRiemannianMetric
-  letI rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
+  let rb : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨cg.toRiemannianMetric⟩
   have h := ContinuousOn.inner_bundle (F := E) (B := M)
     (E := (TangentSpace I : M → Type _)) (b := fun x => x) (v := v) (w := w)
@@ -221,17 +235,17 @@ lemma sq_norm_le_inv_eps_mul_chartTensorInnerPointwise_rs_model_on_compact
     {ε : ℝ} (hε : 0 < ε)
     (h_lb : ∀ b : M, b ∈ K_M →
       ∀ T : TensorRSModel r s ℝ E, ‖T‖ = 1 →
-        ε ≤ chartTensorInnerPointwise_rs_model (I := I) (M := M)
+        ε ≤ chartTensorInnerPointwiseRsModel (I := I) (M := M)
           g r s α b T T) :
     ∀ b : M, b ∈ K_M →
       ∀ T : TensorRSModel r s ℝ E,
         ‖T‖ ^ 2 ≤ ε⁻¹ *
-          chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T T := by
+          chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T T := by
   classical
   intro b hb T
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     hK_M_sub_baseSet hb
-  have hQ_nn : 0 ≤ chartTensorInnerPointwise_rs_model
+  have hQ_nn : 0 ≤ chartTensorInnerPointwiseRsModel
       (I := I) (M := M) g r s α b T T :=
     chartTensorInnerPointwise_rs_model_nonneg
       (I := I) (M := M) g r s α hb_base T
@@ -239,16 +253,16 @@ lemma sq_norm_le_inv_eps_mul_chartTensorInnerPointwise_rs_model_on_compact
   · subst hT0
     have h_left : ‖(0 : TensorRSModel r s ℝ E)‖ ^ 2 = 0 := by
       simp
-    have h_right : chartTensorInnerPointwise_rs_model
+    have h_right : chartTensorInnerPointwiseRsModel
         (I := I) (M := M) g r s α b (0 : TensorRSModel r s ℝ E)
           (0 : TensorRSModel r s ℝ E) = 0 := by
       have h_zero_smul :
-          chartTensorInnerPointwise_rs_model
+          chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α b
               ((0 : ℝ) • (0 : TensorRSModel r s ℝ E))
               (0 : TensorRSModel r s ℝ E) =
           (0 : ℝ) *
-            chartTensorInnerPointwise_rs_model
+            chartTensorInnerPointwiseRsModel
               (I := I) (M := M) g r s α b
                 (0 : TensorRSModel r s ℝ E) (0 : TensorRSModel r s ℝ E) :=
         chartTensorInnerPointwise_rs_model_smul_left
@@ -256,15 +270,15 @@ lemma sq_norm_le_inv_eps_mul_chartTensorInnerPointwise_rs_model_on_compact
           (0 : TensorRSModel r s ℝ E)
       have h_eq : (0 : TensorRSModel r s ℝ E) =
           ((0 : ℝ) • (0 : TensorRSModel r s ℝ E)) := by rw [zero_smul]
-      calc chartTensorInnerPointwise_rs_model
+      calc chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α b
               (0 : TensorRSModel r s ℝ E) (0 : TensorRSModel r s ℝ E)
-          = chartTensorInnerPointwise_rs_model
+          = chartTensorInnerPointwiseRsModel
               (I := I) (M := M) g r s α b
                 ((0 : ℝ) • (0 : TensorRSModel r s ℝ E))
                 (0 : TensorRSModel r s ℝ E) := by rw [← h_eq]
         _ = (0 : ℝ) *
-            chartTensorInnerPointwise_rs_model
+            chartTensorInnerPointwiseRsModel
               (I := I) (M := M) g r s α b
                 (0 : TensorRSModel r s ℝ E) (0 : TensorRSModel r s ℝ E) :=
               h_zero_smul
@@ -272,19 +286,19 @@ lemma sq_norm_le_inv_eps_mul_chartTensorInnerPointwise_rs_model_on_compact
     rw [h_left, h_right, mul_zero]
   · have hT_ne : ‖T‖ ≠ 0 := norm_ne_zero_iff.mpr hT0
     have hT_pos : 0 < ‖T‖ := (norm_pos_iff).mpr hT0
-    letI : NormSMulClass ℝ (TensorRSModel r s ℝ E) :=
+    let _ : NormSMulClass ℝ (TensorRSModel r s ℝ E) :=
       NormedSpace.toNormSMulClass
     set T' : TensorRSModel r s ℝ E := ‖T‖⁻¹ • T with hT'_def
     have hT'_norm : ‖T'‖ = 1 := by
       rw [hT'_def, norm_smul, norm_inv, Real.norm_eq_abs, abs_of_pos hT_pos]
       field_simp
-    have h_T' : ε ≤ chartTensorInnerPointwise_rs_model
+    have h_T' : ε ≤ chartTensorInnerPointwiseRsModel
         (I := I) (M := M) g r s α b T' T' :=
       h_lb b hb T' hT'_norm
     have h_bilin :
-        chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T' T' =
+        chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T' T' =
           (‖T‖⁻¹ * ‖T‖⁻¹) *
-            chartTensorInnerPointwise_rs_model
+            chartTensorInnerPointwiseRsModel
               (I := I) (M := M) g r s α b T T := by
       rw [hT'_def]
       rw [chartTensorInnerPointwise_rs_model_smul_left
@@ -296,22 +310,22 @@ lemma sq_norm_le_inv_eps_mul_chartTensorInnerPointwise_rs_model_on_compact
     have h_sq_pos : 0 < ‖T‖ ^ 2 := by positivity
     have h_mul : ε * ‖T‖ ^ 2 ≤
         ((‖T‖⁻¹ * ‖T‖⁻¹) *
-          chartTensorInnerPointwise_rs_model
+          chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α b T T) * ‖T‖ ^ 2 :=
       mul_le_mul_of_nonneg_right h_T' (le_of_lt h_sq_pos)
     have h_rhs :
         ((‖T‖⁻¹ * ‖T‖⁻¹) *
-          chartTensorInnerPointwise_rs_model
+          chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α b T T) * ‖T‖ ^ 2 =
-          chartTensorInnerPointwise_rs_model
+          chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α b T T := by
       have h_sq_eq : ‖T‖ ^ 2 = ‖T‖ * ‖T‖ := by ring
       rw [h_sq_eq]
       field_simp
     rw [h_rhs] at h_mul
-    rw [show ε⁻¹ * chartTensorInnerPointwise_rs_model
+    rw [show ε⁻¹ * chartTensorInnerPointwiseRsModel
         (I := I) (M := M) g r s α b T T =
-        chartTensorInnerPointwise_rs_model
+        chartTensorInnerPointwiseRsModel
           (I := I) (M := M) g r s α b T T / ε by
       rw [div_eq_inv_mul]]
     exact (le_div_iff₀ hε).mpr (by linarith [h_mul])
@@ -326,7 +340,7 @@ theorem chartTrivializationNorm_le_const_mul_chartTensorInnerPointwise_rs_model_
     ∃ K : ℝ, 0 ≤ K ∧
       ∀ b : M, b ∈ K_M →
         ∀ T : TensorRSModel r s ℝ E,
-          ‖T‖ ^ 2 ≤ K * chartTensorInnerPointwise_rs_model
+          ‖T‖ ^ 2 ≤ K * chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α b T T := by
   classical
   obtain ⟨ε, hε_pos, h_lb⟩ :=
@@ -345,7 +359,7 @@ theorem chartTrivializationNorm_le_const_mul_chartTensorInnerPointwise_rs_model_
           ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
         ∀ T : TensorRSModel r s ℝ E,
-          ‖T‖ ^ 2 ≤ K * chartTensorInnerPointwise_rs_model
+          ‖T‖ ^ 2 ≤ K * chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α b T T :=
   chartTrivializationNorm_le_const_mul_chartTensorInnerPointwise_rs_model_on_compact
     (I := I) (M := M) g r s α

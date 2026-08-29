@@ -613,10 +613,8 @@ private theorem scalarL2Coeff_heatSemigroup
       ((innerSL ℝ (b i))
         (∑' j, Real.exp
             (-(EigenIdx.lambda (I := I) (M := M) j) * t) •
-          ⟪b j, u⟫_ℝ • b j)) := by
-    convert h_inner_hsum using 1
-    funext j
-    exact (h_summand_eq j).symm
+          ⟪b j, u⟫_ℝ • b j)) :=
+    HasSum.congr_fun h_inner_hsum fun j => (h_summand_eq j).symm
   have h_tsum_ite :
       ∑' j : EigenIdx (I := I) (M := M) g,
         (if j = i then

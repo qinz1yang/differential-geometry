@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HolderPath
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.Holder.Defs
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -29,7 +31,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 def metricChartIdx :
     Finset (M × (Fin 2 → Fin (Module.finrank ℝ E))) := by
   classical
-  exact (chartAtlasPOU_finset (I := I) (M := M)).product Finset.univ
+  exact (chartAtlasPOUFinset (I := I) (M := M)).product Finset.univ
 
 def metricCompPath
     (gBase : SmoothRiemannianMetric I M)
@@ -108,7 +110,10 @@ theorem metricConst_ball
         (∑ j ∈ Finset.range 3, eSupNorm (iteratedFDeriv ℝ j u)) +
               eHolderNorm (1 / 2 : ℝ≥0) (iteratedFDeriv ℝ 2 u)
             ≤ (3 : ℝ≥0∞) * C₀n + Cα := add_le_add hsum hholder
-        _ = (Ce : ℝ≥0∞) := by simp [Ce, C₀n]
+        _ = (Ce : ℝ≥0∞) := by
+          simp only [ENNReal.coe_add, ne_eq, ENNReal.coe_ne_top, not_false_eq_true,
+            add_left_inj_of_ne_top, C₀n, Ce]
+          with_unfolding_all rfl
     change eParC2Half τ (fun _ : ℝ => u) ≤ (Ce : ℝ≥0∞)
     have htime :
         (⨆ x : EuclN, eHolderNorm (1 / 4 : ℝ≥0)
@@ -133,12 +138,14 @@ theorem metricConst_ball
     intro a ha
     constructor
     · intro t _ht
-      simpa only [metricCompPath] using
-        (tensorChartComp_contDiff (I := I) (M := M) gBase 0 2
+      change ContDiff ℝ 2
+        (tensorChartComp (I := I) (M := M) gBase 0 2
           (metricDifferenceCcTensor (I := I) (M := M) gBase (gSeq k))
-          a.1 (![] : Fin 0 → Fin (Module.finrank ℝ E)) a.2).of_le
-            (WithTop.coe_le_coe.mpr
-              (show (2 : ENat) ≤ ⊤ from le_top))
+          a.1 (![] : Fin 0 → Fin (Module.finrank ℝ E)) a.2)
+      exact (tensorChartComp_contDiff (I := I) (M := M) gBase 0 2
+        (metricDifferenceCcTensor (I := I) (M := M) gBase (gSeq k))
+        a.1 (![] : Fin 0 → Fin (Module.finrank ℝ E)) a.2).of_le
+          (WithTop.coe_le_coe.mpr (show (2 : ENat) ≤ ⊤ from le_top))
     · intro j hj x
       have hconst : Continuous
           (fun _ : ℝ => iteratedFDeriv ℝ j
@@ -146,7 +153,13 @@ theorem metricConst_ball
               (metricDifferenceCcTensor (I := I) (M := M) gBase (gSeq k))
               a.1 (![] : Fin 0 → Fin (Module.finrank ℝ E)) a.2) x) :=
         continuous_const
-      simpa only [metricCompPath] using hconst.continuousOn
+      change ContinuousOn
+        (fun _ : ℝ => iteratedFDeriv ℝ j
+          (tensorChartComp (I := I) (M := M) gBase 0 2
+            (metricDifferenceCcTensor (I := I) (M := M) gBase (gSeq k))
+            a.1 (![] : Fin 0 → Fin (Module.finrank ℝ E)) a.2) x)
+        (Set.Icc 0 τ)
+      exact hconst.continuousOn
   refine ⟨hreg, ?_⟩
   unfold eFinParC2Half
   change (∑ a ∈ A, eParC2Half τ

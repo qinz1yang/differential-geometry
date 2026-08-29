@@ -237,7 +237,7 @@ theorem scalar_metricInverseInBasis_of_solution_frame
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
     (t : Real) {x : M} (hx : x ∈ u) :
-    MetricInverseInBasis_gen
+    MetricInverseInBasisGen
       (I := I) (M := M) (S.family.metric t) x
       (hframe.toBasisAt hx) (fun i j : Idx => gInv t x i j) := by
   intro i j
@@ -264,7 +264,7 @@ theorem scalarTraceInFrame_eq_metricTracePair
   classical
   let basis := hframe.toBasisAt hx
   have hinvAt :
-      MetricInverseInBasis_gen
+      MetricInverseInBasisGen
         (I := I) (M := M) (S.family.metric t) x
         basis (fun i j : Idx => gInv t x i j) :=
     scalar_metricInverseInBasis_of_solution_frame
@@ -289,7 +289,7 @@ theorem ricciNormSqInFrame_eq_normSq0S
   classical
   let basis := hframe.toBasisAt hx
   have hinvAt :
-      MetricInverseInBasis_gen
+      MetricInverseInBasisGen
         (I := I) (M := M) (S.family.metric t) x
         basis (fun i j : Idx => gInv t x i j) :=
     scalar_metricInverseInBasis_of_solution_frame
@@ -416,7 +416,7 @@ theorem of_metric_inverse_frame
   have hx : x ∈ u := hcover x
   let basis := hframe.toBasisAt hx
   have hinvAt :
-      MetricInverseInBasis_gen
+      MetricInverseInBasisGen
         (I := I) (M := M) (S.family.metric t) x
         basis (fun i j : Idx => gInv t x i j) :=
     scalar_metricInverseInBasis_of_solution_frame

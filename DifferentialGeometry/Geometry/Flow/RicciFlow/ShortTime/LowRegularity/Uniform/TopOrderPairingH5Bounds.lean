@@ -7,7 +7,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.CenteredTopOrderPairingH5Bounds
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -238,7 +237,7 @@ theorem ricciDeTurck_low_order_path_action_h3_bound
   have hsum4 :
       ∑ j ∈ Finset.range 4,
           ‖iteratedCovGrad (I := I) g 0 2 j T‖ ≤ C3 * y := by
-    simpa only [y, Nat.reduceAdd] using hjet3 T
+    simpa only [y, Nat.reduceAdd, Nat.cast_ofNat] using hjet3 T
   have hsq4 :
       ∑ j ∈ Finset.range 4,
           ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2 ≤ (C3 * y) ^ 2 := by
@@ -251,7 +250,7 @@ theorem ricciDeTurck_low_order_path_action_h3_bound
   have hsum5 :
       ∑ j ∈ Finset.range 5,
           ‖iteratedCovGrad (I := I) g 0 2 j T‖ ≤ C4 * q := by
-    simpa only [q, Nat.reduceAdd] using hjet4 T
+    simpa only [q, Nat.reduceAdd, Nat.cast_ofNat] using hjet4 T
   have hsq5 :
       ∑ j ∈ Finset.range 5,
           ‖iteratedCovGrad (I := I) g 0 2 j T‖ ^ 2 ≤ (C4 * q) ^ 2 := by
@@ -472,12 +471,15 @@ theorem ricciDeTurck_low_order_path_action_h3_bound
     simpa only [one_pow] using pow_le_pow_left₀ hx hxone 2
   have hy4 : y ^ 4 ≤ (x * q) ^ 2 := by
     have h := pow_le_pow_left₀ (sq_nonneg y) hinterp 2
-    convert h using 1
-    all_goals ring
+    calc
+      y ^ 4 = (y ^ 2) ^ 2 := by ring
+      _ ≤ (x * q) ^ 2 := h
   have hy6 : y ^ 6 ≤ (x * y * q) ^ 2 := by
     have h := mul_le_mul_of_nonneg_left hy4 (sq_nonneg y)
-    convert h using 1
-    all_goals ring
+    calc
+      y ^ 6 = y ^ 2 * y ^ 4 := by ring
+      _ ≤ y ^ 2 * (x * q) ^ 2 := h
+      _ = (x * y * q) ^ 2 := by ring
   have hcore3 : x ^ 2 * (1 + y ^ 2) * (1 + q ^ 2) ≤ 2 * P2 := by
     dsimp only [P2]
     nlinarith only [hx2y2,
@@ -561,7 +563,8 @@ theorem ricciDeTurck_low_order_path_action_h3_bound
       mul_nonneg (Real.sqrt_nonneg K) hP]
   change ‖ccTensorToHs (I := I) (M := M) g 2 (3 : ℝ) Y‖ ≤ D * P
   calc
-    _ ≤ Ch * JY := by simpa only [JY, Nat.reduceAdd] using hhs Y
+    _ ≤ Ch * JY := by
+      simpa only [JY, Nat.reduceAdd, Nat.cast_ofNat] using hhs Y
     _ ≤ Ch * (2 * (Real.sqrt K * P)) :=
       mul_le_mul_of_nonneg_left hJY hCh
     _ = D * P := by

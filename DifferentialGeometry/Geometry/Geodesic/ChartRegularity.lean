@@ -21,6 +21,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem chartCurve_contDiffOn [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (q : M) {γ : ℝ → M} {O : Set ℝ}
     (hO : IsOpen O) (hγ_cont : ContinuousOn γ O)
@@ -58,6 +59,7 @@ theorem chartCurve_contDiffOn [I.Boundaryless]
     (chartChristoffelContraction_contDiffOn (I := I) g q).neg
   exact contDiffOn_ode2_inf hO hF hmem hy₁ hy₂
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem isGeodesicOn_contMDiffAt_infty [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {s : Set ℝ} {t : ℝ}
     (hs : IsOpen s) (ht : t ∈ s)
@@ -103,6 +105,7 @@ theorem isGeodesicOn_contMDiffAt_infty [I.Boundaryless]
     exact (extChartAt I α).left_inv hr_ext
   exact hcomp.congr_of_eventuallyEq heq.symm
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem isGeodesicOn_contMDiffOn_infty [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {s : Set ℝ}
     (hs : IsOpen s)

@@ -41,9 +41,9 @@ theorem orthoFrame_expand (g : SmoothRiemannianMetric I M) (x : M)
   have hfirst : ∀ w : TangentSpace I x,
       g.inner x S w = ∑ i, c i * g.inner x (B i) w := by
     intro w
-    rw [hS, map_sum, ContinuousLinearMap.sum_apply]
+    rw [hS, map_sum, sum_apply]
     exact Finset.sum_congr rfl fun i _ => by
-      rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul]
+      rw [map_smul, smul_apply, smul_eq_mul]
   have huu : g.inner x u u = ∑ i, c i * c i := by
     rw [g_inner_eq_orthonormal_parseval_sum (I := I) g x u u B hB]
     exact Finset.sum_congr rfl fun i _ => by rw [hc]; rw [g.symm x (B i) u]
@@ -65,7 +65,7 @@ theorem orthoFrame_expand (g : SmoothRiemannianMetric I M) (x : M)
   have hlin : ∀ w : TangentSpace I x,
       g.inner x (u - S) w = g.inner x u w - g.inner x S w := by
     intro w
-    rw [map_sub (g.inner x) u S, ContinuousLinearMap.sub_apply]
+    rw [map_sub (g.inner x) u S, sub_apply]
   have hzero : g.inner x (u - S) (u - S) = 0 := by
     rw [map_sub (g.inner x (u - S)) u S, hlin u, hlin S, huu, huS, hSu, hSS]
     ring
@@ -94,9 +94,9 @@ theorem frameDiag_indep (g : SmoothRiemannianMetric I M) (x : M)
       orthoFrame_expand (I := I) g x B' hB' u₂]
     rw [map_sum]
     refine Finset.sum_congr rfl fun k _ => ?_
-    rw [map_smul, map_sum, ContinuousLinearMap.sum_apply, Finset.smul_sum]
+    rw [map_smul, map_sum, sum_apply, Finset.smul_sum]
     refine Finset.sum_congr rfl fun j _ => ?_
-    rw [map_smul, ContinuousLinearMap.smul_apply, smul_smul, mul_comm]
+    rw [map_smul, smul_apply, smul_smul, mul_comm]
   have hcoef : ∀ j k : Fin (Module.finrank ℝ E),
       (∑ i : Fin (Module.finrank ℝ E),
         g.inner x (B i) (B' j) * g.inner x (B i) (B' k)) =
@@ -147,9 +147,9 @@ private theorem skewDiag_zero (g : SmoothRiemannianMetric I M) (x : M)
           g.inner x (D i) (B j) • A (B j) (B i) := by
     refine Finset.sum_congr rfl fun i _ => ?_
     conv_lhs => rw [orthoFrame_expand (I := I) g x B hB (D i)]
-    rw [map_sum, ContinuousLinearMap.sum_apply]
+    rw [map_sum, sum_apply]
     exact Finset.sum_congr rfl fun j _ => by
-      rw [map_smul, ContinuousLinearMap.smul_apply]
+      rw [map_smul, smul_apply]
   have hflip : (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         g.inner x (D i) (B j) • A (B j) (B i))
       = - ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
@@ -226,7 +226,7 @@ theorem deTurckVF_covDeriv_eq (g g_bg : SmoothRiemannianMetric I M) (x : M)
                   (connectionDifference (I := I) g g_bg x (smoothOrthoFrame (I := I) g x i x) v)
                   (smoothOrthoFrame (I := I) g x i x))) := by
   classical
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   have hXx : smoothExtensionTangent (I := I) x v x = v :=
     smoothExtensionTangent_eq (I := I) x v
   have hBsm : ∀ i : Fin (Module.finrank ℝ E),
@@ -267,7 +267,7 @@ theorem deTurckVF_covDeriv_eq (g g_bg : SmoothRiemannianMetric I M) (x : M)
     (fun i : Fin (Module.finrank ℝ E) =>
       diffSec (LeviCivita (I := I) g_bg) (LeviCivita (I := I) g)
         (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i))
-    hσsm Finset.univ x, ContinuousLinearMap.sum_apply]
+    hσsm Finset.univ x, sum_apply]
   have hper : ∀ i : Fin (Module.finrank ℝ E),
       (LeviCivita (I := I) g).toFun
           (diffSec (LeviCivita (I := I) g_bg) (LeviCivita (I := I) g)

@@ -337,7 +337,8 @@ private theorem hamilton_rm_scalar_ctl
   have htω : t < omega := htD'.2
   have hricOn := hnonnegative t ht0 htω
   have hdimT : Module.finrank Real (TangentSpace I x) = 3 := by
-    simpa using hdim
+    rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl]
+    exact hdim
   have hricNonneg :
       DifferentialGeometry.Geometry.Curvature.RicciNonnegAt (I := I) (P.S.ricciAt t x) := by
     intro v
@@ -697,7 +698,6 @@ theorem hamilton_exists_blowup_point_sequence
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hamilton_fixed_pinching
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {omega : Real} (h0ω : 0 < omega)
     (hM : isClosedThreeManifold (I := I) (M := M))
@@ -707,10 +707,10 @@ theorem hamilton_fixed_pinching
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
     hamiltonFixedPinching (I := I) P omega := by
   rcases hM with ⟨hcompact, hconnected, hboundaryless, hdim⟩
-  letI : CompactSpace M := hcompact
-  letI : ConnectedSpace M := hconnected
-  letI : I.Boundaryless := hboundaryless
-  letI : Nonempty M := inferInstance
+  let : CompactSpace M := hcompact
+  let : ConnectedSpace M := hconnected
+  let : I.Boundaryless := hboundaryless
+  let : Nonempty M := inferInstance
   have hpos0 :
       DifferentialGeometry.PDE.RicciFlow.RicciPosInit (I := I) (M := M)
         (DifferentialGeometry.PDE.RicciFlow.twoTensorSecToFamily (I := I) (M := M)
@@ -740,7 +740,8 @@ theorem hamilton_fixed_pinching
   intro T hT hTω
   have hdimT : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3 := by
     intro x
-    simpa using hdim
+    rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl]
+    exact hdim
   have hTsub : Set.Icc 0 T ⊆ P.D.carrier := by
     intro t ht
     rw [hD]
@@ -755,7 +756,6 @@ theorem hamilton_fixed_pinching
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hamilton_ricci_nonnegative
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {omega : Real} (h0ω : 0 < omega)
     (hM : isClosedThreeManifold (I := I) (M := M))
@@ -765,10 +765,10 @@ theorem hamilton_ricci_nonnegative
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
     hamiltonRicciNonnegative (I := I) P omega := by
   rcases hM with ⟨hcompact, hconnected, hboundaryless, hdim⟩
-  letI : CompactSpace M := hcompact
-  letI : ConnectedSpace M := hconnected
-  letI : I.Boundaryless := hboundaryless
-  letI : Nonempty M := inferInstance
+  let : CompactSpace M := hcompact
+  let : ConnectedSpace M := hconnected
+  let : I.Boundaryless := hboundaryless
+  let : Nonempty M := inferInstance
   have hpos0 := hamilton_initial_ricci_positive (I := I) (M := M) h0ω hpos P hD
   have hinit : DifferentialGeometry.PDE.RicciFlow.TwoTensorFamilyNonnegativeAtTime
       (I := I) (M := M)
@@ -791,7 +791,8 @@ theorem hamilton_ricci_nonnegative
   intro T hT hTω
   have hdimT : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3 := by
     intro x
-    simpa using hdim
+    rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl]
+    exact hdim
   have hTsub : Set.Icc 0 T ⊆ P.D.carrier := by
     intro t ht
     rw [hD]
@@ -807,7 +808,6 @@ theorem hamilton_ricci_nonnegative
 omit [NeZero (Module.finrank ℝ E)] in
 theorem hamilton_rescaled_ricci_nonnegative
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle (1 : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     [ContMDiffVectorBundle (∞ : WithTop ℕ∞) E (TangentSpace I : M -> Type _) I]
     {omega : Real} (h0ω : 0 < omega)
     (hM : isClosedThreeManifold (I := I) (M := M))
@@ -871,9 +871,9 @@ theorem hamilton_scalar_positive
     ∀ t : Real, t ∈ P.D.carrier -> ∀ x : M, 0 < P.S.scalar t x := by
   classical
   rcases hM with ⟨hcompact, _hconnected, hboundaryless, hdim⟩
-  letI : CompactSpace M := hcompact
-  letI : I.Boundaryless := hboundaryless
-  letI : Nonempty M := inferInstance
+  let : CompactSpace M := hcompact
+  let : I.Boundaryless := hboundaryless
+  let : Nonempty M := inferInstance
   rcases hamilton_initial_scalar_minimum (I := I) (M := M) hdim h0ω hpos P hD with
     ⟨c0, hinit_min, hinit_pos⟩
   have hcont :
@@ -986,13 +986,14 @@ theorem hamilton_pinching_implies_pinch_estimate
     (hD : P.D = DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω) :
     hamiltonPinchingEstimate (I := I) P := by
   rcases hM with ⟨hcompact, hconnected, hboundaryless, hdim⟩
-  letI : CompactSpace M := hcompact
-  letI : ConnectedSpace M := hconnected
-  letI : I.Boundaryless := hboundaryless
-  letI : Nonempty M := inferInstance
+  let : CompactSpace M := hcompact
+  let : ConnectedSpace M := hconnected
+  let : I.Boundaryless := hboundaryless
+  let : Nonempty M := inferInstance
   have hdimT : ∀ x : M, Module.finrank Real (TangentSpace I x) = 3 := by
     intro x
-    simpa using hdim
+    rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl]
+    exact hdim
   have hfixed : hamiltonFixedPinching (I := I) P omega :=
     hamilton_fixed_pinching (I := I) (M := M) h0ω
       ⟨hcompact, hconnected, hboundaryless, hdim⟩ hpos P hD
@@ -1024,7 +1025,8 @@ theorem hamilton_rescaled_curvature_bound
   intro i s x hsleft hsright
   let τ : Real := hamiltonRescaledTime (I := I) P Q i s
   have hdimT : Module.finrank Real (TangentSpace I x) = 3 := by
-    simpa using hdim
+    rw [show Module.finrank Real (TangentSpace I x) = Module.finrank Real E from rfl]
+    exact hdim
   have hricNonneg :
       DifferentialGeometry.Geometry.Curvature.RicciNonnegAt (I := I) (P.S.ricciAt τ x) := by
     intro v
@@ -1113,13 +1115,13 @@ theorem hamilton_reference_radius_window
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q) :
-    hamiltonWindow (I := I) P Q hamilton_reference_radius := by
+    hamiltonWindow (I := I) P Q hamiltonReferenceRadius := by
   rcases hsel with ⟨_hscale, _htime, _htimeMem, hprod, _hbase, _hscalarMax⟩
-  rcases hprod (hamilton_reference_radius ^ 2) with ⟨N, hN⟩
+  rcases hprod (hamiltonReferenceRadius ^ 2) with ⟨N, hN⟩
   refine ⟨N, ?_⟩
   intro i hi s hsleft hsright
   have hprod_i :
-      hamilton_reference_radius ^ 2 <= hamiltonBlowupScale (I := I) P Q i * Q.time i := hN i hi
+      hamiltonReferenceRadius ^ 2 <= hamiltonBlowupScale (I := I) P Q i * Q.time i := hN i hi
   constructor
   · linarith
   · exact hsright

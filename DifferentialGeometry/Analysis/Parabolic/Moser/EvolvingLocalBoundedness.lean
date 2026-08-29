@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.Moser.EvolvingPower
 import DifferentialGeometry.Analysis.Parabolic.Moser.LocalBoundedness
 import DifferentialGeometry.Analysis.Integration.Measure.CompactVolumeEquiv
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set
@@ -112,7 +113,7 @@ theorem moserLocalizedMass_le_toReal_mul_evolvingMoserLocalizedMass
   let moving : ℝ → ℝ := fun t =>
     ∫ x, (spatialMoserCutoff rho (2 * k)).toFun x ^ 2 * u t x ^ p
       ∂(riemannianMeasureFamily (I := I) (M := M) g t)
-  letI : IsFiniteMeasure
+  let : IsFiniteMeasure
       (riemannianVolumeMeasure (I := I) (M := M) q) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) q
@@ -145,11 +146,11 @@ theorem moserLocalizedMass_le_toReal_mul_evolvingMoserLocalizedMass
   have hpoint : ∀ t ∈ Icc lower t₁, fixed t ≤ C.toReal * moving t := by
     intro t ht
     let μ := riemannianMeasureFamily (I := I) (M := M) g t
-    letI : IsFiniteMeasure μ := by
+    let : IsFiniteMeasure μ := by
       dsimp only [μ, riemannianMeasureFamily]
       exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
         (I := I) (M := M) (g t)
-    letI : IsFiniteMeasure (C • μ) := μ.smul_finite hC
+    let : IsFiniteMeasure (C • μ) := μ.smul_finite hC
     let f : M → ℝ := fun x =>
       (spatialMoserCutoff rho (2 * k)).toFun x ^ 2 * u t x ^ p
     have hf_cont : Continuous f :=
@@ -200,7 +201,7 @@ theorem evolvingMoserLocalizedMass_le_toReal_mul_moserLocalizedMass
   let moving : ℝ → ℝ := fun t =>
     ∫ x, (spatialMoserCutoff rho (2 * k)).toFun x ^ 2 * u t x ^ p
       ∂(riemannianMeasureFamily (I := I) (M := M) g t)
-  letI : IsFiniteMeasure
+  let : IsFiniteMeasure
       (riemannianVolumeMeasure (I := I) (M := M) q) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) q
@@ -233,7 +234,7 @@ theorem evolvingMoserLocalizedMass_le_toReal_mul_moserLocalizedMass
   have hpoint : ∀ t ∈ Icc lower t₁, moving t ≤ C.toReal * fixed t := by
     intro t ht
     let μ := riemannianVolumeMeasure (I := I) (M := M) q
-    letI : IsFiniteMeasure (C • μ) := μ.smul_finite hC
+    let : IsFiniteMeasure (C • μ) := μ.smul_finite hC
     let f : M → ℝ := fun x =>
       (spatialMoserCutoff rho (2 * k)).toFun x ^ 2 * u t x ^ p
     have hf_cont : Continuous f :=
@@ -327,7 +328,7 @@ theorem evolvingMoserLocalizedMass_succ_le
     simpa [uIcc_of_le hlower] using hright_cont
   have hpoint : ∀ t ∈ Icc lower t₁, left t ≤ right t := by
     intro t _
-    letI : IsFiniteMeasure
+    let : IsFiniteMeasure
         (riemannianMeasureFamily (I := I) (M := M) g t) := by
       dsimp only [riemannianMeasureFamily]
       exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
@@ -389,7 +390,7 @@ theorem evolvingMoserLocalizedMass_succ_le_of_subsolution
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)
@@ -409,7 +410,7 @@ theorem evolvingMoserLocalizedMass_succ_le_of_subsolution
           (I := I) (M := M) (Module.finrank ℝ E) g rho u p₀ a τ t₁ k) ^
         parabolicMoserGain (Module.finrank ℝ E) := by
   let n := Module.finrank ℝ E
-  letI : NeZero n := by
+  let : NeZero n := by
     refine ⟨Nat.ne_of_gt ?_⟩
     exact_mod_cast (by linarith : 0 < (n : ℝ))
   let p := parabolicMoserExponent n p₀ k
@@ -616,7 +617,7 @@ theorem evolvingMoserLocalizedMass_succ_le_majorant
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)
@@ -637,7 +638,7 @@ theorem evolvingMoserLocalizedMass_succ_le_majorant
             (I := I) (M := M) (Module.finrank ℝ E) g rho u p₀ a τ t₁ k) ^
           parabolicMoserGain (Module.finrank ℝ E) := by
   let n := Module.finrank ℝ E
-  letI : NeZero n := by
+  let : NeZero n := by
     refine ⟨Nat.ne_of_gt ?_⟩
     exact_mod_cast (by linarith : 0 < (n : ℝ))
   let A := evolvingMoserStepConstant G B a τ t₁
@@ -697,7 +698,7 @@ theorem evolvingMoserNormalizedMass_succ_le_of_subsolution
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)
@@ -721,7 +722,7 @@ theorem evolvingMoserNormalizedMass_succ_le_of_subsolution
         evolvingMoserNormalizedMass
           (I := I) (M := M) (Module.finrank ℝ E) g rho u p₀ a τ t₁ k := by
   let n := Module.finrank ℝ E
-  letI : NeZero n := by
+  let : NeZero n := by
     refine ⟨Nat.ne_of_gt ?_⟩
     exact_mod_cast (by linarith : 0 < (n : ℝ))
   let S := max 1 C
@@ -769,7 +770,7 @@ theorem evolvingMoserNormalizedMass_le_of_subsolution
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)
@@ -793,7 +794,7 @@ theorem evolvingMoserNormalizedMass_le_of_subsolution
         evolvingMoserNormalizedMass
           (I := I) (M := M) (Module.finrank ℝ E) g rho u p₀ a τ t₁ 0 := by
   let n := Module.finrank ℝ E
-  letI : NeZero n := by
+  let : NeZero n := by
     refine ⟨Nat.ne_of_gt ?_⟩
     exact_mod_cast (by linarith : 0 < (n : ℝ))
   let theta := parabolicMoserDecay n
@@ -853,7 +854,7 @@ theorem evolving_local_boundedness_of_subsolution_of_volume_le
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)
@@ -875,7 +876,7 @@ theorem evolving_local_boundedness_of_subsolution_of_volume_le
           (I := I) (M := M) (Module.finrank ℝ E) g rho u
             C G B p₀ a τ t₁ := by
   let n := Module.finrank ℝ E
-  letI : NeZero n := by
+  let : NeZero n := by
     refine ⟨Nat.ne_of_gt ?_⟩
     exact_mod_cast (by linarith : 0 < (n : ℝ))
   let μ := riemannianVolumeMeasure (I := I) (M := M) q
@@ -886,17 +887,17 @@ theorem evolving_local_boundedness_of_subsolution_of_volume_le
     (I := I) (M := M) n g rho u C G B p₀ a τ t₁
   let volumeFactor := max 1 V.toReal
   let bound := volumeFactor * localBound
-  letI : IsFiniteMeasure μ := by
+  let : IsFiniteMeasure μ := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) q
-  letI : μ.IsOpenPosMeasure := by
+  let : μ.IsOpenPosMeasure := by
     dsimp only [μ]
     exact riemannianVolumeMeasure_isOpenPosMeasure (I := I) (M := M) q
-  letI : ν.IsOpenPosMeasure := by
+  let : ν.IsOpenPosMeasure := by
     dsimp only [ν]
     infer_instance
-  letI : IsFiniteMeasure (ν.restrict U) := by
+  let : IsFiniteMeasure (ν.restrict U) := by
     dsimp only [ν, U]
     rw [← Measure.prod_restrict]
     infer_instance
@@ -963,8 +964,8 @@ theorem evolving_local_boundedness_of_subsolution_of_volume_le
       (I := I) (M := M) g hdim rho u hu hpos hp₀ haτ hτt₁
         hB hC hG hg hgram hSobolev hpde htrace hgradient k
     have hroot : L ^ (1 / p) ≤ localBound := by
-      simpa only [L, p, n, localBound, evolvingMoserLocalBound,
-        evolvingMoserLocalBoundFactor] using hnormalized
+      change L ^ (1 / p) ≤ localBound at hnormalized
+      exact hnormalized
     have hLbound : L ≤ localBound ^ p := by
       calc
         L = L ^ (1 : ℝ) := (Real.rpow_one L).symm
@@ -1020,7 +1021,7 @@ theorem evolving_local_boundedness_of_subsolution
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)
@@ -1069,7 +1070,7 @@ theorem evolving_reciprocal_local_boundedness_of_supersolution_of_volume_le
     (hSobolev : ∀ t ∈ Icc a t₁,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
@@ -1100,7 +1101,7 @@ theorem evolving_reciprocal_local_boundedness_of_supersolution_of_volume_le
   have hvpos : ∀ t x, 0 < v t x := fun t x => inv_pos.mpr (hpos t x)
   have hvpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => v s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) v hv t).toContMDiffMap x := by
     intro t ht x
     have h := rpow_subsolution_of_supersolution
@@ -1135,7 +1136,7 @@ theorem evolving_reciprocal_local_boundedness_of_supersolution
     (hSobolev : ∀ t ∈ Icc a t₁,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
@@ -1163,7 +1164,7 @@ theorem evolving_reciprocal_local_boundedness_of_supersolution
   have hvpos : ∀ t x, 0 < v t x := fun t x => inv_pos.mpr (hpos t x)
   have hvpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => v s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) v hv t).toContMDiffMap x := by
     intro t ht x
     have h := rpow_subsolution_of_supersolution
@@ -1197,7 +1198,7 @@ theorem evolving_reciprocal_local_boundedness_of_supersolution_rpow_of_volume_le
     (hSobolev : ∀ t ∈ Icc a t₁,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
@@ -1236,7 +1237,7 @@ theorem evolving_reciprocal_local_boundedness_of_supersolution_rpow_of_volume_le
     Real.rpow_pos_of_pos (hpos t x) _
   have hvpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => v s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) v hv t).toContMDiffMap x := by
     intro t ht x
     have h := rpow_subsolution_of_supersolution
@@ -1301,7 +1302,7 @@ theorem evolving_reciprocal_local_boundedness_of_supersolution_rpow
     (hSobolev : ∀ t ∈ Icc a t₁,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,

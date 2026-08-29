@@ -26,7 +26,7 @@ private theorem coordinateFrameAt_basis_continuousLinearMapAt
     (x₀ : M) {x : M} (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (i : CoordinateIdx (𝕜 := 𝕜) E) :
     (trivializationAt E (TangentSpace I : M -> Type _) x₀).continuousLinearMapAt
-        𝕜 x ((coordinateFrameAt_basis (I := I) x₀ hx) i) =
+        𝕜 x ((coordinateFrameAtBasis (I := I) x₀ hx) i) =
       (Module.finBasis 𝕜 E) i := by
   let e := trivializationAt E (TangentSpace I : M -> Type _) x₀
   have hxE : x ∈ e.baseSet := by
@@ -34,7 +34,7 @@ private theorem coordinateFrameAt_basis_continuousLinearMapAt
   have hx_src : x ∈ (chartAt H x₀).source := by
     simpa [coordinateFrameSet, coordinateTrivializationAt, e] using hx
   have hframe :
-      (coordinateFrameAt_basis (I := I) x₀ hx) i =
+      (coordinateFrameAtBasis (I := I) x₀ hx) i =
         e.symmL 𝕜 x ((Module.finBasis 𝕜 E) i) := by
     rw [coordinateFrameAt_basis_apply]
     rw [coordinateFrameAt_apply_of_mem (I := I) hx i]
@@ -48,12 +48,12 @@ omit [CompleteSpace 𝕜] in
 private theorem coordinateFrameAt_basis_repr_eq_trivializationAt
     (x₀ : M) {x : M} (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (v : TangentSpace I x) :
-    (coordinateFrameAt_basis (I := I) x₀ hx).repr v =
+    (coordinateFrameAtBasis (I := I) x₀ hx).repr v =
       (Module.finBasis 𝕜 E).repr
         ((trivializationAt E (TangentSpace I : M -> Type _) x₀).continuousLinearMapAt
           𝕜 x v) := by
   classical
-  let b := coordinateFrameAt_basis (I := I) x₀ hx
+  let b := coordinateFrameAtBasis (I := I) x₀ hx
   let e := Module.finBasis 𝕜 E
   let L := (trivializationAt E (TangentSpace I : M -> Type _) x₀).continuousLinearMapAt
     𝕜 x
@@ -81,13 +81,13 @@ theorem constInChart_basisTensor0S_coordFrame {r : ℕ}
     (upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E) :
     Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
         (I := I) (M := M) r x₀
-        ((continuousMultilinearMap_basis
+        ((continuousMultilinearMapBasis
           (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper) x =
-      basisTensor0S (I := I) (coordinateFrameAt_basis (I := I) x₀ hx) upper := by
+      basisTensor0S (I := I) (coordinateFrameAtBasis (I := I) x₀ hx) upper := by
   classical
   have hxE : x ∈ (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet := by
     simpa [coordinateFrameSet, coordinateTrivializationAt] using hx
-  refine ext0S_basis (I := I) (coordinateFrameAt_basis (I := I) x₀ hx) (fun slots => ?_)
+  refine ext0S_basis (I := I) (coordinateFrameAtBasis (I := I) x₀ hx) (fun slots => ?_)
   rw [basisTensor0S_component, component0S_apply,
     Tensor0SSpace.constInChart_apply (I := I) r hxE]
   simp only [coordinateFrameAt_basis_continuousLinearMapAt (I := I) x₀ hx]
@@ -129,14 +129,14 @@ theorem applyInput_coordFrame_eventually {r s : ℕ}
           (T y
             (Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
               (I := I) (M := M) r x₀
-              ((continuousMultilinearMap_basis
+              ((continuousMultilinearMapBasis
                 (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper) y))
             (fun b : Fin s => coordinateFrameAt (I := I) x₀ (lower b) y)) := by
   classical
   filter_upwards
     [(coordinateFrameSet_open (I := I) x₀).mem_nhds
       (coordinateFrameAt_mem (I := I) x₀)] with y hy
-  let basis := coordinateFrameAt_basis (I := I) x₀ hy
+  let basis := coordinateFrameAtBasis (I := I) x₀ hy
   have h :=
     Tensor0SBundle.componentRS_apply_input_eq_sum
       (I := I) basis (T y) (θ y) lower
@@ -147,13 +147,13 @@ theorem applyInput_coordFrame_eventually {r s : ℕ}
           simp [basis, component0S_apply]
     _ = ∑ upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E,
           component0S (I := I) basis (θ y) upper *
-            componentRS_gen (I := I) basis (T y) upper lower := h
+            componentRSGen (I := I) basis (T y) upper lower := h
     _ = ∑ upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E,
         θ y (fun a : Fin r => coordinateFrameAt (I := I) x₀ (upper a) y) *
           (T y
             (Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
               (I := I) (M := M) r x₀
-              ((continuousMultilinearMap_basis
+              ((continuousMultilinearMapBasis
                 (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper) y))
             (fun b : Fin s => coordinateFrameAt (I := I) x₀ (lower b) y) := by
           refine Finset.sum_congr rfl fun upper _ => ?_
@@ -161,7 +161,6 @@ theorem applyInput_coordFrame_eventually {r s : ℕ}
             (I := I) (M := M) (r := r) x₀ hy upper
           simp [basis, component0S_apply, componentRS_apply_gen, hconst]
 
-set_option backward.isDefEq.respectTransparency false in
 omit [IsManifold I 2 M] in
 theorem tensorRS_eval_constInChart_coordinateFrame_contMDiffAt {r s : ℕ}
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
@@ -174,13 +173,13 @@ theorem tensorRS_eval_constInChart_coordinateFrame_contMDiffAt {r s : ℕ}
         (T y
           (Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
             (I := I) (M := M) r x₀
-            ((continuousMultilinearMap_basis
+            ((continuousMultilinearMapBasis
               (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper) y))
           (fun b : Fin s => coordinateFrameAt (I := I) x₀ (lower b) y))
       x₀ := by
   classical
   let β₀ : Tensor0SModel r 𝕜 E :=
-    (continuousMultilinearMap_basis
+    (continuousMultilinearMapBasis
       (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper
   let βsec : (p : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H)
       (I := I) (M := M) r p :=
@@ -228,7 +227,7 @@ theorem coordDeriv0SAt_applyInput_eq_sum {r s : ℕ}
     (x₀ : M) (lower : Fin s -> CoordinateIdx (𝕜 := 𝕜) E) :
     coordDeriv0SAt (I := I) (fun x => X x) x₀
         (fun y : M =>
-          tensorRSField_applyInput (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+          tensorRSFieldApplyInput (𝕜 := 𝕜) (E := E) (H := H) (I := I)
             (M := M) (∞ : WithTop ℕ∞) T θ y)
         lower =
       (∑ upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E,
@@ -246,15 +245,15 @@ theorem coordDeriv0SAt_applyInput_eq_sum {r s : ℕ}
       (T y
         (Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H)
           (I := I) (M := M) r x₀
-          ((continuousMultilinearMap_basis
+          ((continuousMultilinearMapBasis
             (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper) y))
         (fun b : Fin s => coordinateFrameAt (I := I) x₀ (lower b) y)
   have hev := applyInput_coordFrame_eventually (I := I) T θ x₀ lower
   unfold coordDeriv0SAt
   change
-    extDerivFun (I := I)
+    mvfderiv (I := I)
       (fun y : M =>
-        (tensorRSField_applyInput (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+        (tensorRSFieldApplyInput (𝕜 := 𝕜) (E := E) (H := H) (I := I)
           (M := M) (∞ : WithTop ℕ∞) T θ y)
           (fun b : Fin s => coordinateFrameAt (I := I) x₀ (lower b) y))
       x₀ (X x₀) =
@@ -265,17 +264,17 @@ theorem coordDeriv0SAt_applyInput_eq_sum {r s : ℕ}
         coordComponent0SAt (I := I) (θ x₀) upper *
           coordDerivRSAt (I := I) (fun x => X x) x₀ (fun x => T x) upper lower)
   have hderiv_congr :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun y : M =>
-          (tensorRSField_applyInput (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+          (tensorRSFieldApplyInput (𝕜 := 𝕜) (E := E) (H := H) (I := I)
             (M := M) (∞ : WithTop ℕ∞) T θ y)
             (fun b : Fin s => coordinateFrameAt (I := I) x₀ (lower b) y))
         x₀ (X x₀) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun y : M =>
           ∑ upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E,
             θfun upper y * βfun upper y) x₀ (X x₀) := by
-    exact extDerivFun_congr_eventually (I := I) (X x₀) (by
+    exact mvfderiv_congr_eventually (I := I) (X x₀) (by
       simpa [θfun, βfun, tensorRSField_applyInput_apply] using hev)
   rw [hderiv_congr]
   have hsum_fun :
@@ -287,11 +286,11 @@ theorem coordDeriv0SAt_applyInput_eq_sum {r s : ℕ}
     funext y
     simp
   rw [hsum_fun]
-  rw [extDerivFun_finset_sum (I := I) (t := Finset.univ)
+  rw [mvfderiv_finset_sum (I := I) (t := Finset.univ)
     (f := fun upper y => θfun upper y * βfun upper y) (x := x₀) (v := X x₀)]
   · calc
       (∑ upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E,
-          extDerivFun (I := I) (fun y : M => θfun upper y * βfun upper y)
+          mvfderiv (I := I) (fun y : M => θfun upper y * βfun upper y)
             x₀ (X x₀))
           =
         ∑ upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E,
@@ -300,7 +299,7 @@ theorem coordDeriv0SAt_applyInput_eq_sum {r s : ℕ}
           coordComponent0SAt (I := I) (θ x₀) upper *
             coordDerivRSAt (I := I) (fun x => X x) x₀ (fun x => T x) upper lower) := by
           refine Finset.sum_congr rfl fun upper _ => ?_
-          rw [extDerivFun_mul (I := I) (f := θfun upper) (g := βfun upper)
+          rw [mvfderiv_mul (I := I) (f := θfun upper) (g := βfun upper)
         (x := x₀) (v := X x₀)]
           · have hθ0 :
             θfun upper x₀ =
@@ -322,20 +321,16 @@ theorem coordDeriv0SAt_applyInput_eq_sum {r s : ℕ}
                 have hconst := constInChart_basisTensor0S_coordFrame
                   (I := I) (M := M) (r := r) x₀
                   (coordinateFrameAt_mem (I := I) x₀) upper
-                simp [βfun, coordinateFrameAt_basis, hconst]
+                simp [βfun, coordinateFrameAtBasis, hconst]
               exact hlocal.trans
                 (coordFrameRSComp_at (I := I) T x₀ upper lower)
             have hdθ :
-            extDerivFun (I := I) (θfun upper) x₀ (X x₀) =
+            mvfderiv (I := I) (θfun upper) x₀ (X x₀) =
               coordDeriv0SAt (I := I) (fun x => X x) x₀ (fun x => θ x) upper := by
-              change (mfderiv I 𝓘(𝕜, 𝕜) (θfun upper) x₀) (X x₀) =
-                coordDeriv0SAt (I := I) (fun x => X x) x₀ (fun x => θ x) upper
               simp [θfun, coordDeriv0SAt]
             have hdβ :
-            extDerivFun (I := I) (βfun upper) x₀ (X x₀) =
+            mvfderiv (I := I) (βfun upper) x₀ (X x₀) =
               coordDerivRSAt (I := I) (fun x => X x) x₀ (fun x => T x) upper lower := by
-              change (mfderiv I 𝓘(𝕜, 𝕜) (βfun upper) x₀) (X x₀) =
-                coordDerivRSAt (I := I) (fun x => X x) x₀ (fun x => T x) upper lower
               simp [βfun, coordDerivRSAt]
             rw [hθ0, hβ0, hdθ, hdβ]
             ring

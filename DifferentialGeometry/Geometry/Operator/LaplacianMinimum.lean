@@ -28,23 +28,15 @@ private instance tangentSpace_finiteDimensional (x : M) :
 
 private noncomputable def tangentConstAt (x : M) (v : TangentSpace I x) (p : M) :
     TangentSpace I p :=
-  TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x v p
+  TensorLieDeriv.tangentConstInChart (𝕜 := Real) (I := I) x
+    ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x v) p
 
 omit [FiniteDimensional ℝ E] in
 @[simp] private theorem tangentConstAt_self (x : M) (v : TangentSpace I x) :
     tangentConstAt (I := I) x v x = v := by
   unfold tangentConstAt
-  rw [TensorLieDeriv.tangentConstInChart_apply]
-  have hL :
-      (trivializationAt E (TangentSpace I) x).symmL Real x =
-        (1 : E →L[Real] E) := by
-    rw [TangentBundle.symmL_trivializationAt_eq_core
-      (𝕜 := Real) (I := I) (b₀ := x) (b := x) (mem_chart_source H x)]
-    ext w
-    exact (tangentBundleCore I M).coordChange_self (achart H x) x
-      (by rw [tangentBundleCore_baseSet, coe_achart]; exact mem_chart_source H x) w
-  rw [hL]
-  rfl
+  exact TensorLieDeriv.tangentConstInChart_self_continuousLinearMapAt
+    (𝕜 := Real) (I := I) x v
 
 omit [FiniteDimensional ℝ E] in
 private theorem mdifferentiableAt_tangentConstAt_self
@@ -52,15 +44,28 @@ private theorem mdifferentiableAt_tangentConstAt_self
     MDiffAt (T% (tangentConstAt (I := I) x v : (p : M) -> TangentSpace I p)) x := by
   unfold tangentConstAt
   exact TensorLieDeriv.mdifferentiableAt_tangentConstInChart_of_mem
-    (𝕜 := Real) (I := I) (x₀ := x) (p := x) v
+    (𝕜 := Real) (I := I) (x₀ := x) (p := x)
+    ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x v)
     (mem_baseSet_trivializationAt E (TangentSpace I) x)
 
+omit [FiniteDimensional ℝ E] in
+private theorem tangent_continuousLinearMapAt_self (x : M) :
+    (trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x =
+      (1 : E →L[Real] E) := by
+  rw [TangentBundle.continuousLinearMapAt_trivializationAt_eq_core
+    (b₀ := x) (b := x) (mem_chart_source H x)]
+  ext v
+  exact (tangentBundleCore I M).coordChange_self (achart H x) x
+    (by rw [tangentBundleCore_baseSet, coe_achart]; exact mem_chart_source H x) v
+
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-private theorem extDerivFun_real_eq_mfderiv
-    (u : M -> Real) (x : M) (v : TangentSpace I x) :
-    extDerivFun (I := I) u x v =
-      mfderiv I 𝓘(Real, Real) u x v := by
-  simp [extDerivFun, NormedSpace.fromTangentSpace]
+private theorem writtenInExtChartAt_real_eq
+    (f : M → Real) (x : M) :
+    writtenInExtChartAt I 𝓘(Real, Real) x f =
+      fun y : E => f ((extChartAt I x).symm y) := by
+  funext y
+  rw [writtenInExtChartAt, extChartAt_model_space_eq_id]
+  rfl
 
 private theorem deriv_deriv_nonneg_of_isLocalMin
     {φ : Real -> Real} {t₀ : Real}
@@ -164,7 +169,8 @@ private theorem writtenInExtChartAt_differentiableAt_of_mdifferentiableAt
   have hdiff_within :
       DifferentiableWithinAt Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
         (Set.range I) (extChartAt I x p) := by
-    simpa [writtenInExtChartAt] using hmd_within.differentiableWithinAt
+    rw [writtenInExtChartAt_real_eq]
+    exact hmd_within.differentiableWithinAt
   have hpoint : extChartAt I x p = z := by
     rw [hpz]
     exact (extChartAt I x).right_inv hz
@@ -181,15 +187,20 @@ private theorem writtenInExtChartAt_differentiableAt_of_mdifferentiableAt
   exact hdiff_within.differentiableAt hrange
 
 omit [FiniteDimensional ℝ E] in
-private theorem extDerivFun_tangentConstAt_eq_fderiv_writtenInExtChartAt
+private theorem mvfderiv_tangentConstAt_eq_fderiv_writtenInExtChartAt
     {f : M -> Real} {x p : M}
     (hp : p ∈ (chartAt H x).source)
     (hp_interior : I.IsInteriorPoint p)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f p)
     (v : TangentSpace I x) :
-    extDerivFun (I := I) f p (tangentConstAt (I := I) x v p) =
-      fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x f) (extChartAt I x p) v := by
+    mvfderiv (I := I) f p (tangentConstAt (I := I) x v p) =
+      fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x f) (extChartAt I x p)
+        ((trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x v) := by
   let z : E := extChartAt I x p
+  let vModel : E :=
+    (trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x v
+  let vChart : TangentSpace 𝓘(Real, E) z :=
+    (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm vModel
   have hsource : p ∈ (extChartAt I x).source := by
     simpa [extChartAt_source] using hp
   have hz_target : z ∈ (extChartAt I x).target := by
@@ -221,34 +232,52 @@ private theorem extDerivFun_tangentConstAt_eq_fderiv_writtenInExtChartAt
     exact (I.uniqueDiffOn.uniqueDiffWithinAt
       (by exact extChartAt_target_subset_range (I := I) x hz_target)).uniqueMDiffWithinAt
   have hchain :=
-    mfderivWithin_comp (I := 𝓘(Real, E)) (I' := I) (I'' := 𝓘(Real, Real))
+    mvfderivWithin_comp (I := I) (I' := 𝓘(Real, E))
       (x := z) (g := f) (f := (extChartAt I x).symm)
       hf_univ hsymm_mdiff hmaps huniq
   have hchain_apply :
       fderivWithin Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
-          (Set.range I) z v =
-        mfderiv I 𝓘(Real, Real) f p
+          (Set.range I) z vModel =
+        mvfderiv (I := I) f p
           ((mfderivWithin 𝓘(Real, E) I (extChartAt I x).symm
-            (Set.range I) z) v) := by
-    have happ := congrArg (fun L => L v) hchain
-    rw [mfderivWithin_eq_fderivWithin, mfderivWithin_univ] at happ
-    rw [hsymm] at happ
-    simpa [writtenInExtChartAt, z, ContinuousLinearMap.comp_apply] using happ
+            (Set.range I) z) vChart) := by
+    rw [← hsymm]
+    have happ := congrArg (fun L => L vChart) hchain
+    rw [mvfderivWithin_univ] at happ
+    simp only [ContinuousLinearMap.comp_apply] at happ
+    rw [mvfderivWithin_model_apply_eq_fderivWithin] at happ
+    rw [writtenInExtChartAt_real_eq]
+    simpa only [Function.comp_def, vChart, tangentSpaceModelContinuousLinearEquiv_apply,
+      ContinuousLinearEquiv.apply_symm_apply] using happ
   have hfield :
       tangentConstAt (I := I) x v p =
         (mfderivWithin 𝓘(Real, E) I (extChartAt I x).symm
-          (Set.range I) z) v := by
+          (Set.range I) z) vChart := by
+    have hvChart : vChart = vModel := by
+      exact tangentSpaceModelContinuousLinearEquiv_symm_apply z vModel
+    rw [hvChart]
     have hlin := TangentBundle.symmL_trivializationAt
       (𝕜 := Real) (I := I) (x₀ := x) (x := p) hp
-    have happ := congrArg (fun L => L v) hlin
-    simpa [tangentConstAt, z] using happ
+    have happ := congrArg (fun L => L vModel) hlin
+    unfold tangentConstAt
+    rw [TensorLieDeriv.tangentConstInChart_apply]
+    convert happ using 1
+    dsimp only [z, vModel]
+    rfl
   have hwithin_to_fderiv :
       fderivWithin Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
-          (Set.range I) z v =
-        fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x f) z v := by
+          (Set.range I) z vModel =
+        fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x f) z vModel := by
     rw [fderivWithin_of_mem_nhds hrange]
-  rw [extDerivFun_real_eq_mfderiv, hfield]
-  exact hchain_apply.symm.trans hwithin_to_fderiv
+  calc
+    mvfderiv (I := I) f p (tangentConstAt (I := I) x v p) =
+        mvfderiv (I := I) f p
+          ((mfderivWithin 𝓘(Real, E) I (extChartAt I x).symm
+            (Set.range I) z) vChart) := by rw [hfield]
+    _ = fderivWithin Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
+          (Set.range I) z vModel := hchain_apply.symm
+    _ = fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x f) z vModel :=
+      hwithin_to_fderiv
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem mfderiv_eq_zero_at_spatial_min_of_isInteriorPoint
@@ -263,24 +292,29 @@ theorem mfderiv_eq_zero_at_spatial_min_of_isInteriorPoint
     have hmin' :
         IsLocalMin f ((extChartAt I x).symm ((extChartAt I x) x)) := by
       simpa only [mfld_simps] using hmin
-    simpa only [Function.comp_apply] using
-      hmin'.comp_continuous (continuousAt_extChartAt_symm (I := I) x)
+    change IsLocalMin (f ∘ (extChartAt I x).symm) ((extChartAt I x) x)
+    exact hmin'.comp_continuous (continuousAt_extChartAt_symm (I := I) x)
   have hderiv_chart :
       fderiv Real (fun y : E => f ((extChartAt I x).symm y))
         ((extChartAt I x) x) = 0 :=
     hmin_chart.fderiv_eq_zero
   have hrange : Set.range I ∈ nhds ((extChartAt I x) x) := by
     exact range_mem_nhds_isInteriorPoint hx
-  calc
-    mfderiv I 𝓘(Real, Real) f x =
-        fderivWithin Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
-          (Set.range I) ((extChartAt I x) x) := by
-      exact hf.mfderiv
-    _ = fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
-          ((extChartAt I x) x) := by
-      exact fderivWithin_of_mem_nhds hrange
-    _ = 0 := by
-      simpa [writtenInExtChartAt] using hderiv_chart
+  have hmvfderiv : mvfderiv (I := I) f x = 0 := by
+    apply ContinuousLinearMap.ext
+    intro v
+    rw [mvfderiv_apply_eq_fderivWithin_writtenInExtChartAt hf v]
+    rw [fderivWithin_of_mem_nhds hrange, writtenInExtChartAt_real_eq,
+      hderiv_chart]
+    rfl
+  apply ContinuousLinearMap.ext
+  intro v
+  apply (NormedSpace.fromTangentSpace (𝕜 := Real) (f x)).injective
+  change
+    (NormedSpace.fromTangentSpace (𝕜 := Real) (f x)).toContinuousLinearMap
+        (mfderiv I 𝓘(Real, Real) f x v) = 0
+  simpa only [mvfderiv, ContinuousLinearMap.comp_apply, zero_apply] using
+    congrArg (fun L : TangentSpace I x →L[Real] Real => L v) hmvfderiv
 
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
@@ -366,18 +400,26 @@ private theorem fderiv_fderiv_self_nonneg_of_isLocalMin
     (_hgrad : MDiffAt (T% fun y : M => gradientFun (I := I) g f y) x)
     (v : TangentSpace I x) :
     0 <=
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun y : M =>
-          extDerivFun (I := I) f y
+          mvfderiv (I := I) f y
             (tangentConstAt (I := I) x v y)) x v := by
   let F : E -> Real := writtenInExtChartAt I 𝓘(Real, Real) x f
   let z₀ : E := extChartAt I x x
+  let vModel : E :=
+    (trivializationAt E (TangentSpace I) x).continuousLinearMapAt Real x v
+  have hvModel :
+      vModel = tangentSpaceModelContinuousLinearEquiv (I := I) x v := by
+    dsimp only [vModel]
+    rw [tangent_continuousLinearMapAt_self]
+    rfl
   have hmin_chart : IsLocalMin F z₀ := by
     have hmin' :
         IsLocalMin f ((extChartAt I x).symm ((extChartAt I x) x)) := by
       simpa only [mfld_simps] using hmin
-    simpa [F, z₀, writtenInExtChartAt, Function.comp_def] using
-      hmin'.comp_continuous (continuousAt_extChartAt_symm (I := I) x)
+    dsimp only [F]
+    rw [writtenInExtChartAt_real_eq]
+    exact hmin'.comp_continuous (continuousAt_extChartAt_symm (I := I) x)
   have hF : DifferentiableAt Real F z₀ := by
     exact writtenInExtChartAt_differentiableAt_of_mdifferentiableAt
       (I := I) (x := x) (p := x) (z := z₀)
@@ -415,14 +457,14 @@ private theorem fderiv_fderiv_self_nonneg_of_isLocalMin
       hsource hp_interior (interior_subset htarget) rfl hmd
   have hmodel :=
     fderiv_fderiv_apply_self_nonneg_of_isLocalMin_model
-      (F := F) (y := z₀) hmin_chart hF hF_near_model v
+      (F := F) (y := z₀) hmin_chart hF hF_near_model vModel
   let u : M -> Real :=
     fun y : M =>
-      extDerivFun (I := I) f y
+      mvfderiv (I := I) f y
         (tangentConstAt (I := I) x v y)
   have hwrite_eq :
       writtenInExtChartAt I 𝓘(Real, Real) x u =ᶠ[nhds z₀]
-        fun z : E => fderiv Real F z v := by
+        fun z : E => fderiv Real F z vModel := by
     have hmd_z :
         ∀ᶠ z in nhds z₀,
           MDifferentiableAt I 𝓘(Real, Real) f ((extChartAt I x).symm z) :=
@@ -445,50 +487,39 @@ private theorem fderiv_fderiv_self_nonneg_of_isLocalMin
         interior (extChartAt I x).target
       rwa [hright]
     have h :=
-      extDerivFun_tangentConstAt_eq_fderiv_writtenInExtChartAt
+      mvfderiv_tangentConstAt_eq_fderiv_writtenInExtChartAt
         (I := I) (x := x) (p := (extChartAt I x).symm z)
         hsource hp_interior hmd v
-    change
-      mfderiv I 𝓘(Real, Real) f ((extChartAt I x).symm z)
-          (tangentConstAt (I := I) x v ((extChartAt I x).symm z)) =
-        fderiv Real F (extChartAt I x ((extChartAt I x).symm z)) v at h
     rw [hright] at h
-    simpa [u, writtenInExtChartAt, extDerivFun, NormedSpace.fromTangentSpace,
-      ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
-      ContinuousLinearEquiv.coe_mk, LinearEquiv.coe_mk] using h
-  change 0 <= extDerivFun (I := I) u x v
+    rw [writtenInExtChartAt_real_eq]
+    simpa only [u, F, vModel] using h
+  change 0 <= mvfderiv (I := I) u x v
   by_cases hu : MDifferentiableAt I 𝓘(Real, Real) u x
   · have hrange : Set.range I ∈ nhds z₀ := by
       simpa [z₀] using range_mem_nhds_isInteriorPoint hx
     have houter :
-        extDerivFun (I := I) u x v =
-          fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x u) z₀ v := by
-      rw [extDerivFun_real_eq_mfderiv]
-      calc
-        mfderiv I 𝓘(Real, Real) u x v =
-            fderivWithin Real (writtenInExtChartAt I 𝓘(Real, Real) x u)
-              (Set.range I) z₀ v := by
-          simpa [z₀] using congrArg (fun L => L v) hu.mfderiv
-        _ = fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x u) z₀ v := by
-          rw [fderivWithin_of_mem_nhds hrange]
+        mvfderiv (I := I) u x v =
+          fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x u) z₀ vModel := by
+      rw [mvfderiv_apply_eq_fderivWithin_writtenInExtChartAt hu v]
+      rw [fderivWithin_of_mem_nhds hrange, ← hvModel]
     have hrewrite :
-        fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x u) z₀ v =
-          fderiv Real (fun z : E => fderiv Real F z v) z₀ v := by
+        fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x u) z₀ vModel =
+          fderiv Real (fun z : E => fderiv Real F z vModel) z₀ vModel := by
       rw [hwrite_eq.fderiv_eq]
     calc
-      0 <= fderiv Real (fun z : E => fderiv Real F z v) z₀ v := hmodel
-      _ = extDerivFun (I := I) u x v := by
+      0 <= fderiv Real (fun z : E => fderiv Real F z vModel) z₀ vModel := hmodel
+      _ = mvfderiv (I := I) u x v := by
         rw [← hrewrite, ← houter]
-  · rw [extDerivFun_real_eq_mfderiv]
-    rw [mfderiv, if_neg hu]
-    exact le_rfl
+  · have hzero : mfderiv I 𝓘(Real, Real) u x = 0 :=
+      mfderiv_zero_of_not_mdifferentiableAt hu
+    unfold mvfderiv
+    rw [hzero]
+    simp only [ContinuousLinearMap.comp_apply, zero_apply, map_zero, le_refl]
 
 private theorem cov_gradient_inner_self_nonneg_at_spatial_min
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     {f : M -> Real} {x : M}
     (hmin : IsLocalMin f x)
     (hx : I.IsInteriorPoint x)
@@ -511,20 +542,20 @@ private theorem cov_gradient_inner_self_nonneg_at_spatial_min
   have hfun :
       (fun y : M => g.inner y (G y) (V y)) =
         fun y : M =>
-          extDerivFun (I := I) f y
+          mvfderiv (I := I) f y
             (tangentConstAt (I := I) x v y) := by
     funext y
-    rw [extDerivFun_real_eq_mfderiv]
     simpa [G, V] using inner_gradientFun (I := I) g f y (V y)
   have hmetric' :
-      extDerivFun (I := I)
+      mvfderiv (I := I)
           (fun y : M =>
-            extDerivFun (I := I) f y
+            mvfderiv (I := I) f y
               (tangentConstAt (I := I) x v y)) x v =
         g.inner x
           ((cov (fun y : M => gradientFun (I := I) g f y) x) v) v := by
     rw [← hfun]
-    rw [extDerivFun_real_eq_mfderiv]
+    change mvfderiv (I := I) (fun y : M => g.inner y (G y) (V y)) x v =
+      g.inner x ((cov G x) v) v
     have hVx : V x = v := by
       simp [V, tangentConstAt_self]
     rw [hVx] at hmetric
@@ -533,17 +564,28 @@ private theorem cov_gradient_inner_self_nonneg_at_spatial_min
       rw [hcritical]
       simp
     rw [hzero, add_zero] at hmetric
-    simpa [G, V] using hmetric
+    have hmetricScalar := congrArg
+      (NormedSpace.fromTangentSpace (𝕜 := Real) (g.inner x (G x) v)) hmetric
+    have hfrom :
+        NormedSpace.fromTangentSpace (𝕜 := Real) (g.inner x (G x) v)
+            (g.inner x ((cov G x) v) v) =
+          g.inner x ((cov G x) v) v := by
+      change g.inner x ((cov G x) v) v = g.inner x ((cov G x) v) v
+      rfl
+    rw [hfrom] at hmetricScalar
+    change NormedSpace.fromTangentSpace (𝕜 := Real) (g.inner x (G x) (V x))
+        (mfderiv I 𝓘(Real, Real) (fun y : M => g.inner y (G y) (V y)) x v) =
+      g.inner x ((cov G x) v) v
+    rw [hVx]
+    exact hmetricScalar
   rw [← hmetric']
   exact fderiv_fderiv_self_nonneg_of_isLocalMin
     (I := I) g hmin hx hf hf_near hgrad v
 
 theorem laplacian_nonneg_at_spatial_min_of_metricCompatible_of_isInteriorPoint
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     {f : M -> Real} {x : M}
     (hmin : IsLocalMin f x)
     (hx : I.IsInteriorPoint x)
@@ -563,11 +605,9 @@ theorem laplacian_nonneg_at_spatial_min_of_metricCompatible_of_isInteriorPoint
 
 theorem laplacian_nonneg_at_spatial_min_of_metricCompatible
     [I.Boundaryless]
-    [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     {f : M -> Real} {x : M}
     (hmin : IsLocalMin f x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
@@ -581,10 +621,9 @@ theorem laplacian_nonneg_at_spatial_min_of_metricCompatible
 theorem laplacianNonnegativeAtSpatialMin_of_metricCompatible
     [I.Boundaryless]
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
-    [ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g) :
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g) :
     LaplacianNonnegativeAtSpatialMin (I := I) cov g := by
   intro f x hmin hf hf_near hgrad
   exact laplacian_nonneg_at_spatial_min_of_metricCompatible

@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -52,8 +51,8 @@ theorem app_jet_sq_le
           ((iteratedCovGrad (I := I) g 0 b l W).toSection x) with hF_def
   have hF_int : MeasureTheory.Integrable F μ := by
     rw [hF_def]
-    exact (MeasureTheory.integrable_finset_sum (Finset.range (j + 1)) (fun i _ =>
-      (MeasureTheory.integrable_finset_sum (Finset.range (j + 1 - i)) (fun l _ =>
+    exact (MeasureTheory.integrable_finsetSum (Finset.range (j + 1)) (fun i _ =>
+      (MeasureTheory.integrable_finsetSum (Finset.range (j + 1 - i)) (fun l _ =>
         integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g 0 (b + l)
           (iteratedCovGrad (I := I) g 0 b l W))).const_mul (B i))).const_mul _
   have hpt : ∀ x : M,
@@ -78,14 +77,14 @@ theorem app_jet_sq_le
       (operatorFieldApply (I := I) (M := M) g b c Φ W)) F hF_int hpt
   refine le_trans hnorm (le_of_eq ?_)
   rw [hF_def, MeasureTheory.integral_const_mul,
-    MeasureTheory.integral_finset_sum (Finset.range (j + 1)) (fun i _ =>
-      (MeasureTheory.integrable_finset_sum (Finset.range (j + 1 - i)) (fun l _ =>
+    MeasureTheory.integral_finsetSum (Finset.range (j + 1)) (fun i _ =>
+      (MeasureTheory.integrable_finsetSum (Finset.range (j + 1 - i)) (fun l _ =>
         integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g 0 (b + l)
           (iteratedCovGrad (I := I) g 0 b l W))).const_mul (B i))]
   apply congrArg (fun z : ℝ => diagonalGridGrowthFactor (E := E) j * z)
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [MeasureTheory.integral_const_mul,
-    MeasureTheory.integral_finset_sum (Finset.range (j + 1 - i)) (fun l _ =>
+    MeasureTheory.integral_finsetSum (Finset.range (j + 1 - i)) (fun l _ =>
       integrable_riemannianFiberNormSq_toSection (I := I) (M := M) g 0 (b + l)
         (iteratedCovGrad (I := I) g 0 b l W))]
   apply congrArg (fun z : ℝ => B i * z)
@@ -131,9 +130,9 @@ theorem app_jet_sq_head
           ((iteratedCovGrad (I := I) g b c i Φ).toSection x)) with hF_def
   have hF_int : MeasureTheory.Integrable F μ := by
     rw [hF_def]
-    exact (((MeasureTheory.integrable_finset_sum (Finset.range (j + 1))
+    exact (((MeasureTheory.integrable_finsetSum (Finset.range (j + 1))
         (fun l _ => hWint l)).const_mul B).add
-      (MeasureTheory.integrable_finset_sum (Finset.Icc 1 j)
+      (MeasureTheory.integrable_finsetSum (Finset.Icc 1 j)
         (fun i _ => (hCint i).const_mul (D i)))).const_mul _
   have hpt : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 (c + j) x
@@ -168,21 +167,21 @@ theorem app_jet_sq_head
   refine le_trans hnorm (le_of_eq ?_)
   rw [hF_def, MeasureTheory.integral_const_mul,
     MeasureTheory.integral_add
-      ((MeasureTheory.integrable_finset_sum (Finset.range (j + 1))
+      ((MeasureTheory.integrable_finsetSum (Finset.range (j + 1))
         (fun l _ => hWint l)).const_mul B)
-      (MeasureTheory.integrable_finset_sum (Finset.Icc 1 j)
+      (MeasureTheory.integrable_finsetSum (Finset.Icc 1 j)
         (fun i _ => (hCint i).const_mul (D i)))]
   apply congrArg (fun z : ℝ => diagonalGridGrowthFactor (E := E) j * z)
   refine congrArg₂ (· + ·) ?_ ?_
   · rw [MeasureTheory.integral_const_mul,
-      MeasureTheory.integral_finset_sum (Finset.range (j + 1))
+      MeasureTheory.integral_finsetSum (Finset.range (j + 1))
         (fun l _ => hWint l)]
     apply congrArg (fun z : ℝ => B * z)
     exact Finset.sum_congr rfl (fun l _ => by
       rw [SmoothCcTensor.norm_def,
         tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs
           (I := I) (M := M) g 0 (b + l)])
-  · rw [MeasureTheory.integral_finset_sum (Finset.Icc 1 j)
+  · rw [MeasureTheory.integral_finsetSum (Finset.Icc 1 j)
       (fun i _ => (hCint i).const_mul (D i))]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [MeasureTheory.integral_const_mul]
@@ -230,10 +229,10 @@ theorem app_jet_sq_split
           ((iteratedCovGrad (I := I) g b c i Φ).toSection x)) with hF_def
   have hF_int : MeasureTheory.Integrable F μ := by
     rw [hF_def]
-    exact ((MeasureTheory.integrable_finset_sum S (fun i _ =>
-        (MeasureTheory.integrable_finset_sum (Finset.range (j + 1 - i))
+    exact ((MeasureTheory.integrable_finsetSum S (fun i _ =>
+        (MeasureTheory.integrable_finsetSum (Finset.range (j + 1 - i))
           (fun l _ => hWint l)).const_mul (B i))).add
-      (MeasureTheory.integrable_finset_sum (Finset.range (j + 1) \ S)
+      (MeasureTheory.integrable_finsetSum (Finset.range (j + 1) \ S)
         (fun i _ => (hCint i).const_mul (D i)))).const_mul _
   have hpt : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g 0 (c + j) x
@@ -280,26 +279,26 @@ theorem app_jet_sq_split
   refine le_trans hnorm (le_of_eq ?_)
   rw [hF_def, MeasureTheory.integral_const_mul,
     MeasureTheory.integral_add
-      (MeasureTheory.integrable_finset_sum S (fun i _ =>
-        (MeasureTheory.integrable_finset_sum (Finset.range (j + 1 - i))
+      (MeasureTheory.integrable_finsetSum S (fun i _ =>
+        (MeasureTheory.integrable_finsetSum (Finset.range (j + 1 - i))
           (fun l _ => hWint l)).const_mul (B i)))
-      (MeasureTheory.integrable_finset_sum (Finset.range (j + 1) \ S)
+      (MeasureTheory.integrable_finsetSum (Finset.range (j + 1) \ S)
         (fun i _ => (hCint i).const_mul (D i)))]
   apply congrArg (fun z : ℝ => diagonalGridGrowthFactor (E := E) j * z)
   refine congrArg₂ (· + ·) ?_ ?_
-  · rw [MeasureTheory.integral_finset_sum S (fun i _ =>
-      (MeasureTheory.integrable_finset_sum (Finset.range (j + 1 - i))
+  · rw [MeasureTheory.integral_finsetSum S (fun i _ =>
+      (MeasureTheory.integrable_finsetSum (Finset.range (j + 1 - i))
         (fun l _ => hWint l)).const_mul (B i))]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [MeasureTheory.integral_const_mul,
-      MeasureTheory.integral_finset_sum (Finset.range (j + 1 - i))
+      MeasureTheory.integral_finsetSum (Finset.range (j + 1 - i))
         (fun l _ => hWint l)]
     apply congrArg (fun z : ℝ => B i * z)
     exact Finset.sum_congr rfl (fun l _ => by
       rw [SmoothCcTensor.norm_def,
         tensorL2Norm_sq_toFun_eq_integral_riemannianFiberNormSq_rs
           (I := I) (M := M) g 0 (b + l)])
-  · rw [MeasureTheory.integral_finset_sum (Finset.range (j + 1) \ S)
+  · rw [MeasureTheory.integral_finsetSum (Finset.range (j + 1) \ S)
       (fun i _ => (hCint i).const_mul (D i))]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [MeasureTheory.integral_const_mul]

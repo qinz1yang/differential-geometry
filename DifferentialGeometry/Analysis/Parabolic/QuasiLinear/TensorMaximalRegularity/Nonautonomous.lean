@@ -205,15 +205,15 @@ theorem nonautMap_contract
     (hsmall :
       (C2 : Real) * (1 + T) + (C1 : Real) * (2 * Real.sqrt T) < 1) :
     ContractingWith
-      ⟨(C2 : Real) * (1 + T) + (C1 : Real) * (2 * Real.sqrt T),
-        add_nonneg
+      (NNReal.mk ((C2 : Real) * (1 + T) + (C1 : Real) * (2 * Real.sqrt T))
+        (add_nonneg
           (mul_nonneg C2.coe_nonneg (by linarith [hT.le]))
-          (mul_nonneg C1.coe_nonneg (by positivity))⟩
+          (mul_nonneg C1.coe_nonneg (by positivity))))
       (nonautMap (I := I) (M := M) a hT u0
         A2 hA2 C2 hC2 A1 hA1 C1 hC1) := by
   refine ⟨?_, ?_⟩
   · rw [← NNReal.coe_lt_coe]
-    simpa only [NNReal.coe_mk] using hsmall
+    simpa only [NNReal.coe_mk, NNReal.coe_one] using hsmall
   · refine LipschitzWith.of_dist_le_mul (fun force force' => ?_)
     have h := nonautMap_dist_le (I := I) (M := M)
       (h_compact := h_compact) (a := a) hT hT1 u0

@@ -35,7 +35,7 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space 
 lemma chartE_section_repr_chartParallelExtend
     (α b : M) (v : TangentSpace I b) {b' : M}
     (hb' : b' ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    chartE_section_repr (I := I) α
+    chartESectionRepr (I := I) α
         (chartParallelExtend (I := I) α b v) b' =
       trivToE (I := I) α b v := by
   classical
@@ -90,9 +90,10 @@ def chartTensor0SSlotCorrection (s : ℕ) (g : SmoothRiemannianMetric I M)
     (α : M) (T : Π b' : M, Tensor0SSpace s I b')
     (X : Π b' : M, TangentSpace I b') (b : M) (k : Fin s) :
     Tensor0SSpace s I b :=
-  ContinuousMultilinearMap.compContinuousLinearMap
-    (show ContinuousMultilinearMap ℝ (fun _ : Fin s => TangentSpace I b) ℝ from T b)
-    (slotCLM (I := I) s k (chartLeviCivitaParallelCLM (I := I) g α b X))
+  (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s b).symm
+    (ContinuousMultilinearMap.compContinuousLinearMap
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s b (T b))
+      (slotCLM (I := I) s k (chartLeviCivitaParallelCLM (I := I) g α b X)))
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 lemma chartTensor0SSlotCorrection_apply (s : ℕ)
@@ -100,11 +101,10 @@ lemma chartTensor0SSlotCorrection_apply (s : ℕ)
     (T : Π b' : M, Tensor0SSpace s I b')
     (X : Π b' : M, TangentSpace I b') (b : M) (k : Fin s)
     (m : Fin s → TangentSpace I b) :
-    chartTensor0SSlotCorrection (I := I) s g α T X b k m =
-      (show ContinuousMultilinearMap ℝ (fun _ : Fin s => TangentSpace I b) ℝ from T b)
-        (fun i =>
-          slotCLM (I := I) s k
-              (chartLeviCivitaParallelCLM (I := I) g α b X) i (m i)) := by
+    Tensor0SSpace.eval (chartTensor0SSlotCorrection (I := I) s g α T X b k) m =
+      Tensor0SSpace.eval (T b) (fun i =>
+        slotCLM (I := I) s k
+            (chartLeviCivitaParallelCLM (I := I) g α b X) i (m i)) := by
   classical
   unfold chartTensor0SSlotCorrection
   rfl
@@ -115,12 +115,10 @@ def chartTensor0SCovariantDerivative :
       (X : Π b : M, TangentSpace I b) →
       (b : M) → Tensor0SSpace s I b
   | 0, _g, _α, T, X, b =>
-      (show ContinuousMultilinearMap ℝ (fun _ : Fin 0 => TangentSpace I b) ℝ from
-        ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => TangentSpace I b)
-          (mfderiv I 𝓘(ℝ) (fun b' : M =>
-              (show ContinuousMultilinearMap ℝ
-                  (fun _ : Fin 0 => TangentSpace I b') ℝ from T b')
-              (fun i => Fin.elim0 i)) b (X b)))
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 0 b).symm
+        (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => TangentSpace I b)
+          (mvfderiv (I := I) (fun b' : M =>
+            Tensor0SSpace.eval (T b') (fun i => Fin.elim0 i)) b (X b)))
   | s + 1, g, α, T, X, b =>
       tensor0SIntrinsicChartCLM (I := I) (s + 1) α T b (X b)
         - ∑ k : Fin (s + 1),
@@ -132,12 +130,10 @@ lemma chartTensor0SCovariantDerivative_zero
     (T : Π b : M, Tensor0SSpace 0 I b)
     (X : Π b : M, TangentSpace I b) (b : M) :
     chartTensor0SCovariantDerivative (I := I) 0 g α T X b =
-      (show ContinuousMultilinearMap ℝ (fun _ : Fin 0 => TangentSpace I b) ℝ from
-        ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => TangentSpace I b)
-          (mfderiv I 𝓘(ℝ) (fun b' : M =>
-              (show ContinuousMultilinearMap ℝ
-                  (fun _ : Fin 0 => TangentSpace I b') ℝ from T b')
-              (fun i => Fin.elim0 i)) b (X b))) := rfl
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 0 b).symm
+        (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => TangentSpace I b)
+          (mvfderiv (I := I) (fun b' : M =>
+            Tensor0SSpace.eval (T b') (fun i => Fin.elim0 i)) b (X b))) := rfl
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 lemma chartTensor0SCovariantDerivative_succ (s : ℕ)
@@ -155,12 +151,10 @@ lemma chartTensor0SCovariantDerivative_zero_apply
     (T : Π b : M, Tensor0SSpace 0 I b)
     (X : Π b : M, TangentSpace I b) (b : M)
     (m : Fin 0 → TangentSpace I b) :
-    (show ContinuousMultilinearMap ℝ (fun _ : Fin 0 => TangentSpace I b) ℝ from
-      chartTensor0SCovariantDerivative (I := I) 0 g α T X b) m =
-      mfderiv I 𝓘(ℝ) (fun b' : M =>
-        (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin 0 => TangentSpace I b') ℝ from T b')
-        (fun i => Fin.elim0 i)) b (X b) := by
+    Tensor0SSpace.eval
+      (chartTensor0SCovariantDerivative (I := I) 0 g α T X b) m =
+      mvfderiv (I := I) (fun b' : M =>
+        Tensor0SSpace.eval (T b') (fun i => Fin.elim0 i)) b (X b) := by
   classical
   rw [chartTensor0SCovariantDerivative_zero]
   rfl
@@ -171,39 +165,16 @@ lemma chartTensor0SCovariantDerivative_succ_apply (s : ℕ)
     (T : Π b : M, Tensor0SSpace (s + 1) I b)
     (X : Π b : M, TangentSpace I b) (b : M)
     (m : Fin (s + 1) → TangentSpace I b) :
-    (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-      chartTensor0SCovariantDerivative (I := I) (s + 1) g α T X b) m =
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-        tensor0SIntrinsicChartCLM (I := I) (s + 1) α T b (X b)) m
+    Tensor0SSpace.eval
+      (chartTensor0SCovariantDerivative (I := I) (s + 1) g α T X b) m =
+      Tensor0SSpace.eval
+        (tensor0SIntrinsicChartCLM (I := I) (s + 1) α T b (X b)) m
       - ∑ k : Fin (s + 1),
-          (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-            chartTensor0SSlotCorrection (I := I) (s + 1) g α T X b k) m := by
+          Tensor0SSpace.eval
+            (chartTensor0SSlotCorrection (I := I) (s + 1) g α T X b k) m := by
   classical
   rw [chartTensor0SCovariantDerivative_succ]
-  rw [show (show ContinuousMultilinearMap ℝ
-        (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-        tensor0SIntrinsicChartCLM (I := I) (s + 1) α T b (X b)
-          - ∑ k : Fin (s + 1),
-              chartTensor0SSlotCorrection (I := I) (s + 1) g α T X b k) m =
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-        tensor0SIntrinsicChartCLM (I := I) (s + 1) α T b (X b)) m
-      - (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-        ∑ k : Fin (s + 1),
-          chartTensor0SSlotCorrection (I := I) (s + 1) g α T X b k) m by
-    rfl]
-  congr 1
-  set Y : Fin (s + 1) → Tensor0SSpace (s + 1) I b :=
-    fun k => chartTensor0SSlotCorrection (I := I) (s + 1) g α T X b k
-  have hY : (∑ k : Fin (s + 1), Y k) = ∑ k : Fin (s + 1), Y k := rfl
-  change (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-        ∑ k : Fin (s + 1), Y k) m = _
-  rw [ContinuousMultilinearMap.sum_apply]
+  rw [Tensor0SSpace.eval_sub, Tensor0SSpace.eval_sum]
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 lemma chartTensor0SCovariantDerivative_zero_add
@@ -211,59 +182,35 @@ lemma chartTensor0SCovariantDerivative_zero_add
     (T₁ T₂ : Π b : M, Tensor0SSpace 0 I b)
     (X : Π b : M, TangentSpace I b) (b : M)
     (h₁ : MDiffAt
-        (fun b' : M =>
-          (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin 0 => TangentSpace I b') ℝ from T₁ b')
-          (fun i => Fin.elim0 i)) b)
+        (fun b' : M => Tensor0SSpace.eval (T₁ b') (fun i => Fin.elim0 i)) b)
     (h₂ : MDiffAt
-        (fun b' : M =>
-          (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin 0 => TangentSpace I b') ℝ from T₂ b')
-          (fun i => Fin.elim0 i)) b) :
+        (fun b' : M => Tensor0SSpace.eval (T₂ b') (fun i => Fin.elim0 i)) b) :
     chartTensor0SCovariantDerivative (I := I) 0 g α (T₁ + T₂) X b =
       chartTensor0SCovariantDerivative (I := I) 0 g α T₁ X b
         + chartTensor0SCovariantDerivative (I := I) 0 g α T₂ X b := by
   classical
-  apply ContinuousMultilinearMap.ext
+  apply tensor0SSpace_ext
   intro m
-  have hRHS :
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin 0 => TangentSpace I b) ℝ from
-        chartTensor0SCovariantDerivative (I := I) 0 g α T₁ X b
-          + chartTensor0SCovariantDerivative (I := I) 0 g α T₂ X b) m =
-        (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin 0 => TangentSpace I b) ℝ from
-          chartTensor0SCovariantDerivative (I := I) 0 g α T₁ X b) m
-          + (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin 0 => TangentSpace I b) ℝ from
-            chartTensor0SCovariantDerivative (I := I) 0 g α T₂ X b) m := by
-    rfl
-  rw [hRHS]
+  change Tensor0SSpace.eval
+      (chartTensor0SCovariantDerivative (I := I) 0 g α (T₁ + T₂) X b) m =
+    Tensor0SSpace.eval
+      (chartTensor0SCovariantDerivative (I := I) 0 g α T₁ X b
+        + chartTensor0SCovariantDerivative (I := I) 0 g α T₂ X b) m
+  rw [Tensor0SSpace.eval_add]
   rw [chartTensor0SCovariantDerivative_zero_apply,
       chartTensor0SCovariantDerivative_zero_apply,
       chartTensor0SCovariantDerivative_zero_apply]
   have hpw :
       (fun b' : M =>
-          (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin 0 => TangentSpace I b') ℝ from (T₁ + T₂) b')
-          (fun i => Fin.elim0 i)) =
+          Tensor0SSpace.eval ((T₁ + T₂) b') (fun i => Fin.elim0 i)) =
         (fun b' : M =>
-            (show ContinuousMultilinearMap ℝ
-                (fun _ : Fin 0 => TangentSpace I b') ℝ from T₁ b')
-            (fun i => Fin.elim0 i)) +
+            Tensor0SSpace.eval (T₁ b') (fun i => Fin.elim0 i)) +
           (fun b' : M =>
-              (show ContinuousMultilinearMap ℝ
-                  (fun _ : Fin 0 => TangentSpace I b') ℝ from T₂ b')
-              (fun i => Fin.elim0 i)) := by
+              Tensor0SSpace.eval (T₂ b') (fun i => Fin.elim0 i)) := by
     funext b'
-    exact ContinuousMultilinearMap.add_apply
-      (f := (T₁ b' : ContinuousMultilinearMap ℝ
-        (fun _ : Fin 0 => TangentSpace I b') ℝ))
-      (f' := (T₂ b' : ContinuousMultilinearMap ℝ
-        (fun _ : Fin 0 => TangentSpace I b') ℝ))
-      (fun i : Fin 0 => Fin.elim0 i)
+    rfl
   rw [hpw]
-  rw [mfderiv_add h₁ h₂]
+  rw [mvfderiv_add h₁ h₂]
   rfl
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -272,43 +219,33 @@ lemma chartTensor0SCovariantDerivative_zero_smul
     (T : Π b : M, Tensor0SSpace 0 I b)
     (X : Π b : M, TangentSpace I b) (b : M)
     (hT : MDiffAt
-        (fun b' : M =>
-          (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin 0 => TangentSpace I b') ℝ from T b')
-          (fun i => Fin.elim0 i)) b) :
+        (fun b' : M => Tensor0SSpace.eval (T b') (fun i => Fin.elim0 i)) b) :
     chartTensor0SCovariantDerivative (I := I) 0 g α (c • T) X b =
       c • chartTensor0SCovariantDerivative (I := I) 0 g α T X b := by
   classical
-  apply ContinuousMultilinearMap.ext
+  apply tensor0SSpace_ext
   intro m
-  have hRHS :
-      (show ContinuousMultilinearMap ℝ
-          (fun _ : Fin 0 => TangentSpace I b) ℝ from
-        c • chartTensor0SCovariantDerivative (I := I) 0 g α T X b) m =
-        c • (show ContinuousMultilinearMap ℝ
-            (fun _ : Fin 0 => TangentSpace I b) ℝ from
-          chartTensor0SCovariantDerivative (I := I) 0 g α T X b) m := by
-    rfl
-  rw [hRHS]
+  change Tensor0SSpace.eval
+      (chartTensor0SCovariantDerivative (I := I) 0 g α (c • T) X b) m =
+    Tensor0SSpace.eval
+      (c • chartTensor0SCovariantDerivative (I := I) 0 g α T X b) m
+  rw [Tensor0SSpace.eval_smul]
   rw [chartTensor0SCovariantDerivative_zero_apply,
       chartTensor0SCovariantDerivative_zero_apply]
   have hpw :
       (fun b' : M =>
-          (show ContinuousMultilinearMap ℝ
-              (fun _ : Fin 0 => TangentSpace I b') ℝ from (c • T) b')
-          (fun i => Fin.elim0 i)) =
+          Tensor0SSpace.eval ((c • T) b') (fun i => Fin.elim0 i)) =
         c • (fun b' : M =>
-            (show ContinuousMultilinearMap ℝ
-                (fun _ : Fin 0 => TangentSpace I b') ℝ from T b')
-            (fun i => Fin.elim0 i)) := by
+            Tensor0SSpace.eval (T b') (fun i => Fin.elim0 i)) := by
     funext b'
-    exact ContinuousMultilinearMap.smul_apply
-      (f := (T b' : ContinuousMultilinearMap ℝ
-        (fun _ : Fin 0 => TangentSpace I b') ℝ)) c
-      (fun i : Fin 0 => Fin.elim0 i)
+    rfl
   rw [hpw]
-  rw [const_smul_mfderiv hT c]
-  rfl
+  change (mvfderiv (I := I)
+      ((fun _ : M => c) • fun b' : M =>
+        Tensor0SSpace.eval (T b') (fun i => Fin.elim0 i)) b) (X b) = _
+  rw [mvfderiv_smul (mdifferentiableAt_const (c := c)) hT]
+  rw [mvfderiv_const]
+  simp
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 lemma chartTensor0SSlotCorrection_add (s : ℕ)
@@ -359,10 +296,10 @@ lemma chartTensor0SCovariantDerivative_succ_add (s : ℕ)
     (T₁ T₂ : Π b : M, Tensor0SSpace (s + 1) I b)
     (X : Π b : M, TangentSpace I b) (b : M)
     (h₁ : DifferentiableAt ℝ
-      (tensor0SChartE_section_repr (I := I) (s + 1) α T₁ ∘ (extChartAt I α).symm)
+      (tensor0SChartESectionRepr (I := I) (s + 1) α T₁ ∘ (extChartAt I α).symm)
       (extChartAt I α b))
     (h₂ : DifferentiableAt ℝ
-      (tensor0SChartE_section_repr (I := I) (s + 1) α T₂ ∘ (extChartAt I α).symm)
+      (tensor0SChartESectionRepr (I := I) (s + 1) α T₂ ∘ (extChartAt I α).symm)
       (extChartAt I α b)) :
     chartTensor0SCovariantDerivative (I := I) (s + 1) g α (T₁ + T₂) X b =
       chartTensor0SCovariantDerivative (I := I) (s + 1) g α T₁ X b
@@ -409,7 +346,7 @@ lemma chartTensor0SCovariantDerivative_succ_smul (s : ℕ)
     (T : Π b : M, Tensor0SSpace (s + 1) I b)
     (X : Π b : M, TangentSpace I b) (b : M)
     (hT : DifferentiableAt ℝ
-      (tensor0SChartE_section_repr (I := I) (s + 1) α T ∘ (extChartAt I α).symm)
+      (tensor0SChartESectionRepr (I := I) (s + 1) α T ∘ (extChartAt I α).symm)
       (extChartAt I α b)) :
     chartTensor0SCovariantDerivative (I := I) (s + 1) g α (c • T) X b =
       c • chartTensor0SCovariantDerivative (I := I) (s + 1) g α T X b := by

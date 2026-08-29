@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
@@ -307,7 +306,7 @@ lemma covDerivLowerOrderTerm_eq_sum_lowerOrderSummand
   rw [covDerivLowerOrderTerm_def]
   rfl
 
-noncomputable def secondCovDerivLO_gradCoeff
+noncomputable def secondCovDerivLOGradCoeff
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (m : Fin (Module.finrank ℝ E))
     (Idx Idx' : Fin r → Fin (Module.finrank ℝ E))
@@ -315,7 +314,7 @@ noncomputable def secondCovDerivLO_gradCoeff
     EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
   covDerivLowerOrderCoeff (I := I) (M := M) g r s α m Idx Idx' Jdx Jdx'
 
-noncomputable def secondCovDerivLO_valueCoeff
+noncomputable def secondCovDerivLOValueCoeff
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (m n : Fin (Module.finrank ℝ E))
     (Idx Idx' : Fin r → Fin (Module.finrank ℝ E))
@@ -332,7 +331,7 @@ theorem secondCovDerivLO_gradCoeff_contDiffOn
     (Idx Idx' : Fin r → Fin (Module.finrank ℝ E))
     (Jdx Jdx' : Fin s → Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞
-      (secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α m Idx Idx' Jdx Jdx')
+      (secondCovDerivLOGradCoeff (I := I) (M := M) g r s α m Idx Idx' Jdx Jdx')
       (chartTargetEuclid (I := I) (M := M) α) :=
   covDerivLowerOrderCoeff_contDiffOn (I := I) (M := M) g r s α m Idx Idx' Jdx Jdx'
 
@@ -344,7 +343,7 @@ theorem secondCovDerivLO_valueCoeff_contDiffOn
     (Idx Idx' : Fin r → Fin (Module.finrank ℝ E))
     (Jdx Jdx' : Fin s → Fin (Module.finrank ℝ E)) :
     ContDiffOn ℝ ∞
-      (secondCovDerivLO_valueCoeff (I := I) (M := M) g r s α m n Idx Idx' Jdx Jdx')
+      (secondCovDerivLOValueCoeff (I := I) (M := M) g r s α m n Idx Idx' Jdx Jdx')
       (chartTargetEuclid (I := I) (M := M) α) :=
   euclidPartial_contDiffOn_chartTarget' (I := I) (M := M) α n
     (covDerivLowerOrderCoeff_contDiffOn (I := I) (M := M) g r s α m Idx Idx' Jdx Jdx')
@@ -364,10 +363,10 @@ lemma euclidPartial_lowerOrderSummand_apply
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     euclidPartial (E := E) n
         (lowerOrderSummand (I := I) (M := M) g r s α S m Idx Jdx p) y =
-      secondCovDerivLO_valueCoeff (I := I) (M := M) g r s α m n
+      secondCovDerivLOValueCoeff (I := I) (M := M) g r s α m n
           Idx p.1 Jdx p.2 y *
         rawComponentEuclid (I := I) (M := M) g r s α S p.1 p.2 y +
-      secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α m
+      secondCovDerivLOGradCoeff (I := I) (M := M) g r s α m
           Idx p.1 Jdx p.2 y *
         euclidPartial (E := E) n
           (rawComponentEuclid (I := I) (M := M) g r s α S p.1 p.2) y := by
@@ -402,7 +401,7 @@ lemma euclidPartial_lowerOrderSummand_apply
         covDerivLowerOrderCoeff (I := I) (M := M) g r s α m Idx p.1 Jdx p.2 z *
           rawComponentEuclid (I := I) (M := M) g r s α S p.1 p.2 z) from rfl]
   rw [hleib]
-  unfold secondCovDerivLO_valueCoeff secondCovDerivLO_gradCoeff
+  unfold secondCovDerivLOValueCoeff secondCovDerivLOGradCoeff
   ring
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
@@ -496,7 +495,7 @@ private lemma euclidPartial_sum_split
     exact (hd.differentiableAt (hopen.mem_nhds hy))
   rw [euclidPartial_def, euclidPartial_def, euclidPartial_def]
   rw [fderiv_fun_add h1_diff h2_diff]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
 
 omit [CompleteSpace E] in
 omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
@@ -565,7 +564,7 @@ private lemma euclidPartial_covDerivLowerOrderTerm_eq_sum
             (Fin s → Fin (Module.finrank ℝ E)),
         fderiv ℝ (lowerOrderSummand (I := I) (M := M) g r s α S m Idx Jdx p) y
           (EuclideanSpace.single n 1) by
-    rw [ContinuousLinearMap.sum_apply]]
+    rw [sum_apply]]
   rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]
@@ -586,12 +585,12 @@ theorem covDerivComponent_second_eq_iteratedFDeriv_add_lowerOrder
               (tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx))) y
         + (∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
                 (Fin s → Fin (Module.finrank ℝ E)),
-            secondCovDerivLO_valueCoeff (I := I) (M := M) g r s α m n
+            secondCovDerivLOValueCoeff (I := I) (M := M) g r s α m n
                 Idx p.1 Jdx p.2 y *
               rawComponentEuclid (I := I) (M := M) g r s α S p.1 p.2 y)
         + (∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
                 (Fin s → Fin (Module.finrank ℝ E)),
-            secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α m
+            secondCovDerivLOGradCoeff (I := I) (M := M) g r s α m
                 Idx p.1 Jdx p.2 y *
               euclidPartial (E := E) n
                 (rawComponentEuclid (I := I) (M := M) g r s α S p.1 p.2) y) := by
@@ -608,10 +607,10 @@ theorem covDerivComponent_second_eq_iteratedFDeriv_add_lowerOrder
             (lowerOrderSummand (I := I) (M := M) g r s α S m Idx Jdx p) y) =
       (∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
-          (secondCovDerivLO_valueCoeff (I := I) (M := M) g r s α m n
+          (secondCovDerivLOValueCoeff (I := I) (M := M) g r s α m n
                 Idx p.1 Jdx p.2 y *
               rawComponentEuclid (I := I) (M := M) g r s α S p.1 p.2 y +
-            secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α m
+            secondCovDerivLOGradCoeff (I := I) (M := M) g r s α m
                 Idx p.1 Jdx p.2 y *
               euclidPartial (E := E) n
                 (rawComponentEuclid (I := I) (M := M) g r s α S p.1 p.2) y)) by
@@ -655,9 +654,9 @@ theorem covDerivComponent_second_existential
                     euclidPartial (E := E) n
                       (rawComponentEuclid (I := I) (M := M) g r s α S p.1 p.2) y)) := by
   classical
-  refine ⟨fun p => secondCovDerivLO_valueCoeff (I := I) (M := M)
+  refine ⟨fun p => secondCovDerivLOValueCoeff (I := I) (M := M)
             g r s α m n Idx p.1 Jdx p.2,
-          fun p => secondCovDerivLO_gradCoeff (I := I) (M := M)
+          fun p => secondCovDerivLOGradCoeff (I := I) (M := M)
             g r s α m Idx p.1 Jdx p.2, ?_, ?_, ?_⟩
   · intro p
     exact secondCovDerivLO_valueCoeff_contDiffOn (I := I) (M := M)

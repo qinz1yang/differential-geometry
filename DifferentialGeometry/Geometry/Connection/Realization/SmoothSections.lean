@@ -10,7 +10,6 @@ namespace DifferentialGeometry.Geometry.Connection.Realization
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open _root_.Bundle
@@ -42,11 +41,11 @@ theorem contMDiff_dual_apply_section
   exact (contMDiffAt_section (F := ℝ) (E := _root_.Bundle.Trivial M ℝ) y).mp (hap y)
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-theorem contMDiff_extDerivFun_section (h : C^∞⟮I, M; ℝ⟯) :
+theorem contMDiff_mvfderiv_section (h : C^∞⟮I, M; ℝ⟯) :
     ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] ℝ)) ∞
       (fun x => TotalSpace.mk' (E →L[ℝ] ℝ)
         (E := fun x : M => (TangentSpace I x →L[ℝ] (_root_.Bundle.Trivial M ℝ) x))
-        x (extDerivFun h x)) := by
+        x (mvfderiv (I := I) h x)) := by
   intro x₀
   rw [contMDiffAt_hom_bundle]
   refine ⟨contMDiffAt_id, ?_⟩
@@ -66,7 +65,7 @@ theorem contMDiff_extDerivFun_section (h : C^∞⟮I, M; ℝ⟯) :
     _root_.Bundle.Trivial.fiberBundle_trivializationAt',
     _root_.Bundle.Trivial.continuousLinearMapAt_trivialization,
     TangentBundle.continuousLinearMapAt_model_space,
-    extDerivFun, ContinuousLinearMap.coe_comp', Function.comp_apply,
+    mvfderiv, ContinuousLinearMap.coe_comp, Function.comp_apply,
     ContinuousLinearMap.coe_id', id_eq]
   rfl
 
@@ -111,7 +110,8 @@ theorem contMDiff_clm_section_of_pointwise
       (fun x => ∑ i, b.repr v i • (e₂ ⟨x, φ x (Y i x)⟩).2) x₀ := by
     apply ContMDiffAt.sum
     intro i _
-    exact (contMDiffAt_const (c := (b.repr v i : ℝ))).smul (hφY_fiber i)
+    exact (contMDiffAt_const (I := I) (I' := 𝓘(ℝ, ℝ))
+      (c := (b.repr v i : ℝ))).smul (hφY_fiber i)
   refine hsum.congr_of_eventuallyEq ?_
   have h_base₁ : ∀ᶠ x in 𝓝 x₀, x ∈ e₁.baseSet :=
     e₁.open_baseSet.mem_nhds he₁
@@ -137,6 +137,7 @@ theorem contMDiff_clm_section_of_pointwise
   have h_lf : e₁.symmL ℝ x (b i) = (Y i) x := by
     rw [hYx i]
     rw [Trivialization.localFrame_apply_of_mem_baseSet (hx := hx₁)]
+    rw [Trivialization.symmL_apply e₁ hx₁]
     simp [Trivialization.basisAt]
   rw [h_lf]
   change (Trivialization.continuousLinearMapAt ℝ e₂ x) ((φ x) ((Y i) x)) = _

@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
@@ -78,6 +77,7 @@ theorem exists_continuous_riemannianFiberNormSq_riemannOp_tensorCov_proportional
     _ = Ccurv x * g.inner x v v * g.inner x w w *
             riemannianFiberNormSq (I := I) (M := M) g 0 t x T := by ring
 
+omit [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_riemannOp_covGrad_uniform_proportional_bound
     (g : SmoothRiemannianMetric I M) (s : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧

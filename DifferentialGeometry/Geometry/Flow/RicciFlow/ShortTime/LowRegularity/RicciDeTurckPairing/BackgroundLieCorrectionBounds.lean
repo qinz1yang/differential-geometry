@@ -7,7 +7,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.ReindexedPureTraceCov
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -114,7 +113,7 @@ private theorem slotExtendIter_sub
       rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem backgroundMixedConnectionHalf_sub
     (g gm gB : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 4)) :
@@ -128,7 +127,7 @@ private theorem backgroundMixedConnectionHalf_sub
     ← operatorFieldComposition_sub_left, ← slotExtendIter_sub]
 
 omit [NeZero (Module.finrank ℝ E)] in
-omit [I.Boundaryless] in
+omit [I.Boundaryless] [SigmaCompactSpace M] in
 private theorem lieCorrectionZeroMixedConnection_backgroundDifference_eq
     (g gm gB : SmoothRiemannianMetric I M) :
     lieCorrectionZeroMixedConnection (I := I) (M := M) g gm gB -

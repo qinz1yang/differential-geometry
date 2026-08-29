@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 
+
 namespace DifferentialGeometry.Analysis.ODE
 
 open Set Function Bundle
@@ -95,8 +96,9 @@ theorem flowValid_chain_step
       have hmaps : Set.MapsTo (fun y : M => ((t₁, y) : ℝ × M)) (Set.univ : Set M)
           (Set.Ioo lo hi ×ˢ (Set.univ : Set M)) := fun y _ => ⟨ht₁, Set.mem_univ _⟩
       have := (hxsm.comp x hpair.contMDiffWithinAt hmaps)
-      simpa using this.contMDiffAt (by
-        exact Filter.univ_mem)
+      let h : ContMDiffAt I I ∞ (fun x : M => Φ t₁ x) x :=
+        this.contMDiffAt Filter.univ_mem
+      exact h
     have hg : ContMDiff (𝓘(ℝ, ℝ).prod I) (𝓘(ℝ, ℝ).prod I) ∞
         (fun q : ℝ × M => ((q.1, Φ t₁ q.2) : ℝ × M)) :=
       contMDiff_fst.prodMk (hΦt₁.comp contMDiff_snd)
@@ -243,15 +245,15 @@ private theorem trivialLine_isMIntegralCurveOn
   intro t ht
   have htime : HasMFDerivWithinAt 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => pt.1 + s) S t
       (1 : ℝ →L[ℝ] ℝ) := by
-    have h1 := hasMFDerivWithinAt_const (I := 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ)) pt.1 S t
-    have h2 := hasMFDerivWithinAt_id (I := 𝓘(ℝ, ℝ)) S t
-    have h3 := h1.add h2
-    have hfun : ((fun _ : ℝ => pt.1) + id) = (fun s : ℝ => pt.1 + s) := by funext s; simp
-    rw [hfun] at h3
-    refine h3.congr_mfderiv ?_
-    apply ContinuousLinearMap.ext; intro x
-    change (0 : ℝ →L[ℝ] ℝ) x + ContinuousLinearMap.id ℝ ℝ x = (1 : ℝ →L[ℝ] ℝ) x
-    simp
+    have hf : HasFDerivWithinAt (fun s : ℝ => pt.1 + s)
+        (ContinuousLinearMap.toSpanSingleton ℝ (1 : ℝ)) S t :=
+      (HasDerivAt.hasDerivWithinAt (s := S)
+        ((hasDerivAt_id t).const_add pt.1)).hasFDerivWithinAt
+    have hf' : HasFDerivWithinAt (fun s : ℝ => pt.1 + s) (1 : ℝ →L[ℝ] ℝ) S t :=
+      hf.congr_fderiv (by
+        simpa only [one_apply_eq_self] using
+          (ContinuousLinearMap.toSpanSingleton_apply_map_one (c := (1 : ℝ →L[ℝ] ℝ))))
+    exact hf'.hasMFDerivWithinAt
   have hsnd : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun _ : ℝ => pt.2) S t
       (0 : TangentSpace 𝓘(ℝ, ℝ) t →L[ℝ] TangentSpace I pt.2) :=
     hasMFDerivWithinAt_const (I := 𝓘(ℝ, ℝ)) (I' := I) pt.2 S t
@@ -425,7 +427,12 @@ private theorem autonomized_time_comp_eq_self
     fun s => autonomizedFlow_fst_hasDerivAt Xt c s (hc s)
   intro s
   have hconst : ∀ u : ℝ, HasDerivAt (fun w => (c w).1 - w) (0 : ℝ) u :=
-    fun u => by simpa using (hderiv u).sub (hasDerivAt_id u)
+    fun u => by
+      have h := (hderiv u).sub (hasDerivAt_id u)
+      have hfun : ((fun w => (c w).1) - id) = fun w => (c w).1 - w := by
+        rfl
+      rw [hfun, sub_self] at h
+      exact h
   have hkey : (fun w => (c w).1 - w) s = (fun w => (c w).1 - w) 0 :=
     is_const_of_deriv_eq_zero (fun u => (hconst u).differentiableAt) (fun u => (hconst u).deriv) s 0
   simp only at hkey; rw [h0] at hkey; linarith
@@ -864,7 +871,12 @@ theorem global_flow_full_interval_with_reverse_on_closed_manifold
     have hderiv : ∀ s, HasDerivAt (fun w => (ψ p w).1) (1 : ℝ) s :=
       fun s => autonomizedFlow_fst_hasDerivAt Xt (ψ p) s (hψcurve p s)
     have hconst : ∀ w : ℝ, HasDerivAt (fun w => (ψ p w).1 - w) (0 : ℝ) w :=
-      fun w => by simpa using (hderiv w).sub (hasDerivAt_id w)
+      fun w => by
+        have h := (hderiv w).sub (hasDerivAt_id w)
+        have hfun : ((fun u => (ψ p u).1) - id) = fun u => (ψ p u).1 - u := by
+          rfl
+        rw [hfun, sub_self] at h
+        exact h
     intro u
     have hkey : (fun w => (ψ p w).1 - w) u = (fun w => (ψ p w).1 - w) 0 :=
       is_const_of_deriv_eq_zero (fun w => (hconst w).differentiableAt)

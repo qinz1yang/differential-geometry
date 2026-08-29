@@ -61,10 +61,11 @@ theorem zeroRepr_ae (hT : 0 < T) (hT1 : T ≤ 1)
         hT h_compact f).repr t) =ᵐ[timeMeasure T]
       fun t => maxRegDuhamelSolFieldHa1 (I := I) (M := M)
         a hT 0 f t := by
-  simpa only [zeroDuhamelCross, map_zero, sub_zero] using
-    recentred_repr_eq_field_sub (I := I) (M := M)
-      (h_compact := h_compact) hT hT1
-      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f
+  have h := recentred_repr_eq_field_sub (I := I) (M := M)
+    (h_compact := h_compact) hT hT1
+    (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f
+  filter_upwards [h] with t ht
+  simpa only [zeroDuhamelCross, map_zero, sub_zero] using ht
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem zeroRepr_meas (hT : 0 < T) (hT1 : T ≤ 1)
@@ -160,16 +161,22 @@ theorem zeroRepr_norm_le (hT : 0 < T)
       zeroRepr_zero (I := I) (M := M) hT h_compact f
   rw [hzero, norm_zero, zero_pow (by norm_num), zero_add] at hsq
   have hhi : ‖u.hiL2‖ ≤ (1 + T) * ‖f‖ := by
-    simpa only [hu, zeroDuhamelCross, norm_zero, mul_zero, zero_add] using
-      recentredHi_norm_le (I := I) (M := M)
-        (h_compact := h_compact) hT
-        (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f
+    rw [hu]
+    change ‖recentredHiL2 (I := I) (M := M) hT
+      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f‖ ≤ (1 + T) * ‖f‖
+    have h := recentredHi_norm_le (I := I) (M := M)
+      (h_compact := h_compact) hT
+      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f
+    simpa only [norm_zero, mul_zero, zero_add] using h
   have hderiv : ‖u.lo.deriv‖ ≤ 2 * ‖f‖ := by
-    simpa only [hu, zeroDuhamelCross, recentredCarrier,
-      TimeSobolev.timeH1.deriv_mk, norm_zero, mul_zero, zero_add] using
-      recentredCarrier_deriv_norm_le (I := I) (M := M)
-        (h_compact := h_compact) hT
-        (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f
+    rw [hu]
+    change ‖(recentredCarrier (I := I) (M := M) hT
+      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f).deriv‖ ≤ 2 * ‖f‖
+    rw [recentredCarrier, TimeSobolev.timeH1.deriv_mk]
+    have h := recentredCarrier_deriv_norm_le (I := I) (M := M)
+      (h_compact := h_compact) hT
+      (0 : tensorHs (I := I) (M := M) g r s (a + 2)) f
+    simpa only [norm_zero, mul_zero, zero_add] using h
   have hmul :
       ‖u.hiL2‖ * ‖u.lo.deriv‖ ≤
         ((1 + T) * ‖f‖) * (2 * ‖f‖) :=
@@ -198,7 +205,7 @@ theorem zeroRepr_norm_le (hT : 0 < T)
           ≤ ∫ s in Set.Icc (0 : ℝ) T, 2 * (‖u.hiL2 s‖ * ‖u.lo.deriv s‖) := by
             refine setIntegral_mono_set u.integrableOn_energyBound
               (Eventually.of_forall fun s => by positivity) ?_
-            exact HasSubset.Subset.eventuallyLE
+            exact LE.le.eventuallyLE
               (fun x hx => ⟨le_of_lt hx.1, le_trans hx.2 ht.2⟩)
       _ = 2 * (∫ s in Set.Icc (0 : ℝ) T, ‖u.hiL2 s‖ * ‖u.lo.deriv s‖) := by
             rw [← MeasureTheory.integral_const_mul]

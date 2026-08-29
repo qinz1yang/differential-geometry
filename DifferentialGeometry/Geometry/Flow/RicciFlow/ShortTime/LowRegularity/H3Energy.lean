@@ -160,7 +160,8 @@ theorem galerkinRepresentation_lowOrder_iteratedCovGrad_sum_le (g₀ : SmoothRie
   exact mul_le_mul_of_nonneg_left hball hC
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+    [BoundarylessManifold I M] in
 theorem iteratedCovGrad_l2_window_le_l1_window (g : SmoothRiemannianMetric I M) (m : ℕ)
     (T : SmoothCcTensor g 0 2) :
     Real.sqrt (∑ j ∈ Finset.range m,
@@ -172,7 +173,8 @@ theorem iteratedCovGrad_l2_window_le_l1_window (g : SmoothRiemannianMetric I M) 
   exact Finset.sum_congr rfl (fun _ _ => Real.sqrt_sq (norm_nonneg _))
 
 
-omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
+    [BoundarylessManifold I M] in
 theorem iteratedCovGrad_l2_window_mono (g : SmoothRiemannianMetric I M) {m n : ℕ} (hmn : m ≤ n)
     (T : SmoothCcTensor g 0 2) :
     Real.sqrt (∑ j ∈ Finset.range m,
@@ -182,14 +184,6 @@ theorem iteratedCovGrad_l2_window_mono (g : SmoothRiemannianMetric I M) {m n : �
   Real.sqrt_le_sqrt (Finset.sum_le_sum_of_subset_of_nonneg
     (Finset.range_mono hmn) (fun _ _ _ => sq_nonneg _))
 
-
-private noncomputable def secondOrderAction_covariantJetNorm_two_inputs
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  secondOrderAction_perIndex_linear_bound (I := I) (M := M) hDim g g
-
-private noncomputable def firstOrderAction_covariantJetNorm_two_inputs
-    (hDim : Module.finrank ℝ E = 3) (g : SmoothRiemannianMetric I M) :=
-  firstOrderAction_perIndex_linear_bound (I := I) (M := M) hDim g
 
 theorem lowerScaleActions_covariantJetNorm_two_tame_bound (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -228,9 +222,10 @@ theorem lowerScaleActions_covariantJetNorm_two_tame_bound (hDim : Module.finrank
           (Ctop * Cδ + Kr2 * Z + Kr1 * Z) * X +
             Kmid * (1 + Cδ) * ((1 + Y) ^ 2 * (1 + Z) ^ 2) := by
   classical
-  obtain ⟨Cqa, Ka, hCqa, hKa, ha2⟩ := secondOrderAction_covariantJetNorm_two_inputs (I := I) (M := M) hDim g
+  obtain ⟨Cqa, Ka, hCqa, hKa, ha2⟩ :=
+    secondOrderAction_perIndex_linear_bound (I := I) (M := M) hDim g g
   obtain ⟨Cqb, Kb0, Kb1, hCqb, hKb0, hKb1, ha1⟩ :=
-    firstOrderAction_covariantJetNorm_two_inputs (I := I) (M := M) hDim g
+    firstOrderAction_perIndex_linear_bound (I := I) (M := M) hDim g
   have hRest : (0 : ℝ) ≤ Cqa 1 * Ka 1 + Cqa 2 * Ka 1 + Cqa 2 * Ka 2 +
       Cqb 0 * (2 * Kb0 0 + Kb1 0) +
       Cqb 1 * (Kb0 0 + Kb0 1 + Kb1 0 + Kb1 1) +
@@ -731,7 +726,8 @@ private theorem exists_galerkin_energy_three_bound_parameters_raw (hDim : Module
       intro i hi
       rw [galForceArm (I := I) (M := M) g₀ hδ hδ0 hδ3 hCtop hB1 hρ hP hreal
         hcore (eigenIdxFinset (I := I) (M := M) g₀ N) (U N t) i, if_pos hi]
-      exact add_comm _ _
+      simp only [galerkinActionVector]
+      module
     have hstat : ∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
         tensorSobolevWeight (I := I) (M := M) i 3 *
           ((boundedDeTurckRemainderOnLowerState (I := I) (M := M) g₀ g₀ hδ hCtop hB1 hρ hP hreal
@@ -739,7 +735,7 @@ private theorem exists_galerkin_energy_three_bound_parameters_raw (hDim : Module
               (I := I) (M := M) g₀ 1 hRpos.le⟩).coeff i) ^ 2
           ≤ Cseed 3 ^ 2 := by
       have h := hseed 3 (eigenIdxFinset (I := I) (M := M) g₀ N)
-      simpa only [Nat.cast_ofNat] using h
+      simpa only [boundedDeTurckRemainderOnLowerState, Nat.cast_ofNat] using h
     have hladder :
         Real.sqrt (∑ i ∈ eigenIdxFinset (I := I) (M := M) g₀ N,
             tensorSobolevWeight (I := I) (M := M) i (3 - 1) *

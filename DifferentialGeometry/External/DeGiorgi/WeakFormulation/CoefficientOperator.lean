@@ -88,7 +88,11 @@ private theorem coeffAction_component_memLp
       convert hmeas_sum using 1
       ext x
       simp
-    simpa [matMulE_apply, Matrix.mulVec] using hmeas.aestronglyMeasurable
+    exact hmeas.aestronglyMeasurable.congr
+      (Filter.Eventually.of_forall fun x => by
+        simp only [matMulE_apply, Matrix.mulVec]
+        change (∑ j : Fin d, A.a x i j * (g x).ofLp j) = _
+        rfl)
   · filter_upwards [ae_matMulE_norm_le A] with x hx
     calc
       ‖matMulE (A.a x) (g x) i‖ ≤ ‖matMulE (A.a x) (g x)‖ := by
@@ -354,8 +358,8 @@ theorem tendsto_eLpNorm_vector_of_componentwise
         (fun n => ∑ i : Fin d,
           eLpNorm (fun x => gseq n x i - g x i) 2 (volume.restrict Ω))
         atTop (nhds 0) := by
-    simpa using tendsto_finset_sum (Finset.univ : Finset (Fin d)) (fun i _ => hcomp i)
-  exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hsum (fun n => zero_le _)
+    simpa using tendsto_finsetSum (Finset.univ : Finset (Fin d)) (fun i _ => hcomp i)
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hsum (fun _ => bot_le)
     hupper
 
 theorem coeffMulLpL_inner_gradLpOfWitness_eq_bilinFormOfCoeff

@@ -6,7 +6,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorFieldCoeffi
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
@@ -122,9 +121,9 @@ theorem reindexCoeffGen_sub
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
   apply ContinuousLinearMap.ext
   intro D
-  rw [ContinuousLinearMap.sub_apply, reindexCoeffFibGen_apply,
+  rw [sub_apply, reindexCoeffFibGen_apply,
     reindexCoeffFibGen_apply, reindexCoeffFibGen_apply,
-    ContinuousLinearMap.sub_apply]
+    sub_apply]
 
 theorem iteratedCovGrad_rsDomDomCongrSection_norm_sq
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
@@ -216,7 +215,7 @@ theorem domDomCongrSection_sub
   rw [domDomCongrSection_unitModel, domDomCongrSection_unitModel]
   apply ContinuousMultilinearMap.ext
   intro v
-  simp only [ContinuousMultilinearMap.sub_apply,
+  simp only [sub_apply,
     ContinuousMultilinearMap.domDomCongr_apply]
 
 theorem covariantJetNormSq_bilinearSlotInsertionCoefficient_succ_le

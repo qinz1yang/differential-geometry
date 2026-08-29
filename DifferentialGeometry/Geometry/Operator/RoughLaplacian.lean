@@ -65,15 +65,15 @@ private theorem tensor0S_curry_apply_cons_local
     (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 1) x)
     (X : TangentSpace I x) (tail : Fin s -> TangentSpace I x) :
-    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A X) tail =
+    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A X) tail =
       A (Fin.cons X tail) := by
   change
     (((continuousMultilinearCurryLeftEquiv Real
-        (fun _ : Fin (s + 1) => E) Real)
-        ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
+        (fun _ : Fin (s + 1) => TangentSpace I x) Real)
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
         X)
         tail) =
-      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
+      ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) (s + 1) x) A)
         (Fin.cons X tail)
   rw [continuousMultilinearCurryLeftEquiv_apply]
 
@@ -87,7 +87,9 @@ private theorem tensor0SSpace_sum_apply {ι : Type*} [Fintype ι] {x : M} {s : �
   change ((∑ i ∈ S, T i) v) = ∑ i ∈ S, (T i) v
   induction S using Finset.induction_on with
   | empty =>
-      change (0 : ContinuousMultilinearMap Real (fun _ : Fin s => E) Real) v = 0
+      change
+        (0 : ContinuousMultilinearMap Real
+          (fun _ : Fin s => TangentSpace I x) Real) v = 0
       simp
   | insert a S ha ih =>
       rw [Finset.sum_insert ha, Finset.sum_insert ha]
@@ -146,7 +148,7 @@ theorem exists_freezeFirstTwo0S {x : M} {s : ℕ}
   classical
   let Traw :
       ContinuousMultilinearMap Real (fun _ : Fin (s + 2) => TangentSpace I x) Real :=
-    (tensor0SSpace_continuousLinearEquiv (I := I) (M := M) (s + 2) x) T
+    (tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) (s + 2) x) T
   let L : MultilinearMap Real (fun _ : Fin 2 => TangentSpace I x) Real :=
     { toFun := fun v => Traw (metricTraceInput (I := I) (v 0) (v 1) tail)
       map_update_add' := by
@@ -205,7 +207,7 @@ theorem exists_freezeFirstTwo0S {x : M} {s : ℕ}
         ring
   let Braw : ContinuousMultilinearMap Real (fun _ : Fin 2 => TangentSpace I x) Real :=
     L.mkContinuous C hbound
-  refine ⟨(tensor0SSpace_continuousLinearEquiv (I := I) (M := M) 2 x).symm
+  refine ⟨(tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) 2 x).symm
     Braw, ?_⟩
   intro X Y
   change Braw (vec2 (I := I) X Y) =
@@ -237,8 +239,8 @@ def freezeFirstTwoArgs0S {x : M} {s : ℕ}
       (s + 2) x)
     (X Y : TangentSpace I x) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x :=
-  tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x
-    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) (s + 1) x T X) Y
+  tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x
+    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) (s + 1) x T X) Y
 
 omit [FiniteDimensional ℝ E] in
 @[simp]
@@ -259,7 +261,7 @@ theorem exists_freezeLastTwo0S3 {x : M}
     ∃ B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x,
       ∀ X Z : TangentSpace I x,
         B (vec2 (I := I) X Z) = T (vec3 (I := I) Y X Z) := by
-  refine ⟨tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x T Y, ?_⟩
+  refine ⟨tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x T Y, ?_⟩
   intro X Z
   rw [tensor0S_curry_apply_cons_local]
   congr 1
@@ -551,7 +553,7 @@ private theorem metricInverseInBasis_contract_left
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (j k : Idx) :
     (∑ i : Idx, gInv i k * g.inner x (basis i) (basis j)) =
       (if j = k then 1 else 0) := by
@@ -570,7 +572,7 @@ private theorem metricInverseInBasis_contract_metric
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (k l : Idx) :
     (∑ i : Idx, ∑ j : Idx,
       gInv i k * gInv j l * g.inner x (basis i) (basis j)) =
@@ -606,7 +608,7 @@ theorem metricTracePair0SAt_eq_sum_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :
     metricTracePair0SAt (I := I) g B =
       ∑ i : Idx, ∑ j : Idx,
@@ -681,7 +683,7 @@ theorem normSq0S_metricTensor0S_eq_card
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv) :
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv) :
     normSq0S (I := I) g x 2 (metricTensor0S (I := I) g x) =
       (Fintype.card Idx : Real) := by
   classical
@@ -713,15 +715,15 @@ theorem metricTracePair0SAt_sq_le_card_mul_normSq0S
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :
     (metricTracePair0SAt (I := I) g A) ^ 2 <=
       (Fintype.card Idx : Real) * normSq0S (I := I) g x 2 A := by
   let D := tensor0SMetricData (I := I) g x 2
-  letI : PreInnerProductSpace.Core Real
+  let : PreInnerProductSpace.Core Real
       (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :=
     D.toCore.toCore
-  letI : Inner Real
+  let : Inner Real
       (Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :=
     D.toCore.toCore.toInner
   have hcs :=
@@ -913,7 +915,7 @@ theorem metricTracePair0SAt_sq_div_rank_le_normSq0S
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx] [Nonempty Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :
     (1 / (Fintype.card Idx : Real)) *
         (metricTracePair0SAt (I := I) g A) ^ 2 <=
@@ -938,7 +940,7 @@ theorem metricTraceFirstTwo0SAt_eq_sum_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     {s : ℕ}
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 2) x)
@@ -959,7 +961,7 @@ theorem metricTraceLastTwo0SAt3_eq_sum_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (Y : TangentSpace I x) :
     metricTraceLastTwo0SAt3 (I := I) g T Y =
@@ -979,7 +981,7 @@ theorem metricTrace0S2InBasis_eq_metricTrace
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     {s : ℕ}
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 2) x)
@@ -996,10 +998,10 @@ theorem metricTrace0S2InBasis_eq_metricTrace0S2InBasis
     {x : M}
     (basis₁ : Module.Basis Idx₁ Real (TangentSpace I x))
     (gInv₁ : Idx₁ -> Idx₁ -> Real)
-    (hinv₁ : MetricInverseInBasis_gen (I := I) g x basis₁ gInv₁)
+    (hinv₁ : MetricInverseInBasisGen (I := I) g x basis₁ gInv₁)
     (basis₂ : Module.Basis Idx₂ Real (TangentSpace I x))
     (gInv₂ : Idx₂ -> Idx₂ -> Real)
-    (hinv₂ : MetricInverseInBasis_gen (I := I) g x basis₂ gInv₂)
+    (hinv₂ : MetricInverseInBasisGen (I := I) g x basis₂ gInv₂)
     {s : ℕ}
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 2) x)
@@ -1017,9 +1019,9 @@ def metricTraceFirstTwo0STensor
       (s + 2) x) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x :=
   metricTrace0S2TensorInBasis (I := I)
-    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x)
+    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x)
     (fun k l : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component (I := I) g x k
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent (I := I) g x k
         l
         (extChartAt I x x))
     T
@@ -1035,9 +1037,9 @@ theorem metricTraceFirstTwo0STensor_apply
       metricTraceFirstTwo0SAt (I := I) g T tail := by
   rw [metricTraceFirstTwo0STensor, metricTrace0S2TensorInBasis_apply]
   exact metricTrace0S2InBasis_eq_metricTrace (I := I) g
-    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x)
+    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x)
     (fun k l : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component (I := I) g x k
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent (I := I) g x k
         l
         (extChartAt I x x))
     (Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
@@ -1069,7 +1071,7 @@ theorem trace_smul_leibniz
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     {s : ℕ}
     (f : Real)
     (df : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
@@ -1118,7 +1120,7 @@ theorem trace_smul_parallel
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     {s : ℕ}
     (f : Real)
     (df : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
@@ -1157,7 +1159,7 @@ theorem roughLap_smul_leib
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     {s : ℕ}
     (f : Real)
     (df : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
@@ -1194,7 +1196,7 @@ theorem roughLap_smul_par
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     {s : ℕ}
     (f : Real)
     (df : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
@@ -1278,7 +1280,7 @@ theorem roughLap1FormAt_eq_of_realizes
       roughLap1FormAt (I := I) basis gInv nabla2α Y :=
   h (fun _ : Fin 1 => Y)
 
-def metric_trace_0s
+def metricTrace0s
     (g : SmoothRiemannianMetric I M)
     {x : M} {s : ℕ}
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -1296,10 +1298,10 @@ def RoughLap0SRealizesMetricTrace
       s x)
     (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 2) x) : Prop :=
-  metric_trace_0s (I := I) g nabla2A roughA
+  metricTrace0s (I := I) g nabla2A roughA
 
 
-def rough_lap_0s
+def roughLap0s
     (g : SmoothRiemannianMetric I M)
     {x : M} {s : ℕ}
     (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -1315,7 +1317,7 @@ theorem metric_trace_0s_iff_eq_tensor
       (s + 2) x)
     (traceT : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       s x) :
-    metric_trace_0s (I := I) g T traceT ↔
+    metricTrace0s (I := I) g T traceT ↔
       traceT = metricTraceFirstTwo0STensor (I := I) g T := by
   constructor
   · intro htrace
@@ -1331,9 +1333,9 @@ theorem rough_lap_0s_iff_eq_tensor
       (s + 2) x)
     (roughA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       s x) :
-    rough_lap_0s (I := I) g nabla2A roughA ↔
+    roughLap0s (I := I) g nabla2A roughA ↔
       roughA = roughLap0STensor (I := I) g nabla2A := by
-  simpa [rough_lap_0s, RoughLap0SRealizesMetricTrace, roughLap0STensor] using
+  simpa [roughLap0s, RoughLap0SRealizesMetricTrace, roughLap0STensor] using
     metric_trace_0s_iff_eq_tensor (I := I) g nabla2A roughA
 
 theorem roughLap0STensor_realizes
@@ -1341,18 +1343,18 @@ theorem roughLap0STensor_realizes
     {x : M} {s : ℕ}
     (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 2) x) :
-    rough_lap_0s (I := I) g nabla2A
+    roughLap0s (I := I) g nabla2A
       (roughLap0STensor (I := I) g nabla2A) := by
   rw [rough_lap_0s_iff_eq_tensor]
 
-def rough_lap_one_form
+def roughLapOneForm
     (g : SmoothRiemannianMetric I M)
     {x : M}
     (nabla2α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       3 x)
     (roughα : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       1 x) : Prop :=
-  rough_lap_0s (I := I) g (s := 1) nabla2α roughα
+  roughLap0s (I := I) g (s := 1) nabla2α roughα
 
 theorem metric_trace_0s_apply_basis
     (g : SmoothRiemannianMetric I M)
@@ -1364,8 +1366,8 @@ theorem metric_trace_0s_apply_basis
       (s + 2) x)
     (traceT : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       s x)
-    (htrace : metric_trace_0s (I := I) g T traceT)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (htrace : metricTrace0s (I := I) g T traceT)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (tail : Fin s -> TangentSpace I x) :
     traceT tail = metricTrace0S2InBasis (I := I) basis gInv T tail :=
   by
@@ -1382,12 +1384,12 @@ theorem rough_lap_0s_apply_basis
       (s + 2) x)
     (roughA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       s x)
-    (hrough : rough_lap_0s (I := I) g nabla2A roughA)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hrough : roughLap0s (I := I) g nabla2A roughA)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (tail : Fin s -> TangentSpace I x) :
     roughA tail = roughLap0SAt (I := I) basis gInv nabla2A tail :=
   by
-    simpa [rough_lap_0s, roughLap0SAt] using
+    simpa [roughLap0s, roughLap0SAt] using
       metric_trace_0s_apply_basis (I := I) g basis gInv nabla2A roughA hrough hinv tail
 
 theorem rough_lap_one_form_apply_basis
@@ -1400,13 +1402,13 @@ theorem rough_lap_one_form_apply_basis
       3 x)
     (roughα : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       1 x)
-    (hrough : rough_lap_one_form (I := I) g nabla2α roughα)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hrough : roughLapOneForm (I := I) g nabla2α roughα)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (Y : TangentSpace I x) :
     roughα (fun _ : Fin 1 => Y) =
       roughLap1FormAt (I := I) basis gInv nabla2α Y :=
   by
-    simpa [rough_lap_one_form, rough_lap_0s, roughLap1FormAt, roughLap0SAt] using
+    simpa [roughLapOneForm, roughLap0s, roughLap1FormAt, roughLap0SAt] using
       rough_lap_0s_apply_basis (I := I) g basis gInv nabla2α roughα hrough hinv
         (fun _ : Fin 1 => Y)
 
@@ -1420,12 +1422,12 @@ theorem rough_lap_one_form_realizes_metric_trace
       3 x)
     (roughα : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       1 x)
-    (hrough : rough_lap_one_form (I := I) g nabla2α roughα)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv) :
+    (hrough : roughLapOneForm (I := I) g nabla2α roughα)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv) :
     RoughLap0SRealizesMetricTraceInBasis (I := I) basis gInv
       (s := 1) roughα nabla2α := by
   intro tail
-  simpa [rough_lap_one_form, rough_lap_0s, roughLap0SAt] using
+  simpa [roughLapOneForm, roughLap0s, roughLap0SAt] using
     rough_lap_0s_apply_basis (I := I) g basis gInv nabla2α roughα hrough hinv tail
 
 end

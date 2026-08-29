@@ -29,10 +29,7 @@ private theorem sub_translate_eq_integral_fderiv
     intro t
     have hφ_at : HasFDerivAt φ (fderiv ℝ φ (γ t)) (γ t) :=
       (hφ_diff (γ t)).hasFDerivAt
-    have hcomp_at :
-        HasDerivAt (fun s : ℝ => φ (γ s)) ((fderiv ℝ φ (γ t)) h) t := by
-      simpa using hφ_at.comp_hasDerivAt t (hγ_deriv t)
-    simpa [Function.comp] using hcomp_at
+    exact hφ_at.comp_hasDerivAt t (hγ_deriv t)
   have hderiv_cont :
       Continuous (fun s : ℝ => (fderiv ℝ φ (γ s)) h) := by
     have hγ_cont : Continuous γ :=
@@ -252,7 +249,7 @@ private theorem lintegral_rpow_translate_sub_le
           (‖fderiv ℝ φ (x - h + s • h)‖ₑ : ℝ≥0∞) ^ pr =
             ENNReal.ofReal (‖fderiv ℝ φ (x - h + s • h)‖ ^ pr) := by
       intro s
-      rw [← ofReal_norm_eq_enorm,
+      rw [← ofReal_norm,
         ENNReal.ofReal_rpow_of_nonneg (norm_nonneg _) hpr_pos.le]
     have hint_eq :
         ENNReal.ofReal
@@ -429,7 +426,7 @@ theorem eLpNorm_translate_sub_le_smul_eLpNorm_fderiv
     have hcongr :
         ∀ x : E, (‖‖fderiv ℝ φ x‖‖ₑ : ℝ≥0∞) = (‖fderiv ℝ φ x‖ₑ : ℝ≥0∞) := by
       intro x
-      rw [Real.enorm_eq_ofReal (norm_nonneg _), ofReal_norm_eq_enorm]
+      rw [Real.enorm_eq_ofReal (norm_nonneg _), ofReal_norm]
     rw [hpr_toReal]
     have hcongr_lint :
         (∫⁻ x : E, (‖‖fderiv ℝ φ x‖‖ₑ : ℝ≥0∞) ^ pr) =

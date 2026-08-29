@@ -15,7 +15,6 @@ variable {I : ModelWithCorners 𝕜 E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ∞ M]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem nablaRS_reg (r s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
@@ -24,15 +23,15 @@ theorem nablaRS_reg (r s : ℕ)
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) r s) :
     NablaRSRegular (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s cov X T := by
-  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+  let := tensorRSBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) r s
-  letI := tensorRSBundle_fiber (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+  let := tensorRSBundleFiber (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) r s
-  letI := tensorRSBundle_vector (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+  let := tensorRSBundle_vector (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) r s
-  letI := tensorRSBundle_smooth (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+  let := tensorRSBundle_smooth (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) (n := (∞ : WithTop ℕ∞)) r s
-  letI : FiniteDimensional 𝕜 (TensorRSModel r s 𝕜 E) := inferInstance
+  let : FiniteDimensional 𝕜 (TensorRSModel r s 𝕜 E) := inferInstance
   let F : (p : M) -> TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) r s p :=
     fun p : M =>
@@ -57,7 +56,7 @@ theorem nablaRS_reg (r s : ℕ)
     intro ρ σ
     let eTan := trivializationAt E (TangentSpace I : M -> Type _) x₀
     let βρ : Tensor0SModel r 𝕜 E :=
-      (continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) bE r) ρ
+      (continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) bE r) ρ
     let vσ : Fin s -> E := fun a => bE (σ a)
     have hintrinsic :
         ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
@@ -112,8 +111,8 @@ theorem nablaRS_reg (r s : ℕ)
             (I := I) (T := fun p : M => T p) (β := βsec) (V := V) x₀ hT hβ hV
       have hderiv :
           ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
-            (fun p : M => extDerivFun (I := I) pair p (X p)) x₀ := by
-        simpa [Xinf] using DifferentialGeometry.extDerivFun_apply_contMDiffAt I hpair Xinf
+            (fun p : M => mvfderiv (I := I) pair p (X p)) x₀ := by
+        simpa [Xinf] using DifferentialGeometry.mvfderiv_apply_contMDiffAt I hpair Xinf
       have hinput :
           ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
             (fun p : M =>
@@ -174,7 +173,7 @@ theorem nablaRS_reg (r s : ℕ)
       have hmain :
           ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)
             (fun p : M =>
-              extDerivFun (I := I) pair p (X p) -
+              mvfderiv (I := I) pair p (X p) -
                 (T p
                   (localCovariantDerivTensor0SAt
                     (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov X βsec p))
@@ -265,7 +264,7 @@ theorem nablaRS_reg (r s : ℕ)
       change ((nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
           r s cov X T p) (βsec p))
           (fun a : Fin s => eTan.symmL 𝕜 p (vσ a)) =
-        ((extDerivFun (I := I) pair p) (X p) -
+        ((mvfderiv (I := I) pair p) (X p) -
             (T p (localCovariantDerivTensor0SAt
               (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov X βsec p))
               (fun a : Fin s => V a p)) -
@@ -280,10 +279,14 @@ theorem nablaRS_reg (r s : ℕ)
       dsimp [eTan]
       exact mem_baseSet_trivializationAt E (TangentSpace I : M -> Type _) x₀
     filter_upwards [eTan.open_baseSet.mem_nhds hx₀Tan] with p hp
-    simpa [G, F, e, eTan, βρ, vσ] using
-      (TensorRSSpace.trivializationAt_basis_coord
+    let h : (G p βρ) vσ =
+        (F p (Tensor0SSpace.constInChart
+          (𝕜 := 𝕜) (I := I) (M := M) r x₀ βρ p))
+          (fun a : Fin s => eTan.symmL 𝕜 p (vσ a)) :=
+      TensorRSSpace.trivializationAt_basis_coord
         (𝕜 := 𝕜) (I := I) (x₀ := x₀) (x := p)
-        (bE := bE) (r := r) (s := s) hp (F p) ρ σ)
+        (bE := bE) (r := r) (s := s) hp (F p) ρ σ
+    exact h
   simpa [G, F, e] using hG
 end Tensor0SBundle
 end DifferentialGeometry

@@ -140,11 +140,15 @@ theorem nemytskiiOn_mixed
     have huR :
         ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) (f t)‖ ≤ R := by
-      simpa only [lowerState, lowerBall] using hft
+      change ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
+        (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) (f t)‖ ≤ R at hft
+      exact hft
     have hu'R :
         ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) (f' t)‖ ≤ R := by
-      simpa only [lowerState, lowerBall] using hft'
+      change ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
+        (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) (f' t)‖ ≤ R at hft'
+      exact hft'
     have hmax : max
         ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
           (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) (f t)‖

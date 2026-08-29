@@ -255,7 +255,7 @@ theorem smoothApproxSeq_smoothFChartResidual_wkpNorm_cauchy_w22
         (ENNReal.ofReal ((1 : ℝ) / ((m : ℝ) + 1)) +
           ENNReal.ofReal ((1 : ℝ) / ((n : ℝ) + 1))) := by
     refine h_bilinear.trans ?_
-    exact mul_le_mul_of_nonneg_left h_chartW32_cauchy (zero_le _)
+    exact mul_le_mul_of_nonneg_left h_chartW32_cauchy (zero_le)
   refine h_step.trans ?_
   have hN0m : (N0 : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm
   have hN0n : (N0 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
@@ -288,7 +288,7 @@ theorem smoothApproxSeq_smoothFChartResidual_wkpNorm_cauchy_w22
       ENNReal.ofReal C *
         (ENNReal.ofReal ((1 : ℝ) / ((N0 : ℝ) + 1)) +
           ENNReal.ofReal ((1 : ℝ) / ((N0 : ℝ) + 1))) :=
-    mul_le_mul_of_nonneg_left hsum_le (zero_le _)
+    mul_le_mul_of_nonneg_left hsum_le (zero_le)
   refine hC_step.trans ?_
   have hN0_inv_pos : (0 : ℝ) ≤ (1 : ℝ) / ((N0 : ℝ) + 1) := by positivity
   have h_add :

@@ -82,7 +82,7 @@ lemma hasDerivAt_rescaled_orbit
         (y.1, a • y.2)
     refine Prod.ext rfl ?_
     change (a • (ContinuousLinearMap.id ℝ E)) y.2 = a • y.2
-    rw [ContinuousLinearMap.smul_apply]
+    rw [smul_apply]
     rfl
   have hrescaled_eq : (fun s : ℝ => rescale (c (a * s))) =
       (fun s : ℝ => rescaleChartOrbit (E := E) a (c (a * s))) := by

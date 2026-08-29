@@ -48,10 +48,10 @@ theorem trans_bounds_on
     (fun k => d.chartTransition k (x k) (y k))
     U V hU hV hVnorm
   · intro k
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
@@ -63,10 +63,10 @@ theorem trans_bounds_on
       (d.chart k (x k)).metric_contDiffOn (X.obj k).metric hU
         ((d.chart k (x k)).smooth_to.mono hUrad)
   · intro k
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hVrad' :
         V ⊆ Metric.ball (0 : E) (d.chart k (y k)).radius := by
@@ -75,10 +75,10 @@ theorem trans_bounds_on
       (d.chart k (y k)).metric_contDiffOn (X.obj k).metric hV
         ((d.chart k (y k)).smooth_to.mono hVrad')
   · intro k
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
@@ -87,10 +87,10 @@ theorem trans_bounds_on
       (d.chart k (x k)).transition_smooth (d.chart k (y k)) hovl'
   · exact hmap
   · intro k z hz u v
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
@@ -99,10 +99,10 @@ theorem trans_bounds_on
       ((d.chart k (x k)).transition_isom (X.obj k).metric
         (d.chart k (y k)) hovl' hz u v).symm
   · intro k z _ a b
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     change (d.chart k (y k)).metric (X.obj k).metric z a b =
       (d.chart k (y k)).metric (X.obj k).metric z b a
@@ -110,10 +110,10 @@ theorem trans_bounds_on
       (d.chart k (y k)).metric_apply (X.obj k).metric]
     exact (X.obj k).metric.symm _ _ _
   · intro k z hz q
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
@@ -121,10 +121,10 @@ theorem trans_bounds_on
     simpa only [BoundedGeometryNormalData.chartMetric] using
       d.metric_equiv k (x k) z (hovl' z hz).1 q
   · intro k z hz q
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hVrad' :
         V ⊆ Metric.ball (0 : E) (d.chart k (y k)).radius := by
@@ -134,10 +134,10 @@ theorem trans_bounds_on
   · exact d.metricC_nonneg
   · exact d.metricC_nonneg
   · intro k p z hz
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
@@ -145,10 +145,10 @@ theorem trans_bounds_on
     simpa only [BoundedGeometryNormalData.chartMetric] using
       d.metric_deriv k p (x k) z (hovl' z hz).1
   · intro k p z hz
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hVrad' :
         V ⊆ Metric.ball (0 : E) (d.chart k (y k)).radius := by
@@ -194,10 +194,10 @@ theorem exists_trans_lim
   have hJ : ∀ k, ContDiffOn Real (⊤ : ℕ∞)
       (d.chartTransition k (x k) (y k)) U := by
     intro k
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
@@ -207,10 +207,10 @@ theorem exists_trans_lim
   have hJbar : ∀ k, ContDiffOn Real (⊤ : ℕ∞)
       (d.chartTransition k (y k) (x k)) V := by
     intro k
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (y k)).OverlapOn (d.chart k (x k)) V := by
@@ -224,10 +224,10 @@ theorem exists_trans_lim
   · exact d.trans_bounds_on x y U Va hU hVa hVanorm hVarad hovlJ hmapJ
   · exact d.trans_bounds_on y x V Ua hV hUa hUanorm hUarad hovlJbar hmapJbar
   · intro k z hz
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (x k)).OverlapOn (d.chart k (y k)) U := by
@@ -236,10 +236,10 @@ theorem exists_trans_lim
       (d.chart k (x k)).transition_cancel
         (d.chart k (y k)) hovl' hz
   · intro k z hz
-    letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-    letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-    letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-    letI : T2Space (TangentBundle I (X.obj k).M) :=
+    let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+    let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+    let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+    let : T2Space (TangentBundle I (X.obj k).M) :=
       (X.obj k).t2TangentBundle
     have hovl' :
         (d.chart k (y k)).OverlapOn (d.chart k (x k)) V := by

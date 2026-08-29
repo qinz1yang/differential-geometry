@@ -140,16 +140,16 @@ theorem gTotal_le_data_eLpNorm
     (hfSrc : MemLp fSrc 2 ((volume : Measure EuclN).restrict (closure Ω')))
     (D : ChartBilinearH1ComplData (I := I) (M := M) g α) :
     (∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E),
-        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.u_chart x +
-          χ x * D.weak_partial l x) ^ 2
+        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.uChart x +
+          χ x * D.weakPartial l x) ^ 2
       ∂(volume : Measure EuclN)) +
-    (∫ x in Ω', (χ x * D.u_chart x) ^ 2 ∂(volume : Measure EuclN)) +
+    (∫ x in Ω', (χ x * D.uChart x) ^ 2 ∂(volume : Measure EuclN)) +
     (∫ x in Ω', (χ x * fSrc x) ^ 2 ∂(volume : Measure EuclN)) ≤
       (2 * ((Module.finrank ℝ E : ℝ) + 1) * (M_χ ^ 2 + M_dχ ^ 2 + 1)) *
         ((∑ l : Fin (Module.finrank ℝ E),
-            (eLpNorm (D.weak_partial l) 2
+            (eLpNorm (D.weakPartial l) 2
               ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2) +
-          (eLpNorm D.u_chart 2
+          (eLpNorm D.uChart 2
             ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 +
           (eLpNorm fSrc 2
             ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2) := by
@@ -168,13 +168,13 @@ theorem gTotal_le_data_eLpNorm
       ((volume : Measure EuclN).restrict (closure Ω')) := fun l =>
     (hχ_partial_cont l).aestronglyMeasurable
   have hΩ'_closure_meas : MeasurableSet (closure Ω') := isClosed_closure.measurableSet
-  have hu_l2 : MemLp D.u_chart 2
+  have hu_l2 : MemLp D.uChart 2
       ((volume : Measure EuclN).restrict (closure Ω')) :=
     memLp_volume_restrict_of_memLp_chartPulledWeightedMeasure (I := I) (M := M)
       D.u_chart_memLp_weighted hΩ'_closure_compact hΩ'_closure_meas hΩ'_closure_in
   have hf_l2 : MemLp fSrc 2
       ((volume : Measure EuclN).restrict (closure Ω')) := hfSrc
-  have hwp_l2 : ∀ l : Fin (Module.finrank ℝ E), MemLp (D.weak_partial l) 2
+  have hwp_l2 : ∀ l : Fin (Module.finrank ℝ E), MemLp (D.weakPartial l) 2
       ((volume : Measure EuclN).restrict (closure Ω')) := fun l =>
     D.weak_partial_locally_memLp l (closure Ω') hΩ'_closure_compact hΩ'_closure_in
   have hM_χ_nn : 0 ≤ M_χ := le_trans (abs_nonneg _) (hM_χ_bd 0)
@@ -183,9 +183,9 @@ theorem gTotal_le_data_eLpNorm
       ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne _)⟩⟩
     exact le_trans (abs_nonneg _) (hM_dχ_bd l 0)
   set Sw : ℝ := ∑ l : Fin (Module.finrank ℝ E),
-      (eLpNorm (D.weak_partial l) 2
+      (eLpNorm (D.weakPartial l) 2
         ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 with hSw_def
-  set Su : ℝ := (eLpNorm D.u_chart 2
+  set Su : ℝ := (eLpNorm D.uChart 2
       ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 with hSu_def
   set Sf : ℝ := (eLpNorm fSrc 2
       ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 with hSf_def
@@ -194,7 +194,7 @@ theorem gTotal_le_data_eLpNorm
   have hSu_nn : 0 ≤ Su := by rw [hSu_def]; exact sq_nonneg _
   have hSf_nn : 0 ≤ Sf := by rw [hSf_def]; exact sq_nonneg _
   have hu_int_closure :
-      ∫ x in closure Ω', (D.u_chart x) ^ 2 ∂(volume : Measure EuclN) = Su := by
+      ∫ x in closure Ω', (D.uChart x) ^ 2 ∂(volume : Measure EuclN) = Su := by
     rw [hSu_def]
     exact integral_sq_eq_eLpNorm_two_toReal_sq hu_l2
   have hf_int_closure :
@@ -202,52 +202,52 @@ theorem gTotal_le_data_eLpNorm
     rw [hSf_def]
     exact integral_sq_eq_eLpNorm_two_toReal_sq hf_l2
   have hwp_int_closure : ∀ l : Fin (Module.finrank ℝ E),
-      ∫ x in closure Ω', (D.weak_partial l x) ^ 2 ∂(volume : Measure EuclN) =
-        (eLpNorm (D.weak_partial l) 2
+      ∫ x in closure Ω', (D.weakPartial l x) ^ 2 ∂(volume : Measure EuclN) =
+        (eLpNorm (D.weakPartial l) 2
           ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 := fun l =>
     integral_sq_eq_eLpNorm_two_toReal_sq (hwp_l2 l)
-  have hug_l2 : MemLp (fun x => χ x * D.u_chart x) 2
+  have hug_l2 : MemLp (fun x => χ x * D.uChart x) 2
       ((volume : Measure EuclN).restrict (closure Ω')) :=
     memLp_cutoff_mul hM_χ_nn hM_χ_bd hχ_aesm hu_l2
   have hfg_l2 : MemLp (fun x => χ x * fSrc x) 2
       ((volume : Measure EuclN).restrict (closure Ω')) :=
     memLp_cutoff_mul hM_χ_nn hM_χ_bd hχ_aesm hf_l2
   have hgg_l2 : ∀ l : Fin (Module.finrank ℝ E), MemLp (fun x =>
-      (fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.u_chart x +
-        χ x * D.weak_partial l x) 2
+      (fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.uChart x +
+        χ x * D.weakPartial l x) 2
       ((volume : Measure EuclN).restrict (closure Ω')) := by
     intro l
     have h_term1 : MemLp (fun x =>
-        (fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.u_chart x) 2
+        (fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.uChart x) 2
         ((volume : Measure EuclN).restrict (closure Ω')) :=
       memLp_cutoff_mul hM_dχ_nn (hM_dχ_bd l) (hχ_partial_aesm l) hu_l2
-    have h_term2 : MemLp (fun x => χ x * D.weak_partial l x) 2
+    have h_term2 : MemLp (fun x => χ x * D.weakPartial l x) 2
         ((volume : Measure EuclN).restrict (closure Ω')) :=
       memLp_cutoff_mul hM_χ_nn hM_χ_bd hχ_aesm (hwp_l2 l)
     exact h_term1.add h_term2
   have h_each_gg_int : ∀ l : Fin (Module.finrank ℝ E), IntegrableOn (fun x =>
-      ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.u_chart x +
-        χ x * D.weak_partial l x) ^ 2) (closure Ω') (volume : Measure EuclN) := by
+      ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.uChart x +
+        χ x * D.weakPartial l x) ^ 2) (closure Ω') (volume : Measure EuclN) := by
     intro l
     have := (hgg_l2 l).integrable_sq
     simpa [IntegrableOn, pow_two] using this
   have h_principal_int : IntegrableOn (fun x =>
       ∑ l : Fin (Module.finrank ℝ E),
-        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.u_chart x +
-          χ x * D.weak_partial l x) ^ 2) (closure Ω') (volume : Measure EuclN) := by
-    have h_sum := integrable_finset_sum
+        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.uChart x +
+          χ x * D.weakPartial l x) ^ 2) (closure Ω') (volume : Measure EuclN) := by
+    have h_sum := integrable_finsetSum
       (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun l _ => (h_each_gg_int l).integrable)
     have h_eq : (fun x : EuclN => ∑ l : Fin (Module.finrank ℝ E),
-        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.u_chart x +
-          χ x * D.weak_partial l x) ^ 2) =
+        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.uChart x +
+          χ x * D.weakPartial l x) ^ 2) =
         (fun x : EuclN => ∑ l ∈
           (Finset.univ : Finset (Fin (Module.finrank ℝ E))),
-          (fun y => ((fderiv ℝ χ y) (EuclideanSpace.single l 1) * D.u_chart y +
-            χ y * D.weak_partial l y) ^ 2) x) := by
+          (fun y => ((fderiv ℝ χ y) (EuclideanSpace.single l 1) * D.uChart y +
+            χ y * D.weakPartial l y) ^ 2) x) := by
       funext x; rfl
     rw [IntegrableOn, h_eq]; exact h_sum
-  have h_ug_sq_int : IntegrableOn (fun x => (χ x * D.u_chart x) ^ 2)
+  have h_ug_sq_int : IntegrableOn (fun x => (χ x * D.uChart x) ^ 2)
       (closure Ω') (volume : Measure EuclN) := by
     have := hug_l2.integrable_sq
     simpa [IntegrableOn, pow_two] using this
@@ -257,18 +257,18 @@ theorem gTotal_le_data_eLpNorm
     simpa [IntegrableOn, pow_two] using this
   have h_principal_mono :
       (∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E),
-        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.u_chart x +
-          χ x * D.weak_partial l x) ^ 2 ∂(volume : Measure EuclN)) ≤
+        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.uChart x +
+          χ x * D.weakPartial l x) ^ 2 ∂(volume : Measure EuclN)) ≤
       ∫ x in closure Ω', ∑ l : Fin (Module.finrank ℝ E),
-        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.u_chart x +
-          χ x * D.weak_partial l x) ^ 2 ∂(volume : Measure EuclN) :=
+        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.uChart x +
+          χ x * D.weakPartial l x) ^ 2 ∂(volume : Measure EuclN) :=
     setIntegral_mono_set h_principal_int
       (Filter.Eventually.of_forall
         (fun x => Finset.sum_nonneg (fun _ _ => sq_nonneg _)))
       (Filter.Eventually.of_forall subset_closure)
   have h_ug_mono :
-      (∫ x in Ω', (χ x * D.u_chart x) ^ 2 ∂(volume : Measure EuclN)) ≤
-      ∫ x in closure Ω', (χ x * D.u_chart x) ^ 2 ∂(volume : Measure EuclN) :=
+      (∫ x in Ω', (χ x * D.uChart x) ^ 2 ∂(volume : Measure EuclN)) ≤
+      ∫ x in closure Ω', (χ x * D.uChart x) ^ 2 ∂(volume : Measure EuclN) :=
     setIntegral_mono_set h_ug_sq_int
       (Filter.Eventually.of_forall (fun x => sq_nonneg _))
       (Filter.Eventually.of_forall subset_closure)
@@ -280,34 +280,34 @@ theorem gTotal_le_data_eLpNorm
       (Filter.Eventually.of_forall subset_closure)
   have h_pt_sum : ∀ x : EuclN,
       (∑ l : Fin (Module.finrank ℝ E),
-        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.u_chart x +
-          χ x * D.weak_partial l x) ^ 2) ≤
-      2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 * (D.u_chart x) ^ 2 +
+        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.uChart x +
+          χ x * D.weakPartial l x) ^ 2) ≤
+      2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 * (D.uChart x) ^ 2 +
         2 * M_χ ^ 2 * (∑ l : Fin (Module.finrank ℝ E),
-          (D.weak_partial l x) ^ 2) := by
+          (D.weakPartial l x) ^ 2) := by
     intro x
     calc (∑ l : Fin (Module.finrank ℝ E),
-          ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.u_chart x +
-            χ x * D.weak_partial l x) ^ 2)
+          ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.uChart x +
+            χ x * D.weakPartial l x) ^ 2)
         ≤ ∑ l : Fin (Module.finrank ℝ E),
-            (2 * M_dχ ^ 2 * (D.u_chart x) ^ 2 +
-              2 * M_χ ^ 2 * (D.weak_partial l x) ^ 2) :=
+            (2 * M_dχ ^ 2 * (D.uChart x) ^ 2 +
+              2 * M_χ ^ 2 * (D.weakPartial l x) ^ 2) :=
           Finset.sum_le_sum (fun l _ =>
             sq_cutoffPartial_le hM_χ_bd (hM_dχ_bd l) x)
       _ = (∑ _l : Fin (Module.finrank ℝ E),
-              2 * M_dχ ^ 2 * (D.u_chart x) ^ 2) +
+              2 * M_dχ ^ 2 * (D.uChart x) ^ 2) +
             ∑ l : Fin (Module.finrank ℝ E),
-              2 * M_χ ^ 2 * (D.weak_partial l x) ^ 2 :=
+              2 * M_χ ^ 2 * (D.weakPartial l x) ^ 2 :=
           Finset.sum_add_distrib
-      _ = (Module.finrank ℝ E : ℝ) * (2 * M_dχ ^ 2 * (D.u_chart x) ^ 2) +
+      _ = (Module.finrank ℝ E : ℝ) * (2 * M_dχ ^ 2 * (D.uChart x) ^ 2) +
             2 * M_χ ^ 2 * (∑ l : Fin (Module.finrank ℝ E),
-              (D.weak_partial l x) ^ 2) := by
+              (D.weakPartial l x) ^ 2) := by
           rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin,
             nsmul_eq_mul, ← Finset.mul_sum]
-      _ = 2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 * (D.u_chart x) ^ 2 +
+      _ = 2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 * (D.uChart x) ^ 2 +
             2 * M_χ ^ 2 * (∑ l : Fin (Module.finrank ℝ E),
-              (D.weak_partial l x) ^ 2) := by ring
-  have h_u_sq_int : IntegrableOn (fun x => (D.u_chart x) ^ 2)
+              (D.weakPartial l x) ^ 2) := by ring
+  have h_u_sq_int : IntegrableOn (fun x => (D.uChart x) ^ 2)
       (closure Ω') (volume : Measure EuclN) := by
     have := hu_l2.integrable_sq
     simpa [IntegrableOn, pow_two] using this
@@ -316,40 +316,40 @@ theorem gTotal_le_data_eLpNorm
     have := hf_l2.integrable_sq
     simpa [IntegrableOn, pow_two] using this
   have h_wp_sq_int : ∀ l : Fin (Module.finrank ℝ E),
-      IntegrableOn (fun x => (D.weak_partial l x) ^ 2)
+      IntegrableOn (fun x => (D.weakPartial l x) ^ 2)
         (closure Ω') (volume : Measure EuclN) := by
     intro l
     have := (hwp_l2 l).integrable_sq
     simpa [IntegrableOn, pow_two] using this
   have h_wp_sum_sq_int : IntegrableOn
-      (fun x => ∑ l : Fin (Module.finrank ℝ E), (D.weak_partial l x) ^ 2)
+      (fun x => ∑ l : Fin (Module.finrank ℝ E), (D.weakPartial l x) ^ 2)
       (closure Ω') (volume : Measure EuclN) := by
-    have h_sum := integrable_finset_sum
+    have h_sum := integrable_finsetSum
       (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
       (fun l _ => (h_wp_sq_int l).integrable)
     have h_eq : (fun x : EuclN => ∑ l : Fin (Module.finrank ℝ E),
-        (D.weak_partial l x) ^ 2) =
+        (D.weakPartial l x) ^ 2) =
         (fun x : EuclN => ∑ l ∈
           (Finset.univ : Finset (Fin (Module.finrank ℝ E))),
-          (fun y => (D.weak_partial l y) ^ 2) x) := by
+          (fun y => (D.weakPartial l y) ^ 2) x) := by
       funext x; rfl
     rw [IntegrableOn, h_eq]; exact h_sum
   have h_rhs_int : IntegrableOn (fun x =>
-      2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 * (D.u_chart x) ^ 2 +
+      2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 * (D.uChart x) ^ 2 +
         2 * M_χ ^ 2 * (∑ l : Fin (Module.finrank ℝ E),
-          (D.weak_partial l x) ^ 2))
+          (D.weakPartial l x) ^ 2))
       (closure Ω') (volume : Measure EuclN) :=
     Integrable.add
       (h_u_sq_int.integrable.const_mul (2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2))
       (h_wp_sum_sq_int.integrable.const_mul (2 * M_χ ^ 2))
   have h_principal_closure_le :
       (∫ x in closure Ω', ∑ l : Fin (Module.finrank ℝ E),
-        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.u_chart x +
-          χ x * D.weak_partial l x) ^ 2 ∂(volume : Measure EuclN)) ≤
+        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.uChart x +
+          χ x * D.weakPartial l x) ^ 2 ∂(volume : Measure EuclN)) ≤
       ∫ x in closure Ω',
-        (2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 * (D.u_chart x) ^ 2 +
+        (2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 * (D.uChart x) ^ 2 +
           2 * M_χ ^ 2 * (∑ l : Fin (Module.finrank ℝ E),
-            (D.weak_partial l x) ^ 2))
+            (D.weakPartial l x) ^ 2))
         ∂(volume : Measure EuclN) :=
     integral_mono_of_nonneg
       (Filter.Eventually.of_forall
@@ -358,9 +358,9 @@ theorem gTotal_le_data_eLpNorm
       (Filter.Eventually.of_forall h_pt_sum)
   have h_rhs_eval :
       (∫ x in closure Ω',
-        (2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 * (D.u_chart x) ^ 2 +
+        (2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 * (D.uChart x) ^ 2 +
           2 * M_χ ^ 2 * (∑ l : Fin (Module.finrank ℝ E),
-            (D.weak_partial l x) ^ 2))
+            (D.weakPartial l x) ^ 2))
         ∂(volume : Measure EuclN)) =
       2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 * Su + 2 * M_χ ^ 2 * Sw := by
     rw [integral_add (h_u_sq_int.integrable.const_mul _)
@@ -368,21 +368,21 @@ theorem gTotal_le_data_eLpNorm
     rw [integral_const_mul, integral_const_mul, hu_int_closure]
     have h_sum_swap :
         (∫ x in closure Ω', ∑ l : Fin (Module.finrank ℝ E),
-          (D.weak_partial l x) ^ 2 ∂(volume : Measure EuclN)) =
+          (D.weakPartial l x) ^ 2 ∂(volume : Measure EuclN)) =
         ∑ l : Fin (Module.finrank ℝ E), ∫ x in closure Ω',
-          (D.weak_partial l x) ^ 2 ∂(volume : Measure EuclN) :=
-      integral_finset_sum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
+          (D.weakPartial l x) ^ 2 ∂(volume : Measure EuclN) :=
+      integral_finsetSum (Finset.univ : Finset (Fin (Module.finrank ℝ E)))
         (fun l _ => (h_wp_sq_int l).integrable)
     rw [h_sum_swap]
     have h_sum_eq : (∑ l : Fin (Module.finrank ℝ E), ∫ x in closure Ω',
-        (D.weak_partial l x) ^ 2 ∂(volume : Measure EuclN)) = Sw := by
+        (D.weakPartial l x) ^ 2 ∂(volume : Measure EuclN)) = Sw := by
       rw [hSw_def]
       exact Finset.sum_congr rfl (fun l _ => hwp_int_closure l)
     rw [h_sum_eq]
   have h_principal_final :
       (∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E),
-        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.u_chart x +
-          χ x * D.weak_partial l x) ^ 2 ∂(volume : Measure EuclN)) ≤
+        ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.uChart x +
+          χ x * D.weakPartial l x) ^ 2 ∂(volume : Measure EuclN)) ≤
       2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 * Su + 2 * M_χ ^ 2 * Sw :=
     le_trans h_principal_mono (le_trans h_principal_closure_le (le_of_eq h_rhs_eval))
   have h_χmul_pt : ∀ (v : EuclN → ℝ) (x : EuclN),
@@ -395,16 +395,16 @@ theorem gTotal_le_data_eLpNorm
         _ ≤ M_χ ^ 2 := pow_le_pow_left₀ (abs_nonneg _) (hM_χ_bd x) 2
     exact mul_le_mul_of_nonneg_right h_χ_sq (sq_nonneg _)
   have h_ug_closure_le :
-      (∫ x in closure Ω', (χ x * D.u_chart x) ^ 2 ∂(volume : Measure EuclN)) ≤
+      (∫ x in closure Ω', (χ x * D.uChart x) ^ 2 ∂(volume : Measure EuclN)) ≤
       M_χ ^ 2 * Su := by
     have h_int_le :
-        (∫ x in closure Ω', (χ x * D.u_chart x) ^ 2 ∂(volume : Measure EuclN)) ≤
-        ∫ x in closure Ω', M_χ ^ 2 * (D.u_chart x) ^ 2
+        (∫ x in closure Ω', (χ x * D.uChart x) ^ 2 ∂(volume : Measure EuclN)) ≤
+        ∫ x in closure Ω', M_χ ^ 2 * (D.uChart x) ^ 2
           ∂(volume : Measure EuclN) :=
       integral_mono_of_nonneg
         (Filter.Eventually.of_forall (fun x => sq_nonneg _))
         (h_u_sq_int.integrable.const_mul (M_χ ^ 2))
-        (Filter.Eventually.of_forall (fun x => h_χmul_pt D.u_chart x))
+        (Filter.Eventually.of_forall (fun x => h_χmul_pt D.uChart x))
     rwa [integral_const_mul, hu_int_closure] at h_int_le
   have h_fg_closure_le :
       (∫ x in closure Ω', (χ x * fSrc x) ^ 2 ∂(volume : Measure EuclN)) ≤
@@ -419,16 +419,16 @@ theorem gTotal_le_data_eLpNorm
         (Filter.Eventually.of_forall (fun x => h_χmul_pt fSrc x))
     rwa [integral_const_mul, hf_int_closure] at h_int_le
   have h_ug_final :
-      (∫ x in Ω', (χ x * D.u_chart x) ^ 2 ∂(volume : Measure EuclN)) ≤
+      (∫ x in Ω', (χ x * D.uChart x) ^ 2 ∂(volume : Measure EuclN)) ≤
       M_χ ^ 2 * Su := le_trans h_ug_mono h_ug_closure_le
   have h_fg_final :
       (∫ x in Ω', (χ x * fSrc x) ^ 2 ∂(volume : Measure EuclN)) ≤
       M_χ ^ 2 * Sf := le_trans h_fg_mono h_fg_closure_le
   have h_sum_bound :
       (∫ x in Ω', ∑ l : Fin (Module.finrank ℝ E),
-          ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.u_chart x +
-            χ x * D.weak_partial l x) ^ 2 ∂(volume : Measure EuclN)) +
-      (∫ x in Ω', (χ x * D.u_chart x) ^ 2 ∂(volume : Measure EuclN)) +
+          ((fderiv ℝ χ x) (EuclideanSpace.single l 1) * D.uChart x +
+            χ x * D.weakPartial l x) ^ 2 ∂(volume : Measure EuclN)) +
+      (∫ x in Ω', (χ x * D.uChart x) ^ 2 ∂(volume : Measure EuclN)) +
       (∫ x in Ω', (χ x * fSrc x) ^ 2 ∂(volume : Measure EuclN)) ≤
       (2 * (Module.finrank ℝ E : ℝ) * M_dχ ^ 2 * Su + 2 * M_χ ^ 2 * Sw) +
         M_χ ^ 2 * Su + M_χ ^ 2 * Sf := by

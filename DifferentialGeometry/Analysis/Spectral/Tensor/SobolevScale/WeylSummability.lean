@@ -65,7 +65,7 @@ private theorem exists_growth_of_counting_bound
   obtain ⟨enc, henc⟩ : ∃ enc : ι → ℕ, Function.Injective enc := by
     have huniv : (Set.univ : Set ι) = ⋃ n : ℕ, {i | w i < (n : ℝ)} := by
       ext i
-      simp only [mem_iUnion, mem_setOf_eq, mem_univ, true_iff]
+      simp only [mem_iUnion, mem_ofPred_eq, mem_univ, true_iff]
       exact ⟨⌈w i⌉₊ + 1, by push_cast; linarith [Nat.le_ceil (w i)]⟩
     have hcountUniv : (Set.univ : Set ι).Countable := by
       rw [huniv]; exact Set.countable_iUnion (fun n => (hfin (n : ℝ)).countable)
@@ -77,8 +77,8 @@ private theorem exists_growth_of_counting_bound
   have hpred_sub : ∀ i, pred i ⊆ {j | w j < w i + 1} := by
     intro i j hj
     rcases hj with h | ⟨h, _⟩
-    · simp only [mem_setOf_eq]; linarith
-    · simp only [mem_setOf_eq]; rw [h]; linarith
+    · simp only [mem_ofPred_eq]; linarith
+    · simp only [mem_ofPred_eq]; rw [h]; linarith
   have hpred_fin : ∀ i, (pred i).Finite := fun i =>
     (hfin (w i + 1)).subset (hpred_sub i)
   have hirr : ∀ i, ¬ lex i i := by
@@ -125,7 +125,7 @@ private theorem exists_growth_of_counting_bound
     have hins_sub : insert i (pred i) ⊆ {j | w j < w i + 1} := by
       intro x hx
       rcases hx with rfl | hx
-      · simp only [mem_setOf_eq]; linarith
+      · simp only [mem_ofPred_eq]; linarith
       · exact hpred_sub i hx
     have hins_card : (insert i (pred i)).ncard = (pred i).ncard + 1 :=
       Set.ncard_insert_of_notMem hi_notmem (hpred_fin i)
@@ -205,7 +205,7 @@ theorem tensorEigen_counting_le (g : SmoothRiemannianMetric I M) :
     have hempty : {i : TensorEigenIdx (I := I) (M := M) g 0 2 |
         1 + TensorEigenIdx.lambda (I := I) (M := M) i < Λ} = ∅ := by
       ext i
-      simp only [Set.mem_setOf_eq, Set.mem_empty_iff_false, iff_false, not_lt]
+      simp only [Set.mem_ofPred_eq, Set.mem_empty_iff_false, iff_false, not_lt]
       have := tensor_lambda_nonneg (I := I) (M := M) i
       linarith
     rw [hempty, Nat.card_coe_set_eq, Set.ncard_empty, Nat.cast_zero]
@@ -219,7 +219,7 @@ theorem tensorEigen_one_add_lambda_growth (g : SmoothRiemannianMetric I M) :
         ∀ i : TensorEigenIdx (I := I) (M := M) g 0 2,
           C * ((φ i : ℝ) + 1) ^ (1 / ((weylSobolevExp (E := E) : ℕ) : ℝ)) ≤
             1 + TensorEigenIdx.lambda (I := I) (M := M) i := by
-  haveI : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have : CompleteSpace E := FiniteDimensional.complete ℝ E
   set p : ℝ := ((weylSobolevExp (E := E) : ℕ) : ℝ) with hp_def
   have hp : 0 < p := by
     rw [hp_def]; unfold weylSobolevExp; positivity

@@ -4,7 +4,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -424,7 +423,8 @@ theorem fineTrans_smooth
       (contMDiffOn_transitionCoeff (E := E) (I := I) (M := M)
         r s (canonFlatBase (I := I) (M := M) rFine hr z) α P Q x hx)
         |>.contMDiffAt (hopen.mem_nhds hx)
-    simpa only [fineTransCoeff] using (htarget.mul hsource).mul hcoeff
+    unfold fineTransCoeff
+    exact (htarget.mul hsource).mul hcoeff
   · have hxoff : x ∉ tsupport
         (fineTransCoeff (I := I) (M := M) rFine hr r s z α P Q) := by
       intro hs

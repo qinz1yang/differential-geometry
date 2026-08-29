@@ -71,7 +71,7 @@ private theorem integral_sq_Icc_le_norm_sq (f : timeL2 ℝ T) {t : ℝ}
     _ ≤ ∫ s in Set.Icc (0 : ℝ) T, (f s) ^ 2 := by
         refine setIntegral_mono_set hintT
           (Eventually.of_forall fun s => sq_nonneg _) ?_
-        exact HasSubset.Subset.eventuallyLE hsub
+        exact LE.le.eventuallyLE hsub
     _ = ‖f‖ ^ 2 := hnorm'.symm
 
 private theorem perModeConv_endpoint_sq_le_timeL2 (lam : ℝ) (f : timeL2 ℝ T)
@@ -200,7 +200,7 @@ theorem maxRegDuhamelSolField_inclusion_Ha1_ae_pointwise_le
   have h_compact :=
     DifferentialGeometry.Analysis.Spectral.tensorResolventL2_isCompactOperator
       (I := I) (M := M) g₀ r s
-  haveI := countable_tensorEigenIdx (I := I) (M := M)
+  have := countable_tensorEigenIdx (I := I) (M := M)
     (g := g₀) (r := r) (s := s) h_compact
   set field := maxRegDuhamelSolField (I := I) (M := M) a hT
     (0 : tensorHs (I := I) (M := M) g₀ r s (a + 2)) F with hfield_def

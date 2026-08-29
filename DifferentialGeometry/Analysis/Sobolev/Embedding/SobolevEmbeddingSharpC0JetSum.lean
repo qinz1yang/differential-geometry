@@ -98,7 +98,7 @@ private theorem eLpNorm_abs_rawPullR_ball_le_tensorL2Norm
       ENNReal.ofReal (((Module.finrank ℝ E ^ 0 : ℕ) : ℝ) * c⁻¹) *
         (tensorPouSobolevHsNorm (I := I) (M := M) g 0 S) ^ 2 := by
     rw [hX_def]
-    exact h_key.trans (mul_le_mul_of_nonneg_left h_blk (zero_le _))
+    exact h_key.trans (mul_le_mul_of_nonneg_left h_blk (zero_le))
   set L : ℝ := tensorL2Norm (I := I) (M := M) g r s S.toFun with hL_def
   have hL_nn : 0 ≤ L := tensorL2Norm_nonneg (I := I) (M := M) g r s S.toFun
   have h_hs_ne : tensorPouSobolevHsNorm (I := I) (M := M) g 0 S ≠ ⊤ :=
@@ -295,7 +295,7 @@ private theorem sharpRawPullCenter_le_jetSum
           (iteratedCovGrad g r s i T) α q.1 q.2 z| := rfl
     rw [hZc_eq]
     refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_ball
-    refine continuousOn_finset_sum _ (fun q _ => ?_)
+    refine continuousOn_finsetSum _ (fun q _ => ?_)
     exact (((rawPullR_contDiffOn (I := I) (M := M) g r (s + i)
       (iteratedCovGrad g r s i T) α q.1 q.2).continuousOn).mono hball_open).abs
   have h_zc_le : ∀ i ∈ Finset.range (m + 1),
@@ -733,7 +733,7 @@ theorem exists_riemannianFiberNorm_le_iteratedCovGrad_l2_jetSum_supercritical
   rcases isEmpty_or_nonempty M with hMempty | hMne
   · exact ⟨0, le_refl 0, fun _T x => (hMempty.false x).elim⟩
   obtain ⟨x₀⟩ := hMne
-  set S : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hS_def
+  set S : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have hS_ne : S.Nonempty := by
     have hsum := chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x₀
     rw [← hS_def] at hsum

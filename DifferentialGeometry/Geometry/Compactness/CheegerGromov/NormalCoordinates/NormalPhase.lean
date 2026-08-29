@@ -3,6 +3,8 @@ import DifferentialGeometry.Analysis.ODE.PhaseFlowExistence
 
 import DifferentialGeometry.Geometry.Metric.TensorInner.MetricGeodesicSpray
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.NormalCoordinates.NormalMetricExtend
+
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -39,21 +41,35 @@ noncomputable def normalAccel
   letI : SigmaCompactSpace Y.M := Y.sigmaCompact
   letI : T2Space Y.M := Y.t2
   letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  exact -((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
-    (normalTotal (I := I) Y x) (fun _ : E ↦ z.2) z.1) z.2)
+  exact -tangentSpaceModelContinuousLinearEquiv
+    (I := modelWithCornersSelf Real E) z.1
+    ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
+      (I := modelWithCornersSelf Real E) (normalTotal (I := I) Y x)
+      (constantModelVectorField z.2) z.1)
+      ((tangentSpaceModelContinuousLinearEquiv
+        (I := modelWithCornersSelf Real E) z.1).symm z.2))
 
+omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem normalAccel_zero
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     normalAccel (I := I) Y x (0 : E × E) = 0 := by
   unfold normalAccel
-  change -((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := 𝓘(Real, E))
-    (normalTotal (I := I) Y x) (fun _ : E ↦ (0 : E)) (0 : E)) (0 : E)) = 0
+  change -tangentSpaceModelContinuousLinearEquiv
+    (I := modelWithCornersSelf Real E) (0 : E)
+    ((DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric
+      (I := modelWithCornersSelf Real E) (normalTotal (I := I) Y x)
+      (constantModelVectorField (0 : E)) (0 : E))
+      ((tangentSpaceModelContinuousLinearEquiv
+        (I := modelWithCornersSelf Real E) (0 : E)).symm (0 : E))) = 0
   rw [DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_apply]
   have hz :
       DifferentialGeometry.Geometry.Connection.leviCivitaConnectionCandidateAt (I := 𝓘(Real, E))
-        (normalTotal (I := I) Y x) (fun _ : E ↦ (0 : E)) (0 : E) (0 : E) = 0 :=
+        (normalTotal (I := I) Y x) (constantModelVectorField (0 : E))
+        (0 : E)
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := modelWithCornersSelf Real E) (0 : E)).symm (0 : E)) = 0 :=
     ContinuousLinearMap.map_zero _
-  rw [hz, neg_zero]
+  rw [hz, map_zero, neg_zero]
 
 def normalPhaseBox (r : Real) (R : ℝ≥0) : Set (E × E) :=
   {z | z.1 ∈ Metric.ball (0 : E) r ∧ ‖z.2‖ ≤ (R : Real)}
@@ -91,6 +107,7 @@ theorem normalPhaseK_mono
     (mul_le_mul_of_nonneg_left hsq hA)
     (mul_le_mul_of_nonneg_left hRS' hB)
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalAccel_eq
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -105,17 +122,17 @@ theorem normalAccel_eq
       normalAccel (I := I) Y x z =
         -MetricKoszul.koszulVec hco
           (fderiv Real (normalCoordMetric (I := I) Y x) z.1) z.2 z.2 := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   intro z hz hco
   unfold normalAccel
   rw [normal_cov_eq (I := I) Y x z.1 hz hco z.2 z.2]
-  rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalPhase_eq_spray
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M) :
     letI : TopologicalSpace Y.M := Y.topology
@@ -130,17 +147,18 @@ theorem normalPhase_eq_spray
       ∀ _hco : IsCoercive (normalCoordMetric (I := I) Y x z.1),
         PhaseFlow.phaseField (normalAccel (I := I) Y x) z =
           MetricKoszul.metricSpray (normalCoordMetric (I := I) Y x) z := by
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : SigmaCompactSpace Y.M := Y.sigmaCompact
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : SigmaCompactSpace Y.M := Y.sigmaCompact
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   intro z hz hco
   rw [MetricKoszul.metricSpray_eq _ _ hco]
   change (z.2, normalAccel (I := I) Y x z) = _
   rw [normalAccel_eq (I := I) Y x z hz hco]
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalAccel_norm
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (h : NormalCoordMetricBoundInput (I := I) X)
@@ -157,12 +175,12 @@ theorem normalAccel_norm
     (R : ℝ≥0) (z : E × E) (hz : z ∈ normalPhaseBox r R) :
     ‖normalAccel (I := I) (X.obj k) x z‖ ≤
       3 * h.metricC 1 * (R : Real) ^ 2 := by
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-  letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-  letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
-  letI : T2Space (X.obj k).M := (X.obj k).t2
-  letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+  let : T2Space (X.obj k).M := (X.obj k).t2
+  let : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
   rw [normalAccel_eq (I := I) (X.obj k) x z (hrQuarter hz.1)
     ((h.metric_equiv k x).coercive (hrMetric hz.1)), norm_neg]
   calc
@@ -177,6 +195,7 @@ theorem normalAccel_norm
         (mul_self_le_mul_self (norm_nonneg z.2) hz.2) hC
     _ = 3 * h.metricC 1 * (R : Real) ^ 2 := by ring
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalAccel_lip
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (h : NormalCoordMetricBoundInput (I := I) X)
@@ -193,16 +212,19 @@ theorem normalAccel_lip
     (R : ℝ≥0) :
     LipschitzOnWith (normalPhaseK h R)
       (normalAccel (I := I) (X.obj k) x) (normalPhaseBox r R) := by
-  letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
-  letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
-  letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
-  letI : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
-  letI : T2Space (X.obj k).M := (X.obj k).t2
-  letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
+  let : TopologicalSpace (X.obj k).M := (X.obj k).topology
+  let : ChartedSpace H (X.obj k).M := (X.obj k).charted
+  let : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
+  let : SigmaCompactSpace (X.obj k).M := (X.obj k).sigmaCompact
+  let : T2Space (X.obj k).M := (X.obj k).t2
+  let : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
   have hquarter : Metric.ball (0 : E)
       (expMapC2Radius (I := I) (X.obj k).metric x / 4) ⊆
       Metric.ball (0 : E) (expMapC2Radius (I := I) (X.obj k).metric x) := by
-    simpa only [normalBall] using normalInner_sub (I := I) (X.obj k) x
+    change Metric.ball (0 : E)
+      (expMapC2Radius (I := I) (X.obj k).metric x / 4) ⊆
+        (normalBall (I := I) (X.obj k) x : Set E)
+    exact normalInner_sub (I := I) (X.obj k) x
   have hrExp : Metric.ball (0 : E) r ⊆
       Metric.ball (0 : E) (expMapC2Radius (I := I) (X.obj k).metric x) :=
     hrQuarter.trans hquarter
@@ -216,8 +238,12 @@ theorem normalAccel_lip
       ((h.metric_equiv k x).coercive (hrMetric hy.1))]
   simp only [dist_eq_norm, neg_sub_neg]
   rw [norm_sub_rev]
-  simpa only [normalPhaseK, NNReal.coe_mk] using hraw
+  change _ ≤
+    ((6 * h.metricC 1 ^ 2 + 3 * h.metricC 2) * (R : Real) ^ 2 +
+      6 * h.metricC 1 * (R : Real)) * ‖z - y‖
+  exact hraw
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem normalDiag_approx
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (h : NormalCoordMetricBoundInput (I := I) X)
@@ -244,6 +270,7 @@ theorem normalDiag_approx
     (normalAccel_lip (I := I) h k x hrMetric hrQuarter R)
     hinit hcont hderiv hmem
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_normalFlow
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (h : NormalCoordMetricBoundInput (I := I) X)
@@ -289,15 +316,18 @@ theorem exists_normalFlow
     intro z hz
     refine ⟨?_, hz.2⟩
     rw [mem_ball_zero_iff]
-    exact hz.1.trans_lt (by simpa only [P, NNReal.coe_mul, NNReal.coe_natCast] using hqPos)
+    apply hz.1.trans_lt
+    change 4 * (q : Real) < r
+    exact hqPos
   have haLip : LipschitzOnWith (normalPhaseK h V)
       (normalAccel (I := I) (X.obj k) x) (PhaseFlow.phaseBox P V) :=
     (normalAccel_lip (I := I) h k x hrMetric hrQuarter V).mono hbox
   have haNorm : ∀ z ∈ PhaseFlow.phaseBox (E := E) P V,
       ‖normalAccel (I := I) (X.obj k) x z‖ ≤ (A : Real) := by
     intro z hz
-    simpa only [A, NNReal.coe_mk] using
-      normalAccel_norm (I := I) h k x hrMetric hrQuarter V z (hbox hz)
+    change ‖normalAccel (I := I) (X.obj k) x z‖ ≤
+      3 * h.metricC 1 * (V : Real) ^ 2
+    exact normalAccel_norm (I := I) h k x hrMetric hrQuarter V z (hbox hz)
   have hVP : V ≤ half * P := by
     rw [← NNReal.coe_le_coe]
     change (2 : Real) * (q : Real) ≤ (1 / 2 : Real) * (4 * (q : Real))
@@ -445,7 +475,10 @@ theorem chartAccel_lip (g : SmoothRiemannianMetric I M) {p : M}
       (b.equiv.coercive g (hrMetric hy.1))]
   simp only [dist_eq_norm, neg_sub_neg]
   rw [norm_sub_rev]
-  simpa only [chartPhaseK, NNReal.coe_mk] using hraw
+  change _ ≤
+    ((6 * b.C 1 ^ 2 + 3 * b.C 2) * (R : Real) ^ 2 +
+      6 * b.C 1 * (R : Real)) * ‖z - y‖
+  exact hraw
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 theorem chartDiag_approx (g : SmoothRiemannianMetric I M) {p : M}
@@ -509,16 +542,17 @@ theorem exists_chartFlow (g : SmoothRiemannianMetric I M) {p : M}
     intro z hz
     refine ⟨?_, hz.2⟩
     rw [mem_ball_zero_iff]
-    exact hz.1.trans_lt
-      (by simpa only [P, NNReal.coe_mul, NNReal.coe_natCast] using hqPos)
+    apply hz.1.trans_lt
+    change 4 * (q : Real) < r
+    exact hqPos
   have haLip : LipschitzOnWith (chartPhaseK g b V)
       (c.accel g) (PhaseFlow.phaseBox P V) :=
     (chartAccel_lip g c b hrMetric hrQuarter V).mono hbox
   have haNorm : ∀ z ∈ PhaseFlow.phaseBox (E := E) P V,
       ‖c.accel g z‖ ≤ (A : Real) := by
     intro z hz
-    simpa only [A, NNReal.coe_mk] using
-      chartAccel_norm g c b hrMetric hrQuarter V z (hbox hz)
+    change ‖c.accel g z‖ ≤ 3 * b.C 1 * (V : Real) ^ 2
+    exact chartAccel_norm g c b hrMetric hrQuarter V z (hbox hz)
   have hVP : V ≤ half * P := by
     rw [← NNReal.coe_le_coe]
     change (2 : Real) * (q : Real) ≤

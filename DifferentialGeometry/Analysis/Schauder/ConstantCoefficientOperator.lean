@@ -126,7 +126,7 @@ theorem matrixLaplacianEval_apply (A : Matrix n n Real)
         (hessianCurryEquiv (EuclideanSpace Real n) F H) := by
   simp only [matrixLaplacianEval,
     DifferentialGeometry.Analysis.Parabolic.Euclidean.matrixLap,
-    ContinuousLinearMap.sum_apply, ContinuousLinearMap.smul_apply,
+    sum_apply, smul_apply,
     hessianComponentEval_apply]
 
 def contDiffHolderSpaceMatrixLaplacian

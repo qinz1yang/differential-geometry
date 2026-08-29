@@ -18,22 +18,44 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [BoundarylessManifold I M] [I.Boundaryless]
   [T2Space M] in
-set_option backward.isDefEq.respectTransparency false in
 private theorem bareVel_to_chartDeriv
     (X : ℝ → ∀ x : M, TangentSpace I x) (α : M) (γ : ℝ → M) (s : Set ℝ) (t : ℝ)
     (hsrc : γ t ∈ (chartAt H α).source)
     (hd : HasMFDerivWithinAt 𝓘(ℝ, ℝ) I γ s t
       ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t)))) :
     HasDerivWithinAt ((extChartAt I α) ∘ γ)
-      (tangentCoordChange I (γ t) α (γ t) (X t (γ t))) s t := by
-  rw [hasDerivWithinAt_iff_hasFDerivWithinAt, ← hasMFDerivWithinAt_iff_hasFDerivWithinAt]
-  apply (HasMFDerivWithinAt.comp t (hasMFDerivWithinAt_extChartAt (I := I) hsrc) hd
-    (Set.subset_preimage_image _ _)).congr_mfderiv
-  rw [ContinuousLinearMap.ext_iff]
-  intro a
-  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smulRight_apply, map_smul,
-    ← ContinuousLinearMap.one_apply (R₁ := ℝ) a, ← ContinuousLinearMap.smulRight_apply,
-    mfderiv_chartAt_eq_tangentCoordChange hsrc]
+      (tangentCoordChange I (γ t) α (γ t)
+        (tangentSpaceModelContinuousLinearEquiv (I := I) (γ t) (X t (γ t)))) s t := by
+  have hcomp := HasMFDerivWithinAt.comp t
+    (hasMFDerivWithinAt_extChartAt (I := I) hsrc) hd
+    (Set.subset_preimage_image _ _)
+  have hfmodel :=
+    DifferentialGeometry.HasMFDerivWithinAt.hasFDerivWithinAt_model hcomp
+  let A : TangentSpace I (γ t) →L[ℝ]
+      TangentSpace 𝓘(ℝ, E) (extChartAt I α (γ t)) :=
+    mfderiv I I (chartAt H α) (γ t)
+  let B : TangentSpace 𝓘(ℝ, ℝ) t →L[ℝ] TangentSpace I (γ t) :=
+    (1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t))
+  have hraw := mfderiv_chartAt_eq_tangentCoordChange (I := I) hsrc
+  have hmodel := congrArg
+    (fun A : TangentSpace I (γ t) →L[ℝ]
+        TangentSpace 𝓘(ℝ, E) (extChartAt I α (γ t)) =>
+      tangentLinearMapToModel A) hraw
+  apply hfmodel.hasDerivWithinAt.congr_deriv
+  change tangentLinearMapToModel (A.comp B) 1 = _
+  rw [tangentLinearMapToModel_comp, ContinuousLinearMap.comp_apply]
+  have hvel : ((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t))) 1 = X t (γ t) := by
+    simp
+  have hB : tangentLinearMapToModel B 1 =
+      tangentSpaceModelContinuousLinearEquiv (I := I) (γ t) (X t (γ t)) := by
+    rw [tangentLinearMapToModel_apply]
+    change tangentSpaceModelContinuousLinearEquiv (I := I) (γ t)
+      (((1 : ℝ →L[ℝ] ℝ).smulRight (X t (γ t))) 1) = _
+    rw [hvel]
+  rw [hB]
+  have hmodelApply := DFunLike.congr_fun hmodel
+    (tangentSpaceModelContinuousLinearEquiv (I := I) (γ t) (X t (γ t)))
+  convert hmodelApply using 1
   rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M]

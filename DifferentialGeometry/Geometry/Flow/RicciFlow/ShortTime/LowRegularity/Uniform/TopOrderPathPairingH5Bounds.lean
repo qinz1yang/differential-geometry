@@ -158,8 +158,11 @@ theorem ricciDeTurck_remainder_path_pairing_h5_uniform_bound
         (B02 + operatorFieldApply (I := I) (M := M) g 2 2 K0 LT).toFun| =
         2 * |∫ s in (0 : ℝ)..1, f s| := by
       rw [← SmoothCcTensor.inner_def]
-      simpa only [f, B02, P0, P2, K0, LT, HT, HLT, V] using congrArg
-        (fun z : ℝ => 2 * |z|) hpair
+      generalize hleft : Inner.inner ℝ V
+        (B02 + operatorFieldApply (I := I) (M := M) g 2 2 K0 LT) = lhs
+        at hpair ⊢
+      generalize hright : (∫ s in (0 : ℝ)..1, f s) = rhs at hpair ⊢
+      exact congrArg (fun z : ℝ => 2 * |z|) hpair
     _ ≤ 2 * (∫ s in (0 : ℝ)..1, |f s|) :=
       mul_le_mul_of_nonneg_left habs (by norm_num)
     _ = ∫ s in (0 : ℝ)..1, 2 * |f s| := by

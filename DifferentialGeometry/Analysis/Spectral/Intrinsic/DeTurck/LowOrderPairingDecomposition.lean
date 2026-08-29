@@ -58,7 +58,7 @@ theorem zero_metricPerturbation_symmetric (g : SmoothRiemannianMetric I M) :
       (0 : Real) • (0 : SmoothCcTensor g 0 2) := (zero_smul Real _).symm
   rw [h0]
   simp only [ccTensorBilin_apply, ccTensorModel_smul,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul, zero_mul]
+    smul_apply, smul_eq_mul, zero_mul]
 
 def metricPerturbationPathFromZero (g : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     {δ : Real}
@@ -105,6 +105,7 @@ def metricDependentLowOrderAction (g g1 g_bg : SmoothRiemannianMetric I M)
     (metricDependentZeroOrderCoefficient (I := I) (M := M) g g1 g_bg)
     (metricDependentFirstOrderCoefficient (I := I) (M := M) g g1 g_bg) W
 
+omit [SigmaCompactSpace M] in
 theorem lowOrderZeroCoefficient_eq_background_add_metricDependent
     (g g1 g_bg : SmoothRiemannianMetric I M) :
     let A0 :=
@@ -119,6 +120,7 @@ theorem lowOrderZeroCoefficient_eq_background_add_metricDependent
   simp only [backgroundZeroOrderCoefficient, metricDependentZeroOrderCoefficient]
   abel
 
+omit [SigmaCompactSpace M] in
 theorem principalCoefficientAction_decomposition
     (g g1 : SmoothRiemannianMetric I M)
     (W : SmoothCcTensor g 0 2) :
@@ -149,6 +151,7 @@ theorem principalCoefficientAction_decomposition
     deTurckPrincipalCometricCoeff, operatorFieldApplication_sub_left, hlap]
   abel
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M] in
 private theorem edgeLower_add
     (g : SmoothRiemannianMetric I M)
@@ -167,6 +170,7 @@ def ricciDeTurckLowOrderAction (g g₁ : SmoothRiemannianMetric I M)
       deTurckPrincipalCometricArm (I := I) (M := M) g g₁ W) +
     firstOrderCoefficientAction (I := I) (M := M) g C₀ C₁ W
 
+omit [SigmaCompactSpace M] in
 theorem ricciDeTurckRhsSlope_decomposition
     (g g_bg : SmoothRiemannianMetric I M) (W : SmoothCcTensor g 0 2)
     (hWsymm : ∀ (x : M) (v w : TangentSpace I x),
@@ -329,7 +333,7 @@ theorem firstOrderCoefficientAction_pairing_bound
   dsimp only [D] at hyoung ⊢
   nlinarith
 
-theorem ricciDeTurckLowOrderAction_pairing_bound [Nonempty M]
+theorem ricciDeTurckLowOrderAction_pairing_bound
     (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (g₁ : SmoothRiemannianMetric I M)

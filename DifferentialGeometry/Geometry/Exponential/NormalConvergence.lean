@@ -41,7 +41,7 @@ private theorem normalSpray_time_conv
     MapCInfConvOnCompacts (Set.univ ×ˢ (U ×ˢ Set.univ))
       (fun (n : ℕ) (q : Real × (E × E)) => MetricKoszul.metricSpray (g n) q.2)
       (fun q : Real × (E × E) => MetricKoszul.metricSpray gInf q.2) := by
-  letI : ProperSpace (E × E) := FiniteDimensional.proper Real _
+  let : ProperSpace (E × E) := FiniteDimensional.proper Real _
   have hphaseU : IsOpen (U ×ˢ (Set.univ : Set E)) := hU.prod isOpen_univ
   have hspray_cd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞)
       (MetricKoszul.metricSpray (g n)) (U ×ˢ Set.univ) := fun n =>

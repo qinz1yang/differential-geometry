@@ -110,8 +110,8 @@ theorem chartRicciDualNormSq_contMDiffOn
       (trivializationAt E (TangentSpace I) α).baseSet := by
   classical
   unfold chartRicciDualNormSq
-  refine contMDiffOn_finset_sum (fun i _ => ?_)
-  refine contMDiffOn_finset_sum (fun j _ => ?_)
+  refine contMDiffOn_finsetSum (fun i _ => ?_)
+  refine contMDiffOn_finsetSum (fun j _ => ?_)
   have h1 := ricciCovectorChartCoord_contMDiffOn (I := I) g α φ i
   have h2 := ricciCovectorChartCoord_contMDiffOn (I := I) g α φ j
   have h3 := chartInvGramMatrix_entry_contMDiffOn (I := I) g α i j
@@ -222,10 +222,10 @@ lemma inner_ricciSharpChartLocal_chartBasis
                 chartBasisVecFiber (I := I) α i b)) =
             (∑ i, ricciSharpChartCoeff (I := I) g α φ i b •
                 g.inner b (chartBasisVecFiber (I := I) α i b)) from ?_]
-    · rw [ContinuousLinearMap.sum_apply]
+    · rw [sum_apply]
       refine Finset.sum_congr rfl ?_
       intro i _
-      rw [ContinuousLinearMap.smul_apply, smul_eq_mul]
+      rw [smul_apply, smul_eq_mul]
     · rw [map_sum]
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -384,10 +384,10 @@ private lemma inner_ricciSharpChartLocal_self_eq
       intro i _
       rw [map_smul]
     rw [hL]
-    rw [ContinuousLinearMap.sum_apply]
+    rw [sum_apply]
     refine Finset.sum_congr rfl ?_
     intro i _
-    rw [ContinuousLinearMap.smul_apply]
+    rw [smul_apply]
     have hR :
         g.inner b (chartBasisVecFiber (I := I) α i b)
             (∑ j, ricciSharpChartCoeff (I := I) g α φ j b •
@@ -648,12 +648,12 @@ theorem exists_global_ricci_dual_normSq_bound
       (chartAtlasPOU I M).exists_pos_of_mem (Set.mem_univ b₀)
     have hα_seed_supp : (Function.support ((chartAtlasPOU I M) α_seed)).Nonempty :=
       ⟨b₀, ne_of_gt _hα_seed_pos⟩
-    have hα_seed_mem : α_seed ∈ chartAtlasPOU_finset (I := I) (M := M) := by
+    have hα_seed_mem : α_seed ∈ chartAtlasPOUFinset (I := I) (M := M) := by
       rw [chartAtlasPOU_finset_mem]
       exact hα_seed_supp
-    have hS_ne : (chartAtlasPOU_finset (I := I) (M := M)).Nonempty :=
+    have hS_ne : (chartAtlasPOUFinset (I := I) (M := M)).Nonempty :=
       ⟨α_seed, hα_seed_mem⟩
-    refine ⟨(chartAtlasPOU_finset (I := I) (M := M)).sup' hS_ne Cfn, ?_, ?_⟩
+    refine ⟨(chartAtlasPOUFinset (I := I) (M := M)).sup' hS_ne Cfn, ?_, ?_⟩
     · exact le_trans (hCfn_nn α_seed)
         (Finset.le_sup' (f := Cfn) hα_seed_mem)
     · intro b
@@ -661,7 +661,7 @@ theorem exists_global_ricci_dual_normSq_bound
         (chartAtlasPOU I M).exists_pos_of_mem (Set.mem_univ b)
       have hα₀_supp : (Function.support ((chartAtlasPOU I M) α₀)).Nonempty :=
         ⟨b, ne_of_gt hα₀_pos⟩
-      have hα₀_mem : α₀ ∈ chartAtlasPOU_finset (I := I) (M := M) := by
+      have hα₀_mem : α₀ ∈ chartAtlasPOUFinset (I := I) (M := M) := by
         rw [chartAtlasPOU_finset_mem]
         exact hα₀_supp
       have hb_tsupp : b ∈ tsupport (fun x : M =>

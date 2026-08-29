@@ -14,7 +14,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Set Function MeasureTheory intervalIntegral Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Topology Manifold BigOperators ContDiff Matrix
@@ -111,11 +110,11 @@ theorem interiorProductField_jointContMDiffOn_vecJoint (s : ℕ) {S : Set ℝ}
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel s ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel s ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace s I z) p.1
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s p.1 (X p) (α p)))
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s p.1 (X p) (α p)))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (s + 1)
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -125,12 +124,12 @@ theorem interiorProductField_jointContMDiffOn_vecJoint (s : ℕ) {S : Set ℝ}
   have hX' := (Bundle.contMDiffWithinAt_totalSpace (F := E) (E := TangentSpace I)).mp (hX p₀ hp₀)
   have h_combine :
       ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, Tensor0SBundle.Tensor0SModel s ℝ E) ∞
-        (fun p : M × ℝ => Tensor0SBundle.model_interior_bilinear ℝ E s
+        (fun p : M × ℝ => Tensor0SBundle.modelInteriorBilinear ℝ E s
           ((trivializationAt E (TangentSpace I) x₀ ⟨p.1, X p⟩).2)
           ((trivializationAt (Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)
             (fun z : M => Tensor0SBundle.Tensor0SSpace (s + 1) I z) x₀ ⟨p.1, α p⟩).2))
         ((Set.univ : Set M) ×ˢ S) p₀ :=
-    ((contMDiffWithinAt_const (c := Tensor0SBundle.model_interior_bilinear ℝ E s)).clm_apply
+    ((contMDiffWithinAt_const (c := Tensor0SBundle.modelInteriorBilinear ℝ E s)).clm_apply
       hX'.2).clm_apply hα'.2
   refine h_combine.congr_of_eventuallyEq ?_ ?_
   · have hbase : ∀ᶠ p : M × ℝ in nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S),
@@ -185,7 +184,6 @@ theorem interiorProductField_jointContMDiffOn_vecJoint (s : ℕ) {S : Set ℝ}
     · intro j
       rfl
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -194,25 +192,25 @@ private theorem contractTraceField_joint_pointwise (r s : ℕ) (x₀ : M) (z : M
     (hx : z ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) :
     (trivializationAt (Tensor0SBundle.TensorRSModel r s ℝ E)
         (fun y : M => Tensor0SBundle.TensorRSSpace r s I y) x₀
-        ⟨z, Tensor0SBundle.contract_trace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s z Tz⟩).2
+        ⟨z, Tensor0SBundle.contractTrace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s z Tz⟩).2
           =
-      Tensor0SBundle.model_contract_trace (𝕜 := ℝ) (E := E) r s
+      Tensor0SBundle.modelContractTrace (𝕜 := ℝ) (E := E) r s
         ((trivializationAt (Tensor0SBundle.TensorRSModel (1 + r) (s + 1) ℝ E)
           (fun y : M => Tensor0SBundle.TensorRSSpace (1 + r) (s + 1) I y) x₀ ⟨z, Tz⟩).2) := by
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (1 + r) (s + 1)
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (s + 1)
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (1 + r)
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r
   set L : E →L[ℝ] E := (trivializationAt E (TangentSpace I) x₀).symmL ℝ z with hLdef
   set Linv : E →L[ℝ] E := (trivializationAt E (TangentSpace I) x₀).continuousLinearMapAt ℝ z with
     hLinvdef
   set Tx : Tensor0SBundle.TensorRSModel (1 + r) (s + 1) ℝ E :=
-    Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) (1 + r) (s + 1) z Tz with hTxdef
+    Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) (1 + r) (s + 1) z Tz with hTxdef
   have hL : L.comp Linv = ContinuousLinearMap.id ℝ E := by
     ext y
     exact (trivializationAt E (TangentSpace I) x₀).symmL_continuousLinearMapAt (R := ℝ) hx y
@@ -257,55 +255,63 @@ private theorem contractTraceField_joint_pointwise (r s : ℕ) (x₀ : M) (z : M
   have h_input :
       ((trivializationAt (Tensor0SBundle.TensorRSModel (1 + r) (s + 1) ℝ E)
         (fun y : M => Tensor0SBundle.TensorRSSpace (1 + r) (s + 1) I y) x₀ ⟨z, Tz⟩).2) =
-      (Tensor0SBundle.model_covariantChange (𝕜 := ℝ) (E := E) (s + 1) L).comp
-        (Tx.comp (Tensor0SBundle.model_covariantChange (𝕜 := ℝ) (E := E) (1 + r) Linv)) := by
+      (Tensor0SBundle.modelCovariantChange (𝕜 := ℝ) (E := E) (s + 1) L).comp
+        (Tx.comp (Tensor0SBundle.modelCovariantChange (𝕜 := ℝ) (E := E) (1 + r) Linv)) := by
     refine ContinuousLinearMap.ext fun β => ?_
     refine ContinuousMultilinearMap.ext fun v => ?_
     change (trivializationAt (Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)
         (fun y : M => Tensor0SBundle.Tensor0SSpace (s + 1) I y) x₀).continuousLinearMapAt ℝ z
         ((Tz) ((trivializationAt (Tensor0SBundle.Tensor0SModel (1 + r) ℝ E)
           (fun y : M => Tensor0SBundle.Tensor0SSpace (1 + r) I y) x₀).symmL ℝ z β)) v =
-      ((Tensor0SBundle.model_covariantChange (𝕜 := ℝ) (E := E) (s + 1) L)
-        (Tx ((Tensor0SBundle.model_covariantChange (𝕜 := ℝ) (E := E) (1 + r) Linv) β))) v
+      ((Tensor0SBundle.modelCovariantChange (𝕜 := ℝ) (E := E) (s + 1) L)
+        (Tx ((Tensor0SBundle.modelCovariantChange (𝕜 := ℝ) (E := E) (1 + r) Linv) β))) v
     rw [h_cLMAt, Tensor0SBundle.model_covariantChange_apply]
     have hβ :
         (trivializationAt (Tensor0SBundle.Tensor0SModel (1 + r) ℝ E)
           (fun y : M => Tensor0SBundle.Tensor0SSpace (1 + r) I y) x₀).symmL ℝ z β =
-          (Tensor0SBundle.model_covariantChange (𝕜 := ℝ) (E := E) (1 + r) Linv) β := by
-      refine ContinuousMultilinearMap.ext fun u => ?_
-      rw [h_symmL]; rfl
+          Tensor0SBundle.Tensor0SSpace.ofModel (I := I) (x := z)
+            ((Tensor0SBundle.modelCovariantChange (𝕜 := ℝ) (E := E) (1 + r) Linv) β) := by
+      apply Tensor0SBundle.Tensor0SSpace.toModel_injective
+      apply ContinuousMultilinearMap.ext
+      intro u
+      change Tensor0SBundle.Tensor0SSpace.toModel
+          ((trivializationAt (Tensor0SBundle.Tensor0SModel (1 + r) ℝ E)
+            (fun y : M => Tensor0SBundle.Tensor0SSpace (1 + r) I y) x₀).symmL ℝ z β) u =
+        ((Tensor0SBundle.modelCovariantChange (𝕜 := ℝ) (E := E) (1 + r) Linv) β) u
+      have hs := h_symmL (1 + r) β u
+      exact hs
     rw [hβ]; rfl
   have h_output :
       (trivializationAt (Tensor0SBundle.TensorRSModel r s ℝ E)
         (fun y : M => Tensor0SBundle.TensorRSSpace r s I y) x₀
-        ⟨z, Tensor0SBundle.contract_trace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s z Tz⟩).2
+        ⟨z, Tensor0SBundle.contractTrace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s z Tz⟩).2
           =
-      (Tensor0SBundle.model_covariantChange (𝕜 := ℝ) (E := E) s L).comp
-        ((Tensor0SBundle.model_contract_trace (𝕜 := ℝ) (E := E) r s Tx).comp
-          (Tensor0SBundle.model_covariantChange (𝕜 := ℝ) (E := E) r Linv)) := by
+      (Tensor0SBundle.modelCovariantChange (𝕜 := ℝ) (E := E) s L).comp
+        ((Tensor0SBundle.modelContractTrace (𝕜 := ℝ) (E := E) r s Tx).comp
+          (Tensor0SBundle.modelCovariantChange (𝕜 := ℝ) (E := E) r Linv)) := by
     refine ContinuousLinearMap.ext fun β => ?_
     refine ContinuousMultilinearMap.ext fun v => ?_
     change (trivializationAt (Tensor0SBundle.Tensor0SModel s ℝ E)
         (fun y : M => Tensor0SBundle.Tensor0SSpace s I y) x₀).continuousLinearMapAt ℝ z
-        ((Tensor0SBundle.contract_trace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s z Tz)
+        ((Tensor0SBundle.contractTrace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s z Tz)
           ((trivializationAt (Tensor0SBundle.Tensor0SModel r ℝ E)
             (fun y : M => Tensor0SBundle.Tensor0SSpace r I y) x₀).symmL ℝ z β)) v =
-      ((Tensor0SBundle.model_covariantChange (𝕜 := ℝ) (E := E) s L)
-        ((Tensor0SBundle.model_contract_trace (𝕜 := ℝ) (E := E) r s Tx)
-          ((Tensor0SBundle.model_covariantChange (𝕜 := ℝ) (E := E) r Linv) β))) v
+      ((Tensor0SBundle.modelCovariantChange (𝕜 := ℝ) (E := E) s L)
+        ((Tensor0SBundle.modelContractTrace (𝕜 := ℝ) (E := E) r s Tx)
+          ((Tensor0SBundle.modelCovariantChange (𝕜 := ℝ) (E := E) r Linv) β))) v
     rw [h_cLMAt, Tensor0SBundle.model_covariantChange_apply]
-    change ((Tensor0SBundle.model_contract_trace (𝕜 := ℝ) (E := E) r s
-          ((Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) (1 + r) (s + 1) z) Tz))
-        ((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) r z)
+    change ((Tensor0SBundle.modelContractTrace (𝕜 := ℝ) (E := E) r s
+          ((Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) (1 + r) (s + 1) z) Tz))
+        ((Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) r z)
           ((trivializationAt (Tensor0SBundle.Tensor0SModel r ℝ E)
             (fun y : M => Tensor0SBundle.Tensor0SSpace r I y) x₀).symmL ℝ z β))) (fun i => L (v i))
               =
-      (((Tensor0SBundle.model_contract_trace (𝕜 := ℝ) (E := E) r s) Tx)
-        ((Tensor0SBundle.model_covariantChange (𝕜 := ℝ) (E := E) r Linv) β)) (fun i => L (v i))
-    have hβ2 : (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) r z)
+      (((Tensor0SBundle.modelContractTrace (𝕜 := ℝ) (E := E) r s) Tx)
+        ((Tensor0SBundle.modelCovariantChange (𝕜 := ℝ) (E := E) r Linv) β)) (fun i => L (v i))
+    have hβ2 : (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) r z)
           ((trivializationAt (Tensor0SBundle.Tensor0SModel r ℝ E)
             (fun y : M => Tensor0SBundle.Tensor0SSpace r I y) x₀).symmL ℝ z β) =
-          (Tensor0SBundle.model_covariantChange (𝕜 := ℝ) (E := E) r Linv) β := by
+          (Tensor0SBundle.modelCovariantChange (𝕜 := ℝ) (E := E) r Linv) β := by
       refine ContinuousMultilinearMap.ext fun u => ?_
       rw [Tensor0SBundle.model_covariantChange_apply]
       exact h_symmL r β u
@@ -314,7 +320,6 @@ private theorem contractTraceField_joint_pointwise (r s : ℕ) (x₀ : M) (z : M
   exact (Tensor0SBundle.model_contract_trace_naturality (𝕜 := ℝ) (E := E)
     r s L Linv hL Tx).symm
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -328,17 +333,17 @@ theorem contractTraceField_jointContMDiffOn (r s : ℕ) {S : Set ℝ}
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1
-        (Tensor0SBundle.contract_trace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s p.1 (T p)))
+        (Tensor0SBundle.contractTrace (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s p.1 (T p)))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (1 + r) (s + 1)
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (s + 1)
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (1 + r)
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -347,11 +352,11 @@ theorem contractTraceField_jointContMDiffOn (r s : ℕ) {S : Set ℝ}
     (F := Tensor0SBundle.TensorRSModel (1 + r) (s + 1) ℝ E)
     (E := fun z : M => Tensor0SBundle.TensorRSSpace (1 + r) (s + 1) I z)).mp (hT p₀ hp₀)
   have hTrace : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, Tensor0SBundle.TensorRSModel r s ℝ E) ∞
-      (fun p : M × ℝ => Tensor0SBundle.model_contract_trace (𝕜 := ℝ) (E := E) r s
+      (fun p : M × ℝ => Tensor0SBundle.modelContractTrace (𝕜 := ℝ) (E := E) r s
         ((trivializationAt (Tensor0SBundle.TensorRSModel (1 + r) (s + 1) ℝ E)
           (fun z : M => Tensor0SBundle.TensorRSSpace (1 + r) (s + 1) I z) x₀ ⟨p.1, T p⟩).2))
       ((Set.univ : Set M) ×ˢ S) p₀ :=
-    (Tensor0SBundle.model_contract_trace (𝕜 := ℝ) (E := E) r
+    (Tensor0SBundle.modelContractTrace (𝕜 := ℝ) (E := E) r
       s).contMDiff.contMDiffAt.comp_contMDiffWithinAt
       p₀ hT'.2
   refine hTrace.congr_of_eventuallyEq ?_ ?_
@@ -367,7 +372,6 @@ theorem contractTraceField_jointContMDiffOn (r s : ℕ) {S : Set ℝ}
     have hx0 : p₀.1 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet := by rw [← hx₀]; exact hx
     exact contractTraceField_joint_pointwise (I := I) r s x₀ p₀.1 (T p₀) hx0
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -382,7 +386,7 @@ private theorem domDomCongrField_joint_pointwise {d : ℕ} (ρ : Equiv.Perm (Fin
       ContinuousMultilinearMap.domDomCongr ρ
         ((trivializationAt (Tensor0SBundle.Tensor0SModel d ℝ E)
           (fun y : M => Tensor0SBundle.Tensor0SSpace d I y) x₀ ⟨z, Zz⟩).2) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   set L : E →L[ℝ] E := (trivializationAt E (TangentSpace I) x₀).symmL ℝ z with hLdef
   have h_cLMAt : ∀ (U : Tensor0SBundle.Tensor0SSpace d I z) (v : Fin d → E),
       (trivializationAt (Tensor0SBundle.Tensor0SModel d ℝ E)
@@ -428,7 +432,6 @@ private theorem domDomCongrField_joint_pointwise {d : ℕ} (ρ : Equiv.Perm (Fin
   rw [hof, ContinuousMultilinearMap.domDomCongr_apply]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -445,7 +448,7 @@ theorem domDomCongrField_jointContMDiffOn {d : ℕ} (ρ : Equiv.Perm (Fin d)) {S
           (ContinuousMultilinearMap.domDomCongr ρ
             (Tensor0SBundle.Tensor0SSpace.toModel (Z p)))))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -491,7 +494,7 @@ theorem jointTotalSpace_add {d : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) p.1 (A p + B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -526,7 +529,7 @@ theorem jointTotalSpace_sub {d : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) p.1 (A p - B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -558,7 +561,7 @@ theorem jointTotalSpace_smul {d : ℕ} {S : Set ℝ} (a : ℝ)
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) p.1 (a • A p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -567,7 +570,9 @@ theorem jointTotalSpace_smul {d : ℕ} {S : Set ℝ} (a : ℝ)
     (fun z : M => Tensor0SBundle.Tensor0SSpace d I z) x₀ with he
   have hA' := (Bundle.contMDiffWithinAt_totalSpace (F := Tensor0SBundle.Tensor0SModel d ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z)).mp (hA p₀ hp₀)
-  refine ((contMDiffWithinAt_const (c := a)).smul hA'.2).congr_of_eventuallyEq ?_ ?_
+  refine
+    ((contMDiffWithinAt_const (I := I.prod 𝓘(ℝ, ℝ)) (I' := 𝓘(ℝ, ℝ))
+      (c := a)).smul hA'.2).congr_of_eventuallyEq ?_ ?_
   · have hbase : ∀ᶠ p : M × ℝ in nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S), p.1 ∈ e.baseSet :=
       (continuousWithinAt_fst (s := (Set.univ : Set M) ×ˢ S) (p := p₀))
         (e.open_baseSet.mem_nhds (by rw [he]; exact mem_baseSet_trivializationAt _ _ x₀))
@@ -592,7 +597,7 @@ theorem jointTotalSpaceRS_add {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p + B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -614,7 +619,6 @@ theorem jointTotalSpaceRS_add {r s : ℕ} {S : Set ℝ}
     exact (e.linear ℝ (by rw [he, ← hx₀]; exact mem_baseSet_trivializationAt _ _ x₀)).map_add
       (A p₀) (B p₀)
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -627,9 +631,9 @@ private theorem curriedField_jointContMDiffOn {d : ℕ} {S : Set ℝ}
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] Tensor0SBundle.Tensor0SModel d ℝ E)
         (E := fun z : M => TangentSpace I z →L[ℝ] Tensor0SBundle.Tensor0SSpace d I z) p.1
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) d p.1 (A p)))
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) d p.1 (A p)))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (d + 1)
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
@@ -671,7 +675,6 @@ private theorem curriedField_jointContMDiffOn {d : ℕ} {S : Set ℝ}
     rw [TensorMultilinear.curriedSection] at hc
     exact hc
 
-set_option backward.isDefEq.respectTransparency false in
 open DifferentialGeometry.Integral.DivergenceTheorem in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -684,9 +687,9 @@ private theorem uncurriedField_jointContMDiffOn {d : ℕ} {S : Set ℝ}
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel (d + 1) ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (d + 1) ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace (d + 1) I z) p.1
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) d p.1).symm (G p)))
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) d p.1).symm (G p)))
       ((Set.univ : Set M) ×ˢ S) := by
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (d + 1)
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
@@ -713,25 +716,23 @@ private theorem uncurriedField_jointContMDiffOn {d : ℕ} {S : Set ℝ}
           (fun y : M => Tensor0SBundle.Tensor0SSpace d I y) x₀).baseSet →
       (trivializationAt (Tensor0SBundle.Tensor0SModel (d + 1) ℝ E)
           (fun y : M => Tensor0SBundle.Tensor0SSpace (d + 1) I y) x₀
-          ⟨p.1, (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) d p.1).symm (G p)⟩).2 =
+          ⟨p.1, (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) d p.1).symm (G p)⟩).2 =
         (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (d + 1) => E) ℝ).symm
           ((trivializationAt (E →L[ℝ] Tensor0SBundle.Tensor0SModel d ℝ E)
             (fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace d I y) x₀
             ⟨p.1, G p⟩).2) := by
-    intro p hz
+    rintro ⟨x, t⟩ hz
     have hUcurry : TensorMultilinear.curriedSection (I := I) (M := M)
-        (fun y : M => (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) d y).symm (G ⟨y, p.2⟩)) p.1 =
-          G p := by
+        (fun y : M => (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) d y).symm (G ⟨y, t⟩)) x =
+          G ⟨x, t⟩ := by
       rw [TensorMultilinear.curriedSection]
       exact ContinuousLinearEquiv.apply_symm_apply _ _
     have hfwd := TensorMultilinear.trivializationAt_homBundle_curriedSection_eq (I := I) (M := M)
-      (fun y : M => (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) d y).symm (G ⟨y, p.2⟩)) x₀ p.1 hz
+      (fun y : M => (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) d y).symm (G ⟨y, t⟩)) x₀ x hz
     rw [hUcurry] at hfwd
-    rw [show (fun y : M => (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) d y).symm (G ⟨y, p.2⟩)) p.1 =
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) d p.1).symm (G p) from rfl] at hfwd
-    rw [hfwd]
-    exact (LinearIsometryEquiv.symm_apply_apply
-      (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (d + 1) => E) ℝ) _).symm
+    have hback := congrArg
+      (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (d + 1) => E) ℝ).symm hfwd
+    simpa only [LinearIsometryEquiv.symm_apply_apply] using hback.symm
   refine huncurry.congr_of_eventuallyEq ?_ ?_
   · have hbase : ∀ᶠ p : M × ℝ in nhdsWithin p₀ ((Set.univ : Set M) ×ˢ S),
         p.1 ∈ (trivializationAt (Tensor0SBundle.Tensor0SModel d ℝ E)
@@ -747,7 +748,6 @@ private theorem uncurriedField_jointContMDiffOn {d : ℕ} {S : Set ℝ}
       rw [← hx₀]; exact mem_baseSet_trivializationAt _ _ x₀
     exact hpt p₀ hx0
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem slotInsertEndo0Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
     (Λ : ∀ p : M × ℝ, TangentSpace I p.1 →L[ℝ] TangentSpace I p.1)
@@ -770,13 +770,13 @@ theorem slotInsertEndo0Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
       (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SBundle.Tensor0SModel d ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] Tensor0SBundle.Tensor0SModel d ℝ E)
         (E := fun z : M => TangentSpace I z →L[ℝ] Tensor0SBundle.Tensor0SSpace d I z) p.1
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) d p.1 (A p)).comp (Λ p)))
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) d p.1 (A p)).comp (Λ p)))
       ((Set.univ : Set M) ×ˢ S) := by
     apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
       (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
       (F₂ := Tensor0SBundle.Tensor0SModel d ℝ E)
         (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace d I x)
-      (φ := fun p : M × ℝ => (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) d p.1 (A p)).comp (Λ p))
+      (φ := fun p : M × ℝ => (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) d p.1 (A p)).comp (Λ p))
       (S := S)
     intro Z
     have hZjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
@@ -791,12 +791,11 @@ theorem slotInsertEndo0Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
     refine happ.congr (fun p _ => ?_)
     rfl
   have huncurry := uncurriedField_jointContMDiffOn (I := I) (M := M) (d := d) (S := S)
-    (fun p : M × ℝ => (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) d p.1 (A p)).comp (Λ p)) hcomp
+    (fun p : M × ℝ => (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) d p.1 (A p)).comp (Λ p)) hcomp
   refine huncurry.congr (fun p _ => ?_)
   congr 1
   exact slotInsertEndoFib_zero (I := I) (M := M) d p.1 (Λ p) (A p)
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
 theorem slotInsertEndo1Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
     (Λ : ∀ p : M × ℝ, TangentSpace I p.1 →L[ℝ] TangentSpace I p.1)
@@ -820,21 +819,21 @@ theorem slotInsertEndo1Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] Tensor0SBundle.Tensor0SModel (d + 1) ℝ E)
         (E := fun z : M => TangentSpace I z →L[ℝ] Tensor0SBundle.Tensor0SSpace (d + 1) I z) p.1
         ((slotInsertEndoFib (I := I) (M := M) (d + 1) 0 p.1 (Λ p)).comp
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (d + 1) p.1 (A p))))
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (d + 1) p.1 (A p))))
       ((Set.univ : Set M) ×ˢ S) := by
     apply contMDiffOn_clm_section_of_pointwise_joint_manifold_time (I := I) (M := M)
       (F₁ := E) (V₁ := fun x : M => TangentSpace I x)
       (F₂ := Tensor0SBundle.Tensor0SModel (d + 1) ℝ E)
       (V₂ := fun x : M => Tensor0SBundle.Tensor0SSpace (d + 1) I x)
       (φ := fun p : M × ℝ => (slotInsertEndoFib (I := I) (M := M) (d + 1) 0 p.1 (Λ p)).comp
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (d + 1) p.1 (A p)))
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (d + 1) p.1 (A p)))
       (S := S)
     intro Z
     have hcurryZ : ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
         (I.prod 𝓘(ℝ, Tensor0SBundle.Tensor0SModel (d + 1) ℝ E)) ∞
         (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (d + 1) ℝ E)
           (E := fun z : M => Tensor0SBundle.Tensor0SSpace (d + 1) I z) p.1
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (d + 1) p.1 (A p) (Z p.1)))
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (d + 1) p.1 (A p) (Z p.1)))
         ((Set.univ : Set M) ×ˢ S) := by
       have hZjoint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, E)) ∞
           (fun p : M × ℝ => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1 (Z p.1))
@@ -844,12 +843,12 @@ theorem slotInsertEndo1Field_apply_jointContMDiffOn {d : ℕ} {S : Set ℝ}
     have happ := slotInsertEndo0Field_apply_jointContMDiffOn (I := I) (M := M) (d := d) (S := S)
       (Λ := Λ) hΛ
       (A := fun p : M × ℝ =>
-        tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (d + 1) p.1 (A p) (Z p.1)) hcurryZ
+        tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (d + 1) p.1 (A p) (Z p.1)) hcurryZ
     refine happ.congr (fun p _ => ?_)
     rfl
   have huncurry := uncurriedField_jointContMDiffOn (I := I) (M := M) (d := d + 1) (S := S)
     (fun p : M × ℝ => (slotInsertEndoFib (I := I) (M := M) (d + 1) 0 p.1 (Λ p)).comp
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (d + 1) p.1 (A p))) hcomp
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (d + 1) p.1 (A p))) hcomp
   refine huncurry.congr (fun p _ => ?_)
   congr 1
   rw [show (1 : Fin (d + 2)) = (0 : Fin (d + 1)).succ from rfl,

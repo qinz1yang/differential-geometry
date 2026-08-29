@@ -22,8 +22,8 @@ variable {H : Type*} [TopologicalSpace H]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -532,7 +532,17 @@ theorem loopTransport_cont
     have hswap :
         Continuous (fun tz : unitInterval × Core => (tz.2, tz.1)) := by
       fun_prop
-    simpa only [base] using hfamily.comp hswap
+    change Continuous (fun tz : unitInterval × Core =>
+      loopRadial (I := I) g hEnorm p c (tz.2.1 : E) tz.1)
+    have heq :
+        ((fun zt : Core × unitInterval =>
+          loopRadial (I := I) g hEnorm p c (zt.1.1 : E) zt.2) ∘
+            fun tz : unitInterval × Core => (tz.2, tz.1)) =
+          (fun tz : unitInterval × Core =>
+            loopRadial (I := I) g hEnorm p c (tz.2.1 : E) tz.1) := by
+      rfl
+    rw [← heq]
+    exact hfamily.comp hswap
   let f : C(unitInterval × Core, M) := ⟨base, hbase⟩
   have hlifts : fU ∘ lift = f := by
     funext tz
@@ -567,7 +577,7 @@ theorem loopTransport_cont
         Continuous
           (fun t : unitInterval =>
             (⟨P.toFun t, P.maps_ball hR (hlenR z) t.property⟩ : Uo)) :=
-      (continuousOn_iff_continuous_restrict.mp
+      (continuousOn_iff_continuous_domRestrict.mp
         P.contDiff.continuousOn).codRestrict
           (fun t => P.maps_ball hR (hlenR z) t.property)
     exact hP
@@ -609,15 +619,15 @@ theorem loopTransport_curve
       Manifold.pathELength 𝓘(Real, E) η s t =
         Manifold.pathELength 𝓘(Real, E) γ s t := by
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
-  letI pullNormedAdd (z : intrPullBall (E := E) R) :
+  let pullNormedAdd (z : intrPullBall (E := E) R) :
       NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) := inferInstance
-  letI pullNormed (z : intrPullBall (E := E) R) :
+  let pullNormed (z : intrPullBall (E := E) R) :
       NormedSpace Real (TangentSpace 𝓘(Real, E) z) := inferInstance
-  letI pullENormSmul : ∀ z : intrPullBall (E := E) R,
+  let pullENormSmul : ∀ z : intrPullBall (E := E) R,
       ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
     fun _ => inferInstance
   let Core :=
@@ -634,7 +644,7 @@ theorem loopTransport_curve
       ContinuousOn
         (fun u => (⟨γ u, hγcore u⟩ : Core)) (Set.Icc s t) :=
     Topology.IsInducing.subtypeVal.continuousOn_iff.mpr (by
-      simpa only [Function.comp_apply] using hγ.continuousOn)
+      with_unfolding_all exact hγ.continuousOn)
   have hT :
       Continuous
         (fun z : Core =>
@@ -681,8 +691,9 @@ theorem loopTransport_curve
     obtain ⟨hcont, hdiff⟩ := hamb
     refine
       ⟨Topology.IsInducing.subtypeVal.continuousWithinAt_iff.mpr ?_, ?_⟩
-    · simpa only [ηE, η, Function.comp_apply] using hcont
+    · with_unfolding_all exact hcont
     · convert hdiff using 2
+      with_unfolding_all rfl
   have hηlen :=
     intrPull_pathLen (I := I) g hEnorm p hloc hη
   have hγlen :=
@@ -784,24 +795,24 @@ theorem loopTransport_nonexp
       dist x y := by
   classical
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
-  letI pullNormedAdd (z : intrPullBall (E := E) R) :
+  let pullNormedAdd (z : intrPullBall (E := E) R) :
       NormedAddCommGroup (TangentSpace 𝓘(Real, E) z) := inferInstance
-  letI pullNormed (z : intrPullBall (E := E) R) :
+  let pullNormed (z : intrPullBall (E := E) R) :
       NormedSpace Real (TangentSpace 𝓘(Real, E) z) := inferInstance
-  letI pullENormSmul : ∀ z : intrPullBall (E := E) R,
+  let pullENormSmul : ∀ z : intrPullBall (E := E) R,
       ENormSMulClass Real (TangentSpace 𝓘(Real, E) z) :=
     fun _ => inferInstance
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  letI : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
       (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
   obtain ⟨join, hjoin, _⟩ :=
@@ -819,7 +830,7 @@ theorem loopTransport_nonexp
         (Set.Icc (0 : Real) 1) := by
     refine (hspec.1.of_le (by decide)).contMDiffOn.congr ?_
     intro t ht
-    simpa only [γ, γp] using γp.extend_apply ht
+    with_unfolding_all exact γp.extend_apply ht
   have hγcore :
       ∀ t : Real, γ t ∈ intrCore (E := E) R a := by
     intro t
@@ -961,17 +972,17 @@ theorem loopIter_nonexp
           c hc hcLen)^[n]) y) ≤
       dist x y := by
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  letI : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
       (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
   let T : intrPullBall (E := E) R → intrPullBall (E := E) R :=
@@ -1149,17 +1160,17 @@ theorem intrCore_center
         y = c := by
   classical
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  letI : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
       (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
   let z₀ := intrZero (E := E) hR
@@ -1259,17 +1270,17 @@ theorem intrCycle_center
         y = c := by
   classical
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  letI : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
       (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
   dsimp only
@@ -1397,17 +1408,17 @@ theorem intrCycle_not_fin
           c hc hcLen (pts i) (hptsCore i) = pts (e i) := by
   classical
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  letI : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
       (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
   dsimp only
@@ -1491,19 +1502,19 @@ theorem intrOrbit_not_finite
       loopTransport (I := I) g hEnorm p hL ha hfit hloc
         c hc hcLen (pts i) hi = pts (e i) := by
   classical
-  letI : Fintype ι := Fintype.ofFinite ι
+  let : Fintype ι := Fintype.ofFinite ι
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  letI : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
       (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
   change
@@ -1678,7 +1689,7 @@ theorem intrIter_ne_of_lt
   change (T^[i]) q ≠ (T^[j]) q
   intro heq
   have hnPos : 0 < j - i := Nat.sub_pos_of_lt hij
-  letI : NeZero (j - i) := ⟨Nat.ne_of_gt hnPos⟩
+  let : NeZero (j - i) := ⟨Nat.ne_of_gt hnPos⟩
   have hsub :
       ∀ m < j - i,
         ‖((T^[m]) ((T^[i]) q) : E)‖ < r := by
@@ -1791,17 +1802,17 @@ theorem intrIter_inj_core
           c hc hcLen)^[i.val]) (intrZero (E := E) hR)) := by
   classical
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
-  letI : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
       (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
   let z₀ := intrZero (E := E) hR
@@ -1851,7 +1862,7 @@ theorem intrIter_inj_core
     have hnPos : 0 < n := by
       dsimp only [n]
       exact Nat.sub_pos_of_lt hij
-    letI : NeZero n := ⟨Nat.ne_of_gt hnPos⟩
+    let : NeZero n := ⟨Nat.ne_of_gt hnPos⟩
     let pts : Fin n → intrPullBall (E := E) R :=
       fun k => (T^[i + k.val]) z₀
     have hptsCore :
@@ -2329,15 +2340,15 @@ theorem intrCore_center_fix
           T c = c := by
   classical
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
-  letI : RiemannianBundle
+  let : RiemannianBundle
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.toRiemannianMetric⟩
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : intrPullBall (E := E) R ↦
         TangentSpace 𝓘(Real, E) z) :=
     ⟨gPull.inner, gPull.contMDiff.continuous, by intro z v w; rfl⟩
-  letI : ConnectedSpace (intrPullBall (E := E) R) :=
+  let : ConnectedSpace (intrPullBall (E := E) R) :=
     Subtype.connectedSpace (isConnected_ball hR)
   let i₀ : ι := Classical.choice inferInstance
   have ha : 0 ≤ a :=
@@ -2347,7 +2358,7 @@ theorem intrCore_center_fix
     CenterOfMass.exists_minOn_compact
       (I := 𝓘(Real, E)) gPull (fun _ : ι => (1 : Real)) pts
       (intrCore_compact (E := E) haR) ⟨pts i₀, hptsS i₀⟩
-  letI : MetricSpace (intrPullBall (E := E) R) :=
+  let : MetricSpace (intrPullBall (E := E) R) :=
     HopfRinow.riemMetricSpace
       (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
   change

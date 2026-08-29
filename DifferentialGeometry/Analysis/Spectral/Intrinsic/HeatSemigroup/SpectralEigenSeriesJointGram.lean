@@ -80,9 +80,9 @@ theorem ccTensorBilinSymm_add (g : SmoothRiemannianMetric I M)
             (ccTensorMultilinear (I := I) g T x : Tensor0SBundle.Tensor0SSpace 2 I x) := by
         rw [ccTensorMultilinear_apply, ccTensorMultilinear_apply, ccTensorMultilinear_apply,
           SmoothCcTensor.toSection_add]
-        exact ContinuousLinearMap.add_apply _ _ _
+        exact add_apply _ _ _
       rw [hmul, Tensor0SBundle.Tensor0SSpace.toModel_add]
-    rw [hmodel, ContinuousMultilinearMap.add_apply]
+    rw [hmodel, add_apply]
   rw [hbilin v w, hbilin w v]; ring
 
 omit [BoundarylessManifold I M] in
@@ -180,12 +180,13 @@ theorem fibreSymmBilinForm_add (x : M) (T₁ T₂ : Tensor0SBundle.TensorRSSpace
           (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))
         + T₂ (ContinuousMultilinearMap.constOfIsEmpty ℝ
           (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ)) from rfl,
-    Tensor0SBundle.Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply,
-    ContinuousMultilinearMap.add_apply]
+    Tensor0SBundle.Tensor0SSpace.toModel_add, add_apply,
+    add_apply]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 theorem fibreSymmBilinForm_smul (x : M) (a : ℝ) (T : Tensor0SBundle.TensorRSSpace 0 2 I x)
     (v w : TangentSpace I x) :
     fibreSymmBilinForm (I := I) x (a • T) v w = a * fibreSymmBilinForm (I := I) x T v w := by
@@ -194,12 +195,13 @@ theorem fibreSymmBilinForm_smul (x : M) (a : ℝ) (T : Tensor0SBundle.TensorRSSp
         (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))
       = a • (T (ContinuousMultilinearMap.constOfIsEmpty ℝ
           (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))) from rfl,
-    Tensor0SBundle.Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul, smul_eq_mul]
+    Tensor0SBundle.Tensor0SSpace.toModel_smul, smul_apply,
+    smul_apply, smul_eq_mul, smul_eq_mul]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 theorem fibreSymmBilinForm_sum {ι : Type*} (s : Finset ι) (x : M)
     (c : ι → ℝ) (T : ι → Tensor0SBundle.TensorRSSpace 0 2 I x)
     (v w : TangentSpace I x) :
@@ -339,11 +341,11 @@ private theorem spectralPartialSum_ccTensorBilinSymm_tendsto
   have hF_L2 : Tendsto (fun n => (F n : TensorL2 0 2 g)) atTop (𝓝 u) :=
     spectralPartialSum_toL2_tendsto (I := I) (M := M) g u
   have hsum := chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x
-  have hexists : ∃ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hexists : ∃ β ∈ chartAtlasPOUFinset (I := I) (M := M),
       0 < ((chartAtlasPOU I M) β : C^∞⟮I, M; ℝ⟯) x := by
     by_contra hcon
     push Not at hcon
-    have hzero : ∀ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+    have hzero : ∀ β ∈ chartAtlasPOUFinset (I := I) (M := M),
         ((chartAtlasPOU I M) β : M → ℝ) x = 0 := by
       intro β hβ
       have hle := hcon β hβ
@@ -391,7 +393,7 @@ private theorem spectralPartialSum_ccTensorBilinSymm_tendsto
     funext n
     exact ccTensorBilinSymm_eq_sum_chartBasis (I := I) (M := M) g (F n) β hx_src v w
   rw [hrw]
-  refine tendsto_finset_sum _ (fun Q _ => ?_)
+  refine tendsto_finsetSum _ (fun Q _ => ?_)
   exact (hraw_tendsto Q).mul_const _
 
 private theorem realizedChartGramIncrement_eigenSeries_eq
@@ -699,11 +701,11 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (eigenvectorSmooth
 
 private local instance tensorRSModel02NormedAddCommGroup_local :
     NormedAddCommGroup (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup 0 2
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup 0 2
 
 private local instance tensorRSModel02NormedSpace_local :
     NormedSpace ℝ (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace 0 2
+  Tensor0SBundle.tensorRSModelNormedSpace 0 2
 
 def eigenRawIncrementMode
     (g : SmoothRiemannianMetric I M)

@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Connection.LeviCivita.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.RicciNorm
 import DifferentialGeometry.Geometry.Operator.Scaling
 import DifferentialGeometry.Tensor.RSTensor.Tensor0SRiemannian.Scaling
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -300,19 +302,19 @@ private theorem metricTracePair0SAt_scaleMetric
   classical
   let basis : Module.Basis (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
     Real
-      (TangentSpace I x) := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis
+      (TangentSpace I x) := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis
         (I := I) x
   let gInv : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
     fun k l =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component (I := I) g x k
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent (I := I) g x k
         l
         (extChartAt I x x)
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis gInv :=
+  have hinv : MetricInverseInBasisGen (I := I) g x basis gInv :=
     Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
       (I := I) g x
   have hinvScale :
-      MetricInverseInBasis_gen (I := I) (scaleMetric (I := I) c hc g) x basis
+      MetricInverseInBasisGen (I := I) (scaleMetric (I := I) c hc g) x basis
         (fun i j => c⁻¹ * gInv i j) :=
     metricInvBasis_scale (I := I) c hc g basis gInv hinv
   rw [DifferentialGeometry.Geometry.Operator.metricTracePair0SAt_eq_sum_basis (I := I)
@@ -467,8 +469,15 @@ theorem metricFamilySmooth_para
           (paraInterval D τ R hτ).carrier := by
       simpa [Function.comp_def] using
         hOld.comp htime.continuousOn hmaps
-    simpa [SolutionOn.family, paraSolution, paraFamily, scaleMetric_inner, smul_eq_mul]
-      using hcomp.const_smul R
+    change ContinuousOn
+      (fun t : Real => R * (S.base.metric (paraTime τ R t)).inner x X Y)
+      (paraInterval D τ R hτ).carrier
+    rw [show (fun t : Real =>
+        R * (S.base.metric (paraTime τ R t)).inner x X Y) =
+        R • fun t : Real => (S.base.metric (paraTime τ R t)).inner x X Y by
+      funext t
+      rfl]
+    exact hcomp.const_smul R
   · have hmaps :
         Set.MapsTo (fun s : Real => paraTime τ R s)
           (paraInterval D τ R hτ).carrier D.carrier := by
@@ -648,7 +657,7 @@ theorem paraSol
     have hOld := hS.scalarTime (K := shift '' K) (t := shift t) ht' hK' x
     have hshift : DifferentiableWithinAt Real shift K t := by
       simpa [shift, paraTime] using
-        ((differentiableWithinAt_id' (𝕜 := Real) (s := K) (x := t)).div_const R).const_add τ
+        ((differentiableWithinAt_fun_id (𝕜 := Real) (s := K) (x := t)).div_const R).const_add τ
     have hmaps : Set.MapsTo shift K (shift '' K) := by
       intro s hs
       exact ⟨s, hs, rfl⟩
@@ -744,18 +753,8 @@ theorem paraSol
             (R⁻¹ * R⁻¹ * R⁻¹) •
               DifferentialGeometry.Geometry.Operator.gradientFun (I := I)
                 (S.family.metric (paraTime τ R t))
-                (ricciNorm (I := I) S (paraTime τ R t)) y) := by
+              (ricciNorm (I := I) S (paraTime τ R t)) y) := by
       funext y
-      change
-          TotalSpace.mk' E y
-            (DifferentialGeometry.Geometry.Operator.gradientFun (I := I)
-              ((paraSolution (I := I) S τ R hR hτ).family.metric t)
-              (ricciNorm (I := I) (paraSolution (I := I) S τ R hR hτ) t) y) =
-            TotalSpace.mk' E y
-              ((R⁻¹ * R⁻¹ * R⁻¹) •
-                DifferentialGeometry.Geometry.Operator.gradientFun (I := I)
-                  (S.family.metric (paraTime τ R t))
-                  (ricciNorm (I := I) S (paraTime τ R t)) y)
       rw [hpt y]
     rw [htotal]
     exact hscaled

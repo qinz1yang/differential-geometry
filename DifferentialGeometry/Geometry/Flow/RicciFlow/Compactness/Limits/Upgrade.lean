@@ -22,7 +22,7 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-def pointedCGHMaps_of_atZero
+def pointedCGHMapsOfAtZero
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (L : PointedFlowData.{u, uE, uH} (I := I) X.D)
     (subseq : Nat -> Nat)
@@ -34,7 +34,7 @@ def pointedCGHMaps_of_atZero
   base_mem := rmaps.base_mem
   basepoint_map := rmaps.basepoint_map
 
-def pointedCGHMaps_of_manifold
+def pointedCGHMapsOfManifold
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (subseq : Nat -> Nat)
@@ -45,13 +45,13 @@ def pointedCGHMaps_of_manifold
   base_mem := rmaps.base_mem
   basepoint_map := rmaps.basepoint_map
 
-def cghMaps_of_hL0
+def cghMapsOfHL0
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))
     (L : PointedFlowData.{u, uE, uH} (I := I) X.D)
     (hL0 : L.atTime (I := I) 0 = mc.limit) :
     PointedCGHMaps (I := I) X (L.atTime 0) mc.subseq :=
-  pointedCGHMaps_of_atZero (I := I) X L mc.subseq (hL0.symm ▸ mc.maps)
+  pointedCGHMapsOfAtZero (I := I) X L mc.subseq (hL0.symm ▸ mc.maps)
 
 structure FlowLimitData
     (X : PointedFlowSeq.{u, uE, uH} (I := I))

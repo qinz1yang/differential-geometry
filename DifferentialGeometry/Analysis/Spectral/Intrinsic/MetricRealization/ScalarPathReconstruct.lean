@@ -10,7 +10,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter Topology DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -349,7 +348,11 @@ private lemma jet_fst_le
           ((contDiff_fst (𝕜 := ℝ)).contDiffAt.of_le le_top) hq
       rw [heq]
       exact clm_jet_le L j hj q)
-  simpa only [L, Function.comp_apply] using hbound
+  change ‖iteratedFDerivWithin ℝ n (fun y : ℝ × X => f y.1)
+      (A ×ˢ B) q‖ ≤
+    (n.factorial : ℝ) * C *
+      (‖ContinuousLinearMap.fst ℝ ℝ X‖ + 1) ^ n at hbound
+  exact hbound
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma jet_snd_le
@@ -382,7 +385,11 @@ private lemma jet_snd_le
           ((contDiff_snd (𝕜 := ℝ)).contDiffAt.of_le le_top) hq
       rw [heq]
       exact clm_jet_le L j hj q)
-  simpa only [L, Function.comp_apply] using hbound
+  change ‖iteratedFDerivWithin ℝ n (fun y : ℝ × X => f y.2)
+      (A ×ˢ B) q‖ ≤
+    (n.factorial : ℝ) * C *
+      (‖ContinuousLinearMap.snd ℝ ℝ X‖ + 1) ^ n at hbound
+  exact hbound
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -693,11 +700,18 @@ theorem scalarMode_majorant
     rawPullR_contDiffOn (I := I) (M := M) g 0 0
       (eigenvectorSmooth (I := I) (M := M) g 0 0 i)
       α Fin.elim0 Fin.elim0
-  simpa only [scalarMode, ψ] using
-    (prodMode_majorant (I := I) (M := M) (X := EuclN) g htail hab n c
+  obtain ⟨v, hv, hbound⟩ :=
+    prodMode_majorant (I := I) (M := M) (X := EuclN) g htail hab n c
       hU hIccU hc hmass ψ
       (chartTargetEuclid_isOpen (I := I) (M := M) α)
-      hψ hKuniq hKO Csp pSp hCsp hsp)
+      hψ hKuniq hKO Csp pSp hCsp hsp
+  refine ⟨v, hv, ?_⟩
+  intro i q hq
+  have h := hbound i q hq
+  change ‖iteratedFDerivWithin ℝ n
+      (scalarMode (I := I) (M := M) g c α i)
+      (Set.Icc a b ×ˢ K) q‖ ≤ v i at h
+  exact h
 
 theorem scalarTsum_chart
     (g : SmoothRiemannianMetric I M)

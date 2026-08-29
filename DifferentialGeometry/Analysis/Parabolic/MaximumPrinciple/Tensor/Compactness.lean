@@ -9,7 +9,6 @@ open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Geometry.Operator
 namespace DifferentialGeometry.PDE.RicciFlow
@@ -67,6 +66,7 @@ theorem of_section
   classical
   let Sraw : TwoTensorFamily (I := I) (M := M) :=
     twoTensorSecToFamily (I := I) (M := M) S
+  have hSraw : Sraw = twoTensorSecToFamily (I := I) (M := M) S := rfl
   let B : TwoTensorFamily (I := I) (M := M) :=
     tensorBarrierFamily (I := I) (M := M) G Sraw epsilon delta t0
   let slab := MetricUnitTangentSlab (I := I) (M := M) G t0 (t0 + delta)
@@ -77,7 +77,12 @@ theorem of_section
   intro hinit_pos hfail
   have hZclosed : IsClosed Z := by
     have hclosed : IsClosed ((Set.Iic (0 : Real)) : Set Real) := isClosed_Iic
-    simpa [Z, φ] using hclosed.preimage hunit_cont
+    change IsClosed (φ ⁻¹' Set.Iic 0)
+    change IsClosed
+      (barrierUnitQuad (I := I) (M := M) G Sraw epsilon delta t0 t0
+        (t0 + delta) ⁻¹' Set.Iic 0)
+    rw [hSraw]
+    exact hclosed.preimage hunit_cont
   have hZcompact : IsCompact Z := by
     simpa [Z] using hcompact.inter_right hZclosed
   obtain ⟨pbad, hpbad_neg⟩ :=
@@ -119,7 +124,10 @@ theorem of_section
         negBarrier_unitSlab (I := I) (M := M) G S epsilon delta t0
           t0 (t0 + delta) t ht_full x v (by simpa [B, Sraw] using hneg)
       have hqZ : q ∈ Z := by
-        simpa [Z, φ] using le_of_lt hqneg
+        change barrierUnitQuad (I := I) (M := M) G Sraw epsilon delta t0 t0
+          (t0 + delta) q ≤ 0
+        rw [hSraw]
+        exact le_of_lt hqneg
       have hmin_q := hmin hqZ
       have hqtime : q.1.1 = t := hq_time
       have ht1_le_t : t1 ≤ t := by
@@ -139,7 +147,10 @@ theorem of_section
         negBarrier_unitSlab (I := I) (M := M) G S epsilon delta t0
           t0 (t0 + delta) s hs_full x v (by simpa [B, Sraw] using hsneg)
       have hqZ : q ∈ Z := by
-        simpa [Z, φ] using le_of_lt hqneg
+        change barrierUnitQuad (I := I) (M := M) G Sraw epsilon delta t0 t0
+          (t0 + delta) q ≤ 0
+        rw [hSraw]
+        exact le_of_lt hqneg
       have hmin_q := hmin hqZ
       have hqtime : q.1.1 = s := hq_time
       have ht1_le_s : t1 ≤ s := by
@@ -198,6 +209,7 @@ theorem of_section_timeSlab
   classical
   let Sraw : TwoTensorFamily (I := I) (M := M) :=
     twoTensorSecToFamily (I := I) (M := M) S
+  have hSraw : Sraw = twoTensorSecToFamily (I := I) (M := M) S := rfl
   let B : TwoTensorFamily (I := I) (M := M) :=
     tensorBarrierFamily (I := I) (M := M) G Sraw epsilon delta t0
   let slab := MetricUnitTangentTimeSlab (I := I) (M := M) G
@@ -210,7 +222,12 @@ theorem of_section_timeSlab
   intro hinit_pos hfail
   have hZclosed : IsClosed Z := by
     have hclosed : IsClosed ((Set.Iic (0 : Real)) : Set Real) := isClosed_Iic
-    simpa [Z, φ] using hclosed.preimage hunit_cont
+    change IsClosed (φ ⁻¹' Set.Iic 0)
+    change IsClosed
+      (barrierTimeSlabQuad (I := I) (M := M) G Sraw epsilon delta t0
+        (Set.Icc t0 (t0 + delta)) ⁻¹' Set.Iic 0)
+    rw [hSraw]
+    exact hclosed.preimage hunit_cont
   have hZcompact : IsCompact Z := by
     simpa [Z] using hcompact.inter_right hZclosed
   obtain ⟨pbad, hpbad_neg⟩ :=
@@ -256,7 +273,10 @@ theorem of_section_timeSlab
           (K := Set.Icc t0 (t0 + delta)) ht_full x v
           (by simpa [B, Sraw] using hneg)
       have hqZ : q ∈ Z := by
-        simpa [Z, φ] using le_of_lt hqneg
+        change barrierTimeSlabQuad (I := I) (M := M) G Sraw epsilon delta t0
+          (Set.Icc t0 (t0 + delta)) q ≤ 0
+        rw [hSraw]
+        exact le_of_lt hqneg
       have hmin_q := hmin hqZ
       have ht1_le_t : t1 ≤ t := by
         simpa [t1, hq_time] using hmin_q
@@ -274,7 +294,10 @@ theorem of_section_timeSlab
           (K := Set.Icc t0 (t0 + delta)) hs_full x v
           (by simpa [B, Sraw] using hsneg)
       have hqZ : q ∈ Z := by
-        simpa [Z, φ] using le_of_lt hqneg
+        change barrierTimeSlabQuad (I := I) (M := M) G Sraw epsilon delta t0
+          (Set.Icc t0 (t0 + delta)) q ≤ 0
+        rw [hSraw]
+        exact le_of_lt hqneg
       have hmin_q := hmin hqZ
       have ht1_le_s : t1 ≤ s := by
         simpa [t1, hq_time] using hmin_q
@@ -666,7 +689,7 @@ theorem scalarSigns_of_local
     (hnabla : nablaBarrier d.t1 d.x1 = nablaB d.x1)
     (hV : ∀ q : Fin 2, V q d.x1 = d.v)
     (hphi :
-      extDerivFun (I := I) (fun p : M => B p (fun q : Fin 2 => V q p))
+      mvfderiv (I := I) (fun p : M => B p (fun q : Fin 2 => V q p))
         d.x1 (Xsec d.x1) = 0)
     (hcovV :
       ∀ q : Fin 2, ((cov (fun p : M => V q p) d.x1) (Xsec d.x1)) = 0) :
@@ -744,11 +767,11 @@ theorem scalarSigns_of_local_min
   have hmin : IsLocalMin phi d.x1 :=
     firstNullLocalMin (I := I) (M := M) d V hV hB
   have hphi :
-      extDerivFun (I := I) phi d.x1 (Xsec d.x1) = 0 := by
+      mvfderiv (I := I) phi d.x1 (Xsec d.x1) = 0 := by
     have hmf :
         mfderiv I 𝓘(Real, Real) phi d.x1 = 0 :=
       mfderiv_eq_zero_at_spatial_min (I := I) hmin hmdiff
-    rw [DifferentialGeometry.extDerivFun_real_eq_mfderiv, hmf]
+    rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv, hmf]
     rfl
   have hlap_nonneg :
       0 ≤ laplacian (I := I) cov (G d.t1) phi d.x1 :=
@@ -1009,7 +1032,7 @@ theorem scalarSigns_covHess
         (Set.Icc t0 (t0 + delta)))
     (d : TensorFirstNullData (I := I) (M := M) G
       (twoTensorSecToFamily (I := I) (M := M) S) epsilon delta t0)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov (G d.t1))
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov (G d.t1))
     (hreal1 :
       TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         2 cov B nablaB)
@@ -1144,7 +1167,7 @@ theorem scalarSigns_secHess
     (hcovInf : CovariantDerivative.ContMDiffCovariantDerivativeLocally
       (cov d.t1) (∞ : WithTop ℕ∞))
     (hmc : ∀ t : Real,
-      DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (cov t) (G t))
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (cov t) (G t))
     (hS : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S)
     (Xsec :
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))

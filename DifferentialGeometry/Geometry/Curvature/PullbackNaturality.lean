@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Curvature.Metric
 import DifferentialGeometry.Geometry.Metric.Pullback
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import Mathlib.Geometry.Manifold.VectorField.LieBracket
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -42,38 +44,34 @@ theorem mpullback_symm_apply
       mfderiv I I (Phi : M -> N) x (X x) := by
   unfold VectorField.mpullback
   rw [Diffeomorph.symm_apply_apply Phi x]
-  let e := Diffeomorph.mfderivToContinuousLinearEquiv Phi infty_ne_zero x
-  have he_apply : e (X x) = mfderiv I I (Phi : M -> N) x (X x) := by
-    simpa [e] using mfderiv_eq_cle_apply (I := I) (Phi := Phi) x (X x)
-  rw [← he_apply]
-  conv_lhs =>
-    rw [← ContinuousLinearEquiv.symm_apply_apply e (X x)]
-  change (mfderiv I I (Phi.symm : N -> M) (Phi x)).inverse (e.symm (e (X x))) = e (X x)
-  have hInv :
-      (mfderiv I I (Phi.symm : N -> M) (Phi x)).IsInvertible := by
-    rw [← Diffeomorph.mfderivToContinuousLinearEquiv_coe
-      (Φ := Phi.symm) (x := Phi x) infty_ne_zero]
-    exact ContinuousLinearMap.isInvertible_equiv
-  rw [ContinuousLinearMap.IsInvertible.inverse_apply_eq hInv]
-  change e.symm (e (X x)) =
-    (mfderiv I I (Phi.symm : N -> M) (Phi x)) (e (X x))
-  rw [← Diffeomorph.mfderivToContinuousLinearEquiv_coe
-    (Φ := Phi.symm) (x := Phi x) infty_ne_zero]
-  have hlocal :
-      ((Phi.isLocalDiffeomorph x).localInverse : N -> M)
-        =ᶠ[nhds (Phi x)] (Phi.symm : N -> M) := by
-    filter_upwards [(Phi.isLocalDiffeomorph x).localInverse_eventuallyEq_right] with y hy
-    calc
-      (Phi.isLocalDiffeomorph x).localInverse y =
-          Phi.symm (Phi ((Phi.isLocalDiffeomorph x).localInverse y)) := by
-            rw [Diffeomorph.symm_apply_apply]
-      _ = Phi.symm y := by
-            have hy' : Phi ((Phi.isLocalDiffeomorph x).localInverse y) = y := by
-              simpa [Function.comp_def] using hy
-            rw [hy']
-  simp [e, Diffeomorph.mfderivToContinuousLinearEquiv,
-    IsLocalDiffeomorphAt.mfderivToContinuousLinearEquiv, hlocal.mfderiv_eq]
-  rfl
+  have hinv :
+      (mfderiv I I (Phi.symm : N -> M) (Phi x)).inverse =
+        mfderiv I I (Phi : M -> N) x := by
+    apply ContinuousLinearMap.inverse_eq
+    · have hPhi : MDifferentiableAt I I (Phi : M -> N) x :=
+        Phi.mdifferentiable infty_ne_zero x
+      have hPhiSymm : MDifferentiableAt I I (Phi.symm : N -> M) (Phi x) :=
+        Phi.symm.mdifferentiable infty_ne_zero (Phi x)
+      have hcomp : (Phi.symm : N -> M) ∘ (Phi : M -> N) = id := by
+        funext y
+        exact Phi.symm_apply_apply y
+      have hchain := mfderiv_comp x hPhiSymm hPhi
+      rw [hcomp, mfderiv_id] at hchain
+      exact hchain.symm
+    · have hPhiSymm : MDifferentiableAt I I (Phi.symm : N -> M) (Phi x) :=
+        Phi.symm.mdifferentiable infty_ne_zero (Phi x)
+      have hPhi : MDifferentiableAt I I (Phi : M -> N) (Phi.symm (Phi x)) := by
+        rw [Phi.symm_apply_apply]
+        exact Phi.mdifferentiable infty_ne_zero x
+      have hcomp : (Phi : M -> N) ∘ (Phi.symm : N -> M) = id := by
+        funext y
+        exact Phi.apply_symm_apply y
+      have hchain := mfderiv_comp (Phi x) hPhi hPhiSymm
+      rw [hcomp, mfderiv_id] at hchain
+      rw [Phi.symm_apply_apply] at hchain
+      exact hchain.symm
+  exact congrArg
+    (fun f : TangentSpace I x →L[Real] TangentSpace I (Phi x) => f (X x)) hinv
 
 private abbrev pushFwdField
     (Phi : M ≃ₘ⟮I, I⟯ N) (X : (p : M) -> TangentSpace I p) :
@@ -146,7 +144,7 @@ theorem directionalDeriv_pullback
   unfold DifferentialGeometry.Geometry.Connection.directionalDerivAlong
   dsimp only
   rw [pushFwdSection_apply_at_image]
-  rw [extDerivFun_real_eq_mfderiv, extDerivFun_real_eq_mfderiv]
+  rw [mvfderiv_real_eq_mfderiv, mvfderiv_real_eq_mfderiv]
   have hG_diff :
       MDifferentiableAt I 𝓘(Real, Real)
         (fun q : N =>
@@ -169,7 +167,7 @@ theorem directionalDeriv_pullback
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem inner_bracket_pullback_pushFwd
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [BoundarylessManifold I N]
+    [T2Space M]
     [IsManifold I 1 M] [IsManifold I 1 N]
     (g : SmoothRiemannianMetric I N) (Phi : M ≃ₘ⟮I, I⟯ N)
     (A P Q : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -180,12 +178,12 @@ private theorem inner_bracket_pullback_pushFwd
         (VectorField.mlieBracket I
           (fun q : N => pushFwdSection (I := I) Phi P q)
           (fun q : N => pushFwdSection (I := I) Phi Q q) (Phi x)) := by
-  haveI : IsManifold I (minSmoothness Real 2) M := by
+  have : IsManifold I (minSmoothness Real 2) M := by
     exact IsManifold.of_le (I := I) (M := M) (n := ∞)
       (by
         rw [minSmoothness_of_isRCLikeNormedField]
         exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ (⊤ : ℕ∞)))
-  haveI : IsManifold I (minSmoothness Real 2) N := by
+  have : IsManifold I (minSmoothness Real 2) N := by
     exact IsManifold.of_le (I := I) (M := N) (n := ∞)
       (by
         rw [minSmoothness_of_isRCLikeNormedField]
@@ -216,7 +214,7 @@ private theorem inner_bracket_pullback_pushFwd
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem koszulScalar_pullback_pushFwd
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] [BoundarylessManifold I N]
+    [T2Space M]
     [IsManifold I 1 M] [IsManifold I 1 N]
     (g : SmoothRiemannianMetric I N) (Phi : M ≃ₘ⟮I, I⟯ N)
     (A B C : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -239,8 +237,7 @@ private theorem koszulScalar_pullback_pushFwd
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricCov_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [BoundarylessManifold I N]
+    [T2Space M]
     [IsManifold I 1 M] [IsManifold I 1 N] (g : SmoothRiemannianMetric I N) (Phi : M ≃ₘ⟮I, I⟯ N)
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _)) (x : M) (v : TangentSpace I x) :
@@ -310,10 +307,8 @@ theorem metricCov_pullback
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem connectionRiemannCurvatureField_pullback_pushFwd
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold I 1 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
+    [T2Space M]
+    [IsManifold I 1 M] [IsManifold I 1 N]
     (g : SmoothRiemannianMetric I N) (Phi : M ≃ₘ⟮I, I⟯ N)
     (X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _)) (x : M) :
@@ -348,77 +343,61 @@ private theorem connectionRiemannCurvatureField_pullback_pushFwd
         (fun q : N => (covg (fun r : N => pushFwdSection (I := I) Phi Z r) q)
           (pushFwdSection (I := I) Phi Y q)) := by
     funext q
-    let p : M := Phi.symm q
-    have hp : Phi p = q := by
-      simp [p]
-    have hmid :
-        pushFwdSection (I := I) Phi ZYh q =
+    obtain ⟨p, rfl⟩ := Phi.surjective q
+    calc
+      pushFwdSection (I := I) Phi ZYh (Phi p) =
+          mfderiv I I (Phi : M -> N) p
+            ((covh (fun q : M => Z q) p) (Y p)) := by
+            rw [pushFwdSection_apply_at_image]
+            rfl
+      _ =
+          (metricCov (I := I) (M := N) g
+            (fun r : N => pushFwdSection (I := I) Phi Z r) (Phi p))
+            (mfderiv I I (Phi : M -> N) p (Y p)) := by
+            simpa [h, covh, covg, ZYh] using
+              metricCov_pullback
+                (I := I) g Phi Z p (Y p)
+      _ =
           (metricCov (I := I) (M := N) g
             (fun r : N => pushFwdSection (I := I) Phi Z r) (Phi p))
             (pushFwdSection (I := I) Phi Y (Phi p)) := by
-      calc
-        pushFwdSection (I := I) Phi ZYh q =
-            pushFwdSection (I := I) Phi ZYh (Phi p) := by rw [hp]
-        _ = mfderiv I I (Phi : M -> N) p (ZYh p) := by simp
-        _ =
-            (metricCov (I := I) (M := N) g
-              (fun r : N => pushFwdSection (I := I) Phi Z r) (Phi p))
-              (mfderiv I I (Phi : M -> N) p (Y p)) := by
-              simpa [h, covh, covg, ZYh] using
-                metricCov_pullback
-                  (I := I) g Phi Z p (Y p)
-        _ =
-            (metricCov (I := I) (M := N) g
-              (fun r : N => pushFwdSection (I := I) Phi Z r) (Phi p))
-              (pushFwdSection (I := I) Phi Y (Phi p)) := by
-              rw [pushFwdSection_apply_at_image]
-    rw [← hp]
-    rw [← hp] at hmid
-    simpa [covg] using hmid
+            rw [pushFwdSection_apply_at_image]
   have hZX :
       (fun q : N => pushFwdSection (I := I) Phi ZXh q) =
         (fun q : N => (covg (fun r : N => pushFwdSection (I := I) Phi Z r) q)
           (pushFwdSection (I := I) Phi X q)) := by
     funext q
-    let p : M := Phi.symm q
-    have hp : Phi p = q := by
-      simp [p]
-    have hmid :
-        pushFwdSection (I := I) Phi ZXh q =
+    obtain ⟨p, rfl⟩ := Phi.surjective q
+    calc
+      pushFwdSection (I := I) Phi ZXh (Phi p) =
+          mfderiv I I (Phi : M -> N) p
+            ((covh (fun q : M => Z q) p) (X p)) := by
+            rw [pushFwdSection_apply_at_image]
+            rfl
+      _ =
+          (metricCov (I := I) (M := N) g
+            (fun r : N => pushFwdSection (I := I) Phi Z r) (Phi p))
+            (mfderiv I I (Phi : M -> N) p (X p)) := by
+            simpa [h, covh, covg, ZXh] using
+              metricCov_pullback
+                (I := I) g Phi Z p (X p)
+      _ =
           (metricCov (I := I) (M := N) g
             (fun r : N => pushFwdSection (I := I) Phi Z r) (Phi p))
             (pushFwdSection (I := I) Phi X (Phi p)) := by
-      calc
-        pushFwdSection (I := I) Phi ZXh q =
-            pushFwdSection (I := I) Phi ZXh (Phi p) := by rw [hp]
-        _ = mfderiv I I (Phi : M -> N) p (ZXh p) := by simp
-        _ =
-            (metricCov (I := I) (M := N) g
-              (fun r : N => pushFwdSection (I := I) Phi Z r) (Phi p))
-              (mfderiv I I (Phi : M -> N) p (X p)) := by
-              simpa [h, covh, covg, ZXh] using
-                metricCov_pullback
-                  (I := I) g Phi Z p (X p)
-        _ =
-            (metricCov (I := I) (M := N) g
-              (fun r : N => pushFwdSection (I := I) Phi Z r) (Phi p))
-              (pushFwdSection (I := I) Phi X (Phi p)) := by
-              rw [pushFwdSection_apply_at_image]
-    rw [← hp]
-    rw [← hp] at hmid
-    simpa [covg] using hmid
+            rw [pushFwdSection_apply_at_image]
   have hbr :
       mfderiv I I (Phi : M -> N) x
           (VectorField.mlieBracket I (fun p : M => X p) (fun p : M => Y p) x) =
         VectorField.mlieBracket I
           (fun q : N => pushFwdSection (I := I) Phi X q)
           (fun q : N => pushFwdSection (I := I) Phi Y q) (Phi x) := by
-    haveI : IsManifold I (minSmoothness Real 2) M := by
+    have : IsManifold I (minSmoothness Real 2) M := by
       exact IsManifold.of_le (I := I) (M := M) (n := ∞)
         (by
           rw [minSmoothness_of_isRCLikeNormedField]
           exact WithTop.coe_le_coe.2 (le_top : (2 : ℕ∞) ≤ (⊤ : ℕ∞)))
-    haveI : IsManifold I (minSmoothness Real 2) N := by
+    have : IsManifold I (minSmoothness Real 2) N := by
       exact IsManifold.of_le (I := I) (M := N) (n := ∞)
         (by
           rw [minSmoothness_of_isRCLikeNormedField]
@@ -470,10 +449,8 @@ private theorem connectionRiemannCurvatureField_pullback_pushFwd
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricRm04Std_pullback
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-    [SigmaCompactSpace N] [T2Space N] [BoundarylessManifold I N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold I 1 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]
+    [T2Space M] [T2Space N]
+    [IsManifold I 1 M] [IsManifold I 1 N]
     (g : SmoothRiemannianMetric I N) (Phi : M ≃ₘ⟮I, I⟯ N)
     (x : M) (X Y Z W : TangentSpace I x) :
     metricRm04StdAt (I := I) (M := M)

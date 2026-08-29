@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.VariationalEquation.FlatPairing
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.CovariantIdentity.FlatToCovariant
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.CovariantIdentity.Transport
+
+
 open DifferentialGeometry.Geometry.Connection
 
 
@@ -25,19 +27,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
-    [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M] in
-theorem trivFromE_basepoint (α : M) (v : TangentSpace I α) :
-    trivFromE (I := I) α α v = v := by
-  classical
-  have hcore : trivFromE (I := I) α α
-      = (tangentBundleCore I M).coordChange (achart H α) (achart H α) α :=
-    TangentBundle.symmL_trivializationAt_eq_core (I := I) (M := M)
-      (b₀ := α) (b := α) (mem_chart_source H α)
-  rw [hcore]
-  exact (tangentBundleCore I M).coordChange_self (achart H α) α
-    (by rw [tangentBundleCore_baseSet]; exact mem_chart_source H α) v
-
 omit [InnerProductSpace ℝ E] [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -50,19 +39,24 @@ theorem leviCivita_basepoint_eq_rawFderiv_add_corrections
     (hCdiff : DifferentiableAt ℝ
       (fun z => chartMovingTriv (I := I) α z) (extChartAt I α α)) :
     (LeviCivita (I := I) g) X α w
-      = fderiv ℝ (chartRawRepr (I := I) α X) (extChartAt I α α) w
-        + movingTrivCorrection (I := I) α X w
-        + christoffelCorrection (I := I) g α α
-            (chartE_section_repr (I := I) α X α) w := by
+      = (centeredChartTangentEquiv (I := I) α).symm
+          (fderiv ℝ (chartRawRepr (I := I) α X) (extChartAt I α α)
+              (centeredChartTangentEquiv (I := I) α w)
+            + movingTrivCorrection (I := I) α X
+                (centeredChartTangentEquiv (I := I) α w)
+            + christoffelCorrection (I := I) g α α
+                (chartESectionRepr (I := I) α X α) w) := by
   classical
   have hbridge :
       trivFromE (I := I) α α (chartLeviCivitaInnerCLM (I := I) g α X α w)
         = (LeviCivita (I := I) g) X α w :=
     trivFromE_innerCLM_eq_leviCivita_at_orbit (I := I) g X α w hα hX
-  rw [trivFromE_basepoint (I := I) α (chartLeviCivitaInnerCLM (I := I) g α X α w)] at hbridge
+  rw [trivFromE_self_apply] at hbridge
   rw [← hbridge]
-  exact chartLeviCivitaInnerCLM_basepoint_eq_rawFderiv_add_corrections (I := I) g α X w
-    hRdiff hCdiff
+  have h := chartLeviCivitaInnerCLM_basepoint_eq_rawFderiv_add_corrections
+    (I := I) g α X w hRdiff hCdiff
+  rw [trivToE_self_apply] at h
+  rw [h]
 
 end Bridge
 
@@ -113,7 +107,7 @@ theorem variational_flow_flat_paired_residual_hasDerivAt
                 (X : ∀ y : M, TangentSpace I y)
                 (mfderiv I I (Φ_fam t : M → M) x v))
           + christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x v))
     (hbridge_w :
@@ -127,7 +121,7 @@ theorem variational_flow_flat_paired_residual_hasDerivAt
                 (X : ∀ y : M, TangentSpace I y)
                 (mfderiv I I (Φ_fam t : M → M) x w))
           + christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x w)) :
     HasDerivAt
@@ -144,7 +138,7 @@ theorem variational_flow_flat_paired_residual_hasDerivAt
   set dΦw : TangentSpace I α := mfderiv I I (Φ_fam t : M → M) x w with hdΦw
   set Vflat : TangentSpace I α := T'v dΦv + P'v v with hVflat
   set Wflat : TangentSpace I α := T'w dΦw + P'w w with hWflat
-  set Xα : E := chartE_section_repr (I := I) α (X : ∀ y : M, TangentSpace I y) α with hXα
+  set Xα : E := chartESectionRepr (I := I) α (X : ∀ y : M, TangentSpace I y) α with hXα
   set nablaV : TangentSpace I α :=
     (LeviCivita (I := I) g) (X : ∀ y : M, TangentSpace I y) α dΦv with hnablaV
   set nablaW : TangentSpace I α :=
@@ -179,8 +173,8 @@ theorem variational_flow_flat_paired_residual_hasDerivAt
         ContinuousLinearMap.map_neg (g.inner α) _]
     have hslot1 : g.inner α Vflat dΦw
         = -g.inner α nablaV dΦw + g.inner α Cv dΦw := by
-      rw [hcorr_v', hbil1, ContinuousLinearMap.add_apply,
-        ContinuousLinearMap.neg_apply]
+      rw [hcorr_v', hbil1, add_apply,
+        neg_apply]
     have hslot2 : g.inner α dΦv Wflat
         = -g.inner α dΦv nablaW + g.inner α dΦv Cw := by
       rw [hcorr_w', ContinuousLinearMap.map_add (g.inner α dΦv) _ _,

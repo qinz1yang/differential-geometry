@@ -20,8 +20,8 @@ open scoped ContDiff Manifold Topology
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -499,34 +499,34 @@ theorem exists_hat_cm_tail
       hbranch⟩ := hmin P L pb r
   refine ⟨q, δ, hqdata, ?_⟩
   filter_upwards [hbranch, aliveSlots_tail hd P L pb r] with n hn hstable
-  letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
-  letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
-  letI : IsManifold I 1 (X.obj (L.φ n)).M := IsManifold.of_le
+  let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
+  let : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
+  let : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
+  let : IsManifold I 1 (X.obj (L.φ n)).M := IsManifold.of_le
     (I := I) (M := (X.obj (L.φ n)).M) (n := ∞) (by decide)
-  letI : SigmaCompactSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).sigmaCompact
-  letI : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
-  letI : ConnectedSpace (X.obj (L.φ n)).M := hconn (L.φ n)
-  letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
+  let : SigmaCompactSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).sigmaCompact
+  let : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
+  let : ConnectedSpace (X.obj (L.φ n)).M := hconn (L.φ n)
+  let : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
     (X.obj (L.φ n)).t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace (X.obj (L.φ n)).M :=
+  let : TopologicalSpace.MetrizableSpace (X.obj (L.φ n)).M :=
     Manifold.metrizableSpace I (X.obj (L.φ n)).M
-  letI : T3Space (X.obj (L.φ n)).M := inferInstance
-  letI : RiemannianBundle
+  let : T3Space (X.obj (L.φ n)).M := inferInstance
+  let : RiemannianBundle
       (fun z : (X.obj (L.φ n)).M ↦ TangentSpace I z) :=
     (X.obj (L.φ n)).riemBundle (I := I)
-  letI : (z : (X.obj (L.φ n)).M) →
+  let : (z : (X.obj (L.φ n)).M) →
       InnerProductSpace Real (TangentSpace I z) :=
     (X.obj (L.φ n)).riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : (X.obj (L.φ n)).M ↦ TangentSpace I z) :=
     (X.obj (L.φ n)).riemBundle_cont (I := I)
-  letI : EMetricSpace (X.obj (L.φ n)).M :=
+  let : EMetricSpace (X.obj (L.φ n)).M :=
     (X.obj (L.φ n)).emetricSpace (I := I)
-  letI : CompleteSpace (X.obj (L.φ n)).M :=
+  let : CompleteSpace (X.obj (L.φ n)).M :=
     MetricComplete.complete (I := I) (X.obj (L.φ n))
       (hcomplete.complete (L.φ n))
-  letI : MetricSpace (X.obj (L.φ n)).M :=
+  let : MetricSpace (X.obj (L.φ n)).M :=
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
   constructor
   · intro gamma c hc
@@ -679,34 +679,34 @@ theorem exists_hat_cm_tail_support
       hbranch⟩ := hmin P L pb r
   refine ⟨q, δ, hqdata, ?_⟩
   filter_upwards [hbranch, aliveSlots_tail hd P L pb r] with n hn hstable
-  letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
-  letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
-  letI : IsManifold I 1 (X.obj (L.φ n)).M := IsManifold.of_le
+  let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
+  let : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
+  let : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
+  let : IsManifold I 1 (X.obj (L.φ n)).M := IsManifold.of_le
     (I := I) (M := (X.obj (L.φ n)).M) (n := ∞) (by decide)
-  letI : SigmaCompactSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).sigmaCompact
-  letI : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
-  letI : ConnectedSpace (X.obj (L.φ n)).M := hconn (L.φ n)
-  letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
+  let : SigmaCompactSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).sigmaCompact
+  let : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
+  let : ConnectedSpace (X.obj (L.φ n)).M := hconn (L.φ n)
+  let : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
     (X.obj (L.φ n)).t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace (X.obj (L.φ n)).M :=
+  let : TopologicalSpace.MetrizableSpace (X.obj (L.φ n)).M :=
     Manifold.metrizableSpace I (X.obj (L.φ n)).M
-  letI : T3Space (X.obj (L.φ n)).M := inferInstance
-  letI : RiemannianBundle
+  let : T3Space (X.obj (L.φ n)).M := inferInstance
+  let : RiemannianBundle
       (fun z : (X.obj (L.φ n)).M => TangentSpace I z) :=
     (X.obj (L.φ n)).riemBundle (I := I)
-  letI : (z : (X.obj (L.φ n)).M) →
+  let : (z : (X.obj (L.φ n)).M) →
       InnerProductSpace Real (TangentSpace I z) :=
     (X.obj (L.φ n)).riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : (X.obj (L.φ n)).M => TangentSpace I z) :=
     (X.obj (L.φ n)).riemBundle_cont (I := I)
-  letI : EMetricSpace (X.obj (L.φ n)).M :=
+  let : EMetricSpace (X.obj (L.φ n)).M :=
     (X.obj (L.φ n)).emetricSpace (I := I)
-  letI : CompleteSpace (X.obj (L.φ n)).M :=
+  let : CompleteSpace (X.obj (L.φ n)).M :=
     MetricComplete.complete (I := I) (X.obj (L.φ n))
       (hcomplete.complete (L.φ n))
-  letI : MetricSpace (X.obj (L.φ n)).M :=
+  let : MetricSpace (X.obj (L.φ n)).M :=
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
   constructor
   · intro gamma c hc
@@ -919,34 +919,34 @@ theorem exists_hat_cm_min
     hbranchFull, hscale, ?_⟩
   filter_upwards [hbranch, hquarter, aliveSlots_tail hd P L pb r] with
       n hn hquarterN hstable
-  letI : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
-  letI : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
-  letI : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
-  letI : IsManifold I 1 (X.obj (L.φ n)).M := IsManifold.of_le
+  let : TopologicalSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).topology
+  let : ChartedSpace H (X.obj (L.φ n)).M := (X.obj (L.φ n)).charted
+  let : IsManifold I ∞ (X.obj (L.φ n)).M := (X.obj (L.φ n)).smooth
+  let : IsManifold I 1 (X.obj (L.φ n)).M := IsManifold.of_le
     (I := I) (M := (X.obj (L.φ n)).M) (n := ∞) (by decide)
-  letI : SigmaCompactSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).sigmaCompact
-  letI : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
-  letI : ConnectedSpace (X.obj (L.φ n)).M := hconn (L.φ n)
-  letI : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
+  let : SigmaCompactSpace (X.obj (L.φ n)).M := (X.obj (L.φ n)).sigmaCompact
+  let : T2Space (X.obj (L.φ n)).M := (X.obj (L.φ n)).t2
+  let : ConnectedSpace (X.obj (L.φ n)).M := hconn (L.φ n)
+  let : T2Space (TangentBundle I (X.obj (L.φ n)).M) :=
     (X.obj (L.φ n)).t2TangentBundle
-  letI : TopologicalSpace.MetrizableSpace (X.obj (L.φ n)).M :=
+  let : TopologicalSpace.MetrizableSpace (X.obj (L.φ n)).M :=
     Manifold.metrizableSpace I (X.obj (L.φ n)).M
-  letI : T3Space (X.obj (L.φ n)).M := inferInstance
-  letI : RiemannianBundle
+  let : T3Space (X.obj (L.φ n)).M := inferInstance
+  let : RiemannianBundle
       (fun z : (X.obj (L.φ n)).M => TangentSpace I z) :=
     (X.obj (L.φ n)).riemBundle (I := I)
-  letI : (z : (X.obj (L.φ n)).M) →
+  let : (z : (X.obj (L.φ n)).M) →
       InnerProductSpace Real (TangentSpace I z) :=
     (X.obj (L.φ n)).riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let : IsContinuousRiemannianBundle E
       (fun z : (X.obj (L.φ n)).M => TangentSpace I z) :=
     (X.obj (L.φ n)).riemBundle_cont (I := I)
-  letI : EMetricSpace (X.obj (L.φ n)).M :=
+  let : EMetricSpace (X.obj (L.φ n)).M :=
     (X.obj (L.φ n)).emetricSpace (I := I)
-  letI : CompleteSpace (X.obj (L.φ n)).M :=
+  let : CompleteSpace (X.obj (L.φ n)).M :=
     MetricComplete.complete (I := I) (X.obj (L.φ n))
       (hcomplete.complete (L.φ n))
-  letI : MetricSpace (X.obj (L.φ n)).M :=
+  let : MetricSpace (X.obj (L.φ n)).M :=
     HopfRinow.riemMetricSpace (I := I) (M := (X.obj (L.φ n)).M)
   constructor
   · intro gamma c hc
@@ -999,7 +999,11 @@ theorem exists_hat_cm_min
       have hed : riemannianEDist I x x0 =
           ENNReal.ofReal (hd.dist (L.φ n) x x0) := by
         have hrealize := hre.edist_eq (L.φ n) x x0
-        simpa [PointedRiemannianManifold.emetricSpace] using hrealize
+        calc
+          riemannianEDist I x x0 = edist x x0 :=
+            (IsRiemannianManifold.out (I := I) x x0).symm
+          _ = ENNReal.ofReal (hd.dist (L.φ n) x x0) := by
+            simpa [PointedRiemannianManifold.emetricSpace] using hrealize
       have hpq : dist x0 x ≤ 4 * L.lamInf (alpha.1 : Nat) := by
         rw [dist_comm, HopfRinow.riemMetric_dist_eq, hed,
           ENNReal.toReal_ofReal (hre.dist_nonneg (L.φ n) x x0)]

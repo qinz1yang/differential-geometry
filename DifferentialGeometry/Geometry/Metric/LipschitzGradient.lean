@@ -26,10 +26,10 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem grad_norm_le_lip_ne
-    [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) {u : M → ℝ} {L : ℝ≥0} {x : M}
     (hu : ∀ y z, edist (u y) (u z) ≤
       (L : ℝ≥0∞) * riemannianEDistOf (I := I) g y z)
@@ -37,8 +37,8 @@ private theorem grad_norm_le_lip_ne
     Real.sqrt (g.inner x (gradFun (I := I) g u x)
       (gradFun (I := I) g u x)) ≤ (L : ℝ) := by
   classical
-  letI : CompleteSpace E := FiniteDimensional.complete ℝ E
-  letI : T2Space (TangentBundle I M) := inferInstance
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : T2Space (TangentBundle I M) := inferInstance
   let F : E → ℝ := fun v =>
     u (expMap (I := I) g x (show TangentSpace I x from v))
   have hexp0 :
@@ -66,8 +66,7 @@ private theorem grad_norm_le_lip_ne
     exact hu_at
   have hF : HasFDerivAt F (mfderiv I 𝓘(ℝ, ℝ) u x) 0 := by
     have hcomp := hu_exp.comp (0 : E) hexp
-    simpa only [F, Function.comp_apply, ContinuousLinearMap.comp_id] using
-      hcomp.hasFDerivAt
+    convert! hcomp.hasFDerivAt using 1
   let v : TangentSpace I x := gradFun (I := I) g u x
   let vE : E := show E from v
   let duv : ℝ := show ℝ from mfderiv I 𝓘(ℝ, ℝ) u x v
@@ -77,7 +76,7 @@ private theorem grad_norm_le_lip_ne
     have ht : HasDerivAt (fun t : ℝ => t • vE) vE 0 := by
       simpa using (hasDerivAt_id (0 : ℝ)).smul_const vE
     have hc := hF.comp_hasDerivAt_of_eq (0 : ℝ) ht (by simp)
-    simpa only [Function.comp_apply, vE, duv] using hc
+    convert! hc using 1
   have hsmall : ∀ᶠ t in 𝓝 (0 : ℝ),
       ‖t • vE‖ < expMapC2Radius (I := I) g x := by
     have hR : 0 < expMapC2Radius (I := I) g x :=
@@ -90,16 +89,16 @@ private theorem grad_norm_le_lip_ne
         𝓝 (0 : E) := Metric.ball_mem_nhds _ hR
     filter_upwards [hc0.eventually hb] with t ht
     simpa only [Metric.mem_ball, dist_zero_right] using ht
-  letI : RiemannianBundle (fun y : M ↦ TangentSpace I y) :=
+  let : RiemannianBundle (fun y : M ↦ TangentSpace I y) :=
     ⟨g.toRiemannianMetric⟩
   have hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)) := by
     intro y w
-    rw [← ofReal_norm_eq_enorm, norm_eq_sqrt_real_inner]
+    rw [← ofReal_norm, norm_eq_sqrt_real_inner]
     rfl
   have hsmul (t : ℝ) :
       g.inner x (t • v) (t • v) = t ^ 2 * g.inner x v v := by
-    rw [(g.inner x).map_smul t v, ContinuousLinearMap.smul_apply,
+    rw [(g.inner x).map_smul t v, smul_apply,
       (g.inner x v).map_smul t v]
     simp only [smul_eq_mul]
     ring
@@ -159,8 +158,8 @@ private theorem grad_norm_le_lip_ne
   · have hspos : 0 < s := lt_of_le_of_ne hs0 (Ne.symm hs)
     nlinarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem grad_norm_le_lip
     [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) {u : M → ℝ} {L : ℝ≥0} {x : M}
@@ -176,7 +175,7 @@ theorem grad_norm_le_lip
     have hv : gradFun (I := I) g u x = (0 : TangentSpace I x) := hvE
     rw [hv]
     simpa only [map_zero, Real.sqrt_zero] using NNReal.coe_nonneg L
-  · letI : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+  · let : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
     exact grad_norm_le_lip_ne (I := I) g hu hux
 
 theorem grad_norm_le_lip_all

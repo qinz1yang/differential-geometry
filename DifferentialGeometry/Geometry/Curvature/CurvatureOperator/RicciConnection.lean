@@ -4,9 +4,11 @@ import Mathlib.LinearAlgebra.Dual.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.CurvatureBundling
 import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorExtension
+import DifferentialGeometry.Geometry.Metric.ChartGram
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection
+
 
 noncomputable section
 
@@ -26,6 +28,30 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 open DifferentialGeometry.Integral.Measure
 
+noncomputable local instance modelEndomorphismNormedAddCommGroup :
+    NormedAddCommGroup (E →L[ℝ] E) :=
+  ContinuousLinearMap.toNormedAddCommGroup
+
+noncomputable local instance modelEndomorphismNormedSpace :
+    NormedSpace ℝ (E →L[ℝ] E) :=
+  ContinuousLinearMap.toNormedSpace
+
+noncomputable local instance modelBilinearEndomorphismNormedAddCommGroup :
+    NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E) :=
+  ContinuousLinearMap.toNormedAddCommGroup
+
+noncomputable local instance modelBilinearEndomorphismNormedSpace :
+    NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E) :=
+  ContinuousLinearMap.toNormedSpace
+
+noncomputable local instance modelTrilinearEndomorphismNormedAddCommGroup :
+    NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E →L[ℝ] E) :=
+  ContinuousLinearMap.toNormedAddCommGroup
+
+noncomputable local instance modelTrilinearEndomorphismNormedSpace :
+    NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E →L[ℝ] E) :=
+  ContinuousLinearMap.toNormedSpace
+
 def ricciEndo (g : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) : TangentSpace I x →ₗ[ℝ] TangentSpace I x where
   toFun Z := riemannOp (LeviCivita (I := I) g) x Z v w
@@ -34,13 +60,13 @@ def ricciEndo (g : SmoothRiemannianMetric I M) (x : M)
     have happ := congrArg
       (fun (φ : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x) =>
         φ v w) h
-    simp [ContinuousLinearMap.add_apply]
+    simp [add_apply]
   map_smul' c Z := by
     have h := (riemannOp (LeviCivita (I := I) g) x).map_smul c Z
     have happ := congrArg
       (fun (φ : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x) =>
         φ v w) h
-    simp [ContinuousLinearMap.smul_apply]
+    simp [smul_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -116,21 +142,21 @@ omit [SigmaCompactSpace M] in
 private def ricciTensorAuxClm (g : SmoothRiemannianMetric I M) (x : M) :
     TangentSpace I x →ₗ[ℝ] (TangentSpace I x →L[ℝ] ℝ) :=
   haveI : T2Space (TangentSpace I x) := inferInstanceAs (T2Space E)
-  haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
+  let _ : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   { toFun := fun v => LinearMap.toContinuousLinearMap (ricciTensorBilin (I := I) g x v)
     map_add' := fun v v' => by
       ext w
       have := (ricciTensorBilin (I := I) g x).map_add v v'
       have happ := congrArg
         (fun (φ : TangentSpace I x →ₗ[ℝ] ℝ) => φ w) this
-      simp [ContinuousLinearMap.add_apply,
+      simp [add_apply,
              LinearMap.coe_toContinuousLinearMap']
     map_smul' := fun c v => by
       ext w
       have := (ricciTensorBilin (I := I) g x).map_smul c v
       have happ := congrArg
         (fun (φ : TangentSpace I x →ₗ[ℝ] ℝ) => φ w) this
-      simp [ContinuousLinearMap.smul_apply,
+      simp [smul_apply,
              LinearMap.coe_toContinuousLinearMap', smul_eq_mul]}
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -160,13 +186,13 @@ theorem ricciTensor_apply_basisSum (g : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
     ricciTensor (I := I) g x v w =
       ∑ i : Fin (Module.finrank ℝ E),
-        (chartModelBasis E).repr
-          (riemannOp (LeviCivita (I := I) g) x ((chartModelBasis E) i) v w) i := by
+        (centeredChartTangentBasis (I := I) x).repr
+          (riemannOp (LeviCivita (I := I) g) x
+            (centeredChartTangentBasis (I := I) x i) v w) i := by
   classical
   rw [ricciTensor_apply]
-  haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   rw [LinearMap.trace_eq_matrix_trace ℝ
-        (chartModelBasis (TangentSpace I x)) (ricciEndo (I := I) g x v w)]
+        (centeredChartTangentBasis (I := I) x) (ricciEndo (I := I) g x v w)]
   unfold Matrix.trace
   refine Finset.sum_congr rfl ?_
   intro i _
@@ -192,16 +218,16 @@ theorem ricciTensor_apply_smooth_basisSum (g : SmoothRiemannianMetric I M)
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y))
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Z))
     (hB : ∀ i, ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (B i)))
-    (x : M) (hBx : ∀ i, B i x = (chartModelBasis E) i) :
+    (x : M) (hBx : ∀ i, B i x = centeredChartTangentBasis (I := I) x i) :
     ricciTensor (I := I) g x (Y x) (Z x) =
       ∑ i : Fin (Module.finrank ℝ E),
-        (chartModelBasis E).repr
+        (centeredChartTangentBasis (I := I) x).repr
           (riemannSec (LeviCivita (I := I) g) (B i) Y Z x) i := by
   classical
   rw [ricciTensor_apply_basisSum]
   refine Finset.sum_congr rfl ?_
   intro i _
-  rw [show ((chartModelBasis E) i : TangentSpace I x) = B i x from (hBx i).symm,
+  rw [show centeredChartTangentBasis (I := I) x i = B i x from (hBx i).symm,
       riemannOp_apply_smooth (cov := LeviCivita (I := I) g) (hB i) hY hZ]
 
 lemma trace_eq_zero_of_skew_dual
@@ -332,13 +358,13 @@ private lemma metric_compat_one
     {Y Z W : Π b : M, TangentSpace I b} {x : M}
     (_hY : MDiffAt (T% Y) x)
     (hZ : MDiffAt (T% Z) x) (hW : MDiffAt (T% W) x) :
-    extDerivFun (I := I) (fun b => g.inner b (Z b) (W b)) x (Y x) =
+    mvfderiv (I := I) (fun b => g.inner b (Z b) (W b)) x (Y x) =
       g.inner x (covApply (LeviCivita (I := I) g) Y Z x) (W x) +
         g.inner x (Z x) (covApply (LeviCivita (I := I) g) Y W x) := by
   classical
   have hmc :=
     (LeviCivita_isMetricCompatible (I := I) g).apply hZ hW (Y x)
-  have hext_eq : extDerivFun (I := I) (fun b => g.inner b (Z b) (W b)) x (Y x) =
+  have hext_eq : mvfderiv (I := I) (fun b => g.inner b (Z b) (W b)) x (Y x) =
       (mfderiv I 𝓘(ℝ) (fun b : M => g.inner b (Z b) (W b)) x) (Y x) := rfl
   rw [hext_eq, hmc]
   rfl
@@ -346,12 +372,12 @@ private lemma metric_compat_one
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private lemma extDerivFun_inner_eq_globally
+private lemma mvfderiv_inner_eq_globally
     (g : SmoothRiemannianMetric I M)
     {Y Z W : Π b : M, TangentSpace I b}
     (hY_glob : MDiff (T% Y))
     (hZ_glob : MDiff (T% Z)) (hW_glob : MDiff (T% W)) :
-    (fun b : M => extDerivFun (I := I) (fun b' => g.inner b' (Z b') (W b')) b (Y b)) =
+    (fun b : M => mvfderiv (I := I) (fun b' => g.inner b' (Z b') (W b')) b (Y b)) =
       (fun b : M =>
         g.inner b (covApply (LeviCivita (I := I) g) Y Z b) (W b) +
           g.inner b (Z b) (covApply (LeviCivita (I := I) g) Y W b)) := by
@@ -368,8 +394,8 @@ private lemma metric_compat_two
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y))
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Z))
     (hW : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% W)) :
-    extDerivFun (I := I)
-        (fun b : M => extDerivFun (I := I) (fun b' => g.inner b' (Z b') (W b')) b (Y b))
+    mvfderiv (I := I)
+        (fun b : M => mvfderiv (I := I) (fun b' => g.inner b' (Z b') (W b')) b (Y b))
         x (X x) =
       g.inner x (covApply (LeviCivita (I := I) g) X
                    (covApply (LeviCivita (I := I) g) Y Z) x) (W x) +
@@ -385,11 +411,11 @@ private lemma metric_compat_two
   have hY_glob : MDiff (T% Y) := hY.mdifferentiable (by simp)
   have hZ_glob : MDiff (T% Z) := hZ.mdifferentiable (by simp)
   have hW_glob : MDiff (T% W) := hW.mdifferentiable (by simp)
-  have hsec_eq := extDerivFun_inner_eq_globally g hY_glob hZ_glob hW_glob
-  have hLHS_rw : extDerivFun (I := I)
-        (fun b : M => extDerivFun (I := I) (fun b' => g.inner b' (Z b') (W b')) b (Y b))
+  have hsec_eq := mvfderiv_inner_eq_globally g hY_glob hZ_glob hW_glob
+  have hLHS_rw : mvfderiv (I := I)
+        (fun b : M => mvfderiv (I := I) (fun b' => g.inner b' (Z b') (W b')) b (Y b))
         x (X x) =
-      extDerivFun (I := I)
+      mvfderiv (I := I)
         (fun b : M =>
           g.inner b (covApply cov Y Z b) (W b) +
             g.inner b (Z b) (covApply cov Y W b)) x (X x) := by
@@ -409,25 +435,33 @@ private lemma metric_compat_two
     hsmooth_first.mdifferentiable (by simp)
   have hsecond_mdiff : MDiff (fun b : M => g.inner b (Z b) (covApply cov Y W b)) :=
     hsmooth_second.mdifferentiable (by simp)
-  have hext_add : extDerivFun (I := I)
+  have hext_add : mvfderiv (I := I)
         (fun b : M =>
           g.inner b (covApply cov Y Z b) (W b) +
             g.inner b (Z b) (covApply cov Y W b)) x (X x) =
-      extDerivFun (I := I) (fun b => g.inner b (covApply cov Y Z b) (W b)) x (X x) +
-        extDerivFun (I := I) (fun b => g.inner b (Z b) (covApply cov Y W b)) x (X x) := by
+      mvfderiv (I := I) (fun b => g.inner b (covApply cov Y Z b) (W b)) x (X x) +
+        mvfderiv (I := I) (fun b => g.inner b (Z b) (covApply cov Y W b)) x (X x) := by
     have h1 : MDifferentiableAt I 𝓘(ℝ, ℝ)
         (fun b => g.inner b (covApply cov Y Z b) (W b)) x := hfirst_mdiff x
     have h2 : MDifferentiableAt I 𝓘(ℝ, ℝ)
         (fun b => g.inner b (Z b) (covApply cov Y W b)) x := hsecond_mdiff x
-    have hsum : extDerivFun (I := I)
+    have hsum : mvfderiv (I := I)
         ((fun b => g.inner b (covApply cov Y Z b) (W b)) +
           (fun b => g.inner b (Z b) (covApply cov Y W b))) x =
-        extDerivFun (I := I) (fun b => g.inner b (covApply cov Y Z b) (W b)) x +
-          extDerivFun (I := I) (fun b => g.inner b (Z b) (covApply cov Y W b)) x :=
-      extDerivFun_add h1 h2
+        mvfderiv (I := I) (fun b => g.inner b (covApply cov Y Z b) (W b)) x +
+          mvfderiv (I := I) (fun b => g.inner b (Z b) (covApply cov Y W b)) x :=
+      mvfderiv_add h1 h2
     have happ := congrArg (fun (φ : TangentSpace I x →L[ℝ] ℝ) => φ (X x)) hsum
-    simp only [ContinuousLinearMap.add_apply] at happ
-    convert happ using 2
+    simp only [add_apply] at happ
+    have hfun :
+        (fun b : M => g.inner b (covApply cov Y Z b) (W b) +
+          g.inner b (Z b) (covApply cov Y W b)) =
+          (fun b => g.inner b (covApply cov Y Z b) (W b)) +
+            (fun b => g.inner b (Z b) (covApply cov Y W b)) := by
+      funext b
+      rfl
+    rw [hfun]
+    exact happ
   rw [hext_add]
   have hX_at : MDiffAt (T% X) x := (hX x).mdifferentiableAt (by simp)
   have hY_at : MDiffAt (T% Y) x := (hY x).mdifferentiableAt (by simp)
@@ -471,21 +505,21 @@ theorem riemannSec_metric_skew
     exact (hf_smooth x).of_le hle
   have hx_int : extChartAt I x x ∈ interior ((extChartAt I x).target : Set E) :=
     (I.isInteriorPoint_iff (x := x)).mp BoundarylessManifold.isInteriorPoint
-  have hfound : extDerivFun (I := I) (fun b => g.inner b (Z b) (W b)) x
+  have hfound : mvfderiv (I := I) (fun b => g.inner b (Z b) (W b)) x
       (VectorField.mlieBracket I X Y x) =
-      extDerivFun (I := I)
-        (fun b : M => extDerivFun (I := I) (fun b' => g.inner b' (Z b') (W b')) b (Y b))
+      mvfderiv (I := I)
+        (fun b : M => mvfderiv (I := I) (fun b' => g.inner b' (Z b') (W b')) b (Y b))
         x (X x) -
-      extDerivFun (I := I)
-        (fun b : M => extDerivFun (I := I) (fun b' => g.inner b' (Z b') (W b')) b (X b))
+      mvfderiv (I := I)
+        (fun b : M => mvfderiv (I := I) (fun b' => g.inner b' (Z b') (W b')) b (X b))
         x (Y x) :=
-    DifferentialGeometry.Geometry.Connection.extDerivFun_apply_mlieBracket hX_at hY_at hf_2 hx_int
+    DifferentialGeometry.Geometry.Connection.mvfderiv_apply_mlieBracket hX_at hY_at hf_2 hx_int
   have hbr_mdiff : MDiffAt (T% (VectorField.mlieBracket I X Y)) x := by
-    haveI : IsManifold I 2 M := by
+    let _ : IsManifold I 2 M := by
       have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
       exact IsManifold.of_le h_le
-    haveI : CompleteSpace E := inferInstance
-    haveI : IsManifold I (minSmoothness ℝ 2 : WithTop ℕ∞) M := by
+    let _ : CompleteSpace E := inferInstance
+    let _ : IsManifold I (minSmoothness ℝ 2 : WithTop ℕ∞) M := by
       have h_eq : (minSmoothness ℝ 2 : WithTop ℕ∞) = (2 : WithTop ℕ∞) := by
         rw [minSmoothness_of_isRCLikeNormedField]
       rw [h_eq]; infer_instance
@@ -494,7 +528,7 @@ theorem riemannSec_metric_skew
     have hY1 : ContMDiffAt I (I.prod 𝓘(ℝ, E)) 1 (T% Y) x := (hY x).of_le h_le_inf
     have hmin : minSmoothness ℝ ((0 : ℕ∞) + 1) ≤ (1 : ℕ∞) := by
       simp [minSmoothness_of_isRCLikeNormedField]
-    haveI : IsManifold I ((1 : ℕ∞) + 1) M := by
+    let _ : IsManifold I ((1 : ℕ∞) + 1) M := by
       have h_eq : ((1 : ℕ∞) + 1 : WithTop ℕ∞) = (2 : WithTop ℕ∞) := by rfl
       rw [h_eq]; infer_instance
     have h_le_inf2 : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
@@ -503,7 +537,7 @@ theorem riemannSec_metric_skew
     have hmin' : minSmoothness ℝ ((1 : ℕ∞) + 1) ≤ (2 : ℕ∞) := by
       rw [minSmoothness_of_isRCLikeNormedField]
       decide
-    haveI : IsManifold I ((2 : ℕ∞) + 1) M := by
+    let _ : IsManifold I ((2 : ℕ∞) + 1) M := by
       have h_eq : ((2 : ℕ∞) + 1 : WithTop ℕ∞) = (3 : WithTop ℕ∞) := by rfl
       rw [h_eq]
       have h_le3 : (3 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
@@ -511,11 +545,11 @@ theorem riemannSec_metric_skew
     exact (hX2.mlieBracket_vectorField (m := 1) (n := 2) hY2 hmin').mdifferentiableAt
       (by decide)
   have hmc_br := metric_compat_one g hbr_mdiff hZ_at hW_at
-  have hsub : extDerivFun (I := I)
-        (fun b : M => extDerivFun (I := I) (fun b' => g.inner b' (Z b') (W b')) b (Y b))
+  have hsub : mvfderiv (I := I)
+        (fun b : M => mvfderiv (I := I) (fun b' => g.inner b' (Z b') (W b')) b (Y b))
         x (X x) -
-      extDerivFun (I := I)
-        (fun b : M => extDerivFun (I := I) (fun b' => g.inner b' (Z b') (W b')) b (X b))
+      mvfderiv (I := I)
+        (fun b : M => mvfderiv (I := I) (fun b' => g.inner b' (Z b') (W b')) b (X b))
         x (Y x) =
       g.inner x (covApply cov X (covApply cov Y Z) x - covApply cov Y (covApply cov X Z) x) (W x) +
         g.inner x (Z x) (covApply cov X (covApply cov Y W) x - covApply cov Y (covApply cov X W)
@@ -533,7 +567,7 @@ theorem riemannSec_metric_skew
       rw [map_sub]
     rw [h1, h2]
     ring
-  have hbr_eq : extDerivFun (I := I) (fun b => g.inner b (Z b) (W b)) x
+  have hbr_eq : mvfderiv (I := I) (fun b => g.inner b (Z b) (W b)) x
       (VectorField.mlieBracket I X Y x) =
       g.inner x (covApply cov (VectorField.mlieBracket I X Y) Z x) (W x) +
         g.inner x (Z x) (covApply cov (VectorField.mlieBracket I X Y) W x) := hmc_br
@@ -734,18 +768,18 @@ private lemma riemannOp_first_bianchi_rearranged
     ((covApply_smooth_section g hV hW) x).mdifferentiableAt (by simp)
   have hcWV : MDiffAt (T% (covApply (LeviCivita (I := I) g) W V)) x :=
     ((covApply_smooth_section g hW hV) x).mdifferentiableAt (by simp)
-  haveI : IsManifold I 2 M := by
+  let _ : IsManifold I 2 M := by
     have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
     exact IsManifold.of_le h_le
-  haveI : IsManifold I (minSmoothness ℝ 2 : WithTop ℕ∞) M := by
+  let _ : IsManifold I (minSmoothness ℝ 2 : WithTop ℕ∞) M := by
     have h_eq : (minSmoothness ℝ 2 : WithTop ℕ∞) = (2 : WithTop ℕ∞) := by
       rw [minSmoothness_of_isRCLikeNormedField]
     rw [h_eq]; infer_instance
   have h_le_inf : (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
-  haveI : IsManifold I ((1 : ℕ∞) + 1) M := by
+  let _ : IsManifold I ((1 : ℕ∞) + 1) M := by
     have h_eq : ((1 : ℕ∞) + 1 : WithTop ℕ∞) = (2 : WithTop ℕ∞) := rfl
     rw [h_eq]; infer_instance
-  haveI : IsManifold I ((2 : ℕ∞) + 1) M := by
+  let _ : IsManifold I ((2 : ℕ∞) + 1) M := by
     have h_eq : ((2 : ℕ∞) + 1 : WithTop ℕ∞) = (3 : WithTop ℕ∞) := by rfl
     rw [h_eq]
     have h_le3 : (3 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
@@ -853,7 +887,7 @@ theorem ricciTensor_add_self
   have hexpand : ricciTensor (I := I) g x (v + w) (v + w) =
       ricciTensor (I := I) g x v v + ricciTensor (I := I) g x w v +
         (ricciTensor (I := I) g x v w + ricciTensor (I := I) g x w w) := by
-    simp [map_add, ContinuousLinearMap.add_apply]
+    simp [map_add, add_apply]
   rw [hexpand, ricciTensor_symm (I := I) g x w v]
   ring
 
@@ -864,7 +898,7 @@ theorem ricciTensor_add_neg
     (g : SmoothRiemannianMetric I M) (x : M) (v w u : TangentSpace I x) :
     ricciTensor (I := I) g x (v + w) (-u) =
       -ricciTensor (I := I) g x v u - ricciTensor (I := I) g x w u := by
-  simp only [map_add, ContinuousLinearMap.add_apply, map_neg]
+  simp only [map_add, add_apply, map_neg]
   ring
 
 omit [CompleteSpace E] in
@@ -874,7 +908,7 @@ theorem ricciTensor_sub_neg
     (g : SmoothRiemannianMetric I M) (x : M) (v w u : TangentSpace I x) :
     ricciTensor (I := I) g x (v - w) (-u) =
       ricciTensor (I := I) g x w u - ricciTensor (I := I) g x v u := by
-  simp only [map_sub, ContinuousLinearMap.sub_apply, map_neg]
+  simp only [map_sub, sub_apply, map_neg]
   ring
 
 end RicciSymmetry
@@ -905,14 +939,14 @@ theorem riemannSec_section_smooth
   have hcYcXZ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (T% (covApply cov Y (covApply cov X Z))) :=
     covApply_smooth_section g hY hcXZ
-  haveI : IsManifold I 2 M := by
+  let _ : IsManifold I 2 M := by
     have h_le : (2 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
     exact IsManifold.of_le h_le
-  haveI : IsManifold I (minSmoothness ℝ 2) M := by
+  let _ : IsManifold I (minSmoothness ℝ 2) M := by
     have h_eq : (minSmoothness ℝ 2 : WithTop ℕ∞) = (2 : WithTop ℕ∞) := by
       rw [minSmoothness_of_isRCLikeNormedField]
     rw [h_eq]; infer_instance
-  haveI : IsManifold I ((2 : ℕ∞) + 1) M := by
+  let _ : IsManifold I ((2 : ℕ∞) + 1) M := by
     have h_eq : ((2 : ℕ∞) + 1 : WithTop ℕ∞) = (3 : WithTop ℕ∞) := rfl
     rw [h_eq]
     have h_le3 : (3 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) := by norm_cast
@@ -928,7 +962,7 @@ theorem riemannSec_section_smooth
       exact hX b
     have hY_inf : ContMDiffAt I (I.prod 𝓘(ℝ, E)) ((⊤ : ℕ∞) : WithTop ℕ∞) (T% Y) b := by
       exact hY b
-    haveI : IsManifold I (((⊤ : ℕ∞) : WithTop ℕ∞) + 1) M := by
+    let _ : IsManifold I (((⊤ : ℕ∞) : WithTop ℕ∞) + 1) M := by
       have h_eq : (((⊤ : ℕ∞) : WithTop ℕ∞) + 1) = (((⊤ : ℕ∞) : WithTop ℕ∞)) := by
         rw [ENat.coe_top_add_one]
       rw [h_eq]; infer_instance
@@ -1154,7 +1188,13 @@ theorem ricciTensor_pairing_contMDiff
       rw [Trivialization.localFrame_apply_of_mem_baseSet (hx := hb)]
       simp only [Trivialization.basisAt, Module.Basis.map_apply,
         Trivialization.linearEquivAt_symm_apply]
-      rfl
+      calc
+        e.symm b ((chartModelBasis E) i) =
+            e.symmL ℝ b ((chartModelBasis E) i) :=
+          (Trivialization.symmL_apply e hb _).symm
+        _ = chartBasisVecFiber (I := I) x i b := by
+          with_unfolding_all
+            rfl
     have hSb_i : S i b = chartBasisVecFiber (I := I) x i b := (hSb i).trans hframe_eq
     rw [show chartBasisVecFiber (I := I) x i b = S i b from hSb_i.symm]
     have h_F_eq : F (S i b) = riemannOp (LeviCivita (I := I) g) b (S i b) (Y b) (W b) := by
@@ -1237,7 +1277,7 @@ private lemma riemann4_swap12 (g : SmoothRiemannianMetric I M) (x : M)
     riemann4 (I := I) g x a b c d = -riemann4 (I := I) g x b a c d := by
   unfold riemann4
   rw [riemannOp_swap (LeviCivita (I := I) g) x a b c]
-  rw [ContinuousLinearMap.map_neg (g.inner x), ContinuousLinearMap.neg_apply]
+  rw [ContinuousLinearMap.map_neg (g.inner x), neg_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -1281,7 +1321,7 @@ private lemma riemann4_bianchi (g : SmoothRiemannianMetric I M) (x : M)
         riemannOp (LeviCivita (I := I) g) x c a b) e := by
     unfold riemann4
     rw [ContinuousLinearMap.map_add (g.inner x), ContinuousLinearMap.map_add (g.inner x)]
-    simp only [ContinuousLinearMap.add_apply]
+    simp only [add_apply]
   rw [hpair, hcyc]
   simp
 

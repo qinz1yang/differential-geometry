@@ -13,8 +13,7 @@ namespace Integral
 namespace DivergenceTheorem
 namespace WithBoundary
 
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [hI : HasSmoothBoundary E H I] [IsManifold I ∞ M]
@@ -24,7 +23,6 @@ open DifferentialGeometry.Integral.Measure
 def normalFieldComp (νChart : E → E) (k : Fin (Module.finrank ℝ E)) : E → ℝ :=
   fun y => ((Module.finBasis ℝ E).repr (νChart y)) k
 
-omit [InnerProductSpace ℝ E] in
 @[simp] lemma normalFieldComp_def (νChart : E → E)
     (k : Fin (Module.finrank ℝ E)) (y : E) :
     normalFieldComp (E := E) νChart k y =
@@ -37,7 +35,7 @@ def chartChristoffelNormalCorrection
     chartChristoffel (I := I) g α i l k y *
       normalFieldComp (E := E) νChart l y
 
-omit [InnerProductSpace ℝ E] hI in
+omit hI in
 @[simp] lemma chartChristoffelNormalCorrection_def
     (g : SmoothRiemannianMetric I M) (α : M)
     (νChart : E → E) (i k : Fin (Module.finrank ℝ E)) (y : E) :
@@ -52,7 +50,7 @@ def chartCovariantDerivativeOfNormal
   partialDeriv (E := E) i (normalFieldComp (E := E) νChart k) y +
     chartChristoffelNormalCorrection (I := I) g α νChart i k y
 
-omit [InnerProductSpace ℝ E] hI in
+omit hI in
 @[simp] lemma chartCovariantDerivativeOfNormal_def
     (g : SmoothRiemannianMetric I M) (α : M)
     (νChart : E → E) (i k : Fin (Module.finrank ℝ E)) (y : E) :
@@ -68,7 +66,7 @@ def chartSecondFundamentalFormEntry
       chartCovariantDerivativeOfNormal (I := I) g (x : M) νChart i k
         (extChartAt I (x : M) (x : M))
 
-omit [InnerProductSpace ℝ E] hI in
+omit hI in
 @[simp] lemma chartSecondFundamentalFormEntry_def
     (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M)
     (νChart : E → E) (i j : Fin (Module.finrank ℝ E)) :
@@ -86,14 +84,14 @@ def secondFundamentalForm
     (fun X Y =>
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ((Module.finBasis ℝ E).repr X) i *
-            ((Module.finBasis ℝ E).repr Y) j *
+          ((centeredChartTangentBasis (I := I) (x : M)).repr X) i *
+            ((centeredChartTangentBasis (I := I) (x : M)).repr Y) j *
             chartSecondFundamentalFormEntry (I := I) (M := M) g x νChart i j)
     (fun X₁ X₂ Y => by
       classical
-      dsimp only
-      have hrepr : (Module.finBasis ℝ E).repr (X₁ + X₂) =
-          (Module.finBasis ℝ E).repr X₁ + (Module.finBasis ℝ E).repr X₂ :=
+      have hrepr : (centeredChartTangentBasis (I := I) (x : M)).repr (X₁ + X₂) =
+          (centeredChartTangentBasis (I := I) (x : M)).repr X₁ +
+            (centeredChartTangentBasis (I := I) (x : M)).repr X₂ :=
         map_add _ _ _
       rw [hrepr]
       rw [← Finset.sum_add_distrib]
@@ -106,9 +104,8 @@ def secondFundamentalForm
       ring)
     (fun c X Y => by
       classical
-      dsimp only
-      have hrepr : (Module.finBasis ℝ E).repr (c • X) =
-          c • (Module.finBasis ℝ E).repr X := map_smul _ _ _
+      have hrepr : (centeredChartTangentBasis (I := I) (x : M)).repr (c • X) =
+          c • (centeredChartTangentBasis (I := I) (x : M)).repr X := map_smul _ _ _
       rw [hrepr]
       simp only [smul_eq_mul, Finsupp.coe_smul, Pi.smul_apply]
       rw [Finset.mul_sum]
@@ -120,9 +117,9 @@ def secondFundamentalForm
       ring)
     (fun X Y₁ Y₂ => by
       classical
-      dsimp only
-      have hrepr : (Module.finBasis ℝ E).repr (Y₁ + Y₂) =
-          (Module.finBasis ℝ E).repr Y₁ + (Module.finBasis ℝ E).repr Y₂ :=
+      have hrepr : (centeredChartTangentBasis (I := I) (x : M)).repr (Y₁ + Y₂) =
+          (centeredChartTangentBasis (I := I) (x : M)).repr Y₁ +
+            (centeredChartTangentBasis (I := I) (x : M)).repr Y₂ :=
         map_add _ _ _
       rw [hrepr]
       rw [← Finset.sum_add_distrib]
@@ -135,31 +132,34 @@ def secondFundamentalForm
       ring)
     (fun c X Y => by
       classical
-      dsimp only
-      have hrepr : (Module.finBasis ℝ E).repr (c • Y) =
-          c • (Module.finBasis ℝ E).repr Y := map_smul _ _ _
+      have hrepr : (centeredChartTangentBasis (I := I) (x : M)).repr (c • Y) =
+          c • (centeredChartTangentBasis (I := I) (x : M)).repr Y := map_smul _ _ _
       rw [hrepr]
       simp only [smul_eq_mul, Finsupp.coe_smul, Pi.smul_apply]
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl ?_
       intro i _
       have hpull : ∀ j : Fin (Module.finrank ℝ E),
-          (((Module.finBasis ℝ E).repr X) i * (c * ((Module.finBasis ℝ E).repr Y) j) *
+          (((centeredChartTangentBasis (I := I) (x : M)).repr X) i *
+              (c * ((centeredChartTangentBasis (I := I) (x : M)).repr Y) j) *
             chartSecondFundamentalFormEntry (I := I) (M := M) g x νChart i j) =
-          c * (((Module.finBasis ℝ E).repr X) i * ((Module.finBasis ℝ E).repr Y) j *
+          c * (((centeredChartTangentBasis (I := I) (x : M)).repr X) i *
+              ((centeredChartTangentBasis (I := I) (x : M)).repr Y) j *
             chartSecondFundamentalFormEntry (I := I) (M := M) g x νChart i j) := by
         intro j
         ring
       rw [show (∑ j : Fin (Module.finrank ℝ E),
-            ((Module.finBasis ℝ E).repr X) i * (c * ((Module.finBasis ℝ E).repr Y) j) *
+            ((centeredChartTangentBasis (I := I) (x : M)).repr X) i *
+                (c * ((centeredChartTangentBasis (I := I) (x : M)).repr Y) j) *
               chartSecondFundamentalFormEntry (I := I) (M := M) g x νChart i j) =
           ∑ j : Fin (Module.finrank ℝ E),
-            c * (((Module.finBasis ℝ E).repr X) i * ((Module.finBasis ℝ E).repr Y) j *
+            c * (((centeredChartTangentBasis (I := I) (x : M)).repr X) i *
+                ((centeredChartTangentBasis (I := I) (x : M)).repr Y) j *
               chartSecondFundamentalFormEntry (I := I) (M := M) g x νChart i j) from
         Finset.sum_congr rfl (fun j _ => hpull j)]
       rw [← Finset.mul_sum])
 
-omit [InnerProductSpace ℝ E] hI in
+omit hI in
 @[simp] lemma secondFundamentalForm_apply
     (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M)
     (νChart : E → E)
@@ -167,11 +167,11 @@ omit [InnerProductSpace ℝ E] hI in
     secondFundamentalForm (I := I) (M := M) g x νChart X Y =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
-          ((Module.finBasis ℝ E).repr X) i *
-            ((Module.finBasis ℝ E).repr Y) j *
+          ((centeredChartTangentBasis (I := I) (x : M)).repr X) i *
+            ((centeredChartTangentBasis (I := I) (x : M)).repr Y) j *
             chartSecondFundamentalFormEntry (I := I) (M := M) g x νChart i j := rfl
 
-omit [InnerProductSpace ℝ E] hI in
+omit hI in
 theorem secondFundamentalForm_symm
     (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M)
     (νChart : E → E)
@@ -198,7 +198,6 @@ def secondFundamentalFormBoundary
   secondFundamentalForm (I := I) (M := M) g x νChart
     (boundaryInclusionMfderiv (M := M) x Xb) (boundaryInclusionMfderiv (M := M) x Yb)
 
-omit [InnerProductSpace ℝ E] in
 @[simp] lemma secondFundamentalFormBoundary_def
     (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M)
     (νChart : E → E)
@@ -207,7 +206,6 @@ omit [InnerProductSpace ℝ E] in
       secondFundamentalForm (I := I) (M := M) g x νChart
         (boundaryInclusionMfderiv (M := M) x Xb) (boundaryInclusionMfderiv (M := M) x Yb) := rfl
 
-omit [InnerProductSpace ℝ E] in
 theorem secondFundamentalFormBoundary_symm
     (g : SmoothRiemannianMetric I M) (x : BoundaryManifold I M)
     (νChart : E → E)

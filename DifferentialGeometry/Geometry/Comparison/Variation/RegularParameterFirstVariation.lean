@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.ParallelTransport
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Existence
 import DifferentialGeometry.Geometry.Comparison.Variation.FixedChartIdentities
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.CovariantDerivativeAlong
@@ -21,6 +21,7 @@ import DifferentialGeometry.Geometry.Comparison.Variation.ArcLength
 import DifferentialGeometry.Geometry.Comparison.Variation.SpeedDerivative
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
 import DifferentialGeometry.Geometry.Comparison.Variation.CovariantCommutationCurvature
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -290,7 +291,11 @@ theorem first_variation_of_arcLength_at_regular_parameter
       have hshift : HasDerivAt (fun a : ℝ => s₀ + a) (1 : ℝ) 0 := by
         simpa using (hasDerivAt_id (0 : ℝ)).const_add s₀
       have hcomp := hslice0.comp 0 hshift
-      simpa using hcomp
+      change HasDerivAt
+        ((fun u : ℝ => speedSq (I := I) g f u t) ∘ HAdd.hAdd s₀)
+        (fderiv ℝ (fun p : ℝ × ℝ => speedSq (I := I) g f p.1 p.2)
+          (s₀, t) (1, 0)) 0
+      simpa only [mul_one] using hcomp
     have hS1 := speedSq_hasDerivAt (I := I) g fsh t hfsh_smooth
     have hspeed_shift : ∀ a : ℝ, speedSq (I := I) g fsh a t
         = speedSq (I := I) g f (s₀ + a) t := fun a => rfl

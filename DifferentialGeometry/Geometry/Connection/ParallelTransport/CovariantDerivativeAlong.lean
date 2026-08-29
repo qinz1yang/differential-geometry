@@ -228,6 +228,32 @@ theorem covDerivAlong_smulFun (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
   rw [smul_add]
   abel
 
+omit [NeZero (Module.finrank ℝ E)] in
+theorem covDerivAlong_comp (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (V : ∀ t, TangentSpace I (γ t)) (φ : ℝ → ℝ) (t : ℝ)
+    (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I γ (φ t))
+    (hV : DifferentiableAt ℝ (chartRepAt (I := I) γ V (φ t)) (φ t))
+    (hφ : DifferentiableAt ℝ φ t) :
+    covDerivAlong (I := I) g (fun s => γ (φ s)) (fun s => V (φ s)) t =
+      (deriv φ t) • covDerivAlong (I := I) g γ V (φ t) := by
+  have hcurve : DifferentiableAt ℝ
+      (chartCurve (I := I) (γ (φ t)) γ) (φ t) := by
+    change DifferentiableAt ℝ (extChartAt I (γ (φ t)) ∘ γ) (φ t)
+    exact mdifferentiableAt_iff_differentiableAt.mp
+      (mdifferentiableAt_iff_target.mp hγ).2
+  have hrep :
+      chartRepAt (I := I) (fun s => γ (φ s)) (fun s => V (φ s)) t =
+        chartRepAt (I := I) γ V (φ t) ∘ φ := rfl
+  have hchart :
+      chartCurve (I := I) ((fun s => γ (φ s)) t) (fun s => γ (φ s)) =
+        chartCurve (I := I) (γ (φ t)) γ ∘ φ := rfl
+  rw [covDerivAlong_def, covDerivAlong_def, ← map_smul]
+  congr 1
+  rw [chartCovDerivAlong_def, chartCovDerivAlong_def, hrep, hchart]
+  rw [deriv.scomp t hV hφ, deriv.scomp t hcurve hφ]
+  simp only [Function.comp_apply]
+  rw [ChartChristoffel.contraction_smul_left, smul_add]
+
 private def chartTime (I : ModelWithCorners ℝ E H) (γ : ℝ → M) (t : ℝ) : Set ℝ :=
   γ ⁻¹' (extChartAt I (γ t)).source
 
@@ -476,11 +502,11 @@ private theorem trivCoord_comp_symmL_eq_transition [I.Boundaryless]
   rw [← hcc]
   exact hcomp
 
-theorem covDerivAlong_chart_foot_invariance [I.Boundaryless]
-    {n : WithTop ℕ∞} [ENat.LEInfty n] (hn : n ≠ 0)
+omit [NeZero (Module.finrank ℝ E)] in
+theorem covDeriv_chartAt [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t))
     (t : ℝ) (β : M)
-    (hγ : ContMDiff 𝓘(ℝ, ℝ) I n γ)
+    (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I γ t)
     (hβ : γ t ∈ (chartAt H β).source)
     (hV : DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t) :
     (trivializationAt E (TangentSpace I) β).symmL ℝ (γ t)
@@ -500,14 +526,20 @@ theorem covDerivAlong_chart_foot_invariance [I.Boundaryless]
   have hxβ_curve : xβ = chartCurve (I := I) β γ t := by rw [hxβ_eq, chartCurve_def]
   set repα : ℝ → E := chartRepAt (I := I) γ V t with hrepα_def
   set repβ : ℝ → E := chartRepAtBase (I := I) β γ V with hrepβ_def
+  have huα_diff : DifferentiableAt ℝ uα t := by
+    have hcomp := (mdifferentiableAt_extChartAt (I := I)
+      (mem_chart_source H (γ t))).comp t hγ
+    rw [mdifferentiableAt_iff_differentiableAt] at hcomp
+    change DifferentiableAt ℝ (fun s : ℝ => extChartAt I α (γ s)) t
+    exact hcomp
   have huα_hd : HasDerivAt uα (deriv uα t) t :=
-    ((contDiffAt_chartCurve (I := I) hγ t).differentiableAt hn).hasDerivAt
+    huα_diff.hasDerivAt
   have hrepα_hd : HasDerivAt repα (deriv repα t) t := hV.hasDerivAt
   set U : Set ℝ := γ ⁻¹' ((chartAt H α).source ∩ (chartAt H β).source) with hU_def
-  have hU_open : IsOpen U :=
-    ((chartAt H α).open_source.inter (chartAt H β).open_source).preimage hγ.continuous
   have htU : t ∈ U := ⟨hα, hβ⟩
-  have hU_nhds : U ∈ 𝓝 t := hU_open.mem_nhds htU
+  have hU_nhds : U ∈ 𝓝 t :=
+    hγ.continuousAt.preimage_mem_nhds
+      (((chartAt H α).open_source.inter (chartAt H β).open_source).mem_nhds htU)
   have hrepβ_eq : repβ =ᶠ[𝓝 t]
       (fun s => chartTransitionAt (I := I) α β (uα s) (repα s)) := by
     filter_upwards [hU_nhds] with s hs
@@ -641,73 +673,156 @@ theorem covDerivAlong_chart_foot_invariance [I.Boundaryless]
   abel
 
 omit [NeZero (Module.finrank ℝ E)] in
+theorem covDerivAlong_chart_foot_invariance [I.Boundaryless]
+    {n : WithTop ℕ∞} (hn : n ≠ 0)
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t))
+    (t : ℝ) (β : M)
+    (hγ : ContMDiff 𝓘(ℝ, ℝ) I n γ)
+    (hβ : γ t ∈ (chartAt H β).source)
+    (hV : DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t) :
+    (trivializationAt E (TangentSpace I) β).symmL ℝ (γ t)
+        (chartCovDerivAlong (I := I) g β γ (chartRepAtBase (I := I) β γ V) t) =
+      covDerivAlong (I := I) g γ V t :=
+  covDeriv_chartAt (I := I) g γ V t β
+    (hγ.contMDiffAt.mdifferentiableAt hn) hβ hV
+
+omit [NeZero (Module.finrank ℝ E)] in
+omit [Module.Finite ℝ E] in
+theorem chartRep_base_diff [I.Boundaryless]
+    (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t))
+    (t : ℝ) (β : M)
+    (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I γ t)
+    (hβ : γ t ∈ (chartAt H β).source)
+    (hV : DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t) :
+    DifferentiableAt ℝ (chartRepAtBase (I := I) β γ V) t := by
+  classical
+  let α : M := γ t
+  let uα : ℝ → E := chartCurve (I := I) α γ
+  let x : E := extChartAt I α (γ t)
+  let repα : ℝ → E := chartRepAt (I := I) γ V t
+  let repβ : ℝ → E := chartRepAtBase (I := I) β γ V
+  have hα : γ t ∈ (chartAt H α).source := mem_chart_source H (γ t)
+  have hsrc : x ∈ chartTransitionSource (I := I) α β :=
+    extChartAt_mem_chartTransitionSource (I := I) α β hα hβ
+  have huα_diff : DifferentiableAt ℝ uα t := by
+    change DifferentiableAt ℝ (extChartAt I (γ t) ∘ γ) t
+    exact mdifferentiableAt_iff_differentiableAt.mp
+      (mdifferentiableAt_iff_target.mp hγ).2
+  have hU_nhds :
+      γ ⁻¹' ((chartAt H α).source ∩ (chartAt H β).source) ∈ 𝓝 t :=
+    hγ.continuousAt.preimage_mem_nhds
+      (((chartAt H α).open_source.inter (chartAt H β).open_source).mem_nhds
+        ⟨hα, hβ⟩)
+  have hrepβ_eq : repβ =ᶠ[𝓝 t]
+      (fun s => chartTransitionAt (I := I) α β (uα s) (repα s)) := by
+    filter_upwards [hU_nhds] with s hs
+    obtain ⟨hsα, hsβ⟩ := hs
+    have hbridge :=
+      trivCoord_comp_symmL_eq_transition (I := I) α β hsα hsβ
+        ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ
+          (γ s) (V s))
+    have hround :
+        (trivializationAt E (TangentSpace I) α).symmL ℝ (γ s)
+            ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ
+              (γ s) (V s)) = V s := by
+      have hmem : γ s ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+        rw [TangentBundle.trivializationAt_baseSet]
+        exact hsα
+      exact (trivializationAt E (TangentSpace I) α).symmL_continuousLinearMapAt
+        (R := ℝ) hmem (V s)
+    rw [hround] at hbridge
+    simpa only [repα, repβ, chartRepAt_apply, chartRepAtBase_apply,
+      uα, chartCurve] using hbridge
+  have hAdiff : DifferentiableAt ℝ
+      (fun y => (chartTransitionAt (I := I) α β y : E →L[ℝ] E)) x := by
+    exact ((chartTransitionAt_smooth (I := I) α β).contDiffAt
+      ((chartTransitionSource_isOpen (I := I) α β).mem_nhds hsrc)).differentiableAt
+        (by simp)
+  have huαt : uα t = x := by
+    rfl
+  have hAcomp : DifferentiableAt ℝ
+      (fun s => (chartTransitionAt (I := I) α β (uα s) : E →L[ℝ] E)) t := by
+    apply hAdiff.comp t
+    simpa only [huαt] using huα_diff
+  have hrepα : DifferentiableAt ℝ repα t := by
+    simpa only [repα] using hV
+  exact (hAcomp.clm_apply hrepα).congr_of_eventuallyEq hrepβ_eq
+
+omit [NeZero (Module.finrank ℝ E)] in
 omit [Module.Finite ℝ E] in
 theorem chartRepAtBase_differentiableAt [I.Boundaryless]
-    {n : WithTop ℕ∞} [ENat.LEInfty n] (hn : n ≠ 0)
+    {n : WithTop ℕ∞} (hn : n ≠ 0)
     (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t))
     (t : ℝ) (β : M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I n γ)
     (hβ : γ t ∈ (chartAt H β).source)
     (hV : DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t) :
-    DifferentiableAt ℝ (chartRepAtBase (I := I) β γ V) t := by
+    DifferentiableAt ℝ (chartRepAtBase (I := I) β γ V) t :=
+  chartRep_base_diff (I := I) γ V t β
+    (hγ.contMDiffAt.mdifferentiableAt hn) hβ hV
+
+omit [NeZero (Module.finrank ℝ E)] in
+omit [Module.Finite ℝ E] in
+theorem chartRep_diff_base [I.Boundaryless]
+    (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t))
+    (t : ℝ) (β : M)
+    (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I γ t)
+    (hβ : γ t ∈ (chartAt H β).source)
+    (hV : DifferentiableAt ℝ (chartRepAtBase (I := I) β γ V) t) :
+    DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t := by
   classical
-  set α : M := γ t with hα_def
+  let α : M := γ t
+  let uβ : ℝ → E := chartCurve (I := I) β γ
+  let xβ : E := extChartAt I β (γ t)
+  let repα : ℝ → E := chartRepAt (I := I) γ V t
+  let repβ : ℝ → E := chartRepAtBase (I := I) β γ V
   have hα : γ t ∈ (chartAt H α).source := mem_chart_source H (γ t)
-  set uα : ℝ → E := chartCurve (I := I) α γ with huα_def
-  set x : E := extChartAt I α (γ t) with hx_def
-  set repα : ℝ → E := chartRepAt (I := I) γ V t with hrepα_def
-  set repβ : ℝ → E := chartRepAtBase (I := I) β γ V with hrepβ_def
-  have hsrc : x ∈ chartTransitionSource (I := I) α β :=
-    extChartAt_mem_chartTransitionSource (I := I) α β hα hβ
-  have huα_hd : HasDerivAt uα (deriv uα t) t :=
-    ((contDiffAt_chartCurve (I := I) hγ t).differentiableAt hn).hasDerivAt
-  have hrepα_hd : HasDerivAt repα (deriv repα t) t := hV.hasDerivAt
-  set U : Set ℝ := γ ⁻¹' ((chartAt H α).source ∩ (chartAt H β).source) with hU_def
-  have hU_open : IsOpen U :=
-    ((chartAt H α).open_source.inter (chartAt H β).open_source).preimage hγ.continuous
-  have htU : t ∈ U := ⟨hα, hβ⟩
-  have hU_nhds : U ∈ 𝓝 t := hU_open.mem_nhds htU
-  have hrepβ_eq : repβ =ᶠ[𝓝 t]
-      (fun s => chartTransitionAt (I := I) α β (uα s) (repα s)) := by
+  have hsrc : xβ ∈ chartTransitionSource (I := I) β α :=
+    extChartAt_mem_chartTransitionSource (I := I) β α hβ hα
+  have huβ_diff : DifferentiableAt ℝ uβ t := by
+    have hcomp := (mdifferentiableAt_extChartAt (I := I) hβ).comp t hγ
+    rw [mdifferentiableAt_iff_differentiableAt] at hcomp
+    change DifferentiableAt ℝ (fun s : ℝ => extChartAt I β (γ s)) t
+    exact hcomp
+  have hU_nhds :
+      γ ⁻¹' ((chartAt H β).source ∩ (chartAt H α).source) ∈ 𝓝 t :=
+    hγ.continuousAt.preimage_mem_nhds
+      (((chartAt H β).open_source.inter (chartAt H α).open_source).mem_nhds
+        ⟨hβ, hα⟩)
+  have hrepα_eq : repα =ᶠ[𝓝 t]
+      (fun s => chartTransitionAt (I := I) β α (uβ s) (repβ s)) := by
     filter_upwards [hU_nhds] with s hs
-    obtain ⟨hsα, hsβ⟩ := hs
-    have hbridge :
-        (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (γ s)
-            ((trivializationAt E (TangentSpace I) α).symmL ℝ (γ s)
-              ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ (γ s) (V s))) =
-          chartTransitionAt (I := I) α β (extChartAt I α (γ s))
-            ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ (γ s) (V s)) :=
-      trivCoord_comp_symmL_eq_transition (I := I) α β hsα hsβ _
+    obtain ⟨hsβ, hsα⟩ := hs
+    have hbridge :=
+      trivCoord_comp_symmL_eq_transition (I := I) β α hsβ hsα
+        ((trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ
+          (γ s) (V s))
     have hround :
-        (trivializationAt E (TangentSpace I) α).symmL ℝ (γ s)
-            ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ (γ s) (V s)) =
-          V s := by
-      have hmem : γ s ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-        rw [TangentBundle.trivializationAt_baseSet]; exact hsα
-      exact (trivializationAt E (TangentSpace I) α).symmL_continuousLinearMapAt
+        (trivializationAt E (TangentSpace I) β).symmL ℝ (γ s)
+            ((trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ
+              (γ s) (V s)) = V s := by
+      have hmem : γ s ∈ (trivializationAt E (TangentSpace I) β).baseSet := by
+        rw [TangentBundle.trivializationAt_baseSet]
+        exact hsβ
+      exact (trivializationAt E (TangentSpace I) β).symmL_continuousLinearMapAt
         (R := ℝ) hmem (V s)
     rw [hround] at hbridge
-    rw [hrepβ_def, chartRepAtBase_apply]
-    rw [hrepα_def, chartRepAt_apply]
-    rw [huα_def, chartCurve_def]
-    exact hbridge
+    simpa only [repα, repβ, chartRepAt_apply, chartRepAtBase_apply,
+      uβ, chartCurve] using hbridge
   have hAdiff : DifferentiableAt ℝ
-      (fun z => (chartTransitionAt (I := I) α β z : E →L[ℝ] E)) x := by
-    have h_open : IsOpen (chartTransitionSource (I := I) α β) :=
-      chartTransitionSource_isOpen (I := I) α β
-    exact ((chartTransitionAt_smooth (I := I) α β).contDiffAt
-      (h_open.mem_nhds hsrc)).differentiableAt (by simp)
-  have hxut : uα t = x := by rw [huα_def, chartCurve_def, hx_def]
-  have hAdiff' : DifferentiableAt ℝ
-      (fun z => (chartTransitionAt (I := I) α β z : E →L[ℝ] E)) (uα t) := by
-    rw [hxut]; exact hAdiff
-  have hAcomp_diff : DifferentiableAt ℝ
-      (fun s => (chartTransitionAt (I := I) α β (uα s) : E →L[ℝ] E)) t :=
-    hAdiff'.comp t huα_hd.differentiableAt
-  have hdiff : DifferentiableAt ℝ
-      (fun s => chartTransitionAt (I := I) α β (uα s) (repα s)) t :=
-    hAcomp_diff.clm_apply hrepα_hd.differentiableAt
-  exact hdiff.congr_of_eventuallyEq hrepβ_eq
+      (fun y => (chartTransitionAt (I := I) β α y : E →L[ℝ] E)) xβ := by
+    exact ((chartTransitionAt_smooth (I := I) β α).contDiffAt
+      ((chartTransitionSource_isOpen (I := I) β α).mem_nhds hsrc)).differentiableAt
+        (by simp)
+  have huβt : uβ t = xβ := by
+    rfl
+  have hAcomp : DifferentiableAt ℝ
+      (fun s => (chartTransitionAt (I := I) β α (uβ s) : E →L[ℝ] E)) t := by
+    apply hAdiff.comp t
+    simpa only [huβt] using huβ_diff
+  have hrepβ : DifferentiableAt ℝ repβ t := by
+    simpa only [repβ] using hV
+  exact (hAcomp.clm_apply hrepβ).congr_of_eventuallyEq hrepα_eq
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem chartRep_diff
@@ -750,7 +865,9 @@ theorem chartRep_diff
           ℝ (γ s) (V s)) t := by
     rw [← contMDiffAt_iff_contDiffAt]
     exact hfiber'
-  simpa only [chartRepAt] using hfiberDiff.differentiableAt (by simp)
+  let hdiff : DifferentiableAt ℝ (chartRepAt (I := I) γ V t) t :=
+    hfiberDiff.differentiableAt (by simp)
+  exact hdiff
 
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma chartRepAt_sum {ι : Type*} (s : Finset ι) (γ : ℝ → M)

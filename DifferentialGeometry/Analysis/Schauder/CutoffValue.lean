@@ -36,10 +36,13 @@ theorem cutoffValue_holderWith
     (hu : HolderWith Ku alpha (u : V → F)) :
     HolderWith (cutoffValueHolderConst Kchi Ku chi u) alpha
       (cutoffValue chi u : V → F) := by
-  simpa only [cutoffValueHolderConst, cutoffValue_apply] using
-    holderWith_smul_of_norm_le hchi hu
-      (fun x ↦ by simpa using chi.norm_coe_le_norm x)
-      (fun x ↦ by simpa using u.norm_coe_le_norm x)
+  intro x y
+  change edist (((chi : V → Real) • (u : V → F)) x)
+    (((chi : V → Real) • (u : V → F)) y) ≤
+      ↑(‖chi‖₊ * Ku + ‖u‖₊ * Kchi) * edist x y ^ (alpha : Real)
+  exact (holderWith_smul_of_norm_le hchi hu
+    (fun z ↦ by simpa using chi.norm_coe_le_norm z)
+    (fun z ↦ by simpa using u.norm_coe_le_norm z)) x y
 
 end DifferentialGeometry.Analysis.Schauder
 

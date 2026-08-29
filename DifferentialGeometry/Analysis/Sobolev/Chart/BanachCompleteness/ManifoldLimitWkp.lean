@@ -48,7 +48,7 @@ theorem limitFun_memWkp
   classical
   intro γ
   let ρ := DifferentialGeometry.Integral.Measure.chartAtlasPOU I M
-  let S := DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+  let S := DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
     (I := I) (M := M)
   let L : M → EuclN → ℝ := fun β =>
     chartLimit (I := I) (M := M) hp_one h_cauchy β

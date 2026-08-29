@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators RealInnerProductSpace
@@ -29,15 +28,17 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
+omit [CompactSpace M] in
 lemma pointwiseTensorCurv_eq_covGradRoughLapCurv_gen
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     pointwiseTensorCurv (I := I) (M := M) g s S =
-      covGradRoughLapCurv_gen (I := I) (M := M) g s S := rfl
+      covGradRoughLapCurvGen (I := I) (M := M) g s S := rfl
 
+omit [CompactSpace M] in
 lemma tensor0S_curry_pointwiseTensorCurv_eq_genuine_add_obstruction
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     (x : M) (w : TangentSpace I x) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (pointwiseTensorCurv (I := I) (M := M) g s S).toSection x)
           (unitZeroSec (I := I) (M := M) x)) w =
@@ -45,12 +46,12 @@ lemma tensor0S_curry_pointwiseTensorCurv_eq_genuine_add_obstruction
         tensor3rdCurvGenuine (I := I) g 0 s (smoothExtensionTangent (I := I) x w)
           (fun y : M => S.toSection y) x)
         (unitZeroSec (I := I) (M := M) x) +
-        (covGradRoughLapTraceDiscrepancy_gen (I := I) (M := M) g s S x w +
+        (covGradRoughLapTraceDiscrepancyGen (I := I) (M := M) g s S x w +
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
             tensor3rdCurvBracket (I := I) g 0 s (smoothExtensionTangent (I := I) x w)
               (fun y : M => S.toSection y) x)
             (unitZeroSec (I := I) (M := M) x) -
-          covGradRoughLapMovingFrameResidual_gen (I := I) (M := M) g s S x w) := by
+          covGradRoughLapMovingFrameResidualGen (I := I) (M := M) g s S x w) := by
   rw [pointwiseTensorCurv_eq_covGradRoughLapCurv_gen (I := I) (M := M) g s S]
   rw [covGradRoughLapCurv_curry_eq_discrepancy_add_curv_sub_residual_gen
     (I := I) (M := M) g s S x w]
@@ -85,7 +86,7 @@ lemma tensor0S_curry_pointwiseTensorCurv_eq_genuine_add_obstruction
 noncomputable def genuineThirdCurvFieldFib
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (w : TangentSpace I x)
-    (m : Fin s → TangentSpace I x) : ℝ :=
+    (m : Fin s → E) : ℝ :=
   ∑ a : Fin n, g.inner x (e a) w •
     Tensor0SSpace.toModel
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
@@ -96,26 +97,28 @@ noncomputable def genuineThirdCurvFieldFib
 noncomputable def bracketThirdCurvFieldFib
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     {n : ℕ} (e : Fin n → TangentSpace I x) (w : TangentSpace I x)
-    (m : Fin s → TangentSpace I x) : ℝ :=
+    (m : Fin s → E) : ℝ :=
   ∑ a : Fin n, g.inner x (e a) w •
     Tensor0SSpace.toModel
-      (covGradRoughLapTraceDiscrepancy_gen (I := I) (M := M) g s S x (e a) +
+      (covGradRoughLapTraceDiscrepancyGen (I := I) (M := M) g s S x (e a) +
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
           tensor3rdCurvBracket (I := I) g 0 s (smoothExtensionTangent (I := I) x (e a))
             (fun y : M => S.toSection y) x)
           (unitZeroSec (I := I) (M := M) x) -
-        covGradRoughLapMovingFrameResidual_gen (I := I) (M := M) g s S x (e a)) m
+        covGradRoughLapMovingFrameResidualGen (I := I) (M := M) g s S x (e a)) m
 
+omit [CompactSpace M] in
 theorem pointwiseTensorCurv_toSection_eq_genuine_add_bracket_field
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M) :
     ∃ (n : ℕ) (e : Fin n → TangentSpace I x),
       n = Module.finrank ℝ (TangentSpace I x) ∧
       (∀ i j : Fin n, g.inner x (e i) (e j) = if i = j then (1 : ℝ) else 0) ∧
-      ∀ (w : TangentSpace I x) (m : Fin s → TangentSpace I x),
+      ∀ (w : TangentSpace I x) (m : Fin s → E),
         Tensor0SSpace.toModel
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
               (pointwiseTensorCurv (I := I) (M := M) g s S).toSection x)
-              (unitZeroSec (I := I) (M := M) x)) (Fin.cons w m) =
+              (unitZeroSec (I := I) (M := M) x))
+              (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) =
           genuineThirdCurvFieldFib (I := I) (M := M) g s S x e w m +
             bracketThirdCurvFieldFib (I := I) (M := M) g s S x e w m := by
   classical
@@ -130,7 +133,7 @@ theorem pointwiseTensorCurv_toSection_eq_genuine_add_bracket_field
   refine Finset.sum_congr rfl (fun a _ => ?_)
   rw [tensor0S_curry_pointwiseTensorCurv_eq_genuine_add_obstruction
     (I := I) (M := M) g s S x (e a)]
-  rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply, smul_add]
+  rw [Tensor0SSpace.toModel_add, add_apply, smul_add]
 
 end Curvature
 end Geometry

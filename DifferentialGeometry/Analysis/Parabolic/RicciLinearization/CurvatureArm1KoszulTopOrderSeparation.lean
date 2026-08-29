@@ -205,6 +205,7 @@ private lemma riemannianFiberNormSq_iteratedCovGrad_cometricCastG0_gridWindow_le
             2 * (diagonalGridGrowthFactor (E := E) l * (∑ i' ∈ Finset.range (l + 1), SΦ i') *
               (fr ^ 2 * ∑ q ∈ Finset.range (l + 1), C q))) * BFGW := by ring
 
+omit [SigmaCompactSpace M] in
 private lemma riemannianFiberNormSq_operatorFieldComposition_coeffLower_general_le (g : SmoothRiemannianMetric I M)
     (p a b : ℕ) (Φ : SmoothCcTensor g a b) (W : SmoothCcTensor g p a) (i : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g p (b + i) x
@@ -260,7 +261,7 @@ theorem ricciArmOrder1KoszulCoeff_topOrderSeparatedResidual_jetL2_flat_leak_allO
               ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) +
               Kleak * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 1) P‖ ^ 2 := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨Kw, hKw_nn, hKwbound⟩ :=
     riemannianFiberNormSq_iteratedCovGrad_cometricCastG0_gridWindow_le (I := I) (M := M) g₀ hδ₀
@@ -312,7 +313,7 @@ theorem ricciArmOrder1KoszulCoeff_topOrderSeparatedResidual_jetL2_flat_leak_allO
     · obtain ⟨x₀⟩ := hMne
       have hδ0 : 0 ≤ δ := by
         obtain ⟨v, hv⟩ : ∃ v : TangentSpace I x₀, v ≠ 0 := by
-          haveI : Nontrivial (TangentSpace I x₀) := by
+          have : Nontrivial (TangentSpace I x₀) := by
             have hfr : 0 < Module.finrank ℝ (TangentSpace I x₀) := by
               have heq : Module.finrank ℝ (TangentSpace I x₀) = Module.finrank ℝ E := rfl
               rw [heq]; exact Nat.pos_of_ne_zero (NeZero.ne _)
@@ -454,7 +455,7 @@ theorem ricciArmOrder1KoszulCoeff_topOrderSeparatedResidual_jetL2_flat_leak_allO
         simp only [Nat.add_sub_cancel]
         push_cast
         ring
-    · haveI : IsEmpty M := not_nonempty_iff.mp hMne
+    · have : IsEmpty M := not_nonempty_iff.mp hMne
       have hz : ‖∑ k ∈ Finset.range i,
             ccOperatorFieldComp (I := I) (M := M) g₀ 3 (1 + (k + 1)) (2 + i)
               (operatorFieldApplicationLeibnizPsi (I := I) (M := M) g₀ 1 2 (raisedKoszul (I := I) g₀ g₁) i (k + 1))
@@ -495,7 +496,7 @@ theorem ricciArmOrder1KoszulCoeff_perOrder_l2_topOrderSeparated_generic_allOrder
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) +
                 Kleak * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 1) P‖ ^ 2 := by
   classical
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨ΛB, _, hΛB_nn, _, hBfeed⟩ :=
     cometricDoubleTraceField_order0sup_jetL2_ballUniform_generic

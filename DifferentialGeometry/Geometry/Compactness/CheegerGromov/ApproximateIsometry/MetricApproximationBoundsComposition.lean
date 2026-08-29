@@ -25,8 +25,7 @@ section PartialDataComp
 
 open TopologicalSpace
 
-set_option backward.isDefEq.respectTransparency false in
-noncomputable def sepData_comp [I.Boundaryless] {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
+noncomputable def sepDataComp {P : Type u} [TopologicalSpace P] [ChartedSpace H P] [IsManifold I ∞ P]
     [T2Space N] [SigmaCompactSpace N] [T2Space P] [SigmaCompactSpace P]
     [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     [IsManifold I 1 N] [IsManifold I 2 N] [IsManifold I ((∞ : WithTop ℕ∞) + 1) N]

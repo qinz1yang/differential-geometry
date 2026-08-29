@@ -17,8 +17,8 @@ open scoped ContDiff Manifold Topology
 
 open DifferentialGeometry.Geometry.Riemannian
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -55,8 +55,8 @@ theorem liveCenters_core
   refine ⟨N, ?_⟩
   intro k l hk hl alpha
   dsimp only
-  letI : MetricSpace (X.obj (Lphi.φ k)).M := (P (Lphi.φ k)).ms
-  letI : MetricSpace (X.obj (Lphi.φ l)).M := (P (Lphi.φ l)).ms
+  let : MetricSpace (X.obj (Lphi.φ k)).M := (P (Lphi.φ k)).ms
+  let : MetricSpace (X.obj (Lphi.φ l)).M := (P (Lphi.φ l)).ms
   rw [← seqCenterD_dist_eq inp.decay P Lphi l (alpha.1 : Nat),
     ← seqCenterD_dist_eq inp.decay P Lphi k (alpha.1 : Nat)]
   have hk' := abs_lt.mp (hN k hk alpha)
@@ -132,18 +132,18 @@ theorem BoundedGeometryNormalData.mapsTo_tail
   dsimp only
   let Yk := X.obj (Lphi.φ k)
   let Yl := X.obj (Lphi.φ l)
-  letI : TopologicalSpace Yk.M := Yk.topology
-  letI : ChartedSpace H Yk.M := Yk.charted
-  letI : IsManifold I ∞ Yk.M := Yk.smooth
-  letI : T2Space Yk.M := Yk.t2
-  letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-  letI : TopologicalSpace Yl.M := Yl.topology
-  letI : ChartedSpace H Yl.M := Yl.charted
-  letI : IsManifold I ∞ Yl.M := Yl.smooth
-  letI : T2Space Yl.M := Yl.t2
-  letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
-  letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
-  letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
+  let : TopologicalSpace Yk.M := Yk.topology
+  let : ChartedSpace H Yk.M := Yk.charted
+  let : IsManifold I ∞ Yk.M := Yk.smooth
+  let : T2Space Yk.M := Yk.t2
+  let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+  let : TopologicalSpace Yl.M := Yl.topology
+  let : ChartedSpace H Yl.M := Yl.charted
+  let : IsManifold I ∞ Yl.M := Yl.smooth
+  let : T2Space Yl.M := Yl.t2
+  let : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
+  let : MetricSpace Yk.M := (P (Lphi.φ k)).ms
+  let : MetricSpace Yl.M := (P (Lphi.φ l)).ms
   let F := stageComparisonMap inp P Lphi s hs k l (chart := d.chart)
   intro x hx
   have hxLarge : x ∈ Lphi.hatSourceBall inp.decay P s k :=
@@ -161,7 +161,9 @@ theorem BoundedGeometryNormalData.mapsTo_tail
   let chiK := d.chart (Lphi.φ k) ck
   let chiL := d.chart (Lphi.φ l) cl
   have hxEq : chiK.hom z = x := by
-    simpa only [chiK, ck, Yk, Lphi] using hzx
+    simpa only [chiK, ck, Lphi, NetLimitData.subseq_phi,
+      Function.comp_apply, seqCenterD_subseq,
+      NormalChartFamily.hom] using hzx
   have hxCoord : chiK.hom z ∈
       Lphi.hatSourceBall inp.decay P R0 k := by
     rwa [hxEq]
@@ -176,7 +178,13 @@ theorem BoundedGeometryNormalData.mapsTo_tail
   obtain ⟨hRadL, _hmapL⟩ := (hgeom l).1 alpha
   have hxHat : x ∈
       Lphi.hatBall inp.decay inp.D P inp.pack s k alpha.1 := by
-    simpa only [Lphi, hzx] using (hmapK hzU).1
+    rw [NetLimitData.hatBall_subseq]
+    have hmem : chiK.hom z ∈
+        L.hatBall inp.decay inp.D P inp.pack s (phi k) alpha.1 := by
+      simpa only [chiK, ck, Lphi, NetLimitData.subseq_phi,
+        Function.comp_apply, seqCenterD_subseq,
+        NormalChartFamily.hom] using (hmapK hzU).1
+    exact hxEq ▸ hmem
   have hxCenter : dist x ck < 4 * L.lamInf (alpha.1 : Nat) := by
     simpa only [ck, Lphi, NetLimitData.subseq_lamInf] using
       hat_dist_centerD inp.decay P Lphi inp.pack s hxHat
@@ -355,18 +363,18 @@ theorem BoundedGeometryNormalData.return_tail
   dsimp only
   let Yk := X.obj (Lphi.φ k)
   let Yl := X.obj (Lphi.φ l)
-  letI : TopologicalSpace Yk.M := Yk.topology
-  letI : ChartedSpace H Yk.M := Yk.charted
-  letI : IsManifold I ∞ Yk.M := Yk.smooth
-  letI : T2Space Yk.M := Yk.t2
-  letI : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
-  letI : TopologicalSpace Yl.M := Yl.topology
-  letI : ChartedSpace H Yl.M := Yl.charted
-  letI : IsManifold I ∞ Yl.M := Yl.smooth
-  letI : T2Space Yl.M := Yl.t2
-  letI : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
-  letI : MetricSpace Yk.M := (P (Lphi.φ k)).ms
-  letI : MetricSpace Yl.M := (P (Lphi.φ l)).ms
+  let : TopologicalSpace Yk.M := Yk.topology
+  let : ChartedSpace H Yk.M := Yk.charted
+  let : IsManifold I ∞ Yk.M := Yk.smooth
+  let : T2Space Yk.M := Yk.t2
+  let : T2Space (TangentBundle I Yk.M) := Yk.t2TangentBundle
+  let : TopologicalSpace Yl.M := Yl.topology
+  let : ChartedSpace H Yl.M := Yl.charted
+  let : IsManifold I ∞ Yl.M := Yl.smooth
+  let : T2Space Yl.M := Yl.t2
+  let : T2Space (TangentBundle I Yl.M) := Yl.t2TangentBundle
+  let : MetricSpace Yk.M := (P (Lphi.φ k)).ms
+  let : MetricSpace Yl.M := (P (Lphi.φ l)).ms
   let Fkl := stageComparisonMap inp P Lphi s hs k l
     (chart := d.chart)
   let Flk := stageComparisonMap inp P Lphi s hs l k
@@ -386,7 +394,9 @@ theorem BoundedGeometryNormalData.return_tail
   let chiK := d.chart (Lphi.φ k) ck
   let chiL := d.chart (Lphi.φ l) cl
   have hxEq : chiK.hom z = x := by
-    simpa only [chiK, ck, Yk, Lphi] using hzx
+    simpa only [chiK, ck, Lphi, NetLimitData.subseq_phi,
+      Function.comp_apply, seqCenterD_subseq,
+      NormalChartFamily.hom] using hzx
   have hxCoord : chiK.hom z ∈
       Lphi.hatSourceBall inp.decay P R0 k := by
     rwa [hxEq]

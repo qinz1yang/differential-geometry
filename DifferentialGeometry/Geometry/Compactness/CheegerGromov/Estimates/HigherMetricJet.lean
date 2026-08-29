@@ -35,8 +35,8 @@ local instance formNormedSpace :
     NormedSpace Real (E →L[Real] E →L[Real] Real) :=
   ContinuousLinearMap.toNormedSpace
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E]
   [T2Space (TangentBundle I M)] in
 theorem intrMetricJet_abs_le
@@ -111,8 +111,8 @@ theorem intrMetricJet_abs_le
         ring
       rw [hsum]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrMetricJet_tube
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
@@ -142,40 +142,42 @@ theorem intrMetricJet_tube
         ‖v‖ₑ = ENNReal.ofReal
           (Real.sqrt (P.metric.inner x v v)) := by
       intro x v
-      simpa using
-        (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-          (I := I) P.metric x v)
+      with_unfolding_all
+        exact
+          Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+            (I := I) P.metric x v
     Real.sqrt (P.metric.inner p u u) ≤ U →
     Real.sqrt (P.metric.inner p a a) ≤ D →
     Real.sqrt (P.metric.inner p b b) ≤ D →
     |intrMetricJet (I := I) P.metric hEnorm p u a b n 0| ≤
       2 ^ n * jetCap hP.C U D n ^ 2 := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : IsManifold I 1 P.M :=
+  let _ : TopologicalSpace P.M := P.topology
+  let _ : ChartedSpace H P.M := P.charted
+  let _ : IsManifold I ∞ P.M := P.smooth
+  let _ : IsManifold I 1 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := ∞) (by decide)
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : T2Space P.M := P.t2
-  letI : T2Space (TangentBundle I P.M) := P.t2TangentBundle
-  letI : RiemannianBundle (fun x : P.M => TangentSpace I x) :=
+  let _ : SigmaCompactSpace P.M := P.sigmaCompact
+  let _ : T2Space P.M := P.t2
+  let _ : T2Space (TangentBundle I P.M) := P.t2TangentBundle
+  let _ : RiemannianBundle (fun x : P.M => TangentSpace I x) :=
     P.riemBundle (I := I)
-  letI : (x : P.M) → InnerProductSpace Real (TangentSpace I x) :=
+  let _ : (x : P.M) → InnerProductSpace Real (TangentSpace I x) :=
     P.riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun x : P.M => TangentSpace I x) :=
     P.riemBundle_cont (I := I)
-  letI : EMetricSpace P.M := P.emetricSpace (I := I)
-  letI : CompleteSpace P.M :=
+  let _ : EMetricSpace P.M := P.emetricSpace (I := I)
+  let _ : CompleteSpace P.M :=
     MetricComplete.complete (I := I) P hcomplete
-  letI : ConnectedSpace P.M := hconn
+  let _ : ConnectedSpace P.M := hconn
   let hEnorm : ∀ (x : P.M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal
         (Real.sqrt (P.metric.inner x v v)) := by
     intro x v
-    simpa using
-      (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := I) P.metric x v)
+    with_unfolding_all
+      exact
+        Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) P.metric x v
   dsimp only
   intro hu ha hb
   have hjets :=
@@ -188,8 +190,8 @@ theorem intrMetricJet_tube
   simpa only [IntrJetAtom.eval, intrLaunchJet] using
     hjets.1 k hk 1 (by constructor <;> norm_num)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrMetric_deriv_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
@@ -220,41 +222,43 @@ theorem intrMetric_deriv_le
         ‖v‖ₑ = ENNReal.ofReal
           (Real.sqrt (P.metric.inner x v v)) := by
       intro x v
-      simpa using
-        (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-          (I := I) P.metric x v)
+      with_unfolding_all
+        exact
+          Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+            (I := I) P.metric x v
     ContDiffAt Real ∞
         (intrFrameMetric (I := I) P.metric hEnorm p) z →
       ‖iteratedFDeriv Real n
           (intrFrameMetric (I := I) P.metric hEnorm p) z‖ ≤
         ContinuousMultilinearMap.polarConst n *
           (2 * (2 ^ n * jetCap hP.C U 1 n ^ 2)) := by
-  letI : TopologicalSpace P.M := P.topology
-  letI : ChartedSpace H P.M := P.charted
-  letI : IsManifold I ∞ P.M := P.smooth
-  letI : IsManifold I 1 P.M :=
+  let _ : TopologicalSpace P.M := P.topology
+  let _ : ChartedSpace H P.M := P.charted
+  let _ : IsManifold I ∞ P.M := P.smooth
+  let _ : IsManifold I 1 P.M :=
     IsManifold.of_le (I := I) (M := P.M) (n := ∞) (by decide)
-  letI : SigmaCompactSpace P.M := P.sigmaCompact
-  letI : T2Space P.M := P.t2
-  letI : T2Space (TangentBundle I P.M) := P.t2TangentBundle
-  letI : RiemannianBundle (fun x : P.M => TangentSpace I x) :=
+  let _ : SigmaCompactSpace P.M := P.sigmaCompact
+  let _ : T2Space P.M := P.t2
+  let _ : T2Space (TangentBundle I P.M) := P.t2TangentBundle
+  let _ : RiemannianBundle (fun x : P.M => TangentSpace I x) :=
     P.riemBundle (I := I)
-  letI : (x : P.M) → InnerProductSpace Real (TangentSpace I x) :=
+  let _ : (x : P.M) → InnerProductSpace Real (TangentSpace I x) :=
     P.riemInner (I := I)
-  letI : IsContinuousRiemannianBundle E
+  let _ : IsContinuousRiemannianBundle E
       (fun x : P.M => TangentSpace I x) :=
     P.riemBundle_cont (I := I)
-  letI : EMetricSpace P.M := P.emetricSpace (I := I)
-  letI : CompleteSpace P.M :=
+  let _ : EMetricSpace P.M := P.emetricSpace (I := I)
+  let _ : CompleteSpace P.M :=
     MetricComplete.complete (I := I) P hcomplete
-  letI : ConnectedSpace P.M := hconn
+  let _ : ConnectedSpace P.M := hconn
   let hEnorm : ∀ (x : P.M) (v : TangentSpace I x),
       ‖v‖ₑ = ENNReal.ofReal
         (Real.sqrt (P.metric.inner x v v)) := by
     intro x v
-    simpa using
-      (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
-        (I := I) P.metric x v)
+    with_unfolding_all
+      exact
+        Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
+          (I := I) P.metric x v
   dsimp only
   intro hsmooth
   let A :=

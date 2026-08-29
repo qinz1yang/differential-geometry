@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Morse.Manifold
+import DifferentialGeometry.Bundle.TangentSpace
 import Mathlib.Geometry.Manifold.PartitionOfUnity
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
 
@@ -8,6 +9,7 @@ open Manifold Set
 open scoped Manifold ContDiff
 
 noncomputable section
+
 
 variable {n : ℕ} {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
 variable {I : ModelWithCorners ℝ (MorseModel n) H}
@@ -27,7 +29,7 @@ private theorem exists_coord_of_fderiv_ne_zero (g : MorseModel n → ℝ) (y : M
   simp [hz]
 
 private theorem chartRep_contDiffOn (I : ModelWithCorners ℝ (MorseModel n) H)
-    [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
+    [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) (x₀ : M) :
     ContDiffOn ℝ (↑(⊤ : ℕ∞) : WithTop ℕ∞) (fun y : MorseModel n => f ((extChartAt I x₀).symm y))
       (extChartAt I x₀).target := by
@@ -53,17 +55,29 @@ theorem tangentTrivializationAt_apply (I : ModelWithCorners ℝ (MorseModel n) H
     [IsManifold I (⊤ : WithTop ℕ∞) M] (x₀ x : M)
     (hx : x ∈ (extChartAt I x₀).source) (v : TangentSpace I x) :
     (trivializationAt (MorseModel n) (TangentSpace I) x₀ ⟨x, v⟩).2 =
-      (mfderiv I 𝓘(ℝ, MorseModel n) (extChartAt I x₀) x) v := by
-  rw [TangentBundle.trivializationAt_apply]
-  rw [mfderiv]
-  have hmd : MDifferentiableAt I 𝓘(ℝ, MorseModel n) (extChartAt I x₀) x := by
-    have hxsrc : x ∈ (chartAt H x₀).source := by
-      rwa [extChartAt_source (I := I) (x := x₀)] at hx
-    exact (contMDiffAt_extChartAt' (I := I) (n := (⊤ : WithTop ℕ∞)) (x := x₀) hxsrc).mdifferentiableAt (by norm_num)
-  rw [if_pos hmd]
-  change fderivWithin ℝ (extChartAt I x₀ ∘ (extChartAt I x).symm) (range I) (extChartAt I x x) v =
-      fderivWithin ℝ (extChartAt I x₀ ∘ (extChartAt I x).symm) (range I) (extChartAt I x x) v
-  rfl
+      tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, MorseModel n))
+        (extChartAt I x₀ x) ((mfderiv I 𝓘(ℝ, MorseModel n) (extChartAt I x₀) x) v) := by
+  have hxsrc : x ∈ (chartAt H x₀).source := by
+    rwa [extChartAt_source (I := I) (x := x₀)] at hx
+  have hmd : MDifferentiableAt I 𝓘(ℝ, MorseModel n) (extChartAt I x₀) x :=
+    mdifferentiableAt_extChartAt hxsrc
+  have htriv :
+      (trivializationAt (MorseModel n) (TangentSpace I) x₀ ⟨x, v⟩).2 =
+        fderivWithin ℝ
+          (writtenInExtChartAt I 𝓘(ℝ, MorseModel n) x (extChartAt I x₀)) (range I)
+          (extChartAt I x x) (tangentSpaceModelContinuousLinearEquiv (I := I) x v) := by
+    rw [TangentBundle.trivializationAt_apply]
+    rfl
+  rw [htriv]
+  have hmf :
+      tangentLinearMapToModel (mfderiv I 𝓘(ℝ, MorseModel n) (extChartAt I x₀) x) =
+        fderivWithin ℝ (writtenInExtChartAt I 𝓘(ℝ, MorseModel n) x (extChartAt I x₀))
+          (range I) (extChartAt I x x) :=
+    congrArg (fun A => tangentLinearMapToModel A) hmd.mfderiv
+  have hmfv := DFunLike.congr_fun hmf
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
+  simpa only [tangentLinearMapToModel_apply,
+    ContinuousLinearEquiv.symm_apply_apply] using hmfv.symm
 
 theorem localUnitSpeedVectorField_at_noncritical (I : ModelWithCorners ℝ (MorseModel n) H)
     [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] (f : M → ℝ)
@@ -76,7 +90,9 @@ theorem localUnitSpeedVectorField_at_noncritical (I : ModelWithCorners ℝ (Mors
         ∀ x ∈ (extChartAt I x₀).source,
           (fderiv ℝ (fun y : MorseModel n => f ((extChartAt I x₀).symm y)) (extChartAt I x₀ x))
               (Pi.single i (1 : ℝ)) ≠ 0 →
-          (mfderiv I 𝓘(ℝ, MorseModel n) (extChartAt I x₀) x) (W x) =
+          tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, MorseModel n))
+              (extChartAt I x₀ x)
+              ((mfderiv I 𝓘(ℝ, MorseModel n) (extChartAt I x₀) x) (W x)) =
               -(((fderiv ℝ (fun y : MorseModel n => f ((extChartAt I x₀).symm y)) (extChartAt I x₀ x))
                   (Pi.single i (1 : ℝ)))⁻¹) • (Pi.single i (1 : ℝ) : MorseModel n) ∧
           (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (W x)) = -1 := by
@@ -95,7 +111,11 @@ theorem localUnitSpeedVectorField_at_noncritical (I : ModelWithCorners ℝ (Mors
   let g : MorseModel n → ℝ := fun y => f (e.symm y)
   let a : M → ℝ := fun x => (fderiv ℝ g (e x)) (Pi.single i (1 : ℝ))
   let W : (x : M) → TangentSpace I x := fun x =>
-    (mfderivWithin 𝓘(ℝ, MorseModel n) I e.symm (range I) (e x)) (-(a x)⁻¹ • (Pi.single i (1 : ℝ) : MorseModel n))
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+      (tangentSpaceModelContinuousLinearEquiv (I := I) (e.symm (e x))
+        ((mfderivWithin 𝓘(ℝ, MorseModel n) I e.symm (range I) (e x))
+          ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, MorseModel n)) (e x)).symm
+            (-(a x)⁻¹ • (Pi.single i (1 : ℝ) : MorseModel n)))))
   refine ⟨i, ?_, W, ?_⟩
   · simpa [g, e] using hi
   intro x hx hane
@@ -118,23 +138,44 @@ theorem localUnitSpeedVectorField_at_noncritical (I : ModelWithCorners ℝ (Mors
     exact (mfderiv_eq_fderiv (𝕜 := ℝ) (E := MorseModel n) (E' := ℝ) (f := g) (x := e x))
   have hid := mfderiv_extChartAt_comp_mfderivWithin_extChartAt_symm (I := I) (x := x₀)
     (y := e x) (by simpa [e] using hmemx)
-  have hid' : (mfderiv I 𝓘(ℝ, MorseModel n) e x) ∘L
-      (mfderivWithin 𝓘(ℝ, MorseModel n) I e.symm (range I) (e x)) =
-      ContinuousLinearMap.id _ _ := by
-    rw [hepx] at hid
-    exact hid
-  have hidapply : ∀ w : MorseModel n,
-      (mfderiv I 𝓘(ℝ, MorseModel n) e x)
-        ((mfderivWithin 𝓘(ℝ, MorseModel n) I e.symm (range I) (e x)) w) = w := by
+  have hidRaw :
+      (mfderiv I 𝓘(ℝ, MorseModel n) e (e.symm (e x))).comp
+          (mfderivWithin 𝓘(ℝ, MorseModel n) I e.symm (range I) (e x)) =
+        ContinuousLinearMap.id ℝ
+          (TangentSpace 𝓘(ℝ, MorseModel n) (e x)) := by
+    simpa [e] using hid
+  have hidModel :
+      tangentLinearMapToModel
+          ((mfderiv I 𝓘(ℝ, MorseModel n) e (e.symm (e x))).comp
+            (mfderivWithin 𝓘(ℝ, MorseModel n) I e.symm (range I) (e x))) =
+        (1 : MorseModel n →L[ℝ] MorseModel n) :=
+    congrArg (fun A => tangentLinearMapToModel A) hidRaw
+  have hidapplyRaw : ∀ w : MorseModel n,
+      tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, MorseModel n))
+          (e (e.symm (e x)))
+        ((mfderiv I 𝓘(ℝ, MorseModel n) e (e.symm (e x)))
+          ((mfderivWithin 𝓘(ℝ, MorseModel n) I e.symm (range I) (e x))
+            ((tangentSpaceModelContinuousLinearEquiv
+              (I := 𝓘(ℝ, MorseModel n)) (e x)).symm w))) = w := by
     intro w
-    change (((mfderiv I 𝓘(ℝ, MorseModel n) e x).comp
-      (mfderivWithin 𝓘(ℝ, MorseModel n) I e.symm (range I) (e x)))) w = w
-    rw [hid']
-    simp
-  have hchartW : ((mfderiv I 𝓘(ℝ, MorseModel n) e x) : TangentSpace I x →L[ℝ] MorseModel n) (W x) =
-      -(a x)⁻¹ • (Pi.single i (1 : ℝ) : MorseModel n) := by
-    dsimp [W, a]
-    exact hidapply (-(a x)⁻¹ • (Pi.single i (1 : ℝ) : MorseModel n))
+    have hw := DFunLike.congr_fun hidModel w
+    calc
+      _ = tangentLinearMapToModel
+          ((mfderiv I 𝓘(ℝ, MorseModel n) e (e.symm (e x))).comp
+            (mfderivWithin 𝓘(ℝ, MorseModel n) I e.symm (range I) (e x))) w := by
+          rw [tangentLinearMapToModel_apply, ContinuousLinearMap.comp_apply]
+      _ = (1 : MorseModel n →L[ℝ] MorseModel n) w := hw
+      _ = w := by rfl
+  rw [hepx] at hidapplyRaw
+  have hchartW :
+      tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, MorseModel n)) (e x)
+          ((mfderiv I 𝓘(ℝ, MorseModel n) e x) (W x)) =
+        -(a x)⁻¹ • (Pi.single i (1 : ℝ) : MorseModel n) := by
+    dsimp only [W]
+    rw [hepx]
+    simpa only [ContinuousLinearEquiv.apply_symm_apply,
+      ContinuousLinearEquiv.symm_apply_apply] using
+      hidapplyRaw (-(a x)⁻¹ • (Pi.single i (1 : ℝ) : MorseModel n))
   have hfinal : (fderiv ℝ g (e x)) (-(a x)⁻¹ • (Pi.single i (1 : ℝ) : MorseModel n)) = -1 := by
     rw [(fderiv ℝ g (e x)).map_smul]
     rw [smul_eq_mul]
@@ -142,23 +183,54 @@ theorem localUnitSpeedVectorField_at_noncritical (I : ModelWithCorners ℝ (Mors
       dsimp [a]
     rw [← haval]
     field_simp [hane_g]
-  have hmain : (mfderiv I 𝓘(ℝ, ℝ) f x) (W x) = (-1 : ℝ) := by
-    rw [heq]
-    have hfun : (fun y : M => g (e y)) = (g ∘ e) := by rfl
-    rw [hfun, hcomp]
-    change ((mfderiv 𝓘(ℝ, MorseModel n) 𝓘(ℝ, ℝ) g (e x) : MorseModel n →L[ℝ] ℝ))
-        (((mfderiv I 𝓘(ℝ, MorseModel n) e x) : TangentSpace I x →L[ℝ] MorseModel n) (W x)) = (-1 : ℝ)
-    rw [hge]
-    rw [hchartW]
-    exact hfinal
+  have heqModel := congrArg (fun A => tangentLinearMapToModel A) heq
+  have hcompModel := congrArg (fun A => tangentLinearMapToModel A) hcomp
+  have hgeModel :
+      tangentLinearMapToModel
+          (mfderiv 𝓘(ℝ, MorseModel n) 𝓘(ℝ, ℝ) g (e x)) =
+        fderiv ℝ g (e x) :=
+    congrArg (fun A => tangentLinearMapToModel A) hge
+  have hmain :
+      tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, ℝ)) (f x)
+          ((mfderiv I 𝓘(ℝ, ℝ) f x) (W x)) = -1 := by
+    let wx := tangentSpaceModelContinuousLinearEquiv (I := I) x (W x)
+    calc
+      _ = tangentLinearMapToModel (mfderiv I 𝓘(ℝ, ℝ) f x) wx := by
+        rw [tangentLinearMapToModel_apply]
+        simp [wx]
+      _ = tangentLinearMapToModel
+          (mfderiv I 𝓘(ℝ, ℝ) (fun y => g (e y)) x) wx :=
+        DFunLike.congr_fun heqModel wx
+      _ = tangentLinearMapToModel
+          ((mfderiv 𝓘(ℝ, MorseModel n) 𝓘(ℝ, ℝ) g (e x)).comp
+            (mfderiv I 𝓘(ℝ, MorseModel n) e x)) wx :=
+        DFunLike.congr_fun hcompModel wx
+      _ = tangentLinearMapToModel
+          (mfderiv 𝓘(ℝ, MorseModel n) 𝓘(ℝ, ℝ) g (e x))
+            (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, MorseModel n)) (e x)
+              ((mfderiv I 𝓘(ℝ, MorseModel n) e x) (W x))) := by
+        rw [tangentLinearMapToModel_apply, tangentLinearMapToModel_apply,
+          ContinuousLinearMap.comp_apply]
+        simp [wx]
+      _ = fderiv ℝ g (e x)
+          (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, MorseModel n)) (e x)
+            ((mfderiv I 𝓘(ℝ, MorseModel n) e x) (W x))) := by
+        rw [hgeModel]
+      _ = -1 := by
+        rw [hchartW]
+        exact hfinal
   have hts : (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (W x)) =
-      (mfderiv I 𝓘(ℝ, ℝ) f x) (W x) := by
+      tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, ℝ)) (f x)
+        ((mfderiv I 𝓘(ℝ, ℝ) f x) (W x)) := by
     rfl
   constructor
-  · change (mfderiv I 𝓘(ℝ, MorseModel n) e x) (W x) =
-        -(((fderiv ℝ (fun y : MorseModel n => f (e.symm y)) (e x)) (Pi.single i (1 : ℝ)))⁻¹) •
+  · change
+      tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, MorseModel n)) (e x)
+          ((mfderiv I 𝓘(ℝ, MorseModel n) e x) (W x)) =
+        -(((fderiv ℝ (fun y : MorseModel n => f (e.symm y)) (e x))
+          (Pi.single i (1 : ℝ)))⁻¹) •
           (Pi.single i (1 : ℝ) : MorseModel n)
-    simpa [a, g] using hchartW
+    simpa only [a, g] using hchartW
   · rw [hts]
     exact hmain
 
@@ -329,8 +401,8 @@ theorem exists_unitSpeedVectorField_on_compact (I : ModelWithCorners ℝ (MorseM
     fun x => exists_open_unitSpeedVectorField_at_noncritical I f hf (hregular x x.2)
   choose U hUmem hUopen W hWdf hWsec using hpts
   have hKclosed : IsClosed K := hcompact.isClosed
-  haveI : LocallyCompactSpace H := I.locallyCompactSpace
-  haveI : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  have _ : LocallyCompactSpace H := I.locallyCompactSpace
+  have _ : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
   rcases exists_open_between_and_isCompact_closure hcompact isOpen_univ (subset_univ K)
     with ⟨W₀, hW₀open, hKW₀, hW₀cl, hW₀compact⟩
   let U' : K → Set M := fun x => U x ∩ W₀
@@ -468,8 +540,8 @@ theorem exists_unitSpeedVectorField_on_strip (I : ModelWithCorners ℝ (MorseMod
     fun x => exists_open_unitSpeedVectorField_at_noncritical I f hf (hregular x x.2)
   choose U hUmem hUopen W hWdf hWsec using hpts
   have hKclosed : IsClosed K := hcompact.isClosed
-  haveI : LocallyCompactSpace H := I.locallyCompactSpace
-  haveI : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
+  have _ : LocallyCompactSpace H := I.locallyCompactSpace
+  have _ : LocallyCompactSpace M := ChartedSpace.locallyCompactSpace H M
   rcases exists_open_between_and_isCompact_closure hcompact isOpen_univ (subset_univ K)
     with ⟨W₀, hW₀open, hKW₀, hW₀cl, hW₀compact⟩
   let U' : K → Set M := fun x => U x ∩ W₀

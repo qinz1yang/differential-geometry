@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -33,8 +32,8 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-private abbrev EuclN (E : Type*) [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E] := EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
+private abbrev EuclN (E : Type*) [NormedAddCommGroup E] [InnerProductSpace ℝ E] :=
+  EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma exists_eLpNorm_tensorChartComponentScalar_le_const_mul_h1Norm
@@ -71,7 +70,7 @@ private lemma exists_eLpNorm_tensorChartComponentScalar_le_const_mul_h1Norm
     have h_nnnorm_ofReal :
         (‖S.toCcTensor‖₊ : ℝ≥0∞) = ENNReal.ofReal ‖S.toCcTensor‖ := by
       rw [show ((‖S.toCcTensor‖₊ : ℝ≥0∞)) = ‖S.toCcTensor‖ₑ from
-        (enorm_eq_nnnorm _).symm, ← ofReal_norm_eq_enorm _]
+        (enorm_eq_nnnorm _).symm, ← ofReal_norm _]
     rw [h_nnnorm_ofReal, h_norm_eq]
   rw [h_eq] at hB
   have h_l2_le_h1 :
@@ -85,7 +84,7 @@ private lemma exists_eLpNorm_tensorChartComponentScalar_le_const_mul_h1Norm
             g r s S.toCcTensor α Idx Jdx) 2
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤
         ENNReal.ofReal C₂ * (‖S‖₊ : ℝ≥0∞) :=
-    hB.trans (mul_le_mul_of_nonneg_left h_l2_le_h1 (by exact zero_le _))
+    hB.trans (mul_le_mul_of_nonneg_left h_l2_le_h1 (by exact zero_le))
   exact hB'
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -228,7 +227,7 @@ theorem exists_eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar
           h_env_apply
       _ ≤ ENNReal.ofReal C_env *
             (ENNReal.ofReal C_L2 * NS + ENNReal.ofReal C_grad * NS) :=
-          mul_le_mul_of_nonneg_left h_inner_sum (by exact zero_le _)
+          mul_le_mul_of_nonneg_left h_inner_sum (by exact zero_le)
       _ = ENNReal.ofReal C_env *
             ((ENNReal.ofReal C_L2 + ENNReal.ofReal C_grad) * NS) := by
           rw [h_factor_sum]

@@ -10,6 +10,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
@@ -90,7 +91,7 @@ theorem metricDiff_fam_jet
         intro x hx
         exact (hbdd k q hq x hx).trans (le_max_left B BBase)
   have hGramPer : ∀ m : Fin 4, ∃ Cm : ℝ, 0 ≤ Cm ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k : Option ι, ∀ x ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ a c : Fin (Module.finrank ℝ E),
@@ -104,7 +105,7 @@ theorem metricDiff_fam_jet
   let Q : ℝ := ∑ m : Fin 4, CGram m
   have hQ_nn : 0 ≤ Q := Finset.sum_nonneg fun m _ => hCGram_nn m
   have hGram : ∀ m : ℕ, m ≤ 3 →
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k : Option ι, ∀ x ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ a c : Fin (Module.finrank ℝ E),
@@ -127,9 +128,9 @@ theorem metricDiff_fam_jet
       (chartPouKernel_isCompact (I := I) (M := M) α)
       (chartPouKernel_subset_chartTargetEuclid (I := I) (M := M) α) 3
   choose CPou hCPou_nn hCPou using hPouPer
-  let P : ℝ := ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), CPou α
+  let P : ℝ := ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), CPou α
   have hP_nn : 0 ≤ P := Finset.sum_nonneg fun α _ => hCPou_nn α
-  have hCPou_le : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M), CPou α ≤ P := by
+  have hCPou_le : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M), CPou α ≤ P := by
     intro α hα
     exact Finset.single_le_sum (fun β _ => hCPou_nn β) hα
   let R : ℝ := ∑ m ∈ Finset.range 4,
@@ -142,7 +143,7 @@ theorem metricDiff_fam_jet
     positivity
   refine ⟨C, hC_nn, ?_⟩
   intro α k Jdx j hj y
-  by_cases hα : α ∈ chartAtlasPOU_finset (I := I) (M := M)
+  by_cases hα : α ∈ chartAtlasPOUFinset (I := I) (M := M)
   · let a : Fin (Module.finrank ℝ E) := Jdx 0
     let c : Fin (Module.finrank ℝ E) := Jdx 1
     have hJdx : Jdx = ![a, c] := by
@@ -257,9 +258,9 @@ theorem metricDiff_fam_jet
             (hbasecd.of_le (by exact_mod_cast le_top))]
           refine (norm_sub_le _ _).trans (add_le_add ?_ ?_)
           · rw [hcoord]
-            simpa only [gAll] using hGram m hm α hα (some k) x hx a c
+            with_unfolding_all exact hGram m hm α hα (some k) x hx a c
           · rw [hcoord]
-            simpa only [gAll] using hGram m hm α hα none x hx a c
+            with_unfolding_all exact hGram m hm α hα none x hx a c
         have hterm :
             ‖((toEuclidean (E := E)).symm : EuclN →L[ℝ] E)‖ ^ m *
                 ‖iteratedFDerivWithin ℝ m

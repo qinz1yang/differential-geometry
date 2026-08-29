@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -42,7 +41,7 @@ omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem tensor0S_curry_covGradBundleEquiv_unit
     (x : M) (Φ : TangentSpace I x →L[ℝ] TensorRSSpace 0 2 I x)
     (v : TangentSpace I x) :
-    tensor0S_curry (I := I) (M := M) 2 x
+    tensor0SCurry (I := I) (M := M) 2 x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           covGradBundleEquiv (I := I) (M := M) 0 2 x Φ)
           (unitZeroSec (I := I) (M := M) x)) v =
@@ -52,7 +51,7 @@ theorem tensor0S_curry_covGradBundleEquiv_unit
   apply ContinuousMultilinearMap.ext
   intro u
   rw [show Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) 2 x
+        (tensor0SCurry (I := I) (M := M) 2 x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
             covGradBundleEquiv (I := I) (M := M) 0 2 x Φ)
             (unitZeroSec (I := I) (M := M) x)) v) u =
@@ -60,15 +59,19 @@ theorem tensor0S_curry_covGradBundleEquiv_unit
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           covGradBundleEquiv (I := I) (M := M) 0 2 x Φ)
           (unitZeroSec (I := I) (M := M) x))
-        (Fin.cons v u) from
+        (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) u) from
     (TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 2) (b := x)
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
         covGradBundleEquiv (I := I) (M := M) 0 2 x Φ)
         (unitZeroSec (I := I) (M := M) x)) v u)]
-  rw [covGradBundleEquiv_apply_eval (I := I) (M := M) 0 2 x Φ
-    (unitZeroSec (I := I) (M := M) x) (Fin.cons v u)]
-  have hzero : (Fin.cons v u : Fin 3 → TangentSpace I x) 0 = v := by rw [Fin.cons_zero]
-  have htail : Matrix.vecTail (Fin.cons v u : Fin 3 → TangentSpace I x) = u := by
+  rw [covGradBundleEquiv_apply_toModel (I := I) (M := M) 0 2 x Φ
+    (unitZeroSec (I := I) (M := M) x)
+    (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) u)]
+  have hzero : (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+      ((Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) u : Fin 3 → E) 0) = v := by
+    rw [Fin.cons_zero, ContinuousLinearEquiv.symm_apply_apply]
+  have htail : Matrix.vecTail
+      (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) u : Fin 3 → E) = u := by
     funext k; rw [Matrix.vecTail, Function.comp_apply, Fin.cons_succ]
   rw [hzero, htail]
 
@@ -78,7 +81,7 @@ theorem covGradBundleEquiv_tensorCov_unit_curry_eq_abstractCovDeriv
     (g : SmoothRiemannianMetric I M)
     (σ : Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun y : M => TensorRSSpace 0 2 I y)⟯)
     (x : M) (v : TangentSpace I x) :
-    tensor0S_curry (I := I) (M := M) 2 x
+    tensor0SCurry (I := I) (M := M) 2 x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           covGradBundleEquiv (I := I) (M := M) 0 2 x
             (tensorRSCovariantDerivative I M 0 2 (LeviCivita (I := I) g)

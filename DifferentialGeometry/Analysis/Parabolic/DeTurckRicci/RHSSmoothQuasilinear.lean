@@ -278,8 +278,8 @@ theorem combine_smoothness_of_summands
           (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x))
         + lieDerivMetric (I := I) g W x
             (chartFrameVec (I := I) α i x) (chartFrameVec (I := I) α j x)
-    rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply,
+    rw [add_apply, add_apply,
+      smul_apply, smul_apply,
       smul_eq_mul]
     rfl
   refine ContMDiffOn.congr ?_ (fun x _ => (h_unfold x).symm)

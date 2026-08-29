@@ -102,7 +102,7 @@ theorem heatEarlyNear_norm {T t : ℝ} {C : ℝ≥0∞}
       ‖heatKernel (t - z.1) (x - z.2) • f z‖ₑ =
           ENNReal.ofReal
             (heatKernel (t - z.1) (x - z.2) * ‖f z‖) := by
-        rw [← ofReal_norm_eq_enorm, norm_smul, Real.norm_eq_abs,
+        rw [← ofReal_norm, norm_smul, Real.norm_eq_abs,
           abs_of_nonneg hk0]
       _ ≤ ENNReal.ofReal (K * ‖f z‖) :=
         ENNReal.ofReal_le_ofReal

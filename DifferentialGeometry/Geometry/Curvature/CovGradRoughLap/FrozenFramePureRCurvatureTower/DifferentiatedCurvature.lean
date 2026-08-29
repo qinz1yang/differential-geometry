@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -66,7 +65,6 @@ noncomputable def genuineDiffCurvSection
   rw [genuineDiffCurvSection,
     operatorFieldApplication_toSection (I := I) (M := M) g (s + 0) (s + 0 + 1)
       (covGrad (I := I) (M := M) g (s + 0) (s + 0) (curvOpField (I := I) (M := M) g s)) S x]
-  rfl
 
 theorem genuineDiffCurvSection_eq_covGrad_sub_slotExtend
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
@@ -121,7 +119,6 @@ theorem operatorFieldApplication_slotExtend_curvOpField_covGrad_unit_eval
       (covGrad (I := I) (M := M) g 0 (s + 0) S).toSection x) d) v0 vs]
   rw [tensor0S_curry_covGrad_operatorFieldApplication_eq (I := I) (M := M) g (s + 0) S x d v0]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem covGrad_pureRGenuineDiffOp_unit_eval_eq_genuineDiffCurv_add_spectator
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (d : Tensor0SSpace 0 I x) (v0 : E) (vs : Fin (s + 0) → E) :
@@ -149,7 +146,6 @@ theorem covGrad_pureRGenuineDiffOp_unit_eval_eq_genuineDiffCurv_add_spectator
     (curvOpField (I := I) (M := M) g s) S
   rw [hbase] at hB
   have hsec := congrArg (fun T : SmoothCcTensor g 0 (s + 0 + 1) => T.toSection x) hB
-  simp only at hsec
   rw [SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply] at hsec
   have happ :
       (covGrad (I := I) (M := M) g 0 (s + 0)
@@ -159,7 +155,7 @@ theorem covGrad_pureRGenuineDiffOp_unit_eval_eq_genuineDiffCurv_add_spectator
             (slotExtend (I := I) (M := M) g (s + 0) (s + 0)
               (curvOpField (I := I) (M := M) g s))
             (covGrad (I := I) (M := M) g 0 (s + 0) S)).toSection x d := by
-    rw [hsec, ContinuousLinearMap.add_apply]
+    rw [hsec, add_apply]
     rfl
   have hlhs :
       Tensor0SSpace.toModel
@@ -192,7 +188,7 @@ theorem covGrad_pureRGenuineDiffOp_unit_eval_eq_genuineDiffCurv_add_spectator
               tensorCovDerivAt (I := I) (M := M) g 0 (s + 0) S x v0) d))
           vs :=
     operatorFieldApplication_slotExtend_curvOpField_covGrad_unit_eval (I := I) (M := M) g s S x d v0 vs
-  rw [hlhs, happ, Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply, hterm2]
+  rw [hlhs, happ, Tensor0SSpace.toModel_add, add_apply, hterm2]
 
 theorem operatorFieldApplication_covGrad_covGrad_curvOpField_eq_covGrad_genuineDiffCurv_sub_slotExtend
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
@@ -285,8 +281,8 @@ theorem operatorFieldApplication_covGrad_covGrad_curvOpField_unit_eval
             (covGrad (I := I) (M := M) g 0 (s + 0) S)).toSection x d := by
     rw [hsec]
     rw [SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
-      ContinuousLinearMap.sub_apply]
-  rw [happ, Tensor0SSpace.toModel_sub, ContinuousMultilinearMap.sub_apply]
+      sub_apply]
+  rw [happ, Tensor0SSpace.toModel_sub, sub_apply]
   have hT1 :
       Tensor0SSpace.toModel
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 0 + 1 + 1) I x from

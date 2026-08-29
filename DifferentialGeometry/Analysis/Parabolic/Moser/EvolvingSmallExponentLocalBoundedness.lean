@@ -196,7 +196,7 @@ theorem evolving_local_boundedness_of_subsolution_of_lt_two_of_volume_le
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc τ D, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc τ D, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)
@@ -220,7 +220,7 @@ theorem evolving_local_boundedness_of_subsolution_of_lt_two_of_volume_le
           localizedSpacetimeRpowNorm (I := I) (M := M)
             (spatialCutoffBetween rho outerLower outerUpper) u p τ D := by
   let n := Module.finrank ℝ E
-  letI : NeZero n := by
+  let : NeZero n := by
     refine ⟨Nat.ne_of_gt ?_⟩
     exact_mod_cast (by linarith : 0 < (n : ℝ))
   let alpha := p / 2
@@ -319,7 +319,7 @@ theorem evolving_local_boundedness_of_subsolution_of_lt_two_of_volume_le
     have hbOuterD : bOuter ≤ D := hb (k + 1)
     have hpdeOuter : ∀ s ∈ Icc aOuter bOuter, ∀ y : M,
         deriv (fun q => u q y) s ≤
-          Δ_g (I := I) (g s)
+          ΔG (I := I) (g s)
             (smoothScalarSlice (I := I) (g s) u hu s).toContMDiffMap y := by
       intro s hs y
       exact hpde s ⟨haOuterτ.trans hs.1, hs.2.trans hbOuterD⟩ y
@@ -540,7 +540,7 @@ private theorem evolving_local_boundedness_of_subsolution_of_two_le_of_volume_le
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc τ D, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc τ D, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)
@@ -612,7 +612,7 @@ private theorem evolving_local_boundedness_of_subsolution_of_two_le_of_volume_le
     hpivotc.le.trans (hcd.trans hdbOuter.le)
   have hpdeOuter : ∀ s ∈ Icc aOuter bOuter, ∀ y : M,
       deriv (fun q => u q y) s ≤
-        Δ_g (I := I) (g s)
+        ΔG (I := I) (g s)
           (smoothScalarSlice (I := I) (g s) u hu s).toContMDiffMap y := by
     intro s hs y
     exact hpde s ⟨hτaOuter.le.trans hs.1, hs.2.trans hbOuterD.le⟩ y
@@ -759,7 +759,7 @@ theorem evolving_local_boundedness_of_subsolution_rpow_of_volume_le
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc τ D, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc τ D, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)

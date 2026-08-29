@@ -19,11 +19,11 @@ open DifferentialGeometry.Geometry.Riemannian.Exponential
 
 universe u uE uH
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E]
-[InnerProductSpace Real E] [FiniteDimensional Real E]
+variable [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] [CompleteSpace E]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
@@ -94,7 +94,7 @@ theorem liveMetric0_close
       (normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
         (seqCenterD inp.decay P L (psi k) (alpha.1 : Nat)) 0 -
           gInf 0 alpha) v v by
-    simp only [ContinuousLinearMap.sub_apply]]
+    simp only [sub_apply]]
   rw [← Real.norm_eq_abs]
   calc
     ‖(normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
@@ -134,23 +134,31 @@ theorem liveMetric0_symm
         (seqCenterD inp.decay P L (psi k) (alpha.1 : Nat)) 0 w v := by
     funext k
     let Y := X.obj (L.φ (psi k))
-    letI : TopologicalSpace Y.M := Y.topology
-    letI : ChartedSpace H Y.M := Y.charted
-    letI : IsManifold I ∞ Y.M := Y.smooth
-    letI : T2Space Y.M := Y.t2
-    letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+    let : TopologicalSpace Y.M := Y.topology
+    let : ChartedSpace H Y.M := Y.charted
+    let : IsManifold I ∞ Y.M := Y.smooth
+    let : T2Space Y.M := Y.t2
+    let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
     rw [normalCoordMetric_apply (I := I), normalCoordMetric_apply (I := I)]
     exact Y.metric.symm _ _ _
   have hvw' : Filter.Tendsto
       (fun k => normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
         (seqCenterD inp.decay P L (psi k) (alpha.1 : Nat)) 0 v w)
       Filter.atTop (nhds (gInf 0 alpha v w)) := by
-    simpa only [Function.comp_apply] using hvw
+    change Filter.Tendsto
+      (fun k => normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
+        (seqCenterD inp.decay P L (psi k) (alpha.1 : Nat)) 0 v w)
+      Filter.atTop (nhds (gInf 0 alpha v w)) at hvw
+    exact hvw
   have hwv' : Filter.Tendsto
       (fun k => normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
         (seqCenterD inp.decay P L (psi k) (alpha.1 : Nat)) 0 w v)
       Filter.atTop (nhds (gInf 0 alpha w v)) := by
-    simpa only [Function.comp_apply] using hwv
+    change Filter.Tendsto
+      (fun k => normalCoordMetric (I := I) (X.obj (L.φ (psi k)))
+        (seqCenterD inp.decay P L (psi k) (alpha.1 : Nat)) 0 w v)
+      Filter.atTop (nhds (gInf 0 alpha w v)) at hwv
+    exact hwv
   rw [hstage] at hvw'
   exact tendsto_nhds_unique hvw' hwv'
 
@@ -353,8 +361,8 @@ theorem MetricCompactnessInputs.exists_live_cores
           a * gInf 0 alpha x x + b * gInf 0 alpha y y -
             a * b * gInf 0 alpha (x - y) (x - y) := by
         simp only [map_add, map_smul, map_sub,
-          ContinuousLinearMap.add_apply, ContinuousLinearMap.sub_apply,
-          ContinuousLinearMap.smul_apply, smul_eq_mul]
+          add_apply, sub_apply,
+          smul_apply, smul_eq_mul]
         rw [hsymm alpha y x]
         have hb_eq : b = 1 - a := by linarith
         rw [hb_eq]
@@ -410,12 +418,12 @@ theorem MetricCompactnessInputs.exists_live_cores
   filter_upwards [hclose, hscaled, halive, hgpPsi, hradPsi, hmetricPsi, hcenters]
     with k hclosek hscaledk halivek hgpk hradk hmetrick hcentersk
   let Y := X.obj (L.φ (psi k))
-  letI : TopologicalSpace Y.M := Y.topology
-  letI : ChartedSpace H Y.M := Y.charted
-  letI : IsManifold I ∞ Y.M := Y.smooth
-  letI : T2Space Y.M := Y.t2
-  letI : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
-  letI : MetricSpace Y.M := (P (L.φ (psi k))).ms
+  let : TopologicalSpace Y.M := Y.topology
+  let : ChartedSpace H Y.M := Y.charted
+  let : IsManifold I ∞ Y.M := Y.smooth
+  let : T2Space Y.M := Y.t2
+  let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
+  let : MetricSpace Y.M := (P (L.φ (psi k))).ms
   constructor
   · intro alpha
     have hcenterk : seqCenter inp.decay inp.D P (L.φ (psi k)) (alpha.1 : Nat) =

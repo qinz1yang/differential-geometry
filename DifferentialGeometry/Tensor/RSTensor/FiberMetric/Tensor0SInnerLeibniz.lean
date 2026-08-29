@@ -341,19 +341,22 @@ section DirectionalDeriv
 
 variable {Idx : Type} [Fintype Idx]
 
-open DifferentialGeometry.Tensor.Coordinates (extDerivFun_mul_real
-  extDerivFun_finset_sum_real)
+open DifferentialGeometry.Tensor.Coordinates (mvfderiv_mul_real
+  mvfderiv_finset_sum_real)
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-theorem extDerivFun_finset_prod_real
+theorem mvfderiv_finset_prod_real
     {ι : Type} [DecidableEq ι] (t : Finset ι) (f : ι -> M -> Real)
     {x : M} (v : TangentSpace I x)
     (hf : ∀ i ∈ t, MDifferentiableAt I 𝓘(Real, Real) (f i) x) :
-    extDerivFun (I := I) (fun y : M => ∏ i ∈ t, f i y) x v =
-      ∑ i ∈ t, (∏ j ∈ t.erase i, f j x) * extDerivFun (I := I) (f i) x v := by
+    mvfderiv (I := I) (fun y : M => ∏ i ∈ t, f i y) x v =
+      ∑ i ∈ t, (∏ j ∈ t.erase i, f j x) * mvfderiv (I := I) (f i) x v := by
   classical
   induction t using Finset.induction_on with
-  | empty => simp [extDerivFun]
+  | empty =>
+      simp only [Finset.prod_empty, Finset.sum_empty]
+      rw [mvfderiv_const]
+      rfl
   | insert i t hit ih =>
       have hfi : MDifferentiableAt I 𝓘(Real, Real) (f i) x :=
         hf i (Finset.mem_insert_self i t)
@@ -368,14 +371,14 @@ theorem extDerivFun_finset_prod_real
           (fun y : M => ∏ j ∈ insert i t, f j y) =
             fun y : M => f i y * ∏ j ∈ t, f j y := by
         funext y; rw [Finset.prod_insert hit]
-      rw [hsplit, extDerivFun_mul_real (I := I) v hfi hprodt, ih hft]
+      rw [hsplit, mvfderiv_mul_real (I := I) v hfi hprodt, ih hft]
       rw [Finset.sum_insert hit]
       rw [Finset.erase_insert hit]
       have hother :
           (∑ j ∈ t, (∏ k ∈ (insert i t).erase j, f k x) *
-              extDerivFun (I := I) (f j) x v) =
+              mvfderiv (I := I) (f j) x v) =
             f i x *
-              ∑ j ∈ t, (∏ k ∈ t.erase j, f k x) * extDerivFun (I := I) (f j) x v := by
+              ∑ j ∈ t, (∏ k ∈ t.erase j, f k x) * mvfderiv (I := I) (f j) x v := by
         rw [Finset.mul_sum]
         refine Finset.sum_congr rfl fun j hj => ?_
         have hji : j ≠ i := fun h => hit (h ▸ hj)
@@ -387,23 +390,23 @@ theorem extDerivFun_finset_prod_real
 
 omit [Fintype Idx] in
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-theorem extDerivFun_coordContract_summand {s : Nat}
+theorem mvfderiv_coordContract_summand {s : Nat}
     (U : M -> Idx -> Idx -> Real)
     (cA cB : M -> (Fin s -> Idx) -> Real)
     {x : M} (v : TangentSpace I x) (I0 J0 : Fin s -> Idx)
     (hU : ∀ i j : Idx, MDifferentiableAt I 𝓘(Real, Real) (fun y : M => U y i j) x)
     (hcA : MDifferentiableAt I 𝓘(Real, Real) (fun y : M => cA y I0) x)
     (hcB : MDifferentiableAt I 𝓘(Real, Real) (fun y : M => cB y J0) x) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => (∏ a : Fin s, U y (I0 a) (J0 a)) * cA y I0 * cB y J0) x v =
       (∑ b : Fin s,
           (∏ a ∈ (Finset.univ : Finset (Fin s)).erase b, U x (I0 a) (J0 a)) *
-            extDerivFun (I := I) (fun y => U y (I0 b) (J0 b)) x v) *
+            mvfderiv (I := I) (fun y => U y (I0 b) (J0 b)) x v) *
           cA x I0 * cB x J0 +
         ((∏ a : Fin s, U x (I0 a) (J0 a)) *
-            extDerivFun (I := I) (fun y => cA y I0) x v * cB x J0 +
+            mvfderiv (I := I) (fun y => cA y I0) x v * cB x J0 +
           (∏ a : Fin s, U x (I0 a) (J0 a)) * cA x I0 *
-            extDerivFun (I := I) (fun y => cB y J0) x v) := by
+            mvfderiv (I := I) (fun y => cB y J0) x v) := by
   classical
   have hprodU : MDifferentiableAt I 𝓘(Real, Real)
       (fun y : M => ∏ a : Fin s, U y (I0 a) (J0 a)) x := by
@@ -414,14 +417,14 @@ theorem extDerivFun_coordContract_summand {s : Nat}
     simpa [Finset.prod_fn] using this
   have hAB : MDifferentiableAt I 𝓘(Real, Real)
       (fun y : M => (∏ a : Fin s, U y (I0 a) (J0 a)) * cA y I0) x := hprodU.mul hcA
-  rw [extDerivFun_mul_real (I := I) v hAB hcB]
-  rw [extDerivFun_mul_real (I := I) v hprodU hcA]
-  rw [extDerivFun_finset_prod_real (Finset.univ : Finset (Fin s))
+  rw [mvfderiv_mul_real (I := I) v hAB hcB]
+  rw [mvfderiv_mul_real (I := I) v hprodU hcA]
+  rw [mvfderiv_finset_prod_real (Finset.univ : Finset (Fin s))
     (fun a y => U y (I0 a) (J0 a)) v (fun a _ => hU (I0 a) (J0 a))]
   ring
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-theorem extDerivFun_coordContract {s : Nat}
+theorem mvfderiv_coordContract {s : Nat}
     (U : M -> Idx -> Idx -> Real)
     (cA cB : M -> (Fin s -> Idx) -> Real)
     {x : M} (v : TangentSpace I x)
@@ -430,14 +433,14 @@ theorem extDerivFun_coordContract {s : Nat}
       MDifferentiableAt I 𝓘(Real, Real) (fun y : M => cA y I0) x)
     (hcB : ∀ J0 : Fin s -> Idx,
       MDifferentiableAt I 𝓘(Real, Real) (fun y : M => cB y J0) x) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => coordContract (U y) (cA y) (cB y)) x v =
-      coordContractDt (U x) (fun i j => extDerivFun (I := I) (fun y => U y i j) x v)
+      coordContractDt (U x) (fun i j => mvfderiv (I := I) (fun y => U y i j) x v)
           (cA x) (cB x) +
         coordContract (U x)
-          (fun I0 => extDerivFun (I := I) (fun y => cA y I0) x v) (cB x) +
+          (fun I0 => mvfderiv (I := I) (fun y => cA y I0) x v) (cB x) +
         coordContract (U x) (cA x)
-          (fun J0 => extDerivFun (I := I) (fun y => cB y J0) x v) := by
+          (fun J0 => mvfderiv (I := I) (fun y => cB y J0) x v) := by
   classical
   have hprodU : ∀ (I0 J0 : Fin s -> Idx),
       MDifferentiableAt I 𝓘(Real, Real)
@@ -475,32 +478,32 @@ theorem extDerivFun_coordContract {s : Nat}
           (∑ J0 : Fin s -> Idx,
             (∏ a : Fin s, U y (I0 a) (J0 a)) * cA y I0 * cB y J0) from by
     funext y; rfl]
-  rw [DifferentialGeometry.extDerivFun_finset_sum_at'
+  rw [DifferentialGeometry.mvfderiv_finset_sum_at'
     (I := I) (Finset.univ : Finset (Fin s -> Idx))
     (fun I0 y => ∑ J0 : Fin s -> Idx,
       (∏ a : Fin s, U y (I0 a) (J0 a)) * cA y I0 * cB y J0) v
     (fun I0 _ => hG1mdiff I0)]
   rw [show
       (∑ I0 : Fin s -> Idx,
-          extDerivFun (I := I)
+          mvfderiv (I := I)
             (fun y : M => ∑ J0 : Fin s -> Idx,
               (∏ a : Fin s, U y (I0 a) (J0 a)) * cA y I0 * cB y J0) x v) =
         ∑ I0 : Fin s -> Idx, ∑ J0 : Fin s -> Idx,
           ((∑ b : Fin s,
               (∏ a ∈ (Finset.univ : Finset (Fin s)).erase b, U x (I0 a) (J0 a)) *
-                extDerivFun (I := I) (fun y => U y (I0 b) (J0 b)) x v) *
+                mvfderiv (I := I) (fun y => U y (I0 b) (J0 b)) x v) *
               cA x I0 * cB x J0 +
             ((∏ a : Fin s, U x (I0 a) (J0 a)) *
-                extDerivFun (I := I) (fun y => cA y I0) x v * cB x J0 +
+                mvfderiv (I := I) (fun y => cA y I0) x v * cB x J0 +
               (∏ a : Fin s, U x (I0 a) (J0 a)) * cA x I0 *
-                extDerivFun (I := I) (fun y => cB y J0) x v)) from by
+                mvfderiv (I := I) (fun y => cB y J0) x v)) from by
     refine Finset.sum_congr rfl fun I0 _ => ?_
-    rw [DifferentialGeometry.extDerivFun_finset_sum_at'
+    rw [DifferentialGeometry.mvfderiv_finset_sum_at'
       (I := I) (Finset.univ : Finset (Fin s -> Idx))
       (fun J0 y => (∏ a : Fin s, U y (I0 a) (J0 a)) * cA y I0 * cB y J0) v
       (fun J0 _ => hGmdiff I0 J0)]
     refine Finset.sum_congr rfl fun J0 _ => ?_
-    exact extDerivFun_coordContract_summand U cA cB v I0 J0 hU (hcA I0) (hcB J0)]
+    exact mvfderiv_coordContract_summand U cA cB v I0 J0 hU (hcA I0) (hcB J0)]
   unfold coordContractDt coordContract
   simp only [Finset.sum_add_distrib]
   rw [← add_assoc]
@@ -514,12 +517,12 @@ open DifferentialGeometry.Tensor.Coordinates
 theorem inner0S_nabla {s : Nat}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : M) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => inner0S (I := I) g y s (A y) (B y)) x (X x) =
       inner0S (I := I) g x s
         (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X A x) (B x) +
@@ -532,7 +535,7 @@ theorem inner0S_nabla {s : Nat}
     DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x with hframe
   set U : M -> Idx -> Idx -> Real :=
     fun y i j =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
         (I := I) g x i j (extChartAt I x y) with hU
   set cA : M -> (Fin s -> Idx) -> Real :=
     fun y I0 => A y (fun a => frame (I0 a) y) with hcAdef
@@ -540,7 +543,7 @@ theorem inner0S_nabla {s : Nat}
     fun y J0 => B y (fun a => frame (J0 a) y) with hcBdef
   have hx : x ∈ DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x :=
     DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_mem (I := I) x
-  haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
+  have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     simpa using (inferInstance : IsManifold I (∞ : WithTop ℕ∞) M)
   have hUmdiff : ∀ i j : Idx,
       MDifferentiableAt I 𝓘(Real, Real) (fun y : M => U y i j) x := by
@@ -566,7 +569,7 @@ theorem inner0S_nabla {s : Nat}
         (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_isLocalFrame_one (I := I) x)
         x (X x) p q with hΓ
   have hDU : ∀ p q : Idx,
-      extDerivFun (I := I) (fun y => U y p q) x (X x) =
+      mvfderiv (I := I) (fun y => U y p q) x (X x) =
         - ((∑ c : Idx, Γ c p * U x c q) + (∑ c : Idx, Γ c q * U x p c)) := by
     intro p q
     have hzero := DifferentialGeometry.Tensor.Coordinates.gInvCovZeroAt
@@ -574,7 +577,7 @@ theorem inner0S_nabla {s : Nat}
     unfold DifferentialGeometry.Tensor.Coordinates.inverseMetricCovDerivForMetricCompAlongInFrame
       at hzero
     have hzero' :
-        extDerivFun (I := I) (fun y => U y p q) x (X x) +
+        mvfderiv (I := I) (fun y => U y p q) x (X x) +
           (∑ c : Idx, Γ c p * U x c q) +
           (∑ c : Idx, Γ c q * U x p c) = 0 := by
       simpa [U, Γ, hframe, Idx] using hzero
@@ -586,11 +589,11 @@ theorem inner0S_nabla {s : Nat}
       [(DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet_open (I := I) x).mem_nhds hx]
       with y hy
     rw [inner0S_eq_coord (I := I) g y s
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x hy)
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x hy)
       (U y) (DifferentialGeometry.Tensor.Coordinates.gInvBasisAt (I := I) g x hy)
       (A y) (B y)]
     rw [← coordContract_eq_coordInner0S (I := I) (U y) (A y) (B y)
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x hy)]
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x hy)]
     refine congrArg₂ (fun f h => coordContract (U y) f h) ?_ ?_
     · funext I0
       simp only [tensor0SComponent, cA, frame]
@@ -603,9 +606,9 @@ theorem inner0S_nabla {s : Nat}
       funext a
       rw [DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis_apply]
   rw [DifferentialGeometry.Tensor.Coordinates.deriv_congr_nhds (I := I) (x := x) (X x) hlocal]
-  rw [extDerivFun_coordContract U cA cB (X x) hUmdiff hcAmdiff hcBmdiff]
+  rw [mvfderiv_coordContract U cA cB (X x) hUmdiff hcAmdiff hcBmdiff]
   rw [show
-      coordContractDt (U x) (fun i j => extDerivFun (I := I) (fun y => U y i j) x (X x))
+      coordContractDt (U x) (fun i j => mvfderiv (I := I) (fun y => U y i j) x (X x))
           (cA x) (cB x) =
         coordContractDt (U x) (fun i j =>
             - ((∑ c : Idx, Γ c i * U x c j) + (∑ c : Idx, Γ c j * U x i c)))
@@ -616,7 +619,7 @@ theorem inner0S_nabla {s : Nat}
     (fun i j => - ((∑ c : Idx, Γ c i * U x c j) + (∑ c : Idx, Γ c j * U x i c)))
     (cA x) (cB x) (fun p q => rfl)]
   have hcompA : ∀ I0 : Fin s -> Idx,
-      extDerivFun (I := I) (fun y => cA y I0) x (X x) -
+      mvfderiv (I := I) (fun y => cA y I0) x (X x) -
           christoffelCorrComp Γ (cA x) I0 =
         tensor0SComponent (I := I)
           (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X A x)
@@ -625,10 +628,10 @@ theorem inner0S_nabla {s : Nat}
     have hnab := DifferentialGeometry.Tensor.Coordinates.nabla0S_coordFrame_slots_of_smooth
       (I := I) (𝕜 := Real) cov X A x I0
     have hDcA :
-        extDerivFun (I := I) (fun y => cA y I0) x (X x) =
+        mvfderiv (I := I) (fun y => cA y I0) x (X x) =
           DifferentialGeometry.Tensor.Coordinates.coordDeriv0SAt (I := I)
             (fun y => X y) x (fun y => A y) I0 := by
-      rw [DifferentialGeometry.extDerivFun_real_eq_mfderiv]
+      rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv]
       rfl
     have hRHS :
         tensor0SComponent (I := I)
@@ -652,7 +655,7 @@ theorem inner0S_nabla {s : Nat}
     funext c
     rw [DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis_apply]
   have hcompB : ∀ J0 : Fin s -> Idx,
-      extDerivFun (I := I) (fun y => cB y J0) x (X x) -
+      mvfderiv (I := I) (fun y => cB y J0) x (X x) -
           christoffelCorrComp Γ (cB x) J0 =
         tensor0SComponent (I := I)
           (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X B x)
@@ -661,10 +664,10 @@ theorem inner0S_nabla {s : Nat}
     have hnab := DifferentialGeometry.Tensor.Coordinates.nabla0S_coordFrame_slots_of_smooth
       (I := I) (𝕜 := Real) cov X B x J0
     have hDcB :
-        extDerivFun (I := I) (fun y => cB y J0) x (X x) =
+        mvfderiv (I := I) (fun y => cB y J0) x (X x) =
           DifferentialGeometry.Tensor.Coordinates.coordDeriv0SAt (I := I)
             (fun y => X y) x (fun y => B y) J0 := by
-      rw [DifferentialGeometry.extDerivFun_real_eq_mfderiv]
+      rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv]
       rfl
     have hRHS :
         tensor0SComponent (I := I)
@@ -695,23 +698,23 @@ theorem inner0S_nabla {s : Nat}
         inner0S (I := I) g x s T S := by
     intro T S
     rw [show (fun i => frame i x) =
-        ⇑(DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x hx) from by
+        ⇑(DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x hx) from by
       funext i
       rw [DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis_apply]]
     rw [coordContract_eq_coordInner0S (I := I) (U x) T S
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x hx)]
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x hx)]
     rw [← inner0S_eq_coord (I := I) g x s
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x hx)
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x hx)
       (U x) (DifferentialGeometry.Tensor.Coordinates.gInvBasisAt (I := I) g x hx) T S]
   have hgroupA :
       coordContract (U x)
-            (fun I0 => extDerivFun (I := I) (fun y => cA y I0) x (X x)) (cB x) -
+            (fun I0 => mvfderiv (I := I) (fun y => cA y I0) x (X x)) (cB x) -
           coordContract (U x) (christoffelCorrComp Γ (cA x)) (cB x) =
         inner0S (I := I) g x s
           (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X A x) (B x) := by
     rw [← coordContract_sub_left]
     rw [show
-        (fun I0 => extDerivFun (I := I) (fun y => cA y I0) x (X x) -
+        (fun I0 => mvfderiv (I := I) (fun y => cA y I0) x (X x) -
             christoffelCorrComp Γ (cA x) I0) =
           fun I0 => tensor0SComponent (I := I)
             (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X A x)
@@ -721,13 +724,13 @@ theorem inner0S_nabla {s : Nat}
     exact hbasis (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X A x) (B x)
   have hgroupB :
       coordContract (U x) (cA x)
-            (fun J0 => extDerivFun (I := I) (fun y => cB y J0) x (X x)) -
+            (fun J0 => mvfderiv (I := I) (fun y => cB y J0) x (X x)) -
           coordContract (U x) (cA x) (christoffelCorrComp Γ (cB x)) =
         inner0S (I := I) g x s (A x)
           (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X B x) := by
     rw [← coordContract_sub_right]
     rw [show
-        (fun J0 => extDerivFun (I := I) (fun y => cB y J0) x (X x) -
+        (fun J0 => mvfderiv (I := I) (fun y => cB y J0) x (X x) -
             christoffelCorrComp Γ (cB x) J0) =
           fun J0 => tensor0SComponent (I := I)
             (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X B x)
@@ -740,12 +743,12 @@ theorem inner0S_nabla {s : Nat}
 theorem normSq0S_nabla {s : Nat}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : M) :
-    extDerivFun (I := I)
+    mvfderiv (I := I)
         (fun y : M => normSq0S (I := I) g y s (T y)) x (X x) =
       2 * inner0S (I := I) g x s
         (nabla0SFun (E := E) (H := H) (I := I) (M := M) s cov X T x) (T x) := by

@@ -30,7 +30,7 @@ theorem eLpNorm_iterWeakPartial_le_wkpNorm
       (f := fun β : Fin j₀ → Fin d =>
         eLpNorm (iterWeakPartial (d := d) p j₀ β u Ω) p (volume.restrict Ω))
       (s := (Finset.univ : Finset (Fin j₀ → Fin d)))
-      (fun _ _ => zero_le _) (Finset.mem_univ _)
+      (fun _ _ => bot_le) (Finset.mem_univ _)
   have h_outer :
       (∑ β : Fin j₀ → Fin d,
         eLpNorm (iterWeakPartial (d := d) p j₀ β u Ω) p (volume.restrict Ω)) ≤
@@ -42,7 +42,7 @@ theorem eLpNorm_iterWeakPartial_le_wkpNorm
         ∑ β : Fin j → Fin d,
           eLpNorm (iterWeakPartial (d := d) p j β u Ω) p (volume.restrict Ω))
       (s := Finset.range (k + 1))
-      (fun _ _ => zero_le _) ?_
+      (fun _ _ => bot_le) ?_
     rw [Finset.mem_range]
     omega
   exact le_trans h_inner h_outer

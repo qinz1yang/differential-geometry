@@ -38,10 +38,12 @@ lemma gradInnerSmooth_continuous
     Continuous (fun x : M =>
       g.inner x (gradFun (I := I) g ρα x) (gradFun (I := I) g v.toFun x)) := by
   have h := TangentBundle.continuous_g_inner_of_smooth_sections (I := I) (M := M) g
-    (grad_g (I := I) g ρα) (grad_g (I := I) g ⟨v.toFun, v.smooth⟩)
+    (gradG (I := I) g ρα) (gradG (I := I) g ⟨v.toFun, v.smooth⟩)
   refine h.congr ?_
   intro x
-  simp [grad_g_apply]
+  change g.inner x (gradFun (I := I) g ρα x) (gradFun (I := I) g v.toFun x) =
+    g.inner x (gradFun (I := I) g ρα x) (gradFun (I := I) g v.toFun x)
+  rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 lemma gradInnerSmooth_memLp_two
@@ -50,7 +52,7 @@ lemma gradInnerSmooth_memLp_two
     MemLp (fun x : M =>
         g.inner x (gradFun (I := I) g ρα x) (gradFun (I := I) g v.toFun x)) 2
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   exact (gradInnerSmooth_continuous (I := I) (M := M) g ρα v).memLp_of_hasCompactSupport
     (HasCompactSupport.of_compactSpace _)
@@ -107,7 +109,8 @@ lemma gradInnerSmooth_pt_smul
   have hgrad_smul : gradFun (I := I) g (c • v).toFun x =
       c • gradFun (I := I) g v.toFun x := by
     have h := SmoothScalar.grad_g_smul_apply (I := I) (g := g) c v x
-    rw [grad_g_apply, grad_g_apply] at h
+    change gradFun (I := I) g (c • v).toFun x =
+      c • gradFun (I := I) g v.toFun x at h
     exact h
   rw [hgrad_smul]
   rw [ContinuousLinearMap.map_smul, smul_eq_mul]
@@ -327,7 +330,7 @@ lemma norm_gradInnerSmooth_sq_le_gradSupBound_sq_mul_integral
         g.inner x (gradFun (I := I) g v.toFun x)
           (gradFun (I := I) g v.toFun x) :=
     sq_gradInner_le_gradSupBound_sq_mul (I := I) (M := M) g ρα v
-  haveI : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
+  have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   have hLHS_int : Integrable (fun x : M =>
       (g.inner x (gradFun (I := I) g ρα x)
@@ -371,9 +374,9 @@ lemma integral_inner_grad_self_le_h1_norm_sq
   have h_l2_nonneg :=
     SmoothScalar.integral_mul_self_nonneg (I := I) (M := M) (g := g) v
   have h_grad_eq :
-      (∫ x, g.inner x ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
+      (∫ x, g.inner x ((gradG (I := I) g ⟨v.toFun, v.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
+          ((gradG (I := I) g ⟨v.toFun, v.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
       (∫ x, g.inner x (gradFun (I := I) g v.toFun x)

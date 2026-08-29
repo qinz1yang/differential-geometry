@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -185,7 +184,7 @@ theorem exists_chartRiemannData_uniform_bound_compact
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) :
     ∃ C_g : ℝ, 0 ≤ C_g ∧
-      ∀ {α : M}, α ∈ chartAtlasPOU_finset (I := I) (M := M) →
+      ∀ {α : M}, α ∈ chartAtlasPOUFinset (I := I) (M := M) →
         ∀ {b : M},
           b ∈ tsupport (fun x : M =>
               ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ∩
@@ -203,7 +202,7 @@ theorem exists_chartRiemannData_uniform_bound_compact
           |chartRiemannTensor (I := I) g α i j k l ((extChartAt I α) b)| ≤ C :=
     fun α => exists_chartRiemannData_uniform_bound_pouTsupport (I := I) (M := M) g α
   choose C_fn hC_fn_nn hC_fn_bd using h_each
-  set S : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hS_def
+  set S : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hS_def
   set C_g : ℝ := ∑ α ∈ S, C_fn α with hC_g_def
   have hC_g_nn : 0 ≤ C_g :=
     Finset.sum_nonneg (fun α _ => hC_fn_nn α)

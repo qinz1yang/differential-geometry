@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipal
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.MetricComparisonEndomorphismJetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieConnectionDifferenceDerivativeCoefficientTopOrderBounds
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -96,7 +97,34 @@ theorem topOrderDifferenceCoefficient_riemannianFiberNormSq (g₀ : SmoothRieman
             (endoSlotZeroCcTensor (I := I) (M := M) g₀ 0 Λ)).toSection x) ≤
         A 1 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 3 x
           ((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x) := by
-    simpa [Λ, Finset.sum_range_succ, Finset.sum_range_one] using hgrid
+    dsimp only [Λ]
+    have hcongr {a b : ℕ} (h : a = b) {Y : SmoothCcTensor g₀ 0 a}
+        {Z : SmoothCcTensor g₀ 0 b} (hYZ : HEq Y Z) :
+        riemannianFiberNormSq (I := I) (M := M) g₀ 0 a x (Y.toSection x) =
+          riemannianFiberNormSq (I := I) (M := M) g₀ 0 b x (Z.toSection x) := by
+      subst h
+      rw [eq_of_heq hYZ]
+    have hone : (![1] : Fin 1 → ℕ) 0 = 1 := by rfl
+    have hiter :
+        HEq (iteratedCovGrad (I := I) g₀ 0 2 ((![1] : Fin 1 → ℕ) 0) T)
+          (iteratedCovGrad (I := I) g₀ 0 2 1 T) := by
+      cases hone
+      exact HEq.rfl
+    have hnorm :
+        riemannianFiberNormSq (I := I) (M := M) g₀ 0
+            (2 + (![1] : Fin 1 → ℕ) 0) x
+            ((iteratedCovGrad (I := I) g₀ 0 2 ((![1] : Fin 1 → ℕ) 0) T).toSection x) =
+          riemannianFiberNormSq (I := I) (M := M) g₀ 0 3 x
+            ((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x) := by
+      exact hcongr (by omega) hiter
+    rw [Finset.sum_range_succ, Finset.sum_range_one] at hgrid
+    rw [show Finset.Nat.antidiagonalTuple 0 1 = ∅ from
+      Finset.Nat.antidiagonalTuple_zero_succ 0] at hgrid
+    rw [show Finset.Nat.antidiagonalTuple 1 1 = {![1]} from
+      Finset.Nat.antidiagonalTuple_one 1] at hgrid
+    simp only [Finset.sum_empty, Finset.sum_singleton, zero_add] at hgrid
+    rw [Fin.prod_univ_one, hnorm] at hgrid
+    simpa [iteratedCovGrad_succ, iteratedCovGrad_zero] using hgrid
   have hslot := riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_le_endo
     (I := I) (M := M) g₀ 2 Λ 1 x
   have hW :
@@ -149,7 +177,7 @@ theorem topOrderDifferenceCoefficient_riemannianFiberNormSq (g₀ : SmoothRieman
           ((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x) := by
       rw [Real.sq_sqrt hB0]
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem edgePair_point_le
     (g₀ g₁ : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g₀ 0 2) {C δ : ℝ}
@@ -308,7 +336,7 @@ theorem topOrderDifference_remainder_bound (g₀ : SmoothRiemannianMetric I M) :
         ‖iteratedCovGrad (I := I) g₀ 0 2 1 T‖ ^ 2 = _
       rw [SmoothCcTensor.norm_toL2]
 
-theorem topOrderDifference_energy_bound [Nonempty M]
+theorem topOrderDifference_energy_bound
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -360,7 +388,7 @@ theorem topOrderDifference_energy_bound [Nonempty M]
   simp only [oneMinusConnLapSmoothIter_zero] at hibp
   linarith only [hibp, hslot, hresle]
 
-theorem principalDifference_pairing_half_bound [Nonempty M]
+theorem principalDifference_pairing_half_bound
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)

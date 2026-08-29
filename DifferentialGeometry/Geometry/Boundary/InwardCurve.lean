@@ -67,22 +67,18 @@ theorem exists_inward_curve (p : BoundaryManifold I M) :
         (Set.Ici (0 : ℝ)) (0 : ℝ) :=
       (uniqueDiffWithinAt_Ici (0 : ℝ)).uniqueMDiffWithinAt
     have hchain := mfderivWithin_comp_of_preimage_mem_nhdsWithin
-      (x := (0 : ℝ)) (by simpa [hq0] using hsymm) hq_mdiff hq_range huniq
-    have hsymm_deriv :
-        mfderivWithin 𝓘(ℝ, E) I
-          ((chartAt H (p : M)).symm ∘ I.symm)
-          (Set.range I) z = ContinuousLinearMap.id ℝ E := by
-      change mfderivWithin 𝓘(ℝ, E) I (extChartAt I (p : M)).symm
-        (Set.range I) z = ContinuousLinearMap.id ℝ E
+      (x := (0 : ℝ)) (by simpa only [hq0, z] using hsymm) hq_mdiff hq_range huniq
+    have hzinv : (extChartAt I (p : M)).symm z = (p : M) := by
       dsimp [z]
-      exact mfderivWithin_range_extChartAt_symm
-    rw [hq0, hsymm_deriv] at hchain
+      exact extChartAt_to_inv (I := I) (p : M)
+    rw [hq0, hzinv] at hchain
     have happ := congrArg (fun L => L
       ((1 : ℝ) : TangentSpace 𝓘(ℝ, ℝ) (0 : ℝ))) hchain
     change (mfderivWithin 𝓘(ℝ, ℝ) I
         (((chartAt H (p : M)).symm ∘ I.symm) ∘ q) (Set.Ici 0) 0)
           ((1 : ℝ) : TangentSpace 𝓘(ℝ, ℝ) (0 : ℝ)) =
-      ((ContinuousLinearMap.id ℝ E).comp
+      ((mfderivWithin 𝓘(ℝ, E) I (extChartAt I (p : M)).symm
+          (Set.range I) z).comp
         (mfderivWithin 𝓘(ℝ, ℝ) 𝓘(ℝ, E) q (Set.Ici 0) 0))
           ((1 : ℝ) : TangentSpace 𝓘(ℝ, ℝ) (0 : ℝ)) at happ
     have hq_deriv_eq :
@@ -96,14 +92,32 @@ theorem exists_inward_curve (p : BoundaryManifold I M) :
       change ContinuousLinearMap.toSpanSingleton ℝ hI.inwardCoordE 1 = _
       exact ContinuousLinearMap.toSpanSingleton_apply_one
         (R₁ := ℝ) hI.inwardCoordE
-    change (mfderivWithin 𝓘(ℝ, ℝ) I
-      (((chartAt H (p : M)).symm ∘ I.symm) ∘ q) (Set.Ici 0) 0)
-        ((1 : ℝ) : TangentSpace 𝓘(ℝ, ℝ) (0 : ℝ)) = _
-    rw [happ]
-    change (ContinuousLinearMap.id ℝ E)
-      (mfderivWithin 𝓘(ℝ, ℝ) 𝓘(ℝ, E) q (Set.Ici 0) 0
-        ((1 : ℝ) : TangentSpace 𝓘(ℝ, ℝ) (0 : ℝ))) = _
-    rw [ContinuousLinearMap.id_apply, hq_deriv_eq, inwardCoord_eq]
+    have hlin := TangentBundle.symmL_trivializationAt
+      (𝕜 := ℝ) (I := I) (x₀ := (p : M)) (x := (p : M)) (mem_chart_source H (p : M))
+    have hlin_apply := congrArg (fun L => L hI.inwardCoordE) hlin
+    have hinward : inwardCoord (M := M) p =
+        ((trivializationAt E (TangentSpace I) (p : M)).symmL ℝ (p : M))
+          hI.inwardCoordE := by
+      unfold inwardCoord
+      exact (Bundle.Trivialization.symmL_apply (R := ℝ)
+        (e := trivializationAt E (TangentSpace I) (p : M))
+        (mem_baseSet_trivializationAt E (TangentSpace I) (p : M)) hI.inwardCoordE).symm
+    have hcomp :
+        ((mfderivWithin 𝓘(ℝ, E) I (extChartAt I (p : M)).symm
+            (Set.range I) z).comp
+          (mfderivWithin 𝓘(ℝ, ℝ) 𝓘(ℝ, E) q (Set.Ici 0) 0))
+            ((1 : ℝ) : TangentSpace 𝓘(ℝ, ℝ) (0 : ℝ)) =
+          ((trivializationAt E (TangentSpace I) (p : M)).symmL ℝ (p : M))
+            hI.inwardCoordE := by
+      have hcomp_apply := ContinuousLinearMap.comp_apply
+        (mfderivWithin 𝓘(ℝ, E) I (extChartAt I (p : M)).symm (Set.range I) z)
+        (mfderivWithin 𝓘(ℝ, ℝ) 𝓘(ℝ, E) q (Set.Ici 0) 0)
+        ((1 : ℝ) : TangentSpace 𝓘(ℝ, ℝ) (0 : ℝ))
+      have hq_applied := congrArg
+        (mfderivWithin 𝓘(ℝ, E) I (extChartAt I (p : M)).symm (Set.range I) z)
+        hq_deriv_eq
+      exact hcomp_apply.trans (hq_applied.trans hlin_apply.symm)
+    exact happ.trans (hcomp.trans hinward.symm)
   · have hq_tendsto : Tendsto q (𝓝[Set.Ici 0] 0)
         (𝓝[Set.range I] z) := by
       refine tendsto_nhdsWithin_iff.mpr ⟨?_, hq_range⟩

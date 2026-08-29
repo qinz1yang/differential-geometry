@@ -24,7 +24,6 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 noncomputable def chartErr
-    [NeZero (Module.finrank ℝ E)]
     [hCompact : CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {hp : 1 ≤ p}
@@ -42,7 +41,6 @@ noncomputable def chartErr
       chartLimit (I := I) (M := M) hp_one h_cauchy β y
 
 lemma chartErr_mem
-    [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {hp : 1 ≤ p}
@@ -64,7 +62,6 @@ lemma chartErr_mem
       hp_one h_cauchy β)
 
 lemma chartErr_ae_zero
-    [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p) (hp_top : p ≠ (⊤ : ℝ≥0∞))
     {hp : 1 ≤ p}
@@ -137,7 +134,6 @@ lemma pullback_sub (β : M) (v w : EuclN → ℝ) :
       sub_zero]
 
 lemma limitFun_decomp
-    [NeZero (Module.finrank ℝ E)]
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     {k : ℕ} {p : ℝ≥0∞} (hp_one : 1 ≤ p)
     {hp : 1 ≤ p}
@@ -150,12 +146,12 @@ lemma limitFun_decomp
     (fun x => wkpChartFun (f n) x -
         manifoldLimitFun (I := I) (M := M) hp_one h_cauchy x) =
       fun x =>
-        ∑ β ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+        ∑ β ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
             (I := I) (M := M),
           chartPullback I β
             (chartErr (I := I) (M := M) hp_one h_cauchy n β) x := by
   classical
-  let S := DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+  let S := DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
     (I := I) (M := M)
   funext x
   have h_iter := congrFun
@@ -195,7 +191,7 @@ theorem limitFun_tendsto
       atTop (𝓝 0) := by
   classical
   let ρ := DifferentialGeometry.Integral.Measure.chartAtlasPOU I M
-  let S := DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+  let S := DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
     (I := I) (M := M)
   let K : M → Set M := fun β => tsupport ((ρ β : C^∞⟮I, M; ℝ⟯) : M → ℝ)
   have hK_compact : ∀ β : M, IsCompact (K β) := fun _ =>
@@ -318,7 +314,7 @@ theorem limitFun_tendsto
               (chartTargetEuclid (I := I) (M := M) β))
         atTop (𝓝 0) := by
     intro β hβ
-    simpa using tendsto_finset_sum S (fun γ hγ => h_pair β hβ γ hγ)
+    simpa using tendsto_finsetSum S (fun γ hγ => h_pair β hβ γ hγ)
   have h_rhs : Tendsto
       (fun n => ∑ β ∈ S, ∑ γ ∈ S,
         ENNReal.ofReal (C γ β) *
@@ -327,10 +323,10 @@ theorem limitFun_tendsto
             (chartErr (I := I) (M := M) hp_one h_cauchy n β)
             (chartTargetEuclid (I := I) (M := M) β))
       atTop (𝓝 0) := by
-    simpa using tendsto_finset_sum S h_inner
+    simpa using tendsto_finsetSum S h_inner
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le'
     tendsto_const_nhds h_rhs
-    (Filter.Eventually.of_forall (fun _ => zero_le _))
+    (Filter.Eventually.of_forall (fun _ => zero_le))
     (Filter.Eventually.of_forall h_bound)
 
 theorem wkpChart_complete
@@ -357,8 +353,9 @@ theorem wkpChart_complete
         (fun x => wkpChartFun (f n) x -
           manifoldLimitFun (I := I) (M := M) hp_one h_cauchy x)).toReal)
       atTop (𝓝 (0 : ℝ)) := by
-    simpa using ((ENNReal.tendsto_toReal
-      (by simp : (0 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞))).comp h_enn)
+    exact Tendsto.congr' (Filter.Eventually.of_forall fun _ => rfl)
+      ((ENNReal.tendsto_toReal
+        (by simp : (0 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞))).comp h_enn)
   have hfun : ∀ n,
       wkpChartFun (f n - u) =
         fun x => wkpChartFun (f n) x - uFun x := by

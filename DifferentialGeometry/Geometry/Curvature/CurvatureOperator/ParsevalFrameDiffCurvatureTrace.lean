@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set FiberBundle NormedSpace Filter CovariantDerivative
 open scoped Manifold Topology ContDiff BigOperators
@@ -291,10 +290,10 @@ private lemma nablaCurvSec_add_right
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private lemma extDerivFun_apply_smooth_aux
+private lemma mvfderiv_apply_smooth_aux
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {X : Π b : M, TangentSpace I b} (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X)) :
-    ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b => extDerivFun f b (X b)) := by
+    ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b => mvfderiv (I := I) f b (X b)) := by
   classical
   have htan : ContMDiff I.tangent (𝓘(ℝ, ℝ).tangent) ∞ (tangentMap I 𝓘(ℝ, ℝ) f) := by
     have h₁ : ContMDiff I 𝓘(ℝ, ℝ) ((∞ : WithTop ℕ∞) + 1) f := by simpa using hf
@@ -310,7 +309,7 @@ private lemma extDerivFun_apply_smooth_aux
       (fun b => (tangentMap I 𝓘(ℝ, ℝ) f (TotalSpace.mk' E b (X b))).2) :=
     hsnd.comp hcomp
   refine hresult.congr fun b => ?_
-  simp [extDerivFun, tangentMap_snd, NormedSpace.fromTangentSpace]
+  exact mvfderiv_real_eq_mfderiv I f b (X b)
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -342,11 +341,11 @@ private lemma nablaCurvSec_smul_right
       ((covApply_contMDiff (cov := cov) hY hW b).mdifferentiableAt (by simp))
   have h1 : cov.toFun (fun b => riemannSec cov (f • fun b => Y b) (fun b => Z b) (fun b => W b) b)
         x (X x) =
-      f x • cov.toFun R x (X x) + extDerivFun f x (X x) • R x := by
+      f x • cov.toFun R x (X x) + mvfderiv (I := I) f x (X x) • R x := by
     rw [hsecfY, cov.isCovariantDerivativeOnUniv.leibniz (hRsm.mdifferentiableAt (by simp)) hfx]
-    simp [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp [add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply]
-  set Xf : M → ℝ := fun b => extDerivFun f b (X b) with hXf
+  set Xf : M → ℝ := fun b => mvfderiv (I := I) f b (X b) with hXf
   have hcovfY : covApply cov (fun b => X b) (f • fun b => Y b) =
       f • covApply cov (fun b => X b) (fun b => Y b) + Xf • (fun b => Y b) := by
     funext b
@@ -354,15 +353,15 @@ private lemma nablaCurvSec_smul_right
       (f • covApply cov (fun b => X b) (fun b => Y b)) b + (Xf • fun b => Y b) b
     rw [cov.isCovariantDerivativeOnUniv.leibniz ((hY b).mdifferentiableAt (by simp))
       ((hf b).mdifferentiableAt (by simp))]
-    simp [covApply, Xf, ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp [covApply, Xf, add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply]
-  have hXfsm : ContMDiff I 𝓘(ℝ, ℝ) ∞ Xf := extDerivFun_apply_smooth_aux hf hX
+  have hXfsm : ContMDiff I 𝓘(ℝ, ℝ) ∞ Xf := mvfderiv_apply_smooth_aux hf hX
   have hcXY := covApply_contMDiff (cov := cov) hX hY
   have h2 : riemannSec cov (covApply cov (fun b => X b) (f • fun b => Y b)) (fun b => Z b)
         (fun b => W b) x =
       f x • riemannSec cov (covApply cov (fun b => X b) (fun b => Y b)) (fun b => Z b)
             (fun b => W b) x
-        + extDerivFun f x (X x) • R x := by
+        + mvfderiv (I := I) f x (X x) • R x := by
     rw [hcovfY]
     rw [riemannSec_add_left (cov := cov)
       ((hf.smul_section hcXY x).mdifferentiableAt (by simp))
@@ -505,11 +504,11 @@ lemma nablaCurvSec_finsetSum_right
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma riemannSec_eq_of_X_eventuallyEq
-    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     {V : M → Type*} [TopologicalSpace (TotalSpace F V)]
     [∀ x, AddCommGroup (V x)] [∀ x, Module ℝ (V x)] [∀ x : M, TopologicalSpace (V x)]
     [∀ x, IsTopologicalAddGroup (V x)] [∀ x, ContinuousSMul ℝ (V x)]
-    [FiberBundle F V] [VectorBundle ℝ F V] [ContMDiffVectorBundle ∞ F V I]
+    [FiberBundle F V] [VectorBundle ℝ F V]
     (cov : CovariantDerivative I F V) [CovariantDerivative.ContMDiffCovariantDerivative cov ∞]
     {X X' Y : Π b : M, TangentSpace I b} {Z : Π b : M, V b} {x : M}
     (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))
@@ -651,14 +650,14 @@ private lemma nablaCurvSec_vanish_secondSlot
   set sLoc : Module.Basis.ofVectorSpaceIndex ℝ E → Π b : M, TangentSpace I b :=
     fun i => e.localFrame bE i with hsLoc_def
   set cLoc : Module.Basis.ofVectorSpaceIndex ℝ E → M → ℝ :=
-    fun i b => e.localFrame_coeff I bE i b (Δ b) with hcLoc_def
+    fun i b => e.localFrameCoeff I bE i b (Δ b) with hcLoc_def
   have hexpand : ∀ᶠ b in 𝓝 x, Δ b = ∑ i, cLoc i b • sLoc i b :=
     e.eventually_eq_localFrame_sum_coeff_smul bE hx_base
   have hsLoc_on : ∀ i, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (T% (sLoc i)) e.baseSet :=
     fun i => e.contMDiffOn_localFrame_baseSet (n := ∞) (b := bE) i
   have hcLoc_on : ∀ i, ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (cLoc i) e.baseSet := by
     intro i b hb
-    exact (contMDiffAt_localFrame_coeff bE hb (hΔ b) i).contMDiffWithinAt
+    exact (contMDiffAt_localFrameCoeff bE hb (hΔ b) i).contMDiffWithinAt
   obtain ⟨Sglob, hSglob_eq⟩ := exists_contMDiffSection_eqOn_nhd (I := I)
     (V := fun z : M => TangentSpace I z) (n := (⊤ : ℕ∞)) (s := sLoc)
     (fun i => (hsLoc_on i).of_le (by exact_mod_cast le_top)) hbase_open hx_base
@@ -795,9 +794,10 @@ theorem nablaTensor0SCurv_eq_of_pointwise_eq_leftMid
     (x : M) (hX_eq : X x = X' x) (hY_eq : Y x = Y' x) :
     nablaTensor0SCurv (I := I) g s X Y Z A x = nablaTensor0SCurv (I := I) g s X' Y' Z A x := by
   classical
-  apply Tensor0SSpace.toModel_injective
-  apply ContinuousMultilinearMap.ext
+  apply Bundle.continuousMultilinearMap.ext (F := E) (E := TangentSpace I)
   intro u
+  change Tensor0SSpace.eval (nablaTensor0SCurv (I := I) g s X Y Z A x) u =
+    Tensor0SSpace.eval (nablaTensor0SCurv (I := I) g s X' Y' Z A x) u
   rw [nablaTensorCov_baseSlot_eval (I := I) g s X Y Z A hA x u,
       nablaTensorCov_baseSlot_eval (I := I) g s X' Y' Z A hA x u]
   refine congrArg Neg.neg (Finset.sum_congr rfl (fun k _ => ?_))
@@ -813,11 +813,14 @@ theorem nablaTensor0SCurv_add_left
         (X + X') Y Z A x =
       nablaTensor0SCurv (I := I) g s X Y Z A x + nablaTensor0SCurv (I := I) g s X' Y Z A x := by
   classical
-  apply Tensor0SSpace.toModel_injective
-  simp only [Tensor0SSpace.toModel_add]
-  apply ContinuousMultilinearMap.ext
+  apply Bundle.continuousMultilinearMap.ext (F := E) (E := TangentSpace I)
   intro u
-  rw [ContinuousMultilinearMap.add_apply,
+  change Tensor0SSpace.eval
+      (nablaTensor0SCurv (I := I) g s (X + X') Y Z A x) u =
+    Tensor0SSpace.eval
+      (nablaTensor0SCurv (I := I) g s X Y Z A x +
+        nablaTensor0SCurv (I := I) g s X' Y Z A x) u
+  rw [Tensor0SSpace.eval_add,
       nablaTensorCov_baseSlot_eval (I := I) g s (X + X') Y Z A hA x u,
       nablaTensorCov_baseSlot_eval (I := I) g s X Y Z A hA x u,
       nablaTensorCov_baseSlot_eval (I := I) g s X' Y Z A hA x u]
@@ -839,11 +842,12 @@ theorem nablaTensor0SCurv_smul_left
         (c • X) Y Z A x =
       c • nablaTensor0SCurv (I := I) g s X Y Z A x := by
   classical
-  apply Tensor0SSpace.toModel_injective
-  simp only [Tensor0SSpace.toModel_smul]
-  apply ContinuousMultilinearMap.ext
+  apply Bundle.continuousMultilinearMap.ext (F := E) (E := TangentSpace I)
   intro u
-  rw [ContinuousMultilinearMap.smul_apply,
+  change Tensor0SSpace.eval
+      (nablaTensor0SCurv (I := I) g s (c • X) Y Z A x) u =
+    Tensor0SSpace.eval (c • nablaTensor0SCurv (I := I) g s X Y Z A x) u
+  rw [Tensor0SSpace.eval_smul,
       nablaTensorCov_baseSlot_eval (I := I) g s (c • X) Y Z A hA x u,
       nablaTensorCov_baseSlot_eval (I := I) g s X Y Z A hA x u]
   rw [smul_neg, Finset.smul_sum]
@@ -863,11 +867,14 @@ theorem nablaTensor0SCurv_add_mid
         X (Y + Y') Z A x =
       nablaTensor0SCurv (I := I) g s X Y Z A x + nablaTensor0SCurv (I := I) g s X Y' Z A x := by
   classical
-  apply Tensor0SSpace.toModel_injective
-  simp only [Tensor0SSpace.toModel_add]
-  apply ContinuousMultilinearMap.ext
+  apply Bundle.continuousMultilinearMap.ext (F := E) (E := TangentSpace I)
   intro u
-  rw [ContinuousMultilinearMap.add_apply,
+  change Tensor0SSpace.eval
+      (nablaTensor0SCurv (I := I) g s X (Y + Y') Z A x) u =
+    Tensor0SSpace.eval
+      (nablaTensor0SCurv (I := I) g s X Y Z A x +
+        nablaTensor0SCurv (I := I) g s X Y' Z A x) u
+  rw [Tensor0SSpace.eval_add,
       nablaTensorCov_baseSlot_eval (I := I) g s X (Y + Y') Z A hA x u,
       nablaTensorCov_baseSlot_eval (I := I) g s X Y Z A hA x u,
       nablaTensorCov_baseSlot_eval (I := I) g s X Y' Z A hA x u]
@@ -889,11 +896,12 @@ theorem nablaTensor0SCurv_smul_mid
         X (c • Y) Z A x =
       c • nablaTensor0SCurv (I := I) g s X Y Z A x := by
   classical
-  apply Tensor0SSpace.toModel_injective
-  simp only [Tensor0SSpace.toModel_smul]
-  apply ContinuousMultilinearMap.ext
+  apply Bundle.continuousMultilinearMap.ext (F := E) (E := TangentSpace I)
   intro u
-  rw [ContinuousMultilinearMap.smul_apply,
+  change Tensor0SSpace.eval
+      (nablaTensor0SCurv (I := I) g s X (c • Y) Z A x) u =
+    Tensor0SSpace.eval (c • nablaTensor0SCurv (I := I) g s X Y Z A x) u
+  rw [Tensor0SSpace.eval_smul,
       nablaTensorCov_baseSlot_eval (I := I) g s X (c • Y) Z A hA x u,
       nablaTensorCov_baseSlot_eval (I := I) g s X Y Z A hA x u]
   rw [smul_neg, Finset.smul_sum]
@@ -915,7 +923,6 @@ def nablaTensor0SCurvBilin
       (ContMDiffSection.mk (smoothExtensionTangent (I := I) x w)
         (smoothExtensionTangent_contMDiff (I := I) x w)) Z A x)
     (fun v v' w => by
-      dsimp only
       have hadd : (ContMDiffSection.mk (smoothExtensionTangent (I := I) x (v + v'))
             (smoothExtensionTangent_contMDiff (I := I) x (v + v'))) x =
           (ContMDiffSection.mk (smoothExtensionTangent (I := I) x v)
@@ -937,7 +944,6 @@ def nablaTensor0SCurvBilin
             (smoothExtensionTangent_contMDiff (I := I) x w)) Z A hA x hadd rfl]
       exact nablaTensor0SCurv_add_left (I := I) g s _ _ _ Z A hA x)
     (fun c v w => by
-      dsimp only
       have hsmul : (ContMDiffSection.mk (smoothExtensionTangent (I := I) x (c • v))
             (smoothExtensionTangent_contMDiff (I := I) x (c • v))) x =
           (c • ContMDiffSection.mk (smoothExtensionTangent (I := I) x v)
@@ -955,7 +961,6 @@ def nablaTensor0SCurvBilin
             (smoothExtensionTangent_contMDiff (I := I) x w)) Z A hA x hsmul rfl]
       exact nablaTensor0SCurv_smul_left (I := I) g s c _ _ Z A hA x)
     (fun v w w' => by
-      dsimp only
       have hadd : (ContMDiffSection.mk (smoothExtensionTangent (I := I) x (w + w'))
             (smoothExtensionTangent_contMDiff (I := I) x (w + w'))) x =
           (ContMDiffSection.mk (smoothExtensionTangent (I := I) x w)
@@ -977,7 +982,6 @@ def nablaTensor0SCurvBilin
               (smoothExtensionTangent_contMDiff (I := I) x w')) Z A hA x rfl hadd]
       exact nablaTensor0SCurv_add_mid (I := I) g s _ _ _ Z A hA x)
     (fun c v w => by
-      dsimp only
       have hsmul : (ContMDiffSection.mk (smoothExtensionTangent (I := I) x (c • w))
             (smoothExtensionTangent_contMDiff (I := I) x (c • w))) x =
           (c • ContMDiffSection.mk (smoothExtensionTangent (I := I) x w)

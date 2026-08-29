@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Schauder.Holder
 
 noncomputable section
 
+
 open Set
 open scoped NNReal
 
@@ -17,7 +18,7 @@ theorem eSupNormOn_smul (s : Set X) (f : X → F) (c : Real) :
     eSupNormOn s (c • f) = (‖c‖₊ : ENNReal) * eSupNormOn s f := by
   unfold eSupNormOn
   simp_rw [Pi.smul_apply, norm_smul, ENNReal.ofReal_mul (norm_nonneg c),
-    ofReal_norm_eq_enorm, enorm_eq_nnnorm]
+    ofReal_norm, enorm_eq_nnnorm]
   rw [ENNReal.mul_iSup]
 
 theorem eHolderSeminormOn_smul
@@ -25,7 +26,7 @@ theorem eHolderSeminormOn_smul
     eHolderSeminormOn alpha s (c • f) =
       (‖c‖₊ : ENNReal) * eHolderSeminormOn alpha s f := by
   unfold eHolderSeminormOn
-  change eHolderNorm alpha (c • s.restrict f) = _
+  change eHolderNorm alpha (c • s.domRestrict f) = _
   exact eHolderNorm_smul c
 
 end GaugeAlgebra
@@ -167,7 +168,7 @@ theorem zero (k : Nat) (alpha : NNReal) (s : Set V) :
   · intro x _
     exact contDiffAt_const
   · have hjet :
-        s.restrict (iteratedFDeriv Real k (0 : V → F)) = 0 := by
+        s.domRestrict (iteratedFDeriv Real k (0 : V → F)) = 0 := by
       funext x
       rw [iteratedFDeriv_zero]
       rfl
@@ -182,9 +183,9 @@ theorem add {k : Nat} {alpha : NNReal} {s : Set V} {f g : V → F}
   · intro x hx
     exact (hf.1 x hx).add (hg.1 x hx)
   · have hjet :
-        s.restrict (iteratedFDeriv Real k (f + g)) =
-          s.restrict (iteratedFDeriv Real k f) +
-            s.restrict (iteratedFDeriv Real k g) := by
+        s.domRestrict (iteratedFDeriv Real k (f + g)) =
+          s.domRestrict (iteratedFDeriv Real k f) +
+            s.domRestrict (iteratedFDeriv Real k g) := by
       funext x
       exact iteratedFDeriv_add_apply (hf.1 x x.2) (hg.1 x x.2)
     rw [hjet]
@@ -195,10 +196,11 @@ theorem smul {k : Nat} {alpha : NNReal} {s : Set V} {f : V → F}
     IsContDiffHolderOn k alpha s (c • f) := by
   constructor
   · intro x hx
-    simpa only [Pi.smul_apply] using (hf.1 x hx).const_smul c
+    change ContDiffAt Real k (fun y => c • f y) x
+    exact (hf.1 x hx).const_smul c
   · have hjet :
-        s.restrict (iteratedFDeriv Real k (c • f)) =
-          c • s.restrict (iteratedFDeriv Real k f) := by
+        s.domRestrict (iteratedFDeriv Real k (c • f)) =
+          c • s.domRestrict (iteratedFDeriv Real k f) := by
       funext x
       exact iteratedFDeriv_const_smul_apply (hf.1 x x.2)
     rw [hjet]
@@ -307,7 +309,7 @@ theorem parabolicTimeDerivative_const_smul
   unfold parabolicTimeDerivative
   change (fderiv Real (c • fun t ↦ u t p.space) p.time) 1 = _
   rw [fderiv_const_smul hu c]
-  exact ContinuousLinearMap.smul_apply _ _ _
+  exact smul_apply _ _ _
 
 theorem eParabolicC2HolderGaugeOn_smul
     (alpha : NNReal) (Q : Set (ParabolicPoint V))
@@ -407,9 +409,11 @@ theorem smul {Q : Set (ParabolicPoint V)} {u : Real → V → F}
     IsParabolicC2On Q (c • u) := by
   constructor
   · intro p hp
-    simpa only [Pi.smul_apply] using (hu.1 p hp).const_smul c
+    change ContDiffAt Real 2 (fun y => c • u p.time y) p.space
+    exact (hu.1 p hp).const_smul c
   · intro p hp
-    simpa only [Pi.smul_apply] using (hu.2 p hp).const_smul c
+    change DifferentiableAt Real (fun t => c • u t p.space) p.time
+    exact (hu.2 p hp).const_smul c
 
 theorem neg {Q : Set (ParabolicPoint V)} {u : Real → V → F}
     (hu : IsParabolicC2On Q u) :
@@ -429,7 +433,7 @@ theorem zero (alpha : NNReal) (Q : Set (ParabolicPoint V)) :
     IsParabolicC2HolderOn alpha Q (0 : Real → V → F) := by
   refine ⟨IsParabolicC2On.zero Q, ?_, ?_⟩
   · have hjet :
-        Q.restrict (parabolicSpatialJet 2 (0 : Real → V → F)) = 0 := by
+        Q.domRestrict (parabolicSpatialJet 2 (0 : Real → V → F)) = 0 := by
       funext p
       unfold parabolicSpatialJet
       change iteratedFDeriv Real 2 (0 : V → F) p.1.space = 0
@@ -438,7 +442,7 @@ theorem zero (alpha : NNReal) (Q : Set (ParabolicPoint V)) :
     rw [hjet]
     exact memHolder_zero
   · have htime :
-        Q.restrict (parabolicTimeDerivative (0 : Real → V → F)) = 0 := by
+        Q.domRestrict (parabolicTimeDerivative (0 : Real → V → F)) = 0 := by
       funext p
       unfold parabolicTimeDerivative
       change (fderiv Real (0 : Real → F) p.1.time) 1 = 0
@@ -454,17 +458,17 @@ theorem add {alpha : NNReal} {Q : Set (ParabolicPoint V)}
     IsParabolicC2HolderOn alpha Q (u + v) := by
   refine ⟨hu.1.add hv.1, ?_, ?_⟩
   · have hjet :
-        Q.restrict (parabolicSpatialJet 2 (u + v)) =
-          Q.restrict (parabolicSpatialJet 2 u) +
-            Q.restrict (parabolicSpatialJet 2 v) := by
+        Q.domRestrict (parabolicSpatialJet 2 (u + v)) =
+          Q.domRestrict (parabolicSpatialJet 2 u) +
+            Q.domRestrict (parabolicSpatialJet 2 v) := by
       funext p
       exact parabolicSpatialJet_add 2 u v p (hu.1.1 p p.2) (hv.1.1 p p.2)
     rw [hjet]
     exact hu.2.1.add hv.2.1
   · have htime :
-        Q.restrict (parabolicTimeDerivative (u + v)) =
-          Q.restrict (parabolicTimeDerivative u) +
-            Q.restrict (parabolicTimeDerivative v) := by
+        Q.domRestrict (parabolicTimeDerivative (u + v)) =
+          Q.domRestrict (parabolicTimeDerivative u) +
+            Q.domRestrict (parabolicTimeDerivative v) := by
       funext p
       exact parabolicTimeDerivative_add u v p (hu.1.2 p p.2) (hv.1.2 p p.2)
     rw [htime]
@@ -476,15 +480,15 @@ theorem smul {alpha : NNReal} {Q : Set (ParabolicPoint V)}
     IsParabolicC2HolderOn alpha Q (c • u) := by
   refine ⟨hu.1.smul c, ?_, ?_⟩
   · have hjet :
-        Q.restrict (parabolicSpatialJet 2 (c • u)) =
-          c • Q.restrict (parabolicSpatialJet 2 u) := by
+        Q.domRestrict (parabolicSpatialJet 2 (c • u)) =
+          c • Q.domRestrict (parabolicSpatialJet 2 u) := by
       funext p
       exact parabolicSpatialJet_const_smul 2 u p c (hu.1.1 p p.2)
     rw [hjet]
     exact hu.2.1.smul
   · have htime :
-        Q.restrict (parabolicTimeDerivative (c • u)) =
-          c • Q.restrict (parabolicTimeDerivative u) := by
+        Q.domRestrict (parabolicTimeDerivative (c • u)) =
+          c • Q.domRestrict (parabolicTimeDerivative u) := by
       funext p
       exact parabolicTimeDerivative_const_smul u p c (hu.1.2 p p.2)
     rw [htime]
@@ -541,11 +545,11 @@ theorem of_isParabolicC2On_of_gauge_ne_top
     ne_top_of_le_ne_top hfinite
       (parabolicTimeHolderSeminorm_le alpha Q u)
   have hspatial : MemHolder alpha
-      (Q.restrict (parabolicSpatialJet 2 u)) := by
+      (Q.domRestrict (parabolicSpatialJet 2 u)) := by
     rw [← eHolderNorm_lt_top]
     exact lt_top_iff_ne_top.mpr hspatialFinite
   have htime : MemHolder alpha
-      (Q.restrict (parabolicTimeDerivative u)) := by
+      (Q.domRestrict (parabolicTimeDerivative u)) := by
     rw [← eHolderNorm_lt_top]
     exact lt_top_iff_ne_top.mpr htimeFinite
   exact ⟨⟨hu, hspatial, htime⟩, hfinite⟩

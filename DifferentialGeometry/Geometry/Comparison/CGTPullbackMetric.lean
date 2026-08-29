@@ -26,8 +26,8 @@ variable {H : Type*} [TopologicalSpace H]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -63,10 +63,14 @@ theorem intrExpOn_mfderiv
       ‖v‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner x v v)))
     (p : M) (R : Real) (z : intrPullBall (E := E) R) (v : E) :
     mfderiv 𝓘(Real, E) I
-        (intrExpOn (I := I) g hEnorm p R) z v =
+        (intrExpOn (I := I) g hEnorm p R) z
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) z).symm v) =
       mfderiv 𝓘(Real, E) I
-        (intrinsicFramedExp (I := I) g hEnorm p) (z : E) v := by
-  letI : SigmaCompactSpace (intrPullBall (E := E) R) :=
+        (intrinsicFramedExp (I := I) g hEnorm p) (z : E)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) (z : E)).symm v) := by
+  let _ : SigmaCompactSpace (intrPullBall (E := E) R) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen
         𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
@@ -81,8 +85,11 @@ theorem intrExpOn_mfderiv
       (by decide : (∞ : WithTop ℕ∞) ≠ 0)
   change mfderiv 𝓘(Real, E) I
       ((intrinsicFramedExp (I := I) g hEnorm p) ∘
-        (Subtype.val : intrPullBall (E := E) R → E)) z v = _
-  rw [mfderiv_comp_apply z hF hval v, mfderiv_subtype_val_apply]
+        (Subtype.val : intrPullBall (E := E) R → E)) z
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) z).symm v) = _
+  rw [mfderiv_comp_apply z hF hval, mfderiv_subtype_val_apply]
+  with_unfolding_all rfl
 
 noncomputable def intrPullMetric
     (g : SmoothRiemannianMetric I M)
@@ -94,7 +101,7 @@ noncomputable def intrPullMetric
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R)) :
     SmoothRiemannianMetric 𝓘(Real, E) (intrPullBall (E := E) R) := by
-  letI : SigmaCompactSpace (intrPullBall (E := E) R) :=
+  let _ : SigmaCompactSpace (intrPullBall (E := E) R) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen
         𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
@@ -112,9 +119,13 @@ theorem intrPullMetric_inner
         (intrinsicFramedExp (I := I) g hEnorm p)
         (Metric.ball (0 : E) R))
     (z : intrPullBall (E := E) R) (v w : E) :
-    (intrPullMetric (I := I) g hEnorm p hloc).inner z v w =
+    (intrPullMetric (I := I) g hEnorm p hloc).inner z
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(Real, E)) z).symm v)
+        ((tangentSpaceModelContinuousLinearEquiv
+          (I := 𝓘(Real, E)) z).symm w) =
       intrFrameMetric (I := I) g hEnorm p z v w := by
-  letI : SigmaCompactSpace (intrPullBall (E := E) R) :=
+  let _ : SigmaCompactSpace (intrPullBall (E := E) R) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen
         𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
@@ -144,7 +155,7 @@ theorem intrPull_pathLen
     Manifold.pathELength I
         (intrExpOn (I := I) g hEnorm p R ∘ γ) a b =
       Manifold.pathELength 𝓘(Real, E) γ a b := by
-  letI : SigmaCompactSpace (intrPullBall (E := E) R) :=
+  let _ : SigmaCompactSpace (intrPullBall (E := E) R) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen
         𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
@@ -169,18 +180,34 @@ theorem intrPull_rm04
           𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
     Geometry.Curvature.metricRm04StdAt
         (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
-        (intrPullMetric (I := I) g hEnorm p hloc) z X Y Z W =
+        (intrPullMetric (I := I) g hEnorm p hloc) z
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) z).symm X)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) z).symm Y)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) z).symm Z)
+          ((tangentSpaceModelContinuousLinearEquiv
+            (I := 𝓘(Real, E)) z).symm W) =
       Geometry.Curvature.metricRm04StdAt (I := I) (M := M) g
         (intrinsicFramedExp (I := I) g hEnorm p (z : E))
         (mfderiv 𝓘(Real, E) I
-          (intrinsicFramedExp (I := I) g hEnorm p) (z : E) X)
+          (intrinsicFramedExp (I := I) g hEnorm p) (z : E)
+            ((tangentSpaceModelContinuousLinearEquiv
+              (I := 𝓘(Real, E)) (z : E)).symm X))
         (mfderiv 𝓘(Real, E) I
-          (intrinsicFramedExp (I := I) g hEnorm p) (z : E) Y)
+          (intrinsicFramedExp (I := I) g hEnorm p) (z : E)
+            ((tangentSpaceModelContinuousLinearEquiv
+              (I := 𝓘(Real, E)) (z : E)).symm Y))
         (mfderiv 𝓘(Real, E) I
-          (intrinsicFramedExp (I := I) g hEnorm p) (z : E) Z)
+          (intrinsicFramedExp (I := I) g hEnorm p) (z : E)
+            ((tangentSpaceModelContinuousLinearEquiv
+              (I := 𝓘(Real, E)) (z : E)).symm Z))
         (mfderiv 𝓘(Real, E) I
-          (intrinsicFramedExp (I := I) g hEnorm p) (z : E) W) := by
-  letI : SigmaCompactSpace (intrPullBall (E := E) R) :=
+          (intrinsicFramedExp (I := I) g hEnorm p) (z : E)
+            ((tangentSpaceModelContinuousLinearEquiv
+              (I := 𝓘(Real, E)) (z : E)).symm W)) := by
+  let _ : SigmaCompactSpace (intrPullBall (E := E) R) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen
         𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
@@ -211,23 +238,35 @@ theorem intrPull_quad_le
         (Geometry.isSigmaCompact_of_isOpen
           𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
     let gPull := intrPullMetric (I := I) g hEnorm p hloc
+    let Jz := (tangentSpaceModelContinuousLinearEquiv
+      (I := 𝓘(Real, E)) z).symm J
+    let Vz := (tangentSpaceModelContinuousLinearEquiv
+      (I := 𝓘(Real, E)) z).symm V
     gPull.inner z
         (Geometry.Curvature.riemannOp
           (Geometry.Connection.LeviCivita (I := 𝓘(Real, E)) gPull)
-          z J V V)
-        J ≤
-      K * gPull.inner z J J * gPull.inner z V V := by
-  letI : SigmaCompactSpace (intrPullBall (E := E) R) :=
+          z Jz Vz Vz)
+        Jz ≤
+      K * gPull.inner z Jz Jz * gPull.inner z Vz Vz := by
+  let _ : SigmaCompactSpace (intrPullBall (E := E) R) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen
         𝓘(Real, E) (intrPullBall (E := E) R).isOpen)
   let gPull := intrPullMetric (I := I) g hEnorm p hloc
+  let Jz : TangentSpace 𝓘(Real, E) z :=
+    (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm J
+  let Vz : TangentSpace 𝓘(Real, E) z :=
+    (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(Real, E)) z).symm V
   let F : E → M := intrinsicFramedExp (I := I) g hEnorm p
   let q : M := F (z : E)
   let dJ : TangentSpace I q :=
-    mfderiv 𝓘(Real, E) I F (z : E) J
+    mfderiv 𝓘(Real, E) I F (z : E)
+      ((tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(Real, E)) (z : E)).symm J)
   let dV : TangentSpace I q :=
-    mfderiv 𝓘(Real, E) I F (z : E) V
+    mfderiv 𝓘(Real, E) I F (z : E)
+      ((tangentSpaceModelContinuousLinearEquiv
+        (I := 𝓘(Real, E)) (z : E)).symm V)
   have hRm' :
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) g q 4
         (Geometry.Curvature.metricRm04At
@@ -238,29 +277,31 @@ theorem intrPull_quad_le
   have hquad :=
     Integral.Connection.riemann_quad_le (I := I) g basis hON
       hRm' dJ dV
-  have hJJ : gPull.inner z J J = g.inner q dJ dJ := by
-    simp only [gPull, F, q, dJ]
+  have hJJ : gPull.inner z Jz Jz = g.inner q dJ dJ := by
+    simp only [gPull, Jz, F, q, dJ]
     rw [intrPullMetric_inner, intrFrameMetric_apply]
-  have hVV : gPull.inner z V V = g.inner q dV dV := by
-    simp only [gPull, F, q, dV]
+    with_unfolding_all rfl
+  have hVV : gPull.inner z Vz Vz = g.inner q dV dV := by
+    simp only [gPull, Vz, F, q, dV]
     rw [intrPullMetric_inner, intrFrameMetric_apply]
+    with_unfolding_all rfl
   calc
     gPull.inner z
           (Geometry.Curvature.riemannOp
             (Geometry.Connection.LeviCivita (I := 𝓘(Real, E)) gPull)
-            z J V V)
-          J =
-        gPull.inner z J
+            z Jz Vz Vz)
+          Jz =
+        gPull.inner z Jz
           (Geometry.Curvature.riemannOp
             (Geometry.Connection.LeviCivita (I := 𝓘(Real, E)) gPull)
-            z J V V) := gPull.symm _ _ _
+            z Jz Vz Vz) := gPull.symm _ _ _
     _ = Geometry.Curvature.metricRm04StdAt
           (I := 𝓘(Real, E)) (M := intrPullBall (E := E) R)
-          gPull z J V V J := by
+          gPull z Jz Vz Vz Jz := by
       rw [Integral.Connection.rm04_eq_inner]
     _ = Geometry.Curvature.metricRm04StdAt
           (I := I) (M := M) g q dJ dV dV dJ := by
-      simpa only [gPull, F, q, dJ, dV] using
+      simpa only [gPull, Jz, Vz, F, q, dJ, dV] using
         intrPull_rm04 (I := I) g hEnorm p hloc z J V V J
     _ = g.inner q dJ
           (Geometry.Curvature.riemannOp
@@ -274,7 +315,7 @@ theorem intrPull_quad_le
           dJ := g.symm _ _ _
     _ ≤ K * g.inner q dJ dJ * g.inner q dV dV :=
       hquad
-    _ = K * gPull.inner z J J * gPull.inner z V V := by
+    _ = K * gPull.inner z Jz Jz * gPull.inner z Vz Vz := by
       rw [hJJ, hVV]
 
 end CGT

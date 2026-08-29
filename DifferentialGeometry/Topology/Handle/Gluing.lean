@@ -211,8 +211,8 @@ theorem contMDiff_lower_of_contMDiff {𝕜 : Type*} [NontriviallyNormedField �
       (fun x : X => h.toFun (lower φ x))) :
     @ContMDiff 𝕜 _ E _ _ H _ I X _ _ E _ _ H _ I (AdjunctionSpace k l φ) _
       (adjunctionChartedSpace φ h) n (lower φ) := by
-  letI : ChartedSpace H (AdjunctionSpace k l φ) := adjunctionChartedSpace φ h
-  letI : IsManifold I n (AdjunctionSpace k l φ) := adjunctionIsManifold I φ h
+  let : ChartedSpace H (AdjunctionSpace k l φ) := adjunctionChartedSpace φ h
+  let : IsManifold I n (AdjunctionSpace k l φ) := adjunctionIsManifold I φ h
   have hsymm : @ContMDiff 𝕜 _ E _ _ H _ I Y _ _ E _ _ H _ I (AdjunctionSpace k l φ) _
       (adjunctionChartedSpace φ h) n h.symm :=
     contMDiff_adjunctionHomeomorph_symm I φ h
@@ -244,11 +244,11 @@ theorem contMDiff_cell_of_contMDiff {E H : Type*} [NormedAddCommGroup E] [Normed
       (StandardHandle k l) _ (standardHandleChartedSpace k l)
       E _ _ H _ I (AdjunctionSpace k l φ) _ (adjunctionChartedSpace φ h)
       n (cell φ) := by
-  letI : ChartedSpace (ModelProd (EuclideanHalfSpace ((k - 1) + 1))
+  let : ChartedSpace (ModelProd (EuclideanHalfSpace ((k - 1) + 1))
       (EuclideanHalfSpace ((l - 1) + 1))) (StandardHandle k l) :=
     standardHandleChartedSpace k l
-  letI : ChartedSpace H (AdjunctionSpace k l φ) := adjunctionChartedSpace φ h
-  letI : IsManifold I n (AdjunctionSpace k l φ) := adjunctionIsManifold I φ h
+  let : ChartedSpace H (AdjunctionSpace k l φ) := adjunctionChartedSpace φ h
+  let : IsManifold I n (AdjunctionSpace k l φ) := adjunctionIsManifold I φ h
   have hsymm : @ContMDiff ℝ _ E _ _ H _ I Y _ _ E _ _ H _ I (AdjunctionSpace k l φ) _
       (adjunctionChartedSpace φ h) n h.symm :=
     contMDiff_adjunctionHomeomorph_symm I φ h

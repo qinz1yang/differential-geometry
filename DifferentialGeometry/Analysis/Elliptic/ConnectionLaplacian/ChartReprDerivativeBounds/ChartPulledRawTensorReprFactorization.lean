@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open scoped Manifold Topology Bundle ContDiff BigOperators
 
@@ -43,9 +42,9 @@ private lemma V_eq_iteratedFDeriv_zero_norm
     (r s : ℕ) (α : M)
     (S : Π b : M, TensorRSSpace r s I b) {b : M}
     (hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α) :
-    ‖tensorRSChartE_section_repr (I := I) r s α S b‖ =
+    ‖tensorRSChartESectionRepr (I := I) r s α S b‖ =
       ‖iteratedFDeriv ℝ 0
-        ((tensorRSChartE_section_repr (I := I) r s α S) ∘
+        ((tensorRSChartESectionRepr (I := I) r s α S) ∘
             (extChartAt I α).symm)
         (extChartAt I α b)‖ := by
   have hb_chart_src : b ∈ (chartAt H α).source :=
@@ -55,8 +54,8 @@ private lemma V_eq_iteratedFDeriv_zero_norm
   have hsymm_eq : (extChartAt I α).symm ((extChartAt I α) b) = b :=
     (extChartAt I α).left_inv hb_extsrc
   rw [norm_iteratedFDeriv_zero]
-  change ‖tensorRSChartE_section_repr (I := I) r s α S b‖ =
-    ‖tensorRSChartE_section_repr (I := I) r s α S
+  change ‖tensorRSChartESectionRepr (I := I) r s α S b‖ =
+    ‖tensorRSChartESectionRepr (I := I) r s α S
       ((extChartAt I α).symm (extChartAt I α b))‖
   rw [hsymm_eq]
 
@@ -66,11 +65,11 @@ private lemma F_eq_iteratedFDeriv_one_norm
     (r s : ℕ) (α : M)
     (S : Π b : M, TensorRSSpace r s I b) (b : M) :
     ‖fderiv ℝ
-        ((tensorRSChartE_section_repr (I := I) r s α S) ∘
+        ((tensorRSChartESectionRepr (I := I) r s α S) ∘
             (extChartAt I α).symm)
         (extChartAt I α b)‖ =
       ‖iteratedFDeriv ℝ 1
-        ((tensorRSChartE_section_repr (I := I) r s α S) ∘
+        ((tensorRSChartESectionRepr (I := I) r s α S) ∘
             (extChartAt I α).symm)
         (extChartAt I α b)‖ := by
   rw [norm_iteratedFDeriv_one]
@@ -81,18 +80,18 @@ private lemma sum_VFI2_eq_finSum
     (r s : ℕ) (α : M)
     (S : Π b : M, TensorRSSpace r s I b) {b : M}
     (hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α) :
-    ‖tensorRSChartE_section_repr (I := I) r s α S b‖ +
+    ‖tensorRSChartESectionRepr (I := I) r s α S b‖ +
       ‖fderiv ℝ
-        ((tensorRSChartE_section_repr (I := I) r s α S) ∘
+        ((tensorRSChartESectionRepr (I := I) r s α S) ∘
             (extChartAt I α).symm)
         (extChartAt I α b)‖ +
       ‖iteratedFDeriv ℝ 2
-        ((tensorRSChartE_section_repr (I := I) r s α S) ∘
+        ((tensorRSChartESectionRepr (I := I) r s α S) ∘
             (extChartAt I α).symm)
         (extChartAt I α b)‖ =
       ∑ j : Fin 3,
         ‖iteratedFDeriv ℝ j.val
-          ((tensorRSChartE_section_repr (I := I) r s α S) ∘
+          ((tensorRSChartESectionRepr (I := I) r s α S) ∘
               (extChartAt I α).symm)
           (extChartAt I α b)‖ := by
   rw [V_eq_iteratedFDeriv_zero_norm (I := I) (M := M) r s α S (b := b) hb_good]

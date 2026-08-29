@@ -17,8 +17,8 @@ open scoped ContDiff Manifold Topology
 
 open DifferentialGeometry.Geometry.Riemannian
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E]
@@ -63,7 +63,7 @@ theorem hat_dist_centerD
     letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
     dist x (seqCenterD (I := I) hd P L k (gamma : Nat)) <
       4 * L.lamInf (gamma : Nat) := by
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   cases hc : seqCenter hd D P (L.φ k) (gamma : Nat) with
   | none => simp [NetLimitData.hatBall, hc] at hx
   | some c => simpa [NetLimitData.hatBall, seqCenterD, hc] using hx
@@ -80,8 +80,8 @@ theorem seqCenterD_dist_le
           (X.obj (L.φ k)).basepoint ≤
         2 * hd.lambda D 0 * (gamma : Real) := by
   filter_upwards [seqCenterD_live (I := I) hd P L gamma hgamma] with k hk
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
-  haveI : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  have : ProperSpace (X.obj (L.φ k)).M := (P (L.φ k)).proper
   rw [← ProperMetricOn.dist_eq hd hre P (L.φ k)]
   have hr : seqRadius hd D P (L.φ k) gamma =
       dist (seqCenterD (I := I) hd P L k gamma)
@@ -104,7 +104,7 @@ theorem seqCenterD_rInf_lt
       seqRadius hd D P (L.φ k) gamma < L.rInf gamma + 1 :=
     (L.tendsto gamma).eventually (Iio_mem_nhds (by linarith))
   filter_upwards [hrad] with k hk
-  letI : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
+  let : MetricSpace (X.obj (L.φ k)).M := (P (L.φ k)).ms
   rw [← ProperMetricOn.dist_eq hd hre P (L.φ k),
     ← seqCenterD_dist_eq (I := I) hd P L k gamma]
   exact hk

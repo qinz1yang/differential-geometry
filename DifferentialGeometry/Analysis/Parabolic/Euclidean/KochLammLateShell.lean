@@ -31,7 +31,7 @@ omit [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
 theorem klLateShell_sub (x : V) (R : ℝ) (k : ℕ) :
     klLateShell x R k ⊆
       Metric.closedBall x (((k + 1 : ℕ) : ℝ) * R) := by
-  exact diff_subset.trans Metric.ball_subset_closedBall
+  exact sdiff_subset.trans Metric.ball_subset_closedBall
 
 omit [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
   [MeasurableSpace V] [BorelSpace V] [Nontrivial V] in

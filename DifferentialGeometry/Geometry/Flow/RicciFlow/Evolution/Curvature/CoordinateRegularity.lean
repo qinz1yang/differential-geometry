@@ -46,7 +46,12 @@ private lemma coordFrame_chartSum
   calc
     e.basisAt (Module.finBasis Real E) hx i =
         e.symmL Real x ((Module.finBasis Real E) i) := by
-      simp [Bundle.Trivialization.basisAt]
+      unfold Bundle.Trivialization.basisAt
+      rw [Module.Basis.map_apply]
+      change (e.linearEquivAt Real x hx).symm ((Module.finBasis Real E) i) =
+        e.symmL Real x ((Module.finBasis Real E) i)
+      rw [e.symmL_apply hx]
+      rfl
     _ = e.symmL Real x
         (∑ j : Fin (Module.finrank Real E),
           (chartModelBasis E).repr ((Module.finBasis Real E) i) j •
@@ -89,6 +94,10 @@ theorem solnChartGramSmooth
           chartBasisVecFiber (I := I) x0 k x := by
     intro x hx k
     rw [e.localFrame_apply_of_mem_baseSet (chartModelBasis E) hx]
+    rw [Bundle.Trivialization.basisAt, Module.Basis.map_apply]
+    change (e.linearEquivAt Real x hx).symm (chartModelBasis E k) =
+      e.symmL Real x (chartModelBasis E k)
+    rw [e.symmL_apply hx]
     rfl
   have hcomp :=
     hS.smoothMetric.frameCompSmooth
@@ -201,8 +210,8 @@ theorem chartRmSmoothAt
     Set.Ioo a b ×ˢ interior (extChartAt I x0).target
   have hG : ContDiffOn Real ∞ (Function.uncurry G) U := by
     refine contDiffOn_pi.mpr fun r => contDiffOn_pi.mpr fun s => ?_
-    simpa [G, U, chartGramPi_apply] using
-      chartGramOnE_jointContDiffOn (I := I) g a b x0 hsmooth r s
+    exact (chartGramOnE_jointContDiffOn (I := I) g a b x0 hsmooth r s).congr
+      fun _ _ => rfl
   have hD1 : ContDiffOn Real ∞
       (Function.uncurry (fun s z => fderiv Real (G s) z)) U :=
     spatialFDeriv_contDiffOn isOpen_Ioo.uniqueDiffOn isOpen_interior hG
@@ -242,7 +251,8 @@ theorem chartRmSmoothAt
       (fun q : Real × E =>
         jetRiemann (chartModelBasis E) (jet2 (G q.1) q.2) i j k l)
       (t, y) := by
-    simpa only [Function.comp_apply] using houter.comp (t, y) hjet
+    apply (houter.comp (t, y) hjet).congr_of_eventuallyEq
+    · exact Filter.Eventually.of_forall fun _ => rfl
   have heq :
       (fun q : Real × E =>
         chartRiemannTensor (I := I) (g q.1) x0 i j k l q.2) =ᶠ[nhds (t, y)]
@@ -329,8 +339,11 @@ theorem coordRmSmoothInf
         (fun p : Real × M => extChartAt I x0 p.2) ((t : Real), x) :=
       (contMDiffAt_extChartAt' (I := I) (n := ∞) hxchart).comp ((t : Real), x) hsnd
     rw [contMDiffAt_prod_module_iff]
-    exact ⟨by simpa only [Function.comp_apply] using hfst,
-      by simpa only [Function.comp_apply] using hchart⟩
+    constructor
+    · apply hfst.congr_of_eventuallyEq
+      · exact Filter.Eventually.of_forall fun _ => rfl
+    · apply hchart.congr_of_eventuallyEq
+      · exact Filter.Eventually.of_forall fun _ => rfl
   have hLowerM : ContMDiffAt (modelWithCornersSelf Real (Real × E))
       (modelWithCornersSelf Real Real) ∞
       (fun q : Real × E =>

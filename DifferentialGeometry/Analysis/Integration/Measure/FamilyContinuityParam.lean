@@ -46,14 +46,13 @@ private lemma density_cont_param
       simp [Units.smul_def]
       rfl
     rw [hexp]
-    refine continuousOn_finset_sum _ (fun σ _ ↦ ?_)
+    refine continuousOn_finsetSum _ (fun σ _ ↦ ?_)
     refine ContinuousOn.mul continuousOn_const ?_
-    refine continuousOn_finset_prod _ (fun i _ ↦ ?_)
+    refine continuousOn_finsetProd _ (fun i _ ↦ ?_)
     exact hg x₀ (σ i) i
   exact Real.continuous_sqrt.comp_continuousOn hdet
 
 private lemma density_extChart_cont_param
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : P → SmoothRiemannianMetric I M} {K : Set P}
     (hg : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContinuousOn
@@ -77,10 +76,10 @@ private lemma density_extChart_cont_param
       have hs := (extChartAt I α).map_target hp.2
       rw [extChartAt_source_eq_chartAt_source (I := I)] at hs
       exact hs⟩)
-  simpa only [Function.comp_apply] using hcomp
+  exact hcomp.congr fun _ _ => rfl
 
 private lemma chart_integrand_cont_param
-    [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
+    [T2Space M] [SigmaCompactSpace M]
     {g : P → SmoothRiemannianMetric I M}
     {f : P → M → ℝ} {K : Set P}
     (hg : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
@@ -225,7 +224,8 @@ private theorem chart_int_cont_param
     (by filter_upwards [self_mem_nhdsWithin] with s hs; exact hmeas s hs)
     (by filter_upwards [self_mem_nhdsWithin] with s hs; exact hbound s hs)
     hb_int hlim
-  simpa only [F, ρ, symm, target, μ] using hdct
+  change Tendsto (fun s => ∫ y, F s y ∂μ) (𝓝[K] t) (𝓝 (∫ y, F t y ∂μ))
+  exact hdct
 
 theorem integral_family_cont_param
     [FirstCountableTopology P]
@@ -247,7 +247,7 @@ theorem integral_family_cont_param
     rw [← continuousOn_univ]
     exact hf.comp (continuousOn_const.prodMk continuousOn_id)
       (fun x _ ↦ ⟨ht, Set.mem_univ x⟩)
-  let S : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  let S : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   let J : M → P → ℝ := fun α t ↦
     ∫ y in (extChartAt I α).target,
       f t ((extChartAt I α).symm y) *
@@ -259,7 +259,7 @@ theorem integral_family_cont_param
       chart_int_cont_param (I := I) (M := M) (g := g) (f := f) (K := K)
         hK hg hf α
   have hsum : ContinuousOn (fun t ↦ ∑ α ∈ S, J α t) K := by
-    exact continuousOn_finset_sum S (fun α _ ↦ hJ α)
+    exact continuousOn_finsetSum S (fun α _ ↦ hJ α)
   refine hsum.congr ?_
   intro t ht
   change (∫ x, f t x ∂(riemannianMeasureFamily (I := I) (M := M) g t)) =

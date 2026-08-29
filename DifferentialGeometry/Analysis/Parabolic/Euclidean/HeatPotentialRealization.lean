@@ -149,7 +149,10 @@ theorem heatDuh_hasFDerivAt {t : Real} (ht : 0 < t) {B : NNReal}
     (F := G) (F' := DG) (bound := bound) (s := (Set.univ : Set V))
       univ_mem hGmeas hGint hDGmeas hbound
       (heatDuhGradientMajor_intble (V := V) B) hdiff
-  simpa only [G, DG, heatDuh, heatDuhGradientMap] using h
+  change HasFDerivAt
+    (fun z : V => ∫ s : Real in 0..t, heatSup (t - s) (f s) z)
+    (∫ s : Real in 0..t, heatSupGradient (t - s) (f s) x) x
+  exact h
 
 omit [CompleteSpace F] in
 theorem heatDuhGradient_int {t : Real} (ht : 0 < t) {B : NNReal}
@@ -274,7 +277,10 @@ theorem heatDuhGradientMap_hasFDerivAt
     (F := G) (F' := DG) (bound := bound) (s := (Set.univ : Set V))
       univ_mem hGmeas hGint hDGmeas hmajor
       (heatDuhHessianMajor_intble (V := V) halpha0 K) hdiff
-  simpa only [G, DG, heatDuhGradientMap, heatDuhHessian] using h
+  change HasFDerivAt
+    (fun z : V => ∫ s : Real in 0..t, heatSupGradient (t - s) (f s) z)
+    (∫ s : Real in 0..t, heatSupHessian (t - s) (f s) x) x
+  exact h
 
 def heatD2DuhMap (t : Real) (v : V)
     (f : Real → BoundedContinuousFunction V F) (x : V) : V →L[Real] F :=
@@ -398,7 +404,10 @@ theorem heatD1Duh_hasFDerivAt
     (F := G) (F' := DG) (bound := bound) (s := (Set.univ : Set V))
       univ_mem hGmeas hGint hDGmeas hmajor
       (heatD2DuhMapMajor_intble (V := V) halpha0 K v) hdiff
-  simpa only [G, DG, heatD1Duh, heatD2DuhMap] using h
+  change HasFDerivAt
+    (fun z : V => ∫ s : Real in 0..t, heatD1Sup (t - s) v (f s) z)
+    (∫ s : Real in 0..t, heatD2ConvMap (t - s) v (f s) x) x
+  exact h
 
 omit [CompleteSpace F] in
 private theorem heatD1Sup_time_aestronglyMeasurable
@@ -498,7 +507,8 @@ theorem heatDuhHessian_apply
   have heval' : HasFDerivAt (heatD1Duh t v f)
       (L.comp (heatDuhHessian t f x)) x := by
     rw [← hfun]
-    simpa only [Function.comp_apply] using heval
+    exact heval.congr_of_eventuallyEq <|
+      Filter.Eventually.of_forall fun _ => rfl
   have hraw := heatD1Duh_hasFDerivAt halpha0 halpha1 ht f hbound hf v
     (heatD1Sup_time_aestronglyMeasurable ht f hmeas1 v)
     (heatD2ConvMap_time_aestronglyMeasurable ht f hmeas2 v) x

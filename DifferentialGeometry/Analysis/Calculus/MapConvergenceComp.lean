@@ -165,7 +165,7 @@ theorem exists_cInf_finite
       ∀ i, ∃ Φinf : E → F,
         MapCInfConvOnCompacts (U i) (fun n => Φ i (ψ n)) Φinf ∧ Q i Φinf := by
   classical
-  letI := Fintype.ofFinite ι
+  let := Fintype.ofFinite ι
   have aux : ∀ s : Finset ι,
       ∃ (ψ : ℕ → ℕ), StrictMono ψ ∧
         ∀ i ∈ s, ∃ Φinf : E → F,

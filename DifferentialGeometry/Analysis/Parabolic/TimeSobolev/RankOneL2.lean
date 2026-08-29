@@ -21,7 +21,7 @@ theorem rankOneAlong_self
     {u : ℝ → X} {r : ℝ → Y} {t : ℝ}
     (hzero : u t = 0 → r t = 0) :
     rankOneAlong u r t (u t) = r t := by
-  rw [rankOneAlong, ContinuousLinearMap.smul_apply,
+  rw [rankOneAlong, smul_apply,
     InnerProductSpace.rankOne_apply, real_inner_self_eq_norm_sq]
   by_cases hu : u t = 0
   · rw [hu, hzero hu, norm_zero]
@@ -65,7 +65,7 @@ theorem rankOneAlong_aesm
     have h :=
       (ContinuousLinearMap.smulRightL ℝ X Y).aestronglyMeasurable_comp₂
         hdual hr
-    simpa only [InnerProductSpace.rankOne_def] using h
+    simpa only [InnerProductSpace.rankOne_def] using! h
   have hscale :
       AEStronglyMeasurable (fun t => (‖u t‖ ^ 2)⁻¹) μ :=
     (hu.norm.pow 2).aemeasurable.inv.aestronglyMeasurable

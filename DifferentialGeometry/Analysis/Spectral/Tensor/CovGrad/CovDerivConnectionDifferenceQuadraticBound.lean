@@ -43,8 +43,9 @@ private local instance tensorRSRiemannianNormedAddCommGroup_local
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
+omit [SigmaCompactSpace M] in
 private theorem exists_norm_covGrad_connectionDifferenceSection_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
@@ -58,15 +59,15 @@ private theorem exists_norm_covGrad_connectionDifferenceSection_le_of_jetEnvelop
         (x : M),
         (∀ j : ℕ, j ≤ 2 →
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖) ≤ B) →
           letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 1 3 I b) :=
-            Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 1 3
+            Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 1 3
           ‖((covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)).toSection x :
               Tensor0SBundle.TensorRSSpace 1 3 I x)‖ ≤ Cw := by
   classical
-  letI instW : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 1 3 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 1 3
+  let instW : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 1 3 I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 1 3
   obtain ⟨Ck0, hCk00, hKos0⟩ := riemannianFiberNormSq_raisedKoszul_le_of_lt_one (I := I) (M := M) g₀
     hδ₀0 hδ₀
   obtain ⟨Ck1, hCk10, hKos1⟩ :=
@@ -95,10 +96,10 @@ private theorem exists_norm_covGrad_connectionDifferenceSection_le_of_jetEnvelop
       ∑ i ∈ Finset.range 2, Bf i * ∑ l ∈ Finset.range (2 - i), Sf l), Real.sqrt_nonneg _, ?_⟩
   intro g₁ P δ hδ_le hδ0 hδ htie x henv
   have hδlt1 : δ < 1 := lt_of_le_of_lt hδ_le hδ₀
-  letI inst3 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 3 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
-  letI inst4 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 4 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+  let inst3 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 3 I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
+  let inst4 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 4 I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
   set N1 : ℝ := ‖((iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x :
       Tensor0SBundle.TensorRSSpace 0 3 I x)‖ with hN1_def
   set N2 : ℝ := ‖((iteratedCovGrad (I := I) g₀ 0 2 2 P).toSection x :
@@ -183,8 +184,7 @@ private theorem exists_norm_covGrad_connectionDifferenceSection_le_of_jetEnvelop
   rw [← Real.sqrt_sq hWnn]
   exact Real.sqrt_le_sqrt hWsq
 
-set_option backward.isDefEq.respectTransparency false in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem covGrad_connectionDifferenceSection_flat_eval_eq_inner
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) (v w u : TangentSpace I x) :
     Tensor0SSpace.toModel
@@ -239,8 +239,9 @@ private theorem covGrad_connectionDifferenceSection_flat_eval_eq_inner
   rw [hA_def]
   exact hbridge
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
+omit [SigmaCompactSpace M] in
 theorem exists_covDerivConnectionDifference_gQuadratic_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
@@ -254,7 +255,7 @@ theorem exists_covDerivConnectionDifference_gQuadratic_le_of_jetEnvelope
         (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B →
           ∀ (v w u : TangentSpace I x),
             Real.sqrt (g₀.inner x
@@ -269,8 +270,8 @@ theorem exists_covDerivConnectionDifference_gQuadratic_le_of_jetEnvelope
               C * Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) *
                 Real.sqrt (g₀.inner x u u) := by
   classical
-  letI instW : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 1 3 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 1 3
+  let instW : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 1 3 I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 1 3
   have hm0 : (0 : ℝ) ≤ max δ₀ 0 := le_max_right _ _
   have hm1 : max δ₀ 0 < 1 := max_lt hδ₀ (by norm_num)
   obtain ⟨Cw, hCw_nn, hCw⟩ :=
@@ -294,16 +295,16 @@ theorem exists_covDerivConnectionDifference_gQuadratic_le_of_jetEnvelope
       _ = δ' * Real.sqrt (g₀.inner y a a) * Real.sqrt (g₀.inner y b b) := by ring
   have henv' : ∀ j : ℕ, j ≤ 2 →
       (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
       ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖) ≤ B := by
     intro j hj
     have hterms : ∀ k ∈ Finset.range 3, (0 : ℝ) ≤
         (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + k) I b) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
         ‖(iteratedCovGrad (I := I) g₀ 0 2 k P).toSection x‖) := by
       intro k _
-      letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + k) I b) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
+      let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + k) I b) :=
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
       exact norm_nonneg _
     have hjmem : j ∈ Finset.range 3 := by
       rw [Finset.mem_range]; omega

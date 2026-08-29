@@ -139,7 +139,7 @@ private lemma weakPartialDeriv_rescale_to_unitBall
     have h_comp := hφ_at.comp (x₀ + R • z) hS_fd
     rw [harg] at h_comp
     rw [show ψ = φ ∘ S from rfl, h_comp.fderiv]
-    simp only [ContinuousLinearMap.comp_apply, ContinuousLinearMap.smul_apply,
+    simp only [ContinuousLinearMap.comp_apply, smul_apply,
       ContinuousLinearMap.id_apply, map_smul, smul_eq_mul]
     rw [← mul_assoc, mul_inv_cancel₀ hR.ne', one_mul]
   set c := (R ^ Module.finrank ℝ E)⁻¹
@@ -168,7 +168,7 @@ private lemma weakPartialDeriv_rescale_to_unitBall
   ring
 
 /-- Rescaling a witness on `B_R(x₀)` to a witness on the unit ball. -/
-noncomputable def MemW1pWitness.rescale_to_unitBall
+noncomputable def MemW1pWitness.rescaleToUnitBall
     {p : ℝ≥0∞} {x₀ : E} {R : ℝ} {u : E → ℝ}
     (hR : 0 < R)
     (hw : MemW1pWitness p u (Metric.ball x₀ R)) :

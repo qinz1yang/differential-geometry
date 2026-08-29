@@ -90,7 +90,8 @@ omit [SigmaCompactSpace M] in
 theorem deTurckOp_basis_apply (g g' : SmoothRiemannianMetric I M)
     (i j : Fin (Module.finrank ℝ E)) (x : M) :
     deTurckOp (I := I) g g' x
-        ((chartModelBasis E) i) ((chartModelBasis E) j) =
+        (centeredChartTangentBasis (I := I) x i)
+        (centeredChartTangentBasis (I := I) x j) =
       chartDeTurckOpMatrix (I := I) g g' i j x := by
   rw [deTurckOp_apply, chartDeTurckOpMatrix_def,
     ricciFun_basis_apply (I := I) g x i j,

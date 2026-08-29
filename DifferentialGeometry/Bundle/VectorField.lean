@@ -1,7 +1,7 @@
 /-
 Authors: Jack McCarthy
 -/
-import Mathlib.Geometry.Manifold.VectorBundle.SmoothSection
+import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.ContMDiffMap
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
@@ -53,9 +53,10 @@ noncomputable def VectorField.action
       [e₀.open_baseSet.mem_nhds (mem_baseSet_trivializationAt E (TangentSpace I) x₀)]
     intro x hx
     simp only [inTangentCoordinates, ContinuousLinearMap.inCoordinates, Function.id_def,
-      TangentBundle.continuousLinearMapAt_model_space, ContinuousLinearMap.comp_apply]
+      TangentBundle.continuousLinearMapAt_model_space]
     change mfderiv I 𝓘(𝕜) f x (V x) = mfderiv I 𝓘(𝕜) f x (e₀.symmL 𝕜 x ((e₀ ⟨x, V x⟩).2))
     congr 1
+    rw [e₀.symmL_apply hx]
     exact (Bundle.Trivialization.symm_apply_apply_mk e₀ hx (V x)).symm⟩
 
 noncomputable instance : CommRing (ScalarField (I := I) (M := M)) :=

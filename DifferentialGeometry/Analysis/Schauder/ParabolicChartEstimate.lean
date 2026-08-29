@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.Euclidean.NondivergenceSchauder
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.BoundedJetInterpolation
 import DifferentialGeometry.Analysis.Schauder.ParabolicChartExtension
 
+
 noncomputable section
 
 open Matrix Real Set
@@ -21,7 +22,7 @@ variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
   [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M]
 
 private abbrev EuclN (E : Type uE) [NormedAddCommGroup E]
-    [NormedSpace Real E] [FiniteDimensional Real E] :=
+    [NormedSpace Real E] :=
   EuclideanSpace Real (Fin (Module.finrank Real E))
 
 theorem parabolic_nondivergence_interior_schauder_estimate_in_euclideanChart_of_small_freeze_defect
@@ -53,7 +54,7 @@ theorem parabolic_nondivergence_interior_schauder_estimate_in_euclideanChart_of_
         I chartCenter intrinsicU p.time p.space)
       (parabolicCylinder Set.univ (Metric.ball center R)))
     (hsourceHolder : HolderWith Ksource alpha
-      ((parabolicCylinder (Icc (0 : Real) S) (Metric.ball center R)).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) (Metric.ball center R)).domRestrict
         (parabolicNondivergenceOperatorInEuclideanChart (I := I)
           g V chartCenter intrinsicU)))
     (hsourceNorm : ∀ p,
@@ -67,11 +68,11 @@ theorem parabolic_nondivergence_interior_schauder_estimate_in_euclideanChart_of_
       parabolicChartPrincipalCoefficientExtension (I := I)
         center R Rext g chartCenter p0 i j p0).PosDef)
     (hb : ∀ i, HolderWith (Kb i) alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (parabolicChartDriftCoefficientExtension (I := I)
           center R Rext g chartCenter p0 i)))
     (hc : HolderWith Kc alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (parabolicChartPotentialCoefficientExtension (I := I)
           center R Rext V chartCenter p0)))
     (hbNorm : ∀ i p,
@@ -83,7 +84,7 @@ theorem parabolic_nondivergence_interior_schauder_estimate_in_euclideanChart_of_
         ‖parabolicChartPotentialCoefficientExtension (I := I)
           center R Rext V chartCenter p0 p‖ ≤ Bc)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (parabolicChartPrincipalCoefficientExtension (I := I)
           center R Rext g chartCenter p0 i j)))
     (homega : ∀ i j p,
@@ -97,16 +98,16 @@ theorem parabolic_nondivergence_interior_schauder_estimate_in_euclideanChart_of_
         ‖parabolicChartPrincipalCoefficientExtension (I := I)
           center R Rext g chartCenter p0 i j p‖ ≤ A i j)
     (huHolder : HolderWith Ku alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ u p.time p.space)))
     (hdtimeUHolder : HolderWith KdtimeU alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ dtimeU p.time p.space)))
     (hduHolder : HolderWith Kdu alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ du p.time p.space)))
     (hd2uHolder : HolderWith Kd2u alpha
-      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).restrict
+      ((parabolicCylinder (Icc (0 : Real) S) Set.univ).domRestrict
         (fun p ↦ d2u p.time p.space)))
     (huNorm : ∀ p,
       p ∈ parabolicCylinder (Icc (0 : Real) S) Set.univ →
@@ -170,13 +171,13 @@ theorem parabolic_nondivergence_interior_schauder_estimate_in_euclideanChart_of_
           (I := I) center hR hRRext g V chartCenter p0 chartU p
             (Metric.ball_subset_closedBall hp.2)
   have hsourceHolder' : HolderWith Ksource alpha
-      (Qlocal.restrict
+      (Qlocal.domRestrict
         (parabolicNondivergenceOperator aext bext cext
           (fun t x ↦ u t x))) := by
-    have hfun : Qlocal.restrict
+    have hfun : Qlocal.domRestrict
         (parabolicNondivergenceOperator aext bext cext
           (fun t x ↦ u t x)) =
-        Qlocal.restrict
+        Qlocal.domRestrict
           (parabolicNondivergenceOperatorInEuclideanChart (I := I)
             g V chartCenter intrinsicU) := by
       funext p
@@ -190,11 +191,11 @@ theorem parabolic_nondivergence_interior_schauder_estimate_in_euclideanChart_of_
     rw [hsourceEq hp]
     exact hsourceNorm p (by simpa only [Qlocal] using hp)
   have hbLocal : ∀ i, HolderWith (Kb i) alpha
-      (Qlocal.restrict (bext i)) := by
+      (Qlocal.domRestrict (bext i)) := by
     intro i
     exact ((HolderWith.restrict_iff.mp
       (by simpa only [Qglobal, bext] using hb i)).mono hQlocalQglobal).holderWith
-  have hcLocal : HolderWith Kc alpha (Qlocal.restrict cext) :=
+  have hcLocal : HolderWith Kc alpha (Qlocal.domRestrict cext) :=
     ((HolderWith.restrict_iff.mp
       (by simpa only [Qglobal, cext] using hc)).mono hQlocalQglobal).holderWith
   have hbNormLocal : ∀ i p, p ∈ Qlocal → ‖bext i p‖ ≤ Bb i := by
@@ -247,13 +248,13 @@ theorem exists_parabolic_nondivergence_schauder_estimate_in_euclideanChart
       Fin (Module.finrank Real E) → NNReal)
     (Kb Bb : Fin (Module.finrank Real E) → NNReal)
     (ha : ∀ i j, HolderWith (Ka i j) alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         (parabolicChartPrincipalCoefficient (I := I) g chartCenter i j)))
     (hb : ∀ i, HolderWith (Kb i) alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         (parabolicChartDriftCoefficient (I := I) g chartCenter i)))
     (hc : HolderWith Kc alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         (parabolicChartPotentialCoefficient (I := I) V chartCenter)))
     (hbNorm : ∀ i p,
       p ∈ parabolicCylinder (Set.Icc a b) (Metric.closedBall center R) →
@@ -278,7 +279,7 @@ theorem exists_parabolic_nondivergence_schauder_estimate_in_euclideanChart
         I chartCenter intrinsicU p.time p.space)
       (parabolicCylinder Set.univ (Metric.ball center Rext)))
     (hsourceHolder : HolderWith Ksource alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         (parabolicNondivergenceOperatorInEuclideanChart (I := I)
           g V chartCenter intrinsicU)))
     (hsourceNorm : ∀ p,
@@ -286,16 +287,16 @@ theorem exists_parabolic_nondivergence_schauder_estimate_in_euclideanChart
         ‖parabolicNondivergenceOperatorInEuclideanChart (I := I)
           g V chartCenter intrinsicU p‖ ≤ Bsource)
     (huHolder : HolderWith Ku alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ u p.time p.space)))
     (hdtimeUHolder : HolderWith KdtimeU alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ dtimeU p.time p.space)))
     (hduHolder : HolderWith Kdu alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ du p.time p.space)))
     (hd2uHolder : HolderWith Kd2u alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ d2u p.time p.space)))
     (huNorm : ∀ p, p ∈ parabolicCylinder (Set.Icc a b) Set.univ →
       ‖u p.time p.space‖ ≤ Mu)
@@ -358,13 +359,13 @@ theorem exists_parabolic_nondivergence_schauder_estimate_in_euclideanChart
       hUrealize principal drift potential (fun t x ↦ u t x) chartU
         (hQouterU hp) (by simpa only [Urealize, chartU] using hrealize)
   have hsourceHolder' : HolderWith Ksource alpha
-      (Qouter.restrict
+      (Qouter.domRestrict
         (parabolicNondivergenceOperator principal drift potential
           (fun t x ↦ u t x))) := by
-    have hfun : Qouter.restrict
+    have hfun : Qouter.domRestrict
         (parabolicNondivergenceOperator principal drift potential
           (fun t x ↦ u t x)) =
-        Qouter.restrict
+        Qouter.domRestrict
           (parabolicNondivergenceOperatorInEuclideanChart (I := I)
             g V chartCenter intrinsicU) := by
       funext p
@@ -418,7 +419,7 @@ variable {E : Type vE} [NormedAddCommGroup E] [NormedSpace Real E]
   [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M]
 
 private abbrev EuclM (E : Type vE) [NormedAddCommGroup E]
-    [NormedSpace Real E] [FiniteDimensional Real E] :=
+    [NormedSpace Real E] :=
   EuclideanSpace Real (Fin (Module.finrank Real E))
 
 theorem eParabolicC2HolderGaugeInEuclideanChartOn_bounded_of_lower_jet_bounds
@@ -458,7 +459,7 @@ theorem eParabolicC2HolderGaugeInEuclideanChartOn_bounded_of_lower_jet_bounds
         I chartCenter intrinsicU p.time p.space)
       (parabolicCylinder Set.univ (Metric.ball center Rext)))
     (hsourceHolder : HolderWith Ksource alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         (parabolicNondivergenceOperatorInEuclideanChart (I := I)
           G.metric V chartCenter intrinsicU)))
     (hsourceNorm : ∀ p,
@@ -466,16 +467,16 @@ theorem eParabolicC2HolderGaugeInEuclideanChartOn_bounded_of_lower_jet_bounds
         ‖parabolicNondivergenceOperatorInEuclideanChart (I := I)
           G.metric V chartCenter intrinsicU p‖ ≤ Bsource)
     (huHolder : HolderWith Ku alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ u p.time p.space)))
     (hdtimeUHolder : HolderWith KdtimeU alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ dtimeU p.time p.space)))
     (hduHolder : HolderWith Kdu alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ du p.time p.space)))
     (hd2uHolder : HolderWith Kd2u alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ d2u p.time p.space)))
     (huNorm : ∀ p, p ∈ parabolicCylinder (Set.Icc a b) Set.univ →
       ‖u p.time p.space‖ ≤ Mu)
@@ -558,7 +559,7 @@ theorem eParabolicC2HolderGaugeInEuclideanChartOn_bounded_of_lower_jet_bounds_of
         I chartCenter intrinsicU p.time p.space)
       (parabolicCylinder Set.univ (Metric.ball center Rext)))
     (hsourceHolder : HolderWith Ksource alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         (parabolicNondivergenceOperatorInEuclideanChart (I := I)
           G.metric V chartCenter intrinsicU)))
     (hsourceNorm : ∀ p,
@@ -659,7 +660,7 @@ theorem eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartOn_bounded_of_lower_
         I chartCenter intrinsicU p.time p.space)
       (parabolicCylinder Set.univ (Metric.ball center Rext)))
     (hsourceHolder : HolderWith Ksource alpha
-      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).restrict
+      ((parabolicCylinder (Set.Icc a b) (Metric.closedBall center R)).domRestrict
         (parabolicNondivergenceOperatorInEuclideanChart (I := I)
           G.metric V chartCenter intrinsicU)))
     (hsourceNorm : ∀ p,
@@ -667,16 +668,16 @@ theorem eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartOn_bounded_of_lower_
         ‖parabolicNondivergenceOperatorInEuclideanChart (I := I)
           G.metric V chartCenter intrinsicU p‖ ≤ Bsource)
     (huHolder : HolderWith Ku alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ u p.time p.space)))
     (hdtimeUHolder : HolderWith KdtimeU alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ dtimeU p.time p.space)))
     (hduHolder : HolderWith Kdu alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ du p.time p.space)))
     (hd2uHolder : HolderWith Kd2u alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ d2u p.time p.space)))
     (huNorm : ∀ p, p ∈ parabolicCylinder (Set.Icc a b) Set.univ →
       ‖u p.time p.space‖ ≤ Mu)
@@ -780,7 +781,7 @@ theorem eParabolicC2HolderGaugeInEuclideanChartsOn_bounded_of_lower_jet_bounds_o
       Mu MdtimeU Mdu Md2u : Achart → NNReal)
     (hsourceHolder : ∀ i, HolderWith (Ksource i) alpha
       ((parabolicCylinder (Set.Icc a b)
-          (Metric.closedBall (center i) (R i))).restrict
+          (Metric.closedBall (center i) (R i))).domRestrict
         (parabolicNondivergenceOperatorInEuclideanChart (I := I)
           G.metric V (chartCenter i) intrinsicU)))
     (hsourceNorm : ∀ i p,
@@ -789,16 +790,16 @@ theorem eParabolicC2HolderGaugeInEuclideanChartsOn_bounded_of_lower_jet_bounds_o
         ‖parabolicNondivergenceOperatorInEuclideanChart (I := I)
           G.metric V (chartCenter i) intrinsicU p‖ ≤ Bsource i)
     (huHolder : ∀ i, HolderWith (Ku i) alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ u i p.time p.space)))
     (hdtimeUHolder : ∀ i, HolderWith (KdtimeU i) alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ dtimeU i p.time p.space)))
     (hduHolder : ∀ i, HolderWith (Kdu i) alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ du i p.time p.space)))
     (hd2uHolder : ∀ i, HolderWith (Kd2u i) alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ d2u i p.time p.space)))
     (huNorm : ∀ i p, p ∈ parabolicCylinder (Set.Icc a b) Set.univ →
       ‖u i p.time p.space‖ ≤ Mu i)
@@ -814,7 +815,7 @@ theorem eParabolicC2HolderGaugeInEuclideanChartsOn_bounded_of_lower_jet_bounds_o
         (fun i ↦ parabolicCylinder (Set.Icc t₀ t₁)
           (Metric.closedBall (center i) (r i))) intrinsicU ≤ C := by
   classical
-  letI := Fintype.ofFinite Achart
+  let := Fintype.ofFinite Achart
   have hlocal : ∀ i : Achart, ∃ C : NNReal,
       eParabolicC2HolderGaugeInEuclideanChartOn alpha I (chartCenter i)
         (parabolicCylinder (Set.Icc t₀ t₁)
@@ -878,7 +879,7 @@ theorem eParabolicC2HolderGaugeInEuclideanChartsOn_bounded_of_lower_jet_bounds_o
     (Ksource Bsource C M0 : Achart → NNReal)
     (hsourceHolder : ∀ i, HolderWith (Ksource i) alpha
       ((parabolicCylinder (Set.Icc a b)
-          (Metric.closedBall (center i) (R i))).restrict
+          (Metric.closedBall (center i) (R i))).domRestrict
         (parabolicNondivergenceOperatorInEuclideanChart (I := I)
           G.metric V (chartCenter i) intrinsicU)))
     (hsourceNorm : ∀ i p,
@@ -896,7 +897,7 @@ theorem eParabolicC2HolderGaugeInEuclideanChartsOn_bounded_of_lower_jet_bounds_o
         (fun i ↦ parabolicCylinder (Set.Icc t₀ t₁)
           (Metric.closedBall (center i) (r i))) intrinsicU ≤ Cresult := by
   classical
-  letI := Fintype.ofFinite Achart
+  let := Fintype.ofFinite Achart
   have hlocal : ∀ i : Achart, ∃ Cresult : NNReal,
       eParabolicC2HolderGaugeInEuclideanChartOn alpha I (chartCenter i)
         (parabolicCylinder (Set.Icc t₀ t₁)
@@ -960,7 +961,7 @@ theorem eParabolicC2HolderGaugeInEuclideanChartsOn_bounded_of_lower_jet_bounds_o
     {Ksource Bsource C M0 : NNReal}
     (hsourceHolder : ∀ i, HolderWith Ksource alpha
       ((parabolicCylinder (Set.Icc a b)
-          (Metric.closedBall (center i) (R i))).restrict
+          (Metric.closedBall (center i) (R i))).domRestrict
         (parabolicNondivergenceOperatorInEuclideanChart (I := I)
           G.metric V (chartCenter i) intrinsicU)))
     (hsourceNorm : ∀ i p,
@@ -1030,7 +1031,7 @@ theorem eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartsOn_bounded_of_lower
       Mu MdtimeU Mdu Md2u : Achart → NNReal)
     (hsourceHolder : ∀ i, HolderWith (Ksource i) alpha
       ((parabolicCylinder (Set.Icc a b)
-          (Metric.closedBall (center i) (R i))).restrict
+          (Metric.closedBall (center i) (R i))).domRestrict
         (parabolicNondivergenceOperatorInEuclideanChart (I := I)
           G.metric V (chartCenter i) intrinsicU)))
     (hsourceNorm : ∀ i p,
@@ -1039,16 +1040,16 @@ theorem eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartsOn_bounded_of_lower
         ‖parabolicNondivergenceOperatorInEuclideanChart (I := I)
           G.metric V (chartCenter i) intrinsicU p‖ ≤ Bsource i)
     (huHolder : ∀ i, HolderWith (Ku i) alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ u i p.time p.space)))
     (hdtimeUHolder : ∀ i, HolderWith (KdtimeU i) alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ dtimeU i p.time p.space)))
     (hduHolder : ∀ i, HolderWith (Kdu i) alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ du i p.time p.space)))
     (hd2uHolder : ∀ i, HolderWith (Kd2u i) alpha
-      ((parabolicCylinder (Set.Icc a b) Set.univ).restrict
+      ((parabolicCylinder (Set.Icc a b) Set.univ).domRestrict
         (fun p ↦ d2u i p.time p.space)))
     (huNorm : ∀ i p, p ∈ parabolicCylinder (Set.Icc a b) Set.univ →
       ‖u i p.time p.space‖ ≤ Mu i)
@@ -1065,7 +1066,7 @@ theorem eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartsOn_bounded_of_lower
         (fun i ↦ parabolicCylinder (Set.Icc t₀ t₁)
           (Metric.closedBall (center i) (r i))) intrinsicU ≤ C := by
   classical
-  letI := Fintype.ofFinite Achart
+  let := Fintype.ofFinite Achart
   have hlocal : ∀ i : Achart, ∃ C : NNReal,
       eParabolicC2HolderGaugeWithLowerJetsInEuclideanChartOn
         alpha I (chartCenter i)

@@ -26,9 +26,11 @@ theorem hasDerivAt_clm_pre_post
     HasDerivAt (fun s : ℝ => Q (A s d)) (Q (A' d)) t := by
   have hEval : HasDerivAt (fun s : ℝ => A s d) (A' d) t := by
     have := (ContinuousLinearMap.apply ℝ E d).hasFDerivAt.comp_hasDerivAt t hA
-    simpa [ContinuousLinearMap.apply_apply] using this
+    change HasDerivAt (fun s : ℝ => A s d) (A' d) t at this
+    exact this
   have := Q.hasFDerivAt.comp_hasDerivAt t hEval
-  simpa using this
+  change HasDerivAt (fun s : ℝ => Q (A s d)) (Q (A' d)) t at this
+  exact this
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [SigmaCompactSpace M]
     [T2Space M] [BoundarylessManifold I M] in
@@ -54,10 +56,10 @@ theorem chartLeviCivita_flat_add_christoffel
     (hX : MDiffAt (T% X) x) (v : TangentSpace I x) :
     (LeviCivita (I := I) g).toFun X x v
       = trivFromE (I := I) α x
-          (fderiv ℝ (chartE_section_repr (I := I) α X ∘ (extChartAt I α).symm)
+          (fderiv ℝ (chartESectionRepr (I := I) α X ∘ (extChartAt I α).symm)
               (extChartAt I α x) (trivToE (I := I) α x v)
             + christoffelCorrection (I := I) g α x
-                (chartE_section_repr (I := I) α X x) v) := by
+                (chartESectionRepr (I := I) α X x) v) := by
   rw [LeviCivita_chart_apply (I := I) g α hx hX v]
   rw [chartLeviCivita_apply (I := I) g α X hx v]
 
@@ -70,12 +72,12 @@ theorem chartLeviCivita_flat_eq_sub_christoffel
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     (hX : MDiffAt (T% X) x) (v : TangentSpace I x) :
     trivFromE (I := I) α x
-        (fderiv ℝ (chartE_section_repr (I := I) α X ∘ (extChartAt I α).symm)
+        (fderiv ℝ (chartESectionRepr (I := I) α X ∘ (extChartAt I α).symm)
           (extChartAt I α x) (trivToE (I := I) α x v))
       = (LeviCivita (I := I) g).toFun X x v
           - trivFromE (I := I) α x
               (christoffelCorrection (I := I) g α x
-                (chartE_section_repr (I := I) α X x) v) := by
+                (chartESectionRepr (I := I) α X x) v) := by
   have hsplit := chartLeviCivita_flat_add_christoffel (I := I) g α X hx hX v
   rw [map_add] at hsplit
   rw [hsplit]

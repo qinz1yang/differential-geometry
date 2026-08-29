@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
@@ -44,10 +43,10 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [CompactSpace M]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-private lemma extDerivFun_apply_scalar (f : M → ℝ) (x : M) (v : TangentSpace I x) :
-    extDerivFun (I := I) f x v = mfderiv I 𝓘(ℝ, ℝ) f x v := by
-  simp only [extDerivFun, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
-  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk, LinearEquiv.coe_mk]
+private lemma mvfderiv_apply_scalar (f : M → ℝ) (x : M) (v : TangentSpace I x) :
+    mvfderiv (I := I) f x v = mfderiv I 𝓘(ℝ, ℝ) f x v := by
+  simp only [mvfderiv, ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe]
+  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk]
   rfl
 
 omit [CompactSpace M] in
@@ -67,34 +66,54 @@ private lemma gradFun_eq_gramInv_sum
       ∑ j : Fin (Module.finrank ℝ E),
         (∑ i : Fin (Module.finrank ℝ E),
           (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
-            extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) i)) •
-          (chartModelBasis E) j := by
+            mvfderiv (I := I) (ζ : M → ℝ) x
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                ((chartModelBasis E) i))) •
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+            ((chartModelBasis E) j)) := by
   classical
   set Ginv := (gramMatrixAt (I := I) (M := M) g x)⁻¹ with hGinv
   set rhs : TangentSpace I x :=
     ∑ j : Fin (Module.finrank ℝ E),
       (∑ i : Fin (Module.finrank ℝ E),
-        Ginv i j * extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) i)) •
-        (chartModelBasis E) j with hrhs
+        Ginv i j * mvfderiv (I := I) (ζ : M → ℝ) x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+            ((chartModelBasis E) i))) •
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+          ((chartModelBasis E) j)) with hrhs
   refine (DifferentialGeometry.Geometry.Operator.metricFlatLinear_injective
     (I := I) g x ?_).symm
-  refine (chartModelBasis E).ext ?_
+  set tangentBasis : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
+    (chartModelBasis E).map
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm.toLinearEquiv with
+        htangentBasis
+  refine tangentBasis.ext ?_
   intro k
+  rw [htangentBasis, Module.Basis.map_apply]
   have hgrad_k : DifferentialGeometry.Geometry.Operator.metricFlatLinear (I := I) g x
-      (gradFun (I := I) g (ζ : M → ℝ) x) ((chartModelBasis E) k) =
-        extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) k) := by
-    rw [DifferentialGeometry.Geometry.Operator.metricFlatLinear_apply, extDerivFun_apply_scalar]
-    exact inner_gradFun (I := I) g (ζ : M → ℝ) x ((chartModelBasis E) k)
+      (gradFun (I := I) g (ζ : M → ℝ) x)
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+          ((chartModelBasis E) k)) =
+        mvfderiv (I := I) (ζ : M → ℝ) x
+          ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+            ((chartModelBasis E) k)) := by
+    rw [DifferentialGeometry.Geometry.Operator.metricFlatLinear_apply, mvfderiv_apply_scalar]
+    exact inner_gradFun (I := I) g (ζ : M → ℝ) x
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+        ((chartModelBasis E) k))
   have hrhs_k : DifferentialGeometry.Geometry.Operator.metricFlatLinear (I := I) g x rhs
-    ((chartModelBasis E) k) =
+    ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+      ((chartModelBasis E) k)) =
       ∑ j : Fin (Module.finrank ℝ E),
         (∑ i : Fin (Module.finrank ℝ E),
-          Ginv i j * extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) i)) *
+          Ginv i j * mvfderiv (I := I) (ζ : M → ℝ) x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              ((chartModelBasis E) i))) *
           gramMatrixAt (I := I) (M := M) g x j k := by
     rw [DifferentialGeometry.Geometry.Operator.metricFlatLinear_apply, hrhs]
-    rw [map_sum, ContinuousLinearMap.sum_apply]
+    rw [map_sum, sum_apply]
     refine Finset.sum_congr rfl (fun j _ => ?_)
-    rw [map_smul, ContinuousLinearMap.smul_apply, smul_eq_mul, gramMatrixAt_apply]
+    rw [map_smul, smul_apply, smul_eq_mul, gramMatrixAt_apply, modelInnerAt_apply]
   have hgram : ∀ i : Fin (Module.finrank ℝ E),
       (∑ j : Fin (Module.finrank ℝ E),
         Ginv i j * gramMatrixAt (I := I) (M := M) g x j k) =
@@ -106,34 +125,45 @@ private lemma gradFun_eq_gramInv_sum
     rw [hGinv]
     exact hentry
   calc DifferentialGeometry.Geometry.Operator.metricFlatLinear (I := I) g x rhs
-         ((chartModelBasis E) k)
+         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+           ((chartModelBasis E) k))
       = ∑ j : Fin (Module.finrank ℝ E),
           (∑ i : Fin (Module.finrank ℝ E),
             Ginv i j *
-              extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) i)) *
+              mvfderiv (I := I) (ζ : M → ℝ) x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((chartModelBasis E) i))) *
             gramMatrixAt (I := I) (M := M) g x j k := hrhs_k
     _ = ∑ j : Fin (Module.finrank ℝ E),
           ∑ i : Fin (Module.finrank ℝ E),
-            extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) i) *
+            mvfderiv (I := I) (ζ : M → ℝ) x
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                ((chartModelBasis E) i)) *
               (Ginv i j * gramMatrixAt (I := I) (M := M) g x j k) := by
         refine Finset.sum_congr rfl (fun j _ => ?_)
         rw [Finset.sum_mul]
         refine Finset.sum_congr rfl (fun i _ => ?_)
         ring
     _ = ∑ i : Fin (Module.finrank ℝ E),
-          extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) i) *
+          mvfderiv (I := I) (ζ : M → ℝ) x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              ((chartModelBasis E) i)) *
             (∑ j : Fin (Module.finrank ℝ E),
               Ginv i j * gramMatrixAt (I := I) (M := M) g x j k) := by
         rw [Finset.sum_comm]
         refine Finset.sum_congr rfl (fun i _ => ?_)
         rw [Finset.mul_sum]
     _ = ∑ i : Fin (Module.finrank ℝ E),
-          extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) i) *
+          mvfderiv (I := I) (ζ : M → ℝ) x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              ((chartModelBasis E) i)) *
             (1 : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ)
               i k := by
         refine Finset.sum_congr rfl (fun i _ => ?_)
         rw [hgram i]
-    _ = extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) k) := by
+    _ = mvfderiv (I := I) (ζ : M → ℝ) x
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+          ((chartModelBasis E) k)) := by
         rw [Finset.sum_eq_single k]
         · rw [Matrix.one_apply_eq, mul_one]
         · intro i _ hik
@@ -141,7 +171,9 @@ private lemma gradFun_eq_gramInv_sum
         · intro hk
           exact absurd (Finset.mem_univ k) hk
     _ = DifferentialGeometry.Geometry.Operator.metricFlatLinear (I := I) g x
-          (gradFun (I := I) g (ζ : M → ℝ) x) ((chartModelBasis E) k) :=
+          (gradFun (I := I) g (ζ : M → ℝ) x)
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+              ((chartModelBasis E) k)) :=
         hgrad_k.symm
 
 private noncomputable def covDerivHomSection
@@ -155,9 +187,13 @@ omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma covDerivHomSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (S : SmoothCcTensor g r s) (x : M) (v : E) :
+    (S : SmoothCcTensor g r s) (x : M) (v : TangentSpace I x) :
     covDerivHomSection (I := I) (M := M) g r s S x v =
-      tensorCovDerivAt (I := I) (M := M) g r s S x v := rfl
+      tensorCovDerivAt (I := I) (M := M) g r s S x
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x v) := by
+  rw [tensorCovDerivAt_def,
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm_apply_apply]
+  rfl
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -172,7 +208,7 @@ private lemma covDerivHomSection_contMDiff
   classical
   set covLC := tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
     with hcovLC
-  haveI hcovLC_inst : CovariantDerivative.ContMDiffCovariantDerivative covLC ∞ :=
+  have hcovLC_inst : CovariantDerivative.ContMDiffCovariantDerivative covLC ∞ :=
     inferInstance
   have hop : ContMDiffOn I (I.prod 𝓘(ℝ, E →L[ℝ] TensorRSModel r s ℝ E)) ∞
       (fun x : M => (⟨x, covLC.toFun (fun y : M => S.toSection y) x⟩ :
@@ -191,7 +227,8 @@ private lemma covDerivAlong_section_contMDiff
     (V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
       (fun x : M =>
-        (⟨x, tensorCovDerivAt (I := I) (M := M) g r s S x (V x)⟩ :
+        (⟨x, tensorCovDerivAt (I := I) (M := M) g r s S x
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x (V x))⟩ :
           TotalSpace (TensorRSModel r s ℝ E)
             fun y : M => TensorRSSpace r s I y)) := by
   have hϕ := covDerivHomSection_contMDiff (I := I) (M := M) g r s S
@@ -199,7 +236,7 @@ private lemma covDerivAlong_section_contMDiff
       (fun x : M => (⟨x, V x⟩ :
         TotalSpace E (TangentSpace I : M → Type _))) :=
     V.contMDiff
-  exact ContMDiff.clm_bundle_apply hϕ hv
+  simpa only [covDerivHomSection_apply] using ContMDiff.clm_bundle_apply hϕ hv
 
 private noncomputable def covDerivAlongSection
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -207,15 +244,15 @@ private noncomputable def covDerivAlongSection
     (V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯ :=
   letI : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedAddCommGroup r s
+    tensorRSModelNormedAddCommGroup r s
   letI : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedSpace r s
+    tensorRSModelNormedSpace r s
   letI : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   letI : FiberBundle (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   letI : VectorBundle ℝ (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
@@ -223,7 +260,8 @@ private noncomputable def covDerivAlongSection
       (fun y : M => TensorRSSpace r s I y) I :=
     tensorRSBundle_smooth ∞ r s
   (ContMDiffSection.mk
-      (fun x : M => tensorCovDerivAt (I := I) (M := M) g r s S x (V x))
+      (fun x : M => tensorCovDerivAt (I := I) (M := M) g r s S x
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x (V x)))
       (covDerivAlong_section_contMDiff (I := I) (M := M) g r s S V) :
     Cₛ^∞⟮I; TensorRSModel r s ℝ E,
       (fun x : M => TensorRSSpace r s I x)⟯)
@@ -235,7 +273,8 @@ private lemma covDerivAlongSection_apply
     (S : SmoothCcTensor g r s)
     (V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     covDerivAlongSection (I := I) (M := M) g r s S V x =
-      tensorCovDerivAt (I := I) (M := M) g r s S x (V x) := rfl
+      tensorCovDerivAt (I := I) (M := M) g r s S x
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x (V x)) := rfl
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -247,10 +286,11 @@ private lemma covDerivAlongSection_toModel_eq_zero_off_tsupport
     TensorRSSpace.toModel
       (covDerivAlongSection (I := I) (M := M) g r s S V x) = 0 := by
   rw [covDerivAlongSection_apply,
-    tensorCovDerivAt_eq_zero_off_tsupport (I := I) (M := M) g r s S hx (V x),
+    tensorCovDerivAt_eq_zero_off_tsupport (I := I) (M := M) g r s S hx
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x (V x)),
     TensorRSSpace.toModel_zero]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma covDerivAlongSection_hasCompactSupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s)
@@ -275,25 +315,27 @@ noncomputable def covDerivAlong
   hasCompactSupport :=
     covDerivAlongSection_hasCompactSupport (I := I) (M := M) g r s S V
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 lemma covDerivAlong_toSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s)
     (V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     (covDerivAlong (I := I) (M := M) g r s S V).toSection x =
-      tensorCovDerivAt (I := I) (M := M) g r s S x (V x) := rfl
+      tensorCovDerivAt (I := I) (M := M) g r s S x
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x (V x)) := rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 lemma covDerivAlong_toFun_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s)
     (V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     (covDerivAlong (I := I) (M := M) g r s S V).toFun x =
       TensorRSSpace.toModel
-        (tensorCovDerivAt (I := I) (M := M) g r s S x (V x)) := by
+        (tensorCovDerivAt (I := I) (M := M) g r s S x
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x (V x))) := by
   rw [SmoothCcTensor.toFun_apply, covDerivAlong_toSection_apply]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 lemma covDerivAlong_tsupport_subset
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s)
@@ -306,7 +348,8 @@ lemma covDerivAlong_tsupport_subset
   by_contra hxnot
   refine hx ?_
   rw [covDerivAlong_toFun_apply,
-    tensorCovDerivAt_eq_zero_off_tsupport (I := I) (M := M) g r s S hxnot (V x),
+    tensorCovDerivAt_eq_zero_off_tsupport (I := I) (M := M) g r s S hxnot
+      (tangentSpaceModelContinuousLinearEquiv (I := I) x (V x)),
     TensorRSSpace.toModel_zero]
 
 noncomputable def covDerivAlongGrad
@@ -314,28 +357,30 @@ noncomputable def covDerivAlongGrad
     (S : SmoothCcTensor g r s) (ζ : C^∞⟮I, M; ℝ⟯) :
     SmoothCcTensor g r s :=
   covDerivAlong (I := I) (M := M) g r s S
-    (grad_g (I := I) g ζ)
+    (gradG (I := I) g ζ)
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 lemma covDerivAlongGrad_toSection_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (ζ : C^∞⟮I, M; ℝ⟯) (x : M) :
     (covDerivAlongGrad (I := I) (M := M) g r s S ζ).toSection x =
       tensorCovDerivAt (I := I) (M := M) g r s S x
-        (gradFun (I := I) g (ζ : M → ℝ) x) := by
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (gradFun (I := I) g (ζ : M → ℝ) x)) := by
   rw [covDerivAlongGrad, covDerivAlong_toSection_apply, grad_g_apply]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 lemma covDerivAlongGrad_toFun_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (ζ : C^∞⟮I, M; ℝ⟯) (x : M) :
     (covDerivAlongGrad (I := I) (M := M) g r s S ζ).toFun x =
       TensorRSSpace.toModel
         (tensorCovDerivAt (I := I) (M := M) g r s S x
-          (gradFun (I := I) g (ζ : M → ℝ) x)) := by
+          (tangentSpaceModelContinuousLinearEquiv (I := I) x
+            (gradFun (I := I) g (ζ : M → ℝ) x))) := by
   rw [SmoothCcTensor.toFun_apply, covDerivAlongGrad_toSection_apply]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 lemma covDerivAlongGrad_tsupport_subset
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (ζ : C^∞⟮I, M; ℝ⟯) :
@@ -347,10 +392,14 @@ lemma covDerivAlongGrad_tsupport_subset
   by_contra hxnot
   refine hx ?_
   have hgrad_zero : gradFun (I := I) g (ζ : M → ℝ) x = (0 : TangentSpace I x) := by
+    apply gradFun_eq_zero_of_eventuallyEq_zero
+    have h_open : IsOpen (tsupport (ζ : M → ℝ))ᶜ :=
+      (isClosed_tsupport _).isOpen_compl
+    filter_upwards [h_open.mem_nhds hxnot] with y hy
     by_contra hne
-    exact hxnot (support_gradFun_subset (I := I) g (ζ : M → ℝ)
-      (by rw [Function.mem_support]; exact hne))
+    exact hy (subset_tsupport _ hne)
   rw [covDerivAlongGrad_toFun_apply, hgrad_zero,
+    map_zero,
     tensorCovDerivAt_zero_dir (I := I) (M := M) g r s S x,
     TensorRSSpace.toModel_zero]
 
@@ -389,29 +438,34 @@ private lemma tensorInnerPointwise_sum_sum_right
   exact map_sum (tensorInnerPointwiseRightHom (I := I) (M := M) g r s x A)
     (fun j => T i j) Finset.univ
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private lemma gramInv_sum_covDeriv_eq_covDerivAlongGrad
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (S : SmoothCcTensor g r s) (x : M) :
     ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           ((gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
-            extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) i)) •
+            mvfderiv (I := I) (ζ : M → ℝ) x
+              ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                ((chartModelBasis E) i))) •
             TensorRSSpace.toModel
               (tensorCovDerivAt (I := I) (M := M) g r s S x
                 ((chartModelBasis E) j)) =
       (covDerivAlongGrad (I := I) (M := M) g r s S ζ).toFun x := by
   classical
-  set D : TangentSpace I x →L[ℝ] TensorRSSpace r s I x :=
-    tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
-      (fun y : M => S.toSection y) x with hD
+  set D : E →L[ℝ] TensorRSSpace r s I x :=
+    (tensorRSCovariantDerivative I M r s (LeviCivita (I := I) g)
+      (fun y : M => S.toSection y) x).comp
+        (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm.toContinuousLinearMap
+      with hD
   set toM : TensorRSSpace r s I x ≃L[ℝ] TensorRSModel r s ℝ E :=
-    tensorRSSpace_continuousLinearEquiv (I := I) r s x with htoM
+    tensorRSSpaceContinuousLinearEquiv (I := I) r s x with htoM
   have hcov : ∀ v : E,
       tensorCovDerivAt (I := I) (M := M) g r s S x v = D v := fun v => rfl
   have hgoal_rhs :
       (covDerivAlongGrad (I := I) (M := M) g r s S ζ).toFun x =
-        toM (D (gradFun (I := I) g (ζ : M → ℝ) x)) := by
+        toM (D (tangentSpaceModelContinuousLinearEquiv (I := I) x
+          (gradFun (I := I) g (ζ : M → ℝ) x))) := by
     rw [covDerivAlongGrad_toFun_apply, hcov]
     rfl
   rw [hgoal_rhs]
@@ -426,26 +480,34 @@ private lemma gramInv_sum_covDeriv_eq_covDerivAlongGrad
       ∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             ((gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
-              extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) i)) •
+              mvfderiv (I := I) (ζ : M → ℝ) x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((chartModelBasis E) i))) •
               TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S x
                   ((chartModelBasis E) j)) =
         toM (D (∑ j : Fin (Module.finrank ℝ E),
           (∑ i : Fin (Module.finrank ℝ E),
             (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
-              extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) i)) •
+              mvfderiv (I := I) (ζ : M → ℝ) x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((chartModelBasis E) i))) •
             (chartModelBasis E) j)) := by
     calc ∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             ((gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
-              extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) i)) •
+              mvfderiv (I := I) (ζ : M → ℝ) x
+                ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                  ((chartModelBasis E) i))) •
               TensorRSSpace.toModel
                 (tensorCovDerivAt (I := I) (M := M) g r s S x
                   ((chartModelBasis E) j))
         = ∑ j : Fin (Module.finrank ℝ E),
             ∑ i : Fin (Module.finrank ℝ E),
               ((gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
-                extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) i)) •
+                mvfderiv (I := I) (ζ : M → ℝ) x
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                    ((chartModelBasis E) i))) •
                 toM (D ((chartModelBasis E) j)) := by
           rw [Finset.sum_comm]
           refine Finset.sum_congr rfl (fun j _ => ?_)
@@ -454,20 +516,30 @@ private lemma gramInv_sum_covDeriv_eq_covDerivAlongGrad
       _ = ∑ j : Fin (Module.finrank ℝ E),
             toM (D ((∑ i : Fin (Module.finrank ℝ E),
               (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
-                extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) i)) •
+                mvfderiv (I := I) (ζ : M → ℝ) x
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                    ((chartModelBasis E) i))) •
               (chartModelBasis E) j)) := by
           refine Finset.sum_congr rfl (fun j _ => ?_)
           rw [map_smul D, map_smul toM, Finset.sum_smul]
       _ = toM (D (∑ j : Fin (Module.finrank ℝ E),
             (∑ i : Fin (Module.finrank ℝ E),
               (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
-                extDerivFun (I := I) (ζ : M → ℝ) x ((chartModelBasis E) i)) •
+                mvfderiv (I := I) (ζ : M → ℝ) x
+                  ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
+                    ((chartModelBasis E) i))) •
               (chartModelBasis E) j)) := by
           rw [map_sum D, map_sum toM]
   rw [hlhs]
-  rw [← gradFun_eq_gramInv_sum (I := I) g ζ x]
+  have hgradModel := congrArg
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x)
+    (gradFun_eq_gramInv_sum (I := I) g ζ x)
+  simp only [map_sum, map_smul,
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x).apply_symm_apply]
+    at hgradModel
+  rw [← hgradModel]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 theorem tensorCovDerivCrossRight_eq_tensorInnerPointwise_grad
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (w S : SmoothCcTensor g r s) (x : M) :
@@ -484,7 +556,7 @@ theorem tensorCovDerivCrossRight_eq_tensorInnerPointwise_grad
   rw [tensorInnerPointwise_smul_right]
   ring
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem tensorCovDerivCrossRight_integral_eq_innerLow
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (ζ : C^∞⟮I, M; ℝ⟯) (w S : SmoothCcTensor g r s) :

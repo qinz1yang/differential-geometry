@@ -25,8 +25,9 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I ∞ M]
 variable {F : Type uF} [NormedAddCommGroup F] [NormedSpace Real F]
 
+omit [CompleteSpace E] in
 theorem properCone_dualScalarization_eq_zero_of_terminal_eq_zero
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -104,8 +105,9 @@ theorem properCone_dualScalarization_eq_zero_of_terminal_eq_zero
     (I := I) G htau.1 hgrad_cont hlaplacian_cont V L w hwcont
       hwnonneg hwtime hwmdiff hwgrad hwsuper hV hzero
 
+omit [CompleteSpace E] in
 theorem properCone_mem_dualZeroFace_of_terminal_eq_zero
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -141,8 +143,9 @@ theorem properCone_mem_dualZeroFace_of_terminal_eq_zero
   intro t ht x
   exact ProperCone.mem_dualZeroFace.mpr ⟨hmem t ht x, hpairing t ht x⟩
 
+omit [CompleteSpace E] in
 theorem properCone_dualScalarization_eq_zero_of_terminal_eq_zero_of_metricFamilySmoothOn
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -175,8 +178,9 @@ theorem properCone_dualScalarization_eq_zero_of_terminal_eq_zero_of_metricFamily
   · exact hV
   · exact hzero
 
+omit [CompleteSpace E] in
 theorem properCone_mem_dualZeroFace_of_terminal_eq_zero_of_metricFamilySmoothOn
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     [CompactSpace M] [ConnectedSpace M]
     [VectorBundle Real E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) Real)

@@ -3,6 +3,7 @@ import Mathlib.Analysis.Calculus.UniformLimitsDeriv
 
 noncomputable section
 
+
 open Filter Set
 open scoped Topology
 
@@ -96,9 +97,10 @@ theorem hessianCurryEquiv_parabolicSpatialJet_two_eq
   let spaceSlice : E → ParabolicPoint E := fun x ↦ parabolicPoint p.time x
   let spaceDomain : Set E := spaceSlice ⁻¹' Q
   have hspaceSlice : Continuous spaceSlice := by
-    simpa only [spaceSlice, parabolicPoint] using
-      (continuous_const : Continuous
-        (fun _ : E ↦ Metric.Snowflaking.toSnowflaking p.time)).prodMk continuous_id
+    change Continuous (fun x : E =>
+      (Metric.Snowflaking.toSnowflaking p.time, id x))
+    exact (continuous_const : Continuous
+      (fun _ : E ↦ Metric.Snowflaking.toSnowflaking p.time)).prodMk continuous_id
   have hspaceDomain : IsOpen spaceDomain := hQ.preimage hspaceSlice
   have hpSpace : p.space ∈ spaceDomain := by
     change parabolicPoint p.time p.space ∈ Q
@@ -126,13 +128,13 @@ theorem holderWith_restrict_timeDerivative_of_lower_jets_gauge
     {alpha C : NNReal}
     (hgauge : eParabolicC2HolderGaugeWithLowerJetsOn alpha Q
       (fun t x ↦ u (parabolicPoint t x)) ≤ C) :
-    HolderWith C alpha (Q.restrict dtimeU) := by
+    HolderWith C alpha (Q.domRestrict dtimeU) := by
   have hbase : eParabolicC2HolderGaugeOn alpha Q
       (fun t x ↦ u (parabolicPoint t x)) ≤ C :=
     (eParabolicC2HolderGaugeOn_le_with_lower_jets alpha Q _).trans hgauge
   have hholder := parabolicTimeDerivative_holderWith_restrict hbase
-  have heq : Q.restrict (parabolicTimeDerivative
-      (fun t x ↦ u (parabolicPoint t x))) = Q.restrict dtimeU := by
+  have heq : Q.domRestrict (parabolicTimeDerivative
+      (fun t x ↦ u (parabolicPoint t x))) = Q.domRestrict dtimeU := by
     funext p
     exact h.parabolicTimeDerivative_eq p.2
   rwa [heq] at hholder
@@ -146,12 +148,12 @@ theorem holderWith_restrict_spatialDerivative_of_lower_jets_gauge
     {alpha C : NNReal}
     (hgauge : eParabolicC2HolderGaugeWithLowerJetsOn alpha Q
       (fun t x ↦ u (parabolicPoint t x)) ≤ C) :
-    HolderWith C alpha (Q.restrict du) := by
+    HolderWith C alpha (Q.domRestrict du) := by
   let e := continuousMultilinearCurryFin1 Real E F
   have hjet := parabolicSpatialGradient_holderWith_restrict_of_lower_jets hgauge
   have hcomp := e.lipschitz.holderWith.comp hjet
-  have heq : e ∘ Q.restrict (parabolicSpatialJet 1
-      (fun t x ↦ u (parabolicPoint t x))) = Q.restrict du := by
+  have heq : e ∘ Q.domRestrict (parabolicSpatialJet 1
+      (fun t x ↦ u (parabolicPoint t x))) = Q.domRestrict du := by
     funext p
     exact h.continuousMultilinearCurryFin1_parabolicSpatialJet_one_eq p.2
   rw [heq] at hcomp
@@ -166,14 +168,14 @@ theorem holderWith_restrict_spatialSecondDerivative_of_lower_jets_gauge
     {alpha C : NNReal}
     (hgauge : eParabolicC2HolderGaugeWithLowerJetsOn alpha Q
       (fun t x ↦ u (parabolicPoint t x)) ≤ C) :
-    HolderWith C alpha (Q.restrict d2u) := by
+    HolderWith C alpha (Q.domRestrict d2u) := by
   have hbase : eParabolicC2HolderGaugeOn alpha Q
       (fun t x ↦ u (parabolicPoint t x)) ≤ C :=
     (eParabolicC2HolderGaugeOn_le_with_lower_jets alpha Q _).trans hgauge
   have hjet := parabolicSpatialJet_holderWith_restrict hbase
   have hcomp := (hessianCurryEquiv E F).lipschitz.holderWith.comp hjet
-  have heq : hessianCurryEquiv E F ∘ Q.restrict (parabolicSpatialJet 2
-      (fun t x ↦ u (parabolicPoint t x))) = Q.restrict d2u := by
+  have heq : hessianCurryEquiv E F ∘ Q.domRestrict (parabolicSpatialJet 2
+      (fun t x ↦ u (parabolicPoint t x))) = Q.domRestrict d2u := by
     funext p
     exact h.hessianCurryEquiv_parabolicSpatialJet_two_eq hQ p.2
   rw [heq] at hcomp
@@ -242,9 +244,10 @@ theorem isParabolicC2On
     let spaceSlice : E → ParabolicPoint E := fun x ↦ parabolicPoint p.time x
     let spaceDomain : Set E := spaceSlice ⁻¹' Q
     have hspaceSlice : Continuous spaceSlice := by
-      simpa only [spaceSlice, parabolicPoint] using
-        (continuous_const : Continuous
-          (fun _ : E ↦ Metric.Snowflaking.toSnowflaking p.time)).prodMk continuous_id
+      change Continuous (fun x : E =>
+        (Metric.Snowflaking.toSnowflaking p.time, id x))
+      exact (continuous_const : Continuous
+        (fun _ : E ↦ Metric.Snowflaking.toSnowflaking p.time)).prodMk continuous_id
     have hspaceDomain : IsOpen spaceDomain := hQ.preimage hspaceSlice
     have hpSpace : p.space ∈ spaceDomain := by
       change parabolicPoint p.time p.space ∈ Q
@@ -306,16 +309,19 @@ theorem parabolic_jet_realizes_on_of_tendsto_locally_uniformly_on
     have hderiv := hasDerivAt_of_tendstoLocallyUniformlyOn htimeDomain
       hdtimeUTime (Eventually.of_forall fun i t ht ↦ by
         have h := (hrealize i).hasDerivAt_time ht
-        simpa only [timeSlice, parabolicPoint_space, parabolicPoint_time] using h)
+        change HasDerivAt (fun s => uApprox i (parabolicPoint s p.space))
+          (dtimeUApprox i (parabolicPoint t p.space)) t
+        exact h)
       (fun t ht ↦ huTime.tendsto_at ht) hpTime
     simpa only [timeSlice, Function.comp_apply, parabolicPoint_time_space] using hderiv
   · intro p hp
     let spaceSlice : E → ParabolicPoint E := fun x ↦ parabolicPoint p.time x
     let spaceDomain : Set E := spaceSlice ⁻¹' Q
     have hspaceSlice : Continuous spaceSlice := by
-      simpa only [spaceSlice, parabolicPoint] using
-        (continuous_const : Continuous
-          (fun _ : E ↦ Metric.Snowflaking.toSnowflaking p.time)).prodMk continuous_id
+      change Continuous (fun x : E =>
+        (Metric.Snowflaking.toSnowflaking p.time, id x))
+      exact (continuous_const : Continuous
+        (fun _ : E ↦ Metric.Snowflaking.toSnowflaking p.time)).prodMk continuous_id
     have hspaceDomain : IsOpen spaceDomain := hQ.preimage hspaceSlice
     have hpSpace : p.space ∈ spaceDomain := by
       change parabolicPoint p.time p.space ∈ Q
@@ -325,16 +331,19 @@ theorem parabolic_jet_realizes_on_of_tendsto_locally_uniformly_on
     have hderiv := hasFDerivAt_of_tendstoLocallyUniformlyOn hspaceDomain
       hduSpace (fun i x hx ↦ by
         have h := (hrealize i).hasFDerivAt_space hx
-        simpa only [spaceSlice, parabolicPoint_space, parabolicPoint_time] using h)
+        change HasFDerivAt (fun z => uApprox i (parabolicPoint p.time z))
+          (duApprox i (parabolicPoint p.time x)) x
+        exact h)
       (fun x hx ↦ huSpace.tendsto_at hx) hpSpace
     simpa only [spaceSlice, Function.comp_apply, parabolicPoint_time_space] using hderiv
   · intro p hp
     let spaceSlice : E → ParabolicPoint E := fun x ↦ parabolicPoint p.time x
     let spaceDomain : Set E := spaceSlice ⁻¹' Q
     have hspaceSlice : Continuous spaceSlice := by
-      simpa only [spaceSlice, parabolicPoint] using
-        (continuous_const : Continuous
-          (fun _ : E ↦ Metric.Snowflaking.toSnowflaking p.time)).prodMk continuous_id
+      change Continuous (fun x : E =>
+        (Metric.Snowflaking.toSnowflaking p.time, id x))
+      exact (continuous_const : Continuous
+        (fun _ : E ↦ Metric.Snowflaking.toSnowflaking p.time)).prodMk continuous_id
     have hspaceDomain : IsOpen spaceDomain := hQ.preimage hspaceSlice
     have hpSpace : p.space ∈ spaceDomain := by
       change parabolicPoint p.time p.space ∈ Q
@@ -344,7 +353,9 @@ theorem parabolic_jet_realizes_on_of_tendsto_locally_uniformly_on
     have hderiv := hasFDerivAt_of_tendstoLocallyUniformlyOn hspaceDomain
       hd2uSpace (fun i x hx ↦ by
         have h := (hrealize i).hasFDerivAt_gradient hx
-        simpa only [spaceSlice, parabolicPoint_space, parabolicPoint_time] using h)
+        change HasFDerivAt (fun z => duApprox i (parabolicPoint p.time z))
+          (d2uApprox i (parabolicPoint p.time x)) x
+        exact h)
       (fun x hx ↦ hduSpace.tendsto_at hx) hpSpace
     simpa only [spaceSlice, Function.comp_apply, parabolicPoint_time_space] using hderiv
 

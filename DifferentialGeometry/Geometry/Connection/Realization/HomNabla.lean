@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Connection.Realization
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle CovariantDerivative
@@ -111,7 +110,7 @@ private theorem Psi_add_right
   rw [h_add_fun, cov_V.isCovariantDerivativeOn.add hτY hτY']
   rw [show (Y + Y' : Π x : M, TangentSpace I x) = (fun x => Y x) + (fun x => Y' x) from rfl,
       cov_TM.isCovariantDerivativeOn.add hY_T hY'_T]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.map_add]
+  simp only [add_apply, ContinuousLinearMap.map_add]
   abel
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
@@ -135,7 +134,7 @@ private theorem Psi_smul_right
   rw [cov_V.isCovariantDerivativeOn.leibniz hτY hf]
   rw [show (f • Y : Π x : M, TangentSpace I x) = f • (fun x => Y x) from rfl,
       cov_TM.isCovariantDerivativeOn.leibniz hY_T hf]
-  simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+  simp only [add_apply, smul_apply,
     ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.map_add,
     ContinuousLinearMap.map_smul]
   rw [smul_sub]
@@ -260,21 +259,21 @@ private theorem homBundleCovariantDerivativeFun_isCovOn
       vec_section_mdiff I M Y x
     rw [show (v : TangentSpace I x) = (V_field : Π x : M, TangentSpace I x) x from hVx.symm]
     rw [show (w : TangentSpace I x) = (Y : Π x : M, TangentSpace I x) x from hYx.symm]
-    rw [ContinuousLinearMap.add_apply, ContinuousLinearMap.add_apply]
+    rw [add_apply, add_apply]
     rw [homBundleCovariantDerivativeFun_apply I M F V cov_TM cov_V (τ₁ + τ₂) hτ_sum hV_diff hY_diff]
     rw [homBundleCovariantDerivativeFun_apply I M F V cov_TM cov_V τ₁ hτ₁' hV_diff hY_diff]
     rw [homBundleCovariantDerivativeFun_apply I M F V cov_TM cov_V τ₂ hτ₂' hV_diff hY_diff]
     have h_funeq : (fun y => (τ₁ + τ₂) y (Y y)) =
         (fun y => τ₁ y (Y y)) + (fun y => τ₂ y (Y y)) := by
       funext y
-      simp [Pi.add_apply, ContinuousLinearMap.add_apply]
+      simp [Pi.add_apply, add_apply]
     have hτ₁Y : MDiffAtV I M F V (fun y => τ₁ y (Y y)) x :=
       mdiffAt_apply I M F V hτ₁' hY_diff
     have hτ₂Y : MDiffAtV I M F V (fun y => τ₂ y (Y y)) x :=
       mdiffAt_apply I M F V hτ₂' hY_diff
     simp only [Psi]
     rw [h_funeq, cov_V.isCovariantDerivativeOn.add hτ₁Y hτ₂Y]
-    simp only [ContinuousLinearMap.add_apply, Pi.add_apply]
+    simp only [add_apply, Pi.add_apply]
     abel
   leibniz := by
     intro τ g x hτ hg _hx
@@ -293,7 +292,7 @@ private theorem homBundleCovariantDerivativeFun_isCovOn
     rw [show (v : TangentSpace I x) = (V_field : Π x : M, TangentSpace I x) x from hVx.symm]
     rw [show (w : TangentSpace I x) = (Y : Π x : M, TangentSpace I x) x from hYx.symm]
     rw [homBundleCovariantDerivativeFun_apply I M F V cov_TM cov_V (g • τ) hgτ hV_diff hY_diff]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply]
     rw [homBundleCovariantDerivativeFun_apply I M F V cov_TM cov_V τ hτ' hV_diff hY_diff]
     have h_funeq : (fun y => (g • τ) y (Y y)) = g • (fun y => τ y (Y y)) := by
@@ -306,7 +305,7 @@ private theorem homBundleCovariantDerivativeFun_isCovOn
     rw [cov_V.isCovariantDerivativeOn.leibniz hτY hg]
     have hgτ_apply : (g • τ) x = g x • τ x := rfl
     rw [hgτ_apply]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply]
     rw [smul_sub]
     abel
@@ -384,7 +383,11 @@ private theorem homBundleCov_section_smooth
       ⟨fun x => τ x ((concreteConn I M cov_TM Y Z) x), h_second⟩
     have : ContMDiff I (I.prod 𝓘(ℝ, F)) ∞
         (fun x => TotalSpace.mk' F (E := V) x ((s₁ - s₂) x)) := (s₁ - s₂).contMDiff
-    convert this using 1
+    exact this.congr fun x => by
+      change TotalSpace.mk' F (E := V) x
+        (cov_V τZ x (Y x) - τ x ((concreteConn I M cov_TM Y Z) x)) =
+          TotalSpace.mk' F (E := V) x (s₁ x - s₂ x)
+      rfl
   intro x₀
   rw [contMDiffAt_section]
   have h_diff_at := h_diff x₀

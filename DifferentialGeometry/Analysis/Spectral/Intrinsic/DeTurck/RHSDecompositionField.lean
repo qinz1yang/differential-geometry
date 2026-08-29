@@ -5,7 +5,6 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLieKernelL2Jet
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -40,7 +39,7 @@ private theorem bilin_smul
     ccTensorBilin (I := I) g (a • A) x v w =
       a * ccTensorBilin (I := I) g A x v w := by
   rw [ccTensorBilin_apply, ccTensorBilin_apply, ccTensorModel_smul,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    smul_apply, smul_eq_mul]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem perturb_eq_diff
@@ -54,15 +53,34 @@ private theorem perturb_eq_diff
     P = metricDifferenceCcTensor (I := I) (M := M) g g1 := by
   refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g (fun x => ?_)
   refine ContinuousMultilinearMap.ext (fun slots => ?_)
-  have hslots : slots = ![slots 0, slots 1] := by
+  let vt : Fin 2 → TangentSpace I x := fun i =>
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (slots i)
+  have hslots : slots =
+      ![tangentSpaceModelContinuousLinearEquiv (I := I) x (vt 0),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (vt 1)] := by
+    funext i
+    fin_cases i <;> simp [vt]
+  have hmodel :
+      (![tangentSpaceModelContinuousLinearEquiv (I := I) x (vt 0),
+        tangentSpaceModelContinuousLinearEquiv (I := I) x (vt 1)] : Fin 2 → E) =
+        fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+          ((![vt 0, vt 1] : Fin 2 → TangentSpace I x) i) := by
     funext i
     fin_cases i <;> rfl
-  rw [hslots, unitModel_eq_ccTensorBilin_local, metricDiff_unit]
-  change
-    ccTensorBilin (I := I) g P x (slots 0) (slots 1) =
-      g1.inner x (slots 0) (slots 1) - g.inner x (slots 0) (slots 1)
-  rw [htie x (slots 0) (slots 1), ccTensorBilinSymm_apply,
-    hPsymm x (slots 0) (slots 1)]
+  have hunit : ∀ S : SmoothCcTensor g 0 2,
+      unitModel (I := I) (M := M) g 2 S x
+          (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x
+            ((![vt 0, vt 1] : Fin 2 → TangentSpace I x) i)) =
+        ccTensorBilin (I := I) g S x (vt 0) (vt 1) := by
+    intro S
+    with_unfolding_all
+      change unitModel (I := I) (M := M) g 2 S x ![vt 0, vt 1] =
+        ccTensorBilin (I := I) g S x (vt 0) (vt 1)
+      exact unitModel_eq_ccTensorBilin_local (I := I) (M := M) g S x (vt 0) (vt 1)
+  rw [hslots, hmodel, hunit P,
+    hunit (metricDifferenceCcTensor (I := I) (M := M) g g1), metricDiff_raw]
+  rw [htie x (vt 0) (vt 1), ccTensorBilinSymm_apply,
+    hPsymm x (vt 0) (vt 1)]
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -115,6 +133,7 @@ private theorem cc22_ext_app
   rw [hW] at happ'
   exact happ'
 
+omit [SigmaCompactSpace M] in
 private theorem halfRiem_decomposition
     (g g1 : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2)
     (htie : ∀ (x : M) (v w : TangentSpace I x),
@@ -144,6 +163,7 @@ private theorem halfRiem_decomposition
     backgroundRicciCommutatorDiffDecompositionRemainderField,
     operatorFieldApplication_decompositionKernelContractionField] using hprim
 
+omit [SigmaCompactSpace M] in
 theorem ricciDecomposition_eq
     (g g1 : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2)
     (htie : ∀ (x : M) (v w : TangentSpace I x),
@@ -187,6 +207,7 @@ theorem ricciDecomposition_eq
   rw [htwice]
   module
 
+omit [SigmaCompactSpace M] in
 theorem rhsDecomposition_eq
     (g g_bg : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) {delta : Real}
@@ -247,31 +268,6 @@ theorem rhsDecomposition_eq
   rw [rhsDecomposition0]
   rw [ricciDecomposition_eq (I := I) (M := M) g g1 P htie hPsymm]
   rw [lieDecomposition0]
-  change
-    (-2 : Real) •
-          linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g g1 -
-        (2 : Real) •
-          decompositionKernelContractionField (I := I) (M := M) g g1
-            (iteratedCovGrad (I := I) g 0 2 2 P)
-            (Equiv.swap (0 : Fin 4) 2) (Equiv.swap (1 : Fin 4) 3)
-            (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1 +
-        (deTurckLieCovariantDerivativeArmField (I := I) (M := M) g g1 g_bg -
-          deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hdelta hdeltaZ
-            lieDecompositionQ lieDecompositionEps s +
-          deTurckLieEndoArmField (I := I) (M := M) g g1 g_bg +
-          lieCorrectionZeroField (I := I) (M := M) g g1 g_bg) =
-      (-2 : Real) •
-          linearizedRicciConnectionDifferenceOrder0CoeffField (I := I) (M := M) g g1 -
-        (2 : Real) •
-          decompositionKernelContractionField (I := I) (M := M) g g1
-            (iteratedCovGrad (I := I) g 0 2 2 P)
-            (Equiv.swap (0 : Fin 4) 2) (Equiv.swap (1 : Fin 4) 3)
-            (Equiv.swap (0 : Fin 4) 2 * Equiv.swap (1 : Fin 4) 3) 1 +
-        deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g g1 g_bg +
-        deTurckLieCovariantDerivativeInsertionField (I := I) (M := M) g g1 g_bg +
-        lieCorrectionZeroField (I := I) (M := M) g g1 g_bg -
-        deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hdelta hdeltaZ
-          lieDecompositionQ lieDecompositionEps s
   rw [show
     deTurckLieCovariantDerivativeArmField (I := I) (M := M) g g1 g_bg -
           deTurckLieTopOrderPairingFamily (I := I) (M := M) g T hdelta hdeltaZ

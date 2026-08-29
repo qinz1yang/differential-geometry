@@ -81,11 +81,11 @@ private lemma localDivergenceWithin_mul_pou_continuous
       rw [hρy, mul_zero]
     exact (continuousAt_const (y := (0 : ℝ))).congr hev.symm
 
-noncomputable def divergence_g_with_boundary_pou
+noncomputable def divergenceGWithBoundaryPou
     (g : SmoothRiemannianMetric (I_half n) M)
     (X : Cₛ^∞⟮(I_half n); EuclideanSpace ℝ (Fin n),
       (TangentSpace (I_half n) : M → Type _)⟯) : M → ℝ :=
-  fun x => ∑ α ∈ chartAtlasPOU_finset (I := I_half n) (M := M),
+  fun x => ∑ α ∈ chartAtlasPOUFinset (I := I_half n) (M := M),
     localDivergenceWithin (I := I_half n) g α X x *
       ((chartAtlasPOU (I_half n) M) α : M → ℝ) x
 
@@ -93,17 +93,17 @@ lemma divergence_g_with_boundary_pou_continuous
     (g : SmoothRiemannianMetric (I_half n) M)
     (X : Cₛ^∞⟮(I_half n); EuclideanSpace ℝ (Fin n),
       (TangentSpace (I_half n) : M → Type _)⟯) :
-    Continuous (divergence_g_with_boundary_pou (n := n) (M := M) g X) := by
+    Continuous (divergenceGWithBoundaryPou (n := n) (M := M) g X) := by
   classical
-  unfold divergence_g_with_boundary_pou
-  exact continuous_finset_sum _ (fun α _ =>
+  unfold divergenceGWithBoundaryPou
+  exact continuous_finsetSum _ (fun α _ =>
     localDivergenceWithin_mul_pou_continuous (n := n) (M := M) g α X)
 
 private lemma divergence_g_with_boundary_mul_pou_chart_local_ae
     (g : SmoothRiemannianMetric (I_half n) M) (α : M)
     (X : Cₛ^∞⟮(I_half n); EuclideanSpace ℝ (Fin n),
       (TangentSpace (I_half n) : M → Type _)⟯) :
-    (fun x : M => divergence_g_with_boundary (I := I_half n) g X x *
+    (fun x : M => divergenceGWithBoundary (I := I_half n) g X x *
         ((chartAtlasPOU (I_half n) M) α : M → ℝ) x)
       =ᵐ[chartLocalMeasure (I := I_half n) g α]
       (fun x : M => localDivergenceWithin (I := I_half n) g α X x *
@@ -124,11 +124,11 @@ private lemma divergence_g_with_boundary_mul_pou_chart_local_ae
   refine MeasureTheory.ae_iff.mpr ?_
   apply MeasureTheory.measure_mono_null _ h_bad_measzero
   intro x hx
-  simp only [Set.mem_setOf_eq] at hx
+  simp only [Set.mem_ofPred_eq] at hx
   by_cases hx_chart : x ∈ (chartAt (EuclideanHalfSpace n) α).source
   · by_cases hx_int : x ∈ (I_half n).interior M
     · exfalso; apply hx
-      have hd_eq : divergence_g_with_boundary (I := I_half n) g X x =
+      have hd_eq : divergenceGWithBoundary (I := I_half n) g X x =
           localDivergenceWithin (I := I_half n) g α X x :=
         voss_weyl_divergence_with_boundary_formula
           (I := I_half n) g α X hx_chart hx_int
@@ -148,13 +148,13 @@ lemma divergence_g_with_boundary_ae_pou
     (g : SmoothRiemannianMetric (I_half n) M)
     (X : Cₛ^∞⟮(I_half n); EuclideanSpace ℝ (Fin n),
       (TangentSpace (I_half n) : M → Type _)⟯) :
-    (fun x : M => divergence_g_with_boundary (I := I_half n) g X x)
+    (fun x : M => divergenceGWithBoundary (I := I_half n) g X x)
       =ᵐ[riemannianVolumeMeasure (I := I_half n) (M := M) g]
-      divergence_g_with_boundary_pou (n := n) (M := M) g X := by
+      divergenceGWithBoundaryPou (n := n) (M := M) g X := by
   classical
   set ρ : SmoothPartitionOfUnity M (I_half n) M (univ : Set M) :=
     chartAtlasPOU (I_half n) M with hρ_def
-  set S : Finset M := chartAtlasPOU_finset (I := I_half n) (M := M) with hS_def
+  set S : Finset M := chartAtlasPOUFinset (I := I_half n) (M := M) with hS_def
   have hVol_eq :
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) =
         ∑ α ∈ S,
@@ -162,9 +162,9 @@ lemma divergence_g_with_boundary_ae_pou
             (fun x : M => ENNReal.ofReal ((ρ α : M → ℝ) x)) := by
     rw [hS_def]; exact riemannianVolumeMeasure_eq_finset_sum (I := I_half n) (M := M) g
   refine (Filter.EventuallyEq.refl _ _).trans ?_
-  show (fun x : M => divergence_g_with_boundary (I := I_half n) g X x)
+  show (fun x : M => divergenceGWithBoundary (I := I_half n) g X x)
       =ᵐ[riemannianVolumeMeasure (I := I_half n) (M := M) g]
-      divergence_g_with_boundary_pou (n := n) (M := M) g X
+      divergenceGWithBoundaryPou (n := n) (M := M) g X
   rw [hVol_eq]
   rw [Filter.EventuallyEq, ae_finsetSum_measure_iff]
   intro α _hα
@@ -173,7 +173,7 @@ lemma divergence_g_with_boundary_ae_pou
     ENNReal.measurable_ofReal.comp (ρ α).contMDiff.continuous.measurable
   rw [ae_withDensity_iff hρα_meas]
   have hae_per_α :
-      (fun x : M => divergence_g_with_boundary (I := I_half n) g X x *
+      (fun x : M => divergenceGWithBoundary (I := I_half n) g X x *
           ((chartAtlasPOU (I_half n) M) α : M → ℝ) x)
         =ᵐ[chartLocalMeasure (I := I_half n) g α]
         (fun x : M => localDivergenceWithin (I := I_half n) g α X x *
@@ -194,22 +194,22 @@ lemma divergence_g_with_boundary_ae_pou
   refine MeasureTheory.ae_iff.mpr ?_
   apply MeasureTheory.measure_mono_null _ h_bad_measzero
   intro x hx
-  simp only [Set.mem_setOf_eq] at hx
+  simp only [Set.mem_ofPred_eq] at hx
   rw [Classical.not_imp] at hx
   obtain ⟨hρne, hne⟩ := hx
   by_cases hx_chart : x ∈ (chartAt (EuclideanHalfSpace n) α).source
   · by_cases hx_int : x ∈ (I_half n).interior M
     · exfalso
       apply hne
-      unfold divergence_g_with_boundary_pou
+      unfold divergenceGWithBoundaryPou
       have h_sum_collapse : ∑ β ∈ S,
             localDivergenceWithin (I := I_half n) g β X x *
               ((chartAtlasPOU (I_half n) M) β : M → ℝ) x =
-            divergence_g_with_boundary (I := I_half n) g X x := by
+            divergenceGWithBoundary (I := I_half n) g X x := by
         have h_each : ∀ β ∈ S,
             localDivergenceWithin (I := I_half n) g β X x *
               ((chartAtlasPOU (I_half n) M) β : M → ℝ) x =
-            divergence_g_with_boundary (I := I_half n) g X x *
+            divergenceGWithBoundary (I := I_half n) g X x *
               ((chartAtlasPOU (I_half n) M) β : M → ℝ) x := by
           intro β _hβ
           by_cases hβ_supp : ((chartAtlasPOU (I_half n) M) β : M → ℝ) x = 0
@@ -222,7 +222,7 @@ lemma divergence_g_with_boundary_ae_pou
             have hx_chart_β : x ∈ (chartAt (EuclideanHalfSpace n) β).source :=
               hβsub β hx_in_supp
             have hd_eq :
-                divergence_g_with_boundary (I := I_half n) g X x =
+                divergenceGWithBoundary (I := I_half n) g X x =
                   localDivergenceWithin (I := I_half n) g β X x :=
               voss_weyl_divergence_with_boundary_formula
                 (I := I_half n) g β X hx_chart_β hx_int
@@ -262,8 +262,8 @@ lemma divergence_g_with_boundary_ae_pou
 noncomputable def FullSmoothScalar.oneSubLapClassicalRep
     {g : SmoothRiemannianMetric (I_half n) M} (u : FullSmoothScalar g) : M → ℝ :=
   fun x => u.toFun x -
-    divergence_g_with_boundary_pou (n := n) (M := M) g
-      (grad_g_full_section (M := M) (n := n) g u.smooth) x
+    divergenceGWithBoundaryPou (n := n) (M := M) g
+      (gradGFullSection (M := M) (n := n) g u.smooth) x
 
 lemma FullSmoothScalar.oneSubLapClassicalRep_continuous
     {g : SmoothRiemannianMetric (I_half n) M} (u : FullSmoothScalar g) :
@@ -271,13 +271,13 @@ lemma FullSmoothScalar.oneSubLapClassicalRep_continuous
   unfold FullSmoothScalar.oneSubLapClassicalRep
   exact u.smooth.continuous.sub
     (divergence_g_with_boundary_pou_continuous (n := n) (M := M) g
-      (grad_g_full_section (M := M) (n := n) g u.smooth))
+      (gradGFullSection (M := M) (n := n) g u.smooth))
 
 lemma FullSmoothScalar.oneSubLapClassicalRep_memLp
     {g : SmoothRiemannianMetric (I_half n) M} (u : FullSmoothScalar g) :
     MemLp u.oneSubLapClassicalRep 2
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
-  haveI : IsFiniteMeasureOnCompacts
+  have : IsFiniteMeasureOnCompacts
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I_half n) (M := M) g
   exact u.oneSubLapClassicalRep_continuous.memLp_of_hasCompactSupport
@@ -301,19 +301,19 @@ lemma FullSmoothScalar.oneSubLapClassicalLp_ae_oneSubLap
     (u.oneSubLapClassicalLp :
       Lp ℝ 2 (riemannianVolumeMeasure (I := I_half n) (M := M) g)) =ᵐ[
         riemannianVolumeMeasure (I := I_half n) (M := M) g]
-      (fun x : M => u.toFun x - Δ_g_classical (M := M) (n := n) g u.smooth x) := by
+      (fun x : M => u.toFun x - ΔGClassical (M := M) (n := n) g u.smooth x) := by
   have hcoe := u.coeFn_oneSubLapClassicalLp
   have hpou := divergence_g_with_boundary_ae_pou (n := n) (M := M) g
-    (grad_g_full_section (M := M) (n := n) g u.smooth)
+    (gradGFullSection (M := M) (n := n) g u.smooth)
   filter_upwards [hcoe, hpou] with x hcoe_x hpou_x
   rw [hcoe_x]
   change u.toFun x -
-      divergence_g_with_boundary_pou (n := n) (M := M) g
-        (grad_g_full_section (M := M) (n := n) g u.smooth) x =
-      u.toFun x - Δ_g_classical (M := M) (n := n) g u.smooth x
-  rw [show Δ_g_classical (M := M) (n := n) g u.smooth x =
-      divergence_g_with_boundary (I := I_half n) g
-        (grad_g_full_section (M := M) (n := n) g u.smooth) x from rfl]
+      divergenceGWithBoundaryPou (n := n) (M := M) g
+        (gradGFullSection (M := M) (n := n) g u.smooth) x =
+      u.toFun x - ΔGClassical (M := M) (n := n) g u.smooth x
+  rw [show ΔGClassical (M := M) (n := n) g u.smooth x =
+      divergenceGWithBoundary (I := I_half n) g
+        (gradGFullSection (M := M) (n := n) g u.smooth) x from rfl]
   rw [hpou_x]
 
 theorem fullSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
@@ -324,12 +324,12 @@ theorem fullSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
         (outwardNormal (I := I_half n) (M := M) g x :
           TangentSpace _ x.val)
         (gradFun (I := I_half n) g u.toFun x.val) = 0)
-    (h_chart_iden : ∀ α ∈ chartAtlasPOU_finset
+    (h_chart_iden : ∀ α ∈ chartAtlasPOUFinset
         (I := I_half n) (M := M),
       chartFaceIntegralEqualsSurfaceIntegralOnChart (n := n) (M := M)
         g α
         (smoothSmul (I := I_half n) v.toFun v.smooth
-          (grad_g_full_section (M := M) (n := n) g u.smooth))
+          (gradGFullSection (M := M) (n := n) g u.smooth))
         ((chartAtlasPOU (I_half n) M) α : M → ℝ))
     (h_int : Integrable
       (fun b : BoundaryManifold (I_half n) M =>
@@ -338,16 +338,16 @@ theorem fullSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
               (I := I_half n) (M := M) g b :
             TangentSpace _ b.val)
           ((smoothSmul (I := I_half n) v.toFun v.smooth
-              (grad_g_full_section (M := M) (n := n) g u.smooth)) b.val))
+              (gradGFullSection (M := M) (n := n) g u.smooth)) b.val))
       (surfaceMeasure
         (I := I_half n) (M := M) g)) :
     fullSmoothScalarH1Inner u v =
       ∫ x, (u.toFun x -
-              Δ_g_classical (M := M) (n := n) g u.smooth x) *
+              ΔGClassical (M := M) (n := n) g u.smooth x) *
             v.toFun x
         ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
   classical
-  haveI : IsFiniteMeasure
+  have : IsFiniteMeasure
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I_half n) (M := M) g
@@ -399,7 +399,7 @@ theorem fullSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
             (gradFun (I := I_half n) g v.toFun x)
           ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) =
         -∫ x, v.toFun x *
-              Δ_g_classical (M := M) (n := n) g u.smooth x
+              ΔGClassical (M := M) (n := n) g u.smooth x
             ∂(riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
     linarith
   unfold fullSmoothScalarH1Inner
@@ -410,45 +410,45 @@ theorem fullSmoothScalarH1Inner_eq_integral_oneSubLapClassical_mul_neumann
     (hu_cont.mul hv_cont).integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)
   have hΔu_pou_cont : Continuous
-      (divergence_g_with_boundary_pou (n := n) (M := M) g
-        (grad_g_full_section (M := M) (n := n) g u.smooth)) :=
+      (divergenceGWithBoundaryPou (n := n) (M := M) g
+        (gradGFullSection (M := M) (n := n) g u.smooth)) :=
     divergence_g_with_boundary_pou_continuous (n := n) (M := M) g _
   have hvΔu_pou_int : Integrable
       (fun x : M => v.toFun x *
-        divergence_g_with_boundary_pou (n := n) (M := M) g
-          (grad_g_full_section (M := M) (n := n) g u.smooth) x)
+        divergenceGWithBoundaryPou (n := n) (M := M) g
+          (gradGFullSection (M := M) (n := n) g u.smooth) x)
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) :=
     (hv_cont.mul hΔu_pou_cont).integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)
   have hpou_ae :
-      (fun x : M => Δ_g_classical (M := M) (n := n) g u.smooth x)
+      (fun x : M => ΔGClassical (M := M) (n := n) g u.smooth x)
         =ᵐ[riemannianVolumeMeasure (I := I_half n) (M := M) g]
-      divergence_g_with_boundary_pou (n := n) (M := M) g
-        (grad_g_full_section (M := M) (n := n) g u.smooth) :=
+      divergenceGWithBoundaryPou (n := n) (M := M) g
+        (gradGFullSection (M := M) (n := n) g u.smooth) :=
     divergence_g_with_boundary_ae_pou (n := n) (M := M) g _
   have hvΔu_int : Integrable
       (fun x : M => v.toFun x *
-        Δ_g_classical (M := M) (n := n) g u.smooth x)
+        ΔGClassical (M := M) (n := n) g u.smooth x)
       (riemannianVolumeMeasure (I := I_half n) (M := M) g) := by
     refine hvΔu_pou_int.congr ?_
     filter_upwards [hpou_ae] with x hx
     rw [hx]
   have hpt : ∀ x : M,
       (u.toFun x -
-          Δ_g_classical (M := M) (n := n) g u.smooth x) *
+          ΔGClassical (M := M) (n := n) g u.smooth x) *
           v.toFun x =
         u.toFun x * v.toFun x -
           v.toFun x *
-            Δ_g_classical (M := M) (n := n) g u.smooth x := by
+            ΔGClassical (M := M) (n := n) g u.smooth x := by
     intro x; ring
   rw [show (fun x : M =>
         (u.toFun x -
-          Δ_g_classical (M := M) (n := n) g u.smooth x) *
+          ΔGClassical (M := M) (n := n) g u.smooth x) *
           v.toFun x) =
       (fun x : M =>
           u.toFun x * v.toFun x -
             v.toFun x *
-              Δ_g_classical (M := M) (n := n) g u.smooth x)
+              ΔGClassical (M := M) (n := n) g u.smooth x)
       from funext hpt]
   rw [integral_sub h_uv_int hvΔu_int]
   rw [h_grad_eq]
@@ -462,12 +462,12 @@ theorem fullSmoothScalarH1Inner_eq_lpInner_oneSubLapClassical_neumann
         (outwardNormal (I := I_half n) (M := M) g x :
           TangentSpace _ x.val)
         (gradFun (I := I_half n) g u.toFun x.val) = 0)
-    (h_chart_iden : ∀ α ∈ chartAtlasPOU_finset
+    (h_chart_iden : ∀ α ∈ chartAtlasPOUFinset
         (I := I_half n) (M := M),
       chartFaceIntegralEqualsSurfaceIntegralOnChart (n := n) (M := M)
         g α
         (smoothSmul (I := I_half n) v.toFun v.smooth
-          (grad_g_full_section (M := M) (n := n) g u.smooth))
+          (gradGFullSection (M := M) (n := n) g u.smooth))
         ((chartAtlasPOU (I_half n) M) α : M → ℝ))
     (h_int : Integrable
       (fun b : BoundaryManifold (I_half n) M =>
@@ -476,7 +476,7 @@ theorem fullSmoothScalarH1Inner_eq_lpInner_oneSubLapClassical_neumann
               (I := I_half n) (M := M) g b :
             TangentSpace _ b.val)
           ((smoothSmul (I := I_half n) v.toFun v.smooth
-              (grad_g_full_section (M := M) (n := n) g u.smooth)) b.val))
+              (gradGFullSection (M := M) (n := n) g u.smooth)) b.val))
       (surfaceMeasure
         (I := I_half n) (M := M) g)) :
     fullSmoothScalarH1Inner u v =
@@ -494,14 +494,14 @@ theorem fullSmoothScalarH1Inner_eq_lpInner_oneSubLapClassical_neumann
   filter_upwards [hae_lhs, hae_rhs] with x hl hr
   rw [hl, hr]
   show (u.toFun x -
-        Δ_g_classical (M := M) (n := n) g u.smooth x) * v.toFun x = _
+        ΔGClassical (M := M) (n := n) g u.smooth x) * v.toFun x = _
   rw [show @inner ℝ _ _
         (u.toFun x -
-            Δ_g_classical (M := M) (n := n) g u.smooth x)
+            ΔGClassical (M := M) (n := n) g u.smooth x)
         (v.toFun x) =
       v.toFun x *
         (u.toFun x -
-            Δ_g_classical (M := M) (n := n) g u.smooth x)
+            ΔGClassical (M := M) (n := n) g u.smooth x)
       from RCLike.inner_apply _ _]
   ring
 
@@ -513,12 +513,12 @@ theorem fullSmoothScalar_bilin_eq_lpFunctional_smooth_neumann
         (outwardNormal (I := I_half n) (M := M) g x :
           TangentSpace _ x.val)
         (gradFun (I := I_half n) g u.toFun x.val) = 0)
-    (h_chart_iden : ∀ α ∈ chartAtlasPOU_finset
+    (h_chart_iden : ∀ α ∈ chartAtlasPOUFinset
         (I := I_half n) (M := M),
       chartFaceIntegralEqualsSurfaceIntegralOnChart (n := n) (M := M)
         g α
         (smoothSmul (I := I_half n) v.toFun v.smooth
-          (grad_g_full_section (M := M) (n := n) g u.smooth))
+          (gradGFullSection (M := M) (n := n) g u.smooth))
         ((chartAtlasPOU (I_half n) M) α : M → ℝ))
     (h_int : Integrable
       (fun b : BoundaryManifold (I_half n) M =>
@@ -527,7 +527,7 @@ theorem fullSmoothScalar_bilin_eq_lpFunctional_smooth_neumann
               (I := I_half n) (M := M) g b :
             TangentSpace _ b.val)
           ((smoothSmul (I := I_half n) v.toFun v.smooth
-              (grad_g_full_section (M := M) (n := n) g u.smooth)) b.val))
+              (gradGFullSection (M := M) (n := n) g u.smooth)) b.val))
       (surfaceMeasure
         (I := I_half n) (M := M) g)) :
     H1ComplFullNeumannBilin g
@@ -551,11 +551,11 @@ theorem smoothToH1ComplFullNeumann_bilin_eq_lpFunctional_neumann
           TangentSpace _ x.val)
         (gradFun (I := I_half n) g u.toFun x.val) = 0)
     (h_chart_iden : ∀ (v : FullSmoothScalar g),
-      ∀ α ∈ chartAtlasPOU_finset (I := I_half n) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I_half n) (M := M),
       chartFaceIntegralEqualsSurfaceIntegralOnChart (n := n) (M := M)
         g α
         (smoothSmul (I := I_half n) v.toFun v.smooth
-          (grad_g_full_section (M := M) (n := n) g u.smooth))
+          (gradGFullSection (M := M) (n := n) g u.smooth))
         ((chartAtlasPOU (I_half n) M) α : M → ℝ))
     (h_int : ∀ (v : FullSmoothScalar g),
       Integrable
@@ -565,7 +565,7 @@ theorem smoothToH1ComplFullNeumann_bilin_eq_lpFunctional_neumann
                 (I := I_half n) (M := M) g b :
               TangentSpace _ b.val)
             ((smoothSmul (I := I_half n) v.toFun v.smooth
-                (grad_g_full_section (M := M) (n := n) g u.smooth)) b.val))
+                (gradGFullSection (M := M) (n := n) g u.smooth)) b.val))
         (surfaceMeasure
           (I := I_half n) (M := M) g))
     (w : H1ComplFullNeumann g) :
@@ -598,11 +598,11 @@ theorem smoothToH1ComplFullNeumann_eq_resolventFullNeumann_oneSubLap_neumann
           TangentSpace _ x.val)
         (gradFun (I := I_half n) g u.toFun x.val) = 0)
     (h_chart_iden : ∀ (v : FullSmoothScalar g),
-      ∀ α ∈ chartAtlasPOU_finset (I := I_half n) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I_half n) (M := M),
       chartFaceIntegralEqualsSurfaceIntegralOnChart (n := n) (M := M)
         g α
         (smoothSmul (I := I_half n) v.toFun v.smooth
-          (grad_g_full_section (M := M) (n := n) g u.smooth))
+          (gradGFullSection (M := M) (n := n) g u.smooth))
         ((chartAtlasPOU (I_half n) M) α : M → ℝ))
     (h_int : ∀ (v : FullSmoothScalar g),
       Integrable
@@ -612,7 +612,7 @@ theorem smoothToH1ComplFullNeumann_eq_resolventFullNeumann_oneSubLap_neumann
                 (I := I_half n) (M := M) g b :
               TangentSpace _ b.val)
             ((smoothSmul (I := I_half n) v.toFun v.smooth
-                (grad_g_full_section (M := M) (n := n) g u.smooth)) b.val))
+                (gradGFullSection (M := M) (n := n) g u.smooth)) b.val))
         (surfaceMeasure
           (I := I_half n) (M := M) g)) :
     smoothToH1ComplFullNeumann g u =

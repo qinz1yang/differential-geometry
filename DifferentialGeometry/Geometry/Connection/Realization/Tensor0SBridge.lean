@@ -5,7 +5,6 @@ import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Basic
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open scoped Manifold ContDiff Topology
 open Bundle CovariantDerivative
@@ -23,7 +22,7 @@ variable
 
 noncomputable def tensor0Iso (x : M) :
     Tensor0SSpace 0 I x ≃L[ℝ] ℝ :=
-  (tensor0SSpace_continuousLinearEquiv (I := I) 0 x).trans
+  (tensor0SSpaceContinuousLinearEquiv (I := I) 0 x).trans
     (continuousMultilinearCurryFin0 ℝ E ℝ).toContinuousLinearEquiv
 
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -74,39 +73,39 @@ private theorem tensor0Iso_symm_smul (T : Π x : M, Tensor0SSpace 0 I x)
 
 noncomputable def curriedSection {s : ℕ} (T : Π x : M, Tensor0SSpace (s+1) I x) :
     Π x : M, TangentSpace I x →L[ℝ] Tensor0SSpace s I x :=
-  fun x => tensor0S_curry (I := I) (M := M) s x (T x)
+  fun x => tensor0SCurry (I := I) (M := M) s x (T x)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 @[simp] theorem curriedSection_apply {s : ℕ}
     (T : Π x : M, Tensor0SSpace (s+1) I x) (x : M) :
-    curriedSection I M T x = tensor0S_curry (I := I) (M := M) s x (T x) := rfl
+    curriedSection I M T x = tensor0SCurry (I := I) (M := M) s x (T x) := rfl
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem curriedSection_add {s : ℕ} (T₁ T₂ : Π x : M, Tensor0SSpace (s+1) I x) :
     curriedSection I M (T₁ + T₂) = curriedSection I M T₁ + curriedSection I M T₂ := by
   funext x
-  change tensor0S_curry (I := I) (M := M) s x ((T₁ + T₂) x) =
-    tensor0S_curry (I := I) (M := M) s x (T₁ x) +
-    tensor0S_curry (I := I) (M := M) s x (T₂ x)
-  change tensor0S_curry (I := I) (M := M) s x (T₁ x + T₂ x) = _
-  exact map_add (tensor0S_curry (I := I) (M := M) s x) (T₁ x) (T₂ x)
+  change tensor0SCurry (I := I) (M := M) s x ((T₁ + T₂) x) =
+    tensor0SCurry (I := I) (M := M) s x (T₁ x) +
+    tensor0SCurry (I := I) (M := M) s x (T₂ x)
+  change tensor0SCurry (I := I) (M := M) s x (T₁ x + T₂ x) = _
+  exact map_add (tensor0SCurry (I := I) (M := M) s x) (T₁ x) (T₂ x)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem curriedSection_smul {s : ℕ} (g : M → ℝ) (T : Π x : M, Tensor0SSpace (s+1) I x) :
     curriedSection I M (g • T) = g • curriedSection I M T := by
   funext x
-  change tensor0S_curry (I := I) (M := M) s x ((g • T) x) =
-    g x • tensor0S_curry (I := I) (M := M) s x (T x)
-  change tensor0S_curry (I := I) (M := M) s x (g x • T x) = _
-  exact map_smul (tensor0S_curry (I := I) (M := M) s x) (g x) (T x)
+  change tensor0SCurry (I := I) (M := M) s x ((g • T) x) =
+    g x • tensor0SCurry (I := I) (M := M) s x (T x)
+  change tensor0SCurry (I := I) (M := M) s x (g x • T x) = _
+  exact map_smul (tensor0SCurry (I := I) (M := M) s x) (g x) (T x)
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem curriedSection_zero {s : ℕ} :
     curriedSection I M (0 : Π x : M, Tensor0SSpace (s+1) I x) = 0 := by
   funext x
-  change tensor0S_curry (I := I) (M := M) s x ((0 : Π x : M, Tensor0SSpace (s+1) I x) x) = 0
-  change tensor0S_curry (I := I) (M := M) s x (0 : Tensor0SSpace (s+1) I x) = 0
-  exact map_zero (tensor0S_curry (I := I) (M := M) s x)
+  change tensor0SCurry (I := I) (M := M) s x ((0 : Π x : M, Tensor0SSpace (s+1) I x) x) = 0
+  change tensor0SCurry (I := I) (M := M) s x (0 : Tensor0SSpace (s+1) I x) = 0
+  exact map_zero (tensor0SCurry (I := I) (M := M) s x)
 
 theorem compContinuousLinearMap_fin0
     {F₁ F₂ : Type*} [NormedAddCommGroup F₁] [NormedSpace ℝ F₁]
@@ -192,8 +191,10 @@ private theorem trivializationAt_tensor0SBundle_zero_eq_scalarFn
     (trivializationAt (Tensor0SModel 0 ℝ E)
       (fun x : M => Tensor0SSpace 0 I x) x₀ ⟨y, T y⟩).2 =
     (continuousMultilinearCurryFin0 ℝ E ℝ).symm (scalarFn I M T y) := by
-  change ((T y).compContinuousLinearMap
-    (fun _ : Fin 0 => (trivializationAt E (TangentSpace I) x₀).symmL ℝ y)) =
+  change ((Tensor0SSpace.toModel (T y)).compContinuousLinearMap
+    (fun _ : Fin 0 =>
+      (tangentSpaceModelContinuousLinearEquiv (I := I) y).toContinuousLinearMap.comp
+        ((trivializationAt E (TangentSpace I) x₀).symmL ℝ y))) =
     ContinuousMultilinearMap.constOfIsEmpty ℝ _ (scalarFn I M T y)
   rw [compContinuousLinearMap_fin0]
   rfl
@@ -279,8 +280,11 @@ private theorem trivializationAt_tensor0SBundle_succ_fiber_eq {s : ℕ}
     (T : Π x : M, Tensor0SSpace (s+1) I x) (x₀ y : M) :
     (trivializationAt (Tensor0SModel (s+1) ℝ E)
       (fun x : M => Tensor0SSpace (s+1) I x) x₀ ⟨y, T y⟩).2 =
-    (T y).compContinuousLinearMap
-      (fun _ : Fin (s+1) => (trivializationAt E (TangentSpace I) x₀).symmL ℝ y) := rfl
+    (Tensor0SSpace.toModel (T y)).compContinuousLinearMap
+      (fun _ : Fin (s+1) =>
+        (tangentSpaceModelContinuousLinearEquiv (I := I) y).toContinuousLinearMap.comp
+          ((trivializationAt E (TangentSpace I) x₀).symmL ℝ y)) := by
+  rfl
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private theorem trivializationAt_homBundle_curriedSection_fiber_eq {s : ℕ}
@@ -300,16 +304,18 @@ private theorem tensor0SBundle_linearMapAt_apply_of_mem {s : ℕ} (x₀ y : M)
     (f : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) (v : Fin s → E) :
     (((trivializationAt (Tensor0SModel s ℝ E)
         (fun x : M => Tensor0SSpace s I x) x₀).linearMapAt ℝ y)
-      ((tensor0SSpace_continuousLinearEquiv (I := I) s y).symm f)) v =
-    f (fun j => (trivializationAt E (TangentSpace I) x₀).symmL ℝ y (v j)) := by
+      ((tensor0SSpaceContinuousLinearEquiv (I := I) s y).symm f)) v =
+    f (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) y
+      ((trivializationAt E (TangentSpace I) x₀).symmL ℝ y (v j))) := by
   have h_apply := congr_fun
     (Trivialization.coe_linearMapAt_of_mem (R := ℝ)
       (e := trivializationAt (Tensor0SModel s ℝ E)
         (fun x : M => Tensor0SSpace s I x) x₀) hy)
-    ((tensor0SSpace_continuousLinearEquiv (I := I) s y).symm f)
+    ((tensor0SSpaceContinuousLinearEquiv (I := I) s y).symm f)
   rw [h_apply]
-  change ((f.compContinuousLinearMap
-    (fun _ : Fin s => (trivializationAt E (TangentSpace I) x₀).symmL ℝ y))) v = _
+  change ((f.compContinuousLinearMap (fun _ : Fin s =>
+    (tangentSpaceModelContinuousLinearEquiv (I := I) y).toContinuousLinearMap.comp
+      ((trivializationAt E (TangentSpace I) x₀).symmL ℝ y))) v) = _
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
   rfl
 
@@ -329,21 +335,22 @@ private theorem trivializationAt_homBundle_curriedSection_eq_curry_of_mem {s : �
   ext w v
   change (((trivializationAt (Tensor0SModel s ℝ E)
       (fun x : M => Tensor0SSpace s I x) x₀).linearMapAt ℝ y)
-      ((tensor0SSpace_continuousLinearEquiv (I := I) s y).symm
-        ((continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (s+1) => E) ℝ) (T y)
-          ((trivializationAt E (TangentSpace I) x₀).symmL ℝ y w)))) v =
-    ((T y).compContinuousLinearMap
-        (fun _ : Fin (s+1) => (trivializationAt E (TangentSpace I) x₀).symmL ℝ y))
+      ((tensor0SSpaceContinuousLinearEquiv (I := I) s y).symm
+        ((continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (s+1) => E) ℝ)
+          (Tensor0SSpace.toModel (T y))
+          (tangentSpaceModelContinuousLinearEquiv (I := I) y
+            ((trivializationAt E (TangentSpace I) x₀).symmL ℝ y w))))) v =
+    ((Tensor0SSpace.toModel (T y)).compContinuousLinearMap
+        (fun _ : Fin (s+1) =>
+          (tangentSpaceModelContinuousLinearEquiv (I := I) y).toContinuousLinearMap.comp
+            ((trivializationAt E (TangentSpace I) x₀).symmL ℝ y)))
       (Fin.cons w v)
   rw [tensor0SBundle_linearMapAt_apply_of_mem (I := I) (M := M) x₀ y hy]
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
   rw [continuousMultilinearCurryLeftEquiv_apply]
   congr 1
   funext j
-  refine Fin.cases ?_ ?_ j
-  · simp [Fin.cons_zero]
-  · intro k
-    simp [Fin.cons_succ]
+  exact Fin.cases rfl (fun _ => rfl) j
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem contMDiff_curriedSection_iff_section {s : ℕ}
@@ -355,9 +362,9 @@ theorem contMDiff_curriedSection_iff_section {s : ℕ}
       (fun y => TotalSpace.mk' (E →L[ℝ] Tensor0SModel s ℝ E)
         (E := fun y : M => TangentSpace I y →L[ℝ] Tensor0SSpace s I y)
         y (curriedSection I M T y)) := by
-  letI : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
+  let : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
       (fun x : M => Tensor0SSpace (s + 1) I x)) :=
-    tensor0SBundle_topology (s + 1)
+    tensor0SBundleTopology (s + 1)
   refine ⟨fun hT x => ?_, fun hC x => ?_⟩
   · rw [contMDiffAt_section (F := E →L[ℝ] Tensor0SModel s ℝ E)
       (E := fun y : M => TangentSpace I y →L[ℝ] Tensor0SSpace s I y)]
@@ -416,9 +423,9 @@ theorem mdifferentiableAt_curriedSection_iff_section {s : ℕ}
       (fun y => TotalSpace.mk' (E →L[ℝ] Tensor0SModel s ℝ E)
         (E := fun y : M => TangentSpace I y →L[ℝ] Tensor0SSpace s I y)
         y (curriedSection I M T y)) x := by
-  letI : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
+  let : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
       (fun x : M => Tensor0SSpace (s + 1) I x)) :=
-    tensor0SBundle_topology (s + 1)
+    tensor0SBundleTopology (s + 1)
   rw [mdifferentiableAt_section (F := Tensor0SModel (s+1) ℝ E)
     (E := fun x : M => Tensor0SSpace (s+1) I x)]
   rw [mdifferentiableAt_section (F := E →L[ℝ] Tensor0SModel s ℝ E)

@@ -94,7 +94,7 @@ theorem finHolder_complete
     (ι : Type*) [Fintype ι] (τ : ℝ) (R Cspace Ctime : ℝ≥0) :
     CompleteSpace
       (FinHolderBall (V := V) (F := F) ι τ R Cspace Ctime) := by
-  letI : ∀ _ : ι, CompleteSpace (ParHolderJet (V := V) (F := F) τ) :=
+  let : ∀ _ : ι, CompleteSpace (ParHolderJet (V := V) (F := F) τ) :=
     fun _ => inferInstance
   exact (finHolder_closed (V := V) (F := F)
     ι τ R Cspace Ctime).isComplete.completeSpace_coe

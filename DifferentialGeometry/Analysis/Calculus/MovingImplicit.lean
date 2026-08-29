@@ -68,8 +68,8 @@ theorem exists_preim_tail
           ∃ z ∈ Metric.closedBall z₀ r, H n z = y := by
   classical
   by_cases hsub : Subsingleton E
-  · letI : Subsingleton E := hsub
-    letI : Subsingleton F := A.toEquiv.symm.subsingleton
+  · let : Subsingleton E := hsub
+    let : Subsingleton F := A.toEquiv.symm.subsingleton
     refine ⟨R / 2, 1, by linarith, by linarith, by norm_num, 0, ?_⟩
     intro n hn
     refine ⟨fun x hx y hy hxy => Subsingleton.elim x y, ?_⟩
@@ -131,11 +131,11 @@ theorem exists_preim_tail
     have hderivEv : ∀ᶠ n in Filter.atTop,
         ∀ z ∈ Metric.closedBall z₀ r,
           dist (fderiv Real (H n) z) (fderiv Real HInf z) < (c : Real) :=
-      by simpa only [dist_comm] using hdfUniform (c : Real) (by exact_mod_cast hc)
+      by simpa only [dist_comm] using! hdfUniform (c : Real) (by exact_mod_cast hc)
     let B := A.toNonlinearRightInverse
     let margin : Real := (B.nnnorm : Real)⁻¹ - (C : Real)
     have hC_B : C < B.nnnorm⁻¹ := by
-      simpa only [B, ContinuousLinearEquiv.toNonlinearRightInverse] using hC_lt
+      simpa only [B, ContinuousLinearEquiv.toNonlinearRightInverse] using! hC_lt
     have hmargin : 0 < margin := by
       dsimp only [margin]
       exact sub_pos.mpr (by exact_mod_cast hC_B)
@@ -177,7 +177,7 @@ theorem exists_preim_tail
         rw [show fderiv Real g z =
             fderiv Real (H n) z - fderiv Real HInf z by
           exact fderiv_sub (hHdiff z hz) (hInfdiff z hz)]
-        simpa only [dist_eq_norm] using (hderiv z hz).le
+        simpa only [dist_eq_norm] using! (hderiv z hz).le
       · exact convex_closedBall z₀ r
     have happ : ApproximatesLinearOn (H n) (A : E →L[Real] F)
         (Metric.closedBall z₀ r) C := by
@@ -204,13 +204,13 @@ theorem exists_preim_tail
       calc
         dist y (H n z₀) ≤ dist y (HInf z₀) + dist (HInf z₀) (H n z₀) :=
           dist_triangle _ _ _
-        _ < δ + δ := add_lt_add_of_le_of_lt hy (by simpa only [dist_comm] using hval)
+        _ < δ + δ := add_lt_add_of_le_of_lt hy (by simpa only [dist_comm] using! hval)
         _ < margin * r := by
           dsimp only [δ]
           nlinarith [mul_pos hmargin hr]
     have hsurj := happ.surjOn_closedBall_of_nonlinearRightInverse
       B hr.le Subset.rfl
-    simpa only [margin] using hsurj hyStage
+    simpa only [margin] using! hsurj hyStage
 
 noncomputable def partialFDeriv₂
     {P X Y : Type*}
@@ -291,7 +291,7 @@ theorem rootDeriv_contDiffOn
       (implicitRootDomain (P := P) (X := X) (Y := Y)) A :=
     (hInvComp.clm_comp hParam).neg.contDiffWithinAt
   simpa only [implicitRootDeriv, restrictRoot, restrictParam,
-    ContinuousLinearMap.compL_apply] using hComp
+    ContinuousLinearMap.compL_apply] using! hComp
 
 noncomputable def pinnedRootMap
     {P X Y : Type*}
@@ -400,10 +400,10 @@ theorem mem_closedTube
   · rintro ⟨⟨p, u⟩, ⟨hp, hu⟩, rfl⟩
     refine ⟨hp, ?_⟩
     simpa only [Metric.mem_closedBall, dist_zero_right, dist_eq_norm,
-      sub_zero, add_sub_cancel_left] using hu
+      sub_zero, add_sub_cancel_left] using! hu
   · rintro ⟨hp, hx⟩
     refine ⟨(z.1, z.2 - PhiInf z.1), ⟨hp, ?_⟩, ?_⟩
-    · simpa only [Metric.mem_closedBall, dist_zero_right, dist_eq_norm, sub_zero] using hx
+    · simpa only [Metric.mem_closedBall, dist_zero_right, dist_eq_norm, sub_zero] using! hx
     · apply Prod.ext
       · rfl
       · change PhiInf z.1 + (z.2 - PhiInf z.1) = z.2
@@ -440,7 +440,7 @@ theorem closedTube_subset
   intro z hz
   obtain ⟨hp, hdist⟩ := (T.mem_closedTube).mp hz
   exact T.tube_subset z.1 hp (by
-    simpa only [Metric.mem_closedBall] using hdist.trans hr)
+    simpa only [Metric.mem_closedBall] using! hdist.trans hr)
 
 theorem exists_domain_buffer
     {P X Y : Type*}
@@ -481,7 +481,7 @@ theorem exists_domain_buffer
         intro p hp x hx
         apply htubeD'
         exact T.mem_closedTube.mpr ⟨hp, by
-          simpa only [Metric.mem_closedBall] using hx⟩
+          simpa only [Metric.mem_closedBall] using! hx⟩
       limit_unique := by
         intro p hp x hx hroot
         exact T.limit_unique p hp x (hx.trans hrle) hroot
@@ -515,14 +515,14 @@ theorem mem_closedAnnulus
   constructor
   · rintro ⟨⟨p, u⟩, ⟨hp, huBall, huInner⟩, rfl⟩
     have houter : ‖u‖ ≤ outer := by
-      simpa only [Metric.mem_closedBall, dist_zero_right, dist_eq_norm, sub_zero] using huBall
+      simpa only [Metric.mem_closedBall, dist_zero_right, dist_eq_norm, sub_zero] using! huBall
     have hinner : inner ≤ ‖u‖ := by
-      simpa only [Metric.mem_ball, dist_zero_right, dist_eq_norm, sub_zero, not_lt] using huInner
-    simpa only [dist_eq_norm, add_sub_cancel_left] using ⟨hp, hinner, houter⟩
+      simpa only [Metric.mem_ball, dist_zero_right, dist_eq_norm, sub_zero, not_lt] using! huInner
+    simpa only [dist_eq_norm, add_sub_cancel_left] using! ⟨hp, hinner, houter⟩
   · rintro ⟨hp, hinner, houter⟩
     refine ⟨(z.1, z.2 - PhiInf z.1), ⟨hp, ?_, ?_⟩, ?_⟩
-    · simpa only [Metric.mem_closedBall, dist_zero_right, dist_eq_norm, sub_zero] using houter
-    · simpa only [Metric.mem_ball, dist_zero_right, dist_eq_norm, sub_zero, not_lt] using hinner
+    · simpa only [Metric.mem_closedBall, dist_zero_right, dist_eq_norm, sub_zero] using! houter
+    · simpa only [Metric.mem_ball, dist_zero_right, dist_eq_norm, sub_zero, not_lt] using! hinner
     · apply Prod.ext
       · rfl
       · change PhiInf z.1 + (z.2 - PhiInf z.1) = z.2
@@ -562,7 +562,7 @@ theorem exists_residual_gap
       intro z hz
       obtain ⟨hp, _, hdist⟩ := (T.mem_closedAnnulus).mp hz
       exact T.tube_subset z.1 hp (by
-        simpa only [Metric.mem_closedBall] using hdist)
+        simpa only [Metric.mem_closedBall] using! hdist)
     have hcont : ContinuousOn (fun z => ‖FInf z‖)
         (T.closedAnnulus inner T.rho) :=
       T.limit_equation_smooth.continuousOn.norm.mono hsub
@@ -596,7 +596,7 @@ theorem eventually_no_root
     intro z hz
     obtain ⟨hp, _, hdist⟩ := (T.mem_closedAnnulus).mp hz
     exact T.tube_subset z.1 hp (by
-      simpa only [Metric.mem_closedBall] using hdist)
+      simpa only [Metric.mem_closedBall] using! hdist)
   have huniform : TendstoUniformlyOn F FInf Filter.atTop
       (T.closedAnnulus inner T.rho) :=
     tendstoUniformlyOn_of_cPConv (hF_conv.cPConvOn hcompact hsub 0)
@@ -632,7 +632,7 @@ theorem exists_deriv_radius
   have hpartial_cont : ContinuousOn partialInf D := by
     have hcomp := restrictPartial.continuous.comp_continuousOn hdfInf.continuousOn
     simpa only [partialInf, partialFDeriv₂, restrictPartial,
-      ContinuousLinearMap.compL_apply] using hcomp
+      ContinuousLinearMap.compL_apply] using! hcomp
   let invSet : Set (X →L[Real] Y) :=
     Set.range ((↑) : (X ≃L[Real] Y) → X →L[Real] Y)
   have hinvOpen : IsOpen invSet := ContinuousLinearEquiv.isOpen
@@ -648,7 +648,7 @@ theorem exists_deriv_radius
       exact dist_eq_zero.mp (le_antisymm hdist dist_nonneg)
     have hzD : z ∈ D := by
       exact T.tube_subset z.1 hp (by
-        simpa only [Metric.mem_closedBall, hzEq, dist_self] using T.rho_pos.le)
+        simpa only [Metric.mem_closedBall, hzEq, dist_self] using! T.rho_pos.le)
     refine ⟨hzD, ?_⟩
     change partialInf z ∈ invSet
     dsimp only [partialInf]
@@ -713,7 +713,7 @@ theorem exists_deriv_radius
           ≤ ‖restrictPartial‖ *
               dist (fderiv Real FInf z) (fderiv Real (F n) z) := by
             simpa only [partialInf, partialFDeriv₂, restrictPartial,
-              ContinuousLinearMap.compL_apply] using hbound
+              ContinuousLinearMap.compL_apply] using! hbound
       _ ≤ ‖restrictPartial‖ * (delta / (‖restrictPartial‖ + 1)) :=
         mul_le_mul_of_nonneg_left hcloseDeriv.le (norm_nonneg restrictPartial)
       _ < delta := by
@@ -723,7 +723,7 @@ theorem exists_deriv_radius
       Metric.cthickening delta (partialInf '' T.closedTube eta) := by
     apply Metric.mem_cthickening_of_dist_le _ (partialInf z) delta _
     · exact ⟨z, hz, rfl⟩
-    · simpa only [dist_comm] using hclosePartial.le
+    · simpa only [dist_comm] using! hclosePartial.le
   rcases hdeltaball hmem with ⟨e, he⟩
   exact ⟨e, he⟩
 
@@ -749,13 +749,13 @@ theorem exists_root_buffer
   let HInf : P × X → Y × P := pinnedRootMap FInf
   have hH_cd : ∀ n, ContDiffOn Real ∞ (H n) D := by
     intro n
-    simpa only [H, pinnedRootMap] using
+    simpa only [H, pinnedRootMap] using!
       (hF_cd n).prodMk contDiff_fst.contDiffOn
   have hHInf_cd : ContDiffOn Real ∞ HInf D := by
-    simpa only [HInf, pinnedRootMap] using
+    simpa only [HInf, pinnedRootMap] using!
       T.limit_equation_smooth.prodMk contDiff_fst.contDiffOn
   have hH_conv : MapCInfConvOnCompacts D H HInf := by
-    simpa only [H, HInf, pinnedRootMap] using
+    simpa only [H, HInf, pinnedRootMap] using!
       mapCInfConv_prodMk T.isOpen_domain hF_conv
         (mapCInfConv_const (U := D) (fun z : P × X => z.1))
         hF_cd T.limit_equation_smooth
@@ -773,7 +773,7 @@ theorem exists_root_buffer
     let z₀ : P × X := (p, PhiInf p)
     have hz₀D : z₀ ∈ D := by
       exact T.tube_subset p hp (by
-        simpa only [Metric.mem_closedBall, dist_self] using T.rho_pos.le)
+        simpa only [Metric.mem_closedBall, dist_self] using! T.rho_pos.le)
     have hFdiff : DifferentiableAt Real FInf z₀ :=
       (T.limit_equation_smooth.contDiffAt
         (T.isOpen_domain.mem_nhds hz₀D)).differentiableAt (by simp)
@@ -820,7 +820,7 @@ theorem exists_root_buffer
     refine ⟨?_, ?_⟩
     · intro q hq hqU
       have hqp : dist q p < uRad := by
-        simpa only [U, Metric.mem_ball] using hqU
+        simpa only [U, Metric.mem_ball] using! hqU
       have hqδ : dist q p < δ := by
         calc dist q p < uRad := hqp
           _ ≤ δ / 2 := min_le_left _ _
@@ -850,7 +850,7 @@ theorem exists_root_buffer
               dist z.2 (PhiInf p) + dist (PhiInf p) (PhiInf q) :=
             dist_triangle _ _ _
           _ < r + phiTol := add_lt_add_of_le_of_lt hz2p (by
-            simpa only [dist_comm] using hPhi)
+            simpa only [dist_comm] using! hPhi)
           _ < inner := by
             have htol : phiTol ≤ inner / 4 := min_le_right _ _
             linarith
@@ -864,7 +864,7 @@ theorem exists_root_buffer
         exact hzero
     · intro q hq hqU
       have hqp : dist q p < uRad := by
-        simpa only [U, Metric.mem_ball] using hqU
+        simpa only [U, Metric.mem_ball] using! hqU
       have hqr : dist q p < r / 8 := by
         calc dist q p < uRad := hqp
           _ ≤ min (r / 8) eps := min_le_right _ _
@@ -892,7 +892,7 @@ theorem exists_root_buffer
       intro x hx y hy hxy
       have hpairs : H n (q, x) = H n (q, y) := by
         apply Prod.ext
-        · simpa only [H, pinnedRootMap] using hxy
+        · simpa only [H, pinnedRootMap] using! hxy
         · rfl
       exact congrArg Prod.snd (hInj (hpair_mem x hx) (hpair_mem y hy) hpairs)
   have hlocal' : ∀ p : {p // p ∈ closure T.W},
@@ -1018,7 +1018,7 @@ theorem exists_root_c0
     have haeps : a ≤ eps := by
       calc a ≤ eps / 2 := min_le_left _ _
         _ ≤ eps := by linarith
-    simpa only [dist_comm] using hsmall.trans_le haeps
+    simpa only [dist_comm] using! hsmall.trans_le haeps
   obtain ⟨Ninv, hNinv⟩ := eventually_atTop.mp hstageInv
   have hnoOuter := T.eventually_no_root hF_conv
     (inner := b / 2) (div_pos hb (by norm_num))
@@ -1104,12 +1104,12 @@ theorem root_contDiffOn
   have htop : (∞ : WithTop ℕ∞) ≠ 0 := by simp
   have hinv : ((fderiv Real (F n) (p, Phi n p)).comp
       (ContinuousLinearMap.inr Real P X)).IsInvertible := by
-    simpa only [partialFDeriv₂] using hPhiInv
+    simpa only [partialFDeriv₂] using! hPhiInv
   let psi : P → X := cdf.implicitFunction htop hinv
   have hpsiSelf : psi p = Phi n p := by
-    simpa only [psi] using cdf.implicitFunction_apply_self htop hinv
+    simpa only [psi] using! cdf.implicitFunction_apply_self htop hinv
   have hpsiCD : ContDiffAt Real ∞ psi p := by
-    simpa only [psi] using cdf.contDiffAt_implicitFunction htop hinv
+    simpa only [psi] using! cdf.contDiffAt_implicitFunction htop hinv
   have hpsiRoot : ∀ᶠ q in 𝓝 p, F n (q, psi q) = 0 := by
     have h := cdf.eventually_apply_implicitFunction htop hinv
     filter_upwards [h] with q hq
@@ -1163,12 +1163,12 @@ theorem root_fderiv_eq
   have htop : (∞ : WithTop ℕ∞) ≠ 0 := by simp
   have hinv : ((fderiv Real (F n) (p, Phi n p)).comp
       (ContinuousLinearMap.inr Real P X)).IsInvertible := by
-    simpa only [partialFDeriv₂] using hPhiInv
+    simpa only [partialFDeriv₂] using! hPhiInv
   let psi : P → X := cdf.implicitFunction htop hinv
   have hpsiSelf : psi p = Phi n p := by
-    simpa only [psi] using cdf.implicitFunction_apply_self htop hinv
+    simpa only [psi] using! cdf.implicitFunction_apply_self htop hinv
   have hpsiCD : ContDiffAt Real ∞ psi p := by
-    simpa only [psi] using cdf.contDiffAt_implicitFunction htop hinv
+    simpa only [psi] using! cdf.contDiffAt_implicitFunction htop hinv
   have hpsiRoot : ∀ᶠ q in 𝓝 p, F n (q, psi q) = 0 := by
     have h := cdf.eventually_apply_implicitFunction htop hinv
     filter_upwards [h] with q hq
@@ -1208,7 +1208,7 @@ theorem limit_fderiv_eq
       FInf (p, PhiInf p) = 0 ∧
       (partialFDeriv₂ FInf p (PhiInf p)).IsInvertible := by
     intro n hn p hp
-    exact ⟨by simpa using half_pos T.rho_pos, T.limit_root p hp,
+    exact ⟨by simpa using! half_pos T.rho_pos, T.limit_root p hp,
       T.limit_root_deriv_inv p hp⟩
   have huniq : ∀ n : Nat, n ≥ 0 → ∀ p ∈ closure T.W, ∀ x,
       dist x (PhiInf p) < T.rho →
@@ -1258,7 +1258,7 @@ theorem root_cInf
       have hr0 : r = 0 := by omega
       subst r
       simpa only [mapDerivNorm, norm_iteratedFDeriv_zero, dist_eq_norm,
-        norm_sub_rev] using hdist.le
+        norm_sub_rev] using! hdist.le
   | succ p ih =>
       have hId : MapCPConvOn K' p (fun _ : Nat => id) id :=
         (mapCInfConv_const (U := T.W) (id : P → P)) K' hK' hK'W p
@@ -1283,7 +1283,7 @@ theorem root_cInf
         intro q hq
         apply T.tube_subset q (subset_closure hq)
         rw [Metric.mem_closedBall]
-        simpa using T.rho_pos.le
+        simpa using! T.rho_pos.le
       have hDF_conv : MapCInfConvOnCompacts D
           (fun n z => fderiv Real (F n) z)
           (fun z => fderiv Real FInf z) :=
@@ -1410,17 +1410,17 @@ theorem exists_root_cInf
     intro eps heps
     filter_upwards [hconv₀ eps heps, eventually_ge_atTop N] with n hnConv hn
     intro q hq
-    simpa only [Phi, if_pos hn] using hnConv q hq
+    simpa only [Phi, if_pos hn] using! hnConv q hq
   have hPhi_cd : ∀ n, ContDiffOn Real ∞ (Phi n) T.W := by
     intro n
     by_cases hn : N ≤ n
-    · simpa only [Phi, if_pos hn] using hcd₀ n hn
-    · simpa only [Phi, if_neg hn] using hPhiInf_cd
+    · simpa only [Phi, if_pos hn] using! hcd₀ n hn
+    · simpa only [Phi, if_neg hn] using! hPhiInf_cd
   have hF'_cd : ∀ n, ContDiffOn Real ∞ (F' n) D := by
     intro n
     by_cases hn : N ≤ n
-    · simpa only [F', if_pos hn] using hF_cd n
-    · simpa only [F', if_neg hn] using T.limit_equation_smooth
+    · simpa only [F', if_pos hn] using! hF_cd n
+    · simpa only [F', if_neg hn] using! T.limit_equation_smooth
   have hF'_conv : MapCInfConvOnCompacts D F' FInf := by
     apply hF_conv.congr_eventually T.isOpen_domain
     · filter_upwards [eventually_ge_atTop N] with n hn
@@ -1434,9 +1434,9 @@ theorem exists_root_cInf
       (partialFDeriv₂ (F' n) p (Phi n p)).IsInvertible := by
     intro n p hp
     by_cases hn : N ≤ n
-    · simpa only [Phi, F', if_pos hn] using hspec₀ n hn p hp
+    · simpa only [Phi, F', if_pos hn] using! hspec₀ n hn p hp
     · have hdist : dist (PhiInf p) (PhiInf p) < T.rho / 2 := by
-        simpa using half_pos T.rho_pos
+        simpa using! half_pos T.rho_pos
       simpa only [Phi, F', if_neg hn] using
         ⟨hdist, T.limit_root p hp, T.limit_root_deriv_inv p hp⟩
   have huniq : ∀ n, ∀ p ∈ closure T.W, ∀ x,
@@ -1444,7 +1444,7 @@ theorem exists_root_cInf
         (F' n (p, x) = 0 ↔ x = Phi n p) := by
     intro n p hp x hx
     by_cases hn : N ≤ n
-    · simpa only [Phi, F', if_pos hn] using huniq₀ n hn p hp x hx
+    · simpa only [Phi, F', if_pos hn] using! huniq₀ n hn p hp x hx
     · simp only [Phi, F', if_neg hn]
       constructor
       · exact T.limit_unique p hp x hx.le
@@ -1454,9 +1454,9 @@ theorem exists_root_cInf
     T.root_cInf hF'_cd hF'_conv hPhi_conv hPhi_cd hspec huniq
   refine ⟨N, Phi, hCInf, hPhi_cd, ?_, ?_⟩
   · intro n hn p hp
-    simpa only [Phi, if_pos hn] using hspec₀ n hn p hp
+    simpa only [Phi, if_pos hn] using! hspec₀ n hn p hp
   · intro n hn p hp x hx
-    simpa only [Phi, if_pos hn] using huniq₀ n hn p hp x hx
+    simpa only [Phi, if_pos hn] using! huniq₀ n hn p hp x hx
 
 theorem exists_cInf_tail
     {P X Y : Type*}
@@ -1485,8 +1485,8 @@ theorem exists_cInf_tail
   have hF'_cd : ∀ n, ContDiffOn Real ∞ (F' n) D := by
     intro n
     by_cases hn : N₀ ≤ n
-    · simpa only [F', if_pos hn] using hN₀ n hn
-    · simpa only [F', if_neg hn] using T.limit_equation_smooth
+    · simpa only [F', if_pos hn] using! hN₀ n hn
+    · simpa only [F', if_neg hn] using! T.limit_equation_smooth
   have hF'_conv : MapCInfConvOnCompacts D F' FInf := by
     apply hF_conv.congr_eventually T.isOpen_domain
     · filter_upwards [eventually_ge_atTop N₀] with n hn
@@ -1501,11 +1501,11 @@ theorem exists_cInf_tail
   · intro n hn p hp
     have hn₀ : N₀ ≤ n := (Nat.le_max_left _ _).trans hn
     have hn₁ : N₁ ≤ n := (Nat.le_max_right _ _).trans hn
-    simpa only [F', if_pos hn₀] using hspec n hn₁ p hp
+    simpa only [F', if_pos hn₀] using! hspec n hn₁ p hp
   · intro n hn p hp x hx
     have hn₀ : N₀ ≤ n := (Nat.le_max_left _ _).trans hn
     have hn₁ : N₁ ≤ n := (Nat.le_max_right _ _).trans hn
-    simpa only [F', if_pos hn₀] using huniq n hn₁ p hp x hx
+    simpa only [F', if_pos hn₀] using! huniq n hn₁ p hp x hx
 
 end CompactRootTube
 
@@ -1552,17 +1552,17 @@ theorem exists_compactRootTube
     have hstrict := hcd.hasStrictFDerivAt (by simp)
     have hinv' : ((fderiv Real FInf (graph p)).comp
         (ContinuousLinearMap.inr Real P X)).IsInvertible := by
-      simpa only [partialFDeriv₂, graph] using hinv p hp
+      simpa only [partialFDeriv₂, graph] using! hinv p hp
     let data := hstrict.implicitFunctionDataOfProdDomain hinv'
     let e := data.toOpenPartialHomeomorph
     have hmem : graph p ∈ e.source := by
-      simpa only [data, e, graph] using
+      simpa only [data, e, graph] using!
         data.pt_mem_toOpenPartialHomeomorph_source
     refine ⟨e.source, e.open_source.mem_nhds hmem, ?_⟩
     simpa only [H, e, data, ImplicitFunctionData.toOpenPartialHomeomorph_coe,
       ImplicitFunctionData.prodFun_apply,
       HasStrictFDerivAt.leftFun_implicitFunctionDataOfProdDomain,
-      HasStrictFDerivAt.rightFun_implicitFunctionDataOfProdDomain] using e.injOn
+      HasStrictFDerivAt.rightFun_implicitFunctionDataOfProdDomain] using! e.injOn
   obtain ⟨T, hTopen, hST, hTinj⟩ :=
     Set.InjOn.exists_isOpen_superset hSinj hScompact hHcont hHloc
   let restrictPartial : ((P × X) →L[Real] Y) →L[Real] (X →L[Real] Y) :=
@@ -1574,7 +1574,7 @@ theorem exists_compactRootTube
       (fun z : P × X ↦ partialFDeriv₂ FInf z.1 z.2) D := by
     have hcomp := restrictPartial.continuous.comp_continuousOn hdf.continuousOn
     simpa only [partialFDeriv₂, restrictPartial,
-      ContinuousLinearMap.compL_apply] using hcomp
+      ContinuousLinearMap.compL_apply] using! hcomp
   have hpartial_cont : ContinuousOn
       (fun p ↦ partialFDeriv₂ FInf p (PhiInf p)) W₀ := by
     exact hpartial_cont_D.comp hgraph_cont hgraph
@@ -1614,14 +1614,14 @@ theorem exists_compactRootTube
       · exact ⟨p, hp, rfl⟩
       · rw [Prod.dist_eq, dist_self, max_eq_right dist_nonneg]
         have hxrho : dist x (PhiInf p) ≤ rho := by
-          simpa only [Metric.mem_closedBall] using hx
+          simpa only [Metric.mem_closedBall] using! hx
         exact hxrho.trans (by dsimp only [rho]; linarith)
     exact (hdsub hpair).1
   have hunique : ∀ p ∈ closure W, ∀ x,
       dist x (PhiInf p) ≤ rho → FInf (p, x) = 0 → x = PhiInf p := by
     intro p hp x hx hrootx
     have hxball : x ∈ Metric.closedBall (PhiInf p) rho := by
-      simpa only [Metric.mem_closedBall] using hx
+      simpa only [Metric.mem_closedBall] using! hx
     have hxthick : (p, x) ∈ Metric.cthickening d S' := by
       apply Metric.mem_cthickening_of_dist_le (p, x) (graph p) d S'
       · exact ⟨p, hp, rfl⟩
@@ -1676,7 +1676,7 @@ theorem exists_rootTube
       (fun z : P × X => partialFDeriv₂ FInf z.1 z.2) D := by
     have hcomp := restrictPartial.continuous.comp_continuousOn hdf.continuousOn
     simpa only [partialFDeriv₂, restrictPartial,
-      ContinuousLinearMap.compL_apply] using hcomp
+      ContinuousLinearMap.compL_apply] using! hcomp
   let invSet : Set (X →L[Real] Y) :=
     Set.range ((↑) : (X ≃L[Real] Y) → X →L[Real] Y)
   have hinvOpen : IsOpen invSet := ContinuousLinearEquiv.isOpen
@@ -1696,7 +1696,7 @@ theorem exists_rootTube
     rcases hz.2 with ⟨A, hA⟩
     exact ⟨A, hA⟩
   have hH_cd : ContDiffOn Real ∞ H D := by
-    simpa only [H, pinnedRootMap] using
+    simpa only [H, pinnedRootMap] using!
       hFInf.prodMk contDiff_fst.contDiffOn
   have hlocalG : IsLocalHomeomorphOn H G := by
     intro z hz
@@ -1706,7 +1706,7 @@ theorem exists_rootTube
     have hHAt : ContDiffAt Real ∞ H z :=
       hH_cd.contDiffAt (hD.mem_nhds hzD)
     have hHInv : (fderiv Real H z).IsInvertible := by
-      simpa only [H] using
+      simpa only [H] using!
         pinnedFDeriv_inv
           (hFAt.differentiableAt (by simp)) (hGinv z hz)
     rcases hHInv with ⟨A, hA⟩
@@ -1720,7 +1720,7 @@ theorem exists_rootTube
   have hSinj : Set.InjOn H S := by
     rintro _ ⟨p, hp, rfl⟩ _ ⟨q, hq, rfl⟩ heq
     have hpq : p = q := by
-      simpa only [H, pinnedRootMap, graph] using congrArg Prod.snd heq
+      simpa only [H, pinnedRootMap, graph] using! congrArg Prod.snd heq
     subst q
     rfl
   have hHcont : ∀ z ∈ S, ContinuousAt H z := by
@@ -1731,7 +1731,7 @@ theorem exists_rootTube
     intro z hz
     obtain ⟨e, hze, he⟩ := hlocalG z (hSG hz)
     refine ⟨e.source, e.open_source.mem_nhds hze, ?_⟩
-    simpa only [he] using e.injOn
+    simpa only [he] using! e.injOn
   obtain ⟨T₀, hT₀open, hST₀, hT₀inj⟩ :=
     Set.InjOn.exists_isOpen_superset hSinj hScompact hHcont hHloc
   let T : Set (P × X) := T₀ ∩ G
@@ -1740,9 +1740,9 @@ theorem exists_rootTube
   have hTinj : Set.InjOn H T := hT₀inj.mono inter_subset_left
   have hlocalT : IsLocalHomeomorphOn H T :=
     hlocalG.mono inter_subset_right
-  have hHopen : IsOpenMap (T.restrict H) := by
+  have hHopen : IsOpenMap (T.domRestrict H) := by
     intro W hW
-    rw [Set.restrict_eq, Set.image_comp]
+    rw [Set.domRestrict_eq, Set.image_comp]
     let O : Set (P × X) := ((↑) : T → P × X) '' W
     have hOopen : IsOpen O :=
       hTopen.isOpenMap_subtype_val W hW
@@ -1778,13 +1778,13 @@ theorem exists_rootTube
   have hseed_image : ∀ p ∈ K, H (graph p) = pair p := by
     intro p hp
     apply Prod.ext
-    · simpa only [H, pinnedRootMap, graph, pair] using hroot p hp
+    · simpa only [H, pinnedRootMap, graph, pair] using! hroot p hp
     · rfl
   have hKW₀ : K ⊆ W₀ := by
     intro p hp
     have hgraphT : graph p ∈ T := hST ⟨p, hp, rfl⟩
     have hgraphSrc : graph p ∈ e.source := by
-      simpa only [he_source] using hgraphT
+      simpa only [he_source] using! hgraphT
     have hmap := e.map_source hgraphSrc
     rw [he_coe, hseed_image p hp] at hmap
     exact hmap
@@ -1793,13 +1793,13 @@ theorem exists_rootTube
     let z : P × X := e.symm (pair p)
     have hzSrc : z ∈ e.source := e.symm.map_source hp
     have hzT : z ∈ T := by
-      simpa only [he_source] using hzSrc
+      simpa only [he_source] using! hzSrc
     have hFAt : ContDiffAt Real ∞ FInf z :=
       hFInf.contDiffAt (hD.mem_nhds hzT.2.1)
     have hHAt : ContDiffAt Real ∞ H z :=
       hH_cd.contDiffAt (hD.mem_nhds hzT.2.1)
     have hHInv : (fderiv Real H z).IsInvertible := by
-      simpa only [H] using
+      simpa only [H, z] using!
         pinnedFDeriv_inv
           (hFAt.differentiableAt (by simp)) (hGinv z hzT.2)
     rcases hHInv with ⟨A, hA⟩
@@ -1809,12 +1809,12 @@ theorem exists_rootTube
       exact (hHAt.differentiableAt (by simp)).hasFDerivAt
     have heD : HasFDerivAt (e : P × X → Y × P)
         (A : (P × X) →L[Real] (Y × P)) z := by
-      simpa only [he_coe] using hHD
+      simpa only [he_coe] using! hHD
     have heCD : ContDiffAt Real ∞ (e : P × X → Y × P) z := by
-      simpa only [he_coe] using hHAt
+      simpa only [he_coe] using! hHAt
     have hsymm : ContDiffAt Real ∞ e.symm (pair p) :=
       e.contDiffAt_symm hp heD heCD
-    simpa only [PhiInf, z] using
+    simpa only [PhiInf, z] using!
       (contDiffAt_snd.comp p
         (hsymm.comp p hpair_cd.contDiffAt)).contDiffWithinAt
   have hbranch : ∀ p ∈ W₀,
@@ -1823,13 +1823,13 @@ theorem exists_rootTube
     let z : P × X := e.symm (pair p)
     have hzSrc : z ∈ e.source := e.symm.map_source hp
     have hzT : z ∈ T := by
-      simpa only [he_source] using hzSrc
+      simpa only [he_source] using! hzSrc
     have hright := e.right_inv hp
     rw [he_coe] at hright
     have hzRoot : FInf z = 0 := by
-      simpa only [H, pinnedRootMap, pair] using congrArg Prod.fst hright
+      simpa only [H, pinnedRootMap, pair] using! congrArg Prod.fst hright
     have hzFst : z.1 = p := by
-      simpa only [H, pinnedRootMap, pair] using congrArg Prod.snd hright
+      simpa only [H, pinnedRootMap, pair] using! congrArg Prod.snd hright
     have hpz : (p, PhiInf p) = z := by
       apply Prod.ext
       · exact hzFst.symm
@@ -1843,10 +1843,10 @@ theorem exists_rootTube
     intro p hp
     have hgraphT : graph p ∈ T := hST ⟨p, hp, rfl⟩
     have hgraphSrc : graph p ∈ e.source := by
-      simpa only [he_source] using hgraphT
+      simpa only [he_source] using! hgraphT
     have hleft := e.left_inv hgraphSrc
     rw [he_coe, hseed_image p hp] at hleft
-    simpa only [PhiInf, graph] using congrArg Prod.snd hleft
+    simpa only [PhiInf, graph] using! congrArg Prod.snd hleft
   refine ⟨W₀, PhiInf, hEq, ?_⟩
   exact exists_compactRootTube
     hD hW₀open hK hKW₀ hFInf hPhiInf

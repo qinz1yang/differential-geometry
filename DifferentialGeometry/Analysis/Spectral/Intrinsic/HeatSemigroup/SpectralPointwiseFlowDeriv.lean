@@ -198,11 +198,11 @@ theorem spectralPartialSum_ccTensorBilinSymm_tendsto_of_representative
   have hF_L2 : Tendsto (fun n => (F n : TensorL2 0 2 g)) atTop (𝓝 u) :=
     spectralPartialSum_toL2_tendsto (I := I) (M := M) g u
   have hsum := chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x
-  have hexists : ∃ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hexists : ∃ β ∈ chartAtlasPOUFinset (I := I) (M := M),
       0 < ((chartAtlasPOU I M) β : C^∞⟮I, M; ℝ⟯) x := by
     by_contra hcon
     push Not at hcon
-    have hzero : ∀ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+    have hzero : ∀ β ∈ chartAtlasPOUFinset (I := I) (M := M),
         ((chartAtlasPOU I M) β : M → ℝ) x = 0 := by
       intro β hβ
       have hle := hcon β hβ
@@ -250,7 +250,7 @@ theorem spectralPartialSum_ccTensorBilinSymm_tendsto_of_representative
     funext n
     exact ccTensorBilinSymm_eq_sum_chartBasis (I := I) (M := M) g (F n) β hx_src v w
   rw [hrw]
-  refine tendsto_finset_sum _ (fun Q _ => ?_)
+  refine tendsto_finsetSum _ (fun Q _ => ?_)
   exact (hraw_tendsto Q).mul_const _
 
 theorem ccTensorBilinSymm_eigenSeries_eq

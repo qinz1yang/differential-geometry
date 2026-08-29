@@ -82,6 +82,7 @@ theorem parallel_local_existence_uniqueness [I.Boundaryless]
     huCurveCont hsource hY_deriv hY'_deriv (hY_init.trans hY'_init.symm)
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem parallel_chart_overlap_consistency [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α β : M) (γ : ℝ → M) (hγ : Continuous γ)
     (uPrimeα Yα : ℝ → E) (s : Set ℝ)
@@ -122,7 +123,8 @@ theorem parallel_chart_overlap_consistency [I.Boundaryless]
         (fun s => chartTransitionMap (I := I) α β (chartCurve (I := I) α γ s))
         (chartTransitionAt (I := I) α β (chartCurve (I := I) α γ t) (uPrimeα t)) t := by
       have := hTdiff.hasFDerivAt.comp_hasDerivAt t huα
-      simpa [chartTransitionAt_def] using this
+      unfold chartTransitionAt
+      exact this.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
     exact (hcomp.congr_of_eventuallyEq hcurve_eq)
   · intro t ht
     obtain ⟨htα, htβ⟩ := hαβ t ht
@@ -515,6 +517,7 @@ theorem chartCurve_continuousOn_of_mapsTo
   exact hφ.comp hγ.continuousOn hmaps
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_piece_parallel_section [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → M)
     {N : ℕ} (hN : 2 ≤ N) (hγ : ContMDiff 𝓘(ℝ, ℝ) I (N : ℕ∞) γ)
@@ -875,6 +878,7 @@ theorem exists_uniform_chart_radius
   exact this
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_global_parallel_transport_on_Ioo [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     {N : ℕ} (hN : 2 ≤ N) (hγ : ContMDiff 𝓘(ℝ, ℝ) I (N : ℕ∞) γ)
@@ -1048,6 +1052,7 @@ theorem exists_global_parallel_transport_on_Ioo [I.Boundaryless]
     exact hV_par t ⟨ht.1, ht.2⟩
 
 
+omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_parallel_transport_on_Icc [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     {N : ℕ} (hN : 2 ≤ N) (hγ : ContMDiff 𝓘(ℝ, ℝ) I (N : ℕ∞) γ)

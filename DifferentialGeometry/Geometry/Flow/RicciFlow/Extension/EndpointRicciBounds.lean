@@ -57,7 +57,7 @@ theorem ricciEdgeMetric
         {q : {t : Real // t ∈ Set.Ico a b} × M |
           q.2 ∈ (trivializationAt E (TangentSpace I) x₀).baseSet} :=
       (hcont x₀ i j).comp hincl.continuousOn (fun q hq => ⟨q.1.2, hq⟩)
-    simpa only [Function.comp_apply] using hcomp
+    exact hcomp.congr fun _ _ => rfl
   have hK : Set.Icc a c ⊆ Set.Ico a b := by
     intro t ht
     exact ⟨ht.1, lt_of_le_of_lt ht.2 hcb⟩
@@ -76,13 +76,11 @@ theorem ricciEdgeMetric
   have hquadT : Continuous
       (metricTimeBundleQuad (I := I) (M := M) g (Set.Icc a c)) := by
     have hq := tensor0SFamily_quadCont (I := I) (M := M) hGt
-    simpa [metricTimeBundleQuad, quad02,
-      Tensor0SBundle.metricTensorField_apply] using hq
+    exact hq.congr fun _ => rfl
   have hquadA : Continuous
       (metricTimeBundleQuad (I := I) (M := M) (fun _ => g a) (Set.Icc a c)) := by
     have hq := tensor0SFamily_quadCont (I := I) (M := M) hGa
-    simpa [metricTimeBundleQuad, quad02,
-      Tensor0SBundle.metricTensorField_apply] using hq
+    exact hq.congr fun _ => rfl
   have hcompactT := metricUnitTimeSlab_icc_compact_of_bundle
     (I := I) (M := M) g a c (g a) hquadT
   have hcompactA := metricUnitTimeSlab_icc_compact_of_bundle
@@ -195,7 +193,7 @@ theorem ricciEdgeIntegral
   have hRicEval : ContinuousOn
       (fun r : ℝ => metricRicciAt (I := I) (g r) x
         (DifferentialGeometry.Geometry.Curvature.vec2 v w)) (Set.Ioo a b) := by
-    rw [continuousOn_iff_continuous_restrict]
+    rw [continuousOn_iff_continuous_domRestrict]
     exact hRicFam.eval_continuous (P := {r : ℝ // r ∈ Set.Ioo a b})
       (τ := Subtype.val) (b := fun _ => x) continuous_subtype_val
       (fun r => r.2) continuous_const

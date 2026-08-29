@@ -7,7 +7,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open MeasureTheory Set Filter Topology Bundle Manifold DifferentialGeometry.Tensor0SBundle
     ContinuousLinearMap
@@ -137,6 +136,7 @@ private lemma lieArm_scalarOnE_symmS_eventuallyEq_realizedGramDeriv
   rw [DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def,
     DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE_def]
 
+omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieArm_unitModel3_basisChart_readout_split
@@ -155,7 +155,7 @@ private lemma lieArm_unitModel3_basisChart_readout_split
       ((toEuclidean (E := E)).symm ((toEuclidean (E := E)) (extChartAt I x x))) = x :=
     symm_toEuclidean_symm_toEuclidean_extChartAt (I := I) (M := M) x hmemsrc
   rw [show (![chartModelBasis E a, chartModelBasis E b, chartModelBasis E c] :
-        Fin 3 → TangentSpace I x) =
+        Fin 3 → E) =
       (fun j => chartModelBasis E ((![a, b, c] : Fin 3 → Fin (Module.finrank ℝ E)) j)) from by
     funext j; fin_cases j <;> rfl]
   rw [unitModel_basisChart_eq_tensorChartComponentRaw (I := I) (M := M) g₀ (2 + 1)
@@ -174,6 +174,7 @@ private lemma lieArm_unitModel3_basisChart_readout_split
     funext j; fin_cases j <;> rfl
   simp only [arm1ReadoutCovDeriv, hJ0, hJtail]
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lieU3_readout (hδ_lt : δ < 1)
@@ -375,15 +376,16 @@ private lemma lieCorrectionZero_euclid_f_bridge (hδ_lt : δ < 1)
       (T - T') x ![] ![d, r]).contDiffAt (hopen.mem_nhds hcenter)).differentiableAt (by simp)
   rw [euclidPartial_def]
   rw [fderiv_fun_add (hd1.const_mul (1 / 2 : ℝ)) (hd2.const_mul (1 / 2 : ℝ))]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   rw [fderiv_const_mul hd1 (1 / 2 : ℝ), fderiv_const_mul hd2 (1 / 2 : ℝ)]
-  rw [ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply]
+  rw [smul_apply, smul_apply]
   rw [partialDeriv_realizedGramDeriv_eq_half_sum_euclidPartial (I := I) g₀ T T'
     hδ_lt hδ hδ'_lt hδ' x m r d]
   rw [euclidPartial_def, euclidPartial_def]
   simp only [smul_eq_mul]
 
 
+omit [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lieR4_center (hδ_lt : δ < 1)

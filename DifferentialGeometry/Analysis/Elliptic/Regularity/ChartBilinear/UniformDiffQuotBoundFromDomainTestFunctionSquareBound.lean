@@ -215,16 +215,16 @@ theorem chartBilinear_v_test_sq_discharge
     ∀ (k : Fin (Module.finrank ℝ E)), ∀ {h : ℝ}, h ≠ 0 → |h| ≤ R₀ →
       ∫ x,
           (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-            (d := Module.finrank ℝ E) k h η D.u_chart x)^2
+            (d := Module.finrank ℝ E) k h η D.uChart x)^2
         ∂(volume : Measure EuclN) ≤
         8 * N^2 *
           ∫ x in tsupport η,
             (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h D.u_chart x)^2
+              (d := Module.finrank ℝ E) k h D.uChart x)^2
           ∂(volume : Measure EuclN) +
         2 * ∫ x, (η x)^2 *
             (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (D.weak_partial k) x)^2
+              (d := Module.finrank ℝ E) k h (D.weakPartial k) x)^2
           ∂(volume : Measure EuclN) := by
   classical
   have hη_tsupp_compact : IsCompact (tsupport η) := hη_supp
@@ -274,10 +274,10 @@ theorem chartBilinear_v_test_sq_discharge
     intro x
     have hx_range : χ x ∈ Set.range χ := Set.mem_range_self x
     exact ⟨(hχ_range hx_range).1, (hχ_range hx_range).2⟩
-  set u_g : EuclN → ℝ := fun x => χ x * D.u_chart x with hu_g_def
+  set u_g : EuclN → ℝ := fun x => χ x * D.uChart x with hu_g_def
   set G : Fin (Module.finrank ℝ E) → EuclN → ℝ := fun i x =>
-    (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-    χ x * D.weak_partial i x with hG_def
+    (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+    χ x * D.weakPartial i x with hG_def
   have hu_g_l2 : MemLp u_g 2 (volume : Measure EuclN) :=
     cutoff_uChart_memLp_two_univ (I := I) (M := M) D hχ_smooth hχ_cs hχ_tsupp
   have hG_l2 : ∀ i, MemLp (G i) 2 (volume : Measure EuclN) := fun i =>
@@ -359,29 +359,29 @@ theorem chartBilinear_v_test_sq_discharge
     rw [h_fderiv_eq]
     simp
   have h_u_g_eq_on_cthick_R0 : ∀ x ∈ Metric.cthickening R₀ (tsupport η),
-      u_g x = D.u_chart x := by
+      u_g x = D.uChart x := by
     intro x hx
     have hx_in_r : x ∈ Metric.cthickening r (tsupport η) :=
       h_cthick_R0_subset_r hx
     have hχx : χ x = 1 := hχ_one_on_r x hx_in_r
-    change χ x * D.u_chart x = D.u_chart x
+    change χ x * D.uChart x = D.uChart x
     rw [hχx, one_mul]
   have h_G_eq_on_thick_r : ∀ x ∈ Metric.thickening r (tsupport η),
-      G k x = D.weak_partial k x := by
+      G k x = D.weakPartial k x := by
     intro x hx
     have hx_in_cthick_r : x ∈ Metric.cthickening r (tsupport η) :=
       h_thick_r_subset_cthick_r hx
     have hχx : χ x = 1 := hχ_one_on_r x hx_in_cthick_r
     have hdχx : (fderiv ℝ χ x) (EuclideanSpace.single k 1) = 0 :=
       h_fderiv_zero_on_thick_r x hx
-    change (fderiv ℝ χ x) (EuclideanSpace.single k 1) * D.u_chart x +
-      χ x * D.weak_partial k x = D.weak_partial k x
+    change (fderiv ℝ χ x) (EuclideanSpace.single k 1) * D.uChart x +
+      χ x * D.weakPartial k x = D.weakPartial k x
     rw [hdχx, hχx, zero_mul, one_mul, zero_add]
   have h_diffQuot_u_eq_on_tsupport : ∀ x ∈ tsupport η,
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h u_g x =
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart x := by
+        (d := Module.finrank ℝ E) k h D.uChart x := by
     intro x hx
     have hx_in_cthick_h : x ∈ Metric.cthickening |h| (tsupport η) :=
       h_self_subset_cthick hx
@@ -396,10 +396,10 @@ theorem chartBilinear_v_test_sq_discharge
     have h_shift_in_cthick_R0 :
         x + h • EuclideanSpace.single k 1 ∈ Metric.cthickening R₀ (tsupport η) :=
       h_cthick_h_subset_R0 h_shift_in_cthick_h
-    have hux : u_g x = D.u_chart x :=
+    have hux : u_g x = D.uChart x :=
       h_u_g_eq_on_cthick_R0 x hx_in_cthick_R0
     have hux_shift : u_g (x + h • EuclideanSpace.single k 1) =
-        D.u_chart (x + h • EuclideanSpace.single k 1) :=
+        D.uChart (x + h • EuclideanSpace.single k 1) :=
       h_u_g_eq_on_cthick_R0 _ h_shift_in_cthick_R0
     rw [DifferentialGeometry.Analysis.Sobolev.diffQuot_apply_of_ne
         (d := Module.finrank ℝ E) k hh,
@@ -410,7 +410,7 @@ theorem chartBilinear_v_test_sq_discharge
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h (G k) x =
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial k) x := by
+        (d := Module.finrank ℝ E) k h (D.weakPartial k) x := by
     intro x hx
     have hx_in_thick_r : x ∈ Metric.thickening r (tsupport η) :=
       h_tsupp_subset_thick_r hx
@@ -425,9 +425,9 @@ theorem chartBilinear_v_test_sq_discharge
     have h_shift_in_thick_r :
         x + h • EuclideanSpace.single k 1 ∈ Metric.thickening r (tsupport η) :=
       h_cthick_h_subset_thick_r h_shift_in_cthick_h
-    have hGx : G k x = D.weak_partial k x := h_G_eq_on_thick_r x hx_in_thick_r
+    have hGx : G k x = D.weakPartial k x := h_G_eq_on_thick_r x hx_in_thick_r
     have hGx_shift : G k (x + h • EuclideanSpace.single k 1) =
-        D.weak_partial k (x + h • EuclideanSpace.single k 1) :=
+        D.weakPartial k (x + h • EuclideanSpace.single k 1) :=
       h_G_eq_on_thick_r _ h_shift_in_thick_r
     rw [DifferentialGeometry.Analysis.Sobolev.diffQuot_apply_of_ne
         (d := Module.finrank ℝ E) k hh,
@@ -604,7 +604,7 @@ theorem chartBilinear_v_test_sq_discharge
         2 * η y * (fderiv ℝ η y) (EuclideanSpace.single k 1) := by
       have hη_diff : Differentiable ℝ η := hη.differentiable (by simp)
       rw [fderiv_fun_pow 2 (hη_diff y)]
-      rw [ContinuousLinearMap.smul_apply]
+      rw [smul_apply]
       have h1 : (η y) ^ ((2 : ℕ) - 1) = η y := by norm_num
       rw [h1]
       have h_two : ((2 : ℕ) • η y) = 2 * η y := by rw [two_smul]; ring
@@ -786,7 +786,7 @@ theorem chartBilinear_v_test_sq_discharge
     rw [h_zero]; ring
   have h_F_eq_D : F = fun y => (η y)^2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart y := by
+        (d := Module.finrank ℝ E) k h D.uChart y := by
     funext y
     by_cases hη_y : η y = 0
     · change (η y)^2 *
@@ -794,7 +794,7 @@ theorem chartBilinear_v_test_sq_discharge
             (d := Module.finrank ℝ E) k h u_g y =
         (η y)^2 *
           DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h D.u_chart y
+            (d := Module.finrank ℝ E) k h D.uChart y
       rw [hη_y]; ring
     · have hy_in : y ∈ tsupport η := subset_tsupport η hη_y
       rw [hF_def]
@@ -803,22 +803,22 @@ theorem chartBilinear_v_test_sq_discharge
             (d := Module.finrank ℝ E) k h u_g y =
         (η y)^2 *
           DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h D.u_chart y
+            (d := Module.finrank ℝ E) k h D.uChart y
       rw [h_diffQuot_u_eq_on_tsupport y hy_in]
   have h_nb_test_eq : ∀ x,
       DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-        (d := Module.finrank ℝ E) k h η D.u_chart x =
+        (d := Module.finrank ℝ E) k h η D.uChart x =
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k (-h) F x := by
     intro x
     change DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k (-h) (fun y => (η y)^2 *
           DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h D.u_chart y) x = _
+            (d := Module.finrank ℝ E) k h D.uChart y) x = _
     rw [← h_F_eq_D]
   have h_LHS_eq_FK :
       ∫ x, (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-            (d := Module.finrank ℝ E) k h η D.u_chart x)^2
+            (d := Module.finrank ℝ E) k h η D.uChart x)^2
           ∂(volume : Measure EuclN) =
       ∫ x in Ω''_fk,
         (DifferentialGeometry.Analysis.Sobolev.diffQuot
@@ -826,7 +826,7 @@ theorem chartBilinear_v_test_sq_discharge
         ∂(volume : Measure EuclN) := by
     have h_eq :
         (fun x => (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-              (d := Module.finrank ℝ E) k h η D.u_chart x)^2) =
+              (d := Module.finrank ℝ E) k h η D.uChart x)^2) =
         (fun x =>
           (DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k (-h) F x)^2) := by
@@ -974,7 +974,7 @@ theorem chartBilinear_v_test_sq_discharge
       ∂(volume : Measure EuclN) =
       ∫ x in tsupport η,
         (DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h D.u_chart x)^2
+          (d := Module.finrank ℝ E) k h D.uChart x)^2
       ∂(volume : Measure EuclN) := by
     refine setIntegral_congr_fun (isClosed_tsupport η).measurableSet ?_
     intro x hx
@@ -982,7 +982,7 @@ theorem chartBilinear_v_test_sq_discharge
     change (DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h u_g x)^2 =
       (DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart x)^2
+        (d := Module.finrank ℝ E) k h D.uChart x)^2
     rw [h_eq]
   have h_int_eta_sq_dq_G_eq :
       ∫ x, (η x)^2 *
@@ -991,7 +991,7 @@ theorem chartBilinear_v_test_sq_discharge
       ∂(volume : Measure EuclN) =
       ∫ x, (η x)^2 *
         (DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h (D.weak_partial k) x)^2
+          (d := Module.finrank ℝ E) k h (D.weakPartial k) x)^2
       ∂(volume : Measure EuclN) := by
     refine integral_congr_ae ?_
     refine Filter.Eventually.of_forall ?_
@@ -999,7 +999,7 @@ theorem chartBilinear_v_test_sq_discharge
     change (η x)^2 * (DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h (G k) x)^2 =
       (η x)^2 * (DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial k) x)^2
+        (d := Module.finrank ℝ E) k h (D.weakPartial k) x)^2
     by_cases hx : x ∈ tsupport η
     · have h_eq := h_diffQuot_G_eq_on_tsupport x hx
       rw [h_eq]
@@ -1007,7 +1007,7 @@ theorem chartBilinear_v_test_sq_discharge
       rw [hη_x_zero]; ring
   calc ∫ x,
           (DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
-            (d := Module.finrank ℝ E) k h η D.u_chart x)^2
+            (d := Module.finrank ℝ E) k h η D.uChart x)^2
         ∂(volume : Measure EuclN)
       = ∫ x in Ω''_fk,
           (DifferentialGeometry.Analysis.Sobolev.diffQuot
@@ -1045,11 +1045,11 @@ theorem chartBilinear_v_test_sq_discharge
     _ = 8 * N^2 *
           (∫ x in tsupport η,
               (DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.u_chart x)^2
+                (d := Module.finrank ℝ E) k h D.uChart x)^2
             ∂(volume : Measure EuclN)) +
         2 * (∫ x, (η x)^2 *
             (DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (D.weak_partial k) x)^2
+              (d := Module.finrank ℝ E) k h (D.weakPartial k) x)^2
           ∂(volume : Measure EuclN)) := by
           rw [h_int_dq_u_g_eq, h_int_eta_sq_dq_G_eq]
 

@@ -42,7 +42,7 @@ theorem tendsto_superEpsSeq :
 theorem superEpsSeq_le_one (n : ℕ) : superEpsSeq n ≤ 1 := by
   dsimp [superEpsSeq]
   have hden_ge : (1 : ℝ) ≤ (n : ℝ) + 1 := by
-    have hn_nonneg : (0 : ℝ) ≤ n := by exact_mod_cast Nat.zero_le n
+    have hn_nonneg : (0 : ℝ) ≤ n := by exact_mod_cast Nat.zero_le (n := n)
     linarith
   exact inv_le_one_of_one_le₀ hden_ge
 
@@ -336,7 +336,7 @@ theorem one_add_power_half_memLp_on_ball
     MemLp (fun x => 1 + |u x| ^ (p / 2)) 2 (volume.restrict (Metric.ball (0 : E) s)) := by
   let _ := _hs
   let μ : Measure E := volume.restrict (Metric.ball (0 : E) s)
-  haveI : IsFiniteMeasure μ := by
+  have : IsFiniteMeasure μ := by
     dsimp [μ]
     rw [isFiniteMeasure_restrict]
     exact (measure_ball_lt_top (μ := volume) (x := (0 : E)) (r := s)).ne
@@ -346,7 +346,8 @@ theorem one_add_power_half_memLp_on_ball
       MemLp (fun x => |u x| ^ (p / 2)) 2 μ := by
     simpa [μ] using power_half_memLp_of_integrableOn (Ω := Metric.ball (0 : E) s)
       (u := u) (p := p) hp hu hpInt
-  simpa [μ] using hone.add hhalf
+  exact MemLp.ae_eq (Filter.Eventually.of_forall fun x => by rw [Pi.add_apply])
+    (hone.add hhalf)
 
 omit [NeZero d] in
 theorem one_add_rpow_integrableOn_ball

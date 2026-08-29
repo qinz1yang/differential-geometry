@@ -47,7 +47,6 @@ private theorem covStep_zero
     exact h.symm
   exact add_left_cancel h'
 
-set_option backward.isDefEq.respectTransparency false in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem iterCov_metric_zero
     (g : SmoothRiemannianMetric I M) (a : ℕ) :
@@ -55,7 +54,12 @@ private theorem iterCov_metric_zero
   induction a with
   | zero =>
       refine DFunLike.ext _ _ (fun x => ?_)
-      refine ContinuousMultilinearMap.ext (fun slots => ?_)
+      refine Tensor0SBundle.tensor0SSpace_ext (I := I) 3 x (fun slots => ?_)
+      change Tensor0SSpace.eval
+          (iterCov (I := I) g 2 (metricTensorField (I := I) g) 1 x) slots =
+        Tensor0SSpace.eval
+          ((0 : Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
+            (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 3) x) slots
       obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at_gen (I := I) (F := E)
         (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (slots 0)
       have hslots : slots = Fin.cons (X x) (Fin.tail slots) := by
@@ -64,7 +68,7 @@ private theorem iterCov_metric_zero
       rw [show iterCov (I := I) g 2 (metricTensorField (I := I) g) 1 =
           covStep (I := I) g 2 (metricTensorField (I := I) g) from rfl]
       rw [covStep_apply, hslots,
-        totalNabla0SFun_apply_section (𝕜 := ℝ) (E := E) (H := H)
+        totalNabla0SFun_eval_section (𝕜 := ℝ) (E := E) (H := H)
           (I := I) (M := M) 2 _ X (metricTensorField (I := I) g) x _,
         nabla_metric_zero (I := I) _ g
           (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g) X x]
@@ -95,12 +99,19 @@ private theorem metric_self_norm
     normSq0S (I := I) g x 2 (metricTensorField (I := I) g x) =
       (Module.finrank ℝ E : ℝ) := by
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
-    simpa [identityInvMetric, diagonalInvMetric] using
-      metricInverseInBasis_of_orthonormal (I := I) g basis hON
-  simpa using normSq0S_metricTensor0S_eq_card (I := I) g basis
+    have h' := metricInverseInBasis_of_orthonormal (I := I) g basis hON
+    intro a b
+    simpa [identityInvMetric, diagonalInvMetric] using h' a b
+  have hcard := normSq0S_metricTensor0S_eq_card (I := I) g basis
     (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) hinv
+  rw [show Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E from rfl] at hcard
+  rw [show metricTensorField (I := I) g x = metricTensor0S (I := I) g x from by
+    apply Tensor0SBundle.tensor0SSpace_ext (I := I) 2 x
+    intro v
+    rw [metricTensorField_apply, metricTensor0S_apply]]
+  simpa only [Fintype.card_fin] using hcard
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem sqrt_normSq_zero
@@ -109,7 +120,7 @@ private theorem sqrt_normSq_zero
       (0 : Tensor0SSpace s I x)) = 0 := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
     intro i j
     constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
@@ -168,7 +179,7 @@ theorem reverseJetOne
   have hΛ0 : 0 ≤ Λ := le_trans zero_le_one hEq.1
   intro x _
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₀ x
-  have hinv : MetricInverseInBasis_gen (I := I) g₀ x basis
+  have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
   rw [metricCovDerivNorm_eq_iterCov (I := I) gBase g₀ 1 basis hinv]
@@ -222,7 +233,7 @@ theorem reverseJetTwo
         else 0) 2
   intro x _
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₀ x
-  have hinv : MetricInverseInBasis_gen (I := I) g₀ x basis
+  have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
   rw [metricCovDerivNorm_eq_iterCov (I := I) gBase g₀ 2 basis hinv]

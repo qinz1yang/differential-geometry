@@ -37,11 +37,11 @@ theorem norm_c1PullbackGradient_sub_le
   apply ContinuousLinearMap.opNorm_le_bound
   · positivity
   intro a
-  simp only [c1PullbackGradient, ContinuousLinearMap.sub_apply,
+  simp only [c1PullbackGradient, sub_apply,
     ContinuousLinearMap.comp_apply]
   have heq : Du (Dphi a) - Du' (Dphi' a) =
       (Du - Du') (Dphi a) + Du' ((Dphi - Dphi') a) := by
-    simp only [ContinuousLinearMap.sub_apply, map_sub]
+    simp only [sub_apply, map_sub]
     abel
   have hfirst : ‖(Du - Du') (Dphi a)‖ ≤
       ‖Du - Du'‖ * (‖Dphi‖ * ‖a‖) := by
@@ -160,7 +160,7 @@ theorem norm_c2PullbackHessian_le
   apply ContinuousLinearMap.opNorm_le_bound₂
   · positivity
   intro a b
-  simp only [c2PullbackHessian, ContinuousLinearMap.add_apply,
+  simp only [c2PullbackHessian, add_apply,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.flip_apply,
     ContinuousLinearMap.compL_apply]
   have hfirst : ‖Du (D2phi a b)‖ ≤
@@ -203,8 +203,8 @@ theorem norm_c2PullbackHessian_sub_le
   apply ContinuousLinearMap.opNorm_le_bound₂
   · positivity
   intro a b
-  simp only [c2PullbackHessian, ContinuousLinearMap.add_apply,
-    ContinuousLinearMap.sub_apply, ContinuousLinearMap.comp_apply,
+  simp only [c2PullbackHessian, add_apply,
+    sub_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.flip_apply, ContinuousLinearMap.compL_apply]
   let z1 := (Du - Du') (D2phi a b)
   let z2 := Du' ((D2phi - D2phi') a b)
@@ -215,7 +215,7 @@ theorem norm_c2PullbackHessian_sub_le
       Du (D2phi a b) + D2u (Dphi a) (Dphi b) -
           (Du' (D2phi' a b) + D2u' (Dphi' a) (Dphi' b)) =
         z1 + z2 + z3 + z4 + z5 := by
-    simp only [z1, z2, z3, z4, z5, ContinuousLinearMap.sub_apply,
+    simp only [z1, z2, z3, z4, z5, sub_apply,
       map_sub]
     abel
   have hz1 : ‖z1‖ ≤ ‖Du - Du'‖ * ‖D2phi‖ * ‖a‖ * ‖b‖ := by
@@ -427,8 +427,9 @@ theorem hessianCurryEquiv_iteratedFDeriv_two_comp
   have hchain : fderiv Real (fun y => fderiv Real f (phi y)) x =
       (fderiv Real (fderiv Real f) (phi x)).comp
         (fderiv Real phi x) := by
-    simpa only [Function.comp_apply] using
-      fderiv_comp x hfdiff hphidiff
+    change fderiv Real (fderiv Real f ∘ phi) x =
+      (fderiv Real (fderiv Real f) (phi x)).comp (fderiv Real phi x)
+    exact fderiv_comp x hfdiff hphidiff
   rw [hchain]
 
 end DifferentialGeometry.Analysis.Schauder

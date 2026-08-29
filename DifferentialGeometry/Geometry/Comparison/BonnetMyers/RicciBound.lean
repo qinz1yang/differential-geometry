@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciConnection
 import DifferentialGeometry.Geometry.Curvature.RicciOperatorNormBound
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
+
+
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -39,12 +41,17 @@ theorem ricciLower_of_rm
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
   let A : ℝ := Real.sqrt (Tensor0SBundle.normSq0S (I := I) g x 4
     (metricRm04At (I := I) (M := M) g x))
+  have hfinrank : Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E := by
+    have hx : x ∈ (trivializationAt E (TangentSpace I) x).baseSet := by
+      rw [TangentBundle.trivializationAt_baseSet]
+      exact mem_chart_source H x
+    exact ((trivializationAt E (TangentSpace I) x).linearEquivAt ℝ x hx).finrank_eq
   have hcomp : ∀ i j,
       |metricRicciAt (I := I) (M := M) g x
           (vec2 (I := I) (basis i) (basis j))| ≤
         (Module.finrank ℝ E : ℝ) * A := by
     intro i j
-    simpa [A] using metricRicciComp_le (I := I) g basis hON i j
+    simpa [A, hfinrank] using metricRicciComp_le (I := I) g basis hON i j
   have hunit : ∀ u : TangentSpace I x, g.inner x u u = 1 →
       |metricRicciAt (I := I) (M := M) g x (vec2 (I := I) u u)| ≤
         (Module.finrank ℝ E : ℝ) ^ 2 * A := by
@@ -52,7 +59,7 @@ theorem ricciLower_of_rm
     have h := ricci_unitSphere_le_of_componentBound
       (I := I) g (metricRicciAt (I := I) (M := M) g x) basis hON
       (mul_nonneg (Nat.cast_nonneg _) (Real.sqrt_nonneg _)) hcomp u hu
-    simpa [A, pow_two, mul_assoc] using h
+    simpa [A, hfinrank, pow_two, mul_assoc] using h
   have hquad := tensor02_quadForm_abs_le_of_unit_bound
     (I := I) g (metricRicciAt (I := I) (M := M) g x) hunit v
   rw [metricRicciAt_apply_eq_ricciTensor (I := I) g x v v] at hquad

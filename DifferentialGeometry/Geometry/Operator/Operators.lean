@@ -66,27 +66,27 @@ theorem metricSharp_eq
 
 def gradientFun (g : SmoothRiemannianMetric I M) (f : M -> Real) (x : M) :
     TangentSpace I x :=
-  metricSharp (I := I) g x (mfderiv I 𝓘(Real, Real) f x).toLinearMap
+  metricSharp (I := I) g x (mvfderiv (I := I) f x).toLinearMap
 
 @[simp] theorem gradientFun_eq
     (g : SmoothRiemannianMetric I M) (f : M -> Real) (x : M) :
     gradientFun (I := I) g f x =
-      metricSharp (I := I) g x (mfderiv I 𝓘(Real, Real) f x).toLinearMap := by
+      metricSharp (I := I) g x (mvfderiv (I := I) f x).toLinearMap := by
   rfl
 
 theorem inner_gradientFun
     (g : SmoothRiemannianMetric I M) (f : M -> Real) (x : M)
     (v : TangentSpace I x) :
     g.inner x (gradientFun (I := I) g f x) v =
-      mfderiv I 𝓘(Real, Real) f x v := by
+      mvfderiv (I := I) f x v := by
   simpa [gradientFun] using
     inner_metricSharp (I := I) g x
-      (mfderiv I 𝓘(Real, Real) f x).toLinearMap v
+      (mvfderiv (I := I) f x).toLinearMap v
 
 theorem gradientFun_eq_of_flat
     (g : SmoothRiemannianMetric I M) {f : M -> Real} {x : M}
     {v : TangentSpace I x}
-    (hf : (mfderiv I 𝓘(Real, Real) f x).toLinearMap =
+    (hf : (mvfderiv (I := I) f x).toLinearMap =
       metricFlatEquiv (I := I) g x v) :
     gradientFun (I := I) g f x = v := by
   unfold gradientFun metricSharp
@@ -98,10 +98,12 @@ theorem gradientFun_eq_zero_of_mfderiv_eq_zero
     (hf : mfderiv I 𝓘(Real, Real) f x = 0) :
     gradientFun (I := I) g f x = 0 := by
   unfold gradientFun metricSharp
+  have hmv : mvfderiv (I := I) f x = 0 := by
+    simp [mvfderiv, hf]
   have hto :
-      (mfderiv I 𝓘(Real, Real) f x).toLinearMap =
+      (mvfderiv (I := I) f x).toLinearMap =
         (0 : Module.Dual Real (TangentSpace I x)) := by
-    rw [hf]
+    rw [hmv]
     rfl
   rw [hto]
   exact LinearEquiv.map_zero (metricFlatEquiv (I := I) g x).symm
@@ -119,8 +121,8 @@ theorem gradientFun_eq_zero_of_isLocalMin
     have hmin' :
         IsLocalMin f ((extChartAt I x).symm ((extChartAt I x) x)) := by
       simpa only [mfld_simps] using hmin
-    simpa only [Function.comp_apply] using
-      hmin'.comp_continuous (continuousAt_extChartAt_symm (I := I) x)
+    change IsLocalMin (f ∘ (extChartAt I x).symm) ((extChartAt I x) x)
+    exact hmin'.comp_continuous (continuousAt_extChartAt_symm (I := I) x)
   have hderiv_chart :
       fderiv Real (fun y : E => f ((extChartAt I x).symm y))
         ((extChartAt I x) x) = 0 :=
@@ -128,16 +130,17 @@ theorem gradientFun_eq_zero_of_isLocalMin
   have hrange : Set.range I ∈ nhds ((extChartAt I x) x) := by
     rw [ModelWithCorners.Boundaryless.range_eq_univ (I := I)]
     exact Filter.univ_mem
-  calc
-    mfderiv I 𝓘(Real, Real) f x =
-        fderivWithin Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
-          (Set.range I) ((extChartAt I x) x) := by
-      exact hf.mfderiv
-    _ = fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
-          ((extChartAt I x) x) := by
-      exact fderivWithin_of_mem_nhds hrange
-    _ = 0 := by
-      simpa [writtenInExtChartAt] using hderiv_chart
+  apply ContinuousLinearMap.ext
+  intro v
+  apply (NormedSpace.fromTangentSpace (f x)).injective
+  simp only [zero_apply, map_zero]
+  rw [← mvfderiv_real_eq_mfderiv]
+  rw [mvfderiv_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
+    hf Filter.EventuallyEq.rfl]
+  change fderiv Real (fun y : E => f ((extChartAt I x).symm y))
+    ((extChartAt I x) x) v = 0
+  rw [hderiv_chart]
+  rfl
 
 theorem gradientFun_eq_zero_of_isLocalMax
     [I.Boundaryless] (g : SmoothRiemannianMetric I M)
@@ -152,8 +155,8 @@ theorem gradientFun_eq_zero_of_isLocalMax
     have hmax' :
         IsLocalMax f ((extChartAt I x).symm ((extChartAt I x) x)) := by
       simpa only [mfld_simps] using hmax
-    simpa only [Function.comp_apply] using
-      hmax'.comp_continuous (continuousAt_extChartAt_symm (I := I) x)
+    change IsLocalMax (f ∘ (extChartAt I x).symm) ((extChartAt I x) x)
+    exact hmax'.comp_continuous (continuousAt_extChartAt_symm (I := I) x)
   have hderiv_chart :
       fderiv Real (fun y : E => f ((extChartAt I x).symm y))
         ((extChartAt I x) x) = 0 :=
@@ -161,16 +164,17 @@ theorem gradientFun_eq_zero_of_isLocalMax
   have hrange : Set.range I ∈ nhds ((extChartAt I x) x) := by
     rw [ModelWithCorners.Boundaryless.range_eq_univ (I := I)]
     exact Filter.univ_mem
-  calc
-    mfderiv I 𝓘(Real, Real) f x =
-        fderivWithin Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
-          (Set.range I) ((extChartAt I x) x) := by
-      exact hf.mfderiv
-    _ = fderiv Real (writtenInExtChartAt I 𝓘(Real, Real) x f)
-          ((extChartAt I x) x) := by
-      exact fderivWithin_of_mem_nhds hrange
-    _ = 0 := by
-      simpa [writtenInExtChartAt] using hderiv_chart
+  apply ContinuousLinearMap.ext
+  intro v
+  apply (NormedSpace.fromTangentSpace (f x)).injective
+  simp only [zero_apply, map_zero]
+  rw [← mvfderiv_real_eq_mfderiv]
+  rw [mvfderiv_eq_fderiv_of_writtenInExtChartAt_eventuallyEq
+    hf Filter.EventuallyEq.rfl]
+  change fderiv Real (fun y : E => f ((extChartAt I x).symm y))
+    ((extChartAt I x) x) v = 0
+  rw [hderiv_chart]
+  rfl
 
 theorem gradientFun_const
     (g : SmoothRiemannianMetric I M) (c : Real) (x : M) :
@@ -185,10 +189,11 @@ theorem gradientFun_const_smul
     gradientFun (I := I) g (a • f) x =
       a • gradientFun (I := I) g f x := by
   unfold gradientFun metricSharp
-  rw [const_smul_mfderiv hf a]
-  rw [ContinuousLinearMap.coe_smul]
+  rw [show a • f = (fun _ : M => a) • f by rfl]
+  rw [_root_.mvfderiv_smul (mdifferentiableAt_const (c := a)) hf]
+  rw [_root_.mvfderiv_const, ContinuousLinearMap.zero_smulRight, add_zero]
   let e := (metricFlatEquiv (I := I) g x).symm
-  exact e.map_smul a (mfderiv I 𝓘(Real, Real) f x).toLinearMap
+  exact e.map_smul a (mvfderiv (I := I) f x).toLinearMap
 
 theorem gradientFun_neg
     (g : SmoothRiemannianMetric I M)
@@ -212,11 +217,10 @@ theorem gradientFun_add
   change gradientFun (I := I) g (f + h) x =
       gradientFun (I := I) g f x + gradientFun (I := I) g h x
   unfold gradientFun metricSharp
-  rw [mfderiv_add hf hh]
-  rw [ContinuousLinearMap.coe_add]
+  rw [_root_.mvfderiv_add hf hh]
   let e := (metricFlatEquiv (I := I) g x).symm
-  exact e.map_add (mfderiv I 𝓘(Real, Real) f x).toLinearMap
-    (mfderiv I 𝓘(Real, Real) h x).toLinearMap
+  exact e.map_add (mvfderiv (I := I) f x).toLinearMap
+    (mvfderiv (I := I) h x).toLinearMap
 
 theorem gradientFun_sum {κ : Type}
     (g : SmoothRiemannianMetric I M) (s : Finset κ)
@@ -279,11 +283,10 @@ theorem gradientFun_sub
   change gradientFun (I := I) g (f - h) x =
       gradientFun (I := I) g f x - gradientFun (I := I) g h x
   unfold gradientFun metricSharp
-  rw [mfderiv_sub hf hh]
-  rw [ContinuousLinearMap.coe_sub]
+  rw [_root_.mvfderiv_sub hf hh]
   let e := (metricFlatEquiv (I := I) g x).symm
-  exact e.map_sub (mfderiv I 𝓘(Real, Real) f x).toLinearMap
-    (mfderiv I 𝓘(Real, Real) h x).toLinearMap
+  exact e.map_sub (mvfderiv (I := I) f x).toLinearMap
+    (mvfderiv (I := I) h x).toLinearMap
 
 theorem gradientFun_comp
     (g : SmoothRiemannianMetric I M)
@@ -292,54 +295,44 @@ theorem gradientFun_comp
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x) :
     gradientFun (I := I) g (fun y : M => φ (f y)) x =
       deriv φ (f x) • gradientFun (I := I) g f x := by
-  have hcomp :
-      mfderiv I 𝓘(Real, Real) (fun y : M => φ (f y)) x =
-        (ContinuousLinearMap.toSpanSingleton Real (deriv φ (f x))).comp
-          (mfderiv I 𝓘(Real, Real) f x) := by
-    simpa only [Function.comp_apply] using
-      ((hφ.hasDerivAt.hasFDerivAt.hasMFDerivAt).comp x hf.hasMFDerivAt).mfderiv
+  have hmvcomp :
+      mvfderiv (I := I) (φ ∘ f) x =
+        deriv φ (f x) • mvfderiv (I := I) f x := by
+    ext v
+    have hchain := mvfderiv_comp_apply (I := 𝓘(Real, Real)) (I' := I)
+      (f := f) (g := φ) x hφ.mdifferentiableAt hf v
+    rw [mvfderiv_real_model_eq_fderiv,
+      hφ.hasDerivAt.hasFDerivAt.fderiv] at hchain
+    rw [← mvfderiv_real_eq_mfderiv I f x v] at hchain
+    simpa [Function.comp_def, ContinuousLinearMap.toSpanSingleton_apply,
+      smul_eq_mul, mul_comm] using hchain
+  rw [show (fun y : M => φ (f y)) = φ ∘ f by rfl]
   unfold gradientFun metricSharp
-  rw [hcomp]
-  rw [← LinearEquiv.map_smul]
-  congr 1
-  ext v
-  change
-    NormedSpace.fromTangentSpace (𝕜 := Real) (φ (f x))
-        (((ContinuousLinearMap.toSpanSingleton Real (deriv φ (f x))).comp
-          (mfderiv I 𝓘(Real, Real) f x)) v) =
-      deriv φ (f x) *
-        NormedSpace.fromTangentSpace (𝕜 := Real) (f x)
-          (mfderiv I 𝓘(Real, Real) f x v)
-  rw [ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.toSpanSingleton_apply]
-  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk,
-    LinearEquiv.coe_mk, LinearMap.coe_mk, AddHom.coe_mk, smul_eq_mul]
-  rw [mul_comm]
-  rfl
+  rw [hmvcomp]
+  exact LinearEquiv.map_smul (metricFlatEquiv (I := I) g x).symm
+    (deriv φ (f x)) (mvfderiv (I := I) f x).toLinearMap
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-theorem extDerivFun_mul
+theorem mvfderiv_mul
     {f h : M -> Real} {x : M} (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
     (hh : MDifferentiableAt I 𝓘(Real, Real) h x) :
-    extDerivFun (I := I) (fun y : M => f y * h y) x v =
-      f x * extDerivFun (I := I) h x v +
-        extDerivFun (I := I) f x v * h x := by
-  change extDerivFun (I := I) (f • h) x v =
-      f x * extDerivFun (I := I) h x v +
-        extDerivFun (I := I) f x v * h x
-  have hprod := fromTangentSpace_mfderiv_smul_apply
-    (I := I) (f := f) (g := h) hf hh v
-  simpa [extDerivFun, Pi.smul_apply, smul_eq_mul, mul_comm, mul_left_comm,
-    mul_assoc] using hprod
+    mvfderiv (I := I) (fun y : M => f y * h y) x v =
+      f x * mvfderiv (I := I) h x v +
+        mvfderiv (I := I) f x v * h x := by
+  change mvfderiv (I := I) (f • h) x v =
+      f x * mvfderiv (I := I) h x v +
+        mvfderiv (I := I) f x v * h x
+  have hprod := DFunLike.congr_fun (_root_.mvfderiv_mul hf hh) v
+  simpa [Pi.mul_apply, Pi.smul_apply, smul_eq_mul, mul_comm] using hprod
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-theorem extDerivFun_const_mul_apply
+theorem mvfderiv_const_mul_apply
     (a : Real) {f : M -> Real} {x : M} (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x) :
-    extDerivFun (I := I) (fun y : M => a * f y) x v =
-      a * extDerivFun (I := I) f x v := by
-  have h := DifferentialGeometry.extDerivFun_const_mul (I := I) a hf
+    mvfderiv (I := I) (fun y : M => a * f y) x v =
+      a * mvfderiv (I := I) f x v := by
+  have h := DifferentialGeometry.mvfderiv_const_mul (I := I) a hf
   have hv := DFunLike.congr_fun h v
   simpa [Pi.smul_apply, smul_eq_mul] using hv
 
@@ -353,27 +346,21 @@ theorem gradientFun_mul
         h x • gradientFun (I := I) g f x := by
   apply metricFlatLinear_injective (I := I) g x
   ext v
-  have hprod := extDerivFun_mul (I := I) (f := f) (h := h) v hf hh
+  have hprod := mvfderiv_mul (I := I) (f := f) (h := h) v hf hh
   have hmul :
       g.inner x (gradientFun (I := I) g (fun y : M => f y * h y) x) v =
         f x * g.inner x (gradientFun (I := I) g h x) v +
           g.inner x (gradientFun (I := I) g f x) v * h x := by
     rw [inner_gradientFun (I := I) g (fun y : M => f y * h y) x v]
-    have hprod_mf :
-        mfderiv I 𝓘(Real, Real) (fun y : M => f y * h y) x v =
-          extDerivFun (I := I) (fun y : M => f y * h y) x v := by
-      simp [extDerivFun, NormedSpace.fromTangentSpace]
     have hhinner :
-        extDerivFun (I := I) h x v =
+        mvfderiv (I := I) h x v =
           g.inner x (gradientFun (I := I) g h x) v := by
-      rw [inner_gradientFun (I := I) g h x v]
-      simp [extDerivFun, NormedSpace.fromTangentSpace]
+      exact (inner_gradientFun (I := I) g h x v).symm
     have hfinner :
-        extDerivFun (I := I) f x v =
+        mvfderiv (I := I) f x v =
           g.inner x (gradientFun (I := I) g f x) v := by
-      rw [inner_gradientFun (I := I) g f x v]
-      simp [extDerivFun, NormedSpace.fromTangentSpace]
-    rw [hprod_mf, hprod, hhinner, hfinner]
+      exact (inner_gradientFun (I := I) g f x v).symm
+    rw [hprod, hhinner, hfinner]
   calc
     metricFlatLinear (I := I) g x
         (gradientFun (I := I) g (fun y : M => f y * h y) x) v =
@@ -420,38 +407,21 @@ theorem gradientFun_pow
               ring
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-theorem extDerivFun_rpow
+theorem mvfderiv_rpow
     {f : M -> Real} {x : M} (p : Real) (v : TangentSpace I x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
     (hpos : 0 < f x) :
-    extDerivFun (I := I) (fun y : M => f y ^ p) x v =
-      (p * f x ^ (p - 1)) * extDerivFun (I := I) f x v := by
+    mvfderiv (I := I) (fun y : M => f y ^ p) x v =
+      (p * f x ^ (p - 1)) * mvfderiv (I := I) f x v := by
   let coeff : Real := p * f x ^ (p - 1)
-  have hp :
-      HasMFDerivAt 𝓘(Real, Real) 𝓘(Real, Real)
-        (fun z : Real => z ^ p) (f x)
-        (ContinuousLinearMap.toSpanSingleton Real coeff) := by
-    simpa [coeff] using
-      ((Real.hasDerivAt_rpow_const (p := p) (Or.inl hpos.ne')).hasFDerivAt).hasMFDerivAt
-  have hcomp :
-      mfderiv I 𝓘(Real, Real) (fun y : M => (fun z : Real => z ^ p) (f y)) x =
-        (ContinuousLinearMap.toSpanSingleton Real coeff).comp
-          (mfderiv I 𝓘(Real, Real) f x) :=
-    (hp.comp x hf.hasMFDerivAt).mfderiv
-  unfold extDerivFun
-  rw [hcomp]
-  change
-    NormedSpace.fromTangentSpace (𝕜 := Real) (f x ^ p)
-        (((ContinuousLinearMap.toSpanSingleton Real coeff).comp
-          (mfderiv I 𝓘(Real, Real) f x)) v) =
-      coeff *
-        NormedSpace.fromTangentSpace (𝕜 := Real) (f x)
-          ((mfderiv I 𝓘(Real, Real) f x) v)
-  rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.toSpanSingleton_apply]
-  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk,
-    LinearEquiv.coe_mk, LinearMap.coe_mk, AddHom.coe_mk, smul_eq_mul]
-  rw [mul_comm]
-  rfl
+  have hp := Real.hasDerivAt_rpow_const (p := p) (Or.inl hpos.ne')
+  have hchain := mvfderiv_comp_apply (I := 𝓘(Real, Real)) (I' := I)
+    (f := f) (g := fun z : Real => z ^ p)
+    x hp.differentiableAt.mdifferentiableAt hf v
+  rw [mvfderiv_real_model_eq_fderiv, hp.hasFDerivAt.fderiv] at hchain
+  rw [← mvfderiv_real_eq_mfderiv I f x v] at hchain
+  simpa [Function.comp_def, coeff, ContinuousLinearMap.toSpanSingleton_apply,
+    mul_comm] using hchain
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
 theorem mdifferentiableAt_rpow
@@ -474,23 +444,18 @@ theorem gradientFun_rpow
       (p * f x ^ (p - 1)) • gradientFun (I := I) g f x := by
   apply metricFlatLinear_injective (I := I) g x
   ext v
-  have hrpow := extDerivFun_rpow (I := I) (f := f) p v hf hpos
-  have hrpow_mf :
-      mfderiv I 𝓘(Real, Real) (fun y : M => f y ^ p) x v =
-        extDerivFun (I := I) (fun y : M => f y ^ p) x v := by
-    simp [extDerivFun, NormedSpace.fromTangentSpace]
+  have hrpow := mvfderiv_rpow (I := I) (f := f) p v hf hpos
   have hfinner :
-      extDerivFun (I := I) f x v =
+      mvfderiv (I := I) f x v =
         g.inner x (gradientFun (I := I) g f x) v := by
-    rw [inner_gradientFun (I := I) g f x v]
-    simp [extDerivFun, NormedSpace.fromTangentSpace]
+    exact (inner_gradientFun (I := I) g f x v).symm
   calc
     metricFlatLinear (I := I) g x
         (gradientFun (I := I) g (fun y : M => f y ^ p) x) v =
         (p * f x ^ (p - 1)) *
           g.inner x (gradientFun (I := I) g f x) v := by
           rw [metricFlatLinear_apply, inner_gradientFun]
-          rw [hrpow_mf, hrpow, hfinner]
+          rw [hrpow, hfinner]
     _ = metricFlatLinear (I := I) g x
         ((p * f x ^ (p - 1)) • gradientFun (I := I) g f x) v := by
           simp [metricFlatLinear_apply]
@@ -505,76 +470,29 @@ theorem gradientFun_log
   apply metricFlatLinear_injective (I := I) g x
   ext v
   let coeff : Real := (f x)⁻¹
-  have hlog :
-      HasMFDerivAt 𝓘(Real, Real) 𝓘(Real, Real)
-        Real.log (f x)
-        (ContinuousLinearMap.toSpanSingleton Real coeff) := by
-    simpa [coeff] using
-      ((Real.hasDerivAt_log hpos.ne').hasFDerivAt).hasMFDerivAt
-  have hcomp :
-      mfderiv I 𝓘(Real, Real) (fun y : M => Real.log (f y)) x =
-        (ContinuousLinearMap.toSpanSingleton Real coeff).comp
-          (mfderiv I 𝓘(Real, Real) f x) :=
-    (hlog.comp x hf.hasMFDerivAt).mfderiv
   have hlog_ext :
-      extDerivFun (I := I) (fun y : M => Real.log (f y)) x v =
-        coeff * extDerivFun (I := I) f x v := by
-    unfold extDerivFun
-    rw [hcomp]
-    change
-      NormedSpace.fromTangentSpace (𝕜 := Real) (Real.log (f x))
-          (((ContinuousLinearMap.toSpanSingleton Real coeff).comp
-            (mfderiv I 𝓘(Real, Real) f x)) v) =
-        coeff *
-          NormedSpace.fromTangentSpace (𝕜 := Real) (f x)
-            ((mfderiv I 𝓘(Real, Real) f x) v)
-    rw [ContinuousLinearMap.comp_apply,
-      ContinuousLinearMap.toSpanSingleton_apply]
-    simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk,
-      LinearEquiv.coe_mk, LinearMap.coe_mk, AddHom.coe_mk, smul_eq_mul]
-    rw [mul_comm]
-    rfl
-  have hlog_mf :
-      mfderiv I 𝓘(Real, Real) (fun y : M => Real.log (f y)) x v =
-        extDerivFun (I := I) (fun y : M => Real.log (f y)) x v := by
-    simp [extDerivFun, NormedSpace.fromTangentSpace]
+      mvfderiv (I := I) (fun y : M => Real.log (f y)) x v =
+        coeff * mvfderiv (I := I) f x v := by
+    have hlog := Real.hasDerivAt_log hpos.ne'
+    have hchain := mvfderiv_comp_apply (I := 𝓘(Real, Real)) (I' := I)
+      (f := f) (g := Real.log) x hlog.differentiableAt.mdifferentiableAt hf v
+    rw [mvfderiv_real_model_eq_fderiv, hlog.hasFDerivAt.fderiv] at hchain
+    rw [← mvfderiv_real_eq_mfderiv I f x v] at hchain
+    simpa [Function.comp_def, coeff, ContinuousLinearMap.toSpanSingleton_apply,
+      mul_comm] using hchain
   have hfinner :
-      extDerivFun (I := I) f x v =
+      mvfderiv (I := I) f x v =
         g.inner x (gradientFun (I := I) g f x) v := by
-    rw [inner_gradientFun (I := I) g f x v]
-    simp [extDerivFun, NormedSpace.fromTangentSpace]
+    exact (inner_gradientFun (I := I) g f x v).symm
   calc
     metricFlatLinear (I := I) g x
         (gradientFun (I := I) g (fun y : M => Real.log (f y)) x) v =
         coeff * g.inner x (gradientFun (I := I) g f x) v := by
           rw [metricFlatLinear_apply, inner_gradientFun]
-          rw [hlog_mf, hlog_ext, hfinner]
+          rw [hlog_ext, hfinner]
     _ = metricFlatLinear (I := I) g x
         ((f x)⁻¹ • gradientFun (I := I) g f x) v := by
           simp [coeff, metricFlatLinear_apply]
-
-omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] in
-theorem mfderiv_mul_self_toLinearMap
-    {f : M -> Real} {x : M}
-    (hf : MDifferentiableAt I 𝓘(Real, Real) f x) :
-    (mfderiv I 𝓘(Real, Real) (fun y : M => f y * f y) x).toLinearMap =
-      (2 * f x) • (mfderiv I 𝓘(Real, Real) f x).toLinearMap := by
-  have hmul :
-      mfderiv I 𝓘(Real, Real) (fun y : M => f y * f y) x =
-        f x • mfderiv I 𝓘(Real, Real) f x +
-          f x • mfderiv I 𝓘(Real, Real) f x := by
-    simpa only [Pi.mul_apply] using
-      (hf.hasMFDerivAt.mul hf.hasMFDerivAt).mfderiv
-  rw [hmul]
-  ext v
-  rw [ContinuousLinearMap.coe_add]
-  change
-    f x • ((mfderiv I 𝓘(Real, Real) f x).toLinearMap v) +
-      f x • ((mfderiv I 𝓘(Real, Real) f x).toLinearMap v) =
-        (2 * f x) • ((mfderiv I 𝓘(Real, Real) f x).toLinearMap v)
-  rw [← add_smul]
-  congr 1
-  ring_nf
 
 theorem gradientFun_mul_self
     (g : SmoothRiemannianMetric I M)
@@ -582,18 +500,10 @@ theorem gradientFun_mul_self
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x) :
     gradientFun (I := I) g (fun y : M => f y * f y) x =
       (2 * f x) • gradientFun (I := I) g f x := by
-  unfold gradientFun metricSharp
-  change
-    (metricFlatEquiv (I := I) g x).symm
-      ((mfderiv I 𝓘(Real, Real) (fun y : M => f y * f y) x).toLinearMap) =
-      (2 * f x) •
-        (metricFlatEquiv (I := I) g x).symm
-          ((mfderiv I 𝓘(Real, Real) f x).toLinearMap)
-  rw [mfderiv_mul_self_toLinearMap (I := I) (f := f) hf]
-  exact LinearEquiv.map_smul
-    (metricFlatEquiv (I := I) g x).symm
-    (2 * f x)
-    ((mfderiv I 𝓘(Real, Real) f x).toLinearMap)
+  rw [gradientFun_mul (I := I) g hf hf]
+  rw [← add_smul]
+  congr 1
+  ring
 
 def divergence
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -643,7 +553,7 @@ theorem divergence_add
     divergence (I := I) cov (X + Y) x =
       divergence (I := I) cov X x + divergence (I := I) cov Y x := by
   let _ := _hVB
-  letI := _hVB
+  let := _hVB
   unfold divergence
   rw [cov.isCovariantDerivativeOnUniv.add hX hY]
   simp
@@ -658,7 +568,7 @@ theorem divergence_const_smul
     divergence (I := I) cov (a • X) x =
       a * divergence (I := I) cov X x := by
   let _ := _hVB
-  letI := _hVB
+  let := _hVB
   unfold divergence
   rw [cov.isCovariantDerivativeOnUniv.smul_const a hX]
   simp
@@ -672,19 +582,19 @@ theorem divergence_smul
     (hX : MDiffAt (T% X) x) :
     divergence (I := I) cov (f • X) x =
       f x * divergence (I := I) cov X x +
-        extDerivFun (I := I) f x (X x) := by
+        mvfderiv (I := I) f x (X x) := by
   let _ := _hVB
-  letI := _hVB
+  let := _hVB
   unfold divergence
   rw [cov.isCovariantDerivativeOnUniv.leibniz hX hf]
-  rw [ContinuousLinearMap.coe_add]
+  rw [ContinuousLinearMap.toLinearMap_add]
   rw [map_add]
   change
       LinearMap.trace Real (TangentSpace I x) (f x • (cov X x).toLinearMap) +
           LinearMap.trace Real (TangentSpace I x)
-            ((extDerivFun (I := I) f x).toLinearMap.smulRight (X x)) =
+            ((mvfderiv (I := I) f x).toLinearMap.smulRight (X x)) =
         f x * LinearMap.trace Real (TangentSpace I x) (cov X x).toLinearMap +
-          extDerivFun (I := I) f x (X x)
+          mvfderiv (I := I) f x (X x)
   rw [map_smul, LinearMap.trace_smulRight]
   simp [smul_eq_mul]
 
@@ -701,7 +611,7 @@ theorem divergence_sub
   have hneg : cov (-Y) x = (-1 : Real) • cov Y x := by
     simpa using cov.isCovariantDerivativeOnUniv.smul_const (-1 : Real) hY
   rw [hneg]
-  rw [ContinuousLinearMap.coe_add, ContinuousLinearMap.coe_smul]
+  rw [ContinuousLinearMap.toLinearMap_add, ContinuousLinearMap.toLinearMap_smul]
   rw [map_add, map_smul]
   simp [sub_eq_add_neg]
 
@@ -805,11 +715,12 @@ theorem laplacian_sub
           simp [laplacian, hgrad]
     _ = laplacian (I := I) cov g f x -
         laplacian (I := I) cov g h x := by
-          simpa [laplacian, Pi.sub_apply] using
-            (divergence_sub (I := I) cov
-              (X := fun y : M => gradientFun (I := I) g f y)
-              (Y := fun y : M => gradientFun (I := I) g h y)
-              hgradf hgradh)
+          change divergence (I := I) cov
+              ((fun y : M => gradientFun (I := I) g f y) -
+                fun y : M => gradientFun (I := I) g h y) x =
+            divergence (I := I) cov (gradientFun (I := I) g f) x -
+              divergence (I := I) cov (gradientFun (I := I) g h) x
+          exact divergence_sub (I := I) cov hgradf hgradh
 
 theorem laplacian_const_smul
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -895,7 +806,7 @@ theorem divergence_smul_gradientFun
         g.inner x (gradientFun (I := I) g f x) (gradientFun (I := I) g f x) := by
   rw [divergence_smul (I := I) cov inferInstance hf hgrad]
   have hinner := inner_gradientFun (I := I) g f x (gradientFun (I := I) g f x)
-  simpa [extDerivFun] using congrArg id hinner.symm
+  simpa [mvfderiv] using congrArg id hinner.symm
 
 theorem divergence_smul_gradientFun_pair
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -909,7 +820,7 @@ theorem divergence_smul_gradientFun_pair
           (gradientFun (I := I) g h x) := by
   rw [divergence_smul (I := I) cov inferInstance hf hgrad]
   have hinner := inner_gradientFun (I := I) g f x (gradientFun (I := I) g h x)
-  simpa [extDerivFun] using congrArg id hinner.symm
+  simpa [mvfderiv] using congrArg id hinner.symm
 
 theorem laplacian_comp
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
@@ -987,11 +898,10 @@ theorem laplacian_mul
             (f • fun y : M => gradientFun (I := I) g h y) x +
           divergence (I := I) cov
             (h • fun y : M => gradientFun (I := I) g f y) x := by
-          simpa [Pi.add_apply] using
-            divergence_add (I := I) cov inferInstance
-              (X := f • fun y : M => gradientFun (I := I) g h y)
-              (Y := h • fun y : M => gradientFun (I := I) g f y)
-              hfgradh hhgradf
+          change divergence (I := I) cov
+              ((f • fun y : M => gradientFun (I := I) g h y) +
+                (h • fun y : M => gradientFun (I := I) g f y)) x = _
+          exact divergence_add (I := I) cov inferInstance hfgradh hhgradf
     _ =
         (f x * laplacian (I := I) cov g h x +
             g.inner x (gradientFun (I := I) g f x)
@@ -1030,7 +940,9 @@ theorem laplacian_rpow
         MDifferentiableAt I 𝓘(Real, Real)
           (fun y : M => f y ^ (p - 1)) x :=
       mdifferentiableAt_rpow (I := I) (p - 1) (hf x) (hpos x)
-    simpa [coeffFun] using mdifferentiableAt_const.mul hrpow
+    change MDifferentiableAt I 𝓘(Real, Real)
+      ((fun _ : M => p) * fun y : M => f y ^ (p - 1)) x
+    exact mdifferentiableAt_const.mul hrpow
   have hcoeffgrad :
       MDiffAt
         (T% (coeffFun • fun y : M => gradientFun (I := I) g f y)) x := by
@@ -1041,34 +953,34 @@ theorem laplacian_rpow
     funext y
     simpa [coeffFun] using gradientFun_rpow (I := I) g p (hf y) (hpos y)
   have hcoeff_ext :
-      extDerivFun (I := I) coeffFun x (gradientFun (I := I) g f x) =
+      mvfderiv (I := I) coeffFun x (gradientFun (I := I) g f x) =
         (p * (p - 1) * f x ^ (p - 2)) *
           g.inner x (gradientFun (I := I) g f x)
             (gradientFun (I := I) g f x) := by
     have hrpow :=
-      extDerivFun_rpow (I := I) (f := f) (p - 1)
+      mvfderiv_rpow (I := I) (f := f) (p - 1)
         (gradientFun (I := I) g f x) (hf x) (hpos x)
     have hrpow_diff :
         MDifferentiableAt I 𝓘(Real, Real)
           (fun y : M => f y ^ (p - 1)) x :=
       mdifferentiableAt_rpow (I := I) (p - 1) (hf x) (hpos x)
     have hconst :=
-      extDerivFun_const_mul_apply (I := I) p
+      mvfderiv_const_mul_apply (I := I) p
         (f := fun y : M => f y ^ (p - 1))
         (gradientFun (I := I) g f x) hrpow_diff
     have hfinner :
-        extDerivFun (I := I) f x (gradientFun (I := I) g f x) =
+        mvfderiv (I := I) f x (gradientFun (I := I) g f x) =
           g.inner x (gradientFun (I := I) g f x)
             (gradientFun (I := I) g f x) := by
-      rw [inner_gradientFun (I := I) g f x (gradientFun (I := I) g f x)]
-      simp [extDerivFun, NormedSpace.fromTangentSpace]
+      exact (inner_gradientFun (I := I) g f x
+        (gradientFun (I := I) g f x)).symm
     calc
-      extDerivFun (I := I) coeffFun x (gradientFun (I := I) g f x) =
-          p * extDerivFun (I := I) (fun y : M => f y ^ (p - 1)) x
+      mvfderiv (I := I) coeffFun x (gradientFun (I := I) g f x) =
+          p * mvfderiv (I := I) (fun y : M => f y ^ (p - 1)) x
             (gradientFun (I := I) g f x) := by
             simpa [coeffFun] using hconst
       _ = p * (((p - 1) * f x ^ ((p - 1) - 1)) *
-            extDerivFun (I := I) f x
+            mvfderiv (I := I) f x
               (gradientFun (I := I) g f x)) := by
             rw [hrpow]
       _ = (p * (p - 1) * f x ^ (p - 2)) *
@@ -1083,10 +995,13 @@ theorem laplacian_rpow
           simp [laplacian, hgrad_eq]
     _ =
         coeffFun x * laplacian (I := I) cov g f x +
-          extDerivFun (I := I) coeffFun x
+          mvfderiv (I := I) coeffFun x
             (gradientFun (I := I) g f x) := by
-          simpa [laplacian] using
-            divergence_smul (I := I) cov inferInstance hcoeff hgrad
+          change divergence (I := I) cov
+              (coeffFun • gradientFun (I := I) g f) x =
+            coeffFun x * divergence (I := I) cov (gradientFun (I := I) g f) x +
+              mvfderiv (I := I) coeffFun x (gradientFun (I := I) g f x)
+          exact divergence_smul (I := I) cov inferInstance hcoeff hgrad
     _ =
         (p * f x ^ (p - 1)) * laplacian (I := I) cov g f x +
           (p * (p - 1) * f x ^ (p - 2)) *
@@ -1116,23 +1031,23 @@ theorem laplacian_log
     simpa [coeffFun, Real.rpow_neg_one] using
       gradientFun_log (I := I) g (hf y) (hpos y)
   have hcoeff_ext :
-      extDerivFun (I := I) coeffFun x (gradientFun (I := I) g f x) =
+      mvfderiv (I := I) coeffFun x (gradientFun (I := I) g f x) =
         -(f x ^ 2)⁻¹ *
           g.inner x (gradientFun (I := I) g f x)
             (gradientFun (I := I) g f x) := by
     have hrpow :=
-      extDerivFun_rpow (I := I) (f := f) (-1 : Real)
+      mvfderiv_rpow (I := I) (f := f) (-1 : Real)
         (gradientFun (I := I) g f x) (hf x) (hpos x)
     have hfinner :
-        extDerivFun (I := I) f x (gradientFun (I := I) g f x) =
+        mvfderiv (I := I) f x (gradientFun (I := I) g f x) =
           g.inner x (gradientFun (I := I) g f x)
             (gradientFun (I := I) g f x) := by
-      rw [inner_gradientFun (I := I) g f x (gradientFun (I := I) g f x)]
-      simp [extDerivFun, NormedSpace.fromTangentSpace]
+      exact (inner_gradientFun (I := I) g f x
+        (gradientFun (I := I) g f x)).symm
     calc
-      extDerivFun (I := I) coeffFun x (gradientFun (I := I) g f x) =
+      mvfderiv (I := I) coeffFun x (gradientFun (I := I) g f x) =
           ((-1 : Real) * f x ^ ((-1 : Real) - 1)) *
-            extDerivFun (I := I) f x
+            mvfderiv (I := I) f x
               (gradientFun (I := I) g f x) := by
             simpa [coeffFun] using hrpow
       _ = -(f x ^ 2)⁻¹ *
@@ -1149,10 +1064,13 @@ theorem laplacian_log
           (coeffFun • fun y : M => gradientFun (I := I) g f y) x := by
           simp [laplacian, hgrad_eq]
     _ = coeffFun x * laplacian (I := I) cov g f x +
-          extDerivFun (I := I) coeffFun x
+          mvfderiv (I := I) coeffFun x
             (gradientFun (I := I) g f x) := by
-          simpa [laplacian] using
-            divergence_smul (I := I) cov inferInstance hcoeff hgrad
+          change divergence (I := I) cov
+              (coeffFun • gradientFun (I := I) g f) x =
+            coeffFun x * divergence (I := I) cov (gradientFun (I := I) g f) x +
+              mvfderiv (I := I) coeffFun x (gradientFun (I := I) g f x)
+          exact divergence_smul (I := I) cov inferInstance hcoeff hgrad
     _ = (f x)⁻¹ * laplacian (I := I) cov g f x -
         (f x ^ 2)⁻¹ *
           g.inner x (gradientFun (I := I) g f x)

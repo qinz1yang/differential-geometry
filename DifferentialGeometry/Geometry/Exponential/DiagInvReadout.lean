@@ -17,15 +17,14 @@ namespace Exponential
 namespace DiagInvBranch
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
-  [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -47,7 +46,6 @@ def readDom
   B.dom ∩ Prod.fst ⁻¹' (trivializationAt E (TangentSpace I) p).baseSet
 
 omit [ConnectedSpace M] in
-omit [InnerProductSpace ℝ E] in
 theorem readoutDomInf
     {g : SmoothRiemannianMetric I M}
     {hEnorm : ∀ (x : M) (w : TangentSpace I x),
@@ -75,8 +73,9 @@ theorem readoutDomInf
       exact hy.2
     have hreadAt : ContMDiffAt (I.prod I) 𝓘(ℝ, E) ∞
         (diagReadout B) y := by
-      simpa only [diagReadout] using
-        (((e.contMDiffAt_iff (e.mem_source.2 hbase)).mp hbranchAt).2)
+      have hreadAt' := ((e.contMDiffAt_iff (e.mem_source.2 hbase)).mp hbranchAt).2
+      refine hreadAt'.congr_of_eventuallyEq ?_
+      exact Filter.Eventually.of_forall fun _ => rfl
     exact hreadAt.contMDiffWithinAt
   refine ⟨hopen, hp, hsmooth, ?_⟩
   intro y hy
@@ -84,7 +83,7 @@ theorem readoutDomInf
 
 section ChartReadout
 
-variable {E' : Type*} [NormedAddCommGroup E'] [InnerProductSpace ℝ E']
+variable {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
   [FiniteDimensional ℝ E'] [NeZero (Module.finrank ℝ E')]
 variable {H' : Type*} [TopologicalSpace H']
   {I' : ModelWithCorners ℝ E' H'} [I'.Boundaryless]
@@ -151,7 +150,9 @@ theorem chartReadoutInf
     rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod] at hcoordsAt
     have hreadAt : ContMDiffAt (I'.prod I') 𝓘(ℝ, E') ∞
         (B.chartReadout c) y := by
-      simpa only [chartReadout] using contMDiffAt_snd.comp y hcoordsAt
+      have hreadAt' := contMDiffAt_snd.comp y hcoordsAt
+      refine hreadAt'.congr_of_eventuallyEq ?_
+      exact Filter.Eventually.of_forall fun _ => rfl
     exact hreadAt.contMDiffWithinAt
   refine ⟨hopen, hp, hsmooth, ?_⟩
   intro y hy

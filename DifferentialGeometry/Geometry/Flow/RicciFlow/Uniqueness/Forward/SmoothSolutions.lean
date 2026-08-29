@@ -133,15 +133,19 @@ theorem fuLapRm_real (g : Real → SmoothRiemannianMetric I M)
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M] [CompactSpace M] in
 private theorem fuInv_real (g : Real → SmoothRiemannianMetric I M)
     (t : Real) (x : M) :
-    MetricInverseInBasis_gen (I := I) (g t) x (coordBasisAt (I := I) x)
+    MetricInverseInBasisGen (I := I) (g t) x (coordBasisAt (I := I) x)
       (fun i j => coordInv (I := I) (solOfMetric (I := I) (D := refD) g) x t x i j) := by
   have hbasis :
       coordBasisAt (I := I) x =
-        coordinateFrameAt_toBasis (I := I) x := by
+        coordinateFrameAtToBasis (I := I) x := by
     ext i
     simp
-  simpa only [solOfMetric_metric, hbasis] using
-    coordInvReal (I := I) (solOfMetric (I := I) (D := refD) g) x t
+  change MetricInverseInBasisGen (I := I)
+    ((solOfMetric (I := I) (D := refD) g).family.metric t) x
+      (coordBasisAt (I := I) x)
+      (fun i j => coordInv (I := I) (solOfMetric (I := I) (D := refD) g) x t x i j)
+  rw [hbasis]
+  exact coordInvReal (I := I) (solOfMetric (I := I) (D := refD) g) x t
 
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -156,14 +160,22 @@ theorem fuB_low (gN g : Real → SmoothRiemannianMetric I M)
   let basis := coordBasisAt (I := I) x
   let gInv := fun i j =>
     coordInv (I := I) (solOfMetric (I := I) (D := refD) g) x t x i j
-  have hinv : MetricInverseInBasis_gen (I := I) (g t) x basis gInv := by
+  have hinv : MetricInverseInBasisGen (I := I) (g t) x basis gInv := by
     simpa only [basis, gInv] using fuInv_real (I := I) g t x
   have hRm : ∀ i j k l,
       component0S (I := I) basis (fuTf (I := I) g t x) ![i, j, k, l] =
         fuRm04 (I := I) g t x i j k l := by
     intro i j k l
-    simpa only [basis, component0S_apply, fuTf_apply] using
-      (fuRm04_real (I := I) g t x i j k l).symm
+    simp only [basis, component0S_apply, fuTf_apply]
+    have hvec :
+        (fun a => coordBasisAt (I := I) x (![i, j, k, l] a)) =
+          vec4 (I := I) (coordBasisAt (I := I) x i)
+            (coordBasisAt (I := I) x j) (coordBasisAt (I := I) x k)
+            (coordBasisAt (I := I) x l) := by
+      funext a
+      fin_cases a <;> rfl
+    rw [hvec]
+    exact (fuRm04_real (I := I) g t x i j k l).symm
   have hB (a b c d : CoordinateIdx (𝕜 := Real) E) :
       fuBRm (I := I) g t x a b c d =
         ∑ f, ∑ r, ∑ e, ∑ q,
@@ -196,6 +208,7 @@ theorem fuB_low (gN g : Real → SmoothRiemannianMetric I M)
     funext p
     fin_cases p <;> simp [vec4]
   rw [hslots] at hcomp
+  conv_lhs => rw [Tensor0SSpace.eval_eq]
   rw [hcomp, hB i j k l, hB i j l k, hB i k j l, hB i l j k]
 
 
@@ -210,7 +223,7 @@ theorem fuDrift_low (gN g : Real → SmoothRiemannianMetric I M)
   let basis := coordBasisAt (I := I) x
   let gInv := fun i j =>
     coordInv (I := I) (solOfMetric (I := I) (D := refD) g) x t x i j
-  have hinv : MetricInverseInBasis_gen (I := I) (g t) x basis gInv := by
+  have hinv : MetricInverseInBasisGen (I := I) (g t) x basis gInv := by
     simpa only [basis, gInv] using fuInv_real (I := I) g t x
   have hUp (i p : CoordinateIdx (𝕜 := Real) E) :
       fuRicUp (I := I) g t x i p =
@@ -222,8 +235,8 @@ theorem fuDrift_low (gN g : Real → SmoothRiemannianMetric I M)
       solOfMetric_metric, coordBasisAt_coe, basis, gInv]
   apply lowOfComp_ext (I := I)
   intro i j k l
-  change
-    ricciDrift04 (I := I) (g t) x
+  change Tensor0SSpace.eval
+    (ricciDrift04 (I := I) (g t) x)
         (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)) =
       riemann04RicciDriftInFrame (fuRicUp (I := I) g) (fuRm04 (I := I) g)
         t x i j k l
@@ -248,12 +261,12 @@ theorem fuSpeed_low (g : Real → SmoothRiemannianMetric I M)
   intro i j k l
   rw [fuLapRm_real (I := I) g t x i j k l]
   have hB := congrArg
-    (fun T => T (vec4 (I := I) (coordBasisAt (I := I) x i)
+    (fun T => Tensor0SSpace.eval T (vec4 (I := I) (coordBasisAt (I := I) x i)
       (coordBasisAt (I := I) x j) (coordBasisAt (I := I) x k)
       (coordBasisAt (I := I) x l)))
     (fuB_low (I := I) g g t x)
   have hD := congrArg
-    (fun T => T (vec4 (I := I) (coordBasisAt (I := I) x i)
+    (fun T => Tensor0SSpace.eval T (vec4 (I := I) (coordBasisAt (I := I) x i)
       (coordBasisAt (I := I) x j) (coordBasisAt (I := I) x k)
       (coordBasisAt (I := I) x l)))
     (fuDrift_low (I := I) g g t x)
@@ -261,6 +274,7 @@ theorem fuSpeed_low (g : Real → SmoothRiemannianMetric I M)
   rw [hB, hD]
   rw [lowOfComp_eval]
   simp only [frameVec4]
+  simp only [Tensor0SSpace.eval_eq]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] [CompactSpace M] in
@@ -278,10 +292,10 @@ private theorem fuB_diff_low (g₁ g₂ : Real → SmoothRiemannianMetric I M)
   apply lowOfComp_ext (I := I)
   intro i j k l
   change
-    (lowOfComp (I := I) (g₁ t) (coordBasisAt (I := I) x) _)
+    Tensor0SSpace.eval (lowOfComp (I := I) (g₁ t) (coordBasisAt (I := I) x) _)
         (vec4 (I := I) (coordBasisAt (I := I) x i) (coordBasisAt (I := I) x j)
           (coordBasisAt (I := I) x k) (coordBasisAt (I := I) x l)) -
-      (lowOfComp (I := I) (g₁ t) (coordBasisAt (I := I) x) _)
+      Tensor0SSpace.eval (lowOfComp (I := I) (g₁ t) (coordBasisAt (I := I) x) _)
         (vec4 (I := I) (coordBasisAt (I := I) x i) (coordBasisAt (I := I) x j)
           (coordBasisAt (I := I) x k) (coordBasisAt (I := I) x l)) = _
   rw [lowOfComp_eval, lowOfComp_eval]
@@ -301,10 +315,10 @@ private theorem fuDrift_diff_low (g₁ g₂ : Real → SmoothRiemannianMetric I 
   apply lowOfComp_ext (I := I)
   intro i j k l
   change
-    (lowOfComp (I := I) (g₁ t) (coordBasisAt (I := I) x) _)
+    Tensor0SSpace.eval (lowOfComp (I := I) (g₁ t) (coordBasisAt (I := I) x) _)
         (vec4 (I := I) (coordBasisAt (I := I) x i) (coordBasisAt (I := I) x j)
           (coordBasisAt (I := I) x k) (coordBasisAt (I := I) x l)) -
-      (lowOfComp (I := I) (g₁ t) (coordBasisAt (I := I) x) _)
+      Tensor0SSpace.eval (lowOfComp (I := I) (g₁ t) (coordBasisAt (I := I) x) _)
         (vec4 (I := I) (coordBasisAt (I := I) x i) (coordBasisAt (I := I) x j)
           (coordBasisAt (I := I) x k) (coordBasisAt (I := I) x l)) = _
   rw [lowOfComp_eval, lowOfComp_eval]
@@ -1998,19 +2012,19 @@ theorem fuAdotSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real
       (metricCov_smooth (I := I) (g₂ t)) y
   have hS : IsRmDiffField (I := I) (g₁ t) (g₂ t) (fuSfield (I := I) g₁ g₂ t) :=
     fun y => fuSfield_apply (I := I) g₁ g₂ t y
-  have hgInv₁ : MetricInverseInBasis_gen (I := I) (g₁ t) x (hframe.toBasisAt hx)
+  have hgInv₁ : MetricInverseInBasisGen (I := I) (g₁ t) x (hframe.toBasisAt hx)
       (fun i j => chartFrameInv (I := I) g₁ x t x i j) := by
     have hlocal := localFrameInv_real (I := I) (D := refD)
       (solOfMetric (I := I) (D := refD) g₁)
       (chartFrame I x) (chartFrame_isFrameTop I x)
-    simpa [MetricInverseInBasis_gen, InvMetricLocal, chartFrameInv, metricCompInFrame,
+    simpa [MetricInverseInBasisGen, InvMetricLocal, chartFrameInv, metricCompInFrame,
       frame, hframe] using hlocal t x hx
-  have hgInv₂ : MetricInverseInBasis_gen (I := I) (g₂ t) x (hframe.toBasisAt hx)
+  have hgInv₂ : MetricInverseInBasisGen (I := I) (g₂ t) x (hframe.toBasisAt hx)
       (fun i j => chartFrameInv (I := I) g₂ x t x i j) := by
     have hlocal := localFrameInv_real (I := I) (D := refD)
       (solOfMetric (I := I) (D := refD) g₂)
       (chartFrame I x) (chartFrame_isFrameTop I x)
-    simpa [MetricInverseInBasis_gen, InvMetricLocal, chartFrameInv, metricCompInFrame,
+    simpa [MetricInverseInBasisGen, InvMetricLocal, chartFrameInv, metricCompInFrame,
       frame, hframe] using hlocal t x hx
   have hNR₁ : ∀ d i j : Fin (Module.finrank Real E),
       chartNablaRic (I := I) g₁ x t x d i j =
@@ -2029,9 +2043,11 @@ theorem fuAdotSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real
       fin_cases s <;>
         simp [DifferentialGeometry.Geometry.Curvature.vec3]
     rw [component0S_apply, hslots, metricNabla0S_apply]
-    simpa [chartNablaRic, Ric₁, nablaRicComp, solOfMetric, SolutionOn.family,
-      SolutionOn.ricci, SolutionFamily.connection, SolutionFamily.ricci, metricRicci,
-      metricCov, frame, hframe] using hreal.symm
+    convert hreal.symm using 1 <;>
+      simp [chartNablaRic, Ric₁, nablaRicComp, solOfMetric, SolutionOn.family,
+        SolutionOn.ricci, SolutionFamily.connection, SolutionFamily.ricci, metricRicci,
+        metricCov]
+    rfl
   have hNR₂ : ∀ d i j : Fin (Module.finrank Real E),
       chartNablaRic (I := I) g₂ x t x d i j =
         component0S (I := I) (hframe.toBasisAt hx)
@@ -2049,9 +2065,11 @@ theorem fuAdotSlab (g₁ g₂ : Real → SmoothRiemannianMetric I M) {a b : Real
       fin_cases s <;>
         simp [DifferentialGeometry.Geometry.Curvature.vec3]
     rw [component0S_apply, hslots, metricNabla0S_apply]
-    simpa [chartNablaRic, Ric₂, nablaRicComp, solOfMetric, SolutionOn.family,
-      SolutionOn.ricci, SolutionFamily.connection, SolutionFamily.ricci, metricRicci,
-      metricCov, frame, hframe] using hreal.symm
+    convert hreal.symm using 1 <;>
+      simp [chartNablaRic, Ric₂, nablaRicComp, solOfMetric, SolutionOn.family,
+        SolutionOn.ricci, SolutionFamily.connection, SolutionFamily.ricci, metricRicci,
+        metricCov]
+    rfl
   have hΓcoeff := fuGamma (I := I) g₁ g₂ hab h1smooth h2smooth h1pde h2pde
     t ⟨ht.1, lt_trans ht.2 hc.2⟩ x
   have hΓ : ∀ i j k : Fin (Module.finrank Real E),

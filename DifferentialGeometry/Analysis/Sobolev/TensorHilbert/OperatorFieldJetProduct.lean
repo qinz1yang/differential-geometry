@@ -72,6 +72,7 @@ theorem exists_covariantJetNormSq_two_operatorFieldComposition_le
         covariantJetNormSq (I := I) (M := M) g 2 W := by
       rw [mul_pow, mul_pow, hsΦ, hsW]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem iteratedCovGrad_covGrad_norm_sq
     (g : SmoothRiemannianMetric I M) (r s i : ℕ)
@@ -88,6 +89,7 @@ private theorem iteratedCovGrad_covGrad_norm_sq
   exact riemannianFiberNormSq_iteratedCovGrad_covGrad_comm_rs
     (I := I) (M := M) g r s i S x
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem covariantJetNormSq_two_covGrad_le_three
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
@@ -104,6 +106,7 @@ theorem covariantJetNormSq_two_covGrad_le_three
   rw [h0, h1, h2]
   nlinarith only [sq_nonneg ‖S‖]
 
+omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem covariantJetNormSq_three_le_two_add_covGrad
     (g : SmoothRiemannianMetric I M) {r s : ℕ}

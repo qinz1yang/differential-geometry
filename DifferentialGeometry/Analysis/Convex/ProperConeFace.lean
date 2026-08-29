@@ -8,13 +8,16 @@ open Set
 namespace DifferentialGeometry.Analysis.Convex
 
 variable {E F : Type*}
-  [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [NormedAddCommGroup F] [NormedSpace ℝ F]
+  [TopologicalSpace E] [AddCommGroup E] [ContinuousAdd E] [Module ℝ E]
+  [ContinuousConstSMul ℝ E]
+  [TopologicalSpace F] [AddCommGroup F] [ContinuousAdd F] [Module ℝ F]
+  [ContinuousConstSMul ℝ F]
 
 def ProperCone.IsDualElement
     (C : ProperCone ℝ E) (phi : StrongDual ℝ E) : Prop :=
   ∀ x ∈ C, 0 ≤ phi x
 
+omit [ContinuousAdd E] [ContinuousConstSMul ℝ E] in
 @[simp]
 theorem ProperCone.isDualElement_iff
     {C : ProperCone ℝ E} {phi : StrongDual ℝ E} :
@@ -25,24 +28,28 @@ noncomputable def ProperCone.dualZeroFace
     (C : ProperCone ℝ E) (phi : StrongDual ℝ E) : ProperCone ℝ E :=
   C ⊓ (⊥ : ProperCone ℝ ℝ).comap phi
 
+omit [ContinuousAdd E] [ContinuousConstSMul ℝ E] in
 @[simp]
 theorem ProperCone.mem_dualZeroFace
     {C : ProperCone ℝ E} {phi : StrongDual ℝ E} {x : E} :
     x ∈ ProperCone.dualZeroFace C phi ↔ x ∈ C ∧ phi x = 0 := by
   simp [ProperCone.dualZeroFace]
 
+omit [ContinuousAdd E] [ContinuousConstSMul ℝ E] in
 @[simp]
 theorem ProperCone.dualZeroFace_zero (C : ProperCone ℝ E) :
     ProperCone.dualZeroFace C 0 = C := by
   ext x
   simp
 
+omit [ContinuousAdd E] [ContinuousConstSMul ℝ E] in
 theorem ProperCone.dualZeroFace_le
     (C : ProperCone ℝ E) (phi : StrongDual ℝ E) :
     ProperCone.dualZeroFace C phi ≤ C := by
   intro x hx
   exact (ProperCone.mem_dualZeroFace.mp hx).1
 
+omit [ContinuousAdd E] [ContinuousConstSMul ℝ E] in
 theorem ProperCone.dualZeroFace_isExposed
     (C : ProperCone ℝ E) {phi : StrongDual ℝ E}
     (hphi : ProperCone.IsDualElement C phi) :
@@ -54,7 +61,7 @@ theorem ProperCone.dualZeroFace_isExposed
     obtain ⟨hxC, hphix⟩ := ProperCone.mem_dualZeroFace.mp hx
     refine ⟨hxC, fun z hz ↦ ?_⟩
     have hznonneg : 0 ≤ phi z := hphi z hz
-    simp only [ContinuousLinearMap.neg_apply]
+    simp only [neg_apply]
     rw [hphix]
     simpa using neg_nonpos.mpr hznonneg
   · rintro ⟨hxC, hxmax⟩
@@ -65,12 +72,14 @@ theorem ProperCone.dualZeroFace_isExposed
     exact ProperCone.mem_dualZeroFace.mpr
       ⟨hxC, le_antisymm hxnonpos hxnonneg⟩
 
+omit [ContinuousAdd E] [ContinuousConstSMul ℝ E] in
 theorem ProperCone.dualZeroFace_isExtreme
     (C : ProperCone ℝ E) {phi : StrongDual ℝ E}
     (hphi : ProperCone.IsDualElement C phi) :
     IsExtreme ℝ (C : Set E) (ProperCone.dualZeroFace C phi : Set E) :=
   (ProperCone.dualZeroFace_isExposed C hphi).isExtreme
 
+omit [ContinuousAdd E] [ContinuousConstSMul ℝ E] in
 theorem ProperCone.IsDualElement.comp_symm
     {C : ProperCone ℝ E} {phi : StrongDual ℝ E}
     (hphi : ProperCone.IsDualElement C phi) (e : E ≃L[ℝ] F) :
@@ -81,6 +90,7 @@ theorem ProperCone.IsDualElement.comp_symm
     ((DifferentialGeometry.Analysis.InnerProductSpace.ProperCone.mem_map_continuousLinearEquiv_iff
       C e y).mp hy)
 
+omit [ContinuousAdd E] [ContinuousConstSMul ℝ E] in
 @[simp]
 theorem ProperCone.dualZeroFace_map_continuousLinearEquiv
     (C : ProperCone ℝ E) (e : E ≃L[ℝ] F) (phi : StrongDual ℝ E) :

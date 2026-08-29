@@ -161,8 +161,10 @@ private theorem orthoBasisAt (g : SmoothRiemannianMetric I M) (x : M) :
       exact hzero
     · intro j _ hjk
       rw [if_neg (fun h => hjk h.symm), mul_zero]
-  have hcard : Fintype.card (Fin (Module.finrank Real E)) = Module.finrank Real E :=
-    Fintype.card_fin _
+  have hcard : Fintype.card (Fin (Module.finrank Real E)) =
+      Module.finrank Real (TangentSpace I x) := by
+    change Fintype.card (Fin (Module.finrank Real E)) = Module.finrank Real E
+    exact Fintype.card_fin _
   refine ⟨basisOfLinearIndependentOfCardEqFinrank hli hcard, ?_, ?_⟩
   · intro i
     change (basisOfLinearIndependentOfCardEqFinrank hli hcard :
@@ -217,7 +219,7 @@ theorem covDivLift_unit (g : SmoothRiemannianMetric I M)
         (show Tensor0SSpace 0 I x →L[Real] Tensor0SSpace s I x from
           covDivergenceBilinear (I := I) (M := M) g s (ccLift0S (I := I) g V) x
             (smoothOrthoFrame (I := I) g x i x) (smoothOrthoFrame (I := I) g x i x)) := rfl
-  rw [hraw, ContinuousLinearMap.sum_apply]
+  rw [hraw, sum_apply]
   refine DFunLike.ext _ _ fun slots => ?_
   have hterm : ∀ i : Fin (Module.finrank Real E),
       (show Tensor0SSpace 0 I x →L[Real] Tensor0SSpace s I x from
@@ -234,7 +236,7 @@ theorem covDivLift_unit (g : SmoothRiemannianMetric I M)
     rw [codiffPsi_apply (I := I) (M := M) g s (ccLift0S (I := I) g V) x hsmooth hsmooth]
     have hcontract :
         (show Tensor0SSpace 0 I x →L[Real] Tensor0SSpace s I x from
-          contract_covariant 0 s x (smoothOrthoFrame (I := I) g x i x)
+          contractCovariant 0 s x (smoothOrthoFrame (I := I) g x i x)
             (TensorRSNabla.tensorRSCovariantDerivative I M 0 (s + 1) (LeviCivita (I := I) g)
               (fun z : M => (ccLift0S (I := I) g V).toSection z) x
               (smoothOrthoFrame (I := I) g x i x)))
@@ -283,19 +285,25 @@ theorem covGradLift_eq (g : SmoothRiemannianMetric I M)
   refine smoothCcTensor_ext_of_unitModel (I := I) (M := M) g fun x => ?_
   rw [ccLift0S_unitModel]
   refine ContinuousMultilinearMap.ext fun v => ?_
-  have hcons : v = Fin.cons (v 0) (Matrix.vecTail v) := by
+  let vt : Fin (s + 1) → TangentSpace I x :=
+    fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v i)
+  have hcons : vt = Fin.cons (vt 0) (Matrix.vecTail vt) := by
     funext i
     refine Fin.cases ?_ ?_ i
     · simp
-    · intro k; simp [Matrix.vecTail]
-  change Tensor0SSpace.toModel
+    · intro k
+      simp [Matrix.vecTail]
+  change Tensor0SSpace.eval
       ((show Tensor0SSpace 0 I x →L[Real] Tensor0SSpace (s + 1) I x from
         (covGrad (I := I) (M := M) g 0 s (ccLift0S (I := I) g T)).toSection x)
-        (unitZeroSec (I := I) (M := M) x)) v =
-    Tensor0SSpace.toModel (metricNabla0S (I := I) g T x) v
-  rw [covGrad_apply_unit_eval_genVal (I := I) (M := M) g s (ccLift0S (I := I) g T) x v]
-  rw [tensorCovDerivAt_def (I := I) (M := M) g 0 s (ccLift0S (I := I) g T) x (v 0)]
-  have hval := covDerivLift_unit (I := I) g T x (v 0) (Matrix.vecTail v)
+        (unitZeroSec (I := I) (M := M) x)) vt =
+    Tensor0SSpace.eval (metricNabla0S (I := I) g T x) vt
+  rw [covGrad_apply_unit_eval_genVal (I := I) (M := M) g s
+    (ccLift0S (I := I) g T) x vt]
+  rw [tensorCovDerivAt_def (I := I) (M := M) g 0 s (ccLift0S (I := I) g T) x
+    (tangentSpaceModelContinuousLinearEquiv (I := I) x (vt 0)),
+    ContinuousLinearEquiv.symm_apply_apply]
+  have hval := covDerivLift_unit (I := I) g T x (vt 0) (Matrix.vecTail vt)
   refine hval.trans ?_
   conv_rhs => rw [hcons]
   rfl

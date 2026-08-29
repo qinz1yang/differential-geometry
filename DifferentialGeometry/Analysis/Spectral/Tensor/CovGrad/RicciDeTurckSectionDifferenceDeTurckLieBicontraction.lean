@@ -21,7 +21,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators Matrix
@@ -139,7 +138,7 @@ theorem deTurckLieCovariantDerivativeA_tensorialAt_Y (g₁ g_bg : SmoothRiemanni
     have hfYG : (fun b => PDE.DeTurck.connectionDifference (I := I) g₁ g_bg b ((f • Y) b) (Z b)) = f • G := by
       funext b
       change PDE.DeTurck.connectionDifference (I := I) g₁ g_bg b (f b • Y b) (Z b) = f b • G b
-      rw [ContinuousLinearMap.map_smul, ContinuousLinearMap.smul_apply]
+      rw [ContinuousLinearMap.map_smul, smul_apply]
     change cov.toFun (fun b => PDE.DeTurck.connectionDifference (I := I) g₁ g_bg b ((f • Y) b) (Z b)) x (X x)
         - PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (cov.toFun (f • Y) x (X x)) (Z x)
         - PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x ((f • Y) x) (cov.toFun Z x (X x)) =
@@ -151,7 +150,7 @@ theorem deTurckLieCovariantDerivativeA_tensorialAt_Y (g₁ g_bg : SmoothRiemanni
     rw [hcovOn.leibniz hY hf (Set.mem_univ x)]
     have hfY_x : (f • Y) x = f x • Y x := rfl
     rw [hfY_x]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.map_add,
       ContinuousLinearMap.map_smul, hG_def]
     rw [smul_sub, smul_sub]
@@ -175,7 +174,7 @@ theorem deTurckLieCovariantDerivativeA_tensorialAt_Y (g₁ g_bg : SmoothRiemanni
       change PDE.DeTurck.connectionDifference (I := I) g₁ g_bg b (Y b + Y' b) (Z b) =
         PDE.DeTurck.connectionDifference (I := I) g₁ g_bg b (Y b) (Z b) +
           PDE.DeTurck.connectionDifference (I := I) g₁ g_bg b (Y' b) (Z b)
-      rw [ContinuousLinearMap.map_add, ContinuousLinearMap.add_apply]
+      rw [ContinuousLinearMap.map_add, add_apply]
     change cov.toFun (fun b => PDE.DeTurck.connectionDifference (I := I) g₁ g_bg b ((Y + Y') b) (Z b)) x (X x)
         - PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x (cov.toFun (Y + Y') x (X x)) (Z x)
         - PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x ((Y + Y') x) (cov.toFun Z x (X x)) =
@@ -189,7 +188,7 @@ theorem deTurckLieCovariantDerivativeA_tensorialAt_Y (g₁ g_bg : SmoothRiemanni
     rw [hcovOn.add hY hY' (Set.mem_univ x)]
     have hYY'_x : (Y + Y') x = Y x + Y' x := rfl
     rw [hYY'_x]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.map_add]
+    simp only [add_apply, ContinuousLinearMap.map_add]
     abel
 
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -225,7 +224,7 @@ theorem deTurckLieCovariantDerivativeA_tensorialAt_Z (g₁ g_bg : SmoothRiemanni
     rw [hcovOn.leibniz hZ hf (Set.mem_univ x)]
     have hfZ_x : (f • Z) x = f x • Z x := rfl
     rw [hfZ_x]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
+    simp only [add_apply, smul_apply,
       ContinuousLinearMap.smulRight_apply, ContinuousLinearMap.map_add,
       ContinuousLinearMap.map_smul, hG_def]
     rw [smul_sub, smul_sub]
@@ -263,7 +262,7 @@ theorem deTurckLieCovariantDerivativeA_tensorialAt_Z (g₁ g_bg : SmoothRiemanni
     rw [hcovOn.add hZ hZ' (Set.mem_univ x)]
     have hZZ'_x : (Z + Z') x = Z x + Z' x := rfl
     rw [hZZ'_x]
-    simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.map_add]
+    simp only [add_apply, ContinuousLinearMap.map_add]
     abel
 
 noncomputable def connectionDifferenceCovDerivOp (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
@@ -344,7 +343,7 @@ theorem deTurckLieCovariantDerivativeA_X_add (g₁ g_bg : SmoothRiemannianMetric
   have h : (X + X') x = X x + X' x := rfl
   unfold deTurckConnectionDifferenceCovDeriv
   rw [h]
-  simp only [map_add, ContinuousLinearMap.add_apply]
+  simp only [map_add, add_apply]
   abel
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -356,7 +355,7 @@ theorem deTurckLieCovariantDerivativeA_X_smul (g₁ g_bg : SmoothRiemannianMetri
       c • deTurckConnectionDifferenceCovDeriv (I := I) g₁ g_bg X Y Z x := by
   unfold deTurckConnectionDifferenceCovDeriv
   rw [hcX]
-  simp only [map_smul, ContinuousLinearMap.smul_apply]
+  simp only [map_smul, smul_apply]
   rw [smul_sub, smul_sub]
 
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -422,7 +421,7 @@ omit [SigmaCompactSpace M] in
     connectionDifferenceCovDerivKernelBilinSym (I := I) g₁ g_bg x p q v0 v1 =
       g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v0 p q) v1 +
         g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v1 p q) v0 := by
-  rw [connectionDifferenceCovDerivKernelBilinSym, ContinuousLinearMap.add_apply, ContinuousLinearMap.add_apply,
+  rw [connectionDifferenceCovDerivKernelBilinSym, add_apply, add_apply,
     ContinuousLinearMap.flip_apply, deTurckLieConnectionDifferenceDerivativeKernelBilin_apply, deTurckLieConnectionDifferenceDerivativeKernelBilin_apply]
 
 def deTurckLieConnectionDifferenceDerivativeSummandFib (g₁ g_bg : SmoothRiemannianMetric I M) (x : M) (p q : TangentSpace I x) :
@@ -434,9 +433,9 @@ def deTurckLieConnectionDifferenceDerivativeSummandFib (g₁ g_bg : SmoothRieman
           Tensor0SSpace.ofModel (I := I) (x := x)
             (bilinFormToModel E (connectionDifferenceCovDerivKernelBilinSym (I := I) g₁ g_bg x p q))
       map_add' := fun D D' => by
-        rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply, add_smul]
+        rw [Tensor0SSpace.toModel_add, add_apply, add_smul]
       map_smul' := fun c D => by
-        rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul,
+        rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul,
           RingHom.id_apply, mul_smul] }
 
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -444,12 +443,24 @@ omit [NeZero (Module.finrank ℝ E)] in
 @[simp] theorem deTurckLieConnectionDifferenceDerivativeSummandFib_toModel (g₁ g_bg : SmoothRiemannianMetric I M) (x : M)
     (p q : TangentSpace I x) (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel (deTurckLieConnectionDifferenceDerivativeSummandFib (I := I) g₁ g_bg x p q D) v =
-      (Tensor0SSpace.toModel D ![(p : E), (q : E)]) *
-        (g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (v 0) p q) (v 1) +
-          g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (v 1) p q) (v 0)) := by
+      (Tensor0SSpace.toModel D
+          ![tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+            tangentSpaceModelContinuousLinearEquiv (I := I) x q]) *
+        (g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)) p q)
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) +
+          g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) p q)
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) := by
   rw [deTurckLieConnectionDifferenceDerivativeSummandFib, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
-    Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, Tensor0SSpace.toModel_ofModel,
-    bilinFormToModel_apply, smul_eq_mul]
+    Tensor0SSpace.toModel_smul, smul_apply, Tensor0SSpace.toModel_ofModel,
+    smul_eq_mul]
+  change Tensor0SSpace.toModel D
+        ![tangentSpaceModelContinuousLinearEquiv (I := I) x p,
+          tangentSpaceModelContinuousLinearEquiv (I := I) x q] *
+      connectionDifferenceCovDerivKernelBilinSym (I := I) g₁ g_bg x p q
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) = _
   rw [connectionDifferenceCovDerivKernelBilinSym]
   rfl
 
@@ -467,19 +478,25 @@ theorem deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel (g�
     (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel (connectionDifferenceCovDerivBiContrFibFixedFrame (I := I) g₁ g_bg B x D) v =
       (-1 : ℝ) * ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        (g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (v 0) (B a x) (B b x)) (v 1) +
-          g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x (v 1) (B a x) (B b x)) (v 0)) *
-          Tensor0SSpace.toModel D ![(B a x : E), (B b x : E)] := by
+        (g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)) (B a x) (B b x))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) +
+          g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)) (B a x) (B b x))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) *
+          Tensor0SSpace.toModel D
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) x (B a x),
+              tangentSpaceModelContinuousLinearEquiv (I := I) x (B b x)] := by
   classical
-  rw [connectionDifferenceCovDerivBiContrFibFixedFrame, ContinuousLinearMap.smul_apply,
+  rw [connectionDifferenceCovDerivBiContrFibFixedFrame, smul_apply,
     Tensor0SSpace.toModel_smul,
-    ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+    smul_apply, smul_eq_mul]
   apply congrArg (fun z : ℝ => (-1 : ℝ) * z)
-  rw [ContinuousLinearMap.sum_apply, ← Tensor0SSpace.toModelL_apply, map_sum,
-    ContinuousMultilinearMap.sum_apply]
+  rw [sum_apply, ← Tensor0SSpace.toModelL_apply, map_sum,
+    sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [ContinuousLinearMap.sum_apply, Tensor0SSpace.toModelL_apply, ← Tensor0SSpace.toModelL_apply,
-    map_sum, ContinuousMultilinearMap.sum_apply]
+  rw [sum_apply, Tensor0SSpace.toModelL_apply, ← Tensor0SSpace.toModelL_apply,
+    map_sum, sum_apply]
   refine Finset.sum_congr rfl (fun b _ => ?_)
   rw [Tensor0SSpace.toModelL_apply, deTurckLieConnectionDifferenceDerivativeSummandFib_toModel]
   ring
@@ -672,10 +689,10 @@ theorem deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_apply_secti
     rw [hcoeOuter, Finset.sum_apply]
     refine Finset.sum_congr rfl (fun a _ => ?_)
     rw [hcoeInner a, Finset.sum_apply]
-  rw [hsum, ContinuousLinearMap.smul_apply, ContinuousLinearMap.sum_apply]
+  rw [hsum, smul_apply, sum_apply]
   congr 1
   refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [ContinuousLinearMap.sum_apply]
+  rw [sum_apply]
   rfl
 
 omit [CompactSpace M] [I.Boundaryless] in
@@ -707,17 +724,17 @@ def frameConnectionDifferenceCovDerivKernel (g₁ g_bg : SmoothRiemannianMetric 
         ContinuousLinearMap.comp ((g₁.inner x).flip v0) (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v1 p)
       map_add' := fun p p' => by
         ext q
-        simp only [ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply,
+        simp only [add_apply, ContinuousLinearMap.comp_apply,
           (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v0).map_add p p',
-          (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v1).map_add p p', ContinuousLinearMap.add_apply,
+          (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v1).map_add p p', add_apply,
           map_add]
         ring
       map_smul' := fun c p => by
         ext q
-        simp only [ContinuousLinearMap.smul_apply, ContinuousLinearMap.comp_apply,
+        simp only [smul_apply, ContinuousLinearMap.comp_apply,
           RingHom.id_apply, (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v0).map_smul c p,
           (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v1).map_smul c p, map_smul,
-          ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply, smul_eq_mul]
+          add_apply, smul_apply, smul_eq_mul]
         ring }
 
 omit [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -729,63 +746,106 @@ theorem frameConnectionDifferenceCovariantDerivativeKernel_apply (g₁ g_bg : Sm
         g₁.inner x (connectionDifferenceCovDerivOp (I := I) g₁ g_bg x v1 p q) v0 := by
   rw [frameConnectionDifferenceCovDerivKernel, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
     AddHom.coe_mk,
-    ContinuousLinearMap.add_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
+    add_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.flip_apply, ContinuousLinearMap.flip_apply]
 
 def connectionDifferenceCovDerivBiContrFib (g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x :=
   connectionDifferenceCovDerivBiContrFibFixedFrame (I := I) g₁ g_bg (smoothOrthoFrame (I := I) g₁ x) x
 
+section
+
+private local instance frameTangentSpaceNormedAddCommGroup (x : M) :
+    NormedAddCommGroup (TangentSpace I x) := by
+  change NormedAddCommGroup E
+  infer_instance
+
+private local instance frameTangentSpaceNormedSpace (x : M) :
+    NormedSpace ℝ (TangentSpace I x) := by
+  change NormedSpace ℝ E
+  infer_instance
+
+private def frameBilinFormToModel (x : M) :
+    (TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) ≃ₗ[ℝ]
+      ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I x) ℝ :=
+  bilinFormToModel (TangentSpace I x)
+
+omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M]
+    [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
+    [T2Space M] [SigmaCompactSpace M] in
+private theorem frameBilinFormToModel_symm_apply (x : M)
+    (T : ContinuousMultilinearMap ℝ (fun _ : Fin 2 => TangentSpace I x) ℝ)
+    (v w : TangentSpace I x) :
+    (frameBilinFormToModel (I := I) x).symm T v w = T ![v, w] := by
+  exact bilinFormToModel_symm_apply (TangentSpace I x) T v w
+
+end
+
 omit [CompactSpace M] [I.Boundaryless] in
-omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-private theorem connectionDifferenceCovDerivBiContrFibFixedFrame_eq_of_orthonormal
-    (g₁ g_bg : SmoothRiemannianMetric I M) (y : M)
-    (B C : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
-    (hB : ∀ i j, g₁.inner y (B i y) (B j y) = if i = j then (1 : ℝ) else 0)
-    (hC : ∀ i j, g₁.inner y (C i y) (C j y) = if i = j then (1 : ℝ) else 0) :
-    connectionDifferenceCovDerivBiContrFibFixedFrame (I := I) g₁ g_bg B y =
-      connectionDifferenceCovDerivBiContrFibFixedFrame (I := I) g₁ g_bg C y := by
+private theorem deTurckLieConnectionDifferenceDerivativeBiContrFib_eq_fixedFrame_on_nbhd_aux
+    (g₁ g_bg : SmoothRiemannianMetric I M) (x₀ : M)
+    {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
+    connectionDifferenceCovDerivBiContrFib (I := I) g₁ g_bg y =
+      connectionDifferenceCovDerivBiContrFibFixedFrame (I := I) g₁ g_bg (smoothOrthoFrame (I := I) g₁ x₀)
+        y := by
   classical
   apply ContinuousLinearMap.ext
   intro D
   apply Tensor0SSpace.toModel_injective
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel, deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel]
+  let DModel := Tensor0SSpace.toModel D
+  rw [connectionDifferenceCovDerivBiContrFib,
+    deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel,
+    deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel]
   apply congrArg (fun z : ℝ => (-1 : ℝ) * z)
   have hrewrite : ∀ (Bf : Fin (Module.finrank ℝ E) → TangentSpace I y),
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        (g₁.inner y (connectionDifferenceCovDerivOp (I := I) g₁ g_bg y (v 0) (Bf a) (Bf b)) (v 1) +
-          g₁.inner y (connectionDifferenceCovDerivOp (I := I) g₁ g_bg y (v 1) (Bf a) (Bf b)) (v 0)) *
-          Tensor0SSpace.toModel D ![(Bf a : E), (Bf b : E)] =
+        (g₁.inner y (connectionDifferenceCovDerivOp (I := I) g₁ g_bg y
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v 0)) (Bf a) (Bf b))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v 1)) +
+          g₁.inner y (connectionDifferenceCovDerivOp (I := I) g₁ g_bg y
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v 1)) (Bf a) (Bf b))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v 0))) *
+          DModel
+            ![tangentSpaceModelContinuousLinearEquiv (I := I) y (Bf a),
+              tangentSpaceModelContinuousLinearEquiv (I := I) y (Bf b)] =
       ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
-        frameConnectionDifferenceCovDerivKernel (I := I) g₁ g_bg y (v 0) (v 1) (Bf a) (Bf b) *
-          (bilinFormToModel (TangentSpace I y)).symm (Tensor0SSpace.toModel D) (Bf a) (Bf b) := by
+        frameConnectionDifferenceCovDerivKernel (I := I) g₁ g_bg y
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v 0))
+            ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v 1)) (Bf a) (Bf b) *
+          (frameBilinFormToModel (I := I) y).symm DModel (Bf a) (Bf b) := by
     intro Bf
     refine Finset.sum_congr rfl (fun a _ => ?_)
     refine Finset.sum_congr rfl (fun b _ => ?_)
-    rw [frameConnectionDifferenceCovariantDerivativeKernel_apply (I := I) g₁ g_bg y (v 0) (v 1) (Bf a) (Bf b),
-      bilinFormToModel_symm_apply (TangentSpace I y) (Tensor0SSpace.toModel D) (Bf a) (Bf b)]
+    rw [frameConnectionDifferenceCovariantDerivativeKernel_apply (I := I) g₁ g_bg y
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v 0))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v 1)) (Bf a) (Bf b),
+      frameBilinFormToModel_symm_apply (I := I) y DModel (Bf a) (Bf b)]
     rfl
-  rw [hrewrite (fun a => B a y), hrewrite (fun a => C a y)]
+  rw [hrewrite (fun a => smoothOrthoFrame (I := I) g₁ y a y),
+    hrewrite (fun a => smoothOrthoFrame (I := I) g₁ x₀ a y)]
   exact double_frame_bilin_trace_indep (I := I) g₁ y
-    (frameConnectionDifferenceCovDerivKernel (I := I) g₁ g_bg y (v 0) (v 1))
-    ((bilinFormToModel (TangentSpace I y)).symm (Tensor0SSpace.toModel D))
-    (fun a => B a y) (fun a => C a y) hB hC
+    (frameConnectionDifferenceCovDerivKernel (I := I) g₁ g_bg y
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v 0))
+      ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (v 1)))
+    ((frameBilinFormToModel (I := I) y).symm DModel)
+    (fun a => smoothOrthoFrame (I := I) g₁ y a y)
+    (fun a => smoothOrthoFrame (I := I) g₁ x₀ a y)
+    (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g₁ y i j)
+    (fun i j => smoothOrthoFrame_orthonormal (I := I) g₁ x₀ hy i j)
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
-theorem deTurckLieConnectionDifferenceDerivativeBiContrFib_eq_fixedFrame_on_nbhd (g₁ g_bg : SmoothRiemannianMetric I M) (x₀ : M)
+theorem deTurckLieConnectionDifferenceDerivativeBiContrFib_eq_fixedFrame_on_nbhd
+    (g₁ g_bg : SmoothRiemannianMetric I M) (x₀ : M)
     {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
     connectionDifferenceCovDerivBiContrFib (I := I) g₁ g_bg y =
-      connectionDifferenceCovDerivBiContrFibFixedFrame (I := I) g₁ g_bg (smoothOrthoFrame (I := I) g₁ x₀)
-        y := by
-  rw [connectionDifferenceCovDerivBiContrFib]
-  exact connectionDifferenceCovDerivBiContrFibFixedFrame_eq_of_orthonormal (I := I) g₁ g_bg y
-    (smoothOrthoFrame (I := I) g₁ y) (smoothOrthoFrame (I := I) g₁ x₀)
-    (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g₁ y i j)
-    (fun i j => smoothOrthoFrame_orthonormal (I := I) g₁ x₀ hy i j)
+      connectionDifferenceCovDerivBiContrFibFixedFrame (I := I) g₁ g_bg
+        (smoothOrthoFrame (I := I) g₁ x₀) y :=
+  deTurckLieConnectionDifferenceDerivativeBiContrFib_eq_fixedFrame_on_nbhd_aux
+    (I := I) g₁ g_bg x₀ hy
 
 omit [CompactSpace M] [I.Boundaryless] in
 omit [SigmaCompactSpace M] in
@@ -860,11 +920,15 @@ theorem deTurckLieCovariantDerivativeInsertionFib_toModel (g₁ g_bg : SmoothRie
     (D : Tensor0SSpace 2 I x) (v : Fin 2 → E) :
     Tensor0SSpace.toModel (deTurckLieCovariantDerivativeInsertionFib (I := I) g₁ g_bg x D) v =
       Tensor0SSpace.toModel D
-          (Function.update v 0 (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x (v 0))) +
+          (Function.update v 0
+            (tangentLinearMapToModel
+              (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) (v 0))) +
         Tensor0SSpace.toModel D
-          (Function.update v 1 (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x (v 1))) := by
-  rw [deTurckLieCovariantDerivativeInsertionFib, ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add,
-    ContinuousMultilinearMap.add_apply,
+          (Function.update v 1
+            (tangentLinearMapToModel
+              (deTurckVectorFieldCovariantDerivativeEndomorphism (I := I) g₁ g_bg x) (v 1))) := by
+  rw [deTurckLieCovariantDerivativeInsertionFib, add_apply, Tensor0SSpace.toModel_add,
+    add_apply,
     slotInsertEndoFib_apply_eval, slotInsertEndoFib_apply_eval]
 
 omit [I.Boundaryless] [SigmaCompactSpace M] in
@@ -991,11 +1055,14 @@ theorem exists_ricciArmOrder0DeTurckLieCoeff (g₀ g₁ g_bg : SmoothRiemannianM
   set D : Tensor0SSpace 2 I x :=
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x)
       (unitTensor (I := I) (M := M) x) with hD_def
-  rw [deTurckLieFib, ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add,
-    ContinuousMultilinearMap.add_apply]
+  let vModel : Fin 2 → E := fun i => v i
+  rw [deTurckLieFib, add_apply, Tensor0SSpace.toModel_add]
+  change Tensor0SSpace.toModel
+      (connectionDifferenceCovDerivBiContrFib (I := I) g₁ g_bg x D) vModel +
+    Tensor0SSpace.toModel
+      (deTurckLieCovariantDerivativeInsertionFib (I := I) g₁ g_bg x D) vModel = _
   congr 1
-  · change Tensor0SSpace.toModel (connectionDifferenceCovDerivBiContrFib (I := I) g₁ g_bg x D) v = _
-    rw [connectionDifferenceCovDerivBiContrFib, deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel, neg_one_mul]
+  · rw [connectionDifferenceCovDerivBiContrFib, deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel, neg_one_mul]
     rw [show (- ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           unitModel (I := I) (M := M) g₀ 2 W x
               (fun j => if j = 0 then smoothOrthoFrame (I := I) g₁ x a x
@@ -1034,19 +1101,28 @@ theorem exists_ricciArmOrder0DeTurckLieCoeff (g₀ g₁ g_bg : SmoothRiemannianM
     rw [unitModel]
     congr 1
     funext j
-    fin_cases j <;> simp
-  · change Tensor0SSpace.toModel (deTurckLieCovariantDerivativeInsertionFib (I := I) g₁ g_bg x D) v = _
-    rw [deTurckLieCovariantDerivativeInsertionFib_toModel]
-    rw [deTurckVectorFieldCovariantDerivativeEndomorphism_apply, deTurckVectorFieldCovariantDerivativeEndomorphism_apply]
+    fin_cases j <;> simp <;> rfl
+  · rw [deTurckLieCovariantDerivativeInsertionFib_toModel]
+    rw [tangentLinearMapToModel_apply, tangentLinearMapToModel_apply,
+      tangentSpaceModelContinuousLinearEquiv_symm_apply,
+      tangentSpaceModelContinuousLinearEquiv_symm_apply,
+      deTurckVectorFieldCovariantDerivativeEndomorphism_apply,
+      deTurckVectorFieldCovariantDerivativeEndomorphism_apply,
+      tangentSpaceModelContinuousLinearEquiv_apply,
+      tangentSpaceModelContinuousLinearEquiv_apply]
     congr 1
     · rw [unitModel]
       congr 1
       funext j
-      fin_cases j <;> simp
+      fin_cases j
+      · simp; rfl
+      · simp; rfl
     · rw [unitModel]
       congr 1
       funext j
-      fin_cases j <;> simp
+      fin_cases j
+      · simp; rfl
+      · simp; rfl
 
 noncomputable def ricciArmOrder0DeTurckLieCoeff (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     SmoothCcTensor g₀ 2 2 :=
@@ -1113,11 +1189,14 @@ theorem ricciArmOrder0DeTurckLieCoeff_operatorFieldApplication_eq (g₀ g₁ g_b
   set D : Tensor0SSpace 2 I x :=
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from W.toSection x)
       (unitTensor (I := I) (M := M) x) with hD_def
-  rw [deTurckLieFib, ContinuousLinearMap.add_apply, Tensor0SSpace.toModel_add,
-    ContinuousMultilinearMap.add_apply]
+  let vModel : Fin 2 → E := fun i => v i
+  rw [deTurckLieFib, add_apply, Tensor0SSpace.toModel_add]
+  change Tensor0SSpace.toModel
+      (connectionDifferenceCovDerivBiContrFib (I := I) g₁ g_bg x D) vModel +
+    Tensor0SSpace.toModel
+      (deTurckLieCovariantDerivativeInsertionFib (I := I) g₁ g_bg x D) vModel = _
   congr 1
-  · change Tensor0SSpace.toModel (connectionDifferenceCovDerivBiContrFib (I := I) g₁ g_bg x D) v = _
-    rw [connectionDifferenceCovDerivBiContrFib, deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel, neg_one_mul]
+  · rw [connectionDifferenceCovDerivBiContrFib, deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel, neg_one_mul]
     rw [show (- ∑ a : Fin (Module.finrank ℝ E), ∑ b : Fin (Module.finrank ℝ E),
           unitModel (I := I) (M := M) g₀ 2 W x
               (fun j => if j = 0 then smoothOrthoFrame (I := I) g₁ x a x
@@ -1156,19 +1235,28 @@ theorem ricciArmOrder0DeTurckLieCoeff_operatorFieldApplication_eq (g₀ g₁ g_b
     rw [unitModel]
     congr 1
     funext j
-    fin_cases j <;> simp
-  · change Tensor0SSpace.toModel (deTurckLieCovariantDerivativeInsertionFib (I := I) g₁ g_bg x D) v = _
-    rw [deTurckLieCovariantDerivativeInsertionFib_toModel]
-    rw [deTurckVectorFieldCovariantDerivativeEndomorphism_apply, deTurckVectorFieldCovariantDerivativeEndomorphism_apply]
+    fin_cases j <;> simp <;> rfl
+  · rw [deTurckLieCovariantDerivativeInsertionFib_toModel]
+    rw [tangentLinearMapToModel_apply, tangentLinearMapToModel_apply,
+      tangentSpaceModelContinuousLinearEquiv_symm_apply,
+      tangentSpaceModelContinuousLinearEquiv_symm_apply,
+      deTurckVectorFieldCovariantDerivativeEndomorphism_apply,
+      deTurckVectorFieldCovariantDerivativeEndomorphism_apply,
+      tangentSpaceModelContinuousLinearEquiv_apply,
+      tangentSpaceModelContinuousLinearEquiv_apply]
     congr 1
     · rw [unitModel]
       congr 1
       funext j
-      fin_cases j <;> simp
+      fin_cases j
+      · simp; rfl
+      · simp; rfl
     · rw [unitModel]
       congr 1
       funext j
-      fin_cases j <;> simp
+      fin_cases j
+      · simp; rfl
+      · simp; rfl
 
 noncomputable def symmAbsorbedOrder0DeTurckLieCoeff (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) : SmoothCcTensor g₀ 2 2 :=
@@ -1178,6 +1266,7 @@ noncomputable def symmAbsorbedOrder0DeTurckLieCoeff (g₀ g₁ g_bg : SmoothRiem
       (Equiv.swap (0 : Fin 2) 1) S 0))
 
 
+omit [SigmaCompactSpace M] in
 theorem symmAbsorbedOrder0DeTurckLieCoeff_operatorFieldApplication_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g₀ 0 2) (x : M) (v : Fin 2 → TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 2

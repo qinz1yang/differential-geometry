@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.HeatKernelSchauderHigher
 import Mathlib.MeasureTheory.Integral.Prod
 
+
 noncomputable section
 
 open MeasureTheory Real Set
@@ -449,9 +450,9 @@ theorem heatD2_time_add_diff_holder {alpha : NNReal} (halpha : alpha ≤ 1)
       exact (integral_integral_swap (f := fun r x ↦ G (r, x)) hGint).symm
     _ ≤ ∫ _r : Real, C ∂μ := by
       apply integral_mono_ae hGint.integral_prod_left
-        (by simpa only [μ] using
-          (integrableOn_const measure_Ioc_lt_top.ne :
-            IntegrableOn (fun _ : Real ↦ C) (Ioc t (t + d))))
+        (by
+          change IntegrableOn (fun _ : Real ↦ C) (Ioc t (t + d))
+          exact integrableOn_const measure_Ioc_lt_top.ne)
       filter_upwards [ae_restrict_mem measurableSet_Ioc] with r hr
       exact hslice_le r ⟨hr.1.le, hr.2⟩
     _ = d * C := by

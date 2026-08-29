@@ -4,7 +4,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurckSection
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricArmCoeffPassZero
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -46,10 +45,10 @@ theorem cometricTrace_riemannianFiberNormSq
   have htie : ∀ (y : M) (v w : TangentSpace I y),
       g.inner y v w = g.inner y v w + z y v w := by
     intro y v w
-    simp only [z, ContinuousLinearMap.zero_apply, add_zero]
+    simp only [z, zero_apply, add_zero]
   have hz : gFibreOpBound (I := I) (M := M) g z 0 := by
     intro y v w
-    simp only [z, ContinuousLinearMap.zero_apply, abs_zero, zero_mul, le_refl]
+    simp only [z, zero_apply, abs_zero, zero_mul, le_refl]
   have htrace := riemannianFiberNormSq_traceHessianFib_le
     (I := I) (M := M) g g z htie
       (show (0 : ℝ) < 1 by norm_num) (show (0 : ℝ) ≤ 0 by norm_num) hz x
@@ -186,12 +185,12 @@ private theorem traceSucc_fib
     DifferentialGeometry.Integral.Connection.slotExtendFib_apply_eval]
   simp only [cometricDoubleTraceFib_toModel, modelDoubleTrace_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
-  rw [TensorMultilinear.tensor0S_curry_apply_eval, Tensor0SSpace.toModel_ofModel,
+  rw [TensorMultilinear.tensor0S_curry_toModel_apply, Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
   exact congrArg (Tensor0SSpace.toModel D)
     (traceSucc_tuple p
       (cometricLmodel (I := I) g x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis k)))
       ((Module.finBasis ℝ E) k) (Fin.cons (m 0) (Fin.tail m)))
 
@@ -279,7 +278,7 @@ private lemma combinedTrace42Model_apply_symbolic
       modelDoubleTrace (E := E) 2 L
           (ContinuousMultilinearMap.domDomCongr koszulSlotPerm D) mm =
         ∑ k : Fin (Module.finrank ℝ E),
-          D (Fin.cons (L (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          D (Fin.cons (L (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
               ![mm 0, mm 1, (Module.finBasis ℝ E) k]) := by
     intro mm
@@ -336,10 +335,10 @@ private theorem ricciSelf_twice_eq
                 (Equiv.swap (0 : Fin 2) 1)
                 (cometricDoubleTraceField (I := I) g 2)) koszulSlotPerm).toSection x) w -
           ((cometricDoubleTraceField (I := I) g 2).toSection x) w) m
-  rw [Tensor0SSpace.toModel_add, ContinuousMultilinearMap.add_apply,
+  rw [Tensor0SSpace.toModel_add, add_apply,
     ricciDeTurckPrincipalCoefficientFiber_toModel, combinedTrace42Model_apply_symbolic,
     Tensor0SSpace.toModel_sub, Tensor0SSpace.toModel_add,
-    ContinuousMultilinearMap.sub_apply, ContinuousMultilinearMap.add_apply]
+    sub_apply, add_apply]
   simp_rw [reindexCoeffGen_toSection, rsDomDomCongrSection_toSection,
     cometricDoubleTraceField_toSection]
   rw [reindexCoeffFibGen_apply (I := I) 4 2 koszulSlotPerm x
@@ -357,6 +356,7 @@ private theorem ricciSelf_twice_eq
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
+omit [SigmaCompactSpace M] in
 theorem ricciSelf_eq
     (g : SmoothRiemannianMetric I M) :
     ricciDeTurckPrincipalCoefficient (I := I) (M := M) g g =

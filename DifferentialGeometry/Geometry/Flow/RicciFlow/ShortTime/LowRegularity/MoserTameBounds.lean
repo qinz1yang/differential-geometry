@@ -3,7 +3,6 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorFieldComp
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJetNaturality
 
 noncomputable section
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped BigOperators Manifold ContDiff
@@ -52,6 +51,7 @@ def HasMoserTameBounds (g : SmoothRiemannianMetric I M) {r c : ℕ}
   (∀ n : ℕ, covariantJetNormSq (I := I) (M := M) g n X ≤
     A n * (1 + covariantJetNormSq (I := I) (M := M) g n T))
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem HasMoserTameBounds.coefficient_nonneg {g : SmoothRiemannianMetric I M} {r c : ℕ}
@@ -65,6 +65,7 @@ theorem HasMoserTameBounds.coefficient_nonneg {g : SmoothRiemannianMetric I M} {
   have hX := covariantJetNormSq_nonneg (I := I) (M := M) (m := n) g X
   nlinarith [hle, hX, hpos]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem HasMoserTameBounds.mono {g : SmoothRiemannianMetric I M} {r c : ℕ}
@@ -94,6 +95,7 @@ theorem HasMoserTameBounds.const (g : SmoothRiemannianMetric I M) {r c : ℕ}
   · have hT := covariantJetNormSq_nonneg (I := I) (M := M) (m := n) g T
     nlinarith [covariantJetNormSq_nonneg (I := I) (M := M) (m := n) g X]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem HasMoserTameBounds.add {g : SmoothRiemannianMetric I M} {r c : ℕ}
@@ -115,6 +117,7 @@ theorem HasMoserTameBounds.add {g : SmoothRiemannianMetric I M} {r c : ℕ}
     exact le_trans (covariantJetNormSq_add_le (I := I) (M := M) g n X Y)
       (by nlinarith [hX.2.2 n, hY.2.2 n])
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem HasMoserTameBounds.sub {g : SmoothRiemannianMetric I M} {r c : ℕ}
@@ -136,6 +139,7 @@ theorem HasMoserTameBounds.sub {g : SmoothRiemannianMetric I M} {r c : ℕ}
     exact le_trans (covariantJetNormSq_sub_le (I := I) (M := M) g n X Y)
       (by nlinarith [hX.2.2 n, hY.2.2 n])
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] in
@@ -185,7 +189,7 @@ private theorem norm_sq_le_of_riemannianFiberNormSq_le
   rwa [MeasureTheory.integral_const_mul, hint] at hsq
 
 omit [BoundarylessManifold I M] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private theorem covariantJetNormSq_le_of_pointwise_iteratedCovGrad_le
     (g : SmoothRiemannianMetric I M) {a b a' b' : ℕ}
     (X : SmoothCcTensor g a b) (Y : SmoothCcTensor g a' b') {K : ℝ}
@@ -290,6 +294,7 @@ theorem HasMoserTameBounds.slotExtend {g : SmoothRiemannianMetric I M} {r c : �
       linarith
     nlinarith [hstep, h.2.2 n, hfr, hT]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem HasMoserTameBounds.of_pointwise_and_jet_bounds
@@ -400,6 +405,7 @@ def IsControlledMetricPerturbation (g g₁ : SmoothRiemannianMetric I M)
   (∀ n : ℕ, covariantJetNormSq (I := I) (M := M) g n P ≤
     covariantJetNormSq (I := I) (M := M) g n T)
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem HasMoserTameBounds.reference {g : SmoothRiemannianMetric I M}
@@ -413,6 +419,7 @@ theorem HasMoserTameBounds.reference {g : SmoothRiemannianMetric I M}
   have := covariantJetNormSq_nonneg (I := I) (M := M) (m := n) g T
   linarith
 
+omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem riemannianFiberNormSq_symmS_le (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) (j : ℕ) (x : M) :
@@ -628,7 +635,7 @@ private lemma metricComparisonEndomorphism_sub_decomposition
     rw [ContMDiffSection.coe_add]; rfl]
   apply ContinuousLinearMap.ext
   intro v
-  rw [metricComparisonEndomorphismField_apply, ContinuousLinearMap.add_apply]
+  rw [metricComparisonEndomorphismField_apply, add_apply]
   rw [show (metricComparisonDifferenceEndomorphismField (I := I) g g₁ x) =
       metricComparisonDifferenceEndomorphism (I := I) g g₁ x from rfl]
   rw [metricComparisonEndomorphismField_apply, metricComparisonEndomorphism_unitModel, ContinuousLinearMap.id_apply]
@@ -651,10 +658,10 @@ private lemma slotInsertEndomorphism_add (g : SmoothRiemannianMetric I M) (s : �
       (slotInsertEndoCc (I := I) (M := M) g s A).toSection x +
         (slotInsertEndoCc (I := I) (M := M) g s B).toSection x from by
     rw [SmoothCcTensor.toSection_add]; rfl]
-  rw [ContinuousLinearMap.add_apply]
+  rw [add_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A + B) x) = A x + B x from by rw [ContMDiffSection.coe_add]; rfl]
-  rw [slotInsertEndoFib_add_left, ContinuousLinearMap.add_apply]
+  rw [slotInsertEndoFib_add_left, add_apply]
 
 theorem HasMoserTameBounds.inverseMetricDifferenceSlot
     (g : SmoothRiemannianMetric I M)
@@ -1041,12 +1048,13 @@ theorem HasMoserTameBounds.movingMetricCurvatureDecompositionMonomialCoefficient
     (HasMoserTameBounds.permuteCovariantSlots (I := I) (M := M) (monoPerm σ) hslots)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-  [BoundarylessManifold I M] in
+  [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma convexPerturbation_zero (g : SmoothRiemannianMetric I M)
     (T : SmoothCcTensor g 0 2) (s : ℝ) :
     convexPerturbation (I := I) g T (0 : SmoothCcTensor g 0 2) s = s • T := by
   simp [convexPerturbation]
 
+omit [CompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricPerturbationPath_isControlledMetricPerturbation

@@ -57,7 +57,7 @@ private lemma gNorm_self_triangle
       g.inner x a a + 2 * g.inner x a b + g.inner x b b := by
     have h1 : g.inner x (a + b) (a + b) =
         g.inner x a (a + b) + g.inner x b (a + b) := by
-      rw [map_add (g.inner x), ContinuousLinearMap.add_apply]
+      rw [map_add (g.inner x), add_apply]
     have h2 : g.inner x a (a + b) = g.inner x a a + g.inner x a b :=
       map_add (g.inner x a) a b
     have h3 : g.inner x b (a + b) = g.inner x b a + g.inner x b b :=
@@ -87,13 +87,14 @@ private lemma gNorm_self_sub_triangle
       Real.sqrt (g.inner x a a) + Real.sqrt (g.inner x b b) := by
   have h := gNorm_self_triangle (I := I) (M := M) g x a (-b)
   have hnb : g.inner x (-b) (-b) = g.inner x b b := by
-    rw [map_neg (g.inner x), ContinuousLinearMap.neg_apply, map_neg, neg_neg]
+    rw [map_neg (g.inner x), neg_apply, map_neg, neg_neg]
   rw [hnb] at h
   rw [show a - b = a + (-b) from by abel]
   exact h
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
+omit [SigmaCompactSpace M] in
 theorem exists_riemannOp_LeviCivita_difference_gQuadratic_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
@@ -107,7 +108,7 @@ theorem exists_riemannOp_LeviCivita_difference_gQuadratic_le_of_jetEnvelope
         (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B →
           ∀ v w u : TangentSpace I x,
             g₀.inner x
@@ -165,21 +166,21 @@ theorem exists_riemannOp_LeviCivita_difference_gQuadratic_le_of_jetEnvelope
     rw [show covDerivDiff (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁) X Y Z x = A1 from rfl,
       show covDerivDiff (LeviCivita (I := I) g₀) (LeviCivita (I := I) g₁) Y X Z x = A2 from rfl]
     abel
-  letI instTens3 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 3 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+  let instTens3 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 3 I b) :=
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   set Np : ℝ :=
     (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + 1) I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
     ‖(iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x‖) with hNp_def
   have hNp_nn : 0 ≤ Np := by rw [hNp_def]; exact norm_nonneg _
   have hNp_le_B : Np ≤ B := by
     have hsum_terms : ∀ j ∈ Finset.range 3, (0 : ℝ) ≤
         (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
         ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖) := by
       intro j _
-      letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+      let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
       exact norm_nonneg ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)
     have h1mem : (1 : ℕ) ∈ Finset.range 3 := by decide
     exact le_trans (Finset.single_le_sum hsum_terms h1mem) henv

@@ -76,7 +76,7 @@ structure eigenvectorIteratedTensorChartBilinearData
 
 namespace eigenvectorIteratedTensorChartBilinearData
 
-def mk_from_hypotheses
+def mkFromHypotheses
     {g : SmoothRiemannianMetric I M} {r s : ℕ}
     {i : TensorEigenIdx (I := I) (M := M) g r s}
     {α : M} {P₀ : TensorCompIdx (E := E) r s} {m : ℕ}

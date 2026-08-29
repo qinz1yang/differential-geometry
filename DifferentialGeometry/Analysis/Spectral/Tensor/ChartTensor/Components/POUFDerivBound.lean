@@ -5,7 +5,6 @@ import Mathlib.Analysis.Calculus.FDeriv.Mul
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators
@@ -29,8 +28,8 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-private abbrev EuclN (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
-  [FiniteDimensional ℝ E] := EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
+private abbrev EuclN (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E] :=
+  EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [CompactSpace M] [I.Boundaryless] in
 private lemma chartAtlasPOU_mul_one_eq (α : M) :

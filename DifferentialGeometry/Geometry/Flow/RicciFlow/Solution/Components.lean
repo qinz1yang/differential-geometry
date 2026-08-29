@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
+
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 
@@ -615,7 +617,7 @@ theorem ricciNormSq_basis
     (frame : Idx -> (x : M) -> TangentSpace I x)
     {t : Real} {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen
+    (hinv : MetricInverseInBasisGen
       (I := I) (M := M) (S.family.metric t) x basis
       (fun i j : Idx => gInv t x i j))
     (hbasis : ∀ i : Idx, basis i = frame i x) :
@@ -823,7 +825,7 @@ private theorem nablaRicciNorm_basis
     (frame : Idx -> (x : M) -> TangentSpace I x)
     {t : Real} {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen
+    (hinv : MetricInverseInBasisGen
       (I := I) (M := M) (S.family.metric t) x basis
       (fun i j : Idx => gInv t x i j))
     (hbasis : ∀ i : Idx, basis i = frame i x)
@@ -866,7 +868,7 @@ theorem nabla_ricci_norm_sq_in_frame_eq_gradient_norm_sq
     (frame : Idx -> (x : M) -> TangentSpace I x)
     {t : Real} {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen
+    (hinv : MetricInverseInBasisGen
       (I := I) (M := M) (S.family.metric t) x basis
       (fun i j : Idx => gInv t x i j))
     (hbasis : ∀ i : Idx, basis i = frame i x) :
@@ -1314,8 +1316,16 @@ theorem raisedRicciCompInFrame_hasDerivWithinAt
                   have hia := h_inv t x hx i a
                   have hjb := h_inv t x hx j b
                   have hrab := h_ricci t x a b
-                  have hprod := (hia.mul hjb).mul hrab
-                  simpa [Pi.mul_apply, mul_assoc, add_mul] using hprod))))
+                  have hprod := hia.smul (hjb.smul hrab)
+                  convert hprod using 1
+                  · funext s
+                    change gInv s x i a * gInv s x j b *
+                      ricciCompInFrame (I := I) S frame s x a b =
+                        gInv s x i a * (gInv s x j b *
+                          ricciCompInFrame (I := I) S frame s x a b)
+                    ring
+                  · simp [smul_eq_mul]
+                    ring))))
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem raisedRicciDerivAt
@@ -1390,8 +1400,16 @@ theorem raisedRicciDerivAt
                   have hia := h_inv t x hx i a
                   have hjb := h_inv t x hx j b
                   have hrab := h_ricci a b
-                  have hprod := (hia.mul hjb).mul hrab
-                  simpa [Pi.mul_apply, mul_assoc, add_mul] using hprod))))
+                  have hprod := hia.smul (hjb.smul hrab)
+                  convert hprod using 1
+                  · funext s
+                    change gInv s x i a * gInv s x j b *
+                      ricciCompInFrame (I := I) S frame s x a b =
+                        gInv s x i a * (gInv s x j b *
+                          ricciCompInFrame (I := I) S frame s x a b)
+                    ring
+                  · simp [smul_eq_mul]
+                    ring))))
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciNormSqInFrame_hasDerivWithinAt
@@ -1450,8 +1468,12 @@ theorem ricciNormSqInFrame_hasDerivWithinAt
                   have hRaised :=
                     raisedRicciCompInFrame_hasDerivWithinAt
                       (I := I) S Rm04 gInv frame roughLapRic h_inv h_ricci t x hx i j
-                  have hprod := hRic.mul hRaised
-                  simpa [Pi.mul_apply] using hprod))))
+                  have hprod := hRic.smul hRaised
+                  convert hprod using 1
+                  · funext s
+                    rfl
+                  · simp [smul_eq_mul]
+                    ring))))
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciNormSqDerivAt
@@ -1517,8 +1539,12 @@ theorem ricciNormSqDerivAt
                     raisedRicciDerivAt
                       (I := I) S Rm04 gInv frame roughLapRic h_inv t x hx
                       h_ricci i j
-                  have hprod := hRic.mul hRaised
-                  simpa [Pi.mul_apply] using hprod))))
+                  have hprod := hRic.smul hRaised
+                  convert hprod using 1
+                  · funext s
+                    rfl
+                  · simp [smul_eq_mul]
+                    ring))))
 
 end Components
 

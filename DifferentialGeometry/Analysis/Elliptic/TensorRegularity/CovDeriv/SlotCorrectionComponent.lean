@@ -8,7 +8,6 @@ open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
@@ -36,8 +35,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 noncomputable def chartFrameBasisModel (α b : M) (r : ℕ)
     (Idx : Fin r → Fin (Module.finrank ℝ E)) :
     Tensor0SSpace r I b :=
-  (dualCoordinateProductMultilinearMap (E := E) r Idx).compContinuousLinearMap
-    (fun _ : Fin r => chartTrivializationLinearMap (I := I) (M := M) α b)
+  Tensor0SSpace.ofModel (I := I)
+    ((dualCoordinateProductMultilinearMap (E := E) r Idx).compContinuousLinearMap
+      (fun _ : Fin r => chartTrivializationLinearMap (I := I) (M := M) α b))
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -47,13 +47,19 @@ lemma chartFrameBasisModel_apply (α b : M) (r : ℕ)
     chartFrameBasisModel (I := I) (M := M) α b r Idx v =
       ∏ k : Fin r,
         ((chartModelBasis E).coord (Idx k))
-          (chartTrivializationLinearMap (I := I) (M := M) α b (v k)) := by
+          (chartTrivializationLinearMap (I := I) (M := M) α b
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b (v k))) := by
   classical
+  change ((dualCoordinateProductMultilinearMap (E := E) r Idx).compContinuousLinearMap
+      (fun _ : Fin r => chartTrivializationLinearMap (I := I) (M := M) α b))
+      (fun k : Fin r => tangentSpaceModelContinuousLinearEquiv (I := I) b (v k)) = _
   have h : ((dualCoordinateProductMultilinearMap (E := E) r Idx).compContinuousLinearMap
-        (fun _ : Fin r => chartTrivializationLinearMap (I := I) (M := M) α b)) v =
+        (fun _ : Fin r => chartTrivializationLinearMap (I := I) (M := M) α b))
+        (fun k : Fin r => tangentSpaceModelContinuousLinearEquiv (I := I) b (v k)) =
       ∏ k : Fin r,
         ((chartModelBasis E).coord (Idx k))
-          (chartTrivializationLinearMap (I := I) (M := M) α b (v k)) := by
+          (chartTrivializationLinearMap (I := I) (M := M) α b
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b (v k))) := by
     rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
       dualCovariantCMM_apply]
   exact h
@@ -70,14 +76,18 @@ lemma chartFrameBasisModel_apply_chartFrameTuple (α : M) {b : M}
   rw [chartFrameBasisModel_apply]
   have hchartJ : ∀ k : Fin r,
       chartTrivializationLinearMap (I := I) (M := M) α b
-          (chartBasisVecFiber (I := I) α (Jdx k) b) =
+          (tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (chartBasisVecFiber (I := I) α (Jdx k) b)) =
         (chartModelBasis E) (Jdx k) := by
     intro k
     have hcbf : chartBasisVecFiber (I := I) α (Jdx k) b =
-        chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) (Jdx k)) := by
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
+          (chartTrivializationLinearMapSymm (I := I) (M := M) α b
+            ((chartModelBasis E) (Jdx k))) := by
       unfold chartBasisVecFiber chartTrivializationLinearMapSymm
       rfl
     rw [hcbf]
+    rw [(tangentSpaceModelContinuousLinearEquiv (I := I) b).apply_symm_apply]
     exact chartJ_chartJinv (I := I) (M := M) α hb ((chartModelBasis E) (Jdx k))
   rw [Finset.prod_congr rfl (fun k _ => by rw [hchartJ k])]
   by_cases hEq : Idx = Jdx
@@ -101,47 +111,75 @@ lemma chartFrameBasisModel_apply_chartFrameTuple (α : M) {b : M}
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 lemma sum_chartFrame_coord_eq (α : M) {b : M}
-    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) (w : E) :
+    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
+    (w : TangentSpace I b) :
     ∑ p : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).coord p) (chartTrivializationLinearMap (I := I) (M := M) α b w) •
+        ((chartModelBasis E).coord p)
+          (chartTrivializationLinearMap (I := I) (M := M) α b
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b w)) •
           chartBasisVecFiber (I := I) α p b = w := by
   classical
   have hbasis : ∑ p : Fin (Module.finrank ℝ E),
-        ((chartModelBasis E).coord p) (chartTrivializationLinearMap (I := I) (M := M) α b w) •
+        ((chartModelBasis E).coord p)
+          (chartTrivializationLinearMap (I := I) (M := M) α b
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b w)) •
           (chartModelBasis E) p =
-      chartTrivializationLinearMap (I := I) (M := M) α b w := by
-    have hrep := (chartModelBasis E).sum_repr (chartTrivializationLinearMap (I := I) (M := M) α b w)
+      chartTrivializationLinearMap (I := I) (M := M) α b
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b w) := by
+    have hrep := (chartModelBasis E).sum_repr
+      (chartTrivializationLinearMap (I := I) (M := M) α b
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b w))
     rw [show (∑ p : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).coord p) (chartTrivializationLinearMap (I := I) (M := M) α b w) •
+          ((chartModelBasis E).coord p)
+            (chartTrivializationLinearMap (I := I) (M := M) α b
+              (tangentSpaceModelContinuousLinearEquiv (I := I) b w)) •
             (chartModelBasis E) p) =
         ∑ p : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).repr (chartTrivializationLinearMap (I := I) (M := M) α b w)) p •
+          ((chartModelBasis E).repr
+            (chartTrivializationLinearMap (I := I) (M := M) α b
+              (tangentSpaceModelContinuousLinearEquiv (I := I) b w))) p •
             (chartModelBasis E) p from
       Finset.sum_congr rfl (fun p _ => by rw [Module.Basis.coord_apply])]
     exact hrep
   have hcbf : ∀ p : Fin (Module.finrank ℝ E),
       chartBasisVecFiber (I := I) α p b =
-        chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) p) := by
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
+          (chartTrivializationLinearMapSymm (I := I) (M := M) α b
+            ((chartModelBasis E) p)) := by
     intro p
     unfold chartBasisVecFiber chartTrivializationLinearMapSymm
     rfl
   calc ∑ p : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).coord p) (chartTrivializationLinearMap (I := I) (M := M) α b w) •
+          ((chartModelBasis E).coord p)
+              (chartTrivializationLinearMap (I := I) (M := M) α b
+                (tangentSpaceModelContinuousLinearEquiv (I := I) b w)) •
             chartBasisVecFiber (I := I) α p b
       = ∑ p : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).coord p) (chartTrivializationLinearMap (I := I) (M := M) α b w) •
-            chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) p) := by
+          ((chartModelBasis E).coord p)
+              (chartTrivializationLinearMap (I := I) (M := M) α b
+                (tangentSpaceModelContinuousLinearEquiv (I := I) b w)) •
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
+              (chartTrivializationLinearMapSymm (I := I) (M := M) α b
+                ((chartModelBasis E) p)) := by
         exact Finset.sum_congr rfl (fun p _ => by rw [hcbf p])
-    _ = chartTrivializationLinearMapSymm (I := I) (M := M) α b
-          (∑ p : Fin (Module.finrank ℝ E),
-            ((chartModelBasis E).coord p) (chartTrivializationLinearMap (I := I) (M := M) α b w) •
-              (chartModelBasis E) p) := by
-        rw [map_sum]
-        exact Finset.sum_congr rfl (fun p _ => by rw [map_smul])
-    _ = chartTrivializationLinearMapSymm (I := I) (M := M) α b
-      (chartTrivializationLinearMap (I := I) (M := M) α b w) := by
+    _ = (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
+          (chartTrivializationLinearMapSymm (I := I) (M := M) α b
+            (∑ p : Fin (Module.finrank ℝ E),
+              ((chartModelBasis E).coord p)
+                  (chartTrivializationLinearMap (I := I) (M := M) α b
+                    (tangentSpaceModelContinuousLinearEquiv (I := I) b w)) •
+                (chartModelBasis E) p)) := by
+        rw [map_sum, map_sum]
+        exact Finset.sum_congr rfl (fun p _ => by rw [map_smul, map_smul])
+    _ = (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
+        (chartTrivializationLinearMapSymm (I := I) (M := M) α b
+          (chartTrivializationLinearMap (I := I) (M := M) α b
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b w))) := by
         rw [hbasis]
-    _ = w := chartJinv_chartJ_self (I := I) (M := M) α hb w
+    _ = (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b w) := by
+      rw [chartJinv_chartJ_self (I := I) (M := M) α hb]
+    _ = w := (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm_apply_apply w
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -156,57 +194,95 @@ theorem tensor0S_eq_sum_chartFrameBasis (α : M) {b : M}
   have hv_eq : v =
       fun k : Fin r => ∑ p : Fin (Module.finrank ℝ E),
         ((chartModelBasis E).coord p)
-            (chartTrivializationLinearMap (I := I) (M := M) α b (v k)) •
+            (chartTrivializationLinearMap (I := I) (M := M) α b
+              (tangentSpaceModelContinuousLinearEquiv (I := I) b (v k))) •
           chartBasisVecFiber (I := I) α p b := by
     funext k
     exact (sum_chartFrame_coord_eq (I := I) (M := M) α hb (v k)).symm
-  rw [show f v = f (fun k : Fin r =>
-        ∑ p : Fin (Module.finrank ℝ E),
-          ((chartModelBasis E).coord p)
-              (chartTrivializationLinearMap (I := I) (M := M) α b (v k)) •
-            chartBasisVecFiber (I := I) α p b) from congrArg f hv_eq]
+  change Tensor0SSpace.eval f v =
+    Tensor0SSpace.eval
+      (∑ Idx : Fin r → Fin (Module.finrank ℝ E),
+        f (fun k : Fin r => chartBasisVecFiber (I := I) α (Idx k) b) •
+          chartFrameBasisModel (I := I) (M := M) α b r Idx) v
+  conv_lhs => rw [hv_eq]
+  change (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b f)
+      (fun k : Fin r => ∑ p : Fin (Module.finrank ℝ E),
+        ((chartModelBasis E).coord p)
+            (chartTrivializationLinearMap (I := I) (M := M) α b
+              (tangentSpaceModelContinuousLinearEquiv (I := I) b (v k))) •
+          chartBasisVecFiber (I := I) α p b) = _
   rw [ContinuousMultilinearMap.map_sum
-    (f := f)
+    (f := tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b f)
     (g := fun (k : Fin r) (p : Fin (Module.finrank ℝ E)) =>
-      ((chartModelBasis E).coord p) (chartTrivializationLinearMap (I := I) (M := M) α b (v k)) •
+      ((chartModelBasis E).coord p)
+        (chartTrivializationLinearMap (I := I) (M := M) α b
+          (tangentSpaceModelContinuousLinearEquiv (I := I) b (v k))) •
         chartBasisVecFiber (I := I) α p b)]
   have h_pull : ∀ Idx : Fin r → Fin (Module.finrank ℝ E),
-      f (fun k : Fin r =>
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b f)
+        (fun k : Fin r =>
           ((chartModelBasis E).coord (Idx k))
-              (chartTrivializationLinearMap (I := I) (M := M) α b (v k)) •
+              (chartTrivializationLinearMap (I := I) (M := M) α b
+                (tangentSpaceModelContinuousLinearEquiv (I := I) b (v k))) •
             chartBasisVecFiber (I := I) α (Idx k) b) =
         (∏ k : Fin r, ((chartModelBasis E).coord (Idx k))
-            (chartTrivializationLinearMap (I := I) (M := M) α b (v k))) *
-          f (fun k : Fin r => chartBasisVecFiber (I := I) α (Idx k) b) := by
+            (chartTrivializationLinearMap (I := I) (M := M) α b
+              (tangentSpaceModelContinuousLinearEquiv (I := I) b (v k)))) *
+          (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b f)
+            (fun k : Fin r => chartBasisVecFiber (I := I) α (Idx k) b) := by
     intro Idx
-    have hpull := f.toMultilinearMap.map_smul_univ
+    have hpull := (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b f).toMultilinearMap.map_smul_univ
       (c := fun k : Fin r => ((chartModelBasis E).coord (Idx k))
-        (chartTrivializationLinearMap (I := I) (M := M) α b (v k)))
+        (chartTrivializationLinearMap (I := I) (M := M) α b
+          (tangentSpaceModelContinuousLinearEquiv (I := I) b (v k))))
       (m := fun k : Fin r => chartBasisVecFiber (I := I) α (Idx k) b)
     have hpull' :
-        f (fun k : Fin r =>
+        (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b f)
+          (fun k : Fin r =>
             ((chartModelBasis E).coord (Idx k))
-                (chartTrivializationLinearMap (I := I) (M := M) α b (v k)) •
+                (chartTrivializationLinearMap (I := I) (M := M) α b
+                  (tangentSpaceModelContinuousLinearEquiv (I := I) b (v k))) •
               chartBasisVecFiber (I := I) α (Idx k) b) =
           (∏ k : Fin r, ((chartModelBasis E).coord (Idx k))
-              (chartTrivializationLinearMap (I := I) (M := M) α b (v k))) •
-            f (fun k : Fin r => chartBasisVecFiber (I := I) α (Idx k) b) := hpull
+              (chartTrivializationLinearMap (I := I) (M := M) α b
+                (tangentSpaceModelContinuousLinearEquiv (I := I) b (v k)))) •
+            (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b f)
+              (fun k : Fin r => chartBasisVecFiber (I := I) α (Idx k) b) := hpull
     rw [hpull']
     rfl
   rw [show ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
-        f (fun k : Fin r =>
+        (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b f)
+          (fun k : Fin r =>
             ((chartModelBasis E).coord (Idx k))
-                (chartTrivializationLinearMap (I := I) (M := M) α b (v k)) •
+                (chartTrivializationLinearMap (I := I) (M := M) α b
+                  (tangentSpaceModelContinuousLinearEquiv (I := I) b (v k))) •
               chartBasisVecFiber (I := I) α (Idx k) b) =
       ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
         (∏ k : Fin r, ((chartModelBasis E).coord (Idx k))
-            (chartTrivializationLinearMap (I := I) (M := M) α b (v k))) *
-          f (fun k : Fin r => chartBasisVecFiber (I := I) α (Idx k) b) from
+            (chartTrivializationLinearMap (I := I) (M := M) α b
+              (tangentSpaceModelContinuousLinearEquiv (I := I) b (v k)))) *
+          (tensor0SSpaceFiberContinuousLinearEquiv (I := I) r b f)
+            (fun k : Fin r => chartBasisVecFiber (I := I) α (Idx k) b) from
     Finset.sum_congr rfl (fun Idx _ => h_pull Idx)]
-  rw [ContinuousMultilinearMap.sum_apply]
+  change (∑ Idx : Fin r → Fin (Module.finrank ℝ E),
+      (∏ k : Fin r, ((chartModelBasis E).coord (Idx k))
+          (chartTrivializationLinearMap (I := I) (M := M) α b
+            (tangentSpaceModelContinuousLinearEquiv (I := I) b (v k)))) *
+        f (fun k : Fin r => chartBasisVecFiber (I := I) α (Idx k) b)) =
+    Tensor0SSpace.eval
+      (∑ Idx : Fin r → Fin (Module.finrank ℝ E),
+        f (fun k : Fin r => chartBasisVecFiber (I := I) α (Idx k) b) •
+          chartFrameBasisModel (I := I) (M := M) α b r Idx) v
+  rw [Tensor0SSpace.eval_eq, Tensor0SSpace.sum_apply]
   refine Finset.sum_congr rfl (fun Idx _ => ?_)
-  rw [ContinuousMultilinearMap.smul_apply, chartFrameBasisModel_apply,
-    smul_eq_mul]
+  change _ = Tensor0SSpace.eval
+    (f (fun k : Fin r => chartBasisVecFiber (I := I) α (Idx k) b) •
+      chartFrameBasisModel (I := I) (M := M) α b r Idx) v
+  rw [Tensor0SSpace.eval_smul]
+  have hframe := chartFrameBasisModel_apply (I := I) (M := M) α b r Idx v
+  change Tensor0SSpace.eval
+      (chartFrameBasisModel (I := I) (M := M) α b r Idx) v = _ at hframe
+  rw [hframe, smul_eq_mul]
   ring
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
@@ -222,7 +298,9 @@ noncomputable def chartFrameMatrixEntry (α b : M)
     (Ψ : TangentSpace I b →L[ℝ] TangentSpace I b)
     (p q : Fin (Module.finrank ℝ E)) : ℝ :=
   ((chartModelBasis E).coord p)
-    (chartTrivializationLinearMap (I := I) (M := M) α b (Ψ (chartBasisVecFiber (I := I) α q b)))
+    (chartTrivializationLinearMap (I := I) (M := M) α b
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b
+        (Ψ (chartBasisVecFiber (I := I) α q b))))
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -232,7 +310,8 @@ lemma chartFrameMatrixEntry_def (α b : M)
     chartFrameMatrixEntry (I := I) (M := M) α b Ψ p q =
       ((chartModelBasis E).coord p)
         (chartTrivializationLinearMap (I := I) (M := M) α b
-          (Ψ (chartBasisVecFiber (I := I) α q b))) := rfl
+          (tangentSpaceModelContinuousLinearEquiv (I := I) b
+            (Ψ (chartBasisVecFiber (I := I) α q b)))) := rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -273,30 +352,35 @@ theorem tensor0S_apply_slotTransform_chartFrameBasis_eq_sum (α : M) {b : M}
           chartBasisVecFiber (I := I) α p b := by
     funext j
     exact slotCLM_chartFrameVec_eq (I := I) (M := M) α hb (Φ j) (Jdx j)
-  rw [show σ (fun j : Fin s =>
-        Φ j (chartBasisVecFiber (I := I) α (Jdx j) b)) =
-      σ (fun j : Fin s => ∑ p : Fin (Module.finrank ℝ E),
-          chartFrameMatrixEntry (I := I) (M := M) α b (Φ j) p (Jdx j) •
-            chartBasisVecFiber (I := I) α p b) from congrArg σ hslot_eq]
+  change Tensor0SSpace.eval σ
+      (fun j : Fin s => Φ j (chartBasisVecFiber (I := I) α (Jdx j) b)) = _
+  rw [hslot_eq]
+  change (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s b σ)
+      (fun j : Fin s => ∑ p : Fin (Module.finrank ℝ E),
+        chartFrameMatrixEntry (I := I) (M := M) α b (Φ j) p (Jdx j) •
+          chartBasisVecFiber (I := I) α p b) = _
   rw [ContinuousMultilinearMap.map_sum
-    (f := σ)
+    (f := tensor0SSpaceFiberContinuousLinearEquiv (I := I) s b σ)
     (g := fun (j : Fin s) (p : Fin (Module.finrank ℝ E)) =>
       chartFrameMatrixEntry (I := I) (M := M) α b (Φ j) p (Jdx j) •
         chartBasisVecFiber (I := I) α p b)]
   refine Finset.sum_congr rfl (fun Jdx' _ => ?_)
-  have hpull := σ.toMultilinearMap.map_smul_univ
+  have hpull := (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s b σ).toMultilinearMap.map_smul_univ
     (c := fun j : Fin s =>
       chartFrameMatrixEntry (I := I) (M := M) α b (Φ j) (Jdx' j) (Jdx j))
     (m := fun j : Fin s => chartBasisVecFiber (I := I) α (Jdx' j) b)
   have hpull' :
-      σ (fun j : Fin s =>
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s b σ)
+        (fun j : Fin s =>
           chartFrameMatrixEntry (I := I) (M := M) α b (Φ j) (Jdx' j) (Jdx j) •
             chartBasisVecFiber (I := I) α (Jdx' j) b) =
         (∏ j : Fin s,
             chartFrameMatrixEntry (I := I) (M := M) α b (Φ j)
               (Jdx' j) (Jdx j)) •
-          σ (fun j : Fin s => chartBasisVecFiber (I := I) α (Jdx' j) b) := hpull
+          (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s b σ)
+            (fun j : Fin s => chartBasisVecFiber (I := I) α (Jdx' j) b) := hpull
   rw [hpull', smul_eq_mul]
+  rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -354,15 +438,19 @@ lemma chartJ_chartLeviCivitaParallelCLM
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (X : Π b' : M, TangentSpace I b') (v : TangentSpace I b) :
     chartTrivializationLinearMap (I := I) (M := M) α b
-        (chartLeviCivitaParallelCLM (I := I) g α b X v) =
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b
+          (chartLeviCivitaParallelCLM (I := I) g α b X v)) =
       christoffelCorrection (I := I) g α b
         (trivToE (I := I) α b (X b)) v := by
   classical
   rw [chartLeviCivitaParallelCLM_apply]
   change chartTrivializationLinearMap (I := I) (M := M) α b
-      (chartTrivializationLinearMapSymm (I := I) (M := M) α b
-        (christoffelCorrection (I := I) g α b
-          (trivToE (I := I) α b (X b)) v)) = _
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b
+        ((tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
+          (chartTrivializationLinearMapSymm (I := I) (M := M) α b
+            (christoffelCorrection (I := I) g α b
+              (trivToE (I := I) α b (X b)) v)))) = _
+  rw [(tangentSpaceModelContinuousLinearEquiv (I := I) b).apply_symm_apply]
   exact chartJ_chartJinv (I := I) (M := M) α hb _
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -476,12 +564,16 @@ lemma chartFrameMatrixEntry_id (α : M) {b : M}
       chartBasisVecFiber (I := I) α q b := rfl
   rw [hid]
   have htriv : chartTrivializationLinearMap (I := I) (M := M) α b
-      (chartBasisVecFiber (I := I) α q b) = (chartModelBasis E) q := by
+      (tangentSpaceModelContinuousLinearEquiv (I := I) b
+        (chartBasisVecFiber (I := I) α q b)) = (chartModelBasis E) q := by
     have hcbf : chartBasisVecFiber (I := I) α q b =
-        chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) q) := by
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
+          (chartTrivializationLinearMapSymm (I := I) (M := M) α b
+            ((chartModelBasis E) q)) := by
       unfold chartBasisVecFiber chartTrivializationLinearMapSymm
       rfl
     rw [hcbf]
+    rw [(tangentSpaceModelContinuousLinearEquiv (I := I) b).apply_symm_apply]
     exact chartJ_chartJinv (I := I) (M := M) α hb ((chartModelBasis E) q)
   rw [htriv, Module.Basis.coord_apply, Module.Basis.repr_self,
     Finsupp.single_apply]
@@ -644,17 +736,21 @@ theorem chartTensorRSInputSlotCorrection_component_eq
           (chartBasisVecFiber (I := I) α m)))
       (chartFrameBasisModel (I := I) (M := M) α b r Idx) with hψIdx_def
   have htuple : (fun i : Fin s =>
-        chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) (Jdx i))) =
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
+          (chartTrivializationLinearMapSymm (I := I) (M := M) α b
+            ((chartModelBasis E) (Jdx i)))) =
       (fun j : Fin s => chartBasisVecFiber (I := I) α (Jdx j) b) := by
     funext j
-    show chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) (Jdx j)) =
+    show (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
+        (chartTrivializationLinearMapSymm (I := I) (M := M) α b
+          ((chartModelBasis E) (Jdx j))) =
       chartBasisVecFiber (I := I) α (Jdx j) b
     unfold chartBasisVecFiber chartTrivializationLinearMapSymm
     rfl
   rw [triv_continuousLinearMapAt_eq_chartRSTwistInv_toModel (I := I) (M := M)
     r s α hb_chart _, tensorChartComponentProjection_apply, chartRSTwistInv_apply,
     ContinuousMultilinearMap.compContinuousLinearMap_apply]
-  change (Sb ψIdx)
+  change Tensor0SSpace.toModel (Sb ψIdx)
       (fun i : Fin s =>
         chartTrivializationLinearMapSymm (I := I) (M := M) α b ((chartModelBasis E) (Jdx i))) =
     ∑ Idx' : Fin r → Fin (Module.finrank ℝ E),
@@ -671,12 +767,30 @@ theorem chartTensorRSInputSlotCorrection_component_eq
     rw [hψIdx_def]
     exact (inputSlotCoeff_eq_chartFrameProj (I := I) (M := M) g r α m k Idx Idx'
       hb_def).symm
-  rw [hψexp, map_sum Sb, ContinuousMultilinearMap.sum_apply]
+  rw [hψexp, map_sum Sb]
+  rw [Tensor0SSpace.toModel_apply_model_vector]
+  change Tensor0SSpace.eval
+      (∑ Idx' : Fin r → Fin (Module.finrank ℝ E),
+        Sb (inputSlotCoeff (I := I) (M := M) g r α m k Idx Idx' y •
+          chartFrameBasisModel (I := I) (M := M) α b r Idx'))
+      (fun i : Fin s =>
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
+          (chartTrivializationLinearMapSymm (I := I) (M := M) α b
+            ((chartModelBasis E) (Jdx i)))) = _
+  rw [Tensor0SSpace.eval_eq, Tensor0SSpace.sum_apply]
   refine Finset.sum_congr rfl (fun Idx' _ => ?_)
-  rw [map_smul Sb, ContinuousMultilinearMap.smul_apply, smul_eq_mul]
+  change Tensor0SSpace.eval
+      (Sb (inputSlotCoeff (I := I) (M := M) g r α m k Idx Idx' y •
+        chartFrameBasisModel (I := I) (M := M) α b r Idx'))
+      (fun i : Fin s =>
+        (tangentSpaceModelContinuousLinearEquiv (I := I) b).symm
+          (chartTrivializationLinearMapSymm (I := I) (M := M) α b
+            ((chartModelBasis E) (Jdx i)))) = _
+  rw [map_smul Sb, Tensor0SSpace.eval_smul, smul_eq_mul]
   congr 1
   rw [tensorChartComponentRaw_eq_chartFrame (I := I) (M := M) g r s S α
     hb_chart Idx' Jdx, htuple, hSb_def]
+  rfl
 
 noncomputable def outputSlotCoeff
     (g : SmoothRiemannianMetric I M) (s : ℕ) (α : M)

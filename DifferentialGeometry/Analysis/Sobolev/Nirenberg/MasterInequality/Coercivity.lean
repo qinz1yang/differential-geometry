@@ -660,7 +660,7 @@ theorem principal_term_ge_lambda_norm_sq
       (η x)^2 * ∑ i : Fin d, DifferentialGeometry.Analysis.Sobolev.diffQuot k h
         (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x ^ 2) := by
     refine (hη.continuous.pow 2).mul ?_
-    exact continuous_finset_sum _ (fun i _ => (h_diffQuot_partial_u_cont i).pow 2)
+    exact continuous_finsetSum _ (fun i _ => (h_diffQuot_partial_u_cont i).pow 2)
   have h_LHS_supp : HasCompactSupport (fun x : E =>
       (η x)^2 * ∑ i : Fin d, DifferentialGeometry.Analysis.Sobolev.diffQuot k h
         (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x ^ 2) :=
@@ -712,9 +712,9 @@ theorem principal_term_ge_lambda_norm_sq
       Continuous (fun x : E => (η x)^2 * shiftedPrincipal B u k h x) := by
     refine (hη.continuous.pow 2).mul ?_
     unfold shiftedPrincipal
-    refine continuous_finset_sum _ ?_
+    refine continuous_finsetSum _ ?_
     intro i _
-    refine continuous_finset_sum _ ?_
+    refine continuous_finsetSum _ ?_
     intro j _
     refine ((h_translate_a_cont i j).mul (h_diffQuot_partial_u_cont i)).mul
       (h_diffQuot_partial_u_cont j)
@@ -805,7 +805,7 @@ theorem principal_term_ge_lambda_norm_sq
           DifferentialGeometry.Analysis.Sobolev.diffQuot k h
             (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single j 1)) x)
       volume :=
-    fun i => integrable_finset_sum _ (fun j _ => hT1_int i j)
+    fun i => integrable_finsetSum _ (fun j _ => hT1_int i j)
   rw [show (fun x : E => ∑ i : Fin d, ∑ j : Fin d,
           DifferentialGeometry.Analysis.Sobolev.translate k h
               (fun y : E => B.a y i j) x * (η x)^2 *
@@ -821,7 +821,7 @@ theorem principal_term_ge_lambda_norm_sq
             DifferentialGeometry.Analysis.Sobolev.diffQuot k h
               (fun z : E => (fderiv ℝ u z) (EuclideanSpace.single j 1)) y) x)
       from rfl]
-  rw [integral_finset_sum _ (fun i _ => h_inner_int i)]
+  rw [integral_finsetSum _ (fun i _ => h_inner_int i)]
   refine le_of_eq ?_
   refine Finset.sum_congr rfl ?_
   intro i _
@@ -840,7 +840,7 @@ theorem principal_term_ge_lambda_norm_sq
             DifferentialGeometry.Analysis.Sobolev.diffQuot k h
               (fun w : E => (fderiv ℝ u w) (EuclideanSpace.single j 1)) z) y)
       from rfl]
-  rw [integral_finset_sum _ (fun j _ => hT1_int i j)]
+  rw [integral_finsetSum _ (fun j _ => hT1_int i j)]
 
 theorem nirenberg_master_inequality
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)

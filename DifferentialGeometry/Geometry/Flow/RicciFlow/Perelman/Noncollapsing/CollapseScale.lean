@@ -168,8 +168,9 @@ theorem exists_coll_scale
       field_simp at hscaled
       rw [pow_succ]
       nlinarith
-    simpa only [V, n, FlowMetricBall.volume, FlowMetricBall.set,
-      FlowMetricBall.setAt, volumeMeasureOn_eq_metric, dyadic_succ_rad] using hV
+    rw [← dyadic_succ_rad]
+    change V j < (2 : ℝ) ^ (n + 1) * V (j + 1)
+    exact hV
 
 end FlowMetricBall
 

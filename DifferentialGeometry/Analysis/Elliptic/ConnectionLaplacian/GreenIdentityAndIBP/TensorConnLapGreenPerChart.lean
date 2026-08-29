@@ -9,7 +9,6 @@ open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
 
-set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
     CovariantDerivative
@@ -73,7 +72,7 @@ def frameDirDivergencePairing
     tensorInnerScalar (I := I) (M := M) g 0 2
         (covDerivAlongVFSection (I := I) (M := M) g T.toSection (frameVF (I := I) (M := M) g α i))
         v.toSection b
-      * divergence_g (I := I) g (frameVF (I := I) (M := M) g α i) b
+      * divergenceG (I := I) g (frameVF (I := I) (M := M) g α i) b
 
 def frameDirWeightDerivPairing
     (g : SmoothRiemannianMetric I M)
@@ -210,7 +209,7 @@ private theorem integral_pou_perDirCross_eq
                 (loweredCovDerivAlongVF (I := I) (M := M) g 0 2 v.toSection B b))
             + tensorInnerScalar (I := I) (M := M) g 0 2
                 (covDerivAlongVFSection (I := I) (M := M) g T.toSection B) v.toSection b
-              * divergence_g (I := I) g B b) =
+              * divergenceG (I := I) g B b) =
         ρ b * frameDirSecondCovDerivPairing (I := I) (M := M) g T v α i b
           + ρ b * frameDirGradPairing (I := I) (M := M) g T v α i b
           + ρ b * frameDirDivergencePairing (I := I) (M := M) g T v α i b := by
@@ -258,7 +257,7 @@ private theorem integral_pou_perDirCross_eq
       rfl
     have hD : tensorInnerScalar (I := I) (M := M) g 0 2
                 (covDerivAlongVFSection (I := I) (M := M) g T.toSection B) v.toSection b
-              * divergence_g (I := I) g B b =
+              * divergenceG (I := I) g B b =
         frameDirDivergencePairing (I := I) (M := M) g T v α i b := by
       unfold frameDirDivergencePairing frameVF; rw [hB_def]
     rw [hA, hC, hD]; ring
@@ -362,7 +361,7 @@ private theorem integral_pou_tensorCovDerivPointwiseInner_eq_frame_sum
   rw [integral_congr_ae (Filter.Eventually.of_forall hdist)]
   have hρ_cont : Continuous ((chartAtlasPOU I M α : M → ℝ)) :=
     (chartAtlasPOU I M α).contMDiff.continuous
-  refine MeasureTheory.integral_finset_sum (Finset.univ) (fun i _ => ?_)
+  refine MeasureTheory.integral_finsetSum (Finset.univ) (fun i _ => ?_)
   exact perDir_integrable_of_continuous (I := I) g
     (hρ_cont.mul (perDirCross_continuous (I := I) (M := M) g T v α i))
 

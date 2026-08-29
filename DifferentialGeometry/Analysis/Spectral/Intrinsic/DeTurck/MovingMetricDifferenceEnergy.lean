@@ -20,7 +20,6 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false
-set_option backward.isDefEq.respectTransparency false
 
 noncomputable section
 
@@ -49,7 +48,12 @@ private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
 def tensor02Bilin {x : M} (A : Tensor0SSpace 2 I x) :
     TangentSpace I x →L[Real] TangentSpace I x →L[Real] Real :=
-  (bilinFormToModel (TangentSpace I x)).symm (Tensor0SSpace.toModel A)
+  by
+    letI : IsManifold I 1 M :=
+      IsManifold.of_le (I := I) (M := M) (n := ∞)
+        (by decide : (1 : WithTop ℕ∞) ≤ ∞)
+    exact (bilinFormToModel (TangentSpace I x)).symm
+      (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x A)
 
 omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)]
@@ -63,10 +67,23 @@ omit [FiniteDimensional ℝ E]
     tensor02Bilin (I := I) (M := M) A v w =
       eval02 (I := I) (M := M) A v w := by
   rw [tensor02Bilin, bilinFormToModel_symm_apply]
+  rw [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply]
   unfold eval02
   congr 1
   funext i
   fin_cases i <;> simp
+
+omit [NeZero (Module.finrank ℝ E)]
+  [CompactSpace M]
+  [I.Boundaryless]
+  [BoundarylessManifold I M]
+  [SigmaCompactSpace M] in
+private theorem metricDiff02Field_eval_local
+    (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
+    (v : Fin 2 → TangentSpace I x) :
+    Tensor0SSpace.eval (metricDiff02Field (I := I) g₁ g₂ x) v =
+      metricDiff02 (I := I) g₁ g₂ x (v 0) (v 1) := by
+  with_unfolding_all rfl
 
 def negativeHalfDeTurckRHSField (g_bg : SmoothRiemannianMetric I M)
     (g : Real → SmoothRiemannianMetric I M) (t : Real) (x : M) :
@@ -88,11 +105,10 @@ omit [NeZero (Module.finrank ℝ E)]
     negativeHalfDeTurckRHS (I := I) (M := M) g_bg g t x v w =
       (-1 / 2 : Real) * deTurckRicciRHS (I := I) g_bg (g t) x v w := by
   rw [negativeHalfDeTurckRHS, tensor02Bilin_apply]
-  change Tensor0SSpace.toModel
+  change Tensor0SSpace.eval
       ((-1 / 2 : Real) • deTurckRHSField (I := I) g_bg (g t) x)
       (fun i : Fin 2 => if i = 0 then v else w) = _
-  rw [Tensor0SSpace.toModel_smul, ContinuousMultilinearMap.smul_apply, smul_eq_mul,
-    deTurckRHSField_toModel_apply]
+  rw [Tensor0SSpace.eval_smul, deTurckRHSField_eval]
   simp
 
 omit [NeZero (Module.finrank ℝ E)]
@@ -135,13 +151,13 @@ theorem deTurckRHSField_continuousOn
       (I := I) g_bg T g hJ α (idx 0) (idx 1)
     have hcomp := hraw.continuousOn.comp hincl.continuousOn
       (fun q hq => ⟨q.1.2, hq⟩)
-    simpa only [Function.comp_apply] using hcomp
+    exact hcomp.congr fun _ _ => rfl
   refine hchart.congr ?_
   intro q hq
-  change Tensor0SSpace.toModel
+  change Tensor0SSpace.eval
       (deTurckRHSField (I := I) g_bg (g q.1.1) q.2)
       (fun k : Fin 2 => chartBasisVecFiber (I := I) α (idx k) q.2) = _
-  rw [deTurckRHSField_toModel_apply]
+  rw [deTurckRHSField_eval]
   exact deTurckRicciRHS_chartBasisVecFiber_eq_chartDeTurckRicciRHS
     (I := I) (g q.1.1) g_bg α (idx 0) (idx 1) hq
 
@@ -167,7 +183,7 @@ theorem exists_uniform_negativeHalfDeTurckRHS_bound
       (continuous_subtype_val.comp continuous_fst).prodMk continuous_snd
     have hcomp := (hJ α i j).continuousOn.comp hincl.continuousOn
       (fun q hq => ⟨q.1.2, hq⟩)
-    simpa only [Function.comp_apply] using hcomp
+    exact hcomp.congr fun _ _ => rfl
   have hmetric : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
       (Set.Icc 0 T)
       (fun t x => metricTensorField (I := I) (g t) x) :=
@@ -175,15 +191,20 @@ theorem exists_uniform_negativeHalfDeTurckRHS_bound
   have hquad : Continuous
       (metricTimeBundleQuad (I := I) (M := M) g (Set.Icc 0 T)) := by
     have hq := tensor0SFamily_quadCont (I := I) (M := M) hmetric
-    simpa [metricTimeBundleQuad, quad02, metricTensorField_apply] using hq
+    change Continuous
+      (fun q : {t : Real // t ∈ Set.Icc 0 T} × TangentBundle I M =>
+        (g q.1.1).inner q.2.1 q.2.2 q.2.2)
+    exact hq
   have hcompact := metricUnitTimeSlab_icc_compact_of_bundle
     (I := I) (M := M) g 0 T (g 0) hquad
   have hRHS := deTurckRHSField_continuousOn (I := I) (M := M) g_bg g hJ
   have hQ : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
       (Set.Icc 0 T) (negativeHalfDeTurckRHSField (I := I) (M := M) g_bg g) := by
-    simpa only [negativeHalfDeTurckRHSField] using
-      (tensor0SFamilyContinuousOnSet.const_smul
-        (I := I) (M := M) (-1 / 2 : Real) hRHS)
+    change tensor0SFamilyContinuousOnSet (I := I) (M := M) 2
+      (Set.Icc 0 T) (fun t x =>
+        (-1 / 2 : Real) • deTurckRHSField (I := I) g_bg (g t) x)
+    exact tensor0SFamilyContinuousOnSet.const_smul
+      (I := I) (M := M) (-1 / 2 : Real) hRHS
   have htotal := tensor0SFamilyContinuousOnSet.tangentBundle
     (I := I) (M := M) hQ
   have habs := timeSlabAbsQuadCont (I := I) (M := M)
@@ -294,10 +315,12 @@ theorem normSq0S_family_continuousOn
       funext q
       rw [eval0SCLE_apply]
       change
-        ((A q.1.1 q.2).compContinuousLinearMap
+        ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) s q.2
+          (A q.1.1 q.2)).compContinuousLinearMap
           (fun _ : Fin s ↦ e.symmL Real q.2))
             (fun k : Fin s ↦ b (idx k)) = _
       rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
+      rw [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply]
     rw [heq] at heval
     exact heval
   have hF : ContinuousAt
@@ -307,10 +330,10 @@ theorem normSq0S_family_continuousOn
             (∏ a : Fin s, (Gm q)⁻¹ (I₀ a) (J₀ a)) *
               (A q.1.1 q.2 (fun a : Fin s ↦ e.symmL Real q.2 (b (I₀ a)))) *
               (A q.1.1 q.2 (fun a : Fin s ↦ e.symmL Real q.2 (b (J₀ a))))) q₀ := by
-    refine tendsto_finset_sum _ fun I₀ _ ↦ tendsto_finset_sum _ fun J₀ _ ↦ ?_
+    refine tendsto_finsetSum _ fun I₀ _ ↦ tendsto_finsetSum _ fun J₀ _ ↦ ?_
     have hp : ContinuousAt
         (fun q ↦ ∏ a : Fin s, (Gm q)⁻¹ (I₀ a) (J₀ a)) q₀ :=
-      tendsto_finset_prod _ fun a _ ↦ hGinvEnt (I₀ a) (J₀ a)
+      tendsto_finsetProd _ fun a _ ↦ hGinvEnt (I₀ a) (J₀ a)
     exact (hp.mul (hslots I₀)).mul (hslots J₀)
   have hev :
       (fun q : {t : Real // t ∈ K} × M ↦
@@ -322,31 +345,30 @@ theorem normSq0S_family_continuousOn
               (A q.1.1 q.2 (fun a : Fin s ↦ e.symmL Real q.2 (b (I₀ a)))) *
               (A q.1.1 q.2 (fun a : Fin s ↦ e.symmL Real q.2 (b (J₀ a)))) := by
     filter_upwards [hopen] with q hq
-    have hinv : MetricInverseInBasis_gen (I := I) (g q.1.1) q.2
-        (e.basisAt b hq) (fun i j ↦ (Gm q)⁻¹ i j) := by
-      simpa only [e, b, Gm] using
+    have hinv : MetricInverseInBasisGen (I := I) (g q.1.1) q.2
+        (chartBasisFamily (I := I) q₀.2 hq)
+        (fun i j ↦ (Gm q)⁻¹ i j) := by
+      simpa only [Gm, chartInvGramMatrix] using
         chartInvGram_inverse (I := I) (g q.1.1) q₀.2 hq
     rw [normSq0S_eq_coord (I := I) (g q.1.1) q.2 s
-      (e.basisAt b hq) (fun i j ↦ (Gm q)⁻¹ i j) hinv (A q.1.1 q.2)]
+      (chartBasisFamily (I := I) q₀.2 hq)
+      (fun i j ↦ (Gm q)⁻¹ i j) hinv (A q.1.1 q.2)]
     unfold coordInner0S
     refine Finset.sum_congr rfl fun I₀ _ ↦ Finset.sum_congr rfl fun J₀ _ ↦ ?_
     rw [tensor0SComponent_apply, tensor0SComponent_apply]
     have hI :
-        (fun a : Fin s => (e.basisAt b hq) (I₀ a)) =
-          fun a : Fin s => e.localFrame b (I₀ a) q.2 := by
+        (fun a : Fin s => chartBasisFamily (I := I) q₀.2 hq (I₀ a)) =
+          fun a : Fin s => e.symmL Real q.2 (b (I₀ a)) := by
       funext a
-      exact (e.localFrame_apply_of_mem_baseSet (b := b) (i := I₀ a) hq).symm
+      rw [chartBasisFamily_apply]
+      rfl
     have hJ :
-        (fun a : Fin s => (e.basisAt b hq) (J₀ a)) =
-          fun a : Fin s => e.localFrame b (J₀ a) q.2 := by
+        (fun a : Fin s => chartBasisFamily (I := I) q₀.2 hq (J₀ a)) =
+          fun a : Fin s => e.symmL Real q.2 (b (J₀ a)) := by
       funext a
-      exact (e.localFrame_apply_of_mem_baseSet (b := b) (i := J₀ a) hq).symm
+      rw [chartBasisFamily_apply]
+      rfl
     rw [hI, hJ]
-    have hframe (i : Fin (Module.finrank Real E)) :
-        e.localFrame b i q.2 = e.symmL Real q.2 (b i) := by
-      rw [e.localFrame_apply_of_mem_baseSet (b := b) (i := i) hq]
-      simp [Bundle.Trivialization.basisAt, Trivialization.symmL_apply]
-    simp only [hframe]
   exact hF.congr hev.symm
 
 def movingMetricDifferenceNormSq
@@ -401,7 +423,8 @@ theorem ricciReactionContractInBasis_deriv
   let Tdt : (Fin 2 → Idx) → Real := fun _ => 0
   have hinvAll (r : Real) :
       MetricInverseInBasis (I := I) (g r) x basis (gInv r) := by
-    simpa [gInv] using basisInvMetric_real (I := I) (g r) x basis
+    simpa only [gInv, MetricInverseInBasis, MetricInverseInBasisGen] using
+      basisInvMetric_real (I := I) (g r) x basis
   have hgInv (i j : Idx) :
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) Set.univ t := by
     simpa [gInv, gInvDt, ric] using
@@ -605,7 +628,9 @@ theorem ricciReactionCoordinateArray_bound
       simpa only [N] using abs_le_sqrt_compNormSqMulti Wc I₀
     have hstar : |ricStarArray q Wc I₀| ≤
         (2 : Real) * (Fintype.card Idx : Real) * B * Real.sqrt N := by
-      simpa only [N] using abs_ricStarArray_le q Wc B hB hq I₀
+      have hstar0 := abs_ricStarArray_le q Wc B hB hq I₀
+      norm_num at hstar0
+      simpa only [N] using hstar0
     exact mul_le_mul hW hstar (abs_nonneg _) hsqrt
   have hconst :
       (∑ _I₀ : Fin 2 → Idx,
@@ -877,7 +902,10 @@ theorem moving_metric_reaction_and_volume_bound
         (fun r : Real => (g r).inner x X Y)
         ((-2 : Real) * Q
           (fun a : Fin 2 => if a = 0 then X else Y)) t := by
-    simpa only [vec2] using hg
+    intro X Y
+    change HasDerivAt (fun r : Real => (g r).inner x X Y)
+      ((-2 : Real) * Q (vec2 (I := I) X Y)) t
+    exact hg X Y
   have hreact := movingMetricReaction_bound (I := I) (M := M)
     g Q W hB hQ hg'
   have htrace : |traceTimeDerivMetric (I := I) g t x| ≤
@@ -963,7 +991,7 @@ theorem movingMetricDifferenceEnergy_continuousOn
       (continuous_subtype_val.comp continuous_fst).prodMk continuous_snd
     have hcomp := (h₀ x₀ i j).comp hincl.continuousOn
       (fun q hq ↦ ⟨q.1.2, hq⟩)
-    simpa only [Function.comp_apply] using hcomp
+    exact hcomp.congr fun _ _ => rfl
   have h₁' : ∀ (x₀ : M) (i j : Fin (Module.finrank Real E)),
       ContinuousOn
         (fun q : {t : Real // t ∈ K} × M ↦
@@ -976,7 +1004,7 @@ theorem movingMetricDifferenceEnergy_continuousOn
       (continuous_subtype_val.comp continuous_fst).prodMk continuous_snd
     have hcomp := (h₁ x₀ i j).comp hincl.continuousOn
       (fun q hq ↦ ⟨q.1.2, hq⟩)
-    simpa only [Function.comp_apply] using hcomp
+    exact hcomp.congr fun _ _ => rfl
   have hmetric₀ := metricTensorCont_of_chartGram (I := I) (M := M) g₀ h₀'
   have hmetric₁ := metricTensorCont_of_chartGram (I := I) (M := M) g₁ h₁'
   have hdiffRaw := hmetric₁.add
@@ -985,28 +1013,32 @@ theorem movingMetricDifferenceEnergy_continuousOn
       (fun t x ↦ metricDiff02Field (I := I) (g₁ t) (g₀ t) x) := by
     refine tensor0SFamilyContinuousOnSet.congr (I := I) (M := M) hdiffRaw ?_
     intro t ht x
-    apply Tensor0SSpace.toModel_injective
+    apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).injective
     refine ContinuousMultilinearMap.ext (fun v => ?_)
-    rw [metricDiff02Field_toModel_apply]
-    simp only [neg_one_smul, Tensor0SSpace.toModel_add,
-      Tensor0SSpace.toModel_neg, metricDiff02_apply]
-    rw [ContinuousMultilinearMap.add_apply, ContinuousMultilinearMap.neg_apply]
-    change (g₁ t).inner x (v 0) (v 1) + -(g₀ t).inner x (v 0) (v 1) =
-      (g₁ t).inner x (v 0) (v 1) - (g₀ t).inner x (v 0) (v 1)
-    ring
+    rw [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply,
+      tensor0SSpaceFiberContinuousLinearEquiv_apply_apply]
+    change Tensor0SSpace.eval
+      ((metricTensorField (I := I) (g₁ t)) x +
+        (-1 : Real) • (metricTensorField (I := I) (g₀ t)) x) v =
+      Tensor0SSpace.eval
+        (metricDiff02Field (I := I) (g₁ t) (g₀ t) x) v
+    rw [Tensor0SSpace.eval_add, Tensor0SSpace.eval_smul,
+      metricDiff02Field_eval_local, metricTensorField_eval,
+      metricTensorField_eval, metricDiff02_apply]
+    rw [sub_eq_add_neg, neg_smul, one_smul]
   have hnormSub := normSq0S_family_continuousOn (I := I) (M := M) g₀
     (fun t x ↦ metricDiff02Field (I := I) (g₁ t) (g₀ t) x) h₀' hdiff
   have hnorm : ContinuousOn
       (fun p : Real × M ↦ normSq0S (I := I) (g₀ p.1) p.2 2
         (metricDiff02Field (I := I) (g₁ p.1) (g₀ p.1) p.2))
       (K ×ˢ (Set.univ : Set M)) := by
-    rw [continuousOn_iff_continuous_restrict]
+    rw [continuousOn_iff_continuous_domRestrict]
     let pull : {p : Real × M // p ∈ K ×ˢ (Set.univ : Set M)} →
         {t : Real // t ∈ K} × M := fun p ↦ (⟨p.1.1, p.2.1⟩, p.1.2)
     have hpull : Continuous pull := by
       exact (((continuous_fst.comp continuous_subtype_val).subtype_mk _).prodMk
         (continuous_snd.comp continuous_subtype_val))
-    simpa only [pull] using hnormSub.comp hpull
+    exact (hnormSub.comp hpull).congr fun _ => rfl
   change ContinuousOn
     (fun t : Real ↦
       ∫ x, normSq0S (I := I) (g₀ t) x 2
@@ -1126,31 +1158,32 @@ theorem movingMetricDifferenceNormSq_smooth
       (fun q : Real × M ↦
         movingMetricDifferenceNormSq (I := I) (M := M) g₀ g₁ q.1 q.2) =ᶠ[nhds p] rhs := by
     filter_upwards [(hU.prod e.open_baseSet).mem_nhds ⟨hp.1, hx⟩] with q hq
-    have hinv : MetricInverseInBasis_gen (I := I) (g₀ q.1) q.2
-        (e.basisAt b hq.2) (fun i j ↦ (G₀ q)⁻¹ i j) := by
-      simpa only [e, b, G₀, x₀] using
+    have hinv : MetricInverseInBasisGen (I := I) (g₀ q.1) q.2
+        (chartBasisFamily (I := I) p.2 hq.2)
+        (fun i j ↦ (G₀ q)⁻¹ i j) := by
+      simpa only [G₀, x₀, chartInvGramMatrix] using
         chartInvGram_inverse (I := I) (g₀ q.1) p.2 hq.2
     rw [movingMetricDifferenceNormSq,
       normSq0S_eq_coord (I := I) (g₀ q.1) q.2 2
-        (e.basisAt b hq.2) (fun i j ↦ (G₀ q)⁻¹ i j) hinv
+        (chartBasisFamily (I := I) p.2 hq.2)
+        (fun i j ↦ (G₀ q)⁻¹ i j) hinv
         (metricDiff02Field (I := I) (g₁ q.1) (g₀ q.1) q.2)]
     unfold coordInner0S rhs
     refine Finset.sum_congr rfl fun I₀ _ ↦ Finset.sum_congr rfl fun J₀ _ ↦ ?_
     have hcomp (K₀ : Fin 2 → Fin (Module.finrank Real E)) :
         tensor0SComponent (I := I)
             (metricDiff02Field (I := I) (g₁ q.1) (g₀ q.1) q.2)
-            (fun i ↦ e.basisAt b hq.2 i) K₀ = W q K₀ := by
+            (fun i ↦ chartBasisFamily (I := I) p.2 hq.2 i) K₀ = W q K₀ := by
       rw [tensor0SComponent_apply]
-      change Tensor0SSpace.toModel
+      change Tensor0SSpace.eval
           (metricDiff02Field (I := I) (g₁ q.1) (g₀ q.1) q.2)
-          (fun a ↦ e.basisAt b hq.2 (K₀ a)) = _
-      rw [metricDiff02Field_toModel_apply, metricDiff02_apply]
+          (fun a ↦ chartBasisFamily (I := I) p.2 hq.2 (K₀ a)) = _
+      rw [metricDiff02Field_eval_local, metricDiff02_apply]
       simp only [G₀, G₁, W]
       have hslot (a : Fin 2) :
-          (e.basisAt b hq.2) (K₀ a) =
+          chartBasisFamily (I := I) p.2 hq.2 (K₀ a) =
             chartBasisVecFiber (I := I) p.2 (K₀ a) q.2 := by
-        simpa only [e, b, x₀] using
-          chartBasisFamily_apply (I := I) p.2 hq.2 (K₀ a)
+        exact chartBasisFamily_apply (I := I) p.2 hq.2 (K₀ a)
       rw [hslot 0, hslot 1, ← chartGramMatrix_apply, ← chartGramMatrix_apply]
     rw [hcomp I₀, hcomp J₀]
   exact (hrhs.congr_of_eventuallyEq heq).contMDiffWithinAt
@@ -1201,7 +1234,8 @@ theorem movingMetricDifferenceNormSq_time_deriv {x : M} {t : Real}
     tensor0SComponent (I := I) Wdot (fun i ↦ basis i) I₀
   have hinvAll (r : Real) :
       MetricInverseInBasis (I := I) (g₀ r) x basis (gInv r) := by
-    simpa [gInv] using basisInvMetric_real (I := I) (g₀ r) x basis
+    simpa only [gInv, MetricInverseInBasis, MetricInverseInBasisGen] using
+      basisInvMetric_real (I := I) (g₀ r) x basis
   have hgInv (i j : Fin (Module.finrank Real (TangentSpace I x))) :
       HasDerivWithinAt (fun r : Real ↦ gInv r i j) (gInvDt i j) Set.univ t := by
     simpa [gInv, gInvDt, ric] using
@@ -1254,7 +1288,8 @@ theorem movingMetricDifferenceNormSq_time_deriv {x : M} {t : Real}
       (I := I) (s := 2) (u := Set.univ) (t := t)
       g₀ gInv gInvDt ric T Tdt Wdot basis hinvAll hgInv hT hTdot hflow
   have hat := hbase.hasDerivAt (by simp)
-  simpa only [movingMetricDifferenceNormSq, movingMetricReaction, T, gInv, ric] using hat
+  simpa only [movingMetricDifferenceNormSq, movingMetricReaction,
+    ricciReactionContractInBasis, T, gInv, ric] using hat
 
 omit [NeZero (Module.finrank ℝ E)]
   [CompactSpace M]
@@ -1288,8 +1323,11 @@ theorem movingMetricDifferenceNormSq_ricciDeTurck_deriv {x : M} {t : Real}
     ring
   · intro X Y
     have hsub := (hPDE₁ X Y).sub (hPDE₀ X Y)
-    simpa only [metricDiff02_apply, Tensor0SSpace.toModel_sub,
-      ContinuousMultilinearMap.sub_apply, deTurckRHSField_toModel_apply] using hsub
+    change HasDerivAt
+      (fun r : Real => (g₁ r).inner x X Y - (g₀ r).inner x X Y)
+      (deTurckRicciRHS (I := I) g_bg (g₁ t) x X Y -
+        deTurckRicciRHS (I := I) g_bg (g₀ t) x X Y) t
+    exact hsub
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless]
@@ -1317,8 +1355,11 @@ theorem movingMetricDifferenceEnergy_deriv
               movingMetricDifferenceNormSq (I := I) (M := M) g₀ g₁ t x
         ∂(riemannianMeasureFamily (I := I) (M := M) g₀ t)) t := by
   have hsmooth := movingMetricDifferenceNormSq_smooth (I := I) (M := M) g₀ g₁ hU h₀ h₁
-  simpa only [movingMetricDifferenceEnergy] using
-    first_var_joint (I := I) (M := M) hU ht h₀ hsmooth
+  change HasDerivAt
+    (fun s : Real => ∫ x,
+      movingMetricDifferenceNormSq (I := I) (M := M) g₀ g₁ s x
+      ∂(riemannianMeasureFamily (I := I) (M := M) g₀ s)) _ t
+  exact first_var_joint (I := I) (M := M) hU ht h₀ hsmooth
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem movingMetricDifferenceEnergy_ricciDeTurck_deriv
@@ -1462,9 +1503,15 @@ theorem movingMetricDifferenceEnergy_eq_zero
         metricDiff02Field (I := I) (g₁ 0) (g₀ 0) x = 0 := by
       intro x
       rw [hinit]
-      apply Tensor0SSpace.toModel_injective
+      apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x).injective
       refine ContinuousMultilinearMap.ext (fun v => ?_)
-      rw [metricDiff02Field_toModel_apply, metricDiff02_apply]
+      rw [tensor0SSpaceFiberContinuousLinearEquiv_apply_apply,
+        tensor0SSpaceFiberContinuousLinearEquiv_apply_apply]
+      change Tensor0SSpace.eval
+          (metricDiff02Field (I := I) (g₀ 0) (g₀ 0) x) v =
+        Tensor0SSpace.eval (0 : Tensor0SSpace 2 I x) v
+      rw [metricDiff02Field_eval_local, metricDiff02_apply,
+        Tensor0SSpace.eval_zero]
       simp
     unfold movingMetricDifferenceEnergy movingMetricDifferenceNormSq
     simp [hfield, normSq0S, inner0S, MetricFiberData.inner]

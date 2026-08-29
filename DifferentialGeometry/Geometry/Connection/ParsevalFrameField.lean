@@ -5,6 +5,7 @@ open DifferentialGeometry.Geometry.Curvature
 noncomputable section
 
 
+
 open Bundle Manifold Set Filter
 open scoped Manifold Topology ContDiff BigOperators
 
@@ -33,11 +34,11 @@ theorem orthonormal_tangent_expansion
   have hbnd : Bornology.IsVonNBounded ℝ {v : TangentSpace I x |
       RCLike.re (cd.inner v v) < 1} :=
     g.toRiemannianMetric.isVonNBounded x
-  letI nag : NormedAddCommGroup (TangentSpace I x) :=
+  let nag : NormedAddCommGroup (TangentSpace I x) :=
     cd.toNormedAddCommGroupOfTopology hc hbnd
-  letI ips : InnerProductSpace ℝ (TangentSpace I x) :=
+  let ips : InnerProductSpace ℝ (TangentSpace I x) :=
     InnerProductSpace.ofCoreOfTopology cd hc hbnd
-  haveI : Nonempty (Fin (Module.finrank ℝ E)) := ⟨⟨0, NeZero.pos _⟩⟩
+  have : Nonempty (Fin (Module.finrank ℝ E)) := ⟨⟨0, NeZero.pos _⟩⟩
   have hinner_eq : ∀ u v : TangentSpace I x, (inner ℝ u v : ℝ) = g.inner x u v :=
     fun u v => rfl
   have hON : Orthonormal ℝ e := by
@@ -79,14 +80,13 @@ theorem parseval_family_inner_mul_sum
     (∑ a : Fin N, g.inner x (W a) u * g.inner x (W a) v) = g.inner x u v := by
   classical
   have h := congrArg (fun w : TangentSpace I x => g.inner x w v) (hW u)
-  simp only at h
   rw [show g.inner x (∑ a : Fin N, g.inner x (W a) u • W a) v =
       ∑ a : Fin N, g.inner x (W a) u * g.inner x (W a) v from ?_] at h
   · exact h
   · rw [map_sum (g.inner x) (fun a : Fin N => g.inner x (W a) u • W a) Finset.univ,
-      ContinuousLinearMap.sum_apply]
+      sum_apply]
     refine Finset.sum_congr rfl (fun a _ => ?_)
-    rw [map_smul (g.inner x) (g.inner x (W a) u) (W a), ContinuousLinearMap.smul_apply,
+    rw [map_smul (g.inner x) (g.inner x (W a) u) (W a), smul_apply,
       smul_eq_mul]
 
 omit [FiniteDimensional ℝ E] [T2Space M] [BoundarylessManifold I M] in
@@ -185,8 +185,13 @@ theorem exists_smooth_parseval_frame_family (g : SmoothRiemannianMetric I M) :
       | insert k s hk ih =>
           have hsq : ContMDiff I 𝓘(ℝ) ∞ (fun x : M => (f k x) ^ 2) := by
             have h := (f k).contMDiff
-            simpa [pow_two] using h.mul h
-          simpa [Finset.sum_insert hk] using hsq.add ih
+            have hmul := h.mul h
+            change ContMDiff I 𝓘(ℝ) ∞ (fun x : M => f k x * f k x) at hmul
+            simpa only [pow_two] using hmul
+          have hadd := hsq.add ih
+          change ContMDiff I 𝓘(ℝ) ∞
+            (fun x : M => (f k x) ^ 2 + ∑ i ∈ s, (f i x) ^ 2) at hadd
+          simpa only [Finset.sum_insert hk] using hadd
     exact hgen Finset.univ
   set c : ↥t → M → ℝ := fun k x => (Real.sqrt (ρ x))⁻¹ * f k x with hc_def
   have hc_smooth : ∀ k : ↥t, ContMDiff I 𝓘(ℝ) ∞ (c k) := by
@@ -219,7 +224,7 @@ theorem exists_smooth_parseval_frame_family (g : SmoothRiemannianMetric I M) :
       by_cases hfk : f k x = 0
       · have hc0 : c k x = 0 := by rw [hc_def]; simp [hfk]
         rw [hfk]
-        simp only [hW0_def, hc0, zero_smul, map_zero, ContinuousLinearMap.zero_apply,
+        simp only [hW0_def, hc0, zero_smul, map_zero, zero_apply,
           smul_zero, Finset.sum_const_zero]
         rw [show (0 : ℝ) ^ 2 * (ρ x)⁻¹ = 0 by ring, zero_smul]
       · have hx_mem : x ∈ smoothOrthoFrameNbhd (I := I) (M := M) (k : M) := by
@@ -237,7 +242,7 @@ theorem exists_smooth_parseval_frame_family (g : SmoothRiemannianMetric I M) :
           rw [hW0_def]
           simp only
           rw [map_smul (g.inner x) (c k x) (smoothOrthoFrame (I := I) g (k : M) i x),
-            ContinuousLinearMap.smul_apply, smul_eq_mul, smul_smul, smul_smul]
+            smul_apply, smul_eq_mul, smul_smul, smul_smul]
           congr 1
           ring
         rw [Finset.sum_congr rfl (fun i _ => hstep i), ← Finset.smul_sum,
