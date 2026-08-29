@@ -25,7 +25,7 @@ def Rm04LowersRm13At
     (Rm04 : Tensor04At (I := I) (M := M) x) : Prop :=
   forall X Y Z W : TangentSpace I x,
     Rm04 (vec4 X Y Z W) =
-      Rm13 (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) W))
+      Rm13 (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) W))
         (vec3 X Y Z)
 
 theorem rm04RealizesLower
@@ -40,7 +40,7 @@ theorem rm04RealizesLower
   intro X Y Z W x
   rw [hLower x (X x) (Y x) (Z x) (W x)]
   have h := hRm13 X Y Z x
-    (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) (W x)))
+    (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (W x)))
   simpa [tangentFlatLinear_apply_gen, cotangentToDual_apply_gen] using h
 
 theorem rm04LowersRm13At_of_realizes
@@ -71,7 +71,7 @@ theorem rm04LowersRm13At_of_realizes
       (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
       (n := (⊤ : ℕ∞)) x Z
   let alpha : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=
-    dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) W)
+    dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) W)
   have h04 := hRm04 Xsec Ysec Zsec Wsec x
   have h13 := hRm13 Xsec Ysec Zsec x alpha
   have h04' :
@@ -82,7 +82,7 @@ theorem rm04LowersRm13At_of_realizes
     simpa [hWsec, hXsec, hYsec, hZsec] using h04
   have h13' :
       Rm13 x
-          (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) W))
+          (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) W))
           (vec3 X Y Z) =
         g.inner x W
           ((connectionRiemannCurvatureField (I := I) cov
@@ -95,9 +95,9 @@ def Rm13MetricSkewAt
     (g : SmoothRiemannianMetric I M) (x : M)
     (Rm13 : Tensor13At (I := I) (M := M) x) : Prop :=
   forall W X Y Z : TangentSpace I x,
-    Rm13 (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) W))
+    Rm13 (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) W))
         (vec3 X Y Z) =
-      -Rm13 (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) Z))
+      -Rm13 (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) Z))
         (vec3 X Y W)
 
 def Rm04OutputSkewAt
@@ -114,11 +114,11 @@ theorem rm13MetricSkewAt_of_rm04_outputSkew
     Rm13MetricSkewAt (I := I) g x Rm13 := by
   intro W X Y Z
   calc
-    Rm13 (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) W))
+    Rm13 (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) W))
         (vec3 X Y Z)
         = Rm04 (vec4 X Y Z W) := (hLower X Y Z W).symm
     _ = -Rm04 (vec4 X Y W Z) := hSkew X Y Z W
-    _ = -Rm13 (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) Z))
+    _ = -Rm13 (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) Z))
         (vec3 X Y W) := by rw [hLower X Y W Z]
 
 theorem rm13MetricSkewAt_of_realizes_outputSkew

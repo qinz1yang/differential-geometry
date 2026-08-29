@@ -199,21 +199,21 @@ theorem partialDeriv2_chartGramOnE_realizeMetricAt_sub_eq
       ⟨interior ((extChartAt I α).target : Set E), hop.mem_nhds hy, h_eqOn⟩
   rw [hev.fderiv_eq]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
-  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
-  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
+  Bundle.continuousMultilinearMap.mixedInstNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixedInstNormedSpace in
 def iteratedCovGradJetSum (g_bg : SmoothRiemannianMetric I M)
     (S : SmoothCcTensor g_bg 0 2) (x : M) : ℝ :=
   ∑ j ∈ Finset.range 3,
     (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 (2 + j)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 (2 + j)
     ‖(iteratedCovGrad (I := I) (M := M) g_bg 0 2 j S).toSection x‖)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
-  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
-  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
+  Bundle.continuousMultilinearMap.mixedInstNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixedInstNormedSpace in
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -223,13 +223,13 @@ lemma iteratedCovGradJetSum_nonneg (g_bg : SmoothRiemannianMetric I M)
   rw [iteratedCovGradJetSum]
   refine Finset.sum_nonneg (fun j _ => ?_)
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 (2 + j)
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 (2 + j)
   exact norm_nonneg _
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
-  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
-  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
+  Bundle.continuousMultilinearMap.mixedInstNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixedInstNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem iteratedCovGradJetSum_le_toHs (g_bg : SmoothRiemannianMetric I M) (k : ℕ)
     (h_super : 2 * k > Module.finrank ℝ E + 4) :

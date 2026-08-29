@@ -532,7 +532,7 @@ open DifferentialGeometry.Integral.L2
 
 variable [CompleteSpace E]
 
-noncomputable def tensorConnLaplacian_of_contMDiff
+noncomputable def tensorConnLaplacianOfContMDiff
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s)
     (hSmooth : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
       (fun y : M => TotalSpace.mk' (TensorRSModel r s ℝ E)
@@ -555,7 +555,7 @@ omit [CompleteSpace E] in
         (E := fun z : M => TensorRSSpace r s I z) y
         (rawTensorConnLap (I := I) g r s (fun z : M => T.toSection z) y)))
     (x : M) :
-    (tensorConnLaplacian_of_contMDiff (I := I) g r s T hSmooth).toSection x =
+    (tensorConnLaplacianOfContMDiff (I := I) g r s T hSmooth).toSection x =
       rawTensorConnLap (I := I) g r s (fun z : M => T.toSection z) x := rfl
 
 omit [CompleteSpace E] in
@@ -576,10 +576,10 @@ theorem tensorConnLaplacian_of_contMDiff_add
         (rawTensorConnLap (I := I) g r s
           (fun z : M => (T + T').toSection z) y)))
     (x : M) :
-    (tensorConnLaplacian_of_contMDiff (I := I) g r s (T + T')
+    (tensorConnLaplacianOfContMDiff (I := I) g r s (T + T')
         hSmooth_sum).toSection x =
-      (tensorConnLaplacian_of_contMDiff (I := I) g r s T hSmooth_T).toSection x +
-        (tensorConnLaplacian_of_contMDiff (I := I) g r s T'
+      (tensorConnLaplacianOfContMDiff (I := I) g r s T hSmooth_T).toSection x +
+        (tensorConnLaplacianOfContMDiff (I := I) g r s T'
           hSmooth_T').toSection x := by
   classical
   rw [tensorConnLaplacian_of_contMDiff_toFun,
@@ -617,9 +617,9 @@ theorem tensorConnLaplacian_of_contMDiff_smul
         (rawTensorConnLap (I := I) g r s
           (fun z : M => (c • T).toSection z) y)))
     (x : M) :
-    (tensorConnLaplacian_of_contMDiff (I := I) g r s (c • T)
+    (tensorConnLaplacianOfContMDiff (I := I) g r s (c • T)
         hSmooth_cT).toSection x =
-      c • (tensorConnLaplacian_of_contMDiff (I := I) g r s T
+      c • (tensorConnLaplacianOfContMDiff (I := I) g r s T
         hSmooth_T).toSection x := by
   classical
   rw [tensorConnLaplacian_of_contMDiff_toFun,
@@ -646,7 +646,7 @@ theorem tensorConnLaplacian_of_contMDiff_zero
         (E := fun z : M => TensorRSSpace r s I z) y
         (rawTensorConnLap (I := I) g r s
           (fun z : M => (0 : SmoothCcTensor g r s).toSection z) y))) :
-    tensorConnLaplacian_of_contMDiff (I := I) g r s
+    tensorConnLaplacianOfContMDiff (I := I) g r s
         (0 : SmoothCcTensor g r s) hSmooth =
       (0 : SmoothCcTensor g r s) := by
   classical
@@ -685,7 +685,7 @@ section FixedFrame
 
 variable [CompleteSpace E]
 
-noncomputable def rawTensorConnLap_fixedFrame
+noncomputable def rawTensorConnLapFixedFrame
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (T : Π b : M, TensorRSSpace r s I b) (x : M) :
@@ -707,7 +707,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (T : Π b : M, TensorRSSpace r s I b) (x : M) :
-    rawTensorConnLap_fixedFrame (I := I) g r s B T x =
+    rawTensorConnLapFixedFrame (I := I) g r s B T x =
       ∑ i : Fin (Module.finrank ℝ E),
         ((TensorRSNabla.tensorRSCovariantDerivative I M r s
               (LeviCivita (I := I) g)).toFun
@@ -724,7 +724,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 lemma rawTensorConnLap_fixedFrame_smoothOrthoFrame
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Π b : M, TensorRSSpace r s I b) (x : M) :
-    rawTensorConnLap_fixedFrame (I := I) g r s
+    rawTensorConnLapFixedFrame (I := I) g r s
         (smoothOrthoFrame (I := I) g x) T x =
       rawTensorConnLap (I := I) g r s T x := rfl
 
@@ -898,7 +898,7 @@ theorem rawTensorConnLap_fixedFrame_contMDiff
     ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
       (fun y : M => TotalSpace.mk' (TensorRSModel r s ℝ E)
         (E := fun z : M => TensorRSSpace r s I z) y
-        (rawTensorConnLap_fixedFrame (I := I) g r s B T y)) := by
+        (rawTensorConnLapFixedFrame (I := I) g r s B T y)) := by
   classical
   have h_per_index_smooth : ∀ i : Fin (Module.finrank ℝ E),
       ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
@@ -1369,7 +1369,7 @@ theorem rawTensorConnLap_eq_fixedFrame_of_orthonormal
     (hB_orth : ∀ i j : Fin (Module.finrank ℝ E),
       g.inner y (B i y) (B j y) = if i = j then (1 : ℝ) else 0) :
     rawTensorConnLap (I := I) g r s T y =
-      rawTensorConnLap_fixedFrame (I := I) g r s B T y := by
+      rawTensorConnLapFixedFrame (I := I) g r s B T y := by
   classical
   have h_frame_trace :
       rawTensorConnLap (I := I) g r s T y =
@@ -1408,7 +1408,7 @@ private theorem rawTensorConnLap_eq_fixedFrame_smoothOrthoFrame_on_nbhd
     (x₀ : M)
     {y : M} (hy : y ∈ smoothOrthoFrameNbhd (I := I) (M := M) x₀) :
     rawTensorConnLap (I := I) g r s T y =
-      rawTensorConnLap_fixedFrame (I := I) g r s
+      rawTensorConnLapFixedFrame (I := I) g r s
         (smoothOrthoFrame (I := I) g x₀) T y :=
   rawTensorConnLap_eq_fixedFrame_of_orthonormal (I := I) g r s T hT_total
     (B := smoothOrthoFrame (I := I) g x₀)
@@ -1431,14 +1431,14 @@ theorem rawTensorConnLap_contMDiff
   have h_fixed : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
       (fun y : M => TotalSpace.mk' (TensorRSModel r s ℝ E)
         (E := fun z : M => TensorRSSpace r s I z) y
-        (rawTensorConnLap_fixedFrame (I := I) g r s
+        (rawTensorConnLapFixedFrame (I := I) g r s
           (smoothOrthoFrame (I := I) g x₀) T y)) :=
     rawTensorConnLap_fixedFrame_contMDiff (I := I) g r s hT_total
       (fun i => smoothOrthoFrame_smooth (I := I) g x₀ i)
   have h_fixed_at : ContMDiffAt I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
       (fun y : M => TotalSpace.mk' (TensorRSModel r s ℝ E)
         (E := fun z : M => TensorRSSpace r s I z) y
-        (rawTensorConnLap_fixedFrame (I := I) g r s
+        (rawTensorConnLapFixedFrame (I := I) g r s
           (smoothOrthoFrame (I := I) g x₀) T y)) x₀ :=
     h_fixed x₀
   have h_eventuallyEq :
@@ -1447,11 +1447,11 @@ theorem rawTensorConnLap_contMDiff
         (rawTensorConnLap (I := I) g r s T y)) =ᶠ[𝓝 x₀]
       (fun y : M => TotalSpace.mk' (TensorRSModel r s ℝ E)
         (E := fun z : M => TensorRSSpace r s I z) y
-        (rawTensorConnLap_fixedFrame (I := I) g r s
+        (rawTensorConnLapFixedFrame (I := I) g r s
           (smoothOrthoFrame (I := I) g x₀) T y)) := by
     filter_upwards [smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x₀] with y hy
     have h_fib : rawTensorConnLap (I := I) g r s T y =
-        rawTensorConnLap_fixedFrame (I := I) g r s
+        rawTensorConnLapFixedFrame (I := I) g r s
           (smoothOrthoFrame (I := I) g x₀) T y :=
       rawTensorConnLap_eq_fixedFrame_smoothOrthoFrame_on_nbhd (I := I)
         g r s T hT_total x₀ hy

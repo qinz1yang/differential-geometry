@@ -37,7 +37,7 @@ private lemma tensorSectionMDiffAt_tensorPartialEval
       letI _h_top : TopologicalSpace
           (TotalSpace (TensorRSModel r s ℝ E)
             (fun x : M => TensorRSSpace r s I x)) :=
-        tensorRSBundle_topology r s
+        tensorRSBundleTopology r s
       MDifferentiableAt I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E))
         (fun y : M => TotalSpace.mk' (TensorRSModel r s ℝ E)
           (E := fun z : M => TensorRSSpace r s I z) y (T y)) b) :
@@ -48,7 +48,7 @@ private lemma tensorSectionMDiffAt_tensorPartialEval
   unfold TensorSectionMDiffAt
   let _h_top_s : TopologicalSpace
       (TotalSpace (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x)) :=
-    tensor0SBundle_topology s
+    tensor0SBundleTopology s
   have hW_at :
       MDifferentiableAt I (I.prod 𝓘(ℝ, Tensor0SModel r ℝ E))
         (fun y : M => TotalSpace.mk' (Tensor0SModel r ℝ E)
@@ -177,10 +177,10 @@ theorem chartTensorRSCovariantDerivative_eq_abstract_on_chartLeviCivitaGoodSet
       letI _h_top : TopologicalSpace
           (TotalSpace (TensorRSModel r s ℝ E)
             (fun x : M => TensorRSSpace r s I x)) :=
-        tensorRSBundle_topology r s
+        tensorRSBundleTopology r s
       letI _h_fib : FiberBundle (TensorRSModel r s ℝ E)
           (fun x : M => TensorRSSpace r s I x) :=
-        tensorRSBundle_fiber r s
+        tensorRSBundleFiber r s
       Cₛ^∞⟮I; TensorRSModel r s ℝ E,
         fun b => TensorRSSpace r s I b⟯)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -192,10 +192,10 @@ theorem chartTensorRSCovariantDerivative_eq_abstract_on_chartLeviCivitaGoodSet
   let _h_top : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   let _h_fib : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   have hT_at :
       MDifferentiableAt I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E))
         (fun b' : M => TotalSpace.mk' (TensorRSModel r s ℝ E)
@@ -208,7 +208,7 @@ theorem chartTensorRSCovariantDerivative_eq_abstract_on_chartLeviCivitaGoodSet
     X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have hT_pull :
       DifferentiableAt ℝ
-        (tensorRSChartE_section_repr (I := I) r s α T.toFun ∘ (extChartAt I α).symm)
+        (tensorRSChartESectionRepr (I := I) r s α T.toFun ∘ (extChartAt I α).symm)
         (extChartAt I α b) := by
     set e := trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) α with he_def
@@ -228,20 +228,20 @@ theorem chartTensorRSCovariantDerivative_eq_abstract_on_chartLeviCivitaGoodSet
         (e := e) T.toFun hb_base_rs).mp hT_at
     have hα_repr_eq : ∀ {b' : M}, b' ∈ e.baseSet →
         (e ⟨b', T.toFun b'⟩).2 =
-          tensorRSChartE_section_repr (I := I) r s α T.toFun b' := by
+          tensorRSChartESectionRepr (I := I) r s α T.toFun b' := by
       intro b' hb'
-      unfold tensorRSChartE_section_repr
+      unfold tensorRSChartESectionRepr
       have hcoe := e.coe_linearMapAt_of_mem (R := ℝ) (b := b') hb'
       have happ := congrFun hcoe (T.toFun b')
       exact happ.symm
     have hbase_open : IsOpen e.baseSet := e.open_baseSet
     have hbase_nhds : e.baseSet ∈ 𝓝 b := hbase_open.mem_nhds hb_base_rs
     have h_funeq :
-        tensorRSChartE_section_repr (I := I) r s α T.toFun =ᶠ[𝓝 b]
+        tensorRSChartESectionRepr (I := I) r s α T.toFun =ᶠ[𝓝 b]
         (fun b' : M => (e ⟨b', T.toFun b'⟩).2) := by
       filter_upwards [hbase_nhds] with b' hb' using (hα_repr_eq hb').symm
     have hrepr_α_diff : MDifferentiableAt I 𝓘(ℝ, TensorRSModel r s ℝ E)
-        (tensorRSChartE_section_repr (I := I) r s α T.toFun) b :=
+        (tensorRSChartESectionRepr (I := I) r s α T.toFun) b :=
       hα_repr_diff.congr_of_eventuallyEq h_funeq
     have hb_src : b ∈ (chartAt H α).source :=
       chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb
@@ -249,7 +249,7 @@ theorem chartTensorRSCovariantDerivative_eq_abstract_on_chartLeviCivitaGoodSet
       chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hb
     have hpb := mdifferentiableAt_iff_source_of_mem_source (I := I)
       (E' := TensorRSModel r s ℝ E) (I' := 𝓘(ℝ, TensorRSModel r s ℝ E)) (x := α)
-      (f := tensorRSChartE_section_repr (I := I) r s α T.toFun) hb_src
+      (f := tensorRSChartESectionRepr (I := I) r s α T.toFun) hb_src
     have hwithin := hpb.mp hrepr_α_diff
     have htgt_subset : (extChartAt I α).target ⊆ range I :=
       extChartAt_target_subset_range α

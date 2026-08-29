@@ -26,8 +26,8 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 variable {D : RealTimeInterval}
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lRegSpeed_le
     (S : SolutionOn (I := I) (M := M) D)
@@ -117,8 +117,8 @@ private theorem lRegSpeed_le
         simpa only [add_comm] using add_le_add_left hratio U0
       _ = Q := rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRegDomain_of_slab
     (S : SolutionOn (I := I) (M := M) D)

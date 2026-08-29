@@ -44,7 +44,7 @@ theorem connTraceUTrace
         gInvDeriv d i j =
           mvfderiv (I := I)
             (fun y : M =>
-              inverseMetricFlatModelInChart_component (I := I) g x i j
+              inverseMetricFlatModelInChartComponent (I := I) g x i j
                 (extChartAt I x y))
             x (coordinateFrameAt (I := I) x d x))
     (hzero :
@@ -52,7 +52,7 @@ theorem connTraceUTrace
         inverseMetricCovDerivForMetricCompInFrame
           (I := I)
           (fun y : M => fun a b : CoordinateIdx (𝕜 := Real) E =>
-            inverseMetricFlatModelInChart_component (I := I) g x a b
+            inverseMetricFlatModelInChartComponent (I := I) g x a b
               (extChartAt I x y))
           cov (coordinateFrameAt (I := I) x)
           (coordinateFrameAt_isLocalFrame_one (I := I) x)
@@ -62,20 +62,20 @@ theorem connTraceUTrace
         ∑ j : CoordinateIdx (𝕜 := Real) E,
           gInvDeriv d i j *
             componentRS (I := I)
-              (coordinateFrameAt_basis (I := I) x
+              (coordinateFrameAtBasis (I := I) x
                 (coordinateFrameAt_mem (I := I) x))
               (A x) (fun _ : Fin 1 => d)
               (fun q : Fin 2 => if q = 0 then i else j)) =
         -∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
-            inverseMetricFlatModelInChart_component (I := I) g x i j
+            inverseMetricFlatModelInChartComponent (I := I) g x i j
                 (extChartAt I x x) *
               ((∑ a : CoordinateIdx (𝕜 := Real) E,
                 christoffelSymbolInFrame cov
                   (coordinateFrameAt (I := I) x)
                   (coordinateFrameAt_isLocalFrame_one (I := I) x) x d i a *
                   componentRS (I := I)
-                    (coordinateFrameAt_basis (I := I) x
+                    (coordinateFrameAtBasis (I := I) x
                       (coordinateFrameAt_mem (I := I) x))
                     (A x) (fun _ : Fin 1 => d)
                     (fun q : Fin 2 => if q = 0 then a else j)) +
@@ -84,7 +84,7 @@ theorem connTraceUTrace
                   (coordinateFrameAt (I := I) x)
                   (coordinateFrameAt_isLocalFrame_one (I := I) x) x d j a *
                   componentRS (I := I)
-                    (coordinateFrameAt_basis (I := I) x
+                    (coordinateFrameAtBasis (I := I) x
                       (coordinateFrameAt_mem (I := I) x))
                     (A x) (fun _ : Fin 1 => d)
                     (fun q : Fin 2 => if q = 0 then i else a))) := by
@@ -93,13 +93,13 @@ theorem connTraceUTrace
   let Acomp : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun i j =>
       componentRS (I := I)
-        (coordinateFrameAt_basis (I := I) x (coordinateFrameAt_mem (I := I) x))
+        (coordinateFrameAtBasis (I := I) x (coordinateFrameAt_mem (I := I) x))
         (A x) (fun _ : Fin 1 => d) (fun q : Fin 2 => if q = 0 then i else j)
   have hcancel :=
     DifferentialGeometry.Geometry.Connection.gInvTraceCancel
       (I := I)
       (gInv := fun y : M => fun a b : CoordinateIdx (𝕜 := Real) E =>
-        inverseMetricFlatModelInChart_component (I := I) g x a b
+        inverseMetricFlatModelInChartComponent (I := I) g x a b
           (extChartAt I x y))
       (metricDot := fun _ : M => Acomp)
       (cov := cov)
@@ -111,7 +111,7 @@ theorem connTraceUTrace
       ∑ j : CoordinateIdx (𝕜 := Real) E,
         gInvDeriv d i j *
           componentRS (I := I)
-            (coordinateFrameAt_basis (I := I) x
+            (coordinateFrameAtBasis (I := I) x
               (coordinateFrameAt_mem (I := I) x))
             (A x) (fun _ : Fin 1 => d)
             (fun q : Fin 2 => if q = 0 then i else j))
@@ -120,7 +120,7 @@ theorem connTraceUTrace
         ∑ j : CoordinateIdx (𝕜 := Real) E,
           mvfderiv (I := I)
               (fun y : M =>
-                inverseMetricFlatModelInChart_component (I := I) g x i j
+                inverseMetricFlatModelInChartComponent (I := I) g x i j
                   (extChartAt I x y))
               x (coordinateFrameAt (I := I) x d x) *
             Acomp i j := by
@@ -130,7 +130,7 @@ theorem connTraceUTrace
     _ =
       -∑ i : CoordinateIdx (𝕜 := Real) E,
         ∑ j : CoordinateIdx (𝕜 := Real) E,
-          inverseMetricFlatModelInChart_component (I := I) g x i j
+          inverseMetricFlatModelInChartComponent (I := I) g x i j
               (extChartAt I x x) *
             ((∑ a : CoordinateIdx (𝕜 := Real) E,
               christoffelSymbolInFrame cov
@@ -146,14 +146,14 @@ theorem connTraceUTrace
     _ =
       -∑ i : CoordinateIdx (𝕜 := Real) E,
         ∑ j : CoordinateIdx (𝕜 := Real) E,
-          inverseMetricFlatModelInChart_component (I := I) g x i j
+          inverseMetricFlatModelInChartComponent (I := I) g x i j
               (extChartAt I x x) *
             ((∑ a : CoordinateIdx (𝕜 := Real) E,
               christoffelSymbolInFrame cov
                 (coordinateFrameAt (I := I) x)
                 (coordinateFrameAt_isLocalFrame_one (I := I) x) x d i a *
                 componentRS (I := I)
-                  (coordinateFrameAt_basis (I := I) x
+                  (coordinateFrameAtBasis (I := I) x
                     (coordinateFrameAt_mem (I := I) x))
                   (A x) (fun _ : Fin 1 => d)
                   (fun q : Fin 2 => if q = 0 then a else j)) +
@@ -162,7 +162,7 @@ theorem connTraceUTrace
                 (coordinateFrameAt (I := I) x)
                 (coordinateFrameAt_isLocalFrame_one (I := I) x) x d j a *
                 componentRS (I := I)
-                  (coordinateFrameAt_basis (I := I) x
+                  (coordinateFrameAtBasis (I := I) x
                     (coordinateFrameAt_mem (I := I) x))
                   (A x) (fun _ : Fin 1 => d)
                   (fun q : Fin 2 => if q = 0 then i else a))) := rfl
@@ -188,7 +188,7 @@ theorem connTraceATrace
               (coordinateFrameAt (I := I) x)
               (coordinateFrameAt_isLocalFrame_one (I := I) x) x d a k *
               componentRS (I := I)
-                (coordinateFrameAt_basis (I := I) x
+                (coordinateFrameAtBasis (I := I) x
                   (coordinateFrameAt_mem (I := I) x))
                 (A x) (fun _ : Fin 1 => a)
                 (fun q : Fin 2 => if q = 0 then i else j)) -
@@ -197,7 +197,7 @@ theorem connTraceATrace
               (coordinateFrameAt (I := I) x)
               (coordinateFrameAt_isLocalFrame_one (I := I) x) x d i a *
               componentRS (I := I)
-                (coordinateFrameAt_basis (I := I) x
+                (coordinateFrameAtBasis (I := I) x
                   (coordinateFrameAt_mem (I := I) x))
                 (A x) (fun _ : Fin 1 => k)
                 (fun q : Fin 2 => if q = 0 then a else j)) -
@@ -206,7 +206,7 @@ theorem connTraceATrace
               (coordinateFrameAt (I := I) x)
               (coordinateFrameAt_isLocalFrame_one (I := I) x) x d j a *
               componentRS (I := I)
-                (coordinateFrameAt_basis (I := I) x
+                (coordinateFrameAtBasis (I := I) x
                   (coordinateFrameAt_mem (I := I) x))
                 (A x) (fun _ : Fin 1 => k)
                 (fun q : Fin 2 => if q = 0 then i else a)))
@@ -223,7 +223,7 @@ theorem connTraceATrace
         (∑ d : CoordinateIdx (𝕜 := Real) E, componentDeriv d d i j) +
           (∑ d : CoordinateIdx (𝕜 := Real) E,
             componentRS (I := I)
-              (coordinateFrameAt_basis (I := I) x
+              (coordinateFrameAtBasis (I := I) x
                 (coordinateFrameAt_mem (I := I) x))
               (A x) (fun _ : Fin 1 => d)
               (fun q : Fin 2 => if q = 0 then i else j) *
@@ -237,7 +237,7 @@ theorem connTraceATrace
                 (coordinateFrameAt (I := I) x)
                 (coordinateFrameAt_isLocalFrame_one (I := I) x) x d i a *
                 componentRS (I := I)
-                  (coordinateFrameAt_basis (I := I) x
+                  (coordinateFrameAtBasis (I := I) x
                     (coordinateFrameAt_mem (I := I) x))
                   (A x) (fun _ : Fin 1 => d)
                   (fun q : Fin 2 => if q = 0 then a else j)) +
@@ -246,7 +246,7 @@ theorem connTraceATrace
                 (coordinateFrameAt (I := I) x)
                 (coordinateFrameAt_isLocalFrame_one (I := I) x) x d j a *
                 componentRS (I := I)
-                  (coordinateFrameAt_basis (I := I) x
+                  (coordinateFrameAtBasis (I := I) x
                     (coordinateFrameAt_mem (I := I) x))
                   (A x) (fun _ : Fin 1 => d)
                   (fun q : Fin 2 => if q = 0 then i else a)))) := by
@@ -256,7 +256,7 @@ theorem connTraceATrace
       CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
         CoordinateIdx (𝕜 := Real) E -> Real := fun p i j =>
     componentRS (I := I)
-      (coordinateFrameAt_basis (I := I) x (coordinateFrameAt_mem (I := I) x))
+      (coordinateFrameAtBasis (I := I) x (coordinateFrameAt_mem (I := I) x))
       (A x) (fun _ : Fin 1 => p) (fun q : Fin 2 => if q = 0 then i else j)
   let Gamma :
       CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
@@ -301,7 +301,7 @@ private theorem compFun_center
     (x : M) (p i j : CoordinateIdx (𝕜 := Real) E) :
     compFun (I := I) A x p i j x =
       componentRS (I := I)
-        (coordinateFrameAt_basis (I := I) x (coordinateFrameAt_mem (I := I) x))
+        (coordinateFrameAtBasis (I := I) x (coordinateFrameAt_mem (I := I) x))
         (A x) (fun _ : Fin 1 => p)
         (fun q : Fin 2 => if q = 0 then i else j) := by
   classical
@@ -311,11 +311,11 @@ private theorem compFun_center
   have hconst :
       Tensor0SSpace.constInChart (𝕜 := Real) (E := E) (H := H)
           (I := I) (M := M) 1 x
-          ((continuousMultilinearMap_basis
+          ((continuousMultilinearMapBasis
             (𝕜 := Real) (F := E) (Module.finBasis Real E) 1)
             (fun _ : Fin 1 => p)) x =
         basisTensor0S (I := I)
-          (coordinateFrameAt_basis (I := I) x (coordinateFrameAt_mem (I := I) x))
+          (coordinateFrameAtBasis (I := I) x (coordinateFrameAt_mem (I := I) x))
           (fun _ : Fin 1 => p) :=
     DifferentialGeometry.Tensor.Coordinates.constInChart_basisTensor0S_coordFrame
       (𝕜 := Real) (I := I) (M := M) (r := 1) x (coordinateFrameAt_mem (I := I) x)
@@ -330,7 +330,7 @@ private theorem gInvFun_center
     (g : SmoothRiemannianMetric I M)
     (x : M) (i j : CoordinateIdx (𝕜 := Real) E) :
     gInvFun (I := I) g x i j x =
-      inverseMetricFlatModelInChart_component (I := I) g x i j (extChartAt I x x) := rfl
+      inverseMetricFlatModelInChartComponent (I := I) g x i j (extChartAt I x x) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -400,7 +400,7 @@ private theorem connTraceRawDiv_eq_productSum
       (I := I) g Z x
   have hrawdef :
       connTraceRawDiv (I := I) g A x =
-        DifferentialGeometry.Integral.DivergenceTheorem.divergence_g (I := I) g Z x := rfl
+        DifferentialGeometry.Integral.DivergenceTheorem.divergenceG (I := I) g Z x := rfl
   rw [hrawdef, hbridge]
   subst hcov
   rw [Finset.sum_add_distrib]
@@ -514,7 +514,7 @@ theorem connTraceRaw_eq_gamma
         inverseMetricCovDerivForMetricCompInFrame
           (I := I)
           (fun y : M => fun a b : CoordinateIdx (𝕜 := Real) E =>
-            inverseMetricFlatModelInChart_component (I := I) g x a b
+            inverseMetricFlatModelInChartComponent (I := I) g x a b
               (extChartAt I x y))
           cov (coordinateFrameAt (I := I) x)
           (coordinateFrameAt_isLocalFrame_one (I := I) x)
@@ -528,7 +528,7 @@ theorem connTraceRaw_eq_gamma
               (coordinateFrameAt (I := I) x)
               (coordinateFrameAt_isLocalFrame_one (I := I) x) x d a k *
               componentRS (I := I)
-                (coordinateFrameAt_basis (I := I) x
+                (coordinateFrameAtBasis (I := I) x
                   (coordinateFrameAt_mem (I := I) x))
                 (A x) (fun _ : Fin 1 => a)
                 (fun q : Fin 2 => if q = 0 then i else j)) -
@@ -537,7 +537,7 @@ theorem connTraceRaw_eq_gamma
               (coordinateFrameAt (I := I) x)
               (coordinateFrameAt_isLocalFrame_one (I := I) x) x d i a *
               componentRS (I := I)
-                (coordinateFrameAt_basis (I := I) x
+                (coordinateFrameAtBasis (I := I) x
                   (coordinateFrameAt_mem (I := I) x))
                 (A x) (fun _ : Fin 1 => k)
                 (fun q : Fin 2 => if q = 0 then a else j)) -
@@ -546,7 +546,7 @@ theorem connTraceRaw_eq_gamma
               (coordinateFrameAt (I := I) x)
               (coordinateFrameAt_isLocalFrame_one (I := I) x) x d j a *
               componentRS (I := I)
-                (coordinateFrameAt_basis (I := I) x
+                (coordinateFrameAtBasis (I := I) x
                   (coordinateFrameAt_mem (I := I) x))
                 (A x) (fun _ : Fin 1 => k)
                 (fun q : Fin 2 => if q = 0 then i else a)))
@@ -576,7 +576,7 @@ theorem connTraceRaw_eq_gamma
       CoordinateIdx (𝕜 := Real) E -> Real :=
     fun p i j =>
       componentRS (I := I)
-        (coordinateFrameAt_basis (I := I) x (coordinateFrameAt_mem (I := I) x))
+        (coordinateFrameAtBasis (I := I) x (coordinateFrameAt_mem (I := I) x))
         (A x) (fun _ : Fin 1 => p) (fun q : Fin 2 => if q = 0 then i else j)
     with hAcomp
   set Gamma : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E ->
@@ -652,7 +652,7 @@ theorem connTraceRaw_of_components
       inverseMetricCovDerivForMetricCompInFrame
         (I := I)
         (fun y : M => fun a b : CoordinateIdx (𝕜 := Real) E =>
-          inverseMetricFlatModelInChart_component (I := I) g x a b
+          inverseMetricFlatModelInChartComponent (I := I) g x a b
             (extChartAt I x y))
         cov (coordinateFrameAt (I := I) x)
         (coordinateFrameAt_isLocalFrame_one (I := I) x)
@@ -666,7 +666,7 @@ theorem connTraceRaw_of_components
               (coordinateFrameAt (I := I) x)
               (coordinateFrameAt_isLocalFrame_one (I := I) x) x d a k *
               componentRS (I := I)
-                (coordinateFrameAt_basis (I := I) x
+                (coordinateFrameAtBasis (I := I) x
                   (coordinateFrameAt_mem (I := I) x))
                 (A x) (fun _ : Fin 1 => a)
                 (fun q : Fin 2 => if q = 0 then i else j)) -
@@ -675,7 +675,7 @@ theorem connTraceRaw_of_components
               (coordinateFrameAt (I := I) x)
               (coordinateFrameAt_isLocalFrame_one (I := I) x) x d i a *
               componentRS (I := I)
-                (coordinateFrameAt_basis (I := I) x
+                (coordinateFrameAtBasis (I := I) x
                   (coordinateFrameAt_mem (I := I) x))
                 (A x) (fun _ : Fin 1 => k)
                 (fun q : Fin 2 => if q = 0 then a else j)) -
@@ -684,7 +684,7 @@ theorem connTraceRaw_of_components
               (coordinateFrameAt (I := I) x)
               (coordinateFrameAt_isLocalFrame_one (I := I) x) x d j a *
               componentRS (I := I)
-                (coordinateFrameAt_basis (I := I) x
+                (coordinateFrameAtBasis (I := I) x
                   (coordinateFrameAt_mem (I := I) x))
                 (A x) (fun _ : Fin 1 => k)
                 (fun q : Fin 2 => if q = 0 then i else a)))

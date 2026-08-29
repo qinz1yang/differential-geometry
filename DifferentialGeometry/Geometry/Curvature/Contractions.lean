@@ -31,29 +31,29 @@ theorem oneForm_eq_sum_inv_flat
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (β : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
     β =
       ∑ p : Idx,
         (∑ q : Idx, gInv p q * β (fun _ : Fin 1 => basis q)) •
-          dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) (basis p)) := by
+          dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (basis p)) := by
   apply cotangentToDualLinear_injective_gen (I := I) (x := x)
   ext V
   have hsharp := cotangentSharp_eq_sum_inv_gen (I := I) g x basis gInv hinv β
   have hpair :
-      cotangentToDual_gen (I := I) β V =
+      cotangentToDualGen (I := I) β V =
         g.inner x
           (∑ p : Idx,
-            (∑ q : Idx, gInv p q * cotangentToDual_gen (I := I) β (basis q)) •
+            (∑ q : Idx, gInv p q * cotangentToDualGen (I := I) β (basis q)) •
               basis p) V := by
     calc
-      cotangentToDual_gen (I := I) β V =
-          g.inner x (cotangentSharp_gen (I := I) g x β) V := by
+      cotangentToDualGen (I := I) β V =
+          g.inner x (cotangentSharpGen (I := I) g x β) V := by
             rw [cotangentSharp_inner_gen]
       _ =
           g.inner x
             (∑ p : Idx,
-              (∑ q : Idx, gInv p q * cotangentToDual_gen (I := I) β (basis q)) •
+              (∑ q : Idx, gInv p q * cotangentToDualGen (I := I) β (basis q)) •
                 basis p) V := by
             rw [hsharp]
   simpa [tangentFlatLinear_apply_gen, cotangentToDual_apply_gen, map_sum, Finset.sum_mul,
@@ -63,7 +63,7 @@ theorem rm13_oneForm_apply_eq_sum_inv_flat
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (Rm13 : Tensor13At (I := I) (M := M) x)
     (β : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (X Y Z : TangentSpace I x) :
@@ -71,7 +71,7 @@ theorem rm13_oneForm_apply_eq_sum_inv_flat
       ∑ p : Idx,
         (∑ q : Idx, gInv p q * β (fun _ : Fin 1 => basis q)) *
           Rm13
-            (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) (basis p)))
+            (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (basis p)))
             (vec3 X Y Z) := by
   have hβ := oneForm_eq_sum_inv_flat (I := I) g basis gInv hinv β
   calc
@@ -80,14 +80,14 @@ theorem rm13_oneForm_apply_eq_sum_inv_flat
       Rm13
         (∑ p : Idx,
           (∑ q : Idx, gInv p q * β (fun _ : Fin 1 => basis q)) •
-            dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) (basis p)))
+            dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (basis p)))
         (vec3 X Y Z) :=
           congrArg (fun γ => Rm13 γ (vec3 X Y Z)) hβ
     _ =
       ∑ p : Idx,
         (∑ q : Idx, gInv p q * β (fun _ : Fin 1 => basis q)) *
           Rm13
-            (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) (basis p)))
+            (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (basis p)))
             (vec3 X Y Z) := by
           rw [_root_.map_sum Rm13]
           rw [tensor0SSpace_sum_apply]
@@ -646,7 +646,7 @@ theorem contracted_curvatureAction0SAt_vec2_eq
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (A : Tensor02At (I := I) (M := M) x)
@@ -684,7 +684,7 @@ theorem contracted_curvatureAction0SAt_vec2_eq
                 oneFormAtSlot0S (I := I) A (vec2 (basis b) (basis l)) 0
                   (fun _ : Fin 1 => basis q)) *
             Rm13 x
-              (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) (basis p)))
+              (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (basis p)))
               (vec3 (basis k) (basis a) (basis b)) := by
             exact rm13_oneForm_apply_eq_sum_inv_flat
               (I := I) g basis gInv hinv (Rm13 x)
@@ -726,7 +726,7 @@ theorem contracted_curvatureAction0SAt_vec2_eq
                 oneFormAtSlot0S (I := I) A (vec2 (basis b) (basis l)) 1
                   (fun _ : Fin 1 => basis q)) *
             Rm13 x
-              (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) (basis p)))
+              (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (basis p)))
               (vec3 (basis k) (basis a) (basis l)) := by
             exact rm13_oneForm_apply_eq_sum_inv_flat
               (I := I) g basis gInv hinv (Rm13 x)

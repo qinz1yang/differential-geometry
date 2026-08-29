@@ -26,12 +26,12 @@ local notation "E" => EuclideanSpace ℝ (Fin d)
 
 /-- The Sobolev constant for the general `W^{1,p} -> L^{p*}` embedding,
 extracted from Mathlib. -/
-noncomputable def C_gns (d : ℕ) [hNeZero : NeZero d] (p : ℝ) : ℝ :=
+noncomputable def CGns (d : ℕ) [hNeZero : NeZero d] (p : ℝ) : ℝ :=
   let _ := hNeZero
   ↑(MeasureTheory.SNormLESNormFDerivOfEqConst (F := ℝ)
     (μ := (volume : Measure (EuclideanSpace ℝ (Fin d)))) p)
 
-theorem C_gns_nonneg (d : ℕ) [NeZero d] (p : ℝ) : 0 ≤ C_gns d p :=
+theorem C_gns_nonneg (d : ℕ) [NeZero d] (p : ℝ) : 0 ≤ CGns d p :=
   NNReal.coe_nonneg _
 
 /-! ## Section 2: Exponent Arithmetic -/
@@ -70,7 +70,7 @@ Direct wrapper around Mathlib's `eLpNorm_le_eLpNorm_fderiv_of_eq`. -/
 theorem sobolev_smooth {p : ℝ} (hp : 1 ≤ p) (hpd : p < (d : ℝ))
     {u : E → ℝ} (hu : ContDiff ℝ 1 u) (hu_cpt : HasCompactSupport u) :
     eLpNorm u (ENNReal.ofReal ((d : ℝ) * p / ((d : ℝ) - p))) volume ≤
-    ENNReal.ofReal (C_gns d p) *
+    ENNReal.ofReal (CGns d p) *
       eLpNorm (fderiv ℝ u) (ENNReal.ofReal p) volume := by
   set p_nn : ℝ≥0 := Real.toNNReal p with hp_nn_def
   set p'_nn : ℝ≥0 := Real.toNNReal ((d : ℝ) * p / ((d : ℝ) - p)) with hp'_nn_def
@@ -93,10 +93,10 @@ theorem sobolev_smooth {p : ℝ} (hp : 1 ≤ p) (hpd : p < (d : ℝ))
     eLpNorm u (ENNReal.ofReal ((d : ℝ) * p / ((d : ℝ) - p))) volume
       ≤ ↑(MeasureTheory.SNormLESNormFDerivOfEqConst (F := ℝ) (μ := (volume : Measure E)) p) *
           eLpNorm (fderiv ℝ u) (ENNReal.ofReal p) volume := hmain
-    _ = ENNReal.ofReal (C_gns d p) *
+    _ = ENNReal.ofReal (CGns d p) *
           eLpNorm (fderiv ℝ u) (ENNReal.ofReal p) volume := by
         congr 1
-        simp only [C_gns]
+        simp only [CGns]
         exact (ENNReal.ofReal_coe_nnreal).symm
 
 /-! ## Section 4: Gradient norm comparison -/
@@ -296,11 +296,11 @@ theorem sobolev_of_approx {p : ℝ} (hp : 1 ≤ p) (hpd : p < (d : ℝ))
       (fun x => (fderiv ℝ (φ n) x) (EuclideanSpace.single i 1) - G x i)
       (ENNReal.ofReal p) volume) atTop (nhds 0)) :
     eLpNorm u (ENNReal.ofReal ((d : ℝ) * p / ((d : ℝ) - p))) volume ≤
-    ENNReal.ofReal (C_gns d p) *
+    ENNReal.ofReal (CGns d p) *
       eLpNorm (fun x => ‖G x‖) (ENNReal.ofReal p) volume := by
   set p_star := ENNReal.ofReal ((d : ℝ) * p / ((d : ℝ) - p)) with hp_star_def
   set p_enn := ENNReal.ofReal p with hp_enn_def
-  set C := ENNReal.ofReal (C_gns d p) with hC_def
+  set C := ENNReal.ofReal (CGns d p) with hC_def
   have hGNS : ∀ n,
       eLpNorm (φ n) p_star volume ≤
       C * eLpNorm (fderiv ℝ (φ n)) p_enn volume :=

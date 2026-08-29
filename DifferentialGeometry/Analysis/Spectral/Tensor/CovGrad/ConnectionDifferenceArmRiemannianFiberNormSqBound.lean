@@ -90,8 +90,8 @@ private lemma fiberNormSqComponent_sharpFlatEndoCc
   rw [cotangentToDual_g0FlatCLM (I := I) g₀ x
     (inverseMetricSharpFib (I := I) g₁ x (g0FlatCLM (I := I) g₀ x (e (K 0)))) (e (J 0))]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [BoundarylessManifold I M] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_sharpFlatEndoCc_le_of_lt_one
@@ -297,8 +297,8 @@ private lemma fiberNormSqComponent_raisedKoszul
       from (cotangentToDual_apply (I := I) (x := x) _ _).symm]
   rw [cotangentToDual_g0FlatCLM (I := I) g₀ x (e (K 0))]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_raisedKoszul_le_of_lt_one
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
@@ -311,7 +311,7 @@ theorem riemannianFiberNormSq_raisedKoszul_le_of_lt_one
       (x : M),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 2 x
           ((raisedKoszul (I := I) g₀ g₁).toSection x) ≤
         C ^ 2 * ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
@@ -319,7 +319,7 @@ theorem riemannianFiberNormSq_raisedKoszul_le_of_lt_one
   classical
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   obtain ⟨C₀, hC₀0, hpw⟩ :=
     connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hδ₀
   refine ⟨Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 3) * ((1 + δ₀) * C₀), by positivity, ?_⟩
@@ -905,8 +905,8 @@ private lemma sqrt_self_of_inner_le
   · have hle : Nu * Nu ≤ K * Nu := by rw [hNu_sq, hNu]; exact hself
     exact le_of_mul_le_mul_right hle hpos
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma sqrt_inner_endoCov_sharpFlatRaiseEndo_apply_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
@@ -919,7 +919,7 @@ private lemma sqrt_inner_endoCov_sharpFlatRaiseEndo_apply_le
       (x : M) (v w : TangentSpace I x),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       Real.sqrt (g₀.inner x
           (((endoCovariantDerivative (I := I) (M := M) g₀)
             (sharpFlatRaiseEndoField (I := I) (M := M) g₀ g₁) x v) w)
@@ -931,7 +931,7 @@ private lemma sqrt_inner_endoCov_sharpFlatRaiseEndo_apply_le
   classical
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   obtain ⟨C₀, hC₀0, hpw⟩ :=
     connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hδ₀
   refine ⟨2 * (1 + δ₀) * C₀, by positivity, ?_⟩
@@ -1035,15 +1035,15 @@ private lemma sqrt_inner_endoCov_sharpFlatRaiseEndo_apply_le
   rw [hG_def, hNv_def, hNw_def] at hres
   exact hres
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma abs_unitModel4_iteratedCovGrad_symmS_le
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) (x : M)
     (a b c d : TangentSpace I x) :
     letI : Bundle.RiemannianBundle
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
     |unitModel (I := I) (M := M) g₀ 4
         (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) g₀ T)) x ![a, b, c, d]| ≤
       ‖((iteratedCovGrad (I := I) g₀ 0 2 2 T).toSection x :
@@ -1052,7 +1052,7 @@ private lemma abs_unitModel4_iteratedCovGrad_symmS_le
           Real.sqrt (g₀.inner x c c) * Real.sqrt (g₀.inner x d d) := by
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
   set W : Tensor0SBundle.TensorRSSpace 0 4 I x :=
     (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) g₀ T)).toSection x with hW_def
   have hunit : unitModel (I := I) (M := M) g₀ 4
@@ -1086,15 +1086,15 @@ private lemma abs_unitModel4_iteratedCovGrad_symmS_le
           Real.sqrt (g₀.inner x a a) * Real.sqrt (g₀.inner x b b) *
             Real.sqrt (g₀.inner x c c) * Real.sqrt (g₀.inner x d d) := by ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma half_iteratedCovGrad_symmS_combination_le
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) (x : M)
     (a b c d : TangentSpace I x) :
     letI : Bundle.RiemannianBundle
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
     (1 / 2 : ℝ) *
         (unitModel (I := I) (M := M) g₀ 4
             (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) g₀ T))
@@ -1112,7 +1112,7 @@ private lemma half_iteratedCovGrad_symmS_combination_le
             Real.sqrt (g₀.inner x b b) * Real.sqrt (g₀.inner x d d) := by
   let inst4 : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
   let r₁ := unitModel (I := I) (M := M) g₀ 4
     (iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) g₀ T)) x ![a, b, c, d]
   let r₂ := unitModel (I := I) (M := M) g₀ 4
@@ -1279,8 +1279,8 @@ private lemma weighted_sum_le_of_sq_and_linear_bounds
           2 * (1 + δ₀) * C₀ ^ 2 * ((1 + R) * Q) * (NX * NY * NZ * Nζ) := add_le_add hA hB
     _ = ((3 / 2) + 2 * (1 + δ₀) * C₀ ^ 2) * (1 + R) * Q * NX * NY * NZ * Nζ := by ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma g1_inner_covDerivConnectionDifference_le_pointwise
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
@@ -1294,7 +1294,7 @@ private lemma g1_inner_covDerivConnectionDifference_le_pointwise
       (x : M) (v w : TangentSpace I x),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v w)
           (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v w)) ≤
         C₀ * ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
@@ -1312,16 +1312,16 @@ private lemma g1_inner_covDerivConnectionDifference_le_pointwise
     (hjet :
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
           Tensor0SBundle.TensorRSSpace 0 3 I x)‖ ≤ R)
     (ζ : TangentSpace I x) :
     letI : Bundle.RiemannianBundle
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
     letI : Bundle.RiemannianBundle
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
     g₁.inner x
         (covDerivConnectionDifference (I := I) g₀ g₁ (fun b => X b) (fun b => Z b) (fun b => Y b) x) ζ ≤
       (((3 / 2) + 2 * (1 + δ₀) * C₀ ^ 2) *
@@ -1335,10 +1335,10 @@ private lemma g1_inner_covDerivConnectionDifference_le_pointwise
   classical
   let inst3 : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   let inst4 : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
   have hg₁ : ∀ (b : M) (u w : TangentSpace I b),
       g₁.inner b u w = g₀.inner b u w + ccTensorBilinSymm (I := I) g₀ T b u w :=
     fun b u w => h b u w
@@ -1463,8 +1463,8 @@ private lemma g1_inner_covDerivConnectionDifference_le_pointwise
   rw [hB_scaled] at hcombine
   exact le_trans hcombine hfinal
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma sqrt_inner_covDerivConnectionDifference_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
@@ -1480,15 +1480,15 @@ private lemma sqrt_inner_covDerivConnectionDifference_le
       (_hjet :
         letI : Bundle.RiemannianBundle
             (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
         ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
             Tensor0SBundle.TensorRSSpace 0 3 I x)‖ ≤ R),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
       Real.sqrt (g₀.inner x
           (covDerivConnectionDifference (I := I) g₀ g₁ (fun b => X b) (fun b => Z b) (fun b => Y b) x)
           (covDerivConnectionDifference (I := I) g₀ g₁ (fun b => X b) (fun b => Z b) (fun b => Y b) x)) ≤
@@ -1502,10 +1502,10 @@ private lemma sqrt_inner_covDerivConnectionDifference_le
   classical
   let inst3 : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   let inst4 : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
   obtain ⟨C₀, hC₀0, hconn⟩ :=
     connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hδ₀
   have hceil00 : 0 < 1 - δ₀ := by linarith
@@ -1554,8 +1554,8 @@ private lemma sqrt_inner_covDerivConnectionDifference_le
     _ = (1 / (1 - δ₀)) * ((3 / 2) + 2 * (1 + δ₀) * C₀ ^ 2) * (1 + R) * Q * NX * NY * NZ := by
         rw [hKc_def]; ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma sqrt_inner_covDerivRaisedKoszul_endoArm_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
@@ -1571,7 +1571,7 @@ private lemma sqrt_inner_covDerivRaisedKoszul_endoArm_le
       (_hZ : g₀.inner x (Z x) (Z x) = 1),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       Real.sqrt (g₀.inner x
           (((endoCovariantDerivative (I := I) (M := M) g₀)
               (sharpFlatRaiseEndoField (I := I) (M := M) g₀ g₁) x (X x))
@@ -1584,7 +1584,7 @@ private lemma sqrt_inner_covDerivRaisedKoszul_endoArm_le
   classical
   let inst3 : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   obtain ⟨Cendo, hCendo0, hendo⟩ :=
     sqrt_inner_endoCov_sharpFlatRaiseEndo_apply_le (I := I) (M := M) g₀ hδ₀0 hδ₀
   obtain ⟨Cconn, hCconn0, hconn⟩ :=
@@ -1606,8 +1606,8 @@ private lemma sqrt_inner_covDerivRaisedKoszul_endoArm_le
   change Real.sqrt (g₀.inner x A A) ≤ Cendo * Cconn * G ^ 2
   exact product_square_bound Cendo Cconn G _ _ hCendo0 hG0 hAbound hDbound
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma sqrt_inner_covDerivRaisedKoszulVec_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
@@ -1625,15 +1625,15 @@ private lemma sqrt_inner_covDerivRaisedKoszulVec_le
       (_hjet :
         letI : Bundle.RiemannianBundle
             (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
         ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
             Tensor0SBundle.TensorRSSpace 0 3 I x)‖ ≤ R),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
       Real.sqrt (g₀.inner x
           (covDerivRaisedKoszulVec (I := I) g₀ g₁ X Y Z x)
           (covDerivRaisedKoszulVec (I := I) g₀ g₁ X Y Z x)) ≤
@@ -1645,10 +1645,10 @@ private lemma sqrt_inner_covDerivRaisedKoszulVec_le
   classical
   let inst3 : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   let inst4 : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
   obtain ⟨Carm, hCarm0, harm⟩ :=
     sqrt_inner_covDerivRaisedKoszul_endoArm_le (I := I) (M := M) g₀ hδ₀0 hδ₀
   obtain ⟨Ccdc, hCcdc0, hcdc⟩ :=
@@ -1715,8 +1715,8 @@ private lemma sqrt_inner_covDerivRaisedKoszulVec_le
         exact mul_le_mul_of_nonneg_left hG1sq_le (by positivity)
     _ = (Carm + (1 + δ₀) * Ccdc) * (1 + R) * Q := by ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_one_raisedKoszul_le_of_lt_one
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
@@ -1730,15 +1730,15 @@ theorem riemannianFiberNormSq_iteratedCovGrad_one_raisedKoszul_le_of_lt_one
       (_hjet :
         letI : Bundle.RiemannianBundle
             (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
         ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
             Tensor0SBundle.TensorRSSpace 0 3 I x)‖ ≤ R),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (2 + 1) x
           ((iteratedCovGrad (I := I) g₀ 1 2 1 (raisedKoszul (I := I) g₀ g₁)).toSection x) ≤
         C ^ 2 * (1 + R) ^ 2 *
@@ -1749,10 +1749,10 @@ theorem riemannianFiberNormSq_iteratedCovGrad_one_raisedKoszul_le_of_lt_one
   classical
   let inst3 : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   let inst4 : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
   obtain ⟨Carm, hCarm0, harm⟩ :=
     sqrt_inner_covDerivRaisedKoszulVec_le (I := I) (M := M) g₀ hδ₀0 hδ₀
   refine ⟨Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 4) * Carm, by positivity, ?_⟩
@@ -1877,8 +1877,8 @@ private lemma fiberNormSqComponent_flatArmCc
           (flatArmVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x (e (K 0))) (e (J 0)))
           (e (J 1)) from flatArmPairing_apply (I := I) g₀ g₁ kind x _ _]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma sqrt_inner_flatArmVec_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
@@ -1891,7 +1891,7 @@ private lemma sqrt_inner_flatArmVec_le
       (_hw : g₀.inner x w w = 1),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       Real.sqrt (g₀.inner x
           (flatArmVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x w) v0)
           (flatArmVec (I := I) g₀ g₁ kind x (g0FlatCLM (I := I) g₀ x w) v0)) ≤
@@ -1902,7 +1902,7 @@ private lemma sqrt_inner_flatArmVec_le
   classical
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   obtain ⟨C₀, hC₀0, hpw⟩ :=
     connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hδ₀
   refine ⟨(1 / (1 - δ₀)) ^ 2 * C₀, by positivity, ?_⟩
@@ -2050,8 +2050,8 @@ private lemma sqrt_inner_flatArmVec_le
   rw [hG_def, hNv0_def]
   apply le_of_eq; ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_flatArmCc_le_of_lt_one
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) (kind : Bool) :
@@ -2064,7 +2064,7 @@ theorem riemannianFiberNormSq_flatArmCc_le_of_lt_one
       (x : M),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 2 x
           ((flatArmCc (I := I) g₀ g₁ kind).toSection x) ≤
         C ^ 2 * ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
@@ -2072,7 +2072,7 @@ theorem riemannianFiberNormSq_flatArmCc_le_of_lt_one
   classical
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   obtain ⟨Carm, hCarm0, harm⟩ :=
     sqrt_inner_flatArmVec_le (I := I) (M := M) g₀ hδ₀0 hδ₀
   refine ⟨Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 3) * Carm, by positivity, ?_⟩
@@ -2137,8 +2137,8 @@ theorem riemannianFiberNormSq_flatArmCc_le_of_lt_one
             = Real.sqrt ((n : ℝ) ^ 3) ^ 2 * (Carm ^ 2 * G ^ 2) from by ring]
         rw [hsq]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_iteratedCovGrad_one_sharpFlatEndoCc_le_of_lt_one
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀0 : 0 ≤ δ₀) (hδ₀ : δ₀ < 1) :
@@ -2151,7 +2151,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_one_sharpFlatEndoCc_le_of_lt_one
       (x : M),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 (1 + 1) x
           ((iteratedCovGrad (I := I) g₀ 1 1 1 (sharpFlatEndoCc (I := I) g₀ g₁)).toSection x) ≤
         C ^ 2 * ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
@@ -2159,7 +2159,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_one_sharpFlatEndoCc_le_of_lt_one
   classical
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   obtain ⟨Ctrue, hCtrue0, harmTrue⟩ :=
     riemannianFiberNormSq_flatArmCc_le_of_lt_one (I := I) (M := M) g₀ hδ₀0 hδ₀ true
   obtain ⟨Cfalse, hCfalse0, harmFalse⟩ :=

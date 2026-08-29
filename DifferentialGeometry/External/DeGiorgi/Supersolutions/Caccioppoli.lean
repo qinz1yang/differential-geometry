@@ -89,11 +89,11 @@ theorem weighted_caccioppoli_of_supersolution
         (if deriv Ψ (u x) = 0 then 0
          else Ψ (u x) ^ 2 / (-deriv Ψ (u x))) ∂volume := by
   let hwΨ : MemW1pWitness 2 (fun x => Ψ (u x)) Ω :=
-    MemW1pWitness.comp_smooth_bounded (d := d) hΩ hu Ψ hΨ hΨ_zero hΨ_bdd
-  let hwφΨ := hwΨ.mul_smooth_bounded_p (d := d)
+    MemW1pWitness.compSmoothBounded (d := d) hΩ hu Ψ hΨ hΨ_zero hΨ_bdd
+  let hwφΨ := hwΨ.mulSmoothBoundedP (d := d)
     (by norm_num : (1 : ENNReal) ≤ 2) hΩ hφ (by norm_num : (0 : ℝ) ≤ 1) hCφ
     hφ_bound hφ_grad_bound
-  let hwφ2Ψ := hwφΨ.mul_smooth_bounded_p (d := d)
+  let hwφ2Ψ := hwφΨ.mulSmoothBoundedP (d := d)
     (by norm_num : (1 : ENNReal) ≤ 2) hΩ hφ (by norm_num : (0 : ℝ) ≤ 1) hCφ
     hφ_bound hφ_grad_bound
   -- φ(x) * (φ(x) * Ψ(u(x))) = φ(x)² * Ψ(u(x)) ≥ 0
@@ -115,14 +115,14 @@ theorem weighted_caccioppoli_of_supersolution
   have htest : 0 ≤ bilinFormOfCoeff A.1 hu hwφ2Ψ := by
     exact hsuper.2 hu _ hφ2Ψ_memH01 hwφ2Ψ hφ2Ψ_nonneg
   -- The inner expansion: ⟨A∇u, ∇(Ψ(u))⟩ = Ψ'(u)·⟨A∇u,∇u⟩
-  -- (from comp_smooth_bounded: the gradient of Ψ(u) is Ψ'(u)·∇u)
+  -- (from compSmoothBounded: the gradient of Ψ(u) is Ψ'(u)·∇u)
   have hΨu_bilin : ∀ x, bilinFormIntegrandOfCoeff A.1 hu hwΨ x =
       deriv Ψ (u x) * bilinFormIntegrandOfCoeff A.1 hu hu x := by
     intro x
     -- `∇(Ψ ∘ u) = Ψ'(u) ∇u`, so the bilinear integrand factors by pulling
     -- the scalar `Ψ'(u)` out of the inner product.
     have hgrad_eq : hwΨ.weakGrad x = deriv Ψ (u x) • hu.weakGrad x := by
-      ext i; simp [hwΨ, MemW1pWitness.comp_smooth_bounded, smul_eq_mul]
+      ext i; simp [hwΨ, MemW1pWitness.compSmoothBounded, smul_eq_mul]
     rw [bilinFormIntegrandOfCoeff, hgrad_eq, inner_smul_right]
     simp [bilinFormIntegrandOfCoeff]
   -- The ⟨A∇u, ∇φ⟩ term from the expansion lemma

@@ -54,8 +54,8 @@ theorem tangent_closedBall_isCompact
   have : ProperSpace E := FiniteDimensional.proper_real E
   exact isCompact_closedBall (0 : TangentSpace I p) R
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem bonnet_myers_pairwise_edist_le_of_ricci_bound
     {M : Type*}
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -521,8 +521,8 @@ theorem bonnet_myers_pairwise_edist_le_of_ricci_bound
         e heDiff hParallel hON hPerp hIntegrandSum hRicIntegrable hγ_min hVbundle
   exact hL_le
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem bonnet_myers_diameter_of_ricci_bound
     {M : Type*}
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -544,8 +544,8 @@ theorem bonnet_myers_diameter_of_ricci_bound
   intro x _ y _
   exact bonnet_myers_pairwise_edist_le_of_ricci_bound (E := E) g hdim hK hRic hEnorm x y
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem bonnet_myers_pairwise_edist_le_of_complete_metric
     {M : Type*}
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -591,8 +591,8 @@ theorem bonnet_myers_pairwise_edist_le_of_complete_metric
   exact bonnet_myers_pairwise_edist_le_of_ricci_bound (I := I) (M := M) g
     hdim hK hRic hEnorm x y
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem bonnet_myers_diameter_le_of_complete_metric
     {M : Type*}
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -638,8 +638,8 @@ theorem bonnet_myers_diameter_le_of_complete_metric
   exact bonnet_myers_diameter_of_ricci_bound (I := I) (M := M) g
     hdim hK hRic hEnorm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem isCompact_image_closedBall_under_expMapIntrinsic
     {M : Type*}
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -660,8 +660,8 @@ theorem isCompact_image_closedBall_under_expMapIntrinsic
     isCompact_closedBall (0 : TangentSpace I p) R
   exact hcompact.image (expMapIntrinsic_continuous (I := I) g hEnorm p)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem expMapIntrinsic_surjective_on_closedBall_of_ediam_le
     {M : Type*}
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -694,8 +694,8 @@ theorem expMapIntrinsic_surjective_on_closedBall_of_ediam_le
       ≤ (ENNReal.ofReal R).toReal := ENNReal.toReal_mono ENNReal.ofReal_ne_top hedist
     _ = R := ENNReal.toReal_ofReal hR
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem isCompact_univ
     {M : Type*}
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -726,8 +726,8 @@ theorem isCompact_univ
     isCompact_image_closedBall_under_expMapIntrinsic (I := I) (E := E) g hEnorm p (R := R)
   exact himg.of_isClosed_subset isClosed_univ hsurj
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem bonnet_myers_compactSpace_of_ricci_bound
     {M : Type*}
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -746,8 +746,8 @@ theorem bonnet_myers_compactSpace_of_ricci_bound
     CompactSpace M :=
   isCompact_univ_iff.mp (isCompact_univ (E := E) g hdim hK hRic hEnorm)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem bonnet_myers_finite_fundamentalGroup_of_ricci_bound
     {M : Type*}
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -826,7 +826,7 @@ theorem bonnet_myers_finite_fundamentalGroup_of_ricci_bound
   let hUCem :
       PseudoEMetricSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-    DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.uc_pseudoEMetricSpace
+    DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.ucPseudoEMetricSpace
       (I := I) (M := M) gLift
   have hRiemUC :
       IsRiemannianManifold I
@@ -882,8 +882,8 @@ theorem bonnet_myers_finite_fundamentalGroup_of_ricci_bound
       hcov x e'
   exact Finite.of_equiv _ hEquiv
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem bonnet_myers_compactSpace_of_complete_metric
     {M : Type*}
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]
@@ -915,8 +915,8 @@ theorem bonnet_myers_compactSpace_of_complete_metric
   exact bonnet_myers_compactSpace_of_ricci_bound (I := I) (M := M) g
     hdim hK hRic hEnorm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem bonnet_myers_finite_fundamentalGroup_of_complete_metric
     {M : Type*}
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]

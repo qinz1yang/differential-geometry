@@ -34,7 +34,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma eLpNorm_sqrt_g_inner_gradFun_eq_zero_of_inactive_intrinsic
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    {α : M} (hα : α ∉ chartAtlasPOU_activeFinset I M)
+    {α : M} (hα : α ∉ chartAtlasPOUActiveFinset I M)
     (S : SmoothCcTensor g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
@@ -121,7 +121,7 @@ private lemma perAlphaGradConstant_intrinsic_bound
 
 private noncomputable def totalActiveGradConstant
     (g : SmoothRiemannianMetric I M) (r s : ℕ) : ℝ :=
-  ∑ α ∈ chartAtlasPOU_activeFinset I M,
+  ∑ α ∈ chartAtlasPOUActiveFinset I M,
     perAlphaGradConstant (I := I) (M := M) g r s α
 
 omit [CompleteSpace E] in
@@ -136,21 +136,21 @@ private lemma totalActiveGradConstant_intrinsic_nonneg
 omit [CompleteSpace E] in
 private lemma perAlphaGradConstant_le_totalActiveGradConstant
     (g : SmoothRiemannianMetric I M) (r s : ℕ) {α : M}
-    (hα : α ∈ chartAtlasPOU_activeFinset I M) :
+    (hα : α ∈ chartAtlasPOUActiveFinset I M) :
     perAlphaGradConstant (I := I) (M := M) g r s α ≤
       totalActiveGradConstant (I := I) (M := M) g r s := by
   classical
   unfold totalActiveGradConstant
   have h_split :
-      ∑ β ∈ chartAtlasPOU_activeFinset I M,
+      ∑ β ∈ chartAtlasPOUActiveFinset I M,
         perAlphaGradConstant (I := I) (M := M) g r s β =
         perAlphaGradConstant (I := I) (M := M) g r s α +
-        ∑ β ∈ (chartAtlasPOU_activeFinset I M).erase α,
+        ∑ β ∈ (chartAtlasPOUActiveFinset I M).erase α,
           perAlphaGradConstant (I := I) (M := M) g r s β := by
     rw [← Finset.sum_erase_add _ _ hα, add_comm]
   rw [h_split]
   have h_rest_nn :
-      0 ≤ ∑ β ∈ (chartAtlasPOU_activeFinset I M).erase α,
+      0 ≤ ∑ β ∈ (chartAtlasPOUActiveFinset I M).erase α,
             perAlphaGradConstant (I := I) (M := M) g r s β :=
     Finset.sum_nonneg (fun β _ =>
       perAlphaGradConstant_intrinsic_nonneg (I := I) (M := M) g r s β)
@@ -177,7 +177,7 @@ theorem tensorChartComponentScalar_grad_eLpNorm_le
   refine ⟨totalActiveGradConstant (I := I) (M := M) g r s,
     totalActiveGradConstant_intrinsic_nonneg (I := I) (M := M) g r s, ?_⟩
   intro S α Idx Jdx
-  by_cases hα : α ∈ chartAtlasPOU_activeFinset I M
+  by_cases hα : α ∈ chartAtlasPOUActiveFinset I M
   · have h_per :
         eLpNorm (fun b : M => Real.sqrt
             (g.inner b

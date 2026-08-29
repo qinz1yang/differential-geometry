@@ -29,7 +29,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M]
 
-def chartInvGramMatrix_l1Sum
+def chartInvGramMatrixL1Sum
     (g : SmoothRiemannianMetric I M) (α x : M) : ℝ :=
   ∑ ij : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
     |chartInvGramMatrix (I := I) g α x ij.1 ij.2|
@@ -37,8 +37,8 @@ def chartInvGramMatrix_l1Sum
 omit [T2Space M] in
 lemma chartInvGramMatrix_l1Sum_nonneg
     (g : SmoothRiemannianMetric I M) (α x : M) :
-    0 ≤ chartInvGramMatrix_l1Sum (I := I) (M := M) g α x := by
-  unfold chartInvGramMatrix_l1Sum
+    0 ≤ chartInvGramMatrixL1Sum (I := I) (M := M) g α x := by
+  unfold chartInvGramMatrixL1Sum
   exact Finset.sum_nonneg (fun _ _ => abs_nonneg _)
 
 omit [T2Space M] in
@@ -76,10 +76,10 @@ private lemma chartInvGramMatrix_entry_continuousOn_chartSource
 omit [T2Space M] in
 private lemma chartInvGramMatrix_l1Sum_continuousOn_chartSource
     (g : SmoothRiemannianMetric I M) (α : M) :
-    ContinuousOn (chartInvGramMatrix_l1Sum (I := I) (M := M) g α)
+    ContinuousOn (chartInvGramMatrixL1Sum (I := I) (M := M) g α)
       (chartAt H α).source := by
   classical
-  unfold chartInvGramMatrix_l1Sum
+  unfold chartInvGramMatrixL1Sum
   refine continuousOn_finsetSum _ (fun ij _ => ?_)
   exact (chartInvGramMatrix_entry_continuousOn_chartSource
     (I := I) (M := M) g α ij.1 ij.2).abs
@@ -136,7 +136,7 @@ theorem chartInvGramMatrix_l1Sum_isBounded_on_compact
     (α : M) {K : Set M} (hK : IsCompact K)
     (hKsub : K ⊆ (chartAt H α).source) :
     ∃ C : ℝ, 0 < C ∧
-      ∀ b ∈ K, chartInvGramMatrix_l1Sum (I := I) (M := M) g α b ≤ C := by
+      ∀ b ∈ K, chartInvGramMatrixL1Sum (I := I) (M := M) g α b ≤ C := by
   have h_cont := chartInvGramMatrix_l1Sum_continuousOn_chartSource
     (I := I) (M := M) g α
   exact exists_bound_on_compact_of_continuousOn (α := α) _ h_cont hK hKsub
@@ -147,7 +147,7 @@ theorem chartInvGramMatrix_l1Sum_isBounded_on_pouTsupport
     ∃ C : ℝ, 0 < C ∧
       ∀ b : M, b ∈ tsupport (fun x : M =>
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
-        chartInvGramMatrix_l1Sum (I := I) (M := M) g α b ≤ C := by
+        chartInvGramMatrixL1Sum (I := I) (M := M) g α b ≤ C := by
   classical
   set Kα : Set M := tsupport (fun x : M =>
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) with hKα_def

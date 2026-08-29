@@ -19,14 +19,14 @@ omit [FiniteDimensional 𝕜 E] in
 @[simp]
 theorem tensor0SSpace_continuousLinearEquiv_norm_apply (s : ℕ) (b : M)
     (T : Tensor0SSpace s I b) :
-    ‖tensor0SSpace_continuousLinearEquiv (𝕜 := 𝕜) (E := E) (I := I) (M := M) s b T‖
+    ‖tensor0SSpaceContinuousLinearEquiv (𝕜 := 𝕜) (E := E) (I := I) (M := M) s b T‖
       = ‖T‖ := rfl
 
 omit [FiniteDimensional 𝕜 E] in
 @[simp]
 theorem tensor0SSpace_continuousLinearEquiv_symm_norm_apply (s : ℕ) (b : M)
     (f : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜) :
-    ‖(tensor0SSpace_continuousLinearEquiv (𝕜 := 𝕜) (E := E) (I := I)
+    ‖(tensor0SSpaceContinuousLinearEquiv (𝕜 := 𝕜) (E := E) (I := I)
         (M := M) s b).symm f‖ = ‖f‖ := rfl
 
 theorem tensorRSSpace_norm_eq_carrier_opNorm {b : M} (T : TensorRSSpace r s I b) :
@@ -35,14 +35,14 @@ theorem tensorRSSpace_norm_eq_carrier_opNorm {b : M} (T : TensorRSSpace r s I b)
         ‖(T : Tensor0SSpace r I b →L[𝕜] Tensor0SSpace s I b) x‖ ≤ c * ‖x‖} := by
   classical
   have hT_def : ‖T‖
-      = ‖tensorRSSpace_continuousLinearEquiv
+      = ‖tensorRSSpaceContinuousLinearEquiv
           (𝕜 := 𝕜) (E := E) (I := I) (M := M) r s b T‖ := rfl
-  set e_r := tensor0SSpace_continuousLinearEquiv
+  set e_r := tensor0SSpaceContinuousLinearEquiv
     (𝕜 := 𝕜) (E := E) (I := I) (M := M) r b with he_r
-  set e_s := tensor0SSpace_continuousLinearEquiv
+  set e_s := tensor0SSpaceContinuousLinearEquiv
     (𝕜 := 𝕜) (E := E) (I := I) (M := M) s b with he_s
   have hUnfold :
-      tensorRSSpace_continuousLinearEquiv (𝕜 := 𝕜) (E := E) (I := I) (M := M) r s b T
+      tensorRSSpaceContinuousLinearEquiv (𝕜 := 𝕜) (E := E) (I := I) (M := M) r s b T
         = e_r.arrowCongr e_s
             (T : Tensor0SSpace r I b →L[𝕜] Tensor0SSpace s I b) := rfl
   set Tcarrier : Tensor0SSpace r I b →L[𝕜] Tensor0SSpace s I b := T with hTcarrier
@@ -101,9 +101,9 @@ private lemma _bounds_bddBelow_carrier {b : M} (T : TensorRSSpace r s I b) :
 theorem tensorRSSpace_norm_apply_le {b : M} (T : TensorRSSpace r s I b)
     (x : Tensor0SSpace r I b) :
     ‖(T : Tensor0SSpace r I b →L[𝕜] Tensor0SSpace s I b) x‖ ≤ ‖T‖ * ‖x‖ := by
-  set e_r := tensor0SSpace_continuousLinearEquiv
+  set e_r := tensor0SSpaceContinuousLinearEquiv
     (𝕜 := 𝕜) (E := E) (I := I) (M := M) r b with he_r
-  set e_s := tensor0SSpace_continuousLinearEquiv
+  set e_s := tensor0SSpaceContinuousLinearEquiv
     (𝕜 := 𝕜) (E := E) (I := I) (M := M) s b with he_s
   have hbd_model :
       ‖(e_r.arrowCongr e_s

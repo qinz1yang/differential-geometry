@@ -170,8 +170,8 @@ theorem lCost_grad
         (lCost S T x (lExp S T x Z tau) tau)) hcast
     _ = _ := ContinuousLinearEquiv.apply_symm_apply _ _
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lCost_hess_le
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) {Z : TangentSpace I x} {tau : Real}

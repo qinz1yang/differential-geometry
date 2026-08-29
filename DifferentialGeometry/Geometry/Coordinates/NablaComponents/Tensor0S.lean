@@ -880,14 +880,14 @@ theorem nabla0SFun_contMDiff_of_eval_coordinateFrame_contMDiffAt
             s cov X α p)
             (fun a : Fin s => coordinateFrameAt (I := I) x₀ (slots a) p))
         x₀) :
-    letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+    letI := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) s
     ContMDiff I (I.prod 𝓘(𝕜, Tensor0SModel s 𝕜 E)) (∞ : WithTop ℕ∞)
       (fun p : M =>
         (⟨p, nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
           s cov X α p⟩ :
           TotalSpace (Tensor0SModel s 𝕜 E) (fun p : M => Tensor0SSpace s I p))) := by
-  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+  let := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) s
   let F : (p : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) s p :=
@@ -940,7 +940,7 @@ theorem nabla0SFun_contMDiff
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s) :
-    letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+    letI := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) s
     ContMDiff I (I.prod 𝓘(𝕜, Tensor0SModel s 𝕜 E)) (∞ : WithTop ℕ∞)
       (fun p : M =>
@@ -959,7 +959,7 @@ noncomputable def nabla0SCoord (s : ℕ)
       (n := (∞ : WithTop ℕ∞)) s) :
     Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s :=
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+  letI := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) s
   ⟨fun p : M =>
     nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)

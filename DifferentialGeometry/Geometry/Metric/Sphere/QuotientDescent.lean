@@ -65,7 +65,7 @@ structure RoundQuotientData (E : Type uE) [NormedAddCommGroup E] [InnerProductSp
     proj (sphereDiffeo (n := n) (ρ γ) q) = proj q
   proj_eq_imp : ∀ q₁ q₂ : sphere (0 : E) 1,
     proj q₁ = proj q₂ → ∃ γ : Γ, sphereDiffeo (n := n) (ρ γ) q₁ = q₂
-  section_at : ∀ x : Q, SectionWitness E n Q proj x
+  sectionAt : ∀ x : Q, SectionWitness E n Q proj x
 
 attribute [instance] RoundQuotientData.topos RoundQuotientData.charted RoundQuotientData.mfld
   RoundQuotientData.mfld1 RoundQuotientData.mfldTop RoundQuotientData.t2
@@ -239,109 +239,109 @@ namespace RoundQuotientData
 variable (D : RoundQuotientData E n)
 
 def gm (x : D.Q) : TangentSpace (𝓡 n) x →L[ℝ] TangentSpace (𝓡 n) x →L[ℝ] ℝ :=
-  let xW : (D.section_at x).W := ⟨x, (D.section_at x).mem⟩
-  let e := (tangentOpenEquiv (D.section_at x).W xW).toContinuousLinearMap
+  let xW : (D.sectionAt x).W := ⟨x, (D.sectionAt x).mem⟩
+  let e := (tangentOpenEquiv (D.sectionAt x).W xW).toContinuousLinearMap
   let g := (Diffeomorph.pullbackMetric
-    ((roundMetric (E := E) (n := n)).restrictOpen (D.section_at x).V)
-    (D.section_at x).s).inner xW
+    ((roundMetric (E := E) (n := n)).restrictOpen (D.sectionAt x).V)
+    (D.sectionAt x).s).inner xW
   ((ContinuousLinearMap.compL ℝ (TangentSpace (𝓡 n) x)
     (TangentSpace (𝓡 n) xW) ℝ).flip e).comp (g.comp e)
 
 theorem gm_apply (x : D.Q) (v w : TangentSpace (𝓡 n) x) :
     D.gm x v w =
       (Diffeomorph.pullbackMetric
-        ((roundMetric (E := E) (n := n)).restrictOpen (D.section_at x).V)
-        (D.section_at x).s).inner ⟨x, (D.section_at x).mem⟩
-          (tangentOpenEquiv (D.section_at x).W ⟨x, (D.section_at x).mem⟩ v)
-          (tangentOpenEquiv (D.section_at x).W ⟨x, (D.section_at x).mem⟩ w) := by
+        ((roundMetric (E := E) (n := n)).restrictOpen (D.sectionAt x).V)
+        (D.sectionAt x).s).inner ⟨x, (D.sectionAt x).mem⟩
+          (tangentOpenEquiv (D.sectionAt x).W ⟨x, (D.sectionAt x).mem⟩ v)
+          (tangentOpenEquiv (D.sectionAt x).W ⟨x, (D.sectionAt x).mem⟩ w) := by
   rfl
 
 theorem gm_symm (x : D.Q) (v w : TangentSpace (𝓡 n) x) : D.gm x v w = D.gm x w v :=
   by
     rw [D.gm_apply, D.gm_apply]
     exact (Diffeomorph.pullbackMetric
-      ((roundMetric (E := E) (n := n)).restrictOpen (D.section_at x).V)
-      (D.section_at x).s).symm _ _ _
+      ((roundMetric (E := E) (n := n)).restrictOpen (D.sectionAt x).V)
+      (D.sectionAt x).s).symm _ _ _
 
 theorem gm_pos (x : D.Q) (v : TangentSpace (𝓡 n) x) (hv : v ≠ 0) : 0 < D.gm x v v := by
   rw [D.gm_apply]
   apply (Diffeomorph.pullbackMetric
-    ((roundMetric (E := E) (n := n)).restrictOpen (D.section_at x).V)
-    (D.section_at x).s).pos
+    ((roundMetric (E := E) (n := n)).restrictOpen (D.sectionAt x).V)
+    (D.sectionAt x).s).pos
   intro h
   apply hv
-  exact (tangentOpenEquiv (D.section_at x).W
-    ⟨x, (D.section_at x).mem⟩).injective (by simpa using h)
+  exact (tangentOpenEquiv (D.sectionAt x).W
+    ⟨x, (D.sectionAt x).mem⟩).injective (by simpa using h)
 
-theorem sections_agree {x₁ x : D.Q} (hx : x ∈ (D.section_at x₁).W) :
+theorem sections_agree {x₁ x : D.Q} (hx : x ∈ (D.sectionAt x₁).W) :
     ∃ γ : D.Γ,
-      (D.section_at x₁).toSphere ⟨x, hx⟩
+      (D.sectionAt x₁).toSphere ⟨x, hx⟩
           = sphereDiffeo (n := n) (D.ρ γ)
-              ((D.section_at x).toSphere ⟨x, (D.section_at x).mem⟩)
+              ((D.sectionAt x).toSphere ⟨x, (D.sectionAt x).mem⟩)
       ∧ ∀ v : TangentSpace (𝓡 n) x,
-          mfderiv (𝓡 n) (𝓡 n) (D.section_at x₁).toSphere ⟨x, hx⟩
-              (tangentOpenEquiv (D.section_at x₁).W ⟨x, hx⟩ v)
+          mfderiv (𝓡 n) (𝓡 n) (D.sectionAt x₁).toSphere ⟨x, hx⟩
+              (tangentOpenEquiv (D.sectionAt x₁).W ⟨x, hx⟩ v)
             = mfderiv (𝓡 n) (𝓡 n) (sphereDiffeo (n := n) (D.ρ γ))
-                ((D.section_at x).toSphere ⟨x, (D.section_at x).mem⟩)
-                (mfderiv (𝓡 n) (𝓡 n) (D.section_at x).toSphere
-                  ⟨x, (D.section_at x).mem⟩
-                  (tangentOpenEquiv (D.section_at x).W
-                    ⟨x, (D.section_at x).mem⟩ v)) := by
+                ((D.sectionAt x).toSphere ⟨x, (D.sectionAt x).mem⟩)
+                (mfderiv (𝓡 n) (𝓡 n) (D.sectionAt x).toSphere
+                  ⟨x, (D.sectionAt x).mem⟩
+                  (tangentOpenEquiv (D.sectionAt x).W
+                    ⟨x, (D.sectionAt x).mem⟩ v)) := by
   have h0 : (∞ : WithTop ℕ∞) ≠ 0 := by decide
-  have hpq : D.proj ((D.section_at x).toSphere ⟨x, (D.section_at x).mem⟩) = x :=
-    (D.section_at x).toSphere_proj ⟨x, (D.section_at x).mem⟩
-  have hpq₁ : D.proj ((D.section_at x₁).toSphere ⟨x, hx⟩) = x :=
-    (D.section_at x₁).toSphere_proj ⟨x, hx⟩
+  have hpq : D.proj ((D.sectionAt x).toSphere ⟨x, (D.sectionAt x).mem⟩) = x :=
+    (D.sectionAt x).toSphere_proj ⟨x, (D.sectionAt x).mem⟩
+  have hpq₁ : D.proj ((D.sectionAt x₁).toSphere ⟨x, hx⟩) = x :=
+    (D.sectionAt x₁).toSphere_proj ⟨x, hx⟩
   obtain ⟨γ, hγ⟩ := D.proj_eq_imp _ _ (hpq.trans hpq₁.symm)
   refine ⟨γ, hγ.symm, fun v => ?_⟩
-  apply (D.section_at x₁).dproj_inj D.proj_smooth ⟨x, hx⟩
+  apply (D.sectionAt x₁).dproj_inj D.proj_smooth ⟨x, hx⟩
   have hA1 := ContinuousLinearMap.ext_iff.mp
-    ((D.section_at x₁).dproj_sec D.proj_smooth ⟨x, hx⟩)
-      (tangentOpenEquiv (D.section_at x₁).W ⟨x, hx⟩ v)
+    ((D.sectionAt x₁).dproj_sec D.proj_smooth ⟨x, hx⟩)
+      (tangentOpenEquiv (D.sectionAt x₁).W ⟨x, hx⟩ v)
   simp only [ContinuousLinearMap.comp_apply] at hA1
   rw [hpq₁] at hA1
   rw [mfderiv_subtype_val_tangentOpenEquiv] at hA1
   have hφ : MDifferentiableAt (𝓡 n) (𝓡 n) (sphereDiffeo (n := n) (D.ρ γ))
-      ((D.section_at x).toSphere ⟨x, (D.section_at x).mem⟩) :=
+      ((D.sectionAt x).toSphere ⟨x, (D.sectionAt x).mem⟩) :=
     (sphereDiffeo (n := n) (D.ρ γ)).contMDiff.mdifferentiableAt h0
   have hp' : MDifferentiableAt (𝓡 n) (𝓡 n) D.proj
       (sphereDiffeo (n := n) (D.ρ γ)
-        ((D.section_at x).toSphere ⟨x, (D.section_at x).mem⟩)) :=
+        ((D.sectionAt x).toSphere ⟨x, (D.sectionAt x).mem⟩)) :=
     D.proj_smooth.mdifferentiableAt h0
-  have hA2 : mfderiv (𝓡 n) (𝓡 n) D.proj ((D.section_at x₁).toSphere ⟨x, hx⟩)
+  have hA2 : mfderiv (𝓡 n) (𝓡 n) D.proj ((D.sectionAt x₁).toSphere ⟨x, hx⟩)
       (mfderiv (𝓡 n) (𝓡 n) (sphereDiffeo (n := n) (D.ρ γ))
-        ((D.section_at x).toSphere ⟨x, (D.section_at x).mem⟩)
-        (mfderiv (𝓡 n) (𝓡 n) (D.section_at x).toSphere
-          ⟨x, (D.section_at x).mem⟩
-          (tangentOpenEquiv (D.section_at x).W
-            ⟨x, (D.section_at x).mem⟩ v))) = v := by
+        ((D.sectionAt x).toSphere ⟨x, (D.sectionAt x).mem⟩)
+        (mfderiv (𝓡 n) (𝓡 n) (D.sectionAt x).toSphere
+          ⟨x, (D.sectionAt x).mem⟩
+          (tangentOpenEquiv (D.sectionAt x).W
+            ⟨x, (D.sectionAt x).mem⟩ v))) = v := by
     rw [← hγ, ← mfderiv_comp_apply _ hp' hφ,
       show D.proj ∘ ⇑(sphereDiffeo (n := n) (D.ρ γ)) = D.proj from by
         funext y; exact D.proj_smul γ y]
     have hsx := ContinuousLinearMap.ext_iff.mp
-      ((D.section_at x).dproj_sec D.proj_smooth ⟨x, (D.section_at x).mem⟩)
-        (tangentOpenEquiv (D.section_at x).W
-          ⟨x, (D.section_at x).mem⟩ v)
+      ((D.sectionAt x).dproj_sec D.proj_smooth ⟨x, (D.sectionAt x).mem⟩)
+        (tangentOpenEquiv (D.sectionAt x).W
+          ⟨x, (D.sectionAt x).mem⟩ v)
     simp only [ContinuousLinearMap.comp_apply] at hsx
     rw [hpq] at hsx
     rw [mfderiv_subtype_val_tangentOpenEquiv] at hsx
     exact hsx
   exact hA1.trans hA2.symm
 
-theorem gm_locallyEq {x₁ x : D.Q} (hx : x ∈ (D.section_at x₁).W)
+theorem gm_locallyEq {x₁ x : D.Q} (hx : x ∈ (D.sectionAt x₁).W)
     (v w : TangentSpace (𝓡 n) x) :
     D.gm x v w = (Diffeomorph.pullbackMetric
-        ((roundMetric (E := E) (n := n)).restrictOpen (D.section_at x₁).V)
-        (D.section_at x₁).s).inner ⟨x, hx⟩
-          (tangentOpenEquiv (D.section_at x₁).W ⟨x, hx⟩ v)
-          (tangentOpenEquiv (D.section_at x₁).W ⟨x, hx⟩ w) := by
+        ((roundMetric (E := E) (n := n)).restrictOpen (D.sectionAt x₁).V)
+        (D.sectionAt x₁).s).inner ⟨x, hx⟩
+          (tangentOpenEquiv (D.sectionAt x₁).W ⟨x, hx⟩ v)
+          (tangentOpenEquiv (D.sectionAt x₁).W ⟨x, hx⟩ w) := by
   rw [D.gm_apply,
-    (D.section_at x).pullback_inner_eval (D.section_at x).mem
-      (tangentOpenEquiv (D.section_at x).W ⟨x, (D.section_at x).mem⟩ v)
-      (tangentOpenEquiv (D.section_at x).W ⟨x, (D.section_at x).mem⟩ w),
-    (D.section_at x₁).pullback_inner_eval hx
-      (tangentOpenEquiv (D.section_at x₁).W ⟨x, hx⟩ v)
-      (tangentOpenEquiv (D.section_at x₁).W ⟨x, hx⟩ w)]
+    (D.sectionAt x).pullback_inner_eval (D.sectionAt x).mem
+      (tangentOpenEquiv (D.sectionAt x).W ⟨x, (D.sectionAt x).mem⟩ v)
+      (tangentOpenEquiv (D.sectionAt x).W ⟨x, (D.sectionAt x).mem⟩ w),
+    (D.sectionAt x₁).pullback_inner_eval hx
+      (tangentOpenEquiv (D.sectionAt x₁).W ⟨x, hx⟩ v)
+      (tangentOpenEquiv (D.sectionAt x₁).W ⟨x, hx⟩ w)]
   obtain ⟨γ, hq₁, hd⟩ := D.sections_agree hx
   rw [hd v, hd w, hq₁, roundInner_sphereDiffeo]
 
@@ -351,25 +351,25 @@ theorem gm_coeff (x₀ : D.Q) (i j : Fin (Module.finrank ℝ (EuclideanSpace ℝ
       (trivializationAt (EuclideanSpace ℝ (Fin n)) (TangentSpace (𝓡 n)) x₀).baseSet := by
   intro x₁ hx₁
   apply ContMDiffAt.contMDiffWithinAt
-  refine (contMDiffAt_subtype_iff (U := (D.section_at x₁).W)
-    (x := ⟨x₁, (D.section_at x₁).mem⟩)).mp ?_
-  have hfun : (fun r : (D.section_at x₁).W =>
+  refine (contMDiffAt_subtype_iff (U := (D.sectionAt x₁).W)
+    (x := ⟨x₁, (D.sectionAt x₁).mem⟩)).mp ?_
+  have hfun : (fun r : (D.sectionAt x₁).W =>
         D.gm (↑r) (frameVec (I := 𝓡 n) x₀ i ↑r) (frameVec (I := 𝓡 n) x₀ j ↑r))
-      = fun r : (D.section_at x₁).W =>
+      = fun r : (D.sectionAt x₁).W =>
         (Diffeomorph.pullbackMetric
-          ((roundMetric (E := E) (n := n)).restrictOpen (D.section_at x₁).V)
-          (D.section_at x₁).s).inner r
-          (tangentOpenEquiv (D.section_at x₁).W r (frameVec (I := 𝓡 n) x₀ i ↑r))
-          (tangentOpenEquiv (D.section_at x₁).W r (frameVec (I := 𝓡 n) x₀ j ↑r)) := by
+          ((roundMetric (E := E) (n := n)).restrictOpen (D.sectionAt x₁).V)
+          (D.sectionAt x₁).s).inner r
+          (tangentOpenEquiv (D.sectionAt x₁).W r (frameVec (I := 𝓡 n) x₀ i ↑r))
+          (tangentOpenEquiv (D.sectionAt x₁).W r (frameVec (I := 𝓡 n) x₀ j ↑r)) := by
     funext r
     exact D.gm_locallyEq r.2 _ _
   rw [hfun]
   exact CovariantDerivative.metric_inner_contMDiffAt
     (Diffeomorph.pullbackMetric
-      ((roundMetric (E := E) (n := n)).restrictOpen (D.section_at x₁).V)
-      (D.section_at x₁).s)
-    (frameVec_sub_cmdiffAt (I := 𝓡 n) (D.section_at x₁).W x₀ i hx₁ (D.section_at x₁).mem)
-    (frameVec_sub_cmdiffAt (I := 𝓡 n) (D.section_at x₁).W x₀ j hx₁ (D.section_at x₁).mem)
+      ((roundMetric (E := E) (n := n)).restrictOpen (D.sectionAt x₁).V)
+      (D.sectionAt x₁).s)
+    (frameVec_sub_cmdiffAt (I := 𝓡 n) (D.sectionAt x₁).W x₀ i hx₁ (D.sectionAt x₁).mem)
+    (frameVec_sub_cmdiffAt (I := 𝓡 n) (D.sectionAt x₁).W x₀ j hx₁ (D.sectionAt x₁).mem)
     (le_refl _)
 
 def gQuot : SmoothRiemannianMetric (𝓡 n) D.Q :=
@@ -387,7 +387,7 @@ theorem gQuot_constPosSec :
   refine ⟨1, one_pos, fun x X Y => ?_⟩
   have : NeZero (finrank ℝ (EuclideanSpace ℝ (Fin n))) := by
     rw [finrank_euclideanSpace_fin]; infer_instance
-  set S := D.section_at x with hS
+  set S := D.sectionAt x with hS
   let xW : S.W := ⟨x, S.mem⟩
   let XW : TangentSpace (𝓡 n) xW := tangentOpenEquiv S.W xW X
   let YW : TangentSpace (𝓡 n) xW := tangentOpenEquiv S.W xW Y

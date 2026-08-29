@@ -150,7 +150,7 @@ theorem deTurckMetricPrincipalDefectTotal_background_operatorFieldApplication_eq
         unitModel (I := I) (M := M) g₀ 4 W x
           ![v 0, v 1,
             cometricLmodel (I := I) g₀ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             (Module.finBasis ℝ E) k] := by
     rw [hTHraw]
@@ -165,19 +165,19 @@ theorem deTurckMetricPrincipalDefectTotal_background_operatorFieldApplication_eq
         ((∑ k : Fin (Module.finrank ℝ E),
             unitModel (I := I) (M := M) g₀ 4 W x
               ![cometricLmodel (I := I) g₀ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)),
                 v 0, v 1, (Module.finBasis ℝ E) k]
           + ∑ k : Fin (Module.finrank ℝ E),
               unitModel (I := I) (M := M) g₀ 4 W x
                 ![cometricLmodel (I := I) g₀ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)),
                   v 1, v 0, (Module.finBasis ℝ E) k])
         - ∑ k : Fin (Module.finrank ℝ E),
             unitModel (I := I) (M := M) g₀ 4 W x
               (Fin.cons (cometricLmodel (I := I) g₀ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)))
                 (Fin.cons ((Module.finBasis ℝ E) k) v))) := by
     rw [hRACraw, Finset.sum_sub_distrib, Finset.sum_add_distrib]
@@ -194,36 +194,36 @@ theorem deTurckMetricPrincipalDefectTotal_background_operatorFieldApplication_eq
       unitModel (I := I) (M := M) g₀ 4 W x
         ![v 0,
           cometricLmodel (I := I) g₀ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)),
           v 1, (Module.finBasis ℝ E) k] =
       ∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 W x
           ![cometricLmodel (I := I) g₀ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             v 0, v 1, (Module.finBasis ℝ E) k] :=
     Finset.sum_congr rfl fun k _ => hWsymm x (v 0)
       (cometricLmodel (I := I) g₀ x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis k)))
       (v 1) ((Module.finBasis ℝ E) k)
   have hswapB : ∑ k : Fin (Module.finrank ℝ E),
       unitModel (I := I) (M := M) g₀ 4 W x
         ![v 1,
           cometricLmodel (I := I) g₀ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)),
           v 0, (Module.finBasis ℝ E) k] =
       ∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 W x
           ![cometricLmodel (I := I) g₀ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             v 1, v 0, (Module.finBasis ℝ E) k] :=
     Finset.sum_congr rfl fun k _ => hWsymm x (v 1)
       (cometricLmodel (I := I) g₀ x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis k)))
       (v 0) ((Module.finBasis ℝ E) k)
   rw [hswapA, hswapB]
@@ -271,7 +271,7 @@ theorem jointTotalSpaceRS_sub_fw {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p - B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let _ := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let _ := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -307,7 +307,7 @@ theorem jointTotalSpaceRS_add_fw {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p + B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let _ := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let _ := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩

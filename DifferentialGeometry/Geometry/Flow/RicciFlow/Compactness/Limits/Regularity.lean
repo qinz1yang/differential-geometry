@@ -2427,7 +2427,7 @@ theorem gramSmooth
     have htOpen := RealTimeInterval.openWindow_subset ht₀ n ht
     simpa only [hD, RealTimeInterval.openInterval] using htOpen
   have hlocal := ConvOut.gramSmooth (I := I) (Φ := Φ) hwin
-    (OpenConvOut.at_window Φ co n) x₀ i j p ⟨htn, hp.2⟩
+    (OpenConvOut.atWindow Φ co n) x₀ i j p ⟨htn, hp.2⟩
   have hnhds : Set.Ioo (RealTimeInterval.openWindowLeft a t₀ n)
         (RealTimeInterval.openWindowRight b t₀ n) ×ˢ
       (trivializationAt E (TangentSpace I) x₀).baseSet ∈ 𝓝 p :=
@@ -2457,7 +2457,7 @@ theorem smoothMetric_of_conv
           (RealTimeInterval.openInterval a b t₀ ht₀)).family.metric := by
   apply OpenConvOut.smoothMetric (Φ := Φ) ht₀ co
   intro n
-  apply ConvOut.gramSmooth (Φ := Φ) (co := OpenConvOut.at_window Φ co n)
+  apply ConvOut.gramSmooth (Φ := Φ) (co := OpenConvOut.atWindow Φ co n)
   intro t ht
   have htOpen := RealTimeInterval.openWindow_subset ht₀ n ht
   simpa only [hD, RealTimeInterval.openInterval] using htOpen

@@ -733,7 +733,7 @@ theorem exists_riemannianFiberNorm_le_iteratedCovGrad_l2_jetSum_supercritical
   rcases isEmpty_or_nonempty M with hMempty | hMne
   · exact ⟨0, le_refl 0, fun _T x => (hMempty.false x).elim⟩
   obtain ⟨x₀⟩ := hMne
-  set S : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hS_def
+  set S : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have hS_ne : S.Nonempty := by
     have hsum := chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x₀
     rw [← hS_def] at hsum

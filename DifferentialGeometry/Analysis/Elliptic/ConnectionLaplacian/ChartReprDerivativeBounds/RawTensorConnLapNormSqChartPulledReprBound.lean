@@ -54,7 +54,7 @@ private lemma reprT_contDiffOn_goodSet
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : SmoothCcTensor g r s) :
     ContDiffOn ℝ ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => T.toSection y) ∘ (extChartAt I α).symm)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) := by
   classical
@@ -82,7 +82,7 @@ private lemma reprT_contDiffOn_goodSet
   rw [hbase] at hrewrite
   have hcm_on_source :
       ContMDiffOn I (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
-        (fun b : M => tensorRSChartE_section_repr (I := I) r s α
+        (fun b : M => tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => T.toSection y) b)
         ((chartAt H α).source) := by
     refine ContMDiffOn.congr hrewrite ?_
@@ -100,7 +100,7 @@ private lemma reprT_contDiffOn_goodSet
       extChartAt_source_eq_chartAt_source (I := I)]
   have hcm_on_good :
       ContMDiffOn I (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
-        (fun b : M => tensorRSChartE_section_repr (I := I) r s α
+        (fun b : M => tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => T.toSection y) b)
         (chartLeviCivitaGoodSet (I := I) α) := by
     rw [h_good_eq_source]; exact hcm_on_source
@@ -109,7 +109,7 @@ private lemma reprT_contDiffOn_goodSet
   intro y hy
   rcases hy with ⟨x, hx_good, rfl⟩
   set F : M → TensorRSModel r s ℝ E :=
-    fun b : M => tensorRSChartE_section_repr (I := I) r s α
+    fun b : M => tensorRSChartESectionRepr (I := I) r s α
       (fun y' : M => T.toSection y') b with hF_def
   have hF_at : ContMDiffAt I (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞ F x :=
     hcm_on_good.contMDiffAt (hgood_open.mem_nhds hx_good)
@@ -146,7 +146,7 @@ private lemma fderiv_reprT_differentiableAt_chart_point
     (hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α) :
     DifferentiableAt ℝ
       (fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => T.toSection y) ∘ (extChartAt I α).symm))
       (extChartAt I α b) := by
   classical
@@ -157,19 +157,19 @@ private lemma fderiv_reprT_differentiableAt_chart_point
       (extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α :=
     ⟨b, hb_good, rfl⟩
   have hcd : ContDiffOn ℝ ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
         (fun y : M => T.toSection y) ∘ (extChartAt I α).symm)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     reprT_contDiffOn_goodSet (I := I) (M := M) g r s α T
   have h_le : (∞ : WithTop ℕ∞) + 1 ≤ ∞ := by rw [ENat.coe_top_add_one]
   have hfd_cd : ContDiffOn ℝ ∞
-      (fderiv ℝ (tensorRSChartE_section_repr (I := I) r s α
+      (fderiv ℝ (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => T.toSection y) ∘ (extChartAt I α).symm))
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     hcd.fderiv_of_isOpen hU_open h_le
   have hne : (∞ : WithTop ℕ∞) ≠ 0 := by intro h; exact absurd h (by simp)
   have hwithin : DifferentiableWithinAt ℝ
-      (fderiv ℝ (tensorRSChartE_section_repr (I := I) r s α
+      (fderiv ℝ (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => T.toSection y) ∘ (extChartAt I α).symm))
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α)
       (extChartAt I α b) :=
@@ -184,7 +184,7 @@ private lemma chartFrameNormGlobalSmooth_fderiv_repr_bound
       ∀ b ∈ tsupport (fun x : M =>
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x),
         ‖fderiv ℝ
-            (chartE_section_repr (I := I) α
+            (chartESectionRepr (I := I) α
               ((chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun) ∘
               (extChartAt I α).symm)
             (extChartAt I α b)‖ ≤ C := by
@@ -207,16 +207,16 @@ private lemma chartFrameNormGlobalSmooth_fderiv_repr_bound
       (T% (Background.toFun : Π x : M, TangentSpace I x))
       (chartLeviCivitaGoodSet (I := I) α) := hBackground_total.contMDiffOn
   have hu_cd : ContDiffOn ℝ ∞
-      (chartE_section_repr (I := I) α Background.toFun ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α Background.toFun ∘ (extChartAt I α).symm)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     chartE_pullback_contDiffOn_goodSet (I := I) α hBackground_on
   have h_le : (∞ : WithTop ℕ∞) + 1 ≤ ∞ := by rw [ENat.coe_top_add_one]
   have hfd_cd : ContDiffOn ℝ ∞
-      (fderiv ℝ (chartE_section_repr (I := I) α Background.toFun ∘ (extChartAt I α).symm))
+      (fderiv ℝ (chartESectionRepr (I := I) α Background.toFun ∘ (extChartAt I α).symm))
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     hu_cd.fderiv_of_isOpen hU_open h_le
   have hcont_fd : ContinuousOn (fun y : E =>
-      ‖fderiv ℝ (chartE_section_repr (I := I) α Background.toFun ∘ (extChartAt I α).symm) y‖)
+      ‖fderiv ℝ (chartESectionRepr (I := I) α Background.toFun ∘ (extChartAt I α).symm) y‖)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     continuous_norm.comp_continuousOn hfd_cd.continuousOn
   have hφ_cm : ContMDiffOn I 𝓘(ℝ, E) ∞ (extChartAt I α) (chartAt H α).source :=
@@ -235,7 +235,7 @@ private lemma chartFrameNormGlobalSmooth_fderiv_repr_bound
     (hφ_cm.continuousOn).mono hK_sub
   have hcont_fd_M : ContinuousOn (fun b : M =>
       ‖fderiv ℝ
-        (chartE_section_repr (I := I) α Background.toFun ∘ (extChartAt I α).symm)
+        (chartESectionRepr (I := I) α Background.toFun ∘ (extChartAt I α).symm)
         (extChartAt I α b)‖) K_set :=
     hcont_fd.comp hφ_cont hmaps
   obtain ⟨Cfd, hCfd_mem⟩ := hK_compact.bddAbove_image hcont_fd_M

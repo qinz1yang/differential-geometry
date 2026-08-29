@@ -43,7 +43,7 @@ theorem
           ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
         ∀ T : TensorRSModel r (s + 1) ℝ E,
-          ‖T‖ ^ 2 ≤ K * chartTensorInnerPointwise_rs_model
+          ‖T‖ ^ 2 ≤ K * chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r (s + 1) α b T T :=
   chartTrivializationNorm_le_const_mul_chartTensorInnerPointwise_rs_model_on_pouTsupport
     (I := I) (M := M) g r (s + 1) α
@@ -98,13 +98,13 @@ theorem
           ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
         ∀ T : TensorRSModel r s ℝ E,
-          ‖T‖ ^ 2 ≤ K * chartTensorInnerPointwise_rs_model
+          ‖T‖ ^ 2 ≤ K * chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α b T T) ∧
       (∀ b : M, b ∈ tsupport (fun x : M =>
           ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
         ∀ T : TensorRSModel r (s + 1) ℝ E,
-          ‖T‖ ^ 2 ≤ K * chartTensorInnerPointwise_rs_model
+          ‖T‖ ^ 2 ≤ K * chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r (s + 1) α b T T) := by
   classical
   obtain ⟨K₀, hK₀_nn, h₀⟩ :=
@@ -118,13 +118,13 @@ theorem
     have h := h₀ b hb T
     have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
       pouTsupport_subset_baseSet (I := I) (M := M) α hb
-    have hQ_nn : 0 ≤ chartTensorInnerPointwise_rs_model
+    have hQ_nn : 0 ≤ chartTensorInnerPointwiseRsModel
         (I := I) (M := M) g r s α b T T :=
       chartTensorInnerPointwise_rs_model_nonneg
         (I := I) (M := M) g r s α hb_base T
-    have hineq : K₀ * chartTensorInnerPointwise_rs_model
+    have hineq : K₀ * chartTensorInnerPointwiseRsModel
         (I := I) (M := M) g r s α b T T ≤
-        (K₀ + K₁) * chartTensorInnerPointwise_rs_model
+        (K₀ + K₁) * chartTensorInnerPointwiseRsModel
           (I := I) (M := M) g r s α b T T :=
       mul_le_mul_of_nonneg_right
         (by linarith : K₀ ≤ K₀ + K₁) hQ_nn
@@ -133,13 +133,13 @@ theorem
     have h := h₁ b hb T
     have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
       pouTsupport_subset_baseSet (I := I) (M := M) α hb
-    have hQ_nn : 0 ≤ chartTensorInnerPointwise_rs_model
+    have hQ_nn : 0 ≤ chartTensorInnerPointwiseRsModel
         (I := I) (M := M) g r (s + 1) α b T T :=
       chartTensorInnerPointwise_rs_model_nonneg
         (I := I) (M := M) g r (s + 1) α hb_base T
-    have hineq : K₁ * chartTensorInnerPointwise_rs_model
+    have hineq : K₁ * chartTensorInnerPointwiseRsModel
         (I := I) (M := M) g r (s + 1) α b T T ≤
-        (K₀ + K₁) * chartTensorInnerPointwise_rs_model
+        (K₀ + K₁) * chartTensorInnerPointwiseRsModel
           (I := I) (M := M) g r (s + 1) α b T T :=
       mul_le_mul_of_nonneg_right
         (by linarith : K₁ ≤ K₀ + K₁) hQ_nn

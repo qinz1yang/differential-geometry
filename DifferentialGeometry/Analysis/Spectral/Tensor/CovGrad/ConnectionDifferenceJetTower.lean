@@ -59,7 +59,7 @@ theorem g0FlatField_contMDiff (g₀ : SmoothRiemannianMetric I M) :
     (F₂ := Tensor0SModel 1 ℝ E) (V₂ := fun z : M => Tensor0SSpace 1 I z)
     (φ := fun x : M => g0FlatCLM (I := I) g₀ x)
   intro Z
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 1
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 1
   refine (contMDiff_multilinearSection_iff_coord (𝕜 := ℝ) (F := E)
       (E := (TangentSpace I : M → Type _)) (IB := I) (n := (∞ : WithTop ℕ∞)) (Module.finBasis ℝ E)
       (fun x : M => (g0FlatCLM (I := I) g₀ x (Z x) :
@@ -349,7 +349,7 @@ theorem raisedKoszulFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) :
     (φ := fun x : M => (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
       raisedKoszulFib (I := I) g₀ g₁ x))
   intro om
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   have hsec : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SSpace 2 I z) x
@@ -671,8 +671,8 @@ private lemma dualCotangentCLM_eq (x : M) (φ : TangentSpace I x →L[ℝ] ℝ) 
   rw [cotangentToDualLinear_apply, cotangentToDualLinear_apply, cotangentToDual_apply,
     cotangentToDual_dualToCotangent]
   rw [dualCotangentCLM]
-  change dualToCotangent_gen (I := I) φ.toLinearMap (fun _ : Fin 1 => w) = φ w
-  rw [dualToCotangent_gen]
+  change dualToCotangentGen (I := I) φ.toLinearMap (fun _ : Fin 1 => w) = φ w
+  rw [dualToCotangentGen]
   change ((continuousMultilinearCurryFin1 ℝ (TangentSpace I x) ℝ).symm
       (LinearMap.toContinuousLinearMap φ.toLinearMap)) (fun _ : Fin 1 => w) = φ w
   rw [continuousMultilinearCurryFin1_symm_apply]
@@ -906,7 +906,7 @@ private lemma flatArmCovec_section_contMDiff (g₀ g₁ : SmoothRiemannianMetric
         (E := fun z : M => Tensor0SSpace 1 I z) x
         (flatArmCovec (I := I) g₀ g₁ x (om x) (V0 x))) := by
   classical
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 1
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 1
   refine (contMDiff_multilinearSection_iff_coord (𝕜 := ℝ) (F := E)
       (E := (TangentSpace I : M → Type _)) (IB := I) (n := (∞ : WithTop ℕ∞)) (Module.finBasis ℝ E)
       (fun x : M => (flatArmCovec (I := I) g₀ g₁ x (om x) (V0 x) :
@@ -1023,7 +1023,7 @@ theorem flatArmFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) (kind : Bo
     (φ := fun x : M => (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
       flatArmFib (I := I) g₀ g₁ kind x))
   intro om
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   have hsec : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SSpace 2 I z) x
@@ -2084,14 +2084,14 @@ private lemma diagonalGrid_power_closure (G Bc : ℝ) (hG : 0 ≤ G) (hB : 0 ≤
         mul_le_mul_of_nonneg_left hsum hG
     _ = (G * (↑(j + 1) * Bc) ^ 2) * r ^ (2 * (j + 2)) := by ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem norm_iteratedCovGrad_two_symmS_le
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) (x : M) :
     letI instTens : Bundle.RiemannianBundle
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
     letI : ∀ y : M, NormedAddCommGroup (Tensor0SBundle.TensorRSSpace 0 4 I y) :=
       fun y => tensorRSRiemannianNormedAddCommGroup (I := I) 0 4 (h := instTens) y
     ‖((iteratedCovGrad (I := I) g₀ 0 2 2 (ccTensor02Symm (I := I) g₀ T)).toSection x :
@@ -2100,7 +2100,7 @@ theorem norm_iteratedCovGrad_two_symmS_le
           Tensor0SBundle.TensorRSSpace 0 4 I x)‖ := by
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
   let : ∀ y : M, NormedAddCommGroup (Tensor0SBundle.TensorRSSpace 0 4 I y) :=
     fun y => tensorRSRiemannianNormedAddCommGroup (I := I) 0 4 (h := instTens) y
   set Tsw : SmoothCcTensor g₀ 0 2 :=

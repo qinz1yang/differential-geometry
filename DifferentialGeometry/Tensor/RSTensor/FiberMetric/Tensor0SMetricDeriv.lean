@@ -314,14 +314,14 @@ theorem ricReact_one {x : M}
   have hsharpA :
       cotangentSharp (I := I) g x A =
         ∑ p : Idx, (∑ i : Idx, gInv p i * a i) • basis p := by
-    change cotangentSharp_gen (I := I) g x A = _
+    change cotangentSharpGen (I := I) g x A = _
     simpa [gInv, a] using
       (cotangentSharp_eq_sum_inv_gen (I := I) g x basis gInv
       (by simpa [gInv] using basisInvMetric_real (I := I) g x basis) A)
   have hsharpB :
       cotangentSharp (I := I) g x B =
         ∑ r : Idx, (∑ j : Idx, gInv r j * b j) • basis r := by
-    change cotangentSharp_gen (I := I) g x B = _
+    change cotangentSharpGen (I := I) g x B = _
     simpa [gInv, b] using
       (cotangentSharp_eq_sum_inv_gen (I := I) g x basis gInv
         (by simpa [gInv] using basisInvMetric_real (I := I) g x basis) B)
@@ -581,7 +581,7 @@ theorem hasDerivWithinAt_normSq0S_coord {s : Nat} {x : M}
     (T : Real -> Tensor0SSpace s I x)
     (Tdt : (Fin s -> Idx) -> Real)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinvAll : ∀ r : Real, MetricInverseInBasis_gen (I := I) (g r) x basis (gInv r))
+    (hinvAll : ∀ r : Real, MetricInverseInBasisGen (I := I) (g r) x basis (gInv r))
     (hgInv : ∀ i j : Idx,
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) u t)
     (hT : ∀ I0 : Fin s -> Idx,
@@ -627,7 +627,7 @@ theorem hasDerivWithinAt_normSq0S {s : Nat} {x : M}
     (Tdt : (Fin s -> Idx) -> Real)
     (Tdot : Tensor0SSpace s I x)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinvAll : ∀ r : Real, MetricInverseInBasis_gen (I := I) (g r) x basis (gInv r))
+    (hinvAll : ∀ r : Real, MetricInverseInBasisGen (I := I) (g r) x basis (gInv r))
     (hgInv : ∀ i j : Idx,
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) u t)
     (hT : ∀ I0 : Fin s -> Idx,
@@ -682,7 +682,7 @@ theorem hasDerivWithinAt_normSq0S_ricciFlow {s : Nat} {x : M}
     (Tdt : (Fin s -> Idx) -> Real)
     (Tdot : Tensor0SSpace s I x)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinvAll : ∀ r : Real, MetricInverseInBasis_gen (I := I) (g r) x basis (gInv r))
+    (hinvAll : ∀ r : Real, MetricInverseInBasisGen (I := I) (g r) x basis (gInv r))
     (hgInv : ∀ i j : Idx,
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) u t)
     (hT : ∀ I0 : Fin s -> Idx,
@@ -750,7 +750,7 @@ theorem normSq_one_time {x : M} {t : Real}
       (Fin 1 -> Fin (Module.finrank Real (TangentSpace I x))) -> Real := fun I0 =>
     tensor0SComponent (I := I) Adot (fun i => basis i) I0
   have hinvAll (r : Real) :
-      MetricInverseInBasis_gen (I := I) (g r) x basis (gInv r) := by
+      MetricInverseInBasisGen (I := I) (g r) x basis (gInv r) := by
     simpa [gInv] using basisInvMetric_real (I := I) (g r) x basis
   have hgInv (i j : Fin (Module.finrank Real (TangentSpace I x))) :
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) Set.univ t := by

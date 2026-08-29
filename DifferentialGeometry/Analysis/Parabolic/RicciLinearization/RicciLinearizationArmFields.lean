@@ -157,10 +157,10 @@ def traceHessianSlotPerm : Equiv.Perm (Fin 4) :=
 
 noncomputable def domDomCongrFib (x : M) :
     Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 4 I x :=
-  (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) 4 x).symm.toContinuousLinearMap.comp
+  (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) 4 x).symm.toContinuousLinearMap.comp
     (((ContinuousMultilinearMap.domDomCongrₗᵢ ℝ E ℝ
           traceHessianSlotPerm).toContinuousLinearEquiv.toContinuousLinearMap).comp
-      (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) 4 x).toContinuousLinearMap)
+      (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) 4 x).toContinuousLinearMap)
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
@@ -293,16 +293,16 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 theorem cometricLmodel_covectorOfCLM_inner (g₁ : SmoothRiemannianMetric I M) (y : M)
     (φ : E →L[ℝ] ℝ) (u : TangentSpace I y) :
     g₁.inner y (cometricLmodel (I := I) g₁ y
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)) u =
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ)) u =
       φ (tangentSpaceModelContinuousLinearEquiv (I := I) y u) := by
   have h1 : cometricLmodel (I := I) g₁ y
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ) =
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ) =
       inverseMetricSharpFib (I := I) g₁ y
-        ((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (𝕜 := ℝ) (I := I) 1 y).symm
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)) := rfl
+        ((Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (𝕜 := ℝ) (I := I) 1 y).symm
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ)) := rfl
   rw [h1, inverseMetricSharpFib_inner (I := I) g₁ y _ u, cotangentToDualLinear_apply,
     cotangentToDual_apply]
-  change (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)
+  change (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ)
       (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) y u) =
     φ (tangentSpaceModelContinuousLinearEquiv (I := I) y u)
   rw [Tensor0SBundle.model_covectorOfCLM_apply]
@@ -323,7 +323,7 @@ theorem traceHessianCoeff_apply_eq
                 x from
                 W.toSection x) (unitTensor (I := I) (M := M) x)))
             (Fin.cons (cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)))
               (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
   rw [unitModel, operatorFieldApplication_toSection]

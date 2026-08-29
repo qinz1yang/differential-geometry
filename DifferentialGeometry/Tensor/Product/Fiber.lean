@@ -33,7 +33,7 @@ namespace Bundle.TensorProduct
         (mem_baseSet_trivializationAt F₁ E₁ x)).toLinearMap
       ((trivializationAt F₂ E₂ x).continuousLinearEquivAt 𝕜 x
         (mem_baseSet_trivializationAt F₂ E₂ x)).toLinearMap)
-    (instNormedAddCommGroup_tensor 𝕜 F₁ F₂).toUniformSpace.toTopologicalSpace
+    (instNormedAddCommGroupTensor 𝕜 F₁ F₂).toUniformSpace.toTopologicalSpace
 
 private noncomputable def trivEquiv (x : B) :
     (E₁ x ⊗[𝕜] E₂ x) ≃ₗ[𝕜] (F₁ ⊗[𝕜] F₂) :=

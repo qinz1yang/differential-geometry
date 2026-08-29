@@ -108,7 +108,7 @@ theorem harnack_on_separated_cylinders
     (hmass : 0 < cutoffMass (I := I) (M := M) averagingCutoff)
     (hpde : ∀ t ∈ Icc A D, ∀ x : M,
       deriv (fun q ↦ u q x) t =
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x) :
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x) :
     ∀ t ∈ Icc earlyLower earlyUpper, ∀ x : M,
       (bombieriGiustiSpatialCutoff rho innerLower innerUpper 0).toFun x ≠ 0 →
       ∀ q ∈ Icc lateLower lateUpper, ∀ y : M,
@@ -147,7 +147,7 @@ theorem harnack_on_separated_cylinders
   have hvpos : ∀ t x, 0 < v t x := fun t x ↦ inv_pos.mpr (hpos t x)
   have hvpde : ∀ t ∈ Icc c d, ∀ x : M,
       deriv (fun s ↦ v s x) t ≤
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g v hv t).toContMDiffMap x := by
+        ΔG (I := I) g (smoothScalarSlice (I := I) g v hv t).toContMDiffMap x := by
     intro t ht x
     have h := rpow_subsolution_of_supersolution
       (I := I) (M := M) g u (fun _ _ ↦ 0) hu hpos
@@ -238,7 +238,7 @@ theorem harnack_on_separated_cylinders_of_global_volume_normalization
         (M := M) g).real Set.univ ≤ 1)
     (hpde : ∀ t ∈ Icc A D, ∀ x : M,
       deriv (fun q ↦ u q x) t =
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x) :
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x) :
     ∀ t ∈ Icc α β, ∀ x : M, ∀ q ∈ Icc γ δ, ∀ y : M,
       u t x ≤
         separatedCylinderHarnackFactor (I := I) (M := M)
@@ -416,7 +416,7 @@ theorem harnack_on_standard_separated_cylinders_of_global_volume_normalization
         (M := M) g).real Set.univ ≤ 1)
     (hpde : ∀ t ∈ Icc A D, ∀ x : M,
       deriv (fun q ↦ u q x) t =
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x) :
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x) :
     ∀ t ∈ Icc (A + (D - A) / 8) (A + (D - A) / 4), ∀ x : M,
       ∀ q ∈ Icc (A + 3 * (D - A) / 4) (A + 7 * (D - A) / 8), ∀ y : M,
         u t x ≤
@@ -490,7 +490,7 @@ theorem harnack_on_standard_separated_cylinders_of_poincare_inequality
         (M := M) g).real Set.univ ≤ 1)
     (hpde : ∀ t ∈ Icc A D, ∀ x : M,
       deriv (fun q ↦ u q x) t =
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x) :
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x) :
     ∀ t ∈ Icc (A + (D - A) / 8) (A + (D - A) / 4), ∀ x : M,
       ∀ q ∈ Icc (A + 3 * (D - A) / 4) (A + 7 * (D - A) / 8), ∀ y : M,
         u t x ≤

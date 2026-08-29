@@ -144,11 +144,11 @@ theorem connectionDifferenceContrInsertionInnerField_eq_reindex_slotExtend
     rw [show Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
           (connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) D'
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) D'
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0))))
         (Matrix.vecTail u) =
         Tensor0SSpace.toModel
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) D'
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) D'
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))
           (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) x
             (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
@@ -187,7 +187,7 @@ private lemma rs13ContrVec_pairing (x : M) (B : Tensor0SBundle.TensorRSSpace 1 3
       ((Module.finBasis ℝ E).cDualBasis i)
           (rs13ContrVec (I := I) (M := M) x B v) =
         (Tensor0SBundle.TensorRSSpace.toModel B
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis i))) v := by
     intro i
     rw [rs13ContrVec, cDualBasis_eq_coord' (Module.finBasis ℝ E) i]
@@ -195,11 +195,11 @@ private lemma rs13ContrVec_pairing (x : M) (B : Tensor0SBundle.TensorRSSpace 1 3
     rw [show (∑ j : Fin (Module.finrank ℝ E),
         LinearMap.toContinuousLinearMap ((Module.finBasis ℝ E).coord i)
           (((Tensor0SBundle.TensorRSSpace.toModel B
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis j))) v) • (Module.finBasis ℝ E) j)) =
         ∑ j : Fin (Module.finrank ℝ E),
           ((Tensor0SBundle.TensorRSSpace.toModel B
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis j))) v) *
             ((Module.finBasis ℝ E).repr ((Module.finBasis ℝ E) j) i) from
       Finset.sum_congr rfl (fun j _ => by
@@ -215,7 +215,7 @@ private lemma rs13ContrVec_pairing (x : M) (B : Tensor0SBundle.TensorRSSpace 1 3
   have hexp : Tensor0SSpace.toModel β =
       ∑ i : Fin (Module.finrank ℝ E),
         (Tensor0SSpace.toModel β (Fin.cons ((Module.finBasis ℝ E) i) ![])) •
-          Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis i) := by
     refine ContinuousMultilinearMap.ext (fun w => ?_)
     rw [sum_apply]
@@ -236,7 +236,7 @@ private lemma rs13ContrVec_pairing (x : M) (B : Tensor0SBundle.TensorRSSpace 1 3
       ∑ i : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel β (Fin.cons ((Module.finBasis ℝ E) i) ![]) *
           (Tensor0SBundle.TensorRSSpace.toModel B
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis i))) v := by
     rw [show Tensor0SSpace.toModel β
         (fun _ : Fin 1 => rs13ContrVec (I := I) (M := M) x B v) =
@@ -365,7 +365,7 @@ theorem connectionDifferenceGradContrInsertionField_eq_reindex_slotExtend
     rw [rs13ContrVec_pairing (I := I) (M := M) x
       (show Tensor0SBundle.TensorRSSpace 1 3 I x from
         (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)).toSection x)
-      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) D'
+      ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) D'
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))
       (Matrix.vecTail u)]
     rw [TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := 1) D'
@@ -518,7 +518,7 @@ private theorem reindexCoeffFibGen_innerContractionSwapPerm_eq_comp
     {s : ℕ} (x : M)
     (A : Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace s I x) :
     reindexCoeffFibGen (I := I) 2 s innerContractionSwapPerm x A =
-      A.comp (slotPermCLM (I := I) perm2_10 x) := by
+      A.comp (slotPermCLM (I := I) perm210 x) := by
   apply ContinuousLinearMap.ext
   intro D
   rw [reindexCoeffFibGen_apply, ContinuousLinearMap.comp_apply, slotPermCLM_apply]
@@ -587,16 +587,16 @@ private theorem order0KernelField_eq_arm_combination (g₀ g₁ : SmoothRiemanni
     connectionDifferenceContrInsertionInnerField_toSection,
     connectionDifferenceGradContrInsertionField_toSection]
   simp only [reindexCoeffFibGen_innerContractionSwapPerm_eq_comp]
-  rw [show kOut0Perm3201 = perm4_3201 from rfl,
-    show kOut0Perm2301 = perm4_2301 from rfl,
-    show kOut0Perm3102 = perm4_3102 from rfl,
-    show kOut0Perm1302 = perm4_1302 from rfl,
-    show kOut0Perm1203 = perm4_1203 from rfl,
-    show kOut0Perm2103 = perm4_2103 from rfl,
-    show kOut0Perm3012 = perm4_3012 from rfl,
-    show kOut0Perm2013 = perm4_2013 from rfl,
-    show kMid0Perm102 = perm3_102 from rfl,
-    show kMid0Perm120 = perm3_120 from rfl]
+  rw [show kOut0Perm3201 = perm43201 from rfl,
+    show kOut0Perm2301 = perm42301 from rfl,
+    show kOut0Perm3102 = perm43102 from rfl,
+    show kOut0Perm1302 = perm41302 from rfl,
+    show kOut0Perm1203 = perm41203 from rfl,
+    show kOut0Perm2103 = perm42103 from rfl,
+    show kOut0Perm3012 = perm43012 from rfl,
+    show kOut0Perm2013 = perm42013 from rfl,
+    show kMid0Perm102 = perm3102 from rfl,
+    show kMid0Perm120 = perm3120 from rfl]
   unfold linearizedRicciConnectionDifferenceOrder0CLM
   simp only [slotPermCc0_toSection]
   simp only [ContinuousLinearMap.comp_assoc]

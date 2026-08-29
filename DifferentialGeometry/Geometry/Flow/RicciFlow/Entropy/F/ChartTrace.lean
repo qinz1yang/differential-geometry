@@ -49,7 +49,7 @@ def gInvFun
     (g : SmoothRiemannianMetric I M)
     (x : M) (i j : CoordinateIdx (𝕜 := Real) E) : M -> Real :=
   fun y : M =>
-    inverseMetricFlatModelInChart_component (I := I) g x i j (extChartAt I x y)
+    inverseMetricFlatModelInChartComponent (I := I) g x i j (extChartAt I x y)
 
 def compFun
     (A : Tensor0SBundle.TensorRSField (𝕜 := Real) (E := E) (H := H)
@@ -59,7 +59,7 @@ def compFun
     (A y
       (Tensor0SSpace.constInChart (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 1 x
-        ((continuousMultilinearMap_basis
+        ((continuousMultilinearMapBasis
           (𝕜 := Real) (F := E) (Module.finBasis Real E) 1)
           (fun _ : Fin 1 => p)) y))
       (fun q : Fin 2 =>

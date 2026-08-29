@@ -1017,8 +1017,8 @@ theorem velocity_chartRepAt_differentiableAt
     (hderiv_u_cdiffOn.differentiableOn (by simp) t ht_U).differentiableAt hU_nhds
   exact hderiv_u_diff.congr_of_eventuallyEq hurep_eq
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_perp_par_pos
     [hriemannian : RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -1215,8 +1215,8 @@ theorem exists_perp_par_pos
         exact this
       exact hzs
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_parallel_perp_frame [RiemannianBundle (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)

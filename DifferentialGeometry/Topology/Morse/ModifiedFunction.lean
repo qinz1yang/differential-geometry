@@ -328,7 +328,8 @@ theorem differentiableAt_modGamma {δ : ℝ} (x : ℝ) : DifferentiableAt ℝ (m
 
 section
 
-local instance : NormedSpace ℝ ℝ := RCLike.toInnerProductSpaceReal.toNormedSpace
+local instance instNormedSpaceRealDifferentialGeometry : NormedSpace ℝ ℝ :=
+  RCLike.toInnerProductSpaceReal.toNormedSpace
 
 private lemma fderiv_apply_eq_deriv_line {n : ℕ} {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F]
     {g : MorseModel n → F} {y e : MorseModel n}

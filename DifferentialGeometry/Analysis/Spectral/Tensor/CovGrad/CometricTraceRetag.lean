@@ -28,20 +28,20 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance traceRetagTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance traceRetagTensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance traceRetagTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance traceRetagTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 
 omit [CompleteSpace E] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
@@ -88,7 +88,7 @@ theorem trace_slot_flat (q h : SmoothRiemannianMetric I M) (x : M)
     rw [ContinuousLinearMap.comp_apply, g0FlatCLM_apply]
     change q.inner x
         (inverseMetricSharpFib (I := I) h x
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) D
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) D
             (smoothOrthoFrame (I := I) q x a x)))
         (smoothOrthoFrame (I := I) q x a x) = _
     rw [q.symm x]
@@ -100,7 +100,7 @@ theorem trace_slot_flat (q h : SmoothRiemannianMetric I M) (x : M)
     rw [h.symm x]
     rw [inverseMetricSharpFib_inner, cotangentToDualLinear_apply, cotangentToDual_apply]
     change Tensor0SSpace.eval
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) D
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) D
           (smoothOrthoFrame (I := I) q x a x))
         (fun _ => inverseMetricSharpFib (I := I) h x
           (g0FlatCLM (I := I) q x (smoothOrthoFrame (I := I) q x a x))) = _

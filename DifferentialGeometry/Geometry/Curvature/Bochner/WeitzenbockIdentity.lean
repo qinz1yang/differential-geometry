@@ -65,12 +65,12 @@ theorem laplacian_inner_self_half [I.Boundaryless]
     (hgVV : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b : M => g.inner b (V b) (V b)))
     (x : M)
     (hLeibniz :
-      Δ_g (I := I) g ⟨_, hgVV⟩ x =
-        2 * g.inner x (connLaplacian_vector (I := I) g V x) (V x) +
-          2 * frobeniusSq_grad_vector (I := I) g V x) :
-    (1 / 2 : ℝ) * Δ_g (I := I) g ⟨_, hgVV⟩ x =
-      g.inner x (connLaplacian_vector (I := I) g V x) (V x) +
-        frobeniusSq_grad_vector (I := I) g V x := by
+      ΔG (I := I) g ⟨_, hgVV⟩ x =
+        2 * g.inner x (connLaplacianVector (I := I) g V x) (V x) +
+          2 * frobeniusSqGradVector (I := I) g V x) :
+    (1 / 2 : ℝ) * ΔG (I := I) g ⟨_, hgVV⟩ x =
+      g.inner x (connLaplacianVector (I := I) g V x) (V x) +
+        frobeniusSqGradVector (I := I) g V x := by
   rw [hLeibniz]
   ring
 
@@ -79,13 +79,13 @@ theorem laplacian_grad_eq_grad_laplacian_plus_ricciSharp [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
     (hInner : ∀ w : TangentSpace I x,
-      g.inner x (connLaplacian_vector (I := I) g
+      g.inner x (connLaplacianVector (I := I) g
                   (fun b => gradFun (I := I) g f b) x) w =
-        g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
+        g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) w +
           g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w) :
-    connLaplacian_vector (I := I) g
+    connLaplacianVector (I := I) g
         (fun b => gradFun (I := I) g f b) x =
-      gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
+      gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x +
         ricciSharp (I := I) g x (gradFun (I := I) g f x) :=
   connLaplacian_grad_eq_grad_laplacian_plus_ricciSharp_of_inner
     (I := I) g hf x hInner
@@ -95,14 +95,14 @@ theorem laplacian_grad_inner_eq_grad_laplacian_plus_ricci [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
     (hInner : ∀ w : TangentSpace I x,
-      g.inner x (connLaplacian_vector (I := I) g
+      g.inner x (connLaplacianVector (I := I) g
                   (fun b => gradFun (I := I) g f b) x) w =
-        g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
+        g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) w +
           g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w)
     (w : TangentSpace I x) :
-    g.inner x (connLaplacian_vector (I := I) g
+    g.inner x (connLaplacianVector (I := I) g
                 (fun b => gradFun (I := I) g f b) x) w =
-      g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
+      g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) w +
         ricciTensor (I := I) g x (gradFun (I := I) g f x) w := by
   rw [hInner w, inner_ricciSharp (I := I) g x (gradFun (I := I) g f x) w]
 
@@ -114,23 +114,23 @@ theorem bochner_abstract [I.Boundaryless]
       (fun b : M => g.inner b (gradFun (I := I) g f b) (gradFun (I := I) g f b)))
     (x : M)
     (hLeibniz :
-      Δ_g (I := I) g ⟨_, hgVV⟩ x =
-        2 * g.inner x (connLaplacian_vector (I := I) g
+      ΔG (I := I) g ⟨_, hgVV⟩ x =
+        2 * g.inner x (connLaplacianVector (I := I) g
                         (fun b => gradFun (I := I) g f b) x)
                        (gradFun (I := I) g f x) +
-          2 * frobeniusSq_grad_vector (I := I) g
+          2 * frobeniusSqGradVector (I := I) g
                 (fun b => gradFun (I := I) g f b) x)
     (hInner : ∀ w : TangentSpace I x,
-      g.inner x (connLaplacian_vector (I := I) g
+      g.inner x (connLaplacianVector (I := I) g
                   (fun b => gradFun (I := I) g f b) x) w =
-        g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
+        g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) w +
           g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w) :
-    (1 / 2 : ℝ) * Δ_g (I := I) g ⟨_, hgVV⟩ x =
-      g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
+    (1 / 2 : ℝ) * ΔG (I := I) g ⟨_, hgVV⟩ x =
+      g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x)
         (gradFun (I := I) g f x) +
         ricciTensor (I := I) g x (gradFun (I := I) g f x)
           (gradFun (I := I) g f x) +
-        frobeniusSq_grad_vector (I := I) g
+        frobeniusSqGradVector (I := I) g
           (fun b => gradFun (I := I) g f b) x := by
   classical
   have hB2 :=
@@ -149,23 +149,23 @@ theorem bochner_abstract_of_heart_of_bochner [I.Boundaryless]
       (fun b : M => g.inner b (gradFun (I := I) g f b) (gradFun (I := I) g f b)))
     (x : M)
     (hLeibniz :
-      Δ_g (I := I) g ⟨_, hgVV⟩ x =
-        2 * g.inner x (connLaplacian_vector (I := I) g
+      ΔG (I := I) g ⟨_, hgVV⟩ x =
+        2 * g.inner x (connLaplacianVector (I := I) g
                         (fun b => gradFun (I := I) g f b) x)
                        (gradFun (I := I) g f x) +
-          2 * frobeniusSq_grad_vector (I := I) g
+          2 * frobeniusSqGradVector (I := I) g
                 (fun b => gradFun (I := I) g f b) x)
     (hHeart :
-      connLaplacian_vector (I := I) g
+      connLaplacianVector (I := I) g
           (fun b => gradFun (I := I) g f b) x =
-        gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
+        gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x +
           ricciSharp (I := I) g x (gradFun (I := I) g f x)) :
-    (1 / 2 : ℝ) * Δ_g (I := I) g ⟨_, hgVV⟩ x =
-      g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
+    (1 / 2 : ℝ) * ΔG (I := I) g ⟨_, hgVV⟩ x =
+      g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x)
         (gradFun (I := I) g f x) +
         ricciTensor (I := I) g x (gradFun (I := I) g f x)
           (gradFun (I := I) g f x) +
-        frobeniusSq_grad_vector (I := I) g
+        frobeniusSqGradVector (I := I) g
           (fun b => gradFun (I := I) g f b) x := by
   classical
   have hB2 :=
@@ -173,10 +173,10 @@ theorem bochner_abstract_of_heart_of_bochner [I.Boundaryless]
   rw [hB2]
   rw [hHeart]
   rw [show g.inner x
-        (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
+        (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x +
           ricciSharp (I := I) g x (gradFun (I := I) g f x))
         (gradFun (I := I) g f x) =
-      g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
+      g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x)
         (gradFun (I := I) g f x) +
       g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x))
         (gradFun (I := I) g f x) from by
@@ -199,23 +199,23 @@ theorem bochner_abstract_packaged [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
     (hLeibniz :
-      Δ_g (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
-        2 * g.inner x (connLaplacian_vector (I := I) g
+      ΔG (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
+        2 * g.inner x (connLaplacianVector (I := I) g
                         (fun b => gradFun (I := I) g f b) x)
                        (gradFun (I := I) g f x) +
-          2 * frobeniusSq_grad_vector (I := I) g
+          2 * frobeniusSqGradVector (I := I) g
                 (fun b => gradFun (I := I) g f b) x)
     (hInner : ∀ w : TangentSpace I x,
-      g.inner x (connLaplacian_vector (I := I) g
+      g.inner x (connLaplacianVector (I := I) g
                   (fun b => gradFun (I := I) g f b) x) w =
-        g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
+        g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) w +
           g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w) :
-    (1 / 2 : ℝ) * Δ_g (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
-      g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
+    (1 / 2 : ℝ) * ΔG (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
+      g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x)
         (gradFun (I := I) g f x) +
         ricciTensor (I := I) g x (gradFun (I := I) g f x)
           (gradFun (I := I) g f x) +
-        frobeniusSq_grad_vector (I := I) g
+        frobeniusSqGradVector (I := I) g
           (fun b => gradFun (I := I) g f b) x :=
   bochner_abstract (I := I) g hf (normGradSq_contMDiff (I := I) g hf) x
     hLeibniz hInner
@@ -225,23 +225,23 @@ theorem bochner_abstract_of_heart_of_bochner_packaged [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
     (hLeibniz :
-      Δ_g (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
-        2 * g.inner x (connLaplacian_vector (I := I) g
+      ΔG (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
+        2 * g.inner x (connLaplacianVector (I := I) g
                         (fun b => gradFun (I := I) g f b) x)
                        (gradFun (I := I) g f x) +
-          2 * frobeniusSq_grad_vector (I := I) g
+          2 * frobeniusSqGradVector (I := I) g
                 (fun b => gradFun (I := I) g f b) x)
     (hHeart :
-      connLaplacian_vector (I := I) g
+      connLaplacianVector (I := I) g
           (fun b => gradFun (I := I) g f b) x =
-        gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
+        gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x +
           ricciSharp (I := I) g x (gradFun (I := I) g f x)) :
-    (1 / 2 : ℝ) * Δ_g (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
-      g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
+    (1 / 2 : ℝ) * ΔG (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
+      g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x)
         (gradFun (I := I) g f x) +
         ricciTensor (I := I) g x (gradFun (I := I) g f x)
           (gradFun (I := I) g f x) +
-        frobeniusSq_grad_vector (I := I) g
+        frobeniusSqGradVector (I := I) g
           (fun b => gradFun (I := I) g f b) x :=
   bochner_abstract_of_heart_of_bochner (I := I) g hf
     (normGradSq_contMDiff (I := I) g hf) x hLeibniz hHeart
@@ -256,17 +256,17 @@ def IsChartOrthonormalAt
     (V : Π b : M, TangentSpace I b)
     (hgVV : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun b : M => g.inner b (V b) (V b)))
     (x : M) : Prop :=
-  Δ_g (I := I) g ⟨_, hgVV⟩ x =
-    2 * g.inner x (connLaplacian_vector (I := I) g V x) (V x) +
-      2 * frobeniusSq_grad_vector (I := I) g V x
+  ΔG (I := I) g ⟨_, hgVV⟩ x =
+    2 * g.inner x (connLaplacianVector (I := I) g V x) (V x) +
+      2 * frobeniusSqGradVector (I := I) g V x
 
 @[reducible] def IsHeartOfBochnerInnerAt [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) : Prop :=
   ∀ w : TangentSpace I x,
-    g.inner x (connLaplacian_vector (I := I) g
+    g.inner x (connLaplacianVector (I := I) g
                 (fun b => gradFun (I := I) g f b) x) w =
-      g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
+      g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) w +
         g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w
 
 structure BochnerReductionAt [I.Boundaryless]
@@ -281,12 +281,12 @@ theorem bochner_pointwise_abstract_of_reduction [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
     (hRed : BochnerReductionAt (I := I) g hf x) :
-    (1 / 2 : ℝ) * Δ_g (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
-      g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
+    (1 / 2 : ℝ) * ΔG (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
+      g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x)
         (gradFun (I := I) g f x) +
         ricciTensor (I := I) g x (gradFun (I := I) g f x)
           (gradFun (I := I) g f x) +
-        frobeniusSq_grad_vector (I := I) g
+        frobeniusSqGradVector (I := I) g
           (fun b => gradFun (I := I) g f b) x :=
   bochner_abstract_packaged (I := I) g hf x hRed.leibniz hRed.heart
 
@@ -299,12 +299,12 @@ theorem bochner_pointwise_abstract [I.Boundaryless]
         (fun b => gradFun (I := I) g f b)
         (normGradSq_contMDiff (I := I) g hf) x)
     (hInner : IsHeartOfBochnerInnerAt (I := I) g hf x) :
-    (1 / 2 : ℝ) * Δ_g (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
-      g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
+    (1 / 2 : ℝ) * ΔG (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
+      g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x)
         (gradFun (I := I) g f x) +
         ricciTensor (I := I) g x (gradFun (I := I) g f x)
           (gradFun (I := I) g f x) +
-        frobeniusSq_grad_vector (I := I) g
+        frobeniusSqGradVector (I := I) g
           (fun b => gradFun (I := I) g f b) x :=
   bochner_pointwise_abstract_of_reduction (I := I) g hf x ⟨hLeibniz, hInner⟩
 
@@ -317,7 +317,7 @@ theorem sum_abstractHessian_orthonormal_eq_laplacian [I.Boundaryless]
       g.inner x (B i) (B j) = if i = j then (1 : ℝ) else 0) :
     ∑ i : Fin (Module.finrank ℝ E),
       abstractHessian (I := I) g f x (B i) (B i) =
-      Δ_g (I := I) g ⟨_, hf⟩ x := by
+      ΔG (I := I) g ⟨_, hf⟩ x := by
   classical
   have htrace := orthonormal_basis_bilin_trace (I := I) g x
     (abstractHessian (I := I) g f x) B hB
@@ -350,7 +350,7 @@ theorem sum_abstractHessian_smoothOrthoFrame_eq_laplacian [I.Boundaryless]
       abstractHessian (I := I) g f x
         (smoothOrthoFrame (I := I) g x i x)
         (smoothOrthoFrame (I := I) g x i x) =
-      Δ_g (I := I) g ⟨_, hf⟩ x :=
+      ΔG (I := I) g ⟨_, hf⟩ x :=
   sum_abstractHessian_orthonormal_eq_laplacian (I := I) g hf x
     (fun i => smoothOrthoFrame (I := I) g x i x)
     (fun i j => smoothOrthoFrame_orthonormal_at_center (I := I) g x i j)
@@ -493,11 +493,11 @@ theorem leibnizTraceIdentity_holds [I.Boundaryless]
       (fun b => gradFun (I := I) g f b)
       (normGradSq_contMDiff (I := I) g hf) x := by
   classical
-  change Δ_g (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
-    2 * g.inner x (connLaplacian_vector (I := I) g
+  change ΔG (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
+    2 * g.inner x (connLaplacianVector (I := I) g
                     (fun b => gradFun (I := I) g f b) x)
                    (gradFun (I := I) g f x) +
-      2 * frobeniusSq_grad_vector (I := I) g
+      2 * frobeniusSqGradVector (I := I) g
             (fun b => gradFun (I := I) g f b) x
   set V : Π b : M, TangentSpace I b := fun b => gradFun (I := I) g f b with hV_def
   set hgVV : ContMDiff I 𝓘(ℝ, ℝ) ∞
@@ -536,7 +536,7 @@ theorem leibnizTraceIdentity_holds [I.Boundaryless]
               (smoothOrthoFrame (I := I) g x i x))
             ((LeviCivita (I := I) g).toFun V x
               (smoothOrthoFrame (I := I) g x i x)) =
-      frobeniusSq_grad_vector (I := I) g V x := rfl
+      frobeniusSqGradVector (I := I) g V x := rfl
   rw [h_frob]
   have h_LCV : ∑ i : Fin (Module.finrank ℝ E),
         (g.inner x ((LeviCivita (I := I) g).toFun
@@ -547,8 +547,8 @@ theorem leibnizTraceIdentity_holds [I.Boundaryless]
               ((LeviCivita (I := I) g).toFun
                 (smoothOrthoFrame (I := I) g x i) x
                 (smoothOrthoFrame (I := I) g x i x))) (V x)) =
-      g.inner x (connLaplacian_vector (I := I) g V x) (V x) := by
-    rw [show g.inner x (connLaplacian_vector (I := I) g V x) (V x) =
+      g.inner x (connLaplacianVector (I := I) g V x) (V x) := by
+    rw [show g.inner x (connLaplacianVector (I := I) g V x) (V x) =
       g.inner x (∑ i : Fin (Module.finrank ℝ E),
         ((LeviCivita (I := I) g).toFun
             (covApply (LeviCivita (I := I) g)
@@ -576,28 +576,28 @@ theorem bochner_pointwise_abstract_via_orthonormalTrace [I.Boundaryless]
             (gradFun (I := I) g f b) (gradFun (I := I) g f b)) x
           (smoothOrthoFrame (I := I) g x i x)
           (smoothOrthoFrame (I := I) g x i x) =
-        2 * g.inner x (connLaplacian_vector (I := I) g
+        2 * g.inner x (connLaplacianVector (I := I) g
                         (fun b => gradFun (I := I) g f b) x)
                        (gradFun (I := I) g f x) +
-          2 * frobeniusSq_grad_vector (I := I) g
+          2 * frobeniusSqGradVector (I := I) g
                 (fun b => gradFun (I := I) g f b) x)
     (hInner : IsHeartOfBochnerInnerAt (I := I) g hf x) :
-    (1 / 2 : ℝ) * Δ_g (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
-      g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
+    (1 / 2 : ℝ) * ΔG (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
+      g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x)
         (gradFun (I := I) g f x) +
         ricciTensor (I := I) g x (gradFun (I := I) g f x)
           (gradFun (I := I) g f x) +
-        frobeniusSq_grad_vector (I := I) g
+        frobeniusSqGradVector (I := I) g
           (fun b => gradFun (I := I) g f b) x := by
   classical
   have hLeibniz : IsLeibnizTraceAt (I := I) g
       (fun b => gradFun (I := I) g f b)
       (normGradSq_contMDiff (I := I) g hf) x := by
-    change Δ_g (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
-      2 * g.inner x (connLaplacian_vector (I := I) g
+    change ΔG (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
+      2 * g.inner x (connLaplacianVector (I := I) g
                       (fun b => gradFun (I := I) g f b) x)
                      (gradFun (I := I) g f x) +
-        2 * frobeniusSq_grad_vector (I := I) g
+        2 * frobeniusSqGradVector (I := I) g
               (fun b => gradFun (I := I) g f b) x
     have h1 := sum_abstractHessian_smoothOrthoFrame_eq_laplacian (I := I) g
       (normGradSq_contMDiff (I := I) g hf) x
@@ -609,12 +609,12 @@ theorem bochner_pointwise_abstract_hLeibniz_discharged [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M)
     (hInner : IsHeartOfBochnerInnerAt (I := I) g hf x) :
-    (1 / 2 : ℝ) * Δ_g (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
-      g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
+    (1 / 2 : ℝ) * ΔG (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
+      g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x)
         (gradFun (I := I) g f x) +
         ricciTensor (I := I) g x (gradFun (I := I) g f x)
           (gradFun (I := I) g f x) +
-        frobeniusSq_grad_vector (I := I) g
+        frobeniusSqGradVector (I := I) g
           (fun b => gradFun (I := I) g f b) x :=
   bochner_pointwise_abstract (I := I) g hf x
     (leibnizTraceIdentity_holds (I := I) g hf x) hInner
@@ -814,7 +814,7 @@ private lemma sum_abstractHessian_smoothOrthoFrame_eventuallyEq_laplacian
         abstractHessian (I := I) g f b
           (smoothOrthoFrame (I := I) g x i b)
           (smoothOrthoFrame (I := I) g x i b)) =ᶠ[𝓝 x]
-      (fun b : M => Δ_g (I := I) g ⟨_, hf⟩ b) := by
+      (fun b : M => ΔG (I := I) g ⟨_, hf⟩ b) := by
   classical
   have h_open : smoothOrthoFrameNbhd (I := I) (M := M) x ∈ 𝓝 x :=
     smoothOrthoFrameNbhd_mem_nhds (I := I) (M := M) x
@@ -1247,7 +1247,7 @@ theorem heartOfBochnerInner_holds [I.Boundaryless]
                     abstractHessian (I := I) g f b
                       (smoothOrthoFrame (I := I) g x i b)
                       (smoothOrthoFrame (I := I) g x i b)) x (W x)) =
-      mvfderiv (I := I) (Δ_g (I := I) g ⟨_, hf⟩) x w := by
+      mvfderiv (I := I) (ΔG (I := I) g ⟨_, hf⟩) x w := by
     have hB_smooth : ∀ i : Fin (Module.finrank ℝ E),
         ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
           (T% (smoothOrthoFrame (I := I) g x i)) :=
@@ -1382,26 +1382,26 @@ theorem heartOfBochnerInner_holds [I.Boundaryless]
                   abstractHessian (I := I) g f b
                     (smoothOrthoFrame (I := I) g x i b)
                     (smoothOrthoFrame (I := I) g x i b)) x =
-        mvfderiv (I := I) (Δ_g (I := I) g ⟨_, hf⟩) x := by
+        mvfderiv (I := I) (ΔG (I := I) g ⟨_, hf⟩) x := by
       change (NormedSpace.fromTangentSpace _).toContinuousLinearMap ∘L
             (mfderiv I 𝓘(ℝ, ℝ) (fun b : M => ∑ i : Fin (Module.finrank ℝ E),
                       abstractHessian (I := I) g f b
                         (smoothOrthoFrame (I := I) g x i b)
                         (smoothOrthoFrame (I := I) g x i b)) x) =
             (NormedSpace.fromTangentSpace _).toContinuousLinearMap ∘L
-            (mfderiv I 𝓘(ℝ, ℝ) (Δ_g (I := I) g ⟨_, hf⟩) x)
+            (mfderiv I 𝓘(ℝ, ℝ) (ΔG (I := I) g ⟨_, hf⟩) x)
       have h_mf_eq : (mfderiv I 𝓘(ℝ, ℝ) (fun b : M =>
                   ∑ i : Fin (Module.finrank ℝ E),
                   abstractHessian (I := I) g f b
                     (smoothOrthoFrame (I := I) g x i b)
                     (smoothOrthoFrame (I := I) g x i b)) x) =
-          mfderiv I 𝓘(ℝ, ℝ) (Δ_g (I := I) g ⟨_, hf⟩) x :=
+          mfderiv I 𝓘(ℝ, ℝ) (ΔG (I := I) g ⟨_, hf⟩) x :=
         Filter.EventuallyEq.mfderiv_eq h_hess_sum_eventuallyEq
       have h_base_eq : (fun b : M => ∑ i : Fin (Module.finrank ℝ E),
                   abstractHessian (I := I) g f b
                     (smoothOrthoFrame (I := I) g x i b)
                     (smoothOrthoFrame (I := I) g x i b)) x =
-          Δ_g (I := I) g ⟨_, hf⟩ x := by
+          ΔG (I := I) g ⟨_, hf⟩ x := by
         exact h_hess_sum_eventuallyEq.self_of_nhds
       rw [h_mf_eq]
       congr 1
@@ -1414,9 +1414,9 @@ theorem heartOfBochnerInner_holds [I.Boundaryless]
               (smoothOrthoFrame (I := I) g x i) x (W x))) = 0 from by
     rw [hW_eq]
     exact sum_abstractHessian_smoothOrthoFrame_cov_eq_zero (I := I) g hf x w]
-  rw [show mvfderiv (I := I) (Δ_g (I := I) g ⟨_, hf⟩) x w =
-        g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w from
-    (gradFun_metricDual_mvfderiv (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x w).symm]
+  rw [show mvfderiv (I := I) (ΔG (I := I) g ⟨_, hf⟩) x w =
+        g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) w from
+    (gradFun_metricDual_mvfderiv (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x w).symm]
   rw [show ricciTensor (I := I) g x (gradFun (I := I) g f x) w =
         g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w from
     (inner_ricciSharp (I := I) g x (gradFun (I := I) g f x) w).symm]
@@ -1426,12 +1426,12 @@ theorem heartOfBochnerInner_holds [I.Boundaryless]
 theorem bochner_pointwise_abstract_of_smooth [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M) :
-    (1 / 2 : ℝ) * Δ_g (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
-      g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
+    (1 / 2 : ℝ) * ΔG (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
+      g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x)
         (gradFun (I := I) g f x) +
         ricciTensor (I := I) g x (gradFun (I := I) g f x)
           (gradFun (I := I) g f x) +
-        frobeniusSq_grad_vector (I := I) g
+        frobeniusSqGradVector (I := I) g
           (fun b => gradFun (I := I) g f b) x :=
   bochner_pointwise_abstract (I := I) g hf x
     (leibnizTraceIdentity_holds (I := I) g hf x)

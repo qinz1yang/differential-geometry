@@ -33,7 +33,7 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Bound
 theorem tensorRSChartE_section_repr_eq_tensorTrivProj
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) :
-    tensorRSChartE_section_repr (I := I) r s α S.toSection =
+    tensorRSChartESectionRepr (I := I) r s α S.toSection =
       tensorTrivProj (I := I) (M := M) g r s S α :=
   rfl
 

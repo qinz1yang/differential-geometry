@@ -52,20 +52,20 @@ private local instance completeSpaceE : CompleteSpace E := FiniteDimensional.com
 
 private local instance tensorRSModelNormedAddCommGroupLocal (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance tensorRSModelNormedSpaceLocal (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance tensorRSBundleTopologyLocal (r s : ℕ) :
     TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance tensorRSBundleFiberLocal (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 noncomputable def scalarHeatCoeff
     (g : SmoothRiemannianMetric I M) (u₀ : TensorL2 0 0 g)
@@ -3391,14 +3391,14 @@ private lemma trivializationAt_tensor0SBundle_zero_fibre_smulRight
       (fun x : M => Tensor0SSpace 0 I x) α).baseSet) :
     (trivializationAt (TensorRSModel 0 0 ℝ E)
       (fun y : M => TensorRSSpace 0 0 I y) α
-      ⟨b, (tensor0SSpace_evalScalar b).smulRight (scalarTensor0 (I := I) b c)⟩).2 =
+      ⟨b, (tensor0SSpaceEvalScalar b).smulRight (scalarTensor0 (I := I) b c)⟩).2 =
       c • (ContinuousLinearMap.id ℝ (Tensor0SModel 0 ℝ E) :
         Tensor0SModel 0 ℝ E →L[ℝ] Tensor0SModel 0 ℝ E) := by
   set e₀ : Trivialization (Tensor0SModel 0 ℝ E)
       (π (Tensor0SModel 0 ℝ E) (fun x : M => Tensor0SSpace 0 I x)) :=
     trivializationAt (Tensor0SModel 0 ℝ E) (fun x : M => Tensor0SSpace 0 I x) α
   set T : TensorRSSpace 0 0 I b :=
-    (tensor0SSpace_evalScalar b).smulRight (scalarTensor0 (I := I) b c)
+    (tensor0SSpaceEvalScalar b).smulRight (scalarTensor0 (I := I) b c)
   have htriv : (trivializationAt (TensorRSModel 0 0 ℝ E)
       (fun y : M => TensorRSSpace 0 0 I y) α ⟨b, T⟩).2 =
       (e₀.continuousLinearMapAt ℝ b).comp (T.comp (e₀.symmL ℝ b)) := by
@@ -3408,11 +3408,11 @@ private lemma trivializationAt_tensor0SBundle_zero_fibre_smulRight
   apply ContinuousLinearMap.ext
   intro z
   change e₀.continuousLinearMapAt ℝ b
-      (((tensor0SSpace_evalScalar b).smulRight
+      (((tensor0SSpaceEvalScalar b).smulRight
         (scalarTensor0 (I := I) b c)).toFun (e₀.symmL ℝ b z)) =
     c • z
   change e₀.continuousLinearMapAt ℝ b
-      (((tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) b) (e₀.symmL ℝ b z)) •
+      (((tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) b) (e₀.symmL ℝ b z)) •
         scalarTensor0 (I := I) b c) =
     c • z
   have hlmc : e₀.continuousLinearMapAt ℝ b
@@ -3426,7 +3426,7 @@ private lemma trivializationAt_tensor0SBundle_zero_fibre_smulRight
     change ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E)
         ((scalarTensor0 (I := I) b c) 0) = _
     congr 1
-  have hscalar : (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) b)
+  have hscalar : (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) b)
       (e₀.symmL ℝ b z) = z Fin.elim0 := by
     have hA (A : Tensor0SSpace 0 I b) :
         (e₀.continuousLinearMapAt ℝ b A) Fin.elim0 = A Fin.elim0 := by
@@ -3439,7 +3439,7 @@ private lemma trivializationAt_tensor0SBundle_zero_fibre_smulRight
       congr 1
       exact Subsingleton.elim _ _
     calc
-      (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) b) (e₀.symmL ℝ b z)
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) b) (e₀.symmL ℝ b z)
           = (e₀.symmL ℝ b z) Fin.elim0 := by
             rw [Tensor0SSpace.evalScalar_apply]
       _ = (e₀.continuousLinearMapAt ℝ b (e₀.symmL ℝ b z)) Fin.elim0 := by
@@ -3458,9 +3458,9 @@ private lemma trivializationAt_tensor0SBundle_zero_fibre_smulRight
     ring
   calc
     e₀.continuousLinearMapAt ℝ b
-        (((tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) b) (e₀.symmL ℝ b z)) •
+        (((tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) b) (e₀.symmL ℝ b z)) •
           scalarTensor0 (I := I) b c)
-        = ((tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) b) (e₀.symmL ℝ b z)) •
+        = ((tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) b) (e₀.symmL ℝ b z)) •
             (e₀.continuousLinearMapAt ℝ b
               (scalarTensor0 (I := I) b c)) := by
           rw [map_smul]
@@ -3484,7 +3484,7 @@ private lemma scalarCcLift_jointContMDiffOn_of_jointSmooth
   let Φ : M × ℝ → TotalSpace (TensorRSModel 0 0 ℝ E) (fun z : M => TensorRSSpace 0 0 I z) :=
     fun q => TotalSpace.mk' (TensorRSModel 0 0 ℝ E)
       (E := fun z : M => TensorRSSpace 0 0 I z) q.1
-        ((tensor0SSpace_evalScalar q.1).smulRight
+        ((tensor0SSpaceEvalScalar q.1).smulRight
           (scalarTensor0 (I := I) q.1 q.2))
   have hsec (x : M) (t : ℝ) :
       (scalarCcLift g (F t)).toSection x =
@@ -8239,8 +8239,8 @@ private theorem scalarHeatFlowTensor_smoothInitial_one_point_harnack_of_nonnegat
     (fun t ht => ⟨ht.1, le_trans ht.2 (by linarith)⟩)
     (fun t ht => ⟨ht.1, lt_trans ht.2 (by linarith)⟩) x
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 private theorem scalarHeatFlowTensor_smoothInitial_harnack_of_nonnegative_ricci
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
@@ -8605,8 +8605,8 @@ private lemma riemannianEDist_congr_enorm
   intro s
   exact h (γ s) (mfderiv% γ s 1)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [CompactSpace M] in
 private lemma scalarHeatFlow_smoothInitial_harnack_of_nonnegative_ricci_of_enorm
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]

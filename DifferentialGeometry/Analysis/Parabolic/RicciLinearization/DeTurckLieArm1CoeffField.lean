@@ -82,7 +82,7 @@ noncomputable def deTurckLieArm1CoreFib (g₀ g₁ g_bg : SmoothRiemannianMetric
       (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
     - deTurckLiePairTraceFib (I := I) g₁ deTurckLieArm1PairPermCorrection x
         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
-    - (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 2 x
+    - (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 2 x
           ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x)).comp
         (domDomCongrFibRank (I := I) 3 deTurckLieArm1VecSlotPerm x)
     - deTurckLiePairTraceFib (I := I) g₁ deTurckLieArm1PairPermOuterZero x
@@ -93,7 +93,7 @@ noncomputable def deTurckLieArm1CoreFib (g₀ g₁ g_bg : SmoothRiemannianMetric
 
 noncomputable def deTurckLieArm1Fib (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace 3 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
-  Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 2 x
+  Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 2 x
       ((PDE.DeTurck.deTurckVF (I := I) g₁ g_bg : Π b : M, TangentSpace I b) x)
     + deTurckLieArm1CoreFib (I := I) g₀ g₁ g_bg x
     + (domDomCongrFibRank (I := I) 2 (Equiv.swap (0 : Fin 2) 1) x).comp

@@ -307,8 +307,8 @@ private lemma velocity_totalSpace_continuous
           TangentBundle I M)) :=
   (velocity_totalSpace_contMDiff (I := I) (M := M) f hf).continuous
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private lemma continuous_g_inner_along_param

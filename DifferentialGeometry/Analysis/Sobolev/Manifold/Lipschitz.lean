@@ -59,8 +59,8 @@ private lemma lip_mul_bdd
       simp only [NNReal.coe_add, NNReal.coe_mul, one_mul]
       ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem chart_pou_lip
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
@@ -294,8 +294,8 @@ private lemma pou_ae_mdiff
   filter_upwards [pou_ae_diff (I := I) g α hu hB] with x hx
   exact fun hx_source => mdiff_of_raw (I := I) α hx_source (hx hx_source)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem ae_mdiff_of_lip
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
@@ -341,8 +341,8 @@ theorem ae_mdiff_of_lip
   filter_upwards [hρ_smooth.continuousAt.eventually_ne hρ_ne] with y hy
   rw [← mul_assoc, inv_mul_cancel₀ hy, one_mul]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem mem_chart_one_of_lip
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)

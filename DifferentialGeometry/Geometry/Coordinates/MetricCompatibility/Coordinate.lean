@@ -42,7 +42,7 @@ theorem invCovZeroLocal
       (fun y : M => ∑ k : Idx,
           gInv y i k * metricCompForMetricInFrame (I := I) g frame y k j) =ᶠ[𝓝 x]
         fun _ : M => if i = j then 1 else 0)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (hu : IsOpen u) (hx : x ∈ u)
     (hginv_mdiff : ∀ a b : Idx,
       MDifferentiableAt I 𝓘(Real, Real) (fun y : M => gInv y a b) x)
@@ -354,19 +354,19 @@ theorem gInvCovZeroAt
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (x₀ : M) (k l : CoordinateIdx (𝕜 := Real) E) :
     inverseMetricCovDerivForMetricCompAlongInFrame
         (I := I)
         (fun y : M => fun a b : CoordinateIdx (𝕜 := Real) E =>
-          inverseMetricFlatModelInChart_component (I := I) g x₀ a b
+          inverseMetricFlatModelInChartComponent (I := I) g x₀ a b
             (extChartAt I x₀ y))
         cov (coordinateFrameAt (I := I) x₀)
         (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
         x₀ (X x₀) k l = 0 := by
   classical
   let gInv : M -> CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
-    fun y a b => inverseMetricFlatModelInChart_component (I := I) g x₀ a b
+    fun y a b => inverseMetricFlatModelInChartComponent (I := I) g x₀ a b
       (extChartAt I x₀ y)
   have hinvX : ∀ i j : CoordinateIdx (𝕜 := Real) E,
       (∑ r : CoordinateIdx (𝕜 := Real) E,

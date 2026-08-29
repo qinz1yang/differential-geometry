@@ -124,7 +124,7 @@ noncomputable def tensorSlotZeroEvalFib (x : M) (s : ℕ)
   LinearMap.toContinuousLinearMap
     { toFun := fun Wx =>
         tensor0SToTensorRS (I := I) (M := M) x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from Wx)
               (unitZeroSec (I := I) (M := M) x)) v)
       map_add' := fun W₁ W₂ => by
@@ -138,7 +138,7 @@ noncomputable def tensorSlotZeroEvalFib (x : M) (s : ℕ)
               (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from W₁) +
                 (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from W₂) from rfl,
             add_apply]
-        rw [hval, map_add (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x),
+        rw [hval, map_add (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x),
           add_apply,
           tensor0SAsRS_add_loc (I := I) (M := M) x]
       map_smul' := fun c W => by
@@ -149,7 +149,7 @@ noncomputable def tensorSlotZeroEvalFib (x : M) (s : ℕ)
           rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from c • W) =
               c • (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from W) from rfl,
             smul_apply]
-        rw [hval, map_smul (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x),
+        rw [hval, map_smul (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x),
           smul_apply, tensor0SAsRS_smul_loc (I := I) (M := M) x]
         rfl }
 
@@ -160,7 +160,7 @@ lemma slot0SliceFib_apply (x : M) (s : ℕ) (v : TangentSpace I x)
     (Wx : TensorRSSpace 0 (s + 1) I x) :
     tensorSlotZeroEvalFib (I := I) (M := M) x s v Wx =
       tensor0SToTensorRS (I := I) (M := M) x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from Wx)
             (unitZeroSec (I := I) (M := M) x)) v) := by
   have : FiniteDimensional ℝ (TensorRSSpace 0 (s + 1) I x) :=
@@ -218,7 +218,7 @@ lemma slot0SliceFib_dir_add (x : M) (s : ℕ) (v v' : TangentSpace I x)
       tensorSlotZeroEvalFib (I := I) (M := M) x s v Wx + tensorSlotZeroEvalFib (I := I) (M := M) x s
         v' Wx := by
   rw [slot0SliceFib_apply, slot0SliceFib_apply, slot0SliceFib_apply]
-  rw [map_add (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+  rw [map_add (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from Wx)
       (unitZeroSec (I := I) (M := M) x)))]
   rw [tensor0SAsRS_add_loc (I := I) (M := M) x]
@@ -231,7 +231,7 @@ lemma slot0SliceFib_dir_smul (x : M) (s : ℕ) (c : ℝ) (v : TangentSpace I x)
     tensorSlotZeroEvalFib (I := I) (M := M) x s (c • v) Wx =
       c • tensorSlotZeroEvalFib (I := I) (M := M) x s v Wx := by
   rw [slot0SliceFib_apply, slot0SliceFib_apply]
-  rw [map_smul (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+  rw [map_smul (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from Wx)
       (unitZeroSec (I := I) (M := M) x)))]
   rw [tensor0SAsRS_smul_loc (I := I) (M := M) x]
@@ -374,7 +374,7 @@ lemma gradArmFib_covGrad_slice_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (a : Fin (Module.finrank ℝ E)) :
     tensor0SToTensorRS (I := I) (M := M) x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
             curvatureGradContractionFib (I := I) (M := M) g s (smoothOrthoFrame (I := I) g x) x
               ((covGrad (I := I) (M := M) g 0 s S).toSection x))
@@ -581,9 +581,9 @@ private noncomputable def curvatureGradContractionBilin
   haveI : T2Space (TangentSpace I x) := inferInstanceAs (T2Space E)
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   letI : TopologicalSpace (TensorRSSpace 0 s I x) :=
-    tensorRSSpace_topologicalSpace 0 s x
-  letI : AddCommGroup (TensorRSSpace 0 s I x) := tensorRSSpace_addCommGroup 0 s x
-  letI : Module ℝ (TensorRSSpace 0 s I x) := tensorRSSpace_module 0 s x
+    tensorRSSpaceTopologicalSpace 0 s x
+  letI : AddCommGroup (TensorRSSpace 0 s I x) := tensorRSSpaceAddCommGroup 0 s x
+  letI : Module ℝ (TensorRSSpace 0 s I x) := tensorRSSpaceModule 0 s x
   letI : ContinuousAdd (TensorRSSpace 0 s I x) := tensorRSSpace_continuousAdd 0 s x
   letI : ContinuousSMul ℝ (TensorRSSpace 0 s I x) := tensorRSSpace_continuousSMul 0 s x
   haveI iFD : FiniteDimensional ℝ (TensorRSSpace 0 s I x) :=

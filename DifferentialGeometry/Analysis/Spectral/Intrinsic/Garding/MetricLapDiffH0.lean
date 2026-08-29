@@ -211,10 +211,10 @@ theorem lapDiffA20_test
               (g_fam (T : Real)) =>
             ((v.1 : tensorHs (I := I) (M := M)
                 (g_fam (T : Real)) 0 0 2),
-              ∫ x, (Δ_g (I := I) (g_fam ((T : Real) - s))
+              ∫ x, (ΔG (I := I) (g_fam ((T : Real) - s))
                       ⟨reprScalar0 (I := I) (M := M) v.1 v.2,
                         reprScalar0_smooth (I := I) (M := M) v.1 v.2⟩ x -
-                    Δ_g (I := I) (g_fam (T : Real))
+                    ΔG (I := I) (g_fam (T : Real))
                       ⟨reprScalar0 (I := I) (M := M) v.1 v.2,
                         reprScalar0_smooth (I := I) (M := M) v.1 v.2⟩ x) *
                   reprScalar0 (I := I) (M := M) w.1 w.2 x
@@ -241,10 +241,10 @@ theorem lapDiffA20_test
         v : ScalarH2Core (I := I) (M := M) (g_fam (T : Real)) =>
           ((v.1 : tensorHs (I := I) (M := M)
               (g_fam (T : Real)) 0 0 2),
-            ∫ x, (Δ_g (I := I) (g_fam ((T : Real) - s))
+            ∫ x, (ΔG (I := I) (g_fam ((T : Real) - s))
                     ⟨reprScalar0 (I := I) (M := M) v.1 v.2,
                       reprScalar0_smooth (I := I) (M := M) v.1 v.2⟩ x -
-                  Δ_g (I := I) (g_fam (T : Real))
+                  ΔG (I := I) (g_fam (T : Real))
                     ⟨reprScalar0 (I := I) (M := M) v.1 v.2,
                       reprScalar0_smooth (I := I) (M := M) v.1 v.2⟩ x) *
                 reprScalar0 (I := I) (M := M) w.1 w.2 x

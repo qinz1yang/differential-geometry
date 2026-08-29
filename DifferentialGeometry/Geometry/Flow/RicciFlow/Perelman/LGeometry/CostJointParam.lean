@@ -242,8 +242,8 @@ private theorem lScalar_param
             (htimeSub.prodMk_nhds halphaAt)
       exact tendsto_const_nhds.mul hscalarAt
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] [T2Space M] in
 private theorem lAction_head_param
     (S : SolutionOn (I := I) (M := M) D)
@@ -607,8 +607,8 @@ private theorem toFun_cast_param {a b : Real} (h : a = b) (v : timeH1 E b) :
   subst b
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
 theorem lCost_lt_param
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)

@@ -38,20 +38,20 @@ private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
 private local instance oneTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance oneTensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance oneTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance oneTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 private local instance oneTensorRSNormedAddCommGroupOfRiemannianBundle
     (r s : ℕ) [Bundle.RiemannianBundle (fun y : M => TensorRSSpace r s I y)] (x : M) :
@@ -323,8 +323,8 @@ private theorem one_insert_riemannianFiberNormSq
       simp only [A]
       ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem linearizedRicciConnectionDifferenceOrderOneCoefficient_fiberNormSq_le (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (gm : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2)
@@ -357,7 +357,7 @@ theorem linearizedRicciConnectionDifferenceOrderOneCoefficient_fiberNormSq_le (g
   intro gm P htie delta hdelta hdelta0 hPbound x
   let instTens : Bundle.RiemannianBundle
       (fun y : M => TensorRSSpace 0 3 I y) :=
-    tensorRS_riemannianBundle (I := I) (M := M) g 0 3
+    tensorRSRiemannianBundle (I := I) (M := M) g 0 3
   let P1 : Real := riemannianFiberNormSq (I := I) (M := M) g 0 3 x
     ((iteratedCovGrad (I := I) g 0 2 1 P).toSection x)
   let Ac : Real := riemannianFiberNormSq (I := I) (M := M) g 1 2 x

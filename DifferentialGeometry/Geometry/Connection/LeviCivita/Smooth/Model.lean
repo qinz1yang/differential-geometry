@@ -233,25 +233,25 @@ private theorem inverseMetricFlatModelInChart_component_center_eq_symm
             (metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ x₀)))
           (LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord i))) := by
   simpa only [metricFlatModelInChart,
-    Tensor.Coordinates.inverseMetricFlatModelInChart_component] using
+    Tensor.Coordinates.inverseMetricFlatModelInChartComponent] using
     Tensor.Coordinates.inverseMetricFlatModelInChart_component_center_eq_symm
       (I := I) g x₀ i j
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem inverseMetricFlatModelInChart_metricInverseInBasis_center
     (g : SmoothRiemannianMetric I M) (x₀ : M) :
-    MetricInverseInBasis_gen (I := I) g x₀ (coordinateFrameAt_toBasis (I := I) x₀)
+    MetricInverseInBasisGen (I := I) g x₀ (coordinateFrameAtToBasis (I := I) x₀)
       (fun k l : CoordinateIdx (𝕜 := Real) E =>
         (Module.finBasis Real E).coord k
           ((ContinuousLinearMap.inverse
               (metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ x₀)))
             (LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord l)))) := by
   simpa only [metricFlatModelInChart,
-    Tensor.Coordinates.inverseMetricFlatModelInChart_component] using
+    Tensor.Coordinates.inverseMetricFlatModelInChartComponent] using
     Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
       (I := I) g x₀
 
-noncomputable def metricFlatModelInChart_component
+noncomputable def metricFlatModelInChartComponent
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (i j : CoordinateIdx (𝕜 := Real) E) (y : E) : Real :=
   metricFlatModelInChart (I := I) g x₀ y

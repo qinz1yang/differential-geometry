@@ -28,8 +28,8 @@ open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]
@@ -134,14 +134,14 @@ private theorem metricNorm_le_basis_comp
   obtain ⟨b, hbON⟩ :=
     DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
       (I := 𝓘(Real, E)) g z
-  have hbinv : Tensor0SBundle.MetricInverseInBasis_gen
+  have hbinv : Tensor0SBundle.MetricInverseInBasisGen
       (I := 𝓘(Real, E)) g z b
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace 𝓘(Real, E) z)))) := by
     have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := 𝓘(Real, E)) g b hbON
     with_unfolding_all
-      change Tensor0SBundle.MetricInverseInBasis_gen
+      change Tensor0SBundle.MetricInverseInBasisGen
         (I := modelWithCornersSelf Real E) g z b
           (fun a k => if a = k then 1 else 0)
     exact h
@@ -2244,14 +2244,14 @@ theorem metric_norm_le_comp
     have h := (stdOrthonormalBasis Real E).inner_eq_ite i j
     with_unfolding_all
       exact h
-  have hinv0 : Tensor0SBundle.MetricInverseInBasis_gen
+  have hinv0 : Tensor0SBundle.MetricInverseInBasisGen
       (I := 𝓘(Real, E)) g0 z e
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real E))) := by
     have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := 𝓘(Real, E)) g0 e hON0
     with_unfolding_all
-      change Tensor0SBundle.MetricInverseInBasis_gen
+      change Tensor0SBundle.MetricInverseInBasisGen
         (I := modelWithCornersSelf Real E) g0 z e
           (fun i j => if i = j then 1 else 0)
     exact h
@@ -2269,14 +2269,14 @@ theorem metric_norm_le_comp
   obtain ⟨b, hbON⟩ :=
     DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis
       (I := 𝓘(Real, E)) g z
-  have hbinv : Tensor0SBundle.MetricInverseInBasis_gen
+  have hbinv : Tensor0SBundle.MetricInverseInBasisGen
       (I := 𝓘(Real, E)) g z b
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace 𝓘(Real, E) z)))) := by
     have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
       (I := 𝓘(Real, E)) g b hbON
     with_unfolding_all
-      change Tensor0SBundle.MetricInverseInBasis_gen
+      change Tensor0SBundle.MetricInverseInBasisGen
         (I := modelWithCornersSelf Real E) g z b
           (fun i j => if i = j then 1 else 0)
     exact h

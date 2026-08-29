@@ -207,8 +207,8 @@ private theorem regAt_of_punct
       (fun A : TangentSpace I (lPhaseCurve (I := I) x z c) ↦ (A : E)) hphase
   rw [hphaseE, hcurve.self_of_nhds, hvelEq.self_of_nhds]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_lRegExtOn
@@ -664,8 +664,8 @@ theorem exists_lRegExtOn
     exact lRegData_congr (I := I) S T s heq ⟨hsReg, hthetaSol s hlocal⟩
   exact hclosed s ⟨le_of_not_gt hsa, le_of_not_gt hbs⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_lRegExt

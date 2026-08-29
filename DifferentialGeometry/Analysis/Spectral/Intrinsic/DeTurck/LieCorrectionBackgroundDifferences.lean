@@ -64,8 +64,8 @@ private lemma rsDomDomCongrSection_sub (g₀ : SmoothRiemannianMetric I M)
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
-  change tensorRS_domDomCongr σ ((X - Y).toSection x) =
-    tensorRS_domDomCongr σ (X.toSection x) - tensorRS_domDomCongr σ (Y.toSection x)
+  change tensorRSDomDomCongr σ ((X - Y).toSection x) =
+    tensorRSDomDomCongr σ (X.toSection x) - tensorRSDomDomCongr σ (Y.toSection x)
   rw [SmoothCcTensor.toSection_sub]
   rfl
 

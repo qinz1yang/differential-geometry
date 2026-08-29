@@ -130,8 +130,8 @@ private noncomputable def tailFieldCast
 variable [SigmaCompactSpace M]
 
 omit [SigmaCompactSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lTail_lap_K
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (ha0 : 0 < a) (hab : a < b)

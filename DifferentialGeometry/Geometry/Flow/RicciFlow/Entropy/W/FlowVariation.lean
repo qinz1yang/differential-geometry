@@ -138,7 +138,7 @@ theorem revTrace_eq
     intro y
     have hy : y ∈ (trivializationAt E (TangentSpace I) y).baseSet :=
       mem_baseSet_trivializationAt E (TangentSpace I) y
-    have hinv : MetricInverseInBasis_gen (I := I) (G.metric s) y
+    have hinv : MetricInverseInBasisGen (I := I) (G.metric s) y
         (chartBasisFamily (I := I) y hy)
         (fun i j => chartInvGramMatrix (I := I) (G.metric s) y y i j) := by
       exact chartInvGram_inverse (I := I) (G.metric s) y hy

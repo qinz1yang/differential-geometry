@@ -42,7 +42,7 @@ private lemma chartComponentRaw_eq_proj_comp_repr
     tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx =
       (fun x : M =>
         tensorChartComponentProjection (E := E) r s Idx Jdx
-          (tensorRSChartE_section_repr (I := I) r s α
+          (tensorRSChartESectionRepr (I := I) r s α
             (fun y : M => S.toSection y) x)) := by
   classical
   funext x
@@ -58,7 +58,7 @@ private lemma chartComponentRaw_symm_eq_proj_comp_repr_symm
     (tensorChartComponentRaw (I := I) (M := M) g r s S α Idx Jdx ∘
       (extChartAt I α).symm) =
       (tensorChartComponentProjection (E := E) r s Idx Jdx) ∘
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => S.toSection y) ∘ (extChartAt I α).symm) := by
   classical
   funext y
@@ -72,7 +72,7 @@ private lemma tensorRepr_chart_pulled_contDiffAt_inf
     (S : SmoothCcTensor g r s) (α : M)
     {b : M} (hb_chart : b ∈ (chartAt H α).source) :
     ContDiffAt ℝ ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => S.toSection y) ∘ (extChartAt I α).symm)
       (extChartAt I α b) := by
   classical
@@ -100,7 +100,7 @@ private lemma tensorRepr_chart_pulled_contDiffAt_inf
   rw [hbase] at hrewrite
   have hcm_on_source :
       ContMDiffOn I (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
-        (fun b : M => tensorRSChartE_section_repr (I := I) r s α
+        (fun b : M => tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => S.toSection y) b)
         ((chartAt H α).source) := by
     refine ContMDiffOn.congr hrewrite ?_
@@ -121,7 +121,7 @@ private lemma tensorRepr_chart_pulled_contDiffAt_inf
       (extChartAt I α).map_target hy
     rwa [extChartAt_source] at hsrc
   have hcomp : ContMDiffOn 𝓘(ℝ, E) (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => S.toSection y) ∘ (extChartAt I α).symm)
       (extChartAt I α).target :=
     hcm_on_source.comp hsymm hmaps
@@ -132,7 +132,7 @@ private lemma tensorRepr_chart_pulled_contDiffAt_inf
   have h_open_target : IsOpen (extChartAt I α).target :=
     isOpen_extChartAt_target (I := I) α
   have hcontDiffOn : ContDiffOn ℝ ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => S.toSection y) ∘ (extChartAt I α).symm)
       (extChartAt I α).target :=
     hcomp.contDiffOn
@@ -145,7 +145,7 @@ private lemma tensorRepr_chart_pulled_contDiffAt_two
     (S : SmoothCcTensor g r s) (α : M)
     {b : M} (hb_chart : b ∈ (chartAt H α).source) :
     ContDiffAt ℝ 2
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => S.toSection y) ∘ (extChartAt I α).symm)
       (extChartAt I α b) := by
   classical
@@ -169,14 +169,14 @@ private lemma iteratedFDeriv_two_chartComponentRaw_symm_eq_compCMM
       (extChartAt I α b) =
     (tensorChartComponentProjection (E := E) r s Idx Jdx).compContinuousMultilinearMap
       (iteratedFDeriv ℝ 2
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
             (fun y : M => S.toSection y) ∘ (extChartAt I α).symm)
         (extChartAt I α b)) := by
   classical
   rw [chartComponentRaw_symm_eq_proj_comp_repr_symm
     (I := I) (M := M) g r s S α Idx Jdx]
   have hcd : ContDiffAt ℝ 2
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => S.toSection y) ∘ (extChartAt I α).symm)
       (extChartAt I α b) :=
     tensorRepr_chart_pulled_contDiffAt_two (I := I) (M := M) g r s S α hb_chart
@@ -197,7 +197,7 @@ private lemma norm_iteratedFDeriv_two_chartComponentRaw_symm_le
       (extChartAt I α b)‖ ≤
     ‖tensorChartComponentProjection (E := E) r s Idx Jdx‖ *
       ‖iteratedFDeriv ℝ 2
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
             (fun y : M => S.toSection y) ∘ (extChartAt I α).symm)
         (extChartAt I α b)‖ := by
   classical
@@ -247,7 +247,7 @@ theorem iteratedFDeriv_two_rawTensorConnLap_chartComponentRaw_norm_sq_le_rawRepr
             (extChartAt I α b)‖ ^ 2 ≤
           K *
             ‖iteratedFDeriv ℝ 2
-              ((tensorRSChartE_section_repr (I := I) r s α
+              ((tensorRSChartESectionRepr (I := I) r s α
                   (fun y : M =>
                     (rawTensorConnLapSmooth (I := I) g r s T).toSection y)) ∘
                 (extChartAt I α).symm)
@@ -266,7 +266,7 @@ theorem iteratedFDeriv_two_rawTensorConnLap_chartComponentRaw_norm_sq_le_rawRepr
     projection_norm_le_projectionNormMax (E := E) r s Idx Jdx
   set R : ℝ :=
     ‖iteratedFDeriv ℝ 2
-      ((tensorRSChartE_section_repr (I := I) r s α
+      ((tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => S.toSection y)) ∘ (extChartAt I α).symm)
       (extChartAt I α b)‖ with hR_def
   have hR_nn : 0 ≤ R := norm_nonneg _

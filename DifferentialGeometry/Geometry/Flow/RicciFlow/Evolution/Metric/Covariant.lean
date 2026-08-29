@@ -54,7 +54,7 @@ theorem metricCompInFrame_mvfderiv_eq_christoffel
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (t : Real)
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (hg : g = S.family.metric t)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
@@ -363,7 +363,7 @@ theorem inverseMetricCovDerivCompInFrame_eq_zero
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
     (t : Real)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
       cov (S.family.metric t))
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (hginv_mdiff : ∀ a b : Idx,
@@ -386,7 +386,7 @@ theorem inverseMetricCovDerivCompInFrame_eq_zero
   let Γ : Idx -> Idx -> Real := fun a b =>
     christoffelSymbolInFrame cov frame hframe x d a b
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasis_gen
+      Tensor0SBundle.MetricInverseInBasisGen
         (I := I) (M := M) (S.family.metric t) x
         (hframe.toBasisAt hx) (fun a b : Idx => gInv t x a b) := by
     intro a b
@@ -664,7 +664,7 @@ theorem invCovZeroLocal
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
     (t : Real)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
       cov (S.family.metric t))
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (hginv_mdiff : ∀ a b : Idx,
@@ -687,7 +687,7 @@ theorem invCovZeroLocal
   let Γ : Idx -> Idx -> Real := fun a b =>
     christoffelSymbolInFrame cov frame hframe x d a b
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasis_gen
+      Tensor0SBundle.MetricInverseInBasisGen
         (I := I) (M := M) (S.family.metric t) x
         (hframe.toBasisAt hx) (fun a b : Idx => gInv t x a b) := by
     intro a b

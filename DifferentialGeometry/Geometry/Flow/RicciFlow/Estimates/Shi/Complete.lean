@@ -2755,7 +2755,7 @@ theorem estimate_barrier_at
               le_antisymm (le_of_not_gt hnot) (cut.range n s y hs).1
             have : F s y = 0 := by simp [F, GfunLocal, hchi0]
             linarith
-          let support := cut.lower_support n s hs hspos y hchiPos
+          let support := cut.lowerSupport n s hs hspos y hchiPos
           let Fs : Real → M → Real :=
             GfunLocal (I := I) B support.phi m
           let v : Real → M → Real := fun r z ↦ (aBar + bBar * r) - Fs r z

@@ -198,8 +198,8 @@ private lemma norm_sq_map_neg_sum_add_sum_le
     _ = C ^ 2 * (2 * ((r' : ℝ) + (s' : ℝ))) * ((r' : ℝ) + (s' : ℝ)) *
           M ^ 2 * t ^ 2 := by ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
   Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace in
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
@@ -209,7 +209,7 @@ private theorem tchr_model_triv_per_direction_le
     (T : SmoothCcTensor g r s) {b : M}
     (k : Fin (Module.finrank ℝ E)) (Cto M_F : ℝ) :
     letI : Bundle.RiemannianBundle (fun y : M => TensorRSSpace r s I y) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     letI : NormedAddCommGroup (TensorRSSpace r s I b) :=
       tensorRSRiemannianNormedAddCommGroup r s b
     (∀ X : TensorRSSpace r s I b,
@@ -238,7 +238,7 @@ private theorem tchr_model_triv_per_direction_le
           M_F ^ 2 * ‖T.toSection b‖ ^ 2 := by
   classical
   let : Bundle.RiemannianBundle (fun y : M => TensorRSSpace r s I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   let : NormedAddCommGroup (TensorRSSpace r s I b) :=
     tensorRSRiemannianNormedAddCommGroup r s b
   intro hCto hinput houtput
@@ -253,8 +253,8 @@ private theorem tchr_model_triv_per_direction_le
       (fun b' => T.toSection b') (chartBasisVecFiber (I := I) α k) b l)
     hinput houtput
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
   Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace in
 omit [CompleteSpace E] in
@@ -278,7 +278,7 @@ private theorem tchr_model_triv_sum_le_const_mul_tensorInnerPointwise_on_pouTsup
           C * tensorInnerPointwise (I := I) (M := M) g r s b (T.toFun b) (T.toFun b) := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   set n : ℕ := Module.finrank ℝ E with hn_def
   obtain ⟨M_F_in, hM_F_in_nn, hM_F_in_le⟩ :=
     chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport_local
@@ -359,15 +359,15 @@ private theorem tchr_model_triv_sum_le_const_mul_tensorInnerPointwise_on_pouTsup
           tensorInnerPointwise (I := I) (M := M) g r s b (T.toFun b) (T.toFun b) := by
         rw [h_sec_iso]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
   Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace in
 omit [CompleteSpace E] in
 theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_mul_h1Norm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensorH1 g r s)
         (Idx : Fin r → Fin (Module.finrank ℝ E))
@@ -384,7 +384,7 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
           ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   obtain ⟨A, B, hA_nn, hB_nn, h_G1⟩ :=
     g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport_h1
       (I := I) (M := M) g r s α

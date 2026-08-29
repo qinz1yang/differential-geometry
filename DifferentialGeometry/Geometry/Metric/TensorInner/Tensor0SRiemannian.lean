@@ -51,7 +51,7 @@ variable {n : ℕ}
 
 private local instance tensor0SModelNormedSpace_local {s : ℕ} :
     NormedSpace ℝ (Tensor0SModel s ℝ E) :=
-  Tensor0SBundle.tensor0SModel_normedSpace s
+  Tensor0SBundle.tensor0SModelNormedSpace s
 
 private local instance tensor0SModelNormedAddCommGroup_local {s : ℕ} :
     NormedAddCommGroup (Tensor0SModel s ℝ E) := inferInstance
@@ -63,7 +63,7 @@ lemma chartTensorInnerPointwise_0s_continuousOn_smooth_args
     (_hT : ContinuousOn T (trivializationAt E (TangentSpace I) α).baseSet)
     (_hS : ContinuousOn S (trivializationAt E (TangentSpace I) α).baseSet),
       ContinuousOn (fun b : M =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) s g α b (T b) (S b))
+          chartTensorInnerPointwise0s (I := I) (M := M) s g α b (T b) (S b))
         (trivializationAt E (TangentSpace I) α).baseSet := by
   intro s
   induction s with
@@ -74,7 +74,7 @@ lemma chartTensorInnerPointwise_0s_continuousOn_smooth_args
             T (fun i => Fin.elim0 i)) :=
         continuous_id.eval_const _
       have heq : (fun b : M =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) 0 g α b (T b) (S b)) =
+          chartTensorInnerPointwise0s (I := I) (M := M) 0 g α b (T b) (S b)) =
           fun b : M =>
             ((T b) (fun i => Fin.elim0 i)) * ((S b) (fun i => Fin.elim0 i)) := by
         funext b
@@ -84,12 +84,12 @@ lemma chartTensorInnerPointwise_0s_continuousOn_smooth_args
   | succ s ih =>
       intro T S hT hS
       have heq : (fun b : M =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) (s + 1) g α b (T b) (S b)) =
+          chartTensorInnerPointwise0s (I := I) (M := M) (s + 1) g α b (T b) (S b)) =
           fun b : M =>
             ∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
                 (chartGramMatrix g α b)⁻¹ i j *
-                  chartTensorInnerPointwise_0s (I := I) (M := M) s g α b
+                  chartTensorInnerPointwise0s (I := I) (M := M) s g α b
                     ((T b).curryLeft ((chartModelBasis E) i))
                     ((S b).curryLeft ((chartModelBasis E) j)) := by
         funext b
@@ -133,14 +133,14 @@ lemma chartTensorInnerPointwise_0s_contMDiffOn_smooth_args
         (trivializationAt E (TangentSpace I) α).baseSet),
       ContMDiffOn I 𝓘(ℝ) ∞
         (fun b : M =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) s g α b (T b) (S b))
+          chartTensorInnerPointwise0s (I := I) (M := M) s g α b (T b) (S b))
         (trivializationAt E (TangentSpace I) α).baseSet := by
   intro s
   induction s with
   | zero =>
       intro T S hT hS
       have heq : (fun b : M =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) 0 g α b (T b) (S b)) =
+          chartTensorInnerPointwise0s (I := I) (M := M) 0 g α b (T b) (S b)) =
           fun b : M =>
             ((T b) (fun i => Fin.elim0 i)) * ((S b) (fun i => Fin.elim0 i)) := by
         funext b
@@ -183,12 +183,12 @@ lemma chartTensorInnerPointwise_0s_contMDiffOn_smooth_args
   | succ s ih =>
       intro T S hT hS
       have heq : (fun b : M =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) (s + 1) g α b (T b) (S b)) =
+          chartTensorInnerPointwise0s (I := I) (M := M) (s + 1) g α b (T b) (S b)) =
           fun b : M =>
             ∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
                 (chartGramMatrix g α b)⁻¹ i j *
-                  chartTensorInnerPointwise_0s (I := I) (M := M) s g α b
+                  chartTensorInnerPointwise0s (I := I) (M := M) s g α b
                     ((T b).curryLeft ((chartModelBasis E) i))
                     ((S b).curryLeft ((chartModelBasis E) j)) := by
         funext b
@@ -282,7 +282,7 @@ theorem chartLocal_continuous_inner_of_smooth_sections
           (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) (T b))
         (Tensor0SBundle.Tensor0SSpace.toModel
           (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) (S b)) =
-      chartTensorInnerPointwise_0s (I := I) (M := M) s g α b
+      chartTensorInnerPointwise0s (I := I) (M := M) s g α b
         ((Tensor0SBundle.Tensor0SSpace.toModel
           (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b)
           (T b)).compContinuousLinearMap

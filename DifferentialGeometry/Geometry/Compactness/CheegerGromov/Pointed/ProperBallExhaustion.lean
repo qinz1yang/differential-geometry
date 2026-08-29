@@ -12,8 +12,8 @@ open scoped Topology Manifold ContDiff ENNReal
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
-attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpace_normedAddCommGroup
-  DifferentialGeometry.Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedSpace
 
 namespace DifferentialGeometry
 namespace HCGCompactness

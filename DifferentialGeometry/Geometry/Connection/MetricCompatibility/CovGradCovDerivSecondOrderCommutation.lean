@@ -196,7 +196,7 @@ lemma covGrad_covDeriv_innerSlot_secondOrder_eq_abstract
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     {B w : Π b : M, TangentSpace I b}
     (hB : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% B)) (x : M) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           covGradBundleEquiv (I := I) (M := M) 0 s x
             ((tensorCov (I := I) g 0 s).toFun
@@ -300,7 +300,7 @@ lemma curry_covApply_unitGradFieldGen_eq_abstractHess
   set U := unitGradFieldGen (I := I) (M := M) g s S with hU
   set V := unitEvalSection (I := I) (M := M) g s S with hV
   have hcov : Tensor0SNabla.curriedSection I M (covApply nab1 B U) y (w y) =
-      tensor0S_curry (I := I) (M := M) s y (nab1.toFun U y (B y)) (w y) := by
+      tensor0SCurry (I := I) (M := M) s y (nab1.toFun U y (B y)) (w y) := by
     rw [Tensor0SNabla.curriedSection_apply]; rfl
   rw [hcov]
   rw [curry_covDeriv_succ_eq_covDeriv_curriedSection_sub_connCorrection (I := I) (M := M) g s U
@@ -318,7 +318,7 @@ lemma covGrad_covDeriv_leadingSlot_secondOrder_eq_abstract
     {B w : Π b : M, TangentSpace I b}
     (hB : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% B))
     (hw : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% w)) (x : M) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           tensorSecondCovDeriv (I := I) g 0 (s + 1) B B
             (fun y : M => (covGrad (I := I) (M := M) g 0 s S).toSection y) x)
@@ -475,12 +475,12 @@ theorem covGrad_covDeriv_leadingSlot_secondOrder_commutation
     {B w : Π b : M, TangentSpace I b}
     (hB : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% B))
     (hw : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% w)) (x : M) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           tensorSecondCovDeriv (I := I) g 0 (s + 1) B B
             (fun y : M => (covGrad (I := I) (M := M) g 0 s S).toSection y) x)
           (unitZeroSec (I := I) (M := M) x)) (w x) -
-      tensor0S_curry (I := I) (M := M) s x
+      tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           covGradBundleEquiv (I := I) (M := M) 0 s x
             ((tensorCov (I := I) g 0 s).toFun

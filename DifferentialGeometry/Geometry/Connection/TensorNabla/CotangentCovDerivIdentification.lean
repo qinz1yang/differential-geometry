@@ -106,7 +106,7 @@ lemma tensor0SCovariantDerivative_one_cotangentToCLM
         exact i.elim0
       rw [hempty]
       change Tensor0SSpace.eval
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 b (α b) (Y b))
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 b (α b) (Y b))
             (fun i : Fin 0 => i.elim0) = cotangentToCLM (I := I) (α b) (Y b)
       rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
         (T := α b) (v0 := Y b) (vs := fun i : Fin 0 => i.elim0)]

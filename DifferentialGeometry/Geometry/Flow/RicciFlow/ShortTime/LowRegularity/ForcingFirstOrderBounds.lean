@@ -211,7 +211,7 @@ theorem rhs_raw_lip {ι : Type*}
     (gSeq : ι → SmoothRiemannianMetric I M) (D : LowRegularityCoefficientBounds)
     (hD : HasLowRegularityCoefficientBounds (I := I) gBase gSeq D) :
     ∃ B : ℝ, 0 ≤ B ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k₁ k₂ : ι, ∀ b ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ Idx : Fin 0 → Fin (Module.finrank ℝ E),
@@ -230,11 +230,11 @@ theorem rhs_raw_lip {ι : Type*}
   choose Cjet hCjet hjet using fun α : M =>
     metricJet2_intrinsic (I := I) (M := M) gBase α
   let CjetAll : ℝ :=
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), Cjet α
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Cjet α
   have hCjetAll : 0 ≤ CjetAll := by
     dsimp [CjetAll]
     exact Finset.sum_nonneg fun α _ => hCjet α
-  have hCjet_le : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hCjet_le : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       Cjet α ≤ CjetAll := by
     intro α hα
     dsimp [CjetAll]
@@ -290,7 +290,7 @@ theorem rhs_cov_lip {ι : Type*}
     (gSeq : ι → SmoothRiemannianMetric I M) (D : LowRegularityCoefficientBounds)
     (hD : HasLowRegularityCoefficientBounds (I := I) gBase gSeq D) :
     ∃ B : ℝ, 0 ≤ B ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k₁ k₂ : ι, ∀ b ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ Idx : Fin 0 → Fin (Module.finrank ℝ E),
@@ -311,11 +311,11 @@ theorem rhs_cov_lip {ι : Type*}
   choose Cjet hCjet hjet using fun α : M =>
     metricJet3_intrinsic (I := I) (M := M) gBase α
   let CjetAll : ℝ :=
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), Cjet α
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Cjet α
   have hCjetAll : 0 ≤ CjetAll := by
     dsimp [CjetAll]
     exact Finset.sum_nonneg fun α _ => hCjet α
-  have hCjet_le : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hCjet_le : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       Cjet α ≤ CjetAll := by
     intro α hα
     dsimp [CjetAll]
@@ -323,11 +323,11 @@ theorem rhs_cov_lip {ι : Type*}
   choose Cα hCα hCα_bd using fun α : M =>
     exists_lowerOrderCoeff_uniform_boundR
       (I := I) (M := M) gBase 0 2 α 0
-  let CΓ : ℝ := ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), Cα α
+  let CΓ : ℝ := ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Cα α
   have hCΓ : 0 ≤ CΓ := by
     dsimp [CΓ]
     exact Finset.sum_nonneg fun α _ => hCα α
-  have hcoeff : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hcoeff : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ m : Fin (Module.finrank ℝ E),
         ∀ Idx : Fin 0 → Fin (Module.finrank ℝ E),
           ∀ Jdx : Fin 2 → Fin (Module.finrank ℝ E),
@@ -575,7 +575,7 @@ theorem deTurck_rhs_sobolev_one_uniform_bound {ι : Type*}
   classical
   let S : ι → SmoothCcTensor gBase 0 2 := fun k =>
     deTurckRHSSectionBackground (I := I) gBase (gSeq k)
-  have hraw0 : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hraw0 : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ Idx : Fin 0 → Fin (Module.finrank ℝ E),
@@ -597,11 +597,11 @@ theorem deTurck_rhs_sobolev_one_uniform_bound {ι : Type*}
   choose Cα hCα hCα_bd using fun α : M =>
     exists_lowerOrderCoeff_uniform_boundR
       (I := I) (M := M) gBase 0 2 α 0
-  let CΓ : ℝ := ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), Cα α
+  let CΓ : ℝ := ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Cα α
   have hCΓ : 0 ≤ CΓ := by
     dsimp [CΓ]
     exact Finset.sum_nonneg fun α _ => hCα α
-  have hcoeff : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hcoeff : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ m : Fin (Module.finrank ℝ E),
         ∀ Idx : Fin 0 → Fin (Module.finrank ℝ E),
           ∀ Jdx : Fin 2 → Fin (Module.finrank ℝ E),
@@ -627,7 +627,7 @@ theorem deTurck_rhs_sobolev_one_uniform_bound {ι : Type*}
   have hB₁ : 0 ≤ B₁ := by
     dsimp [B₁]
     exact add_nonneg hD.rhsD1Bound_pos.le hL
-  have hlower : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hlower : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m : Fin (Module.finrank ℝ E),
@@ -665,7 +665,7 @@ theorem deTurck_rhs_sobolev_one_uniform_bound {ι : Type*}
           (hraw0 α hα k b hb p.1 p.2) (abs_nonneg _) hCΓ
     rw [covDerivLowerOrderTerm_def]
     exact (Finset.abs_sum_le_sum_abs _ _).trans (hsum.trans_eq rfl)
-  have hraw1 : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hraw1 : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ Idx : Fin 0 → Fin (Module.finrank ℝ E),

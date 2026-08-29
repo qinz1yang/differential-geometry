@@ -283,9 +283,9 @@ lemma tensorChartComponentRaw_sq_le_const_mul_tensorInner_on_compact
     have h_lhs : ‖P_IJ T‖ * ‖P_IJ T‖ = ‖P_IJ T‖ ^ 2 := by rw [sq]
     linarith [hsq, h_lhs.symm.le, h_rhs.symm.le, h_lhs.le, h_rhs.le]
   have h_chart_sq_le : ‖T‖ ^ 2 ≤
-      K * chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T T :=
+      K * chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T T :=
     h_norm b hb T
-  have h_chart_eq : chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T T =
+  have h_chart_eq : chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T T =
       tensorInnerPointwise (I := I) (M := M) g r s b (S.toFun b) (S.toFun b) := by
     rw [hT_def]
     exact chartTensorInner_tensorTrivProj_eq_tensorInner_toFun
@@ -310,8 +310,8 @@ lemma tensorChartComponentRaw_sq_le_const_mul_tensorInner_on_compact
             (S.toFun b) (S.toFun b) := by ring
   linarith [h_chain_sq, h_rhs_rearr.le, h_rhs_rearr.symm.le]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 lemma exists_zeroContentR_le_fiberNorm_on_compact
@@ -319,7 +319,7 @@ lemma exists_zeroContentR_le_fiberNorm_on_compact
     {K_M : Set M} (hK_M : IsCompact K_M)
     (hK_M_sub : K_M ⊆ (chartAt H α).source) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     letI : ∀ b : M, NormedAddCommGroup (TensorRSSpace r s I b) :=
       fun b =>
         instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal
@@ -331,7 +331,7 @@ lemma exists_zeroContentR_le_fiberNorm_on_compact
           C * ‖S.toSection b‖ := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   let : ∀ b : M, NormedAddCommGroup (TensorRSSpace r s I b) :=
     fun b =>
       instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal
@@ -396,8 +396,8 @@ lemma exists_zeroContentR_le_fiberNorm_on_compact
     _ = Npair * Real.sqrt Craw * ‖S.toSection b‖ := by
         rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, hNpair_def]; ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma zeroContent_sum_le_sobolev_norm
@@ -412,7 +412,7 @@ private lemma zeroContent_sum_le_sobolev_norm
         Czf i *
           (letI : Bundle.RiemannianBundle
               (fun z : M => TensorRSSpace r (s + i) I z) :=
-            Tensor0SBundle.tensorRS_riemannianBundle
+            Tensor0SBundle.tensorRSRiemannianBundle
               (I := I) (M := M) g r (s + i)
            letI : ∀ z : M, NormedAddCommGroup (TensorRSSpace r (s + i) I z) :=
              fun z =>
@@ -423,7 +423,7 @@ private lemma zeroContent_sum_le_sobolev_norm
       ∑ i ∈ Finset.range (m + 1),
           (letI : Bundle.RiemannianBundle
               (fun z : M => TensorRSSpace r (s + i) I z) :=
-            Tensor0SBundle.tensorRS_riemannianBundle
+            Tensor0SBundle.tensorRSRiemannianBundle
               (I := I) (M := M) g r (s + i)
            letI : ∀ z : M, NormedAddCommGroup (TensorRSSpace r (s + i) I z) :=
              fun z =>
@@ -444,7 +444,7 @@ private lemma zeroContent_sum_le_sobolev_norm
       Czmax * ∑ i ∈ Finset.range (m + 1),
         (letI : Bundle.RiemannianBundle
             (fun z : M => TensorRSSpace r (s + i) I z) :=
-          Tensor0SBundle.tensorRS_riemannianBundle
+          Tensor0SBundle.tensorRSRiemannianBundle
             (I := I) (M := M) g r (s + i)
          letI : ∀ z : M, NormedAddCommGroup (TensorRSSpace r (s + i) I z) :=
            fun z =>
@@ -457,7 +457,7 @@ private lemma zeroContent_sum_le_sobolev_norm
     refine (hCzf i S hb).trans ?_
     let : Bundle.RiemannianBundle
         (fun z : M => TensorRSSpace r (s + i) I z) :=
-      Tensor0SBundle.tensorRS_riemannianBundle
+      Tensor0SBundle.tensorRSRiemannianBundle
         (I := I) (M := M) g r (s + i)
     let : ∀ z : M, NormedAddCommGroup (TensorRSSpace r (s + i) I z) :=
       fun z =>
@@ -466,8 +466,8 @@ private lemma zeroContent_sum_le_sobolev_norm
     exact mul_le_mul_of_nonneg_right (hCz_le i hi) (norm_nonneg _)
   exact hsum.trans (mul_le_mul_of_nonneg_left (hCemb S b) hCzmax_nn)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 lemma rawPullR_jet_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
@@ -513,7 +513,7 @@ lemma rawPullR_jet_le
           Cz *
             (letI : Bundle.RiemannianBundle
                 (fun z : M => TensorRSSpace r (s + i) I z) :=
-              Tensor0SBundle.tensorRS_riemannianBundle
+              Tensor0SBundle.tensorRSRiemannianBundle
                 (I := I) (M := M) g r (s + i)
              letI : ∀ z : M, NormedAddCommGroup (TensorRSSpace r (s + i) I z) :=
                fun z =>

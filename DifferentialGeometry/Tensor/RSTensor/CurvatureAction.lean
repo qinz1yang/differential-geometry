@@ -23,7 +23,7 @@ def oneFormAtSlot0S {x : M} {s : ℕ}
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x)
     (slots : Fin s → TangentSpace I x) (q : Fin s) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=
-  dualToCotangent_gen (I := I)
+  dualToCotangentGen (I := I)
     { toFun := fun W : TangentSpace I x => alpha (Function.update slots q W)
       map_add' := by
         intro A B
@@ -47,7 +47,7 @@ abbrev freezeSlot0SAt {x : M} {s : ℕ}
     oneFormAtSlot0S (I := I) alpha slots q (fun _ : Fin 1 => W) =
       alpha (Function.update slots q W) := by
   change Tensor0SSpace.eval
-      (dualToCotangent_gen (I := I)
+      (dualToCotangentGen (I := I)
         { toFun := fun W : TangentSpace I x => alpha (Function.update slots q W)
           map_add' := by
             intro A B

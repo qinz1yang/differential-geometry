@@ -248,8 +248,8 @@ theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le
         (chartTargetEuclid (I := I) (M := M) β)) :
     ∃ C : ℝ, 0 ≤ C ∧
       eLpNorm
-          ((eigenvectorIteratedTensorChartBilinearData_toData
-              (I := I) (M := M) g r s i α P₀ D_m h_parent).f_chart)
+          ((eigenvectorIteratedTensorChartBilinearDataToData
+              (I := I) (M := M) g r s i α P₀ D_m h_parent).fChart)
           2 ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α))
         ≤ ENNReal.ofReal ((i.fst.val)⁻¹ * C) *
@@ -257,8 +257,8 @@ theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le
             g r s i α P₀ m 0 directions := by
   classical
   have h_f_chart_eq :
-      (eigenvectorIteratedTensorChartBilinearData_toData
-          (I := I) (M := M) g r s i α P₀ D_m h_parent).f_chart =
+      (eigenvectorIteratedTensorChartBilinearDataToData
+          (I := I) (M := M) g r s i α P₀ D_m h_parent).fChart =
         eigenvectorChartRHSDiff (I := I) (M := M)
           g r s i α P₀ m directions := by
     change D_m.diffChartForcing =
@@ -328,8 +328,8 @@ theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le_uniform
           (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀)
           (chartTargetEuclid (I := I) (M := M) α)),
         eLpNorm
-            ((eigenvectorIteratedTensorChartBilinearData_toData
-                (I := I) (M := M) g r s i α P₀ D_m h_parent).f_chart)
+            ((eigenvectorIteratedTensorChartBilinearDataToData
+                (I := I) (M := M) g r s i α P₀ D_m h_parent).fChart)
             2 ((chartPulledWeightedMeasure (I := I) g α).restrict
                 (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal ((i.fst.val)⁻¹ * C) *
@@ -355,8 +355,8 @@ theorem eigenvectorIteratedCarrier_fChartEff_eLpNorm_le_uniform
   refine ⟨Ccmp * Cvol, mul_nonneg hCcmp_nn hCvol_nn, ?_⟩
   intro i D_m h_fChartEff h_parent
   have h_f_chart_eq :
-      (eigenvectorIteratedTensorChartBilinearData_toData
-          (I := I) (M := M) g r s i α P₀ D_m h_parent).f_chart =
+      (eigenvectorIteratedTensorChartBilinearDataToData
+          (I := I) (M := M) g r s i α P₀ D_m h_parent).fChart =
         eigenvectorChartRHSDiff (I := I) (M := M)
           g r s i α P₀ m directions := by
     change D_m.diffChartForcing =

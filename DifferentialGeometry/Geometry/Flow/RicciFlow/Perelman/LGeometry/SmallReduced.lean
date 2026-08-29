@@ -23,8 +23,8 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 variable {D : RealTimeInterval}
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRedJac_zero_lim
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -158,8 +158,8 @@ theorem lRedJac_zero_lim
   rw [hfun, htarget] at hdiv
   exact hdiv
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRedJac_tau_lim
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -188,8 +188,8 @@ theorem lRedJac_tau_lim
     rw [Real.sq_sqrt htau.le]
   exact hlim.congr' heq.symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRedJac_le_gauss
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) {Z : TangentSpace I x} {tau : Real}

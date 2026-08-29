@@ -553,8 +553,8 @@ theorem laplacian_sq_le_dim_mul_frobenius_sq_of_trace_eq
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
     (htr : traceFun (I := I) (M := M) (hessFun (I := I) g f) x =
-        Δ_g (I := I) g ⟨_, hf⟩ x) :
-    (Δ_g (I := I) g ⟨_, hf⟩ x)^2 ≤
+        ΔG (I := I) g ⟨_, hf⟩ x) :
+    (ΔG (I := I) g ⟨_, hf⟩ x)^2 ≤
       (Module.finrank ℝ E : ℝ) *
         ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -569,8 +569,8 @@ theorem laplacian_sq_div_dim_le_frobenius_sq_of_trace_eq
     [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M)
     (htr : traceFun (I := I) (M := M) (hessFun (I := I) g f) x =
-        Δ_g (I := I) g ⟨_, hf⟩ x) :
-    (Δ_g (I := I) g ⟨_, hf⟩ x)^2 / (Module.finrank ℝ E : ℝ) ≤
+        ΔG (I := I) g ⟨_, hf⟩ x) :
+    (ΔG (I := I) g ⟨_, hf⟩ x)^2 / (Module.finrank ℝ E : ℝ) ≤
       ∑ i : Fin (Module.finrank ℝ E),
       ∑ j : Fin (Module.finrank ℝ E),
         (chartHessianTensor (I := I) g x f i j x)^2 := by

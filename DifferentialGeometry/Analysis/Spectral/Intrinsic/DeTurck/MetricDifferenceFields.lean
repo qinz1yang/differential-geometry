@@ -212,7 +212,7 @@ private theorem metricDiff02ModelFun_toModel_apply
 
 def metricDiff02Field (g₁ g₂ : SmoothRiemannianMetric I M) :
     Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 2 :=
-  letI := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  letI := tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := ∞)
   ⟨fun x => metricDiff02ModelFun (I := I) g₁ g₂ x, by
     let d := Module.finrank ℝ E
@@ -331,7 +331,7 @@ private theorem metricDiff02CovModelFun_toModel_apply
 
 def metricDiff02CovField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 3 :=
-  letI := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
+  letI := tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
   letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := ∞)
   ⟨fun x => metricDiff02CovModelFun (I := I) g₀ g₁ g₂ x, by
     let d := Module.finrank ℝ E
@@ -455,7 +455,7 @@ private theorem metricDiff02CovIterateModelFun_toModel_apply
 
 def metricDiff02CovIterateField (g₀ g₁ g₂ : SmoothRiemannianMetric I M) :
     Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 4 :=
-  letI := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
+  letI := tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
   letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := ∞)
   ⟨fun x => metricDiff02CovIterateModelFun (I := I) g₀ g₁ g₂ x, by
     let d := Module.finrank ℝ E

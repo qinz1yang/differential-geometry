@@ -1383,7 +1383,7 @@ theorem smooth_manifold_morrey_sup_bound_uniform_withBoundary
           (wkpNormChart (n := n) (M := M) 1 (ENNReal.ofReal p) u).toReal := by
   classical
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I_hs) (M := M)
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I_hs) (M := M)
     with hS_def
   refine ⟨∑ α ∈ S, perChartMorreyConst (n := n) (M := M) g hp α, ?_, ?_⟩
   · exact Finset.sum_nonneg (fun α _ =>
@@ -1640,7 +1640,7 @@ theorem smooth_manifold_morrey_holder_modulus_per_chart_withBoundary
 theorem norm_sub_le_sum_pou_diff_withBoundary
     (u : M → ℝ) (x y : M) :
     ‖u x - u y‖ ≤
-      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
         (I := I_hs) (M := M),
         ‖(DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α
             : C^∞⟮I_hs, M; ℝ⟯) x * u x -
@@ -1648,7 +1648,7 @@ theorem norm_sub_le_sum_pou_diff_withBoundary
             : C^∞⟮I_hs, M; ℝ⟯) y * u y‖ := by
   classical
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I_hs) (M := M)
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I_hs) (M := M)
     with hS_def
   have hsum_x : ∑ α ∈ S,
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α : M → ℝ) x = 1 :=

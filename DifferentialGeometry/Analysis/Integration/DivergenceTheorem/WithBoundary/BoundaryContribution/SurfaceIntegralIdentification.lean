@@ -142,7 +142,7 @@ private lemma weighted_integrand_integrable
 
 private lemma chartAtlasPOU_finset_sum_eq_one_at_val
     (b : BoundaryManifold (modelWithCornersEuclideanHalfSpace n) M) :
-    ∑ α ∈ chartAtlasPOU_finset
+    ∑ α ∈ chartAtlasPOUFinset
         (I := modelWithCornersEuclideanHalfSpace n) (M := M),
       ((chartAtlasPOU (modelWithCornersEuclideanHalfSpace n) M) α :
         M → ℝ) b.val = 1 := by
@@ -150,7 +150,7 @@ private lemma chartAtlasPOU_finset_sum_eq_one_at_val
   set ρ : SmoothPartitionOfUnity M (modelWithCornersEuclideanHalfSpace n) M
       (univ : Set M) :=
     chartAtlasPOU (modelWithCornersEuclideanHalfSpace n) M with hρ_def
-  set S : Finset M := chartAtlasPOU_finset
+  set S : Finset M := chartAtlasPOUFinset
       (I := modelWithCornersEuclideanHalfSpace n) (M := M) with hS_def
   have h_supp_subset :
       Function.support (fun α : M => (ρ α : M → ℝ) b.val) ⊆ (S : Set M) := by
@@ -184,7 +184,7 @@ private lemma sum_integral_eq_integral_sum_pou
           (X b.val))
       (surfaceMeasure
         (I := modelWithCornersEuclideanHalfSpace n) (M := M) g)) :
-    ∑ α ∈ chartAtlasPOU_finset
+    ∑ α ∈ chartAtlasPOUFinset
             (I := modelWithCornersEuclideanHalfSpace n) (M := M),
         ∫ b : BoundaryManifold (modelWithCornersEuclideanHalfSpace n) M,
           ((chartAtlasPOU (modelWithCornersEuclideanHalfSpace n) M) α :
@@ -197,7 +197,7 @@ private lemma sum_integral_eq_integral_sum_pou
           ∂(surfaceMeasure
             (I := modelWithCornersEuclideanHalfSpace n) (M := M) g)
       = ∫ b : BoundaryManifold (modelWithCornersEuclideanHalfSpace n) M,
-          (∑ α ∈ chartAtlasPOU_finset
+          (∑ α ∈ chartAtlasPOUFinset
                   (I := modelWithCornersEuclideanHalfSpace n) (M := M),
               ((chartAtlasPOU (modelWithCornersEuclideanHalfSpace n) M) α :
                   M → ℝ) b.val) *
@@ -209,7 +209,7 @@ private lemma sum_integral_eq_integral_sum_pou
           ∂(surfaceMeasure
             (I := modelWithCornersEuclideanHalfSpace n) (M := M) g) := by
   classical
-  set S : Finset M := chartAtlasPOU_finset
+  set S : Finset M := chartAtlasPOUFinset
       (I := modelWithCornersEuclideanHalfSpace n) (M := M)
   have h_per :=
     fun α : M =>
@@ -247,7 +247,7 @@ theorem boundaryFaceSum_eq_surface_integral_of_chartIdentification
     (X : Cₛ^∞⟮(modelWithCornersEuclideanHalfSpace n);
         EuclideanSpace ℝ (Fin n),
         (TangentSpace (modelWithCornersEuclideanHalfSpace n) : M → Type _)⟯)
-    (h_chart : ∀ α ∈ chartAtlasPOU_finset
+    (h_chart : ∀ α ∈ chartAtlasPOUFinset
         (I := modelWithCornersEuclideanHalfSpace n) (M := M),
       chartFaceIntegralEqualsSurfaceIntegralOnChart (n := n) (M := M)
         g α X
@@ -271,7 +271,7 @@ theorem boundaryFaceSum_eq_surface_integral_of_chartIdentification
         ∂(surfaceMeasure
           (I := modelWithCornersEuclideanHalfSpace n) (M := M) g) := by
   classical
-  set S : Finset M := chartAtlasPOU_finset
+  set S : Finset M := chartAtlasPOUFinset
       (I := modelWithCornersEuclideanHalfSpace n) (M := M) with hS_def
   rw [boundaryFaceSum_def]
   have h_sum_chart :
@@ -297,7 +297,7 @@ theorem boundaryFaceSum_eq_surface_integral_of_chartIdentification
   rw [h_sum_chart]
   rw [sum_integral_eq_integral_sum_pou (n := n) (M := M) g X h_int]
   refine integral_congr_ae (Filter.Eventually.of_forall (fun b => ?_))
-  change (∑ α ∈ chartAtlasPOU_finset
+  change (∑ α ∈ chartAtlasPOUFinset
               (I := modelWithCornersEuclideanHalfSpace n) (M := M),
             ((chartAtlasPOU (modelWithCornersEuclideanHalfSpace n) M) α :
               M → ℝ) b.val) *

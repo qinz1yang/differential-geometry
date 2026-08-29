@@ -236,6 +236,67 @@ semantic-preserving source-style change; no statement, proof term or declaration
 retaining each opening whose removal prevented elaboration. This is a semantic-preserving lexical
 scope cleanup; no declaration, statement, or proof was changed.
 
+### 2026-08-29 — definition-name normalization
+
+**Files**:
+- `BallExtension/RoughInput.lean`
+- `BallExtension/SmoothApproximation.lean`
+- `BallExtensionEstimates.lean`
+- `BallScaling.lean`
+- `Crossover/ExponentialIntegrability.lean`
+- `Crossover/LocalIntegrability.lean`
+- `Crossover/LogGradient.lean`
+- `Crossover/ProductBound.lean`
+- `Crossover/PublicEstimate.lean`
+- `DeGiorgiIteration/CutoffAdmissibility.lean`
+- `DeGiorgiIteration/Energy.lean`
+- `DeGiorgiIteration/Linfty.lean`
+- `DeGiorgiIteration/PreIteration.lean`
+- `Harnack.lean`
+- `Holder/LocalBounds.lean`
+- `Holder/OscillationDecay.lean`
+- `Holder/PublicEstimate.lean`
+- `Holder/Representative.lean`
+- `Localization.lean`
+- `MoserIteration/Constants.lean`
+- `MoserIteration/CutoffPrep/Basics.lean`
+- `MoserIteration/CutoffPrep/ExactRegularization.lean`
+- `MoserIteration/CutoffPrep/PreEstimate.lean`
+- `MoserIteration/CutoffPrep/RegularizedEnergy.lean`
+- `MoserIteration/CutoffPrep/RegularizedWitnesses.lean`
+- `MoserIteration/Iteration.lean`
+- `MoserIteration/Linfty.lean`
+- `Oscillation/BMO.lean`
+- `Oscillation/Campanato.lean`
+- `Oscillation/LocalJohnNirenberg.lean`
+- `Poincare.lean`
+- `PositivePart.lean`
+- `ScaledBallEstimates.lean`
+- `SobolevChainRule.lean`
+- `SobolevPoincare.lean`
+- `SobolevSpace/Approximation.lean`
+- `SobolevSpace/Witnesses.lean`
+- `Supersolutions/Caccioppoli.lean`
+- `Supersolutions/ForwardIteration/Iteration.lean`
+- `Supersolutions/ForwardIteration/OneStep.lean`
+- `Supersolutions/InverseIteration.lean`
+- `Supersolutions/InverseOneStep.lean`
+- `Supersolutions/StageOne.lean`
+- `Supersolutions/TestFunctions.lean`
+- `Support/IterationConstants.lean`
+- `UnitBallApproximationCore/Approximation.lean`
+- `UnitBallApproximationCore/Dilation.lean`
+- `UnitBallApproximationCore/Rescaling.lean`
+- `WeakFormulation/WeightedEstimates.lean`
+- `WeakHarnack.lean`
+- `WholeSpaceSobolev.lean`
+
+**Change**: renamed definition, abbreviation, and structure-field identifiers from theorem-style
+snake case to Mathlib camel case, and updated every internal reference. Two witness constructors
+whose short source names also name Mathlib declarations were migrated only at their project-owned
+declarations and qualified references. This is an API-only, semantic-preserving migration; theorem
+statements and proof bodies are unchanged.
+
 <!-- Add entries below as modifications occur. -->
 
 ### 2026-08-20 — explicit small-ball average estimate

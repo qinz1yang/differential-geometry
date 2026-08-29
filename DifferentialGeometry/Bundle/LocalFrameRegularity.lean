@@ -255,10 +255,10 @@ theorem homLocalFrameCoeff_eq_localHomCoeff
     {x : M} (hx : x ∈ e.baseSet)
     (A : TangentSpace I x →L[Real] TangentSpace I x) (i k : ι) :
     (e.continuousLinearMap (RingHom.id Real) e).localFrameCoeff I
-        (continuousLinearMap_homBasis (𝕜 := Real) b b) (k, i) x A =
+        (continuousLinearMapHomBasis (𝕜 := Real) b b) (k, i) x A =
       localHomCoeff (I := I) e b i k x A := by
   let eHom := e.continuousLinearMap (RingHom.id Real) e
-  let bHom := continuousLinearMap_homBasis (𝕜 := Real) b b
+  let bHom := continuousLinearMapHomBasis (𝕜 := Real) b b
   have hhom : x ∈ eHom.baseSet := by
     simp [eHom, hx]
   classical
@@ -654,7 +654,7 @@ theorem covariantDerivative_homSection_contMDiffAt_of_coeff
             (fun y : M => TangentSpace I y →L[Real] TangentSpace I y))) x := by
   classical
   let eHom := e.continuousLinearMap (RingHom.id Real) e
-  let bHom := continuousLinearMap_homBasis (𝕜 := Real) b b
+  let bHom := continuousLinearMapHomBasis (𝕜 := Real) b b
   have hhom : x ∈ eHom.baseSet := by
     simp [eHom, hx]
   refine
@@ -695,7 +695,7 @@ theorem covariantDerivative_homSection_contMDiffAt_of_coeff_one
             (fun y : M => TangentSpace I y →L[Real] TangentSpace I y))) x := by
   classical
   let eHom := e.continuousLinearMap (RingHom.id Real) e
-  let bHom := continuousLinearMap_homBasis (𝕜 := Real) b b
+  let bHom := continuousLinearMapHomBasis (𝕜 := Real) b b
   have hhom : x ∈ eHom.baseSet := by
     simp [eHom, hx]
   refine

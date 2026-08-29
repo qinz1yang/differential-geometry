@@ -59,7 +59,7 @@ private theorem cometricLmodel_finBasis_inner_eq_kronecker (g₁ : SmoothRiemann
     g₁.inner x
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
           (cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k))))
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((Module.finBasis ℝ E) j)) =
       if j = k then 1 else 0 := by
@@ -67,13 +67,13 @@ private theorem cometricLmodel_finBasis_inner_eq_kronecker (g₁ : SmoothRiemann
   let e := tangentSpaceModelContinuousLinearEquiv (I := I) x
   change g₁.inner x
       (e.symm ((cometricLmodel (I := I) g₁ x)
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis k))))
       (e.symm ((Module.finBasis ℝ E) j)) = _
   change g₁.inner x
       (inverseMetricSharpFib (I := I) g₁ x
-        ((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (𝕜 := ℝ) (I := I) 1 x).symm
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        ((Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (𝕜 := ℝ) (I := I) 1 x).symm
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k))))
       (e.symm ((Module.finBasis ℝ E) j)) = _
   rw [inverseMetricSharpFib_inner, cotangentToDualLinear_apply, cotangentToDual_apply]
@@ -94,7 +94,7 @@ theorem trace_eq_cometricLmodel_pairing_sum (g₁ : SmoothRiemannianMetric I M) 
         g₁.inner x
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
             (G (cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))))
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
             ((Module.finBasis ℝ E) k)) =
@@ -103,7 +103,7 @@ theorem trace_eq_cometricLmodel_pairing_sum (g₁ : SmoothRiemannianMetric I M) 
   let e := tangentSpaceModelContinuousLinearEquiv (I := I) x
   set d : Fin (Module.finrank ℝ E) → E := fun k =>
     cometricLmodel (I := I) g₁ x
-      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
         ((Module.finBasis ℝ E).cDualBasis k)) with hd
   set ε : Fin (Module.finrank ℝ E) → Module.Dual ℝ E := fun k =>
     { toFun := fun m => g₁.inner x (e.symm m) (e.symm ((Module.finBasis ℝ E) k))
@@ -460,7 +460,7 @@ def secondKoszulFrameRemainder (g₀ g₁ : SmoothRiemannianMetric I M)
           ![(LeviCivita (I := I) g₀).toFun (fun b => Z b) x
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
                 (cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)))), Y x,
             (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((Module.finBasis ℝ E) k)]
         + unitModelTangent (I := I) (M := M) g₀ 3
@@ -468,7 +468,7 @@ def secondKoszulFrameRemainder (g₀ g₁ : SmoothRiemannianMetric I M)
             ![Z x, (LeviCivita (I := I) g₀).toFun (fun b => Y b) x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
                   (cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)))),
               (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((Module.finBasis ℝ E) k)]
         + unitModelTangent (I := I) (M := M) g₀ 3
@@ -476,7 +476,7 @@ def secondKoszulFrameRemainder (g₀ g₁ : SmoothRiemannianMetric I M)
             ![(LeviCivita (I := I) g₀).toFun (fun b => Y b) x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
                   (cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)))), Z x,
               (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((Module.finBasis ℝ E) k)]
         + unitModelTangent (I := I) (M := M) g₀ 3
@@ -484,7 +484,7 @@ def secondKoszulFrameRemainder (g₀ g₁ : SmoothRiemannianMetric I M)
             ![Y x, (LeviCivita (I := I) g₀).toFun (fun b => Z b) x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
                   (cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)))),
               (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm ((Module.finBasis ℝ E) k)]
         - unitModelTangent (I := I) (M := M) g₀ 3
@@ -493,7 +493,7 @@ def secondKoszulFrameRemainder (g₀ g₁ : SmoothRiemannianMetric I M)
               (LeviCivita (I := I) g₀).toFun (fun b => Z b) x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
                   (cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)))), Y x]
         - unitModelTangent (I := I) (M := M) g₀ 3
             (covGrad (I := I) (M := M) g₀ 0 2 S) x
@@ -501,7 +501,7 @@ def secondKoszulFrameRemainder (g₀ g₁ : SmoothRiemannianMetric I M)
               (LeviCivita (I := I) g₀).toFun (fun b => Y b) x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
                   (cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k))))])
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
@@ -532,7 +532,7 @@ private lemma alignedPrincipalEndoC_trace_eq
   rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun k _ => ?_
   let d := cometricLmodel (I := I) g₁ x
-    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
       ((Module.finBasis ℝ E).cDualBasis k))
   let b := (Module.finBasis ℝ E) k
   have h := alignedPrincipalEndoC_inner_secondKoszul (I := I) (M := M) g₀ g₁ S hbil Z Y x
@@ -655,12 +655,12 @@ theorem combinedTrace42ModelZ_apply
     combinedTrace42ModelZSlot (E := E) L D m =
       (1 / 2 : ℝ) *
         ∑ k : Fin (Module.finrank ℝ E),
-          (D ![m 0, L (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (D ![m 0, L (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)), m 1, (Module.finBasis ℝ E) k]
-            + D ![m 0, m 1, L (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            + D ![m 0, m 1, L (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)), (Module.finBasis ℝ E) k]
             - D ![m 0, (Module.finBasis ℝ E) k, L
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)), m 1]) := by
   classical
   have hcongr_eq : ∀ (σ : Equiv.Perm (Fin 4)) (D' : Tensor0SBundle.Tensor0SModel 4 ℝ E),
@@ -672,7 +672,7 @@ theorem combinedTrace42ModelZ_apply
     rfl
   have htrace : ∀ (σ : Equiv.Perm (Fin 4)) (tup : Fin (Module.finrank ℝ E) → Fin 4 → E)
       (_htup : ∀ k, (fun j =>
-        (![L (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (![L (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)), (Module.finBasis ℝ E) k, m 0, m 1] :
           Fin 4 → E) (σ j)) = tup k),
       modelDoubleTrace (E := E) 2 L
@@ -682,10 +682,10 @@ theorem combinedTrace42ModelZ_apply
     rw [modelDoubleTrace_apply (E := E) 2 L _ m]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [ContinuousMultilinearMap.domDomCongr_apply]
-    rw [show (Fin.cons (L (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+    rw [show (Fin.cons (L (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))
           (Fin.cons ((Module.finBasis ℝ E) k) m) : Fin 4 → E) =
-        ![L (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        ![L (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)), (Module.finBasis ℝ E) k, m 0, m 1] from by
       funext j; fin_cases j <;> rfl]
     rw [← htup k]
@@ -697,7 +697,7 @@ theorem combinedTrace42ModelZ_apply
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     hcongr_eq, hcongr_eq, hcongr_eq]
   rw [htrace koszulZSlotPerm1
-    (fun k => ![m 0, L (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+    (fun k => ![m 0, L (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)), m 1, (Module.finBasis ℝ E) k]) (by
         intro k
         funext j
@@ -705,7 +705,7 @@ theorem combinedTrace42ModelZ_apply
           simp only [koszulZSlotPerm1, Fin.isValue, Equiv.trans_apply, Equiv.swap_apply_def] <;>
             rfl)]
   rw [htrace koszulZSlotPerm2
-    (fun k => ![m 0, m 1, L (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+    (fun k => ![m 0, m 1, L (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)), (Module.finBasis ℝ E) k]) (by
         intro k
         funext j
@@ -713,7 +713,7 @@ theorem combinedTrace42ModelZ_apply
           simp only [koszulZSlotPerm2, Fin.isValue, Equiv.trans_apply, Equiv.swap_apply_def] <;>
             rfl)]
   rw [htrace koszulZSlotPerm3 (fun k => ![m 0, (Module.finBasis ℝ E) k,
-        L (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        L (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)), m 1]) (by
         intro k
         funext j
@@ -723,9 +723,9 @@ theorem combinedTrace42ModelZ_apply
 
 noncomputable def ricciDeTurckPrincipalCoefficientZSlotFib (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
-  (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) 2 x).symm.toContinuousLinearMap.comp
+  (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) 2 x).symm.toContinuousLinearMap.comp
     ((combinedTrace42ModelZSlot (E := E) (cometricLmodel (I := I) g₁ x)).comp
-      (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) 4 x).toContinuousLinearMap)
+      (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) 4 x).toContinuousLinearMap)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -866,7 +866,7 @@ theorem ricciDeTurckPrincipalCoefficientZ_operatorFieldApplication_eq_combinedTr
           (unitModel (I := I) (M := M) g₀ 4 W x
               ![tangentSpaceModelContinuousLinearEquiv (I := I) x (v 0),
                 cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)),
                 tangentSpaceModelContinuousLinearEquiv (I := I) x (v 1),
                 (Module.finBasis ℝ E) k]
@@ -874,12 +874,12 @@ theorem ricciDeTurckPrincipalCoefficientZ_operatorFieldApplication_eq_combinedTr
                 ![tangentSpaceModelContinuousLinearEquiv (I := I) x (v 0),
                   tangentSpaceModelContinuousLinearEquiv (I := I) x (v 1),
                   cometricLmodel (I := I) g₁ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)), (Module.finBasis ℝ E) k]
             - unitModel (I := I) (M := M) g₀ 4 W x
                 ![tangentSpaceModelContinuousLinearEquiv (I := I) x (v 0),
                   (Module.finBasis ℝ E) k, cometricLmodel (I := I) g₁ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)),
                   tangentSpaceModelContinuousLinearEquiv (I := I) x (v 1)]) := by
   rw [unitModel, operatorFieldApplication_toSection]
@@ -1201,7 +1201,7 @@ lemma alignedPrincipalEndoCZ_trace_eq (g₀ g₁ : SmoothRiemannianMetric I M)
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun k _ => ?_
   let d := cometricLmodel (I := I) g₁ x
-    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
       ((Module.finBasis ℝ E).cDualBasis k))
   let b := (Module.finBasis ℝ E) k
   have h := alignedPrincipalEndoCZ_inner (I := I) (M := M) g₀ g₁ S V W x

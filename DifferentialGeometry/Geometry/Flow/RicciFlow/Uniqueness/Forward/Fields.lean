@@ -168,10 +168,10 @@ theorem rmDiffLowAt_std (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     rmDiffLowAt (I := I) g₁ g₂ x
         (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) X Y Z W) =
       metricRm13At (I := I) g₁ x
-          (dualToCotangent_gen (I := I) (tangentFlatLinear_gen (I := I) g₁ x W))
+          (dualToCotangentGen (I := I) (tangentFlatLinearGen (I := I) g₁ x W))
           (DifferentialGeometry.Geometry.Curvature.vec3 (I := I) X Y Z) -
         metricRm13At (I := I) g₂ x
-          (dualToCotangent_gen (I := I) (tangentFlatLinear_gen (I := I) g₁ x W))
+          (dualToCotangentGen (I := I) (tangentFlatLinearGen (I := I) g₁ x W))
           (DifferentialGeometry.Geometry.Curvature.vec3 (I := I) X Y Z) := by
   have hsub : rmDiffLowAt (I := I) g₁ g₂ x
         (DifferentialGeometry.Geometry.Curvature.vec4 (I := I) X Y Z W) =

@@ -587,7 +587,7 @@ lemma divergence_dirichletVFGen_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (hint : LoweringIntertwiner (I := I) (M := M) g s)
     (T v : SmoothCcTensor g 0 s) (b : M) :
-    divergence_g (I := I) g (dirichletVFSectionGen (I := I) (M := M) g s T v) b =
+    divergenceG (I := I) g (dirichletVFSectionGen (I := I) (M := M) g s T v) b =
       tensorCovDerivPointwiseInner (I := I) (M := M) g 0 s T v b
         + tensorInnerPointwise (I := I) (M := M) g 0 s b
             (TensorRSSpace.toModel
@@ -628,7 +628,7 @@ lemma divergence_dirichletVFGen_eq
     rw [tensorInnerPointwise_sum_left (I := I) (M := M) g 0 s b Finset.univ _ _ _]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [one_mul]
-  · exact map_sum (tensorRSSpace_continuousLinearEquiv (I := I) 0 s b)
+  · exact map_sum (tensorRSSpaceContinuousLinearEquiv (I := I) 0 s b)
       (fun i => tensorSecondCovDeriv (I := I) g 0 s
         (smoothOrthoFrame (I := I) g b i) (smoothOrthoFrame (I := I) g b i)
         (fun y : M => T.toSection y) b) Finset.univ
@@ -648,9 +648,9 @@ theorem tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawConnLap_general
     dirichletVFSectionGen (I := I) (M := M) g s T v with hZ_def
   have hZ_cs : HasCompactSupport (Z : ∀ x, TangentSpace I x) :=
     HasCompactSupport.of_compactSpace _
-  have hdiv_zero : ∫ b, divergence_g (I := I) g Z b ∂μ = 0 :=
+  have hdiv_zero : ∫ b, divergenceG (I := I) g Z b ∂μ = 0 :=
     integral_divergence_eq_zero_of_hasCompactSupport (I := I) g Z hZ_cs
-  have hpt : ∀ b : M, divergence_g (I := I) g Z b =
+  have hpt : ∀ b : M, divergenceG (I := I) g Z b =
       tensorCovDerivPointwiseInner (I := I) (M := M) g 0 s T v b
         + tensorInnerPointwise (I := I) (M := M) g 0 s b
             (TensorRSSpace.toModel

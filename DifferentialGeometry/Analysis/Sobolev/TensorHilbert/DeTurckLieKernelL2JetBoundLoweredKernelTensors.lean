@@ -73,12 +73,12 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 lemma interiorProduct_toModel_eval_deTurckLieConnectionDifferenceDerivative (s : ℕ) (x : M) (vv : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (w : Fin s → E) :
     Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x vv D) w =
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x vv D) w =
       Tensor0SSpace.toModel D
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x vv) w) := by
   have h1 : Tensor0SSpace.toModel
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x vv D) =
-      Tensor0SBundle.model_interior_product (𝕜 := ℝ) (E := E) s
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x vv D) =
+      Tensor0SBundle.modelInteriorProduct (𝕜 := ℝ) (E := E) s
         (tangentSpaceModelContinuousLinearEquiv (I := I) x vv)
         (Tensor0SSpace.toModel D) := rfl
   rw [h1]
@@ -284,7 +284,7 @@ private theorem deTurckLieConnectionDifferenceDerivativeLoweredCovec_section_con
       (fun x : M => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
         (E := fun z : M => Tensor0SSpace 4 I z) x (deTurckLieConnectionDifferenceDerivativeLoweredCovec (I := I) g₀ g₁ g_bg x)) := by
   classical
-  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
   refine (contMDiff_multilinearSection_iff_coord (𝕜 := ℝ) (F := E)
       (E := (TangentSpace I : M → Type _)) (IB := I) (n := (∞ : WithTop ℕ∞)) (Module.finBasis ℝ E)
       (fun x : M => (deTurckLieConnectionDifferenceDerivativeLoweredCovec (I := I) g₀ g₁ g_bg x :
@@ -315,7 +315,7 @@ private theorem deTurckLieConnectionDifferenceDerivativeLoweredCovec_section_con
 
 private def deTurckLieConnectionDifferenceDerivativeLoweredField (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 4 :=
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
+  letI := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
   ⟨fun x => deTurckLieConnectionDifferenceDerivativeLoweredCovec (I := I) g₀ g₁ g_bg x,
     deTurckLieConnectionDifferenceDerivativeLoweredCovec_section_contMDiff (I := I) (M := M) g₀ g₁ g_bg⟩
 
@@ -445,7 +445,7 @@ def deTurckLieConnectionDifferenceDerivativeKernelRaisedCc (g₀ g₁ g_bg : Smo
 def deTurckLieConnectionDifferenceDerivativeCovectorExtensionSection (g₀ : SmoothRiemannianMetric I M) (x : M)
     (om : Tensor0SSpace 1 I x) :
     Cₛ^∞⟮I; Tensor0SModel 1 ℝ E, (fun y : M => Tensor0SSpace 1 I y)⟯ :=
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 1
+  letI := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 1
   ⟨fun b : M => g0FlatCLM (I := I) g₀ b
       (smoothExtensionTangent (I := I) x (inverseMetricSharpFib (I := I) g₀ x om) b),
    by

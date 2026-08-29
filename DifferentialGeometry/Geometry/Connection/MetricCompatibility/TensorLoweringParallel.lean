@@ -177,13 +177,13 @@ lemma toModel_tensorRS_apply
       TensorRSSpace.toModel T (Tensor0SSpace.toModel D) := by
   change Tensor0SSpace.toModel
       ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from T) D) =
-    ((tensor0SSpace_continuousLinearEquiv (I := I) r x).arrowCongr
-        (tensor0SSpace_continuousLinearEquiv (I := I) s x) T)
+    ((tensor0SSpaceContinuousLinearEquiv (I := I) r x).arrowCongr
+        (tensor0SSpaceContinuousLinearEquiv (I := I) s x) T)
       (Tensor0SSpace.toModel D)
   rw [ContinuousLinearEquiv.arrowCongr_apply]
-  have hD : (tensor0SSpace_continuousLinearEquiv (I := I) r x).symm
+  have hD : (tensor0SSpaceContinuousLinearEquiv (I := I) r x).symm
       (Tensor0SSpace.toModel D) = D :=
-    (tensor0SSpace_continuousLinearEquiv (I := I) r x).symm_apply_apply D
+    (tensor0SSpaceContinuousLinearEquiv (I := I) r x).symm_apply_apply D
   rw [hD]
   rfl
 
@@ -720,13 +720,13 @@ noncomputable def prependMetricCLM
     (g : SmoothRiemannianMetric I M) (r : ℕ)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (y : M) :
     Tensor0SSpace r I y →L[ℝ] Tensor0SSpace (r + 1) I y :=
-  (tensor0S_curry (I := I) (M := M) r y).symm.toContinuousLinearMap.comp
+  (tensor0SCurry (I := I) (M := M) r y).symm.toContinuousLinearMap.comp
     (((((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm).arrowCongr
-          (tensor0SSpace_continuousLinearEquiv (I := I) r y).symm).toContinuousLinearMap).comp
+          (tensor0SSpaceContinuousLinearEquiv (I := I) r y).symm).toContinuousLinearMap).comp
       ((ContinuousLinearMap.smulRightL ℝ E (Tensor0SModel r ℝ E)
           (modelInnerAt (I := I) (M := M) g y
             (tangentSpaceModelContinuousLinearEquiv (I := I) y (X y)))).comp
-        (tensor0SSpace_continuousLinearEquiv (I := I) r y).toContinuousLinearMap))
+        (tensor0SSpaceContinuousLinearEquiv (I := I) r y).toContinuousLinearMap))
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2Space M]
     [BoundarylessManifold I M] in
@@ -737,7 +737,7 @@ lemma toModel_prependMetricCLM
     Tensor0SSpace.toModel (prependMetricCLM (I := I) (M := M) g r X y γ) z =
       g.inner y (X y) ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (z 0)) *
         Tensor0SSpace.toModel γ (fun i : Fin r => z i.succ) := by
-  have hval : Tensor0SSpace.toModel (tensor0S_curry (I := I) (M := M) r y
+  have hval : Tensor0SSpace.toModel (tensor0SCurry (I := I) (M := M) r y
         (prependMetricCLM (I := I) (M := M) g r X y γ)
           ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm (z 0))) =
       (g.inner y (X y)

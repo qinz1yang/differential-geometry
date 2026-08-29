@@ -58,7 +58,7 @@ lemma contDiff_partial_eta
     simpa using hfd
   exact hfd'.clm_apply contDiff_const
 
-theorem MemW1p.mul_smooth_bounded
+theorem MemW1p.mulSmoothBounded
     {p : ℝ≥0∞} (hp : 1 ≤ p) {Ω : Set E} (hΩ : IsOpen Ω)
     {η u : E → ℝ}
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
@@ -133,7 +133,7 @@ theorem chosenWeakPartial'_smul_smooth_bounded_ae
         (fderiv ℝ η x) (EuclideanSpace.single i 1) * u x) := by
   classical
   have hηu : DeGiorgi.MemW1p (d := d) p (fun x => η x * u x) Ω :=
-    MemW1p.mul_smooth_bounded (d := d) hp hΩ hη hη_bound hη_grad_bound hu
+    MemW1p.mulSmoothBounded (d := d) hp hΩ hη hη_bound hη_grad_bound hu
   have hLHS : DeGiorgi.HasWeakPartialDeriv (d := d) i
       (chosenWeakPartial' p i (fun x => η x * u x) Ω) (fun x => η x * u x) Ω :=
     chosenWeakPartial'_isWeakPartial_of_mem hηu i
@@ -228,7 +228,7 @@ theorem MemWkp.smul_smooth_bounded
         intro x hx
         have h := hη_bound 1 (Nat.succ_le_succ (Nat.zero_le _)) x hx
         rwa [norm_iteratedFDeriv_one] at h
-      refine ⟨MemW1p.mul_smooth_bounded (d := d) hp hΩ hη h0 h1 hu.1, ?_⟩
+      refine ⟨MemW1p.mulSmoothBounded (d := d) hp hΩ hη h0 h1 hu.1, ?_⟩
       intro i
       have hae : chosenWeakPartial' p i (fun x => η x * u x) Ω
           =ᵐ[volume.restrict Ω]

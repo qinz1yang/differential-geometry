@@ -33,8 +33,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 variable [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrinsicGeodesic_compactArc
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -45,8 +45,8 @@ theorem intrinsicGeodesic_compactArc
   isCompact_Icc.image_of_continuousOn
     (intrinsicGeodesic_continuous (I := I) g hEnorm p v).continuousOn
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrinsicGeodesic_arc_lebesgue_mesh
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -79,8 +79,8 @@ theorem intrinsicGeodesic_arc_lebesgue_mesh
   have : s ∈ c q := hq hs
   simpa only [hc_def, Set.mem_preimage] using this
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrinsicGeodesic_arc_finite_chart_cover
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -118,8 +118,8 @@ theorem intrinsicGeodesic_arc_finite_chart_cover
   · intro t r hr
     exact hq t r hr
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [NeZero (Module.finrank ℝ E)] in
@@ -246,13 +246,13 @@ theorem intrinsicGeodesic_hasGeodesicEquationAt_to_lift
     rw [extChartAt_source_eq_chartAt_source (I := I)]; exact hfs
   exact (extChartAt I y).injOn hγ_es hf_es heq
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private def flowProj (α : M) (Φ : (E × E) × ℝ → E × E) (z : E × E) (s : ℝ) : M :=
   (extChartAt I α).symm (Φ (z, s)).1
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] in
@@ -290,8 +290,8 @@ private theorem flowProj_continuousOn
     exact htgt nτ.1 hnτ.1 nτ.2 hnτ.2
   exact hsymm.comp hfst hmaps
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem perChart_jointContinuity_of_flowIdentifiedOn
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -490,8 +490,8 @@ private theorem orbit_speed_confined_fwd
     _ ≤ (R - ρ) + ρ := by linarith [hkey s hs, hz_c]
     _ = R := by ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)] in
 private theorem flowOrbit_speed_confined_uniform
@@ -523,8 +523,8 @@ private theorem flowOrbit_speed_confined_uniform
   rw [hmin] at hconf
   exact hconf s hs
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)] in
 private theorem flowOrbit_cutoff_confined_explicit
@@ -570,8 +570,8 @@ private theorem flowOrbit_cutoff_confined_explicit
     _ ≤ (b.rIn - ρ) + ρ := by linarith [hkey s hs, hzc, hMs]
     _ = b.rIn := by ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)] in
 private theorem flowOrbit_cutoff_confined_symm
@@ -645,8 +645,8 @@ private theorem flowOrbit_cutoff_confined_symm
     have hneg := hbwd (-s) ⟨by linarith, by linarith [hs.1]⟩
     rwa [neg_neg] at hneg
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NormedSpace ℝ E] [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 private theorem flowOrbit_uniform_confinement
     {N : Type*} [TopologicalSpace N]
@@ -715,8 +715,8 @@ private theorem flowOrbit_uniform_confinement
     have hpair : (v, s) ∈ S₁ ×ˢ V₁ := ⟨hv_S₁, hs_V₁⟩
     exact h_sub hpair
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -776,8 +776,8 @@ private theorem geodesic_chartPhaseVF_on_open
       Integral.DivergenceTheorem.extChartAt_target_subset_interior_of_boundaryless
       (I := I) α hp_target
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem perJunction_flowIdentification
     [Module.Finite ℝ E]
@@ -886,8 +886,8 @@ private theorem perJunction_flowIdentification
     (extChartAt I α).left_inv hγ_es
   rw [flowProj, ← hfst, hsymm]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem perJunction_phaseIdentification
     [Module.Finite ℝ E]
@@ -996,8 +996,8 @@ private theorem perJunction_phaseIdentification
   rw [hc₁_eval, hc₂_eval] at hpair
   exact hpair
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem intrinsicGeodesic_window_of_junction_data
     [Module.Finite ℝ E]
@@ -1190,8 +1190,8 @@ private theorem intrinsicGeodesic_window_of_junction_data
       (lt_of_le_of_lt hTfin_le_T' hT'_lt_Tcap) hTcap_le_TΦ))
     hΦ_cont hz_cont_r hz_ball_rfin htgt hident
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private def intrinsicVelocityLift
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -1201,8 +1201,8 @@ private def intrinsicVelocityLift
   ⟨intrinsicGeodesic (I := I) g hEnorm p v s,
     (mfderiv 𝓘(ℝ, ℝ) I (intrinsicGeodesic (I := I) g hEnorm p v) s : ℝ →L[ℝ] _) (1 : ℝ)⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem intrinsicVelocityLift_proj
     [Module.Finite ℝ E]
@@ -1214,8 +1214,8 @@ private theorem intrinsicVelocityLift_proj
     (intrinsicVelocityLift (I := I) g hEnorm p v s).proj =
       intrinsicGeodesic (I := I) g hEnorm p v s := rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem chartFiberCoord_intrinsicVelocityLift
     [Module.Finite ℝ E]
@@ -1260,8 +1260,8 @@ private theorem chartFiberCoord_intrinsicVelocityLift
     (I := I) (M := M) (γ := γ) hγ_mdiff α hs]
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem phasePoint_eq_extChartAt_tangent_intrinsicVelocityLift
     [Module.Finite ℝ E]
@@ -1292,8 +1292,8 @@ private theorem phasePoint_eq_extChartAt_tangent_intrinsicVelocityLift
       (p := intrinsicVelocityLift (I := I) g hEnorm p v s) hproj
     exact hsnd
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem intrinsicVelocityLift_window_of_junction_data
     [Module.Finite ℝ E]
@@ -1619,8 +1619,8 @@ private theorem continuousOn_ball_prod_Icc_of_local_windows
   have hcwa_N : ContinuousWithinAt f N (v, x) := hcwa.mono hN_sub_Wt
   exact hcwa_N.mono_of_mem_nhdsWithin (nhdsWithin_le_nhds (hN_open.mem_nhds hpt_N))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem intrinsicGeodesic_junctionData_of_lift_continuousOn
     [Module.Finite ℝ E]
@@ -1813,8 +1813,8 @@ private theorem intrinsicGeodesic_junctionData_of_lift_continuousOn
   · intro v hv
     rw [hz]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem intrinsicVelocityLift_continuousOn_step
     [Module.Finite ℝ E]
@@ -1866,8 +1866,8 @@ private theorem intrinsicVelocityLift_continuousOn_step
   exact intrinsicVelocityLift_window_of_junction_data (I := I) g hEnorm p v₀ α
     (x₀ := x₀) (w₀ := w₀) hx₀ (z := z) (tₖ := τ) (rz := rz) hrz hz_cont hz0 hgeo
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem intrinsicGeodesic_phasePoint_continuous_zero
     [Module.Finite ℝ E]
@@ -1909,8 +1909,8 @@ private theorem intrinsicGeodesic_phasePoint_continuous_zero
   rw [hfun]
   exact continuous_const.prodMk CLM.continuous
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem intrinsicGeodesic_window_of_flowData
     [Module.Finite ℝ E]
@@ -1961,8 +1961,8 @@ private theorem intrinsicGeodesic_window_of_flowData
     (α := α) (Φ := Φ) (z₀ := z₀) (z := z) (tₖ := tₖ) (ε := T') (r := r) (ρ := ρ) (T := T')
     (le_refl T') hΦ_cont hz_cont hz_ball htgt hident
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -2035,8 +2035,8 @@ private theorem exists_chartFlowData_of_zContinuousAt
     exact hflow.apply_initial (z v) (hzv_rN v hv)
   · exact hzS_ball
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -2129,8 +2129,8 @@ private theorem exists_chartFlow_confined
   · intro w hw
     exact hflow.apply_initial w (hw_ball_rN w hw)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem intrinsicGeodesic_chart_confined_of_orbit
     [Module.Finite ℝ E]
@@ -2379,8 +2379,8 @@ private theorem intrinsicGeodesic_chart_confined_of_orbit
   have hxKnA : x ∈ K \ A := hU_KnA_inter_K_sub_KnA ⟨hx_UKnA, hx_K⟩
   exact hxKnA.2 hxA
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem intrinsicVelocityLift_window_of_flow
     [Module.Finite ℝ E]
@@ -2529,8 +2529,8 @@ private theorem intrinsicVelocityLift_window_of_flow
     _ = (extChartAt I.tangent (⟨α, (0 : E)⟩ : TangentBundle I M)).symm
           (Φ (z v, s - tₖ)) := by rw [hread]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem intrinsicGeodesic_window_of_zContinuousOn
     [Module.Finite ℝ E]
@@ -2617,8 +2617,8 @@ private theorem intrinsicGeodesic_window_of_zContinuousOn
     (hz_cont.mono (Metric.ball_subset_ball (min_le_right _ _)))
     (fun v hv => hz_ball v (hr_S hv))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem intrinsicVelocityLift_window_base
     [Module.Finite ℝ E]
@@ -2757,8 +2757,8 @@ private theorem intrinsicVelocityLift_window_base
       hz_cont_all.continuousOn hz0 hgeo
   exact ⟨r, ε, hr, hε, by simpa only [zero_sub, zero_add] using hlift⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 private theorem intrinsicVelocityLift_step_uniformWidth
     [Module.Finite ℝ E]
@@ -2854,8 +2854,8 @@ private theorem intrinsicVelocityLift_step_uniformWidth
   · intro v hv
     exact hsrc v (Metric.ball_subset_ball (min_le_right _ _) hv)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 theorem intrinsicGeodesic_jointContinuity
     [Module.Finite ℝ E]
@@ -3079,8 +3079,8 @@ theorem intrinsicGeodesic_jointContinuity
     (x₀ := x₀) (w₀ := w₀) hx₀ (z := z) (tₖ := t) (rz := rz) hrz hz_cont hz0 hgeo
 
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 theorem expMapIntrinsic_continuous_of_jointContinuity
     [Module.Finite ℝ E]
@@ -3119,8 +3119,8 @@ theorem expMapIntrinsic_continuous_of_jointContinuity
     exact hcont.comp hsl_cont.continuousOn hsl_maps
   exact hcw.continuousAt hball_nhds
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 theorem expMapIntrinsic_continuous
     [Module.Finite ℝ E]
@@ -3133,8 +3133,8 @@ theorem expMapIntrinsic_continuous
   expMapIntrinsic_continuous_of_jointContinuity (I := I) g hEnorm p
     (fun v₀ => intrinsicGeodesic_jointContinuity (I := I) g hEnorm p v₀)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
 theorem expMapIntrinsic_continuous_of_complete_metric
     (g : SmoothRiemannianMetric I M)

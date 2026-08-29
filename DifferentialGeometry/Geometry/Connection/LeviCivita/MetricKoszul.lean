@@ -323,7 +323,7 @@ theorem cov_eq_fderiv_add
   have hzgood : z ∈ chartLeviCivitaGoodSet (I := 𝓘(Real, E)) z :=
     self_mem_chartLeviCivitaGoodSet (I := 𝓘(Real, E)) (α := z)
   have hrepr :
-      chartE_section_repr (I := 𝓘(Real, E)) z Vfield = V := by
+      chartESectionRepr (I := 𝓘(Real, E)) z Vfield = V := by
     funext y
     rw [chartE_section_repr_eq_trivToE]
     unfold trivToE Vfield

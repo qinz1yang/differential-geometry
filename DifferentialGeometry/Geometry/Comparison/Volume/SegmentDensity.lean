@@ -102,8 +102,8 @@ theorem mfderiv_chartBasis
           rw [hbasis]
           rw [ContinuousLinearEquiv.apply_symm_apply]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit riemannianBundle
   [NeZero (Module.finrank ℝ E)]
   [CompleteSpace E]
@@ -177,8 +177,8 @@ theorem gramDiff_det
   rw [hJdet]
   ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E]
   [T2Space (TangentBundle I M)] in
 theorem exp_density_curve

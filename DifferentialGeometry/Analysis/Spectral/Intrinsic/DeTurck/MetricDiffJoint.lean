@@ -34,7 +34,7 @@ private lemma metricDiff_apply (q h : SmoothRiemannianMetric I M)
     (x : M) (c : Tensor0SSpace 0 I x) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
       (metricDifferenceCcTensor (I := I) (M := M) q h).toSection x) c =
-      (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x) c •
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x) c •
         (metricCcTensorFib (I := I) h x - metricCcTensorFib (I := I) q x) := by
   unfold metricDifferenceCcTensor
   change
@@ -42,7 +42,7 @@ private lemma metricDiff_apply (q h : SmoothRiemannianMetric I M)
           metricCcTensorFib (I := I) h x -
         (MixedSection.eval₀ (F := E) (E := TangentSpace I) x c) •
           metricCcTensorFib (I := I) q x =
-      (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x) c •
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x) c •
         (metricCcTensorFib (I := I) h x - metricCcTensorFib (I := I) q x)
   rw [Tensor0SSpace.evalScalar_apply]
   have heval :

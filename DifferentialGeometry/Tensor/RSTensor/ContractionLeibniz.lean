@@ -45,9 +45,9 @@ theorem tensor0SField_product_apply {s q : ℕ}
     (B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) q)
     (x : M) (V : Fin (s + q) -> TangentSpace I x) :
-    tensor0SField_product (∞ : WithTop ℕ∞) A B x V =
+    tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x V =
       A x (V ∘ Fin.castAdd q) * B x (V ∘ Fin.natAdd s) := by
-  change Bundle.continuousMultilinearMap.product_fun
+  change Bundle.continuousMultilinearMap.productFun
     (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x (A x))
     (tensor0SSpaceFiberContinuousLinearEquiv (I := I) q x (B x)) V = _
   rw [Bundle.continuousMultilinearMap.product_fun_apply]
@@ -59,11 +59,11 @@ theorem tensor0SField_product_eval {s q : ℕ}
     (B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) q)
     (x : M) (V : Fin (s + q) -> TangentSpace I x) :
-    Tensor0SSpace.eval (tensor0SField_product (∞ : WithTop ℕ∞) A B x) V =
+    Tensor0SSpace.eval (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x) V =
       Tensor0SSpace.eval (A x) (V ∘ Fin.castAdd q) *
         Tensor0SSpace.eval (B x) (V ∘ Fin.natAdd s) := by
   have h := tensor0SField_product_apply A B x V
-  change Tensor0SSpace.eval (tensor0SField_product (∞ : WithTop ℕ∞) A B x) V =
+  change Tensor0SSpace.eval (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x) V =
     Tensor0SSpace.eval (A x) (V ∘ Fin.castAdd q) *
       Tensor0SSpace.eval (B x) (V ∘ Fin.natAdd s) at h
   exact h
@@ -88,7 +88,7 @@ theorem nabla0SFun_product_eval {s q : ℕ}
       (TangentSpace I : M -> Type _))
     (x : M) :
     (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (s + q) cov X
-        (tensor0SField_product (∞ : WithTop ℕ∞) A B) x)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B) x)
         (fun a : Fin (s + q) => V a x) =
       nablaA x (Fin.cons (X x) (fun a : Fin s => V (Fin.castAdd q a) x)) *
           B x (fun a : Fin q => V (Fin.natAdd s a) x) +
@@ -101,7 +101,7 @@ theorem nabla0SFun_product_eval {s q : ℕ}
       (TangentSpace I : M -> Type _) := fun a => V (Fin.natAdd s a)
   let P : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (s + q) :=
-    tensor0SField_product (∞ : WithTop ℕ∞) A B
+    tensor0SFieldProduct (∞ : WithTop ℕ∞) A B
   let af : M -> Real := fun y : M => A y (fun a : Fin s => Vfirst a y)
   let bf : M -> Real := fun y : M => B y (fun a : Fin q => Vlast a y)
   have heval :=
@@ -146,7 +146,7 @@ theorem nabla0SFun_product_eval {s q : ℕ}
     · rw [Finset.sum_mul]
       refine Finset.sum_congr rfl fun a _ => ?_
       dsimp only [P]
-      change Bundle.continuousMultilinearMap.product_fun
+      change Bundle.continuousMultilinearMap.productFun
         (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x (A x))
         (tensor0SSpaceFiberContinuousLinearEquiv (I := I) q x (B x))
         (Function.update (fun b : Fin (s + q) => V b x) (Fin.castAdd q a)
@@ -169,7 +169,7 @@ theorem nabla0SFun_product_eval {s q : ℕ}
     · rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun a _ => ?_
       dsimp only [P]
-      change Bundle.continuousMultilinearMap.product_fun
+      change Bundle.continuousMultilinearMap.productFun
         (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x (A x))
         (tensor0SSpaceFiberContinuousLinearEquiv (I := I) q x (B x))
         (Function.update (fun b : Fin (s + q) => V b x) (Fin.natAdd s a)
@@ -227,7 +227,7 @@ theorem nabla_product_zero_of_zero {s q : ℕ}
         (n := (∞ : WithTop ℕ∞)) (q + 1))) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + q) cov
-      (tensor0SField_product (∞ : WithTop ℕ∞) A B)
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B)
       (0 : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (n := (∞ : WithTop ℕ∞)) (s + q + 1)) := by
   classical
@@ -253,7 +253,7 @@ theorem nabla_product_zero_of_zero {s q : ℕ}
   change (0 : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (s + q + 1)) x (Fin.cons (X x) slots) =
     nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (s + q) cov X
-      (tensor0SField_product (∞ : WithTop ℕ∞) A B) x slots
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B) x slots
   rw [show slots = (fun a : Fin (s + q) => V a x) from hslots.symm]
   rw [hmain]
   simp
@@ -269,7 +269,7 @@ noncomputable def metricPow
   | (r + 1) => by
       have hcast : 2 + 2 * r = 2 * (r + 1) := by ring
       exact hcast ▸
-        tensor0SField_product (∞ : WithTop ℕ∞)
+        tensor0SFieldProduct (∞ : WithTop ℕ∞)
           (metricTensorField (I := I) g) (metricPow g r)
 
 private theorem nabla_one0_zero
@@ -339,7 +339,7 @@ theorem nabla_metricPow_zero
     [IsManifold I 2 M] [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g) :
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g) :
     ∀ r : ℕ,
       TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (2 * r) cov (metricPow (I := I) g r)
@@ -361,11 +361,11 @@ theorem nabla_metricPow_zero
     have hcast : 2 + 2 * r = 2 * (r + 1) := by ring
     have htrans :=
       totalNabla0SRealizes_zero_cast (I := I) cov hcast
-        (tensor0SField_product (∞ : WithTop ℕ∞)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
           (metricTensorField (I := I) g) (metricPow (I := I) g r))
         hprod
     have hmp : metricPow (I := I) g (r + 1) =
-        hcast ▸ tensor0SField_product (∞ : WithTop ℕ∞)
+        hcast ▸ tensor0SFieldProduct (∞ : WithTop ℕ∞)
           (metricTensorField (I := I) g) (metricPow (I := I) g r) := rfl
     rw [hmp]
     exact htrans
@@ -374,7 +374,7 @@ theorem nabla0SFun_metricPow_contraction_eval {s r : ℕ}
     [IsManifold I 2 M] [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (nablaA : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -386,7 +386,7 @@ theorem nabla0SFun_metricPow_contraction_eval {s r : ℕ}
       (TangentSpace I : M -> Type _))
     (x : M) :
     (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (s + 2 * r) cov X
-        (tensor0SField_product (∞ : WithTop ℕ∞) A (metricPow (I := I) g r)) x)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) A (metricPow (I := I) g r)) x)
         (fun a : Fin (s + 2 * r) => V a x) =
       nablaA x (Fin.cons (X x) (fun a : Fin s => V (Fin.castAdd (2 * r) a) x)) *
         (metricPow (I := I) g r) x (fun a : Fin (2 * r) => V (Fin.natAdd s a) x) := by

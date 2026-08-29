@@ -136,9 +136,9 @@ private lemma eLpNorm_gNormGrad_sq_toReal_eq_integral_inner_grad
             (gradFun (I := I) g f.toFun x))) 2
           (riemannianVolumeMeasure (I := I) (M := M) g)).toReal ^ 2 =
       ∫ x, g.inner x
-            ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+            ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+            ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
@@ -149,9 +149,9 @@ private lemma eLpNorm_gNormGrad_sq_toReal_eq_integral_inner_grad
     (g.inner x (gradFun (I := I) g f.toFun x)
       (gradFun (I := I) g f.toFun x)) with hψ_def
   have hψ_sq : ∀ x : M, ψ x ^ 2 =
-      g.inner x ((grad_g (I := I) g fMap :
+      g.inner x ((gradG (I := I) g fMap :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g fMap :
+            ((gradG (I := I) g fMap :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
     intro x
     rw [hψ_def]
@@ -165,9 +165,9 @@ private lemma eLpNorm_gNormGrad_sq_toReal_eq_integral_inner_grad
       have h1 : (fun x : M =>
           g.inner x (gradFun (I := I) g f.toFun x) (gradFun (I := I) g f.toFun x)) =
           (fun x : M =>
-            g.inner x ((grad_g (I := I) g fMap :
+            g.inner x ((gradG (I := I) g fMap :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-              ((grad_g (I := I) g fMap :
+              ((gradG (I := I) g fMap :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) := by
         funext x
         rw [grad_g_apply]
@@ -198,9 +198,9 @@ private lemma eLpNorm_gNormGrad_sq_toReal_eq_integral_inner_grad
   rw [integral_congr_ae hae] at h_inner
   have h_integrand_eq :
       (fun a : M => ψ a * ψ a) = (fun a : M =>
-        g.inner a ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+        g.inner a ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) a)
-            ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+            ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) a)) := by
     funext a
     rw [← sq]
@@ -237,9 +237,9 @@ lemma norm_smoothScalar_le_const_mul_wkpNormChart_one
     rw [hL_def]
     exact (eLpNorm_sq_toReal_eq_integral_sq (I := I) (M := M) g f).symm
   have h_int_g_grad : ∫ x, g.inner x
-        ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+        ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+          ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) = Gnorm ^ 2 := by
     rw [hGnorm_def]

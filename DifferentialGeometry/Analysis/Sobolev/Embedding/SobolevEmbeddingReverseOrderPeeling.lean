@@ -1707,7 +1707,7 @@ private lemma exists_tensorPouSobolevHsNormSq_le
   classical
   choose Cα hCα_nn hCα using fun α =>
     reverse_pointwise_integrand_le (I := I) (M := M) g r s k α
-  set actF : Finset M := chartAtlasPOU_activeFinset I M with hactF_def
+  set actF : Finset M := chartAtlasPOUActiveFinset I M with hactF_def
   set Cmax : ℝ := ∑ α ∈ actF, Cα α with hCmax_def
   have hCmax_nn : 0 ≤ Cmax := Finset.sum_nonneg (fun α _ => hCα_nn α)
   have hCmax_ge : ∀ α ∈ actF, Cα α ≤ Cmax :=

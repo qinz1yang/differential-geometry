@@ -48,7 +48,7 @@ private lemma raw_reprT_contDiffOn_goodSet
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : SmoothCcTensor g r s) :
     ContDiffOn ℝ ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M =>
             (rawTensorConnLapSmooth (I := I) g r s T).toSection y) ∘
         (extChartAt I α).symm)
@@ -57,10 +57,10 @@ private lemma raw_reprT_contDiffOn_goodSet
   let _h_top : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   let _h_fib : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   set S : SmoothCcTensor g r s := rawTensorConnLapSmooth (I := I) g r s T
   have hsmooth_total :
       ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
@@ -86,7 +86,7 @@ private lemma raw_reprT_contDiffOn_goodSet
   rw [hbase] at hrewrite
   have hcm_on_source :
       ContMDiffOn I (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
-        (fun b : M => tensorRSChartE_section_repr (I := I) r s α
+        (fun b : M => tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => S.toSection y) b)
         ((chartAt H α).source) := by
     refine ContMDiffOn.congr hrewrite ?_
@@ -104,7 +104,7 @@ private lemma raw_reprT_contDiffOn_goodSet
       extChartAt_source_eq_chartAt_source (I := I)]
   have hcm_on_good :
       ContMDiffOn I (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
-        (fun b : M => tensorRSChartE_section_repr (I := I) r s α
+        (fun b : M => tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => S.toSection y) b)
         (chartLeviCivitaGoodSet (I := I) α) := by
     rw [h_good_eq_source]; exact hcm_on_source
@@ -113,7 +113,7 @@ private lemma raw_reprT_contDiffOn_goodSet
   intro y hy
   rcases hy with ⟨x, hx_good, rfl⟩
   set F : M → TensorRSModel r s ℝ E :=
-    fun b : M => tensorRSChartE_section_repr (I := I) r s α
+    fun b : M => tensorRSChartESectionRepr (I := I) r s α
       (fun y' : M => S.toSection y') b with hF_def
   have hF_at : ContMDiffAt I (𝓘(ℝ, TensorRSModel r s ℝ E)) ∞ F x :=
     hcm_on_good.contMDiffAt (hgood_open.mem_nhds hx_good)
@@ -147,7 +147,7 @@ theorem rawTensorRepr_chart_pulled_contDiffOn_goodSet_image
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (T : SmoothCcTensor g r s) :
     ContDiffOn ℝ ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M =>
             (rawTensorConnLapSmooth (I := I) g r s T).toSection y) ∘
         (extChartAt I α).symm)
@@ -160,7 +160,7 @@ theorem rawTensorRepr_chart_pulled_contDiffAt_goodSet
     (T : SmoothCcTensor g r s) (N : ℕ) {b : M}
     (hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α) :
     ContDiffAt ℝ N
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M =>
             (rawTensorConnLapSmooth (I := I) g r s T).toSection y) ∘
         (extChartAt I α).symm)
@@ -173,7 +173,7 @@ theorem rawTensorRepr_chart_pulled_contDiffAt_goodSet
       (extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α :=
     ⟨b, hb_good, rfl⟩
   have hcd : ContDiffOn ℝ ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M =>
             (rawTensorConnLapSmooth (I := I) g r s T).toSection y) ∘
         (extChartAt I α).symm)
@@ -181,7 +181,7 @@ theorem rawTensorRepr_chart_pulled_contDiffAt_goodSet
     rawTensorRepr_chart_pulled_contDiffOn_goodSet_image
       (I := I) (M := M) g r s α T
   have hat : ContDiffAt ℝ ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M =>
             (rawTensorConnLapSmooth (I := I) g r s T).toSection y) ∘
         (extChartAt I α).symm)

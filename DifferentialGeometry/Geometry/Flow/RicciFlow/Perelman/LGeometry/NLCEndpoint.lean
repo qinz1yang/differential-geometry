@@ -56,8 +56,8 @@ theorem lGrad_scale [CompactSpace M]
   exact (hgrad t ht x v).trans
     (mul_le_mul_of_nonneg_right hscale (Real.sqrt_nonneg _))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank Real E)] in
 omit [SigmaCompactSpace M] in
@@ -85,8 +85,8 @@ theorem lRegRicci_le
   rw [← metricRicciAt_apply_eq_ricciTensor] at hquad
   simpa only [SolutionOn.ricciAt, SolutionFamily.ricciAt, lRegSpeedSq] using hquad
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)] in
 omit [SigmaCompactSpace M] in
 theorem lRegSpeed_ball [CompactSpace M]
@@ -163,8 +163,8 @@ private theorem speedDeriv_two
         (1 + 2 * G * R ^ 2) := by
       nlinarith [mul_nonneg hG (sq_nonneg R)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 private theorem lRegSpeed_two
@@ -229,8 +229,8 @@ private theorem div_one_sub_le {x : Real} (hx : x ≤ 1 / 4) :
   apply (div_le_iff₀ (by linarith [hx])).2
   nlinarith [hx]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem lRegSpeed_fixed
     {F : Type uE} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [FiniteDimensional Real F]
@@ -471,8 +471,8 @@ private theorem lRegSpeed_fixed
       field_simp [heps.ne']
       nlinarith [heps32]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRegSpeed_scale
     {F : Type uE} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [FiniteDimensional Real F]
@@ -580,8 +580,8 @@ private theorem first_exit_to
   · rw [frontier, hK.closure_eq]
     exact ⟨htK, htNot⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]
   [InnerProductSpace Real E] [I.Boundaryless] [T2Space M]
   [SigmaCompactSpace M] in
@@ -617,8 +617,8 @@ private theorem c1_ref_int
     exact hinner.congr fun _ ↦ rfl
   exact hq.continuousOn.integrableOn_compact isCompact_Icc
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lRegTerm_int
@@ -806,8 +806,8 @@ theorem lMetric_scale [CompactSpace M]
   · exact hpair.2.trans
       (mul_le_mul_of_nonneg_right hFQ hTnn)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lExp_edist_le
@@ -838,8 +838,8 @@ theorem lExp_edist_le
     (lRegCurve_c1On S hS T x Z hdom) hE' hEC
   simpa only [lRegCurve_zero, lExp, sub_zero] using hdist
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lExp_mem_ball
@@ -862,8 +862,8 @@ theorem lExp_mem_ball
     hdom hE hEC
   exact hdist.trans_lt ((ENNReal.ofReal_lt_ofReal_iff B.radius_pos).2 hreach)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRegRange_scale
     {F : Type uE} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [FiniteDimensional Real F]
@@ -1163,8 +1163,8 @@ theorem lRegRange_scale
     exact hsK
   · simpa only [alpha] using hKmove s hs hsK
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lExp_scale_ball
     {F : Type uE} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [FiniteDimensional Real F]
@@ -1202,8 +1202,8 @@ theorem lExp_scale_ball
     ((ENNReal.ofReal_lt_ofReal_iff B.radius_pos).2 (by
       linarith [B.radius_pos]))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lReg_small_ball
     {F : Type uE} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [FiniteDimensional Real F]
@@ -1295,8 +1295,8 @@ theorem lReg_small_ball
     lRegCurve S (time : Real) B.center Z b ∈ B.set
   exact hUb
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lExp_small_ball
     {F : Type uE} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [FiniteDimensional Real F]

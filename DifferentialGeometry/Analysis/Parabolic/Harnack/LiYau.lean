@@ -43,7 +43,7 @@ variable [I.Boundaryless] [T2Space M]
 private abbrev deltaLegacy
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ f) : M → ℝ :=
-  Δ_g (I := I) g ⟨f, hf⟩
+  ΔG (I := I) g ⟨f, hf⟩
 
 private theorem deltaLegacy_contMDiff
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
@@ -103,14 +103,14 @@ theorem heatSolution_log_evolution
     exact ((Real.hasDerivAt_log (hpos t (D.regular_subset ht) x).ne').comp t hpde').deriv
   have hgrad : MDiffAt
       (T% fun y : M => gradientFun (I := I) g ut.toFun y) x :=
-    (grad_g (I := I) g ut.toContMDiffMap).mdifferentiable x
+    (gradG (I := I) g ut.toContMDiffMap).mdifferentiable x
   have hlap_raw := laplacian_log (I := I)
     (LeviCivita (I := I) g) g
     (fun y => ut.smooth.mdifferentiable (by simp) y)
     (fun y => hpos t (D.regular_subset ht) y) hgrad
   have hlap :
-      Δ_g (I := I) g logut.toContMDiffMap x =
-        (u t x)⁻¹ * Δ_g (I := I) g ut.toContMDiffMap x -
+      ΔG (I := I) g logut.toContMDiffMap x =
+        (u t x)⁻¹ * ΔG (I := I) g ut.toContMDiffMap x -
           (u t x ^ 2)⁻¹ *
             g.inner x (gradientFun (I := I) g ut.toFun x)
               (gradientFun (I := I) g ut.toFun x) := by
@@ -132,10 +132,10 @@ theorem heatSolution_log_evolution
   calc
     deriv (fun s => Real.log (u s x)) t
         = (u t x)⁻¹ * deriv (fun s => u s x) t := htime_deriv
-    _ = (u t x)⁻¹ * Δ_g (I := I) g ut.toContMDiffMap x := by
+    _ = (u t x)⁻¹ * ΔG (I := I) g ut.toContMDiffMap x := by
       rw [hpde.deriv]
       rfl
-    _ = Δ_g (I := I) g logut.toContMDiffMap x +
+    _ = ΔG (I := I) g logut.toContMDiffMap x +
         g.inner x
           (gradientFun (I := I) g (fun y => Real.log (u t y)) x)
           (gradientFun (I := I) g (fun y => Real.log (u t y)) x) := by
@@ -1007,7 +1007,7 @@ theorem liYauQuantity_evolution_identity
         hsub_eq
       unfold deltaLegacy
       rw [hbridge]
-      change Δ_g (I := I) g
+      change ΔG (I := I) g
           (⟨_, hftslice⟩ + ⟨_, ContMDiff.neg
             (deltaLegacy_contMDiff (I := I) g (hlogslice t (D.regular_subset ht)))⟩) x = _
       rw [h1, h2]
@@ -2562,7 +2562,7 @@ theorem liYau_estimate_of_nonnegative_ricci_on_of_metric_family
           (hscd.add (ContMDiff.neg hc_cd)) hc_eq
         unfold deltaLegacy
         rw [hbridge]
-        change Δ_g (I := I) g
+        change ΔG (I := I) g
             (⟨_, hscd⟩ + ⟨_, ContMDiff.neg hc_cd⟩) x₀ = _
         rw [hsum]
         rw [hneg]
@@ -2688,7 +2688,7 @@ theorem liYau_estimate_of_nonnegative_ricci
     (hu : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞ (fun p : ℝ × M => u p.1 p.2))
     (hpos : ∀ t x, 0 < u t x)
     (hpde : ∀ t x, deriv (fun s => u s x) t =
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x)
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x)
     {t : ℝ} (ht : 0 < t) (x : M) :
     liYauQuantity g (fun τ y => Real.log (u τ y)) t x ≤
       (Module.finrank ℝ E : ℝ) / (2 * t) := by
@@ -2716,9 +2716,9 @@ theorem liYau_estimate_of_nonnegative_ricci
       have hder : HasDerivAt (fun s => u s x) (deriv (fun s => u s x) τ) τ :=
         (ContDiff.differentiable hslice_cd (by norm_num) τ).hasDerivAt
       have hlap : laplacianAt (I := I) G τ (u τ) x =
-          Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu τ).toContMDiffMap x := by
+          ΔG (I := I) g (smoothScalarSlice (I := I) g u hu τ).toContMDiffMap x := by
         change laplacianAt (I := I) G τ (smoothScalarSlice (I := I) g u hu τ).toFun x =
-          Δ_g (I := I) g
+          ΔG (I := I) g
             ⟨(smoothScalarSlice (I := I) g u hu τ).toFun,
               (smoothScalarSlice (I := I) g u hu τ).smooth⟩ x
         rw [laplacianAt_eq_delta (I := I) G τ (smoothScalarSlice (I := I) g u hu τ).smooth
@@ -2825,7 +2825,7 @@ theorem heat_solution_differential_harnack_of_nonnegative_ricci
     (hu : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞ (fun p : ℝ × M => u p.1 p.2))
     (hpos : ∀ t x, 0 < u t x)
     (hpde : ∀ t x, deriv (fun s => u s x) t =
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x)
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x)
     {t : ℝ} (ht : 0 < t) (x : M) :
     -(Module.finrank ℝ E : ℝ) / (2 * t) ≤
       deriv (fun s => u s x) t / u t x -

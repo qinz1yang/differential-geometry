@@ -172,7 +172,7 @@ theorem mul_smooth_chart_bound_C1
     rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
     exact ENNReal.ofReal_le_ofReal hp_one
   have hp_enn_top : ENNReal.ofReal p ≠ (⊤ : ℝ≥0∞) := ENNReal.ofReal_ne_top
-  set S : Finset M := DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+  set S : Finset M := DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
     (I := I) (M := M) with hS_def
   have h_per_α : ∀ α ∈ S, ∃ K_α : ℝ, 0 ≤ K_α ∧
       ∀ {v : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ v →
@@ -802,7 +802,7 @@ private lemma mul_smooth_chart_bound_explicit_form
     rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
     exact ENNReal.ofReal_le_ofReal hp_one
   have hp_enn_top : ENNReal.ofReal p ≠ (⊤ : ℝ≥0∞) := ENNReal.ofReal_ne_top
-  set S : Finset M := DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+  set S : Finset M := DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
     (I := I) (M := M) with hS_def
   have h_per_α : ∀ α ∈ S, ∃ Bα : ℝ, 0 ≤ Bα ∧
       ∀ {u v : M → ℝ}, ContMDiff I 𝓘(ℝ, ℝ) ∞ u → ContMDiff I 𝓘(ℝ, ℝ) ∞ v →

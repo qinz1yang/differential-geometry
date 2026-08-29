@@ -118,7 +118,7 @@ theorem chartLocal_weighted_finset_sum_eq_riemannianMeasure_integral
     [T2Space M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M) (t : ℝ)
     (h : M → ℝ) (hh_cont : Continuous h) :
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∫ x, h x * (chartAtlasPOU I M) α x
           ∂(chartLocalMeasure (I := I) (g_fam t) α)
       = ∫ x, h x ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) := by
@@ -164,7 +164,7 @@ theorem volume_variation_formula_of_chart_derivs
     (hh_cont : Continuous
       (fun x : M => deriv (fun s : ℝ => f s x) t +
         (1/2) * traceTimeDerivMetric (I := I) g_fam t x * f t x))
-    (hα_deriv_explicit : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hα_deriv_explicit : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       HasDerivAt
         (fun s : ℝ => ∫ x, f s x
           ∂((chartLocalMeasure (I := I) (g_fam s) α).withDensity
@@ -189,7 +189,7 @@ theorem volume_variation_formula_of_chart_derivs
   set Iglobal : ℝ :=
       ∫ x, h x
           ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) with hIglobal_def
-  have hSum : ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), Iα α = Iglobal := by
+  have hSum : ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Iα α = Iglobal := by
     exact chartLocal_weighted_finset_sum_eq_riemannianMeasure_integral
       (I := I) (M := M) g_fam t h hh_cont
   refine volume_variation_formula_of_chart_integrals (I := I) (M := M)

@@ -580,7 +580,7 @@ theorem tensorPouSobolevHsNorm_zero_le_tensorL2Norm
   set N : ℝ := (Fintype.card ((Fin r → Fin (Module.finrank ℝ E)) ×
       (Fin s → Fin (Module.finrank ℝ E))) : ℝ) with hN_def
   have hN_nn : 0 ≤ N := by positivity
-  set Ksum : ℝ := ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  set Ksum : ℝ := ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       N * (sqrtPouChartConst (I := I) (M := M) g r s α) ^ 2 with hKsum_def
   have hKsum_nn : 0 ≤ Ksum := by
     refine Finset.sum_nonneg (fun α _ => ?_)
@@ -614,7 +614,7 @@ theorem tensorPouSobolevHsNorm_zero_le_tensorL2Norm
                   ∂(volume :
                     Measure (EuclideanSpace ℝ
                       (Fin (Module.finrank ℝ E))))) =
-          ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+          ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
             ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
                 (Fin s → Fin (Module.finrank ℝ E)),
               ∑ j ∈ Finset.range (2 * 0 + 1),
@@ -666,7 +666,7 @@ theorem tensorPouSobolevHsNorm_zero_le_tensorL2Norm
       simp
     rw [h_tsum_eq]
     have h_termwise :
-        ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           (∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
             ∑ j ∈ Finset.range (2 * 0 + 1),
@@ -768,7 +768,7 @@ theorem tensorPouSobolevHsNorm_zero_le_tensorL2Norm
             congr 1
             rw [hN_def]
             ring
-    calc (∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    calc (∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
             ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
                 (Fin s → Fin (Module.finrank ℝ E)),
               ∑ j ∈ Finset.range (2 * 0 + 1),
@@ -789,7 +789,7 @@ theorem tensorPouSobolevHsNorm_zero_le_tensorL2Norm
                     ∂(volume :
                       Measure (EuclideanSpace ℝ
                         (Fin (Module.finrank ℝ E)))))
-        ≤ ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ≤ ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
             ENNReal.ofReal
               (N * (sqrtPouChartConst (I := I) (M := M) g r s α) ^ 2 * L ^ 2) :=
           Finset.sum_le_sum h_termwise

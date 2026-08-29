@@ -118,7 +118,7 @@ lemma chartGramMatrix_inv_entry_contMDiffOn
     ContMDiffWithinAt.inv₀ hdet hpos_ne
   exact hinv.mul hadj
 
-noncomputable def chartTensorInnerPointwise_0s :
+noncomputable def chartTensorInnerPointwise0s :
     (s : ℕ) → SmoothRiemannianMetric I M → (α : M) → (b : M) →
       Tensor0SModel s ℝ E →
       Tensor0SModel s ℝ E → ℝ
@@ -127,23 +127,23 @@ noncomputable def chartTensorInnerPointwise_0s :
   | s + 1, g, α, b, S, T =>
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         (chartGramMatrix g α b)⁻¹ i j *
-          chartTensorInnerPointwise_0s s g α b
+          chartTensorInnerPointwise0s s g α b
             (S.curryLeft ((chartModelBasis E) i))
             (T.curryLeft ((chartModelBasis E) j))
 
 lemma chartTensorInnerPointwise_0s_zero
     (g : SmoothRiemannianMetric I M) (α b : M)
     (S T : ContinuousMultilinearMap ℝ (fun _ : Fin 0 => E) ℝ) :
-    chartTensorInnerPointwise_0s (I := I) (M := M) 0 g α b S T =
+    chartTensorInnerPointwise0s (I := I) (M := M) 0 g α b S T =
       S (fun i => Fin.elim0 i) * T (fun i => Fin.elim0 i) := rfl
 
 lemma chartTensorInnerPointwise_0s_succ
     (g : SmoothRiemannianMetric I M) (α b : M) (s : ℕ)
     (S T : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => E) ℝ) :
-    chartTensorInnerPointwise_0s (I := I) (M := M) (s + 1) g α b S T =
+    chartTensorInnerPointwise0s (I := I) (M := M) (s + 1) g α b S T =
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         (chartGramMatrix g α b)⁻¹ i j *
-          chartTensorInnerPointwise_0s (I := I) (M := M) s g α b
+          chartTensorInnerPointwise0s (I := I) (M := M) s g α b
             (S.curryLeft ((chartModelBasis E) i))
             (T.curryLeft ((chartModelBasis E) j)) := rfl
 
@@ -152,7 +152,7 @@ lemma chartTensorInnerPointwise_0s_contMDiffOn
     ∀ (s : ℕ) (S T : Tensor0SModel s ℝ E),
       ContMDiffOn I 𝓘(ℝ) ∞
         (fun b : M =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T)
+          chartTensorInnerPointwise0s (I := I) (M := M) s g α b S T)
         (trivializationAt E (TangentSpace I) α).baseSet := by
   intro s
   induction s with
@@ -160,7 +160,7 @@ lemma chartTensorInnerPointwise_0s_contMDiffOn
       intro S T
       have heq :
           (fun b : M =>
-              chartTensorInnerPointwise_0s (I := I) (M := M) 0 g α b S T)
+              chartTensorInnerPointwise0s (I := I) (M := M) 0 g α b S T)
             = fun _ : M =>
               S (fun i => Fin.elim0 i) * T (fun i => Fin.elim0 i) := by
         funext b
@@ -171,12 +171,12 @@ lemma chartTensorInnerPointwise_0s_contMDiffOn
       intro S T
       have heq :
           (fun b : M =>
-              chartTensorInnerPointwise_0s (I := I) (M := M) (s + 1) g α b S T)
+              chartTensorInnerPointwise0s (I := I) (M := M) (s + 1) g α b S T)
             = fun b : M =>
               ∑ i : Fin (Module.finrank ℝ E),
                 ∑ j : Fin (Module.finrank ℝ E),
                   (chartGramMatrix g α b)⁻¹ i j *
-                    chartTensorInnerPointwise_0s (I := I) (M := M) s g α b
+                    chartTensorInnerPointwise0s (I := I) (M := M) s g α b
                       (S.curryLeft ((chartModelBasis E) i))
                       (T.curryLeft ((chartModelBasis E) j)) := by
         funext b
@@ -193,9 +193,9 @@ lemma chartTensorInnerPointwise_0s_contMDiffOn
 lemma chartTensorInnerPointwise_0s_add_left
     (g : SmoothRiemannianMetric I M) (α b : M) (s : ℕ)
     (S₁ S₂ T : Tensor0SModel s ℝ E) :
-    chartTensorInnerPointwise_0s (I := I) (M := M) s g α b (S₁ + S₂) T =
-      chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S₁ T +
-        chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S₂ T := by
+    chartTensorInnerPointwise0s (I := I) (M := M) s g α b (S₁ + S₂) T =
+      chartTensorInnerPointwise0s (I := I) (M := M) s g α b S₁ T +
+        chartTensorInnerPointwise0s (I := I) (M := M) s g α b S₂ T := by
   induction s with
   | zero =>
       change (S₁ + S₂) _ * T _ = S₁ _ * T _ + S₂ _ * T _
@@ -223,8 +223,8 @@ lemma chartTensorInnerPointwise_0s_add_left
 lemma chartTensorInnerPointwise_0s_smul_left
     (g : SmoothRiemannianMetric I M) (α b : M) (s : ℕ)
     (c : ℝ) (S T : Tensor0SModel s ℝ E) :
-    chartTensorInnerPointwise_0s (I := I) (M := M) s g α b (c • S) T =
-      c * chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T := by
+    chartTensorInnerPointwise0s (I := I) (M := M) s g α b (c • S) T =
+      c * chartTensorInnerPointwise0s (I := I) (M := M) s g α b S T := by
   induction s with
   | zero =>
       change (c • S) _ * T _ = c * (S _ * T _)
@@ -250,9 +250,9 @@ lemma chartTensorInnerPointwise_0s_smul_left
 lemma chartTensorInnerPointwise_0s_add_right
     (g : SmoothRiemannianMetric I M) (α b : M) (s : ℕ)
     (S T₁ T₂ : Tensor0SModel s ℝ E) :
-    chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S (T₁ + T₂) =
-      chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T₁ +
-        chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T₂ := by
+    chartTensorInnerPointwise0s (I := I) (M := M) s g α b S (T₁ + T₂) =
+      chartTensorInnerPointwise0s (I := I) (M := M) s g α b S T₁ +
+        chartTensorInnerPointwise0s (I := I) (M := M) s g α b S T₂ := by
   induction s with
   | zero =>
       change S _ * (T₁ + T₂) _ = S _ * T₁ _ + S _ * T₂ _
@@ -280,8 +280,8 @@ lemma chartTensorInnerPointwise_0s_add_right
 lemma chartTensorInnerPointwise_0s_smul_right
     (g : SmoothRiemannianMetric I M) (α b : M) (s : ℕ)
     (c : ℝ) (S T : Tensor0SModel s ℝ E) :
-    chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S (c • T) =
-      c * chartTensorInnerPointwise_0s (I := I) (M := M) s g α b S T := by
+    chartTensorInnerPointwise0s (I := I) (M := M) s g α b S (c • T) =
+      c * chartTensorInnerPointwise0s (I := I) (M := M) s g α b S T := by
   induction s with
   | zero =>
       change S _ * (c • T) _ = c * (S _ * T _)

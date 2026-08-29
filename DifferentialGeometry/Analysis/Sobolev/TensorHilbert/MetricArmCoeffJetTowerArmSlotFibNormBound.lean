@@ -50,36 +50,36 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma curry_symm_smul_aux (s : ℕ) (x : M) (c : ℝ)
     (a : TangentSpace I x →L[ℝ] Tensor0SSpace (s + 1) I x) :
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm (c • a) =
-      c • (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm a := by
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm (c • a) =
+      c • (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm a := by
   apply Tensor0SSpace.toModel_injective (I := I) (M := M)
   ext vv
   rw [show vv = Fin.cons (vv 0) (Matrix.vecTail vv) from (Fin.cons_self_tail vv).symm]
   rw [← tensor0S_curry_toModel_apply
-    (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm (c • a))]
+    (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm (c • a))]
   simp only [ContinuousLinearEquiv.apply_symm_apply, smul_apply,
     Tensor0SSpace.toModel_smul, smul_apply]
   rw [← tensor0S_curry_toModel_apply
-    (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm a)]
+    (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm a)]
   simp only [ContinuousLinearEquiv.apply_symm_apply]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma curry_symm_add_aux (s : ℕ) (x : M)
     (a b : TangentSpace I x →L[ℝ] Tensor0SSpace (s + 1) I x) :
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm (a + b) =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm a +
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm b := by
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm (a + b) =
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm a +
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm b := by
   apply Tensor0SSpace.toModel_injective (I := I) (M := M)
   ext vv
   rw [show vv = Fin.cons (vv 0) (Matrix.vecTail vv) from (Fin.cons_self_tail vv).symm]
   rw [← tensor0S_curry_toModel_apply
-    (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm (a + b))]
+    (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm (a + b))]
   simp only [ContinuousLinearEquiv.apply_symm_apply, add_apply,
     Tensor0SSpace.toModel_add]
   rw [← tensor0S_curry_toModel_apply
-    (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm a),
-    ← tensor0S_curry_toModel_apply (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm b)]
+    (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm a),
+    ← tensor0S_curry_toModel_apply (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm b)]
   simp only [ContinuousLinearEquiv.apply_symm_apply]
 
 def bilinearSlotInsertCurriedCLM (s : ℕ) (x : M)
@@ -132,7 +132,7 @@ def bilinearSlotInsertCLM (s : ℕ) (x : M)
     Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x :=
   haveI : FiniteDimensional ℝ (Tensor0SSpace (s + 1) I x) := inferInstance
   LinearMap.toContinuousLinearMap
-    { toFun := fun D => (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
+    { toFun := fun D => (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
         (bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Arm D)
       map_add' := fun D D' => by
         rw [armCurryCLM_add, curry_symm_add_aux]
@@ -150,7 +150,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
     (D : Tensor0SSpace (s + 1) I x) :
     bilinearSlotInsertCLM (I := I) (M := M) s x Arm D =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
         (bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Arm D) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -163,7 +163,7 @@ lemma armSlotFib_apply_eval (s : ℕ) (x : M)
         (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Arm (v 0)) D) (Matrix.vecTail v) := by
   rw [armSlotFib_apply]
   have hkey := tensor0S_curry_apply_eval (I := I) (M := M) (n := s + 1)
-    (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
+    (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
       (bilinearSlotInsertCurriedCLM (I := I) (M := M) s x Arm D)) (v0 := v 0)
         (vs := Matrix.vecTail v)
   rw [ContinuousLinearEquiv.apply_symm_apply, armCurryCLM_apply] at hkey
@@ -442,7 +442,7 @@ theorem armSlotFib_contMDiff (s : ℕ)
     (φ := fun x : M => (show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
       bilinearSlotInsertCLM (I := I) (M := M) s x (Arm x)))
   intro D
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (s + 1 + 1)
   have hsec : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel (s + 1 + 1) ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel (s + 1 + 1) ℝ E)

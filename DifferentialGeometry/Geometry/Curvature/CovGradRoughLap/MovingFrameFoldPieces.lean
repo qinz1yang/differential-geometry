@@ -34,13 +34,13 @@ omit [CompactSpace M] in
 theorem frameSummand_leadingSlot_secondOrder_commutation_orthoFrame
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (i : Fin (Module.finrank ℝ E)) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           tensorSecondCovDeriv (I := I) g 0 (s + 1)
             (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
             (fun y : M => (covGrad (I := I) (M := M) g 0 s S).toSection y) x)
           (unitZeroSec (I := I) (M := M) x)) (smoothOrthoFrame (I := I) g x i x) -
-      tensor0S_curry (I := I) (M := M) s x
+      tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           covGradBundleEquiv (I := I) (M := M) 0 s x
             ((tensorCov (I := I) g 0 s).toFun
@@ -112,7 +112,7 @@ noncomputable def christoffelResidualPairingFib
         (smoothOrthoFrame (I := I) g x i) (smoothOrthoFrame (I := I) g x i)
         (unitEvalSection (I := I) (M := M) g s S) x))
     (Tensor0SSpace.toModel
-      (tensor0S_curry (I := I) (M := M) s x
+      (tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (covGrad (I := I) (M := M) g 0 s S).toSection x)
           (unitZeroSec (I := I) (M := M) x)) (smoothOrthoFrame (I := I) g x i x)))

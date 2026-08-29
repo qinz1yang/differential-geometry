@@ -28,7 +28,7 @@ private theorem gradientFun_coeff_eq_sum
     (coordinateFrameAt_isLocalFrame (I := I) x₀).coeff k y
         (gradientFun (I := I) g f y) =
       ∑ l : CoordinateIdx (𝕜 := Real) E,
-        inverseMetricFlatModelInChart_component (I := I) g x₀ k l
+        inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
             (extChartAt I x₀ y) *
           mvfderiv (I := I) f y (coordinateFrameAt (I := I) x₀ l y) := by
   classical
@@ -36,12 +36,12 @@ private theorem gradientFun_coeff_eq_sum
     (coordinateFrameAt_isLocalFrame (I := I) x₀).toBasisAt hy
   let gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun a b =>
-      inverseMetricFlatModelInChart_component (I := I) g x₀ a b
+      inverseMetricFlatModelInChartComponent (I := I) g x₀ a b
         (extChartAt I x₀ y)
   have hbasis :
-      basis = coordinateFrameAt_basis (I := I) x₀ hy := by
+      basis = coordinateFrameAtBasis (I := I) x₀ hy := by
     rfl
-  have hinv : MetricInverseInBasis_gen (I := I) g y basis gInv := by
+  have hinv : MetricInverseInBasisGen (I := I) g y basis gInv := by
     simpa [basis, hbasis, gInv] using
       gInvBasisAt (I := I) g x₀ (x := y) hy
   rw [(coordinateFrameAt_isLocalFrame (I := I) x₀).coeff_apply_of_mem
@@ -64,7 +64,7 @@ private theorem gradientFun_coeff_eq_sum
     _ = gInv k l * mvfderiv (I := I) f y (basis l) := by
           rw [hinner]
     _ =
-          inverseMetricFlatModelInChart_component (I := I) g x₀ k l
+          inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
             (extChartAt I x₀ y) *
           mvfderiv (I := I) f y (coordinateFrameAt (I := I) x₀ l y) := by
           rw [hbasis_l]
@@ -82,7 +82,7 @@ theorem gradientFun_contMDiffAt
   intro k
   let rhs : M -> Real := fun y =>
     ∑ l : CoordinateIdx (𝕜 := Real) E,
-      inverseMetricFlatModelInChart_component (I := I) g x₀ k l
+      inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
           (extChartAt I x₀ y) *
         mvfderiv (I := I) f y (coordinateFrameAt (I := I) x₀ l y)
   have hrhs : ContMDiffAt I 𝓘(Real, Real) ∞ rhs x₀ := by
@@ -90,7 +90,7 @@ theorem gradientFun_contMDiffAt
     have hginv :
         ContMDiffAt I 𝓘(Real, Real) ∞
           (fun y : M =>
-            inverseMetricFlatModelInChart_component (I := I) g x₀ k l
+            inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
               (extChartAt I x₀ y)) x₀ :=
       gInvComp_contMDiffAt (I := I) g x₀ k l
     have hframe :

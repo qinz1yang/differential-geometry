@@ -170,7 +170,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
 lemma chartE_section_repr_coordExtensionTangent_eq
     (x : M) (w : TangentSpace I x) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) x).baseSet) :
-    chartE_section_repr (I := I) x (coordExtensionTangent (I := I) x w) b =
+    chartESectionRepr (I := I) x (coordExtensionTangent (I := I) x w) b =
       tangentCoord (I := I) x w := by
   rw [chartE_section_repr_eq_trivToE, coordExtensionTangent_apply]
   exact (trivializationAt E (TangentSpace I) x).continuousLinearMapAt_symmL (R := ℝ) hb _
@@ -179,7 +179,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 lemma chartE_section_repr_linearExtensionTangent_eventuallyEq_const
     (x : M) (w : TangentSpace I x) :
-    chartE_section_repr (I := I) x (linearExtensionTangent (I := I) x w)
+    chartESectionRepr (I := I) x (linearExtensionTangent (I := I) x w)
       =ᶠ[𝓝 x] (fun _ : M => tangentCoord (I := I) x w) := by
   classical
   have h1 : {b : M | (linExtBump (I := I) x : M → ℝ) b = 1} ∈ 𝓝 x :=
@@ -191,7 +191,7 @@ lemma chartE_section_repr_linearExtensionTangent_eventuallyEq_const
   have hWb : linearExtensionTangent (I := I) x w b =
       coordExtensionTangent (I := I) x w b := by
     rw [linearExtensionTangent_apply, hb1, one_smul]
-  change chartE_section_repr (I := I) x (linearExtensionTangent (I := I) x w) b =
+  change chartESectionRepr (I := I) x (linearExtensionTangent (I := I) x w) b =
     tangentCoord (I := I) x w
   rw [chartE_section_repr_eq_trivToE, hWb, ← chartE_section_repr_eq_trivToE]
   exact chartE_section_repr_coordExtensionTangent_eq (I := I) x w hb2
@@ -200,25 +200,25 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
 lemma fderiv_chartE_section_repr_linearExtensionTangent_eq_zero
     (x : M) (w : TangentSpace I x) :
-    fderiv ℝ (chartE_section_repr (I := I) x (linearExtensionTangent (I := I) x w)
+    fderiv ℝ (chartESectionRepr (I := I) x (linearExtensionTangent (I := I) x w)
         ∘ (extChartAt I x).symm) (extChartAt I x x) = 0 := by
   classical
   have hconst :
-      (chartE_section_repr (I := I) x (linearExtensionTangent (I := I) x w)
+      (chartESectionRepr (I := I) x (linearExtensionTangent (I := I) x w)
           ∘ (extChartAt I x).symm)
         =ᶠ[𝓝 (extChartAt I x x)] (fun _ : E => tangentCoord (I := I) x w) := by
     have hsymm_cont : ContinuousAt (extChartAt I x).symm (extChartAt I x x) :=
       continuousAt_extChartAt_symm x
     have hsymm_pt : (extChartAt I x).symm (extChartAt I x x) = x :=
       extChartAt_to_inv x
-    have hmem : {b : M | chartE_section_repr (I := I) x
+    have hmem : {b : M | chartESectionRepr (I := I) x
           (linearExtensionTangent (I := I) x w) b = tangentCoord (I := I) x w}
         ∈ 𝓝 ((extChartAt I x).symm (extChartAt I x x)) := by
       rw [hsymm_pt]
       exact chartE_section_repr_linearExtensionTangent_eventuallyEq_const (I := I) x w
     have hpre :
         (extChartAt I x).symm ⁻¹'
-          {b : M | chartE_section_repr (I := I) x (linearExtensionTangent (I := I) x w) b
+          {b : M | chartESectionRepr (I := I) x (linearExtensionTangent (I := I) x w) b
             = tangentCoord (I := I) x w}
           ∈ 𝓝 (extChartAt I x x) :=
       hsymm_cont.preimage_mem_nhds hmem
@@ -243,7 +243,7 @@ theorem covApply_linearExtensionTangent_basepoint_eq
   rw [LeviCivita_chart_apply (I := I) g x hself hMDiff v]
   rw [chartLeviCivita_apply (I := I) g x (linearExtensionTangent (I := I) x w) hself v]
   rw [fderiv_chartE_section_repr_linearExtensionTangent_eq_zero (I := I) x w]
-  have hreprx : chartE_section_repr (I := I) x (linearExtensionTangent (I := I) x w) x =
+  have hreprx : chartESectionRepr (I := I) x (linearExtensionTangent (I := I) x w) x =
       tangentCoord (I := I) x w := by
     rw [chartE_section_repr_eq_trivToE, linearExtensionTangent_eq]
     rfl

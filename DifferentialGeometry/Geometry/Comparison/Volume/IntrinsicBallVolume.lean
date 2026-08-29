@@ -171,8 +171,8 @@ theorem param_dens_ge
       (A := paramGramMatrix (I := I) g c.hom z) (a := a)
       hgram.posSemidef ha hray)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrBall_vol_ge
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]

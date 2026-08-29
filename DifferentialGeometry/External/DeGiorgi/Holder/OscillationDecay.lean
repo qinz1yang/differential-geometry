@@ -21,12 +21,12 @@ local notation "μhalf" => volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))
 
 noncomputable def moserDecayAlpha
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1)) : ℝ :=
-  Real.exp (-(C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2)))
+  Real.exp (-(CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2)))
 
 theorem C_harnack_nonneg
     (hd : 2 < (d : ℝ)) :
-    0 ≤ C_harnack d := by
-  unfold C_harnack
+    0 ≤ CHarnack d := by
+  unfold CHarnack
   have hcoeff_nonneg : 0 ≤ ((d : ℝ) - 2) / ((d : ℝ) - 1) := by
     have hnum_nonneg : 0 ≤ (d : ℝ) - 2 := by
       linarith
@@ -34,43 +34,43 @@ theorem C_harnack_nonneg
       linarith
     exact div_nonneg hnum_nonneg hden_nonneg
   have hlogM_nonneg :
-      0 ≤ Real.log (C_Moser d * (((d : ℝ) - 1) ^ (d : ℝ)) * ((4 : ℝ) ^ (d : ℝ))) := by
+      0 ≤ Real.log (CMoser d * (((d : ℝ) - 1) ^ (d : ℝ)) * ((4 : ℝ) ^ (d : ℝ))) := by
     simpa [localMoserBase] using Real.log_nonneg (one_le_localMoserBase (d := d) hd)
   have hlogW_nonneg :
-      0 ≤ Real.log (C_weakHarnack_of d * ((d : ℝ) ^ (weak_harnack_decay_exp d))) := by
+      0 ≤ Real.log (CWeakHarnackOf d * ((d : ℝ) ^ (weakHarnackDecayExp d))) := by
     simpa [localWeakHarnackBase] using Real.log_nonneg (one_le_localWeakHarnackBase (d := d) hd)
   have hd_nonneg : 0 ≤ (d : ℝ) := by positivity
   refine mul_nonneg (by norm_num) ?_
   exact add_nonneg (add_nonneg (mul_nonneg hcoeff_nonneg hlogM_nonneg) hd_nonneg) hlogW_nonneg
 
 theorem C_harnack_le_C_holder_Moser :
-    C_harnack d ≤ C_holder_Moser d := by
-  unfold C_holder_Moser
+    CHarnack d ≤ CHolderMoser d := by
+  unfold CHolderMoser
   have hlocal_nonneg : 0 ≤ localMoserBase d := localMoserBase_nonneg (d := d)
-  have htwo_nonneg : 0 ≤ C_Moser d * (2 : ℝ) ^ (d : ℝ) := by
+  have htwo_nonneg : 0 ≤ CMoser d * (2 : ℝ) ^ (d : ℝ) := by
     refine mul_nonneg ?_ ?_
     · exact le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_Moser (d := d))
     · exact Real.rpow_nonneg (by norm_num : (0 : ℝ) ≤ 2) _
-  have hweak_nonneg : 0 ≤ C_weakHarnack_of d * (d : ℝ) ^ (d : ℝ) := by
+  have hweak_nonneg : 0 ≤ CWeakHarnackOf d * (d : ℝ) ^ (d : ℝ) := by
     refine mul_nonneg ?_ ?_
     · exact le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_weakHarnack_of (d := d))
     · exact Real.rpow_nonneg (by positivity : (0 : ℝ) ≤ d) _
   have hsum_nonneg :
       0 ≤
-        |C_harnack d| + localMoserBase d + C_Moser d * (2 : ℝ) ^ (d : ℝ) +
-          C_weakHarnack_of d * (d : ℝ) ^ (d : ℝ) + 8 := by
-    nlinarith [abs_nonneg (C_harnack d), hlocal_nonneg, htwo_nonneg, hweak_nonneg]
+        |CHarnack d| + localMoserBase d + CMoser d * (2 : ℝ) ^ (d : ℝ) +
+          CWeakHarnackOf d * (d : ℝ) ^ (d : ℝ) + 8 := by
+    nlinarith [abs_nonneg (CHarnack d), hlocal_nonneg, htwo_nonneg, hweak_nonneg]
   have hsum_ge_abs :
-      |C_harnack d| ≤
-        |C_harnack d| + localMoserBase d + C_Moser d * (2 : ℝ) ^ (d : ℝ) +
-          C_weakHarnack_of d * (d : ℝ) ^ (d : ℝ) + 8 := by
+      |CHarnack d| ≤
+        |CHarnack d| + localMoserBase d + CMoser d * (2 : ℝ) ^ (d : ℝ) +
+          CWeakHarnackOf d * (d : ℝ) ^ (d : ℝ) + 8 := by
     nlinarith [hlocal_nonneg, htwo_nonneg, hweak_nonneg]
   have hmul_ge :
-      |C_harnack d| + localMoserBase d + C_Moser d * (2 : ℝ) ^ (d : ℝ) +
-          C_weakHarnack_of d * (d : ℝ) ^ (d : ℝ) + 8 ≤
+      |CHarnack d| + localMoserBase d + CMoser d * (2 : ℝ) ^ (d : ℝ) +
+          CWeakHarnackOf d * (d : ℝ) ^ (d : ℝ) + 8 ≤
         256 *
-          (|C_harnack d| + localMoserBase d + C_Moser d * (2 : ℝ) ^ (d : ℝ) +
-            C_weakHarnack_of d * (d : ℝ) ^ (d : ℝ) + 8) := by
+          (|CHarnack d| + localMoserBase d + CMoser d * (2 : ℝ) ^ (d : ℝ) +
+            CWeakHarnackOf d * (d : ℝ) ^ (d : ℝ) + 8) := by
     nlinarith
   exact le_trans (le_abs_self _) (le_trans hsum_ge_abs hmul_ge)
 
@@ -87,22 +87,22 @@ theorem moserDecayAlpha_le_one
   unfold moserDecayAlpha
   refine Real.exp_le_one_iff.mpr ?_
   have hnonneg :
-      0 ≤ C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2) := by
+      0 ≤ CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2) := by
     exact mul_nonneg (C_harnack_nonneg (d := d) hd) (Real.rpow_nonneg A.1.Λ_nonneg _)
   linarith
 
 theorem moserLowerBound_le_decayAlpha
     (_hd : 2 < (d : ℝ))
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1)) :
-    Real.exp (-(C_holder_Moser d * A.1.Λ ^ ((1 : ℝ) / 2))) ≤ moserDecayAlpha A := by
+    Real.exp (-(CHolderMoser d * A.1.Λ ^ ((1 : ℝ) / 2))) ≤ moserDecayAlpha A := by
   let _ := _hd
   unfold moserDecayAlpha
   refine Real.exp_le_exp.mpr ?_
   have hs_nonneg : 0 ≤ A.1.Λ ^ ((1 : ℝ) / 2) := by
     exact Real.rpow_nonneg A.1.Λ_nonneg _
   have hmul :
-      C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2) ≤
-        C_holder_Moser d * A.1.Λ ^ ((1 : ℝ) / 2) := by
+      CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2) ≤
+        CHolderMoser d * A.1.Λ ^ ((1 : ℝ) / 2) := by
     exact mul_le_mul_of_nonneg_right (C_harnack_le_C_holder_Moser (d := d)) hs_nonneg
   linarith
 
@@ -174,11 +174,11 @@ theorem ae_abs_le_moserHolderNorm_on_smallBall
     {c : E} (hc : c ∈ Metric.ball (0 : E) (1 / 2 : ℝ))
     {r : ℝ} (_hr : 0 < r) (hrq : r ≤ (1 / 4 : ℝ)) :
     ∀ᵐ z ∂ ballMeasure c r,
-      |u z| ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ := by
+      |u z| ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ := by
   let _ := _hr
   have hquarter :
       ∀ᵐ z ∂ ballMeasure c (1 / 4 : ℝ),
-        |u z| ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ :=
+        |u z| ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ :=
     ae_abs_le_moserHolderNorm_on_quarterBall
       (d := d) hd A hp₀ hsol hInt hc
   have hsub : Metric.ball c r ⊆ Metric.ball c (1 / 4 : ℝ) := by
@@ -323,34 +323,34 @@ theorem pointwise_abs_le_moserHolderNorm_on_halfBall
     (hvu : v =ᵐ[μ1] u)
     (hv_cont : ContinuousOn v (Metric.ball (0 : E) (1 / 2 : ℝ)))
     {x : E} (hx : x ∈ Metric.ball (0 : E) (1 / 2 : ℝ)) :
-    |v x| ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ := by
+    |v x| ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ := by
   have hae :
       ∀ᵐ z ∂ ballMeasure x (1 / 4 : ℝ),
-        |u z| ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ :=
+        |u z| ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ :=
     ae_abs_le_moserHolderNorm_on_quarterBall
       (d := d) hd A hp₀ hsol hInt hx
   have hupper :
       ∀ᵐ z ∂ ballMeasure x (1 / 4 : ℝ),
-        u z ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ := by
+        u z ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ := by
     filter_upwards [hae] with z hz
     exact (abs_le.mp hz).2
   have hlower :
       ∀ᵐ z ∂ ballMeasure x (1 / 4 : ℝ),
-        -((C_holder_Moser d / 64) * moserHolderNorm A u p₀) ≤ u z := by
+        -((CHolderMoser d / 64) * moserHolderNorm A u p₀) ≤ u z := by
     filter_upwards [hae] with z hz
     exact (abs_le.mp hz).1
   have hx_ball : x ∈ Metric.ball x (1 / 4 : ℝ) := Metric.mem_ball_self (by norm_num)
   have hle :
-      v x ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ :=
+      v x ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ :=
     pointwise_le_of_ae_le_on_ball_inter_half
       (x := x) (c := x) (r := (1 / 4 : ℝ))
-      (M := (C_holder_Moser d / 64) * moserHolderNorm A u p₀)
+      (M := (CHolderMoser d / 64) * moserHolderNorm A u p₀)
       hx hx_ball hv_cont hvu hupper
   have hge :
-      -((C_holder_Moser d / 64) * moserHolderNorm A u p₀) ≤ v x :=
+      -((CHolderMoser d / 64) * moserHolderNorm A u p₀) ≤ v x :=
     pointwise_ge_of_ae_ge_on_ball_inter_half
       (x := x) (c := x) (r := (1 / 4 : ℝ))
-      (m := -((C_holder_Moser d / 64) * moserHolderNorm A u p₀))
+      (m := -((CHolderMoser d / 64) * moserHolderNorm A u p₀))
       hx hx_ball hv_cont hvu hlower
   exact abs_le.mpr ⟨hge, hle⟩
 
@@ -537,12 +537,12 @@ theorem moser_oscillation_decay_on_ball
   have hα_le : α ≤ 1 := by
     simpa [α] using moserDecayAlpha_le_one (d := d) hd A
   have hαH :
-      α * Real.exp (C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2)) = 1 := by
+      α * Real.exp (CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2)) = 1 := by
     dsimp [α, moserDecayAlpha]
     rw [← Real.exp_add]
     have hsum :
-        -(C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2)) +
-            (C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2)) = 0 := by
+        -(CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2)) +
+            (CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2)) = 0 := by
       ring
     rw [hsum, Real.exp_zero]
   refine le_of_forall_pos_add_bound ?_
@@ -630,12 +630,12 @@ theorem moser_oscillation_decay_on_ball
         hneg_bdd_below_half hneg_bdd_above_half)
   have hlo :
       S - m + δ ≤
-        Real.exp (C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2)) * (i - m + δ) := by
+        Real.exp (CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2)) * (i - m + δ) := by
     rw [hsup_lo, hinf_lo] at hlo_raw
     exact hlo_raw
   have hhi :
       M - i + δ ≤
-        Real.exp (C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2)) * (M - S + δ) := by
+        Real.exp (CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2)) * (M - S + δ) := by
     rw [hsup_hi, hinf_hi] at hhi_raw
     exact hhi_raw
   have hlo' : α * (S - m + δ) ≤ i - m + δ := by
@@ -693,35 +693,35 @@ theorem moserDyadic_oscillation_bound
     ∀ n : ℕ,
       moserDyadicEssSup u x n - moserDyadicEssInf u x n ≤
         (1 - moserDecayAlpha A) ^ n *
-          ((C_holder_Moser d / 32) * moserHolderNorm A u p₀) := by
+          ((CHolderMoser d / 32) * moserHolderNorm A u p₀) := by
   intro n
   induction n with
   | zero =>
       have hae :
           ∀ᵐ z ∂ ballMeasure x (1 / 4 : ℝ),
-            |u z| ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ :=
+            |u z| ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ :=
         ae_abs_le_moserHolderNorm_on_quarterBall
           (d := d) hd A hp₀ hsol hInt hx
       have hupper :
           ∀ᵐ z ∂ ballMeasure x (1 / 4 : ℝ),
-            u z ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ := by
+            u z ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ := by
         filter_upwards [hae] with z hz
         exact (abs_le.mp hz).2
       have hlower :
           ∀ᵐ z ∂ ballMeasure x (1 / 4 : ℝ),
-            -((C_holder_Moser d / 64) * moserHolderNorm A u p₀) ≤ u z := by
+            -((CHolderMoser d / 64) * moserHolderNorm A u p₀) ≤ u z := by
         filter_upwards [hae] with z hz
         exact (abs_le.mp hz).1
       have hsup :
           moserDyadicEssSup u x 0 ≤
-            (C_holder_Moser d / 64) * moserHolderNorm A u p₀ := by
+            (CHolderMoser d / 64) * moserHolderNorm A u p₀ := by
         have hμ_ne : ballMeasure x (1 / 4 : ℝ) ≠ 0 := by
           exact restrict_ball_ne_zero (c := x) (r := (1 / 4 : ℝ)) (by norm_num)
         simpa [moserDyadicEssSup, ballMeasure, moserDyadicRadius] using
           (essSup_le_of_ae_bdd
             (μ := ballMeasure x (1 / 4 : ℝ)) hμ_ne hlower hupper)
       have hinf :
-          -((C_holder_Moser d / 64) * moserHolderNorm A u p₀) ≤
+          -((CHolderMoser d / 64) * moserHolderNorm A u p₀) ≤
             moserDyadicEssInf u x 0 := by
         have hμ_ne : ballMeasure x (1 / 4 : ℝ) ≠ 0 := by
           exact restrict_ball_ne_zero (c := x) (r := (1 / 4 : ℝ)) (by norm_num)
@@ -730,7 +730,7 @@ theorem moserDyadic_oscillation_bound
             (μ := ballMeasure x (1 / 4 : ℝ)) hμ_ne hlower hupper)
       have hbase :
           moserDyadicEssSup u x 0 - moserDyadicEssInf u x 0 ≤
-            (C_holder_Moser d / 32) * moserHolderNorm A u p₀ := by
+            (CHolderMoser d / 32) * moserHolderNorm A u p₀ := by
         nlinarith
       simpa using hbase
   | succ n ihn =>
@@ -740,7 +740,7 @@ theorem moserDyadic_oscillation_bound
               (moserDyadicEssSup u x n - moserDyadicEssInf u x n) := by
         have hu_bound :
             ∀ᵐ z ∂ ballMeasure x (moserDyadicRadius n),
-              |u z| ≤ (C_holder_Moser d / 64) * moserHolderNorm A u p₀ :=
+              |u z| ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ :=
           ae_abs_le_moserHolderNorm_on_smallBall
             (d := d) hd A hp₀ hsol hInt hx
             (r := moserDyadicRadius n)
@@ -752,7 +752,7 @@ theorem moserDyadic_oscillation_bound
             (r := moserDyadicRadius n)
             (moserDyadicRadius_pos (n := n))
             (moserDyadicRadius_le_quarter (n := n))
-            ((C_holder_Moser d / 64) * moserHolderNorm A u p₀) hu_bound
+            ((CHolderMoser d / 64) * moserHolderNorm A u p₀) hu_bound
         simpa [moserDyadicEssSup, moserDyadicEssInf, moserDyadicRadius_succ] using hdecay
       have hfac_nonneg : 0 ≤ 1 - moserDecayAlpha A := by
         have hα_le := moserDecayAlpha_le_one (d := d) hd A
@@ -762,7 +762,7 @@ theorem moserDyadic_oscillation_bound
               (moserDyadicEssSup u x n - moserDyadicEssInf u x n) ≤
             (1 - moserDecayAlpha A) *
               ((1 - moserDecayAlpha A) ^ n *
-                ((C_holder_Moser d / 32) * moserHolderNorm A u p₀)) :=
+                ((CHolderMoser d / 32) * moserHolderNorm A u p₀)) :=
         mul_le_mul_of_nonneg_left ihn hfac_nonneg
       calc
         moserDyadicEssSup u x (n + 1) - moserDyadicEssInf u x (n + 1)
@@ -770,9 +770,9 @@ theorem moserDyadic_oscillation_bound
                 (moserDyadicEssSup u x n - moserDyadicEssInf u x n) := hstep
         _ ≤ (1 - moserDecayAlpha A) *
               ((1 - moserDecayAlpha A) ^ n *
-                ((C_holder_Moser d / 32) * moserHolderNorm A u p₀)) := hmul
+                ((CHolderMoser d / 32) * moserHolderNorm A u p₀)) := hmul
         _ = (1 - moserDecayAlpha A) ^ (n + 1) *
-              ((C_holder_Moser d / 32) * moserHolderNorm A u p₀) := by
+              ((CHolderMoser d / 32) * moserHolderNorm A u p₀) := by
               rw [pow_succ]
               ring
 

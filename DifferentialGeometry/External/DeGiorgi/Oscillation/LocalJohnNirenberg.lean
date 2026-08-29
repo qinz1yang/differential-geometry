@@ -1594,8 +1594,8 @@ theorem john_nirenberg_local
     {t : ℝ} (ht : 0 < t) :
     volume ({x ∈ Metric.ball x₀ R |
       ‖u x - ⨍ y in Metric.ball x₀ R, u y ∂volume‖ > t}) ≤
-    ENNReal.ofReal (C_JN d) * volume (Metric.ball x₀ R) *
-      ENNReal.ofReal (Real.exp (-t / (C_JN d * M))) := by
+    ENNReal.ofReal (CJN d) * volume (Metric.ball x₀ R) *
+      ENNReal.ofReal (Real.exp (-t / (CJN d * M))) := by
   let _ := _hu_meas
   classical
   set B := Metric.ball x₀ R with hB_def
@@ -2027,10 +2027,10 @@ theorem john_nirenberg_local
     rw [mul_pow]
     ring
   have h_coeff_ball :
-      ENNReal.ofReal 4 * volume sixB ≤ ENNReal.ofReal (C_JN d) * volume B := by
+      ENNReal.ofReal 4 * volume sixB ≤ ENNReal.ofReal (CJN d) * volume B := by
     rw [hsixB_vol]
-    have hcoeff : 4 * (6 : ℝ) ^ d ≤ C_JN d := by
-      rw [C_JN]
+    have hcoeff : 4 * (6 : ℝ) ^ d ≤ CJN d := by
+      rw [CJN]
       have h36 : (6 : ℝ) ^ d ≤ 36 ^ d :=
         pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ 6) (by norm_num : (6 : ℝ) ≤ 36) d
       calc
@@ -2043,23 +2043,23 @@ theorem john_nirenberg_local
       ENNReal.ofReal 4 * (ENNReal.ofReal ((6 : ℝ) ^ d) * volume B)
           = ENNReal.ofReal (4 * (6 : ℝ) ^ d) * volume B := by
               rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
-      _ ≤ ENNReal.ofReal (C_JN d) * volume B := by
+      _ ≤ ENNReal.ofReal (CJN d) * volume B := by
           exact mul_le_mul_of_nonneg_right (ENNReal.ofReal_le_ofReal hcoeff) (by positivity)
   have h_const_exp : ∀ s : ℝ, 0 < s →
-      -s * (-Real.log θ / A) ≤ -s / (C_JN d * M) := by
+      -s * (-Real.log θ / A) ≤ -s / (CJN d * M) := by
     intro s hs
-    have hCJN_pos : 0 < C_JN d := C_JN_pos d
-    have hCM_pos : 0 < C_JN d * M := mul_pos hCJN_pos hM
-    suffices hkey : A ≤ C_JN d * M * (-Real.log θ) by
-      have h_rate : 1 / (C_JN d * M) ≤ -Real.log θ / A := by
+    have hCJN_pos : 0 < CJN d := C_JN_pos d
+    have hCM_pos : 0 < CJN d * M := mul_pos hCJN_pos hM
+    suffices hkey : A ≤ CJN d * M * (-Real.log θ) by
+      have h_rate : 1 / (CJN d * M) ≤ -Real.log θ / A := by
         rw [div_le_div_iff₀ hCM_pos hA_pos, one_mul]
-        linarith [mul_comm (C_JN d * M) (-Real.log θ)]
+        linarith [mul_comm (CJN d * M) (-Real.log θ)]
       have := mul_le_mul_of_nonpos_left h_rate (neg_nonpos.mpr (le_of_lt hs))
       simp only [mul_div_assoc'] at this
       calc
         -s * (-Real.log θ / A) = -s * (-Real.log θ) / A := by ring
-        _ ≤ -s * 1 / (C_JN d * M) := this
-        _ = -s / (C_JN d * M) := by ring
+        _ ≤ -s * 1 / (CJN d * M) := this
+        _ = -s / (CJN d * M) := by ring
     have hlog : Real.log θ ≤ θ - 1 := Real.log_le_sub_one_of_pos hθ_pos
     have hneg_log : (1 / 2 : ℝ) ≤ -Real.log θ := by
       rw [hθ_def] at hlog ⊢
@@ -2070,14 +2070,14 @@ theorem john_nirenberg_local
           have hpow : (25 : ℝ) ^ d ≤ 36 ^ d :=
             pow_le_pow_left₀ (by positivity : (0 : ℝ) ≤ 25) (by norm_num : (25 : ℝ) ≤ 36) d
           nlinarith [hpow, hM]
-      _ = C_JN d * M * (1 / 2) := by
-          rw [C_JN]
+      _ = CJN d * M * (1 / 2) := by
+          rw [CJN]
           ring
-      _ ≤ C_JN d * M * (-Real.log θ) := by
-          exact mul_le_mul_of_nonneg_left hneg_log (by positivity : 0 ≤ C_JN d * M)
+      _ ≤ CJN d * M * (-Real.log θ) := by
+          exact mul_le_mul_of_nonneg_left hneg_log (by positivity : 0 ≤ CJN d * M)
   have hexp_bound :
       ENNReal.ofReal (Real.exp (-t * (-Real.log θ / A))) ≤
-        ENNReal.ofReal (Real.exp (-t / (C_JN d * M))) := by
+        ENNReal.ofReal (Real.exp (-t / (CJN d * M))) := by
     exact ENNReal.ofReal_le_ofReal (Real.exp_le_exp.2 (h_const_exp t ht))
   calc
     volume ({x ∈ Metric.ball x₀ R |
@@ -2089,16 +2089,16 @@ theorem john_nirenberg_local
     _ = (ENNReal.ofReal 4 * volume sixB) *
           ENNReal.ofReal (Real.exp (-t * (-Real.log θ / A))) := by
             rfl
-    _ ≤ (ENNReal.ofReal (C_JN d) * volume B) *
+    _ ≤ (ENNReal.ofReal (CJN d) * volume B) *
           ENNReal.ofReal (Real.exp (-t * (-Real.log θ / A))) := by
             exact mul_le_mul_of_nonneg_right h_coeff_ball (by positivity)
-    _ = ENNReal.ofReal (C_JN d) * volume B *
+    _ = ENNReal.ofReal (CJN d) * volume B *
           ENNReal.ofReal (Real.exp (-t * (-Real.log θ / A))) := by
             rfl
-    _ ≤ ENNReal.ofReal (C_JN d) * volume B *
-          ENNReal.ofReal (Real.exp (-t / (C_JN d * M))) := by
+    _ ≤ ENNReal.ofReal (CJN d) * volume B *
+          ENNReal.ofReal (Real.exp (-t / (CJN d * M))) := by
             exact mul_le_mul_of_nonneg_left hexp_bound
-              (by positivity : 0 ≤ ENNReal.ofReal (C_JN d) * volume B)
+              (by positivity : 0 ≤ ENNReal.ofReal (CJN d) * volume B)
 
 
 end DeGiorgi

@@ -173,7 +173,7 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
       (∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 D x
           ![u, cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             w, (Module.finBasis ℝ E) k]) =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
@@ -184,14 +184,14 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
     rw [show (∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 D x
           ![u, cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             w, (Module.finBasis ℝ E) k]) =
       ∑ k : Fin (Module.finrank ℝ E),
         quadrilinearMapSlotBilinearAt (E := E) (unitModel (I := I) (M := M) g₀ 4 D x)
           1 3 (by decide) ![u, 0, w, 0]
           (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           ((Module.finBasis ℝ E) k) from
       Finset.sum_congr rfl (fun k _ => (hpack13 u w _ _).symm)]
@@ -202,7 +202,7 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
       unitModel (I := I) (M := M) g₀ 4 D x
         ![(chartModelBasis E) i, (chartModelBasis E) j,
           cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)),
           (Module.finBasis ℝ E) k]) =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
@@ -214,7 +214,7 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
         unitModel (I := I) (M := M) g₀ 4 D x
           ![(chartModelBasis E) i, (chartModelBasis E) j,
             cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             (Module.finBasis ℝ E) k]) =
       ∑ k : Fin (Module.finrank ℝ E),
@@ -222,7 +222,7 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
           2 3 (by decide)
           ![(chartModelBasis E) i, (chartModelBasis E) j, 0, 0]
           (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           ((Module.finBasis ℝ E) k) from
       Finset.sum_congr rfl (fun k _ =>
@@ -983,11 +983,11 @@ private lemma lieArm_cometric_doubleTrace_eq_invGram
     (F : E →L[ℝ] E →L[ℝ] E →L[ℝ] E →L[ℝ] ℝ) :
     (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         F (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis l)))
           ((Module.finBasis ℝ E) l)
           (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           ((Module.finBasis ℝ E) k)) =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
@@ -1000,33 +1000,33 @@ private lemma lieArm_cometric_doubleTrace_eq_invGram
   have hinner : ∀ c v : E,
       (∑ l : Fin (Module.finrank ℝ E),
         F (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis l)))
           ((Module.finBasis ℝ E) l) c v) =
       (∑ l : Fin (Module.finrank ℝ E),
         (F (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis l)))
           ((Module.finBasis ℝ E) l) : E →L[ℝ] E →L[ℝ] ℝ)) c v := by
     intro c v
     rw [sum_apply, sum_apply]
   rw [show (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
       F (cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis l)))
         ((Module.finBasis ℝ E) l)
         (cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))
         ((Module.finBasis ℝ E) k)) =
     ∑ k : Fin (Module.finrank ℝ E),
       (∑ l : Fin (Module.finrank ℝ E),
         (F (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis l)))
           ((Module.finBasis ℝ E) l) : E →L[ℝ] E →L[ℝ] ℝ))
         (cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))
         ((Module.finBasis ℝ E) k) from
     Finset.sum_congr rfl (fun k _ => (hinner _ _))]
@@ -1050,14 +1050,14 @@ private lemma lieArm_cometric_doubleTrace_eq_invGram
   rw [sum_apply, sum_apply]
   rw [show (∑ l : Fin (Module.finrank ℝ E),
       F (cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis l)))
         ((Module.finBasis ℝ E) l) (chartModelBasis E p) (chartModelBasis E k₁)) =
     ∑ l : Fin (Module.finrank ℝ E),
       ContinuousLinearMap.evalCurriedFourLastTwo F
         (chartModelBasis E p) (chartModelBasis E k₁)
         (cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis l)))
         ((Module.finBasis ℝ E) l) from
     Finset.sum_congr rfl (fun l _ => rfl)]
@@ -1088,10 +1088,10 @@ private lemma lieArm_doubleTrace_slotBilin
     (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         unitModel3SlotBilin (E := E) W3 i₁ i₂ h12 base
             (cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis l)))
             (cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k))) *
           B ((Module.finBasis ℝ E) l) ((Module.finBasis ℝ E) k)) =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
@@ -1108,21 +1108,21 @@ private lemma lieArm_doubleTrace_slotBilin
   rw [show (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
       unitModel3SlotBilin (E := E) W3 i₁ i₂ h12 base
           (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis l)))
           (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k))) *
         B ((Module.finBasis ℝ E) l) ((Module.finBasis ℝ E) k)) =
     ∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
       ContinuousLinearMap.curriedBilinearMul
         (unitModel3SlotBilin (E := E) W3 i₁ i₂ h12 base) B
         (cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis l)))
         ((Module.finBasis ℝ E) l)
         (cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))
         ((Module.finBasis ℝ E) k) from
     Finset.sum_congr rfl (fun k _ => Finset.sum_congr rfl (fun l _ => ?_))]
@@ -1160,10 +1160,10 @@ private lemma lieArm_arm1_group_traced
     ((∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         W3 ![v0,
               cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis l)),
               cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k))] *
           g₁.inner x
             (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v1 ((Module.finBasis ℝ E) l))
@@ -1171,10 +1171,10 @@ private lemma lieArm_arm1_group_traced
       - (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         W3 ![v0,
               cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis l)),
               cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k))] *
           g₁.inner x
             (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x ((Module.finBasis ℝ E) l)
@@ -1184,28 +1184,28 @@ private lemma lieArm_arm1_group_traced
             (PDE.DeTurck.deTurckVF (I := I) g₁ g₀X : Π y : M, TangentSpace I y) x)]
       - (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         W3 ![cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis l)),
               v1,
               cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k))] *
           g₁.inner x
             (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 ((Module.finBasis ℝ E) k))
             ((Module.finBasis ℝ E) l))
       - (∑ k : Fin (Module.finrank ℝ E),
         W3 ![cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
               (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 v1),
               ((Module.finBasis ℝ E) k)])
       - (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         W3 ![cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis l)),
               v1,
               cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k))] *
           g₁.inner x
             (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 ((Module.finBasis ℝ E) l))
@@ -1254,10 +1254,10 @@ private lemma lieArm_arm1_group_traced
   have hT2 : (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         W3 ![v0,
               cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis l)),
               cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k))] *
           g₁.inner x
             (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v1 ((Module.finBasis ℝ E) l))
@@ -1283,10 +1283,10 @@ private lemma lieArm_arm1_group_traced
   have hT3 : (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         W3 ![v0,
               cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis l)),
               cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k))] *
           g₁.inner x
             (PDE.DeTurck.connectionDifference (I := I) g₁ g_bg x ((Module.finBasis ℝ E) l)
@@ -1312,11 +1312,11 @@ private lemma lieArm_arm1_group_traced
       rfl
   have hT5 : (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         W3 ![cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis l)),
               v1,
               cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k))] *
           g₁.inner x
             (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 ((Module.finBasis ℝ E) k))
@@ -1341,11 +1341,11 @@ private lemma lieArm_arm1_group_traced
       rfl
   have hT7 : (∑ k : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
         W3 ![cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis l)),
               v1,
               cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k))] *
           g₁.inner x
             (PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 ((Module.finBasis ℝ E) l))
@@ -1370,7 +1370,7 @@ private lemma lieArm_arm1_group_traced
       rfl
   have hT6 : (∑ k : Fin (Module.finrank ℝ E),
         W3 ![cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
               (show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 v1),
               ((Module.finBasis ℝ E) k)]) =
@@ -1399,7 +1399,7 @@ private lemma lieArm_arm1_T14_traced
     (∑ k : Fin (Module.finrank ℝ E),
         W3 ![(show E from PDE.DeTurck.connectionDifference (I := I) g₁ g₀X x v0 v1),
               cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
               ((Module.finBasis ℝ E) k)]) =
       (∑ k₁ : Fin (Module.finrank ℝ E), ∑ p : Fin (Module.finrank ℝ E),
@@ -4892,7 +4892,7 @@ private theorem lieArm_jointRS_add_local {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p + B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -4924,7 +4924,7 @@ theorem lieArm_jointRS_const_smul_local {r s : ℕ} {S : Set ℝ} (a : ℝ)
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (a • A p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩

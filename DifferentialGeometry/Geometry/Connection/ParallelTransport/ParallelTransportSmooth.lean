@@ -97,8 +97,8 @@ theorem parallelTransportVF_contDiffOn
     exact (hCLM.comp hsnd).contDiffOn
   exact (hΓ.mul hvi).mul hwj
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransport_section_contMDiffOn [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -244,8 +244,8 @@ theorem parallelTransport_section_contMDiffOn [I.Boundaryless]
     rw [(trivializationAt E (TangentSpace I) (γ t₀)).coe_linearMapAt_of_mem hs]
   exact hY_cmwa.congr_of_eventuallyEq heq (heq.eq_of_nhdsWithin ht₀)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem parallelTransport_section_contMDiffOn_Ioo [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)

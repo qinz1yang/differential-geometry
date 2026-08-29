@@ -102,7 +102,7 @@ theorem totalNabla0S_reg (s : ℕ)
       (n := (∞ : WithTop ℕ∞)) s) :
     TotalNabla0SRegular (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       s cov α := by
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) (s + 1)
   let F : (p : M) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) (s + 1) p :=
@@ -150,7 +150,7 @@ theorem totalNabla0S_reg (s : ℕ)
     congr
   exact hsec
 
-noncomputable def CanonicalSpatialDerivs0S.of_smooth_connection {s : ℕ}
+noncomputable def CanonicalSpatialDerivs0S.ofSmoothConnection {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))

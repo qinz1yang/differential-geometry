@@ -291,7 +291,7 @@ private theorem exists_smoothCcTensor_of_allOrder_spectralMass_local
   set hc := tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2
   obtain ⟨B0, hB0s, hB0le⟩ := hmass 0 le_rfl
   set v0 : tensorHs (I := I) (M := M) g₀ 0 2 0 :=
-    tensorHs_of_spectralMass_majorant (I := I) (M := M) d B0 hB0s hB0le with hv0_def
+    tensorHsOfSpectralMassMajorant (I := I) (M := M) d B0 hB0s hB0le with hv0_def
   set u : TensorL2 0 2 g₀ :=
     tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2) hc le_rfl v0 with hu_def
   have hu_coeff : ∀ i, tensorL2Coeff (I := I) (M := M) hc u i = d i := by
@@ -331,11 +331,11 @@ private def deTurckRHSReconSectionFiniteOrder (g₀ g_bg : SmoothRiemannianMetri
 
 private local instance tensorRSModelNormedAddCommGroup_local :
     NormedAddCommGroup (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup 0 2
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup 0 2
 
 private local instance tensorRSModelNormedSpace_local :
     NormedSpace ℝ (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace 0 2
+  Tensor0SBundle.tensorRSModelNormedSpace 0 2
 
 
 section FiniteOrderReconJetEnergy
@@ -1136,7 +1136,7 @@ private lemma tensorChartComponentRaw_congr_toSection
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E)) (x : M) :
     tensorChartComponentRaw (I := I) (M := M) g₁ 0 2 S₁ α Idx Jdx x =
       tensorChartComponentRaw (I := I) (M := M) g₂ 0 2 S₂ α Idx Jdx x := by
-  let _ := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let _ := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) 0 2
   change tensorChartComponentProjection (E := E) 0 2 Idx Jdx
       ((trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
@@ -1573,7 +1573,7 @@ private theorem sectionPath_jointContMDiffOn_of_rawChartComponent_pou
         ((T_rep p.2).toSection p.1))
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) := by
   classical
-  let _ := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let _ := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) 0 2
   refine contMDiffOn_of_locally_contMDiffOn ?_
   rintro ⟨x₀, s₀⟩ ⟨-, -⟩
@@ -2842,7 +2842,7 @@ theorem deTurckSobolevNHa2_finiteOrder_jetSpectralMass_preserving
     intro t ht
     obtain ⟨B0, hB0s, hB0le⟩ := hmass0 0 le_rfl
     set v0 : tensorHs (I := I) (M := M) g₀ 0 2 0 :=
-      tensorHs_of_spectralMass_majorant (I := I) (M := M) (ct t) B0 hB0s
+      tensorHsOfSpectralMassMajorant (I := I) (M := M) (ct t) B0 hB0s
         (fun i => by
           have := hB0le i t ht
           simpa [hct_def] using this) with hv0_def

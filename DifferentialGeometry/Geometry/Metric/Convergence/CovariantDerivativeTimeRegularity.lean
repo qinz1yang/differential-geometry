@@ -172,7 +172,7 @@ theorem covDerivOfField_eval_contMDiffAt
                   (fun q : M => V a.succ q) y) ((V 0) y)⟩ :
                 Bundle.TotalSpace E (TangentSpace I : M → Type _))) := by
         intro a
-        simpa [TensorLieDeriv.covariantDeriv_vectorField] using
+        simpa [TensorLieDeriv.covariantDerivVectorField] using
           TensorLieDeriv.covariantDeriv_vectorField_contMDiff (I := I)
             (leviCivitaConnectionOfMetric (I := I) gRef) hcov (V 0) (V a.succ)
       let W : Fin (p + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -283,7 +283,7 @@ theorem covDerivOfField_eval_smoothAt
                   (fun q : M => V a.succ q) y) ((V 0) y)⟩ :
                 Bundle.TotalSpace E (TangentSpace I : M → Type _))) := by
         intro a
-        simpa [TensorLieDeriv.covariantDeriv_vectorField] using
+        simpa [TensorLieDeriv.covariantDerivVectorField] using
           TensorLieDeriv.covariantDeriv_vectorField_contMDiff (I := I)
             (leviCivitaConnectionOfMetric (I := I) gRef) hcov (V 0) (V a.succ)
       let W : Fin (p + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞)

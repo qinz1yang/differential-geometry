@@ -166,7 +166,7 @@ instance instModule : Module ℝ (DifferentialForm IM M k) :=
 
 noncomputable def wedge {k l : ℕ} (α : DifferentialForm IM M k)
     (β : DifferentialForm IM M l) : DifferentialForm IM M (k + l) :=
-  ⟨fun x => ContinuousAlternatingMap.wedge_product (α x) (β x) (ContinuousLinearMap.mul ℝ ℝ), by
+  ⟨fun x => ContinuousAlternatingMap.wedgeProduct (α x) (β x) (ContinuousLinearMap.mul ℝ ℝ), by
     intro x₀
     let e := trivializationAt (EM [⋀^Fin (k + l)]→L[ℝ] ℝ)
       (Bundle.continuousAlternatingMap ℝ (Fin (k + l)) EM (TangentSpace IM) ℝ
@@ -199,7 +199,7 @@ noncomputable def wedge {k l : ℕ} (α : DifferentialForm IM M k)
             (Bundle.Trivial M ℝ)) x₀)).mp (β.contMDiff_toFun x₀)
     let W : (EM [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ]
         (EM [⋀^Fin (k + l)]→L[ℝ] ℝ) :=
-      wedge_productL (ContinuousLinearMap.mul ℝ ℝ)
+      wedgeProductL (ContinuousLinearMap.mul ℝ ℝ)
     have hW : ContMDiffAt IM 𝓘(ℝ, (EM [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ] (EM [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ]
         (EM [⋀^Fin (k + l)]→L[ℝ] ℝ)) ⊤ (fun _ : M => W) x₀ :=
       contMDiffAt_const
@@ -212,7 +212,7 @@ noncomputable def wedge {k l : ℕ} (α : DifferentialForm IM M k)
         change ((trivializationAt (EM [⋀^Fin (k + l)]→L[ℝ] ℝ)
             (Bundle.continuousAlternatingMap ℝ (Fin (k + l)) EM (TangentSpace IM) ℝ
               (Bundle.Trivial M ℝ)) x₀)
-            ⟨x, ContinuousAlternatingMap.wedge_product (α x) (β x)
+            ⟨x, ContinuousAlternatingMap.wedgeProduct (α x) (β x)
               (ContinuousLinearMap.mul ℝ ℝ)⟩).2 =
           W ((trivializationAt (EM [⋀^Fin k]→L[ℝ] ℝ)
               (Bundle.continuousAlternatingMap ℝ (Fin k) EM (TangentSpace IM) ℝ
@@ -222,7 +222,7 @@ noncomputable def wedge {k l : ℕ} (α : DifferentialForm IM M k)
                 (Bundle.Trivial M ℝ)) x₀) ⟨x, β x⟩).2
         rw [continuousAlternatingMap_trivializationAt_apply (m := k + l) (IM := IM) (M := M)
           (x₀ := x₀) (x := x)
-          (L := ContinuousAlternatingMap.wedge_product (α x) (β x) (ContinuousLinearMap.mul ℝ ℝ)),
+          (L := ContinuousAlternatingMap.wedgeProduct (α x) (β x) (ContinuousLinearMap.mul ℝ ℝ)),
           continuousAlternatingMap_trivializationAt_apply (m := k) (IM := IM) (M := M)
             (x₀ := x₀) (x := x) (L := α x),
           continuousAlternatingMap_trivializationAt_apply (m := l) (IM := IM) (M := M)
@@ -231,7 +231,7 @@ noncomputable def wedge {k l : ℕ} (α : DifferentialForm IM M k)
           (TangentSpace IM) x₀).symmL ℝ x))
               ((β x).compContinuousLinearMap ((trivializationAt EM
                 (TangentSpace IM) x₀).symmL ℝ x)) =
-              ContinuousAlternatingMap.wedge_product ((α x).compContinuousLinearMap
+              ContinuousAlternatingMap.wedgeProduct ((α x).compContinuousLinearMap
                 ((trivializationAt EM (TangentSpace IM) x₀).symmL ℝ x))
                 ((β x).compContinuousLinearMap ((trivializationAt EM
                   (TangentSpace IM) x₀).symmL ℝ x))
@@ -345,9 +345,9 @@ theorem add_wedge {k l : ℕ} (α β : DifferentialForm IM M k)
     DifferentialForm.wedge (α + β) γ = DifferentialForm.wedge α γ + DifferentialForm.wedge β γ := by
   apply ContMDiffSection.ext
   intro x
-  change ContinuousAlternatingMap.wedge_product (α x + β x) (γ x) (ContinuousLinearMap.mul ℝ ℝ) =
-    ContinuousAlternatingMap.wedge_product (α x) (γ x) (ContinuousLinearMap.mul ℝ ℝ) +
-    ContinuousAlternatingMap.wedge_product (β x) (γ x) (ContinuousLinearMap.mul ℝ ℝ)
+  change ContinuousAlternatingMap.wedgeProduct (α x + β x) (γ x) (ContinuousLinearMap.mul ℝ ℝ) =
+    ContinuousAlternatingMap.wedgeProduct (α x) (γ x) (ContinuousLinearMap.mul ℝ ℝ) +
+    ContinuousAlternatingMap.wedgeProduct (β x) (γ x) (ContinuousLinearMap.mul ℝ ℝ)
   exact ContinuousAlternatingMap.add_wedge (α x) (β x) (γ x) (ContinuousLinearMap.mul ℝ ℝ)
 
 theorem wedge_add {k l : ℕ} (α : DifferentialForm IM M k)
@@ -355,9 +355,9 @@ theorem wedge_add {k l : ℕ} (α : DifferentialForm IM M k)
     DifferentialForm.wedge α (β + γ) = DifferentialForm.wedge α β + DifferentialForm.wedge α γ := by
   apply ContMDiffSection.ext
   intro x
-  change ContinuousAlternatingMap.wedge_product (α x) (β x + γ x) (ContinuousLinearMap.mul ℝ ℝ) =
-    ContinuousAlternatingMap.wedge_product (α x) (β x) (ContinuousLinearMap.mul ℝ ℝ) +
-    ContinuousAlternatingMap.wedge_product (α x) (γ x) (ContinuousLinearMap.mul ℝ ℝ)
+  change ContinuousAlternatingMap.wedgeProduct (α x) (β x + γ x) (ContinuousLinearMap.mul ℝ ℝ) =
+    ContinuousAlternatingMap.wedgeProduct (α x) (β x) (ContinuousLinearMap.mul ℝ ℝ) +
+    ContinuousAlternatingMap.wedgeProduct (α x) (γ x) (ContinuousLinearMap.mul ℝ ℝ)
   exact ContinuousAlternatingMap.wedge_add (α x) (β x) (γ x) (ContinuousLinearMap.mul ℝ ℝ)
 
 theorem smul_wedge {k l : ℕ} (c : ℝ) (α : DifferentialForm IM M k)
@@ -365,8 +365,8 @@ theorem smul_wedge {k l : ℕ} (c : ℝ) (α : DifferentialForm IM M k)
     DifferentialForm.wedge (c • α) β = c • DifferentialForm.wedge α β := by
   apply ContMDiffSection.ext
   intro x
-  change ContinuousAlternatingMap.wedge_product (c • α x) (β x) (ContinuousLinearMap.mul ℝ ℝ) =
-    c • ContinuousAlternatingMap.wedge_product (α x) (β x) (ContinuousLinearMap.mul ℝ ℝ)
+  change ContinuousAlternatingMap.wedgeProduct (c • α x) (β x) (ContinuousLinearMap.mul ℝ ℝ) =
+    c • ContinuousAlternatingMap.wedgeProduct (α x) (β x) (ContinuousLinearMap.mul ℝ ℝ)
   exact ContinuousAlternatingMap.smul_wedge c (α x) (β x) (ContinuousLinearMap.mul ℝ ℝ)
 
 theorem wedge_smul {k l : ℕ} (c : ℝ) (α : DifferentialForm IM M k)
@@ -374,8 +374,8 @@ theorem wedge_smul {k l : ℕ} (c : ℝ) (α : DifferentialForm IM M k)
     DifferentialForm.wedge α (c • β) = c • DifferentialForm.wedge α β := by
   apply ContMDiffSection.ext
   intro x
-  change ContinuousAlternatingMap.wedge_product (α x) (c • β x) (ContinuousLinearMap.mul ℝ ℝ) =
-    c • ContinuousAlternatingMap.wedge_product (α x) (β x) (ContinuousLinearMap.mul ℝ ℝ)
+  change ContinuousAlternatingMap.wedgeProduct (α x) (c • β x) (ContinuousLinearMap.mul ℝ ℝ) =
+    c • ContinuousAlternatingMap.wedgeProduct (α x) (β x) (ContinuousLinearMap.mul ℝ ℝ)
   exact ContinuousAlternatingMap.wedge_smul c (α x) (β x) (ContinuousLinearMap.mul ℝ ℝ)
 
 theorem wedge_comm {k l : ℕ} (α : DifferentialForm IM M k) (β : DifferentialForm IM M l) :
@@ -401,11 +401,11 @@ theorem wedge_assoc {k l r : ℕ} (α : DifferentialForm IM M k) (β : Different
   apply ContMDiffSection.ext
   intro x
   change ContinuousAlternatingMap.domDomCongr Fin.finAssoc.symm
-      (ContinuousAlternatingMap.wedge_product (α x)
-        (ContinuousAlternatingMap.wedge_product (β x) (γ x) (ContinuousLinearMap.mul ℝ ℝ))
+      (ContinuousAlternatingMap.wedgeProduct (α x)
+        (ContinuousAlternatingMap.wedgeProduct (β x) (γ x) (ContinuousLinearMap.mul ℝ ℝ))
         (ContinuousLinearMap.mul ℝ ℝ)) =
-    ContinuousAlternatingMap.wedge_product
-      (ContinuousAlternatingMap.wedge_product (α x) (β x) (ContinuousLinearMap.mul ℝ ℝ))
+    ContinuousAlternatingMap.wedgeProduct
+      (ContinuousAlternatingMap.wedgeProduct (α x) (β x) (ContinuousLinearMap.mul ℝ ℝ))
       (γ x) (ContinuousLinearMap.mul ℝ ℝ)
   exact ContinuousAlternatingMap.wedge_mul_assoc (M := TangentSpace IM x) (m := k) (n := l)
     (p := r) (α x) (β x) (γ x)

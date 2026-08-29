@@ -30,16 +30,16 @@ def metricSeedOfBG
       letI : TopologicalSpace (X.obj k).M := (X.obj k).topology
       ConnectedSpace (X.obj k).M) :
     MetricCompactSeed (I := I) X := by
-  let hd := injDecay_of_bg (I := I) X hcomplete hconn hgeom hinj
+  let hd := injDecayOfBg (I := I) X hcomplete hconn hgeom hinj
   let hreal : hd.RealizesEdist :=
     injDecay_realizes (I := I) X hcomplete hconn hgeom hinj
   let out :=
-    volInput_of_bg (I := I) X hgeom hd hreal hcomplete hconn 1
+    volInputOfBg (I := I) X hgeom hd hreal hcomplete hconn 1
       (by norm_num : (0 : Real) < 1)
   exact
     { decay := hd
       packAll := fun D hD =>
-        packInput_of_bg (I := I) X hgeom hd hreal hcomplete hconn D hD
+        packInputOfBg (I := I) X hgeom hd hreal hcomplete hconn D hD
       volume := out.1
       dist_eq := out.2
       realizes := hreal }

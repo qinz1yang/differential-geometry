@@ -43,7 +43,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 def slot0FrameTraceMatching
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (x : M) (w : TangentSpace I x) : Prop :=
-  tensor0S_curry (I := I) (M := M) 2 x
+  tensor0SCurry (I := I) (M := M) 2 x
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
         (rawTensorConnLapSmooth (I := I) g 0 3
           (covGrad (I := I) (M := M) g 0 2 T₀)).toSection x)
@@ -60,12 +60,12 @@ omit [CompactSpace M] in
 lemma rawConnLap_covGrad_curry_eq_abstractRoughLap_curry
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (x : M) (w : TangentSpace I x) :
-    tensor0S_curry (I := I) (M := M) 2 x
+    tensor0SCurry (I := I) (M := M) 2 x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           (rawTensorConnLapSmooth (I := I) g 0 3
             (covGrad (I := I) (M := M) g 0 2 T₀)).toSection x)
           (unitZeroSec (I := I) (M := M) x)) w =
-      tensor0S_curry (I := I) (M := M) 2 x
+      tensor0SCurry (I := I) (M := M) 2 x
         (unitGradAbstractRoughLap (I := I) (M := M) g T₀ x)
         (smoothExtensionTangent (I := I) x w x) := by
   rw [rawTensorConnLapSmooth_toSection_apply]
@@ -199,7 +199,7 @@ theorem covGradRoughLapCurv_curry_eq_of_slot0Matching
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (x : M) (w : TangentSpace I x)
     (hmatch : slot0FrameTraceMatching (I := I) (M := M) g T₀ x w) :
-    tensor0S_curry (I := I) (M := M) 2 x
+    tensor0SCurry (I := I) (M := M) 2 x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           (covGradRoughLapCurv (I := I) (M := M) g T₀).toSection x)
           (unitZeroSec (I := I) (M := M) x)) w =

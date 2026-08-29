@@ -36,14 +36,14 @@ private lemma tensor0S_curry_symm_apply_cons (s : ℕ) {b : M}
     (Φ : TangentSpace I b →L[ℝ] Tensor0SSpace s I b)
     (v : TangentSpace I b) (m : Fin s → TangentSpace I b) :
     Tensor0SSpace.eval
-        ((tensor0S_curry (I := I) (M := M) s b).symm Φ) (Fin.cons v m) =
+        ((tensor0SCurry (I := I) (M := M) s b).symm Φ) (Fin.cons v m) =
       Tensor0SSpace.eval (Φ v) m := by
   classical
   set P : Tensor0SSpace (s + 1) I b :=
-    (tensor0S_curry (I := I) (M := M) s b).symm Φ
+    (tensor0SCurry (I := I) (M := M) s b).symm Φ
   have hroundtrip :
-      tensor0S_curry (I := I) (M := M) s b P = Φ :=
-    (tensor0S_curry (I := I) (M := M) s b).apply_symm_apply Φ
+      tensor0SCurry (I := I) (M := M) s b P = Φ :=
+    (tensor0SCurry (I := I) (M := M) s b).apply_symm_apply Φ
   have hev := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
     (T := P) (v0 := v) (vs := m)
   have hraw :
@@ -245,7 +245,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_aux
     rw [← hRank0_bridge]
     have hT_pull :
         DifferentiableAt ℝ
-          (tensor0SChartE_section_repr (I := I) (0 + 1) α T ∘
+          (tensor0SChartESectionRepr (I := I) (0 + 1) α T ∘
             (extChartAt I α).symm) (extChartAt I α b) :=
       differentiableAt_tensor0SChartE_pullback_of_mdifferentiableAt
         (I := I) (0 + 1) α T hb hT_at
@@ -404,7 +404,7 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ_aux
       LeviCivita_chartParallelExtend_eq_parallelCLM (I := I) g α hb v X
     have hT_pull :
         DifferentiableAt ℝ
-          (tensor0SChartE_section_repr (I := I) (s + 1 + 1) α T ∘
+          (tensor0SChartESectionRepr (I := I) (s + 1 + 1) α T ∘
             (extChartAt I α).symm) (extChartAt I α b) :=
       differentiableAt_tensor0SChartE_pullback_of_mdifferentiableAt
         (I := I) (s + 1 + 1) α T hb hT_at
@@ -441,10 +441,10 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ
     (T :
       letI _h_top : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
           (fun x : M => Tensor0SSpace (s + 1) I x)) :=
-        tensor0SBundle_topology (s + 1)
+        tensor0SBundleTopology (s + 1)
       letI _h_fib : FiberBundle (Tensor0SModel (s + 1) ℝ E)
           (fun x : M => Tensor0SSpace (s + 1) I x) :=
-        tensor0SBundle_fiber (s + 1)
+        tensor0SBundleFiber (s + 1)
       Cₛ^∞⟮I; Tensor0SModel (s + 1) ℝ E,
         fun b => Tensor0SSpace (s + 1) I b⟯)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -455,10 +455,10 @@ theorem chartTensor0SCovariantDerivative_eq_abstract_succ
   classical
   let _h_top : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
       (fun x : M => Tensor0SSpace (s + 1) I x)) :=
-    tensor0SBundle_topology (s + 1)
+    tensor0SBundleTopology (s + 1)
   let _h_fib : FiberBundle (Tensor0SModel (s + 1) ℝ E)
       (fun x : M => Tensor0SSpace (s + 1) I x) :=
-    tensor0SBundle_fiber (s + 1)
+    tensor0SBundleFiber (s + 1)
   have hT_at : TensorSectionMDiffAt (I := I) (s + 1) T.toFun b := by
     unfold TensorSectionMDiffAt
     exact T.contMDiff.contMDiffAt.mdifferentiableAt (by simp)

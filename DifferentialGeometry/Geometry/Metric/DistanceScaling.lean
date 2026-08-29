@@ -19,16 +19,16 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def riemannianEDistOf
     (g : SmoothRiemannianMetric I M) (x y : M) : ℝ≥0∞ :=
   letI : Bundle.RiemannianBundle (TangentSpace I : M → Type _) :=
     ⟨g.toRiemannianMetric⟩
   Manifold.riemannianEDist I x y
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem riemannianEDistOf_self
     (g : SmoothRiemannianMetric I M) (x : M) :
     riemannianEDistOf (I := I) g x x = 0 := by
@@ -37,8 +37,8 @@ theorem riemannianEDistOf_self
   change Manifold.riemannianEDist I x x = 0
   exact Manifold.riemannianEDist_self
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem edistOf_iInf
     (g : SmoothRiemannianMetric I M) (x y : M) :
     riemannianEDistOf (I := I) g x y =
@@ -55,8 +55,8 @@ theorem edistOf_iInf
   rw [← ofReal_norm, norm_eq_sqrt_real_inner]
   congr 2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem riemannianEDistOf_eq_riemannianEDist
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [hContinuous : IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -72,8 +72,8 @@ theorem riemannianEDistOf_eq_riemannianEDist
   refine lintegral_congr fun t => ?_
   rw [hEnorm]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem edistOf_mono
     (g h : SmoothRiemannianMetric I M)
     (hgh : ∀ x v, g.inner x v v ≤ h.inner x v v)
@@ -86,8 +86,8 @@ theorem edistOf_mono
   refine lintegral_mono fun t => ?_
   exact ENNReal.ofReal_le_ofReal (Real.sqrt_le_sqrt (hgh (γ t) _))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem edistOf_scale
     (c : Real) (hc : 0 < c) (g : SmoothRiemannianMetric I M)
     (x y : M) :

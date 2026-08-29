@@ -23,8 +23,8 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] in
 private lemma exists_W_and_constant_tangent_symmL
     (g : SmoothRiemannianMetric I M)
@@ -130,8 +130,8 @@ private lemma exists_W_and_constant_tangent_symmL
       _ = C₁ * C₂ * ‖w‖ := by ring
   exact ContinuousLinearMap.opNorm_le_bound _ (by positivity) h_norm_w
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] in
 theorem chartTrivInv_opNorm_isBounded_on_compact
     (g : SmoothRiemannianMetric I M) (α : M) {K : Set M} (hK : IsCompact K)
@@ -275,8 +275,8 @@ private lemma norm_basis_le_modelBasisVecSup
     (f := fun k => ‖(chartModelBasis E) k‖)
     (Finset.mem_univ _)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma christoffelCorrection_summand_opNorm_le_unconditional
     (g : SmoothRiemannianMetric I M) (α : M) (b : M) (Y : E)
     (i j k : Fin (Module.finrank ℝ E))
@@ -420,8 +420,8 @@ private lemma christoffelCorrection_summand_opNorm_le_unconditional
         modelBasisVecSup (E := E) := by ring
   linarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport
     [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :
@@ -549,8 +549,8 @@ theorem christoffelCorrection_opNorm_isBounded_on_pouTsupport
   rw [h_C_eq] at h_outer_norm
   exact h_outer_norm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem chartLeviCivitaParallelCLM_general_X_opNorm_isBounded_on_pouTsupport
     [I.Boundaryless] [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (α : M) :

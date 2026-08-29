@@ -109,7 +109,7 @@ lemma cometricRaiseSlot0Field_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   apply ContinuousMultilinearMap.ext
   intro w
   calc Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (s + 1) x
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (s + 1) x
           (inverseMetricSharpFib (I := I) g₀ x om) (DW - DW')) w
       = Tensor0SSpace.toModel (DW - DW')
           (Fin.cons
@@ -128,19 +128,19 @@ lemma cometricRaiseSlot0Field_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
         rw [Tensor0SSpace.toModel_sub]
         simp only [sub_apply]
     _ = Tensor0SSpace.toModel
-          (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (s + 1) x
+          (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (s + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) DW) w -
         Tensor0SSpace.toModel
-          (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (s + 1) x
+          (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (s + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) DW') w := by
         rw [interiorProduct_toModel_apply (I := I) (M := M) (s + 1) x
           (inverseMetricSharpFib (I := I) g₀ x om) DW w]
         rw [interiorProduct_toModel_apply (I := I) (M := M) (s + 1) x
           (inverseMetricSharpFib (I := I) g₀ x om) DW' w]
     _ = Tensor0SSpace.toModel
-          (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (s + 1) x
+          (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (s + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) DW -
-          Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (s + 1) x
+          Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (s + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) DW') w := by
         rw [Tensor0SSpace.toModel_sub]
         simp only [sub_apply]

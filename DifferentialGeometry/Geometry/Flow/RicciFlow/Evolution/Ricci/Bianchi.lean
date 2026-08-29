@@ -78,7 +78,7 @@ theorem ricciVariationFromConnectionRHSInFrame_nablaGammaDtFromNabla2Ric
   simp [ricciVariationFromConnectionRHSInFrame,
     nablaGammaDtFromNabla2RicInFrame, ricciVariationExpandedRHSInFrame]
 
-def RicciVariationExpandedRHS_eq_evolutionRHS
+def RicciVariationExpandedRHSEqEvolutionRHS
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))

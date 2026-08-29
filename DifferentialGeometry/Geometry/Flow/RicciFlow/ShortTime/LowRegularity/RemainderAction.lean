@@ -1538,7 +1538,7 @@ private theorem joint_param_smul
     (A : ℝ → SmoothCcTensor g r s)
     (hA : JointRS (I := I) g r s S A) :
     JointRS (I := I) g r s S (fun t => t • A t) := by
-  let _ := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let _ := tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) r s
   intro p hp
   rw [Bundle.contMDiffWithinAt_totalSpace]
@@ -1578,9 +1578,9 @@ private theorem joint_curry {d : ℕ} {S : Set ℝ}
       (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SModel d ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] Tensor0SModel d ℝ E)
         (E := fun z : M => TangentSpace I z →L[ℝ] Tensor0SSpace d I z) p.1
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) d p.1 (A p)))
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) d p.1 (A p)))
       ((Set.univ : Set M) ×ˢ S) := by
-  let _ := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let _ := tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) (d + 1)
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
@@ -1650,10 +1650,10 @@ private theorem joint_uncurry {d : ℕ} {S : Set ℝ}
       (I.prod 𝓘(ℝ, Tensor0SModel (d + 1) ℝ E)) ∞
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel (d + 1) ℝ E)
         (E := fun z : M => Tensor0SSpace (d + 1) I z) p.1
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) d p.1).symm
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) d p.1).symm
           (G p)))
       ((Set.univ : Set M) ×ˢ S) := by
-  let _ := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let _ := tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) (d + 1)
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
@@ -1687,7 +1687,7 @@ private theorem joint_uncurry {d : ℕ} {S : Set ℝ}
           (fun y : M => Tensor0SSpace d I y) x₀).baseSet →
       (trivializationAt (Tensor0SModel (d + 1) ℝ E)
           (fun y : M => Tensor0SSpace (d + 1) I y) x₀
-          ⟨p.1, (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ)
+          ⟨p.1, (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ)
             d p.1).symm (G p)⟩).2 =
         (continuousMultilinearCurryLeftEquiv ℝ
           (fun _ : Fin (d + 1) => E) ℝ).symm
@@ -1699,7 +1699,7 @@ private theorem joint_uncurry {d : ℕ} {S : Set ℝ}
     have hUcurry :
         TensorMultilinear.curriedSection (I := I) (M := M)
           (fun y : M =>
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ)
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ)
               d y).symm (G ⟨y, p.2⟩)) p.1 = G p := by
       rw [TensorMultilinear.curriedSection]
       exact ContinuousLinearEquiv.apply_symm_apply _ _
@@ -1707,7 +1707,7 @@ private theorem joint_uncurry {d : ℕ} {S : Set ℝ}
       TensorMultilinear.trivializationAt_homBundle_curriedSection_eq
         (I := I) (M := M)
         (fun y : M =>
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ)
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ)
             d y).symm (G ⟨y, p.2⟩)) x₀ p.1 hz
     rw [hUcurry] at hfwd
     rw [hfwd]
@@ -1767,7 +1767,7 @@ private theorem slotExtend_joint
         (E := fun x : M =>
           TangentSpace I x →L[ℝ] Tensor0SSpace s I x) p.1
         (((A p.2).toSection p.1).comp
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ)
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ)
             r p.1) (Y p.1))))
       ((Set.univ : Set M) ×ˢ S) := by
     apply contMDiffOn_clm_section_of_pointwise_jointMR (I := I) (M := M)
@@ -1776,7 +1776,7 @@ private theorem slotExtend_joint
       (V₂ := fun x : M => Tensor0SSpace s I x)
       (φ := fun p : M × ℝ =>
         ((A p.2).toSection p.1).comp
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ)
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ)
             r p.1) (Y p.1)))
       (S := S)
     intro Z
@@ -1796,7 +1796,7 @@ private theorem slotExtend_joint
     (d := s) (S := S)
     (fun p : M × ℝ =>
       (((A p.2).toSection p.1).comp
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ)
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ)
           r p.1) (Y p.1)))) hcomp
   refine hout.congr (fun p _ => ?_)
   refine congrArg (fun z => TotalSpace.mk'
@@ -1842,7 +1842,7 @@ private theorem smoothCcTensorOfCovariantSection_apply_unitTensor
     apply ContinuousMultilinearMap.ext
     intro v
     change (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 0 x
-        ((tensor0SSpace_continuousLinearEquiv (I := I) 0 x).symm
+        ((tensor0SSpaceContinuousLinearEquiv (I := I) 0 x).symm
           (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) 1))) v = _
     rw [tensor0SSpaceFiberContinuousLinearEquiv_model_symm_apply,
       ContinuousMultilinearMap.constOfIsEmpty_apply,
@@ -4445,39 +4445,39 @@ private theorem hp_app_of
       simp only [X]
       ring
 
-private def ricciQuadraticPermutation_cycleZeroThreeOneTwo : Equiv.Perm (Fin 4) :=
+private def ricciQuadraticPermutationCycleZeroThreeOneTwo : Equiv.Perm (Fin 4) :=
   ⟨![3, 2, 0, 1], ![2, 3, 1, 0], by decide, by decide⟩
 
-private def ricciQuadraticPermutation_swapBlocks : Equiv.Perm (Fin 4) :=
+private def ricciQuadraticPermutationSwapBlocks : Equiv.Perm (Fin 4) :=
   ⟨![2, 3, 0, 1], ![2, 3, 0, 1], by decide, by decide⟩
 
-private def ricciQuadraticPermutation_cycleZeroThreeTwo : Equiv.Perm (Fin 4) :=
+private def ricciQuadraticPermutationCycleZeroThreeTwo : Equiv.Perm (Fin 4) :=
   ⟨![3, 1, 0, 2], ![2, 1, 3, 0], by decide, by decide⟩
 
-private def ricciQuadraticPermutation_cycleZeroOneThreeTwo : Equiv.Perm (Fin 4) :=
+private def ricciQuadraticPermutationCycleZeroOneThreeTwo : Equiv.Perm (Fin 4) :=
   ⟨![1, 3, 0, 2], ![2, 0, 3, 1], by decide, by decide⟩
 
-private def ricciQuadraticPermutation_cycleZeroOneTwo : Equiv.Perm (Fin 4) :=
+private def ricciQuadraticPermutationCycleZeroOneTwo : Equiv.Perm (Fin 4) :=
   ⟨![1, 2, 0, 3], ![2, 0, 1, 3], by decide, by decide⟩
 
-private def ricciQuadraticPermutation_swapZeroTwo : Equiv.Perm (Fin 4) :=
+private def ricciQuadraticPermutationSwapZeroTwo : Equiv.Perm (Fin 4) :=
   ⟨![2, 1, 0, 3], ![2, 1, 0, 3], by decide, by decide⟩
 
-private def ricciQuadraticPermutation_swapZeroOne : Equiv.Perm (Fin 3) :=
+private def ricciQuadraticPermutationSwapZeroOne : Equiv.Perm (Fin 3) :=
   ⟨![1, 0, 2], ![1, 0, 2], by decide, by decide⟩
 
-private def ricciQuadraticPermutation_rotateInputs : Equiv.Perm (Fin 3) :=
+private def ricciQuadraticPermutationRotateInputs : Equiv.Perm (Fin 3) :=
   ⟨![1, 2, 0], ![2, 0, 1], by decide, by decide⟩
 
 private def nestedConnectionDifferenceKernelTerm_swapZeroOne_cycleZeroThreeOneTwo
     (g g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 4
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeOneTwo)
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeOneTwo)
     (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
       (connectionDifferenceContravariantInsertionField (I := I) g g₁)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne)
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne)
         (connectionDifferenceContrInsertionInnerField (I := I) g g₁)))
 
 private def reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks
@@ -4485,11 +4485,11 @@ private def reindexedNestedConnectionDifferenceKernelTerm_swapZeroOne_swapBlocks
     SmoothCcTensor g 2 4 :=
   reindexCoeffGen (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks)
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
         (connectionDifferenceContravariantInsertionField (I := I) g g₁)
         (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-          (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne)
+          (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne)
           (connectionDifferenceContrInsertionInnerField (I := I) g g₁))))
     innerCoreInPerm10
 
@@ -4497,11 +4497,11 @@ private def nestedConnectionDifferenceKernelTerm_rotateInputs_cycleZeroThreeTwo
     (g g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 4
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeTwo)
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeTwo)
     (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
       (connectionDifferenceContravariantInsertionField (I := I) g g₁)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs)
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
         (connectionDifferenceContrInsertionInnerField (I := I) g g₁)))
 
 private def reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo
@@ -4509,7 +4509,7 @@ private def reindexedBareConnectionDifferenceKernelTerm_cycleZeroOneThreeTwo
     SmoothCcTensor g 2 4 :=
   reindexCoeffGen (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneThreeTwo)
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneThreeTwo)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
         (connectionDifferenceContravariantInsertionField (I := I) g g₁)
         (connectionDifferenceContrInsertionInnerField (I := I) g g₁)))
@@ -4519,7 +4519,7 @@ private def bareConnectionDifferenceKernelTerm_cycleZeroOneTwo
     (g g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 4
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneTwo)
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneTwo)
     (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
       (connectionDifferenceContravariantInsertionField (I := I) g g₁)
       (connectionDifferenceContrInsertionInnerField (I := I) g g₁))
@@ -4529,11 +4529,11 @@ private def reindexedNestedConnectionDifferenceKernelTerm_rotateInputs_swapZeroT
     SmoothCcTensor g 2 4 :=
   reindexCoeffGen (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroTwo)
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroTwo)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
         (connectionDifferenceContravariantInsertionField (I := I) g g₁)
         (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-          (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs)
+          (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
           (connectionDifferenceContrInsertionInnerField (I := I) g g₁))))
     innerCoreInPerm10
 
@@ -4599,21 +4599,21 @@ private theorem ricciConnectionDifferenceQuadratic_secondOrder_radiusFree_bound
   have hKouter : 0 ≤ Kouter :=
     mul_nonneg hfr hKinner
   let P102 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne)
   let P120 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
   let P3201 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeOneTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeOneTwo)
   let P2301 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
   let P3102 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeTwo)
   let P1302 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneThreeTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneThreeTwo)
   let P1203 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneTwo)
   let P2103 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroTwo)
   have hP102 : 0 ≤ P102 := by
     exact covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _
   have hP120 : 0 ≤ P120 := by
@@ -4708,18 +4708,18 @@ private theorem ricciConnectionDifferenceQuadratic_secondOrder_radiusFree_bound
       connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_two] using hr
   have hp102 :
       H2Poly (I := I) (M := M) g P 0 P102
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne) := by
     simpa only [P102] using hp_const (I := I) (M := M) g P
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne)
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne)
   have hp120 :
       H2Poly (I := I) (M := M) g P 0 P120
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs) := by
     simpa only [P120] using hp_const (I := I) (M := M) g P
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs)
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
   have h102 :
       H2Poly (I := I) (M := M) g P 1 K102
         (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-          (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne)
+          (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne)
           (connectionDifferenceContrInsertionInnerField (I := I) g g₁)) := by
     simpa only [K102, Nat.zero_add] using
       hp_app_of (I := I) (M := M) g P C233 hC233
@@ -4727,7 +4727,7 @@ private theorem ricciConnectionDifferenceQuadratic_secondOrder_radiusFree_bound
   have h120 :
       H2Poly (I := I) (M := M) g P 1 K120
         (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-          (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs)
+          (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
           (connectionDifferenceContrInsertionInnerField (I := I) g g₁)) := by
     simpa only [K120, Nat.zero_add] using
       hp_app_of (I := I) (M := M) g P C233 hC233
@@ -4737,7 +4737,7 @@ private theorem ricciConnectionDifferenceQuadratic_secondOrder_radiusFree_bound
         (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
           (connectionDifferenceContravariantInsertionField (I := I) g g₁)
           (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-            (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne)
+            (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne)
             (connectionDifferenceContrInsertionInnerField (I := I) g g₁))) := by
     simpa only [Kcore0, Nat.reduceAdd] using
       hp_app_of (I := I) (M := M) g P C234 hC234
@@ -4747,7 +4747,7 @@ private theorem ricciConnectionDifferenceQuadratic_secondOrder_radiusFree_bound
         (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
           (connectionDifferenceContravariantInsertionField (I := I) g g₁)
           (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-            (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs)
+            (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
             (connectionDifferenceContrInsertionInnerField (I := I) g g₁))) := by
     simpa only [Kcore2, Nat.reduceAdd] using
       hp_app_of (I := I) (M := M) g P C234 hC234
@@ -4762,27 +4762,27 @@ private theorem ricciConnectionDifferenceQuadratic_secondOrder_radiusFree_bound
         (h234 _ _) houter hinner
   have hp3201 :
       H2Poly (I := I) (M := M) g P 0 P3201
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeOneTwo) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeOneTwo) := by
     simpa only [P3201] using hp_const (I := I) (M := M) g P _
   have hp2301 :
       H2Poly (I := I) (M := M) g P 0 P2301
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks) := by
     simpa only [P2301] using hp_const (I := I) (M := M) g P _
   have hp3102 :
       H2Poly (I := I) (M := M) g P 0 P3102
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeTwo) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeTwo) := by
     simpa only [P3102] using hp_const (I := I) (M := M) g P _
   have hp1302 :
       H2Poly (I := I) (M := M) g P 0 P1302
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneThreeTwo) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneThreeTwo) := by
     simpa only [P1302] using hp_const (I := I) (M := M) g P _
   have hp1203 :
       H2Poly (I := I) (M := M) g P 0 P1203
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneTwo) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneTwo) := by
     simpa only [P1203] using hp_const (I := I) (M := M) g P _
   have hp2103 :
       H2Poly (I := I) (M := M) g P 0 P2103
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroTwo) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroTwo) := by
     simpa only [P2103] using hp_const (I := I) (M := M) g P _
   have h0 :
       H2Poly (I := I) (M := M) g P 2 K0
@@ -4905,21 +4905,21 @@ private theorem aa_h2_of
     app_h2_mul (I := I) (M := M) hDim g 2 4 2
   let fr : ℝ := Module.finrank ℝ E
   let P102 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne)
   let P120 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
   let P3201 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeOneTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeOneTwo)
   let P2301 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
   let P3102 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeTwo)
   let P1302 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneThreeTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneThreeTwo)
   let P1203 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneTwo)
   let P2103 : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroTwo)
   have hfr : 0 ≤ fr := Nat.cast_nonneg _
   have hP102 : 0 ≤ P102 :=
     covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _
@@ -5013,16 +5013,16 @@ private theorem aa_h2_of
       connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_two] using hr
   have hp102 :
       H2Poly (I := I) (M := M) g Z 0 P102
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne) := by
     simpa only [P102] using hp_const (I := I) (M := M) g Z _
   have hp120 :
       H2Poly (I := I) (M := M) g Z 0 P120
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs) := by
     simpa only [P120] using hp_const (I := I) (M := M) g Z _
   have h102 :
       H2Poly (I := I) (M := M) g Z 0 (D102 * Q)
         (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-          (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne)
+          (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne)
           (connectionDifferenceContrInsertionInnerField (I := I) g g₁)) := by
     have hraw := hp_app_of (I := I) (M := M) g Z C233 hC233
       (h233 _ _) hp102 hinner
@@ -5031,7 +5031,7 @@ private theorem aa_h2_of
   have h120 :
       H2Poly (I := I) (M := M) g Z 0 (D120 * Q)
         (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-          (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs)
+          (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
           (connectionDifferenceContrInsertionInnerField (I := I) g g₁)) := by
     have hraw := hp_app_of (I := I) (M := M) g Z C233 hC233
       (h233 _ _) hp120 hinner
@@ -5042,7 +5042,7 @@ private theorem aa_h2_of
         (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
           (connectionDifferenceContravariantInsertionField (I := I) g g₁)
           (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-            (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne)
+            (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne)
             (connectionDifferenceContrInsertionInnerField (I := I) g g₁))) := by
     have hraw := hp_app_of (I := I) (M := M) g Z C234 hC234
       (h234 _ _) houter h102
@@ -5053,7 +5053,7 @@ private theorem aa_h2_of
         (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
           (connectionDifferenceContravariantInsertionField (I := I) g g₁)
           (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-            (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs)
+            (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
             (connectionDifferenceContrInsertionInnerField (I := I) g g₁))) := by
     have hraw := hp_app_of (I := I) (M := M) g Z C234 hC234
       (h234 _ _) houter h120
@@ -5070,27 +5070,27 @@ private theorem aa_h2_of
       simp only [Dcore3]; ring
   have hp3201 :
       H2Poly (I := I) (M := M) g Z 0 P3201
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeOneTwo) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeOneTwo) := by
     simpa only [P3201] using hp_const (I := I) (M := M) g Z _
   have hp2301 :
       H2Poly (I := I) (M := M) g Z 0 P2301
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks) := by
     simpa only [P2301] using hp_const (I := I) (M := M) g Z _
   have hp3102 :
       H2Poly (I := I) (M := M) g Z 0 P3102
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeTwo) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeTwo) := by
     simpa only [P3102] using hp_const (I := I) (M := M) g Z _
   have hp1302 :
       H2Poly (I := I) (M := M) g Z 0 P1302
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneThreeTwo) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneThreeTwo) := by
     simpa only [P1302] using hp_const (I := I) (M := M) g Z _
   have hp1203 :
       H2Poly (I := I) (M := M) g Z 0 P1203
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneTwo) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneTwo) := by
     simpa only [P1203] using hp_const (I := I) (M := M) g Z _
   have hp2103 :
       H2Poly (I := I) (M := M) g Z 0 P2103
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroTwo) := by
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroTwo) := by
     simpa only [P2103] using hp_const (I := I) (M := M) g Z _
   have h0 :
       H2Poly (I := I) (M := M) g Z 0 (D0 * Q ^ 2)

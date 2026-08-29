@@ -57,11 +57,11 @@ noncomputable def freezeHead03Field
       (TangentSpace I : M -> Type _)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 := by
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 2
   let F : (p : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 p :=
-    fun p : M => tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 p (A p) (Y p)
+    fun p : M => tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 p (A p) (Y p)
   refine ⟨F, ?_⟩
   let d := Module.finrank Real E
   let b : Module.Basis (Fin d) Real E := Module.finBasis Real E
@@ -160,7 +160,7 @@ noncomputable def freezeHead03Field
       (TangentSpace I : M -> Type _))
     (x : M) :
     freezeHead03Field (I := I) (M := M) A Y x =
-      tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x (A x) (Y x) := by
+      tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x (A x) (Y x) := by
   unfold freezeHead03Field
   rfl
 
@@ -193,7 +193,7 @@ noncomputable def freezeTail04Field
       (TangentSpace I : M -> Type _)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 := by
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 2
   let F : (p : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 p :=
@@ -331,7 +331,7 @@ noncomputable def freezeMiddle04Field
       (TangentSpace I : M -> Type _)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 := by
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 2
   let F : (p : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 p :=
@@ -452,13 +452,13 @@ theorem nablaTrace02
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
     (X : TangentSpace I x) :
     let traceA : M -> Real := fun y => metricTracePair0SAt (I := I) g (A y)
     let nablaA :=
@@ -567,7 +567,7 @@ theorem dTrace02_eq
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -580,13 +580,13 @@ theorem dTrace02_eq
           2 cov X A x) := by
   classical
   let traceA : M -> Real := fun y => metricTracePair0SAt (I := I) g (A y)
-  let basis := coordinateFrameAt_toBasis (I := I) x
+  let basis := coordinateFrameAtToBasis (I := I) x
   let gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun i j =>
-      inverseMetricFlatModelInChart_component (I := I) g x i j
+      inverseMetricFlatModelInChartComponent (I := I) g x i j
         (extChartAt I x x)
   have hinv :
-      MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv := by
+      MetricInverseInBasisGen (I := I) (M := M) g x basis gInv := by
     simpa [basis, gInv] using
       (inverseMetricFlatModelInChart_metricInverseInBasis_center (I := I) g x)
   have htrace :=

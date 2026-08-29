@@ -296,7 +296,7 @@ noncomputable def ballIndicatorWitnessOn
     · intro i
       simpa using hφ.weakGrad_component_memLp i
   let hφExtUniv : MemW1pWitness (ENNReal.ofReal (2 : ℝ)) ((Metric.ball c r).indicator φ) Set.univ :=
-    zeroExtend_memW1pWitness_p (d := d) Metric.isOpen_ball
+    zeroExtendMemW1pWitnessP (d := d) Metric.isOpen_ball
       (p := 2) (by norm_num : (1 : ℝ) < 2) hφ0_real hφ_real
   have htwo : ENNReal.ofReal (2 : ℝ) = (2 : ENNReal) := by
     norm_num
@@ -333,7 +333,7 @@ private lemma cast_MemW1pWitness_weakGrad
   have htwo : ENNReal.ofReal (2 : ℝ) = (2 : ENNReal) := by
     norm_num
   let hφExtUniv : MemW1pWitness (ENNReal.ofReal (2 : ℝ)) ((Metric.ball c r).indicator φ) Set.univ :=
-    zeroExtend_memW1pWitness_p (d := d) Metric.isOpen_ball
+    zeroExtendMemW1pWitnessP (d := d) Metric.isOpen_ball
       (p := 2) (by norm_num : (1 : ℝ) < 2) hφ0_real hφ_real
   let hφExt : MemW1pWitness (ENNReal.ofReal (2 : ℝ)) ((Metric.ball c r).indicator φ) Ω :=
     hφExtUniv.restrict hΩ (by intro y hy; simp)
@@ -344,7 +344,7 @@ private lemma cast_MemW1pWitness_weakGrad
       cast_MemW1pWitness_weakGrad htwo hφExt
   have hraw :
       hφExt.weakGrad x i = (Metric.ball c r).indicator (fun y => hφ.weakGrad y i) x := by
-    simp [hφExt, hφExtUniv, zeroExtend_memW1pWitness_p, MemW1pWitness.restrict, hφ_real]
+    simp [hφExt, hφExtUniv, zeroExtendMemW1pWitnessP, MemW1pWitness.restrict, hφ_real]
   simpa [hcast] using hraw
 
 theorem bilinForm_ball_restrict_eq_zeroExtend
@@ -400,7 +400,7 @@ theorem bilinForm_ball_restrict_eq_zeroExtend
     _ = bilinFormOfCoeff A hu hφExt := by
           rfl
 
-noncomputable def MemW1pWitness.of_ae_eq
+noncomputable def MemW1pWitness.ofAeEq
     {Ω : Set E} {f g : E → ℝ}
     (hfg : f =ᵐ[volume.restrict Ω] g)
     (hw : MemW1pWitness 2 f Ω) :
@@ -428,9 +428,9 @@ theorem IsSubsolution.congr_ae
     (huv : u =ᵐ[volume.restrict Ω] v)
     (hsub : IsSubsolution A u) :
     IsSubsolution A v := by
-  refine ⟨(MemW1pWitness.of_ae_eq huv (MemW1p.someWitness hsub.1)).memW1p, ?_⟩
+  refine ⟨(MemW1pWitness.ofAeEq huv (MemW1p.someWitness hsub.1)).memW1p, ?_⟩
   intro hv φ hφ hφw hφ_nonneg
-  let hu : MemW1pWitness 2 u Ω := MemW1pWitness.of_ae_eq huv.symm hv
+  let hu : MemW1pWitness 2 u Ω := MemW1pWitness.ofAeEq huv.symm hv
   have hineq : bilinFormOfCoeff A hu hφw ≤ 0 := hsub.2 hu φ hφ hφw hφ_nonneg
   change bilinFormOfCoeff A hv hφw ≤ 0 at hineq
   exact hineq
@@ -440,9 +440,9 @@ theorem IsSupersolution.congr_ae
     (huv : u =ᵐ[volume.restrict Ω] v)
     (hsuper : IsSupersolution A u) :
     IsSupersolution A v := by
-  refine ⟨(MemW1pWitness.of_ae_eq huv (MemW1p.someWitness hsuper.1)).memW1p, ?_⟩
+  refine ⟨(MemW1pWitness.ofAeEq huv (MemW1p.someWitness hsuper.1)).memW1p, ?_⟩
   intro hv φ hφ hφw hφ_nonneg
-  let hu : MemW1pWitness 2 u Ω := MemW1pWitness.of_ae_eq huv.symm hv
+  let hu : MemW1pWitness 2 u Ω := MemW1pWitness.ofAeEq huv.symm hv
   have hineq : 0 ≤ bilinFormOfCoeff A hu hφw := hsuper.2 hu φ hφ hφw hφ_nonneg
   change 0 ≤ bilinFormOfCoeff A hv hφw at hineq
   exact hineq
@@ -546,13 +546,13 @@ theorem IsSubsolution.sub_const_ball
     simpa using (measure_ball_lt_top (μ := volume) (x := c) (r := r))
   let hu : MemW1pWitness 2 u (Metric.ball c r) := MemW1p.someWitness hsub.1
   let huShift : MemW1pWitness 2 (fun x => u x - k) (Metric.ball c r) :=
-    hu.sub_const Metric.isOpen_ball k
+    hu.subConst Metric.isOpen_ball k
   refine ⟨huShift.memW1p, ?_⟩
   intro hv φ hφ0 hφ hφ_nonneg
   let huBackRaw : MemW1pWitness 2 (fun x => (u x - k) - (-k)) (Metric.ball c r) :=
-    hv.sub_const Metric.isOpen_ball (-k)
+    hv.subConst Metric.isOpen_ball (-k)
   let huBack : MemW1pWitness 2 u (Metric.ball c r) :=
-    MemW1pWitness.of_ae_eq (Ω := Metric.ball c r)
+    MemW1pWitness.ofAeEq (Ω := Metric.ball c r)
       (Filter.Eventually.of_forall fun x => by ring) huBackRaw
   have hineq : bilinFormOfCoeff A huBack hφ ≤ 0 := hsub.2 huBack φ hφ0 hφ hφ_nonneg
   change bilinFormOfCoeff A hv hφ ≤ 0 at hineq
@@ -569,13 +569,13 @@ theorem IsSupersolution.sub_const_ball
     simpa using (measure_ball_lt_top (μ := volume) (x := c) (r := r))
   let hu : MemW1pWitness 2 u (Metric.ball c r) := MemW1p.someWitness hsuper.1
   let huShift : MemW1pWitness 2 (fun x => u x - k) (Metric.ball c r) :=
-    hu.sub_const Metric.isOpen_ball k
+    hu.subConst Metric.isOpen_ball k
   refine ⟨huShift.memW1p, ?_⟩
   intro hv φ hφ0 hφ hφ_nonneg
   let huBackRaw : MemW1pWitness 2 (fun x => (u x - k) - (-k)) (Metric.ball c r) :=
-    hv.sub_const Metric.isOpen_ball (-k)
+    hv.subConst Metric.isOpen_ball (-k)
   let huBack : MemW1pWitness 2 u (Metric.ball c r) :=
-    MemW1pWitness.of_ae_eq (Ω := Metric.ball c r)
+    MemW1pWitness.ofAeEq (Ω := Metric.ball c r)
       (Filter.Eventually.of_forall fun x => by ring) huBackRaw
   have hineq : 0 ≤ bilinFormOfCoeff A huBack hφ := hsuper.2 huBack φ hφ0 hφ hφ_nonneg
   change 0 ≤ bilinFormOfCoeff A hv hφ at hineq
@@ -601,7 +601,7 @@ theorem IsSubsolution.neg_ball
   intro hv φ hφ0 hφ hφ_nonneg
   let huBackRaw : MemW1pWitness 2 (fun x => (-1 : ℝ) * (-u x)) (Metric.ball c r) := hv.smul (-1)
   let huBack : MemW1pWitness 2 u (Metric.ball c r) :=
-    MemW1pWitness.of_ae_eq (Ω := Metric.ball c r)
+    MemW1pWitness.ofAeEq (Ω := Metric.ball c r)
       (Filter.Eventually.of_forall fun x => by ring) huBackRaw
   have hineq : bilinFormOfCoeff A huBack hφ ≤ 0 := hsub.2 huBack φ hφ0 hφ hφ_nonneg
   have hsmul : bilinFormOfCoeff A huBack hφ = -bilinFormOfCoeff A hv hφ := by
@@ -626,7 +626,7 @@ theorem IsSupersolution.neg_ball
   intro hv φ hφ0 hφ hφ_nonneg
   let huBackRaw : MemW1pWitness 2 (fun x => (-1 : ℝ) * (-u x)) (Metric.ball c r) := hv.smul (-1)
   let huBack : MemW1pWitness 2 u (Metric.ball c r) :=
-    MemW1pWitness.of_ae_eq (Ω := Metric.ball c r)
+    MemW1pWitness.ofAeEq (Ω := Metric.ball c r)
       (Filter.Eventually.of_forall fun x => by ring) huBackRaw
   have hineq : 0 ≤ bilinFormOfCoeff A huBack hφ := hsuper.2 huBack φ hφ0 hφ hφ_nonneg
   have hsmul : bilinFormOfCoeff A huBack hφ = -bilinFormOfCoeff A hv hφ := by

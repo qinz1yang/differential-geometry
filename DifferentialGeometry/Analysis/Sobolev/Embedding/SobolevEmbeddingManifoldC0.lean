@@ -822,21 +822,21 @@ private theorem superlevel_compact_subset_source
     subset_tsupport _ hx_supp
   exact DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α hx_tsupp
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 private theorem chartFiberNorm_le_hsNorm_on_superlevel
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (k : ℕ)
     (hk : (Module.finrank ℝ E : ℝ) < 2 * (2 * k))
     (α : M) {c : ℝ} (hc_pos : 0 < c) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ D : ℝ, 0 ≤ D ∧ ∀ (T : SmoothCcTensor g r s),
       ∀ x ∈ {x : M | c ≤ (chartAtlasPOU I M α : M → ℝ) x},
         ‖T.toSection x‖ ≤ D *
           ‖SmoothCcTensor.toHs (g := g) (r := r) (s := s) (2 * k) T‖ := by
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   classical
   set Kset : Set M := {x : M | c ≤ (chartAtlasPOU I M α : M → ℝ) x} with hKset_def
   obtain ⟨hK_compact, hK_sub⟩ := superlevel_compact_subset_source (I := I) (M := M) α hc_pos
@@ -981,20 +981,20 @@ private theorem chartFiberNorm_le_hsNorm_on_superlevel
     _ = Real.sqrt (C₁ * npairs) * Dmax * hsn :=
         Real.sqrt_sq (by positivity)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem tensorPouSobolevHilbert_embedding_Ck_gNorm
     (g : SmoothRiemannianMetric I M) (r s k m : ℕ)
     (h_super : 2 * k > Module.finrank ℝ E + 2 * m) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ C : ℝ, 0 < C ∧
       ∀ (T : SmoothCcTensor g r s) (x : M),
         ‖T.toSection x‖ ≤
           C * ‖SmoothCcTensor.toHs (g := g) (r := r) (s := s) (2 * k) T‖ := by
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   classical
   have hk : (Module.finrank ℝ E : ℝ) < 2 * (2 * k) := by
     have : Module.finrank ℝ E < 2 * (2 * k) := by omega
@@ -1002,7 +1002,7 @@ theorem tensorPouSobolevHilbert_embedding_Ck_gNorm
   rcases isEmpty_or_nonempty M with hMempty | hMne
   · exact ⟨1, one_pos, fun _T x => (hMempty.false x).elim⟩
   obtain ⟨x₀⟩ := hMne
-  set S : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hS_def
+  set S : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have hS_ne : S.Nonempty := by
     have hsum := chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x₀
     rw [← hS_def] at hsum

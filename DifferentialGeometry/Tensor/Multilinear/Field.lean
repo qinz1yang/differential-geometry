@@ -68,7 +68,7 @@ noncomputable def fromScalarField
     let d := Module.finrank 𝕜 F
     let b : Module.Basis (Fin d) 𝕜 F := Module.finBasis 𝕜 F
     refine (contMDiff_multilinearSection_iff_coord E n b _).mpr fun σ x₀ => ?_
-    have hcoord : ∀ x, (continuousMultilinearMap_basis b 0).repr
+    have hcoord : ∀ x, (continuousMultilinearMapBasis b 0).repr
         (trivializationAt (MLF 0)
           (fun x => Bundle.continuousMultilinearMap 𝕜 0 F E x) x₀
           ⟨x, ContinuousMultilinearMap.constOfIsEmpty 𝕜

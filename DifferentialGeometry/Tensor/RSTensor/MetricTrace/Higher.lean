@@ -136,13 +136,13 @@ theorem nabla2Trace02
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
     (X Y : TangentSpace I x) :
     let traceA : M -> Real := fun y => metricTracePair0SAt (I := I) g (A y)
     let htrace : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) traceA :=
@@ -191,7 +191,7 @@ theorem nabla2Trace02
       B p =
         nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           2 cov Ysec A p := by
-    let basisp := coordinateFrameAt_toBasis (I := I) p
+    let basisp := coordinateFrameAtToBasis (I := I) p
     apply ext0S_basis (I := I) basisp
     intro slots
     have hslots :
@@ -563,13 +563,13 @@ theorem nablaTrace04
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 4)
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
     (X Y Z : TangentSpace I x) :
     let traceA := trace04Field (I := I) (M := M) g A
     let nablaA :=

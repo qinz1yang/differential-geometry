@@ -937,7 +937,7 @@ theorem normSq0S_three_eq_componentL2Sq3_of_components [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      Tensor0SBundle.MetricInverseInBasis_gen
+      Tensor0SBundle.MetricInverseInBasisGen
         (I := I) g x basis (Tensor0SBundle.identityInvMetric (Idx := Idx)))
     (A : Tensor0SBundle.Tensor0SSpace
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
@@ -1347,7 +1347,7 @@ theorem normSqRS_connectionDifference_eq_componentL2Sq3 [DecidableEq Idx]
               (G.connection base) frame hframe x a b e) := by
   classical
   have hinvBasis :
-      Tensor0SBundle.MetricInverseInBasis_gen
+      Tensor0SBundle.MetricInverseInBasisGen
         (I := I) (G.metric var) x (hframe.toBasisAt hx)
         (Tensor0SBundle.identityInvMetric (Idx := Idx)) := by
     intro i j

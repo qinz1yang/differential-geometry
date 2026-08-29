@@ -29,8 +29,8 @@ variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
   [T2Space (TangentBundle I M)]
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 def Rm04DataAt
     (g : SmoothRiemannianMetric I M) (p : M) (r : ℝ) : Prop :=
   ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
@@ -84,8 +84,8 @@ private lemma jacobiRadius_lt_exp
   hx.trans_le (jacobi_radius_le_c2 (I := I) g p)
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem rm04Data_jacobi
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -168,8 +168,8 @@ theorem rm04Data_jacobi
       (d2_zero_of_jac0 (I := I) g p x w hJac0)
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem rm04_one_le
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]
@@ -231,8 +231,8 @@ theorem rm04_one_le
     hderiv hx hw hinit hmodel (jacobiRadius_lt_exp (I := I) g p hx)
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem rm04_one_ge
     [PseudoEMetricSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)]

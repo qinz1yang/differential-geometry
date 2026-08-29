@@ -447,13 +447,13 @@ private lemma chrRiem_tensorRSTriv_baseSet_eq_chartSource (r s : ℕ) (α : M) :
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport_local
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     letI : ∀ b : M, NormedAddCommGroup (TensorRSSpace r s I b) :=
       fun b => tensorRSRiemannianNormedAddCommGroup r s b
     ∃ M_F : ℝ, 0 ≤ M_F ∧
@@ -466,7 +466,7 @@ theorem chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport_local
             M_F * ‖T b‖ := by
   classical
   let _ : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   let _ : ∀ b : M, NormedAddCommGroup (TensorRSSpace r s I b) :=
     fun b => tensorRSRiemannianNormedAddCommGroup r s b
   have hK_cpt : IsCompact (tsupport (fun x : M =>
@@ -546,13 +546,13 @@ theorem chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport_local
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem chartTensorRSOutputSlotCorrection_riemannian_norm_le_on_pouTsupport_local
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     letI : ∀ b : M, NormedAddCommGroup (TensorRSSpace r s I b) :=
       fun b => tensorRSRiemannianNormedAddCommGroup r s b
     ∃ M_F : ℝ, 0 ≤ M_F ∧
@@ -565,7 +565,7 @@ theorem chartTensorRSOutputSlotCorrection_riemannian_norm_le_on_pouTsupport_loca
             M_F * ‖T b‖ := by
   classical
   let _ : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   let _ : ∀ b : M, NormedAddCommGroup (TensorRSSpace r s I b) :=
     fun b => tensorRSRiemannianNormedAddCommGroup r s b
   have hK_cpt : IsCompact (tsupport (fun x : M =>

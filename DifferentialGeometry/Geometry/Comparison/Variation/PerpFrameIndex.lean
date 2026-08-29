@@ -39,8 +39,8 @@ omit [FiniteDimensional ℝ E]
   [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [Fintype ι] [DecidableEq ι]
   [T2Space M] [SigmaCompactSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma g_inner_contDiff
     (g : SmoothRiemannianMetric I M)
     {γ : ℝ → M} {v w : ∀ t : ℝ, TangentSpace I (γ t)}
@@ -153,8 +153,8 @@ theorem perpCurvOp_apply
         (F i t) * y j := by
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem perpCurv_smooth
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
@@ -300,8 +300,8 @@ theorem perpLift_inner
   rw [PiLp.inner_apply]
   simp [map_sum, map_smul, hON, mul_ite]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 theorem perpFrame_expand
@@ -447,8 +447,8 @@ theorem perpCoeff_ne_zero
     hFperp hYperp hON]
   exact perpLift_zero (I := I) F (perpCoeff (I := I) g F Y) t hcoeff
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
 theorem perpCurv_coeff

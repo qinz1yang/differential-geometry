@@ -101,8 +101,8 @@ private theorem orthoFrame_to_basis
   refine ⟨basisOfLinearIndependentOfCardEqFinrank he_li hcard, fun i => ?_⟩
   rw [coe_basisOfLinearIndependentOfCardEqFinrank]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 private theorem componentSlice_sq_sum_le_riemannianFiberNormSq
@@ -125,8 +125,8 @@ private theorem componentSlice_sq_sum_le_riemannianFiberNormSq
         (fiberNormSqComponent (I := I) (M := M) g x 2 2 S (Module.finrank ℝ E) e K' J) ^ 2)
     (fun K' _ => Finset.sum_nonneg (fun J _ => sq_nonneg _)) (Finset.mem_univ K)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem riemannianFiberNormSq_le_of_componentSlice_sq_sum_le
@@ -214,8 +214,8 @@ private lemma g_inner_off_frame_le
   rw [hkk, Real.sqrt_one, one_mul] at hCS
   exact le_trans hCS (Real.sqrt_le_sqrt hw)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_riemannBiContrFib_perturbed_frameComponentSlice_sq_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
@@ -229,7 +229,7 @@ theorem exists_riemannBiContrFib_perturbed_frameComponentSlice_sq_le_of_jetEnvel
         (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B →
           ∀ (e : Fin (Module.finrank ℝ E) → TangentSpace I x)
             (_horth : ∀ a b : Fin (Module.finrank ℝ E),
@@ -498,8 +498,8 @@ theorem exists_riemannBiContrFib_perturbed_frameComponentSlice_sq_le_of_jetEnvel
         push_cast
         ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_riemannBiContrFib_perturbed_riemannianFiberNormSq_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
@@ -513,7 +513,7 @@ theorem exists_riemannBiContrFib_perturbed_riemannianFiberNormSq_le_of_jetEnvelo
         (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B →
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
               (show TensorRSSpace 2 2 I x from
@@ -662,8 +662,8 @@ private lemma ricciArm_component_abs_le
   rw [hKKunit, Real.sqrt_one, one_mul] at hCS
   exact le_trans hCS hsqrtΛ
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponentSlice_sq_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
@@ -677,7 +677,7 @@ theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponentSlice_sq_le_of
         (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B →
           ∀ (e : Fin (Module.finrank ℝ E) → TangentSpace I x)
             (_horth : ∀ a b : Fin (Module.finrank ℝ E),
@@ -762,8 +762,8 @@ theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponentSlice_sq_le_of
             mul_le_mul_of_nonneg_right hn1 (by positivity)
           _ = (2 * (Module.finrank ℝ E : ℝ) * C0) ^ 2 := by ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_riemannianFiberNormSq_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
@@ -777,7 +777,7 @@ theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_riemannianFiberNormSq_le_of_
         (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B →
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
               (show TensorRSSpace 2 2 I x from
@@ -794,8 +794,8 @@ theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_riemannianFiberNormSq_le_of_
   refine le_trans hred (le_of_eq ?_)
   rw [mul_pow]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_riemannBiContrFib_perturbed_frameComponent_sum_sq_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
@@ -809,7 +809,7 @@ theorem exists_riemannBiContrFib_perturbed_frameComponent_sum_sq_le_of_jetEnvelo
         (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B →
           ∀ (e : Fin (Module.finrank ℝ E) → TangentSpace I x)
             (_horth : ∀ a b : Fin (Module.finrank ℝ E),
@@ -832,8 +832,8 @@ theorem exists_riemannBiContrFib_perturbed_frameComponent_sum_sq_le_of_jetEnvelo
       e horth K)
     (hC g₁ P hδ_le hδ htie x henv)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponent_sum_sq_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
@@ -847,7 +847,7 @@ theorem exists_ricciArmOrder0CurvCoeffFib_perturbed_frameComponent_sum_sq_le_of_
         (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B →
           ∀ (e : Fin (Module.finrank ℝ E) → TangentSpace I x)
             (_horth : ∀ a b : Fin (Module.finrank ℝ E),

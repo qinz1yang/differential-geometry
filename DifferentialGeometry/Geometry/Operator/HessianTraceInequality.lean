@@ -169,7 +169,7 @@ private theorem hessianTrace_chart_norm_of_boundaryless
     chartBasisFamily (I := I) x hbase
   let cgInv : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun i j => chartInvGramMatrix (I := I) g x x i j
-  have hcinv : MetricInverseInBasis_gen (I := I) g x cbasis cgInv := by
+  have hcinv : MetricInverseInBasisGen (I := I) g x cbasis cgInv := by
     intro i j
     constructor
     · have hmatrix := congrArg (fun A => A i j)
@@ -253,7 +253,7 @@ theorem laplacian_sq_le_dim_mul_hessianFrobeniusSq_of_boundaryless
     [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    (Δ_g (I := I) g ⟨f, hf⟩ x)^2 ≤
+    (ΔG (I := I) g ⟨f, hf⟩ x)^2 ≤
       (Module.finrank ℝ E : ℝ) * chartHessFrobeniusSq (I := I) g f x := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
@@ -265,7 +265,7 @@ theorem laplacian_sq_le_dim_mul_hessianFrobeniusSq_of_boundaryless
   have hdim : (Module.finrank ℝ (TangentSpace I x) : ℝ) =
       (Module.finrank ℝ E : ℝ) := by
     exact_mod_cast hfinrank
-  have htr : Δ_g (I := I) g ⟨f, hf⟩ x =
+  have htr : ΔG (I := I) g ⟨f, hf⟩ x =
       ∑ i : Fin (Module.finrank ℝ (TangentSpace I x)),
         hessFun (I := I) g f x (basis i) (basis i) := by
     have hlap : laplacian (I := I) (LeviCivita (I := I) g) g f x =
@@ -312,7 +312,7 @@ theorem laplacian_sq_le_dim_mul_hessianFrobeniusSq_of_boundaryless
       chartHessFrobeniusSq (I := I) g f x :=
     Eq.trans (Eq.symm hpv)
       (hessianTrace_chart_norm_of_boundaryless (I := I) g hf x)
-  have htr' : (Δ_g (I := I) g ⟨f, hf⟩ x)^2 ≤
+  have htr' : (ΔG (I := I) g ⟨f, hf⟩ x)^2 ≤
       (Module.finrank ℝ E : ℝ) *
         ∑ i : Fin (Module.finrank ℝ (TangentSpace I x)),
           ∑ j : Fin (Module.finrank ℝ (TangentSpace I x)),

@@ -28,8 +28,8 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem edist_vol_pos
     [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) :
@@ -141,8 +141,8 @@ private lemma exists_inner_bound
       ‖tangentBilinearFormToModel (I := I) p (g.inner p)‖]
   · exact sqrt_inner_le_norm (I := I) g p
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_ball_vol_low
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -237,8 +237,8 @@ theorem exists_ball_vol_low
   simp only [unitBallVol]
   ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_edist_vol
     [T3Space M] [ConnectedSpace M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : M) :

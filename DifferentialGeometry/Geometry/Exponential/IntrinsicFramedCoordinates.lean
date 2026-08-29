@@ -56,8 +56,8 @@ omit [CompleteSpace E] [NeZero (Module.finrank Real E)] [I.Boundaryless]
 
 section
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 noncomputable def intrinsicFramedExp
     [PseudoEMetricSpace M]

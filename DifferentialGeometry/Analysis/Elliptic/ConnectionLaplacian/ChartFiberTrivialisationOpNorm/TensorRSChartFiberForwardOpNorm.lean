@@ -25,7 +25,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private lemma tensorRSSpace_norm_eq_fwd (r s : ℕ) (b : M)
     (T : TensorRSSpace r s I b) :
-    ‖T‖ = ‖tensorRSSpace_continuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s b T‖ :=
+    ‖T‖ = ‖tensorRSSpaceContinuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s b T‖ :=
   rfl
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -36,7 +36,7 @@ private lemma tensorRS_trivAt_clmAt_eq_CLE_on_locality_fwd
     ((trivializationAt (TensorRSModel r s ℝ E)
         (fun y : M => TensorRSSpace r s I y) b₀).continuousLinearMapAt ℝ b :
         TensorRSSpace r s I b →L[ℝ] TensorRSModel r s ℝ E) =
-      ((tensorRSSpace_continuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s
+      ((tensorRSSpaceContinuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s
         b).toContinuousLinearMap) := by
   apply ContinuousLinearMap.ext
   intro T
@@ -48,7 +48,7 @@ private lemma tensorRS_trivAt_clmAt_eq_CLE_on_locality_fwd
   change (((trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) b₀).continuousLinearMapAt ℝ b T)
         D_α : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) =
-      (tensorRSSpace_continuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s b T) D_α
+      (tensorRSSpaceContinuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s b T) D_α
   rw [h_subB]
   rfl
 
@@ -68,7 +68,7 @@ private lemma trivAt_clmAt_norm_eq_on_locality
       ((trivializationAt (TensorRSModel r s ℝ E)
           (fun y : M => TensorRSSpace r s I y) b₀).continuousLinearMapAt ℝ b T :
           TensorRSModel r s ℝ E) =
-        ((tensorRSSpace_continuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s b)
+        ((tensorRSSpaceContinuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s b)
           T : TensorRSModel r s ℝ E) := by
     have := congrArg
       (fun (f : TensorRSSpace r s I b →L[ℝ] TensorRSModel r s ℝ E) => f T) h_clm

@@ -168,7 +168,7 @@ private lemma weakPartialDeriv_rescale_to_unitBall
   ring
 
 /-- Rescaling a witness on `B_R(x₀)` to a witness on the unit ball. -/
-noncomputable def MemW1pWitness.rescale_to_unitBall
+noncomputable def MemW1pWitness.rescaleToUnitBall
     {p : ℝ≥0∞} {x₀ : E} {R : ℝ} {u : E → ℝ}
     (hR : 0 < R)
     (hw : MemW1pWitness p u (Metric.ball x₀ R)) :

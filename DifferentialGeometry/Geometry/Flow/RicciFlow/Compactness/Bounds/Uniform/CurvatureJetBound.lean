@@ -437,8 +437,8 @@ private lemma component0S_unit_eq_ccBilin
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M]
   in
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem metricDiff_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
@@ -446,12 +446,12 @@ theorem metricDiff_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : 
         g₀.inner x v v ≤ Λ * gBase.inner x v v)
     (x : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) gBase 0 2
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) gBase 0 2
     ‖((metricDifferenceCcTensor (I := I) (M := M) gBase g₀).toSection x :
         TensorRSSpace 0 2 I x)‖ ≤ (Module.finrank ℝ E : ℝ) * (Λ - 1) := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) gBase 0 2
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) gBase 0 2
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gBase x
   have hΛ1 : (0 : ℝ) ≤ Λ - 1 := by linarith
   rw [norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) gBase 0 2 x
@@ -504,17 +504,17 @@ theorem metricDiff_order0_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : 
         rw [← mul_pow, Real.sqrt_sq (mul_nonneg (Nat.cast_nonneg _) hΛ1)]
 
 omit [NeZero (Module.finrank ℝ E)] in
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem metricDiff_orderPos_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (a : ℕ) (hjet : MetricCovDerivOrderBoundOn Set.univ (a + 1) g₀ gBase Λ) (x : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + (a + 1)) I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) gBase 0 (2 + (a + 1))
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) gBase 0 (2 + (a + 1))
     ‖((iteratedCovGrad gBase 0 2 (a + 1)
         (metricDifferenceCcTensor (I := I) (M := M) gBase g₀)).toSection x :
         TensorRSSpace 0 (2 + (a + 1)) I x)‖ ≤ Λ := by
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + (a + 1)) I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) gBase 0 (2 + (a + 1))
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) gBase 0 (2 + (a + 1))
   have hBzero : ‖((iteratedCovGrad gBase 0 2 (a + 1)
         (metricCcTensor (I := I) (M := M) gBase gBase)).toSection x :
         TensorRSSpace 0 (2 + (a + 1)) I x)‖ = 0 := by
@@ -534,8 +534,8 @@ theorem metricDiff_orderPos_bound (gBase g₀ : SmoothRiemannianMetric I M) {Λ 
   exact hjet x (Set.mem_univ x)
 
 omit [NeZero (Module.finrank ℝ E)] in
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem metricDiff_jetEnvelope (gBase g₀ : SmoothRiemannianMetric I M) {Λ : ℝ}
     (hΛ : 1 ≤ Λ)
     (hcomp : ∀ (x : M) (v : TangentSpace I x),
@@ -546,7 +546,7 @@ theorem metricDiff_jetEnvelope (gBase g₀ : SmoothRiemannianMetric I M) {Λ : �
     (x : M) :
     (∑ j ∈ Finset.range 3,
         (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) gBase 0 (2 + j)
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) gBase 0 (2 + j)
         ‖((iteratedCovGrad gBase 0 2 j
             (metricDifferenceCcTensor (I := I) (M := M) gBase g₀)).toSection x :
             TensorRSSpace 0 (2 + j) I x)‖)) ≤ (Module.finrank ℝ E : ℝ) * (Λ - 1) + 2 * Λ := by

@@ -41,7 +41,7 @@ noncomputable def freezeTailField {s : ℕ}
       (TangentSpace I : M → Type _)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 := by
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 2
   let F : (p : M) →
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 p :=
@@ -321,7 +321,7 @@ private theorem metricTraceFirstTwoEvent {s : ℕ}
       fun y : M =>
         ∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
-            inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+            inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
                 (extChartAt I x₀ y) *
               A y (fun q : Fin (s + 2) =>
                 coordinateFrameAt (I := I) x₀ (traceFirstTwoIdx i j σ q) y) := by
@@ -329,10 +329,10 @@ private theorem metricTraceFirstTwoEvent {s : ℕ}
   filter_upwards
     [(coordinateFrameSet_open (I := I) x₀).mem_nhds
       (coordinateFrameAt_mem (I := I) x₀)] with y hy
-  let basis := coordinateFrameAt_basis (I := I) x₀ hy
+  let basis := coordinateFrameAtBasis (I := I) x₀ hy
   let gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun i j =>
-      inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+      inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
         (extChartAt I x₀ y)
   rw [metricTraceFirstTwo0STensor_apply (I := I) g (A y)
     (fun c : Fin s => coordinateFrameAt (I := I) x₀ (σ c) y)]
@@ -362,7 +362,7 @@ private theorem metricTraceFirstTwoCoeff {s : ℕ}
         (fun y : M =>
           ∑ i : CoordinateIdx (𝕜 := Real) E,
             ∑ j : CoordinateIdx (𝕜 := Real) E,
-              inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+              inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
                   (extChartAt I x₀ y) *
                 A y
                   (fun q : Fin (s + 2) =>
@@ -382,7 +382,7 @@ def metricTraceFirstTwoField {s : ℕ}
       (n := (∞ : WithTop ℕ∞)) (s + 2)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s := by
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) s
   let F : (p : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s p :=
@@ -449,11 +449,11 @@ private theorem metricTraceFirstTwo0STensor_eq_pair_freeze {s : ℕ}
     metricTraceFirstTwo0STensor (I := I) g T tail =
       metricTracePair0SAt (I := I) g (freezeFirstTwo0S (I := I) T tail) := by
   classical
-  let basis := coordinateFrameAt_toBasis (I := I) x
+  let basis := coordinateFrameAtToBasis (I := I) x
   let gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun i j =>
-      inverseMetricFlatModelInChart_component (I := I) g x i j (extChartAt I x x)
-  have hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv := by
+      inverseMetricFlatModelInChartComponent (I := I) g x i j (extChartAt I x x)
+  have hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv := by
     simpa [basis, gInv] using
       (inverseMetricFlatModelInChart_metricInverseInBasis_center (I := I) g x)
   rw [metricTraceFirstTwo0STensor_apply (I := I) g T tail]
@@ -470,13 +470,13 @@ theorem nabla_metricTraceFirstTwo0S {s : ℕ}
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (s + 2))
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
     (X : TangentSpace I x) (tail : Fin s -> TangentSpace I x) :
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         s cov (metricTraceFirstTwoField (I := I) (M := M) g A) x (Fin.cons X tail) =
@@ -586,9 +586,9 @@ theorem metricTraceFirstTwoField_eq_sum {s : ℕ}
     Tensor0SSpace.eval
         (metricTraceFirstTwoField (I := I) (M := M) g A x) tail =
       metricTrace0S2InBasis (I := I)
-        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x)
+        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x)
         (fun k l : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E =>
-          DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+          DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
             (I := I) g x k l (extChartAt I x x))
         (A x) tail := by
   have hfield := metricTraceFirstTwoField_apply (I := I) (M := M) g A x
@@ -596,9 +596,9 @@ theorem metricTraceFirstTwoField_eq_sum {s : ℕ}
   change metricTraceFirstTwo0STensor (I := I) g (A x) tail = _
   rw [metricTraceFirstTwo0STensor_apply,
     metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x)
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x)
       (fun k l : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E =>
-        DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+        DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
           (I := I) g x k l (extChartAt I x x))
       (inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) g x)
@@ -613,7 +613,7 @@ theorem metricTraceFirstTwoField_add {s : ℕ}
       = metricTraceFirstTwoField (I := I) (M := M) g A
         + metricTraceFirstTwoField (I := I) (M := M) g B := by
   classical
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s
   refine DFunLike.ext _ _ fun x => ?_
   refine tensor0SSpace_ext (I := I) s x fun tail => ?_
   change Tensor0SSpace.eval
@@ -643,7 +643,7 @@ theorem metricTraceFirstTwoField_smul {s : ℕ}
     metricTraceFirstTwoField (I := I) (M := M) g (c • A)
       = c • metricTraceFirstTwoField (I := I) (M := M) g A := by
   classical
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s
   refine DFunLike.ext _ _ fun x => ?_
   refine tensor0SSpace_ext (I := I) s x fun tail => ?_
   change Tensor0SSpace.eval
@@ -677,7 +677,7 @@ theorem metricTraceFirstTwoField_domDomCongr_gen {s s' : ℕ}
       = Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e'
           (metricTraceFirstTwoField (I := I) (M := M) g A) := by
   classical
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s'
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s'
   refine DFunLike.ext _ _ fun x => ?_
   refine tensor0SSpace_ext (I := I) s' x fun tail => ?_
   change Tensor0SSpace.eval
@@ -737,19 +737,19 @@ theorem metricTraceFirstTwoField_product {k q : ℕ}
     (h : k + 2 + q = k + q + 2) :
     metricTraceFirstTwoField (I := I) (M := M) g
         (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (finCongr h)
-          (tensor0SField_product (∞ : WithTop ℕ∞) A B))
-      = tensor0SField_product (∞ : WithTop ℕ∞)
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B))
+      = tensor0SFieldProduct (∞ : WithTop ℕ∞)
           (metricTraceFirstTwoField (I := I) (M := M) g A) B := by
   classical
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (k + q)
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (k + q)
   refine DFunLike.ext _ _ fun x => ?_
   refine tensor0SSpace_ext (I := I) (k + q) x fun tail => ?_
   change Tensor0SSpace.eval
       (metricTraceFirstTwoField (I := I) (M := M) g
         (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (finCongr h)
-          (tensor0SField_product (∞ : WithTop ℕ∞) A B)) x) tail =
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B)) x) tail =
     Tensor0SSpace.eval
-      (tensor0SField_product (∞ : WithTop ℕ∞)
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞)
         (metricTraceFirstTwoField (I := I) (M := M) g A) B x) tail
   have fact1 : forall (X Y : TangentSpace I x),
       ((fun i_1 => metricTraceInput (I := I) X Y tail ((finCongr h) i_1)) ∘ Fin.castAdd q)
@@ -787,8 +787,8 @@ theorem metricTraceFirstTwoField_product {k q : ℕ}
   rw [metricTraceFirstTwoField_eq_sum, Tensor0SField.domDomCongr_apply]
   change metricTrace0S2InBasis _ _
       (Tensor0SSpace.domDomCongr
-        ((tensor0SField_product (∞ : WithTop ℕ∞) A B) x) (finCongr h)) tail =
-    tensor0SField_product (∞ : WithTop ℕ∞)
+        ((tensor0SFieldProduct (∞ : WithTop ℕ∞) A B) x) (finCongr h)) tail =
+    tensor0SFieldProduct (∞ : WithTop ℕ∞)
       (metricTraceFirstTwoField (I := I) (M := M) g A) B x tail
   rw [tensor0SField_product_apply]
   change metricTrace0S2InBasis _ _ _ _ =
@@ -814,7 +814,7 @@ theorem metricTraceFirstTwoField_zero {s : ℕ}
           (n := (∞ : WithTop ℕ∞)) (s + 2))
       = 0 := by
   classical
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s
   refine DFunLike.ext _ _ fun x => ?_
   refine tensor0SSpace_ext (I := I) s x fun tail => ?_
   change Tensor0SSpace.eval
@@ -941,7 +941,7 @@ theorem nablaRealizes_metricTraceFirstTwo {s : ℕ}
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (s + 2))
     (nablaA : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -954,13 +954,13 @@ theorem nablaRealizes_metricTraceFirstTwo {s : ℕ}
         (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (traceNablaShuffle s) nablaA)) := by
   classical
   intro X x slots
-  set basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+  set basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
     with hbasis
   set gInv : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
-    (fun k l => DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+    (fun k l => DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
       (I := I) g x k l (extChartAt I x x)) with hgInv
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis gInv :=
+  have hinv : MetricInverseInBasisGen (I := I) g x basis gInv :=
     inverseMetricFlatModelInChart_metricInverseInBasis_center
       (I := I) g x
   change Tensor0SSpace.eval

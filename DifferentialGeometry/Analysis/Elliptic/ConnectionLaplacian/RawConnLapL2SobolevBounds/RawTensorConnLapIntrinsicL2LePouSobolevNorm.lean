@@ -102,7 +102,7 @@ private lemma tensorPouSobolevNormSqSum_one_eq_finsetSum
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (T : SmoothCcTensor g r s) :
     tensorPouSobolevNormSqSum_one (I := I) (M := M) g T =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
             (Fin s → Fin (Module.finrank ℝ E)),
           ∑ j ∈ Finset.range 3,
@@ -119,7 +119,7 @@ private lemma tensorPouSobolevNormSqSum_one_eq_finsetSum
   let _ := hboundary
   classical
   unfold tensorPouSobolevNormSqSum_one
-  rw [tsum_eq_sum (s := chartAtlasPOU_finset (I := I) (M := M))]
+  rw [tsum_eq_sum (s := chartAtlasPOUFinset (I := I) (M := M))]
   intro α hα
   have hρ_zero : ∀ x : M,
       (chartAtlasPOU I M α : M → ℝ) x = 0 := fun x =>
@@ -647,7 +647,7 @@ theorem rawTensorConnLap_intrinsicL2_le_tensorPouSobolevNorm_sq
         C * (tensorPouSobolevNorm (I := I) (M := M) g 1 T₀) ^ 2 := by
   classical
   set n := Module.finrank ℝ E with hn_def
-  set S : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hS_def
+  set S : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have h_bridge_choose :
       ∀ α : M, ∃ CB : ℝ, 0 ≤ CB ∧
         ∀ T₀' : SmoothCcTensor g r s,

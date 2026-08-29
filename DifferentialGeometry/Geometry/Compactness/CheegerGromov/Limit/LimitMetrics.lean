@@ -551,8 +551,8 @@ variable [∀ j, RiemannianBundle (fun x : M j => TangentSpace I x)]
 variable [∀ j, IsRiemannianManifold I (M j)]
 variable [NeZero (Module.finrank ℝ E)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 include I in
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [∀ (j : ℕ), IsManifold I ∞ (M j)]
     [∀ (j : ℕ), SigmaCompactSpace (M j)] [∀ (j : ℕ), T2Space (M j)] [I.Boundaryless]
@@ -988,7 +988,7 @@ theorem diffNorm_change_le
   classical
   obtain ⟨bBase, hBaseON⟩ :=
     DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) gBase x
-  have hBaseInv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gBase x bBase
+  have hBaseInv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gBase x bBase
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
@@ -997,7 +997,7 @@ theorem diffNorm_change_le
     simpa [Tensor0SBundle.identityInvMetric, Tensor0SBundle.diagonalInvMetric] using h i j
   obtain ⟨bInf, hInfON⟩ :=
     DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) gInf x
-  have hInfInv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gInf x bInf
+  have hInfInv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gInf x bInf
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
@@ -1011,7 +1011,7 @@ theorem diffNorm_change_le
     intro y hy j hj1 hjp
     obtain ⟨b, hON⟩ :=
       DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) gBase y
-    have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gBase y b
+    have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gBase y b
         (Tensor0SBundle.identityInvMetric
           (Idx := Fin (Module.finrank Real (TangentSpace I y)))) := by
       have h := DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
@@ -1328,8 +1328,8 @@ theorem chainPrefix_zero_le
     (chainCompAssoc_eq (I := I) (Mf := M) Ψ j a b)]
   exact prefixTail_zero_le Φ Θ U hpre hnext hUK gMid g D hε x
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 omit [∀ (j : ℕ), SigmaCompactSpace (M j)] in
 theorem chain_image_open
@@ -1376,8 +1376,8 @@ theorem chain_image_open
   rw [chainComp_base (I := I) (Mf := M) Ψ b hbase j a] at hyball
   exact hyball
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
     [∀ j, SigmaCompactSpace (M j)] in
 theorem chain_image_ball
@@ -1417,8 +1417,8 @@ theorem tailBall_source
   apply (D0 k).source_sub
   exact Metric.mem_closedBall.mpr ((Metric.mem_ball.mp hx).le.trans hpow)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 theorem tailBall_image
     (b : ∀ j, M j)
@@ -1462,8 +1462,8 @@ theorem tailBall_image
   rw [chainComp_base (I := I) (Mf := M) Ψ b hbase (j₀ + n) 1] at hy'
   exact hy'
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 theorem tailClosed_image
     (b : ∀ j, M j)
@@ -1525,8 +1525,8 @@ theorem tailClosed_image
   rw [chainComp_base (I := I) (Mf := M) Ψ b hbase (j₀ + n) 1] at hy'
   exact hy'
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def tailBallSystem
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
@@ -1553,8 +1553,8 @@ noncomputable def tailBallSystem
     exact tailBall_image (I := I) b Ψ hbase g hnorm j₀ n (D₀ n 1) hy
   exact chainBallSystem (I := I) j₀ (tailBallOpen b j₀) Ψ hU hmap
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 theorem tailSystem_center
     (b : ∀ j, M j)
@@ -1595,8 +1595,8 @@ theorem tailSystem_center
     M (j₀ + n) → M ((j₀ + n) + 1)) (b (j₀ + n)) = b (j₀ + (n + 1))
   exact chainComp_base (I := I) (Mf := M) Ψ b hbase (j₀ + n) 1
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 theorem tailCenter_map
     (b : ∀ j, M j)
@@ -1633,8 +1633,8 @@ theorem tailCenter_map
         _ = tailCenter b j₀ (n + 1) :=
           tailSystem_center (I := I) b Ψ hbase g hnorm j₀ D₀ n
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 theorem tailCenter_incl
     (b : ∀ j, M j)
@@ -1667,8 +1667,8 @@ theorem tailCenter_incl
           S.toSeqSystem.incl_comp (Nat.le_succ n) (tailCenter b j₀ n)
         _ = S.toSeqSystem.incl 0 (tailCenter b j₀ 0) := ih
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 theorem tailSystem_compact
     [∀ j, ProperSpace (M j)]
@@ -1745,8 +1745,8 @@ theorem tailSystem_compact
       (Φ : M (j₀ + n) → M ((j₀ + n) + 1)) '' C)
     exact ⟨x, Metric.mem_closedBall.mpr (Metric.mem_ball.mp x.property).le, rfl⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 theorem tailMetricCocycle
     (b : ∀ j, M j)
@@ -1873,8 +1873,8 @@ theorem chainBall_source
   exact Metric.mem_closedBall.mpr (Metric.mem_ball.mp hx).le
 
 omit [NeZero (Module.finrank ℝ E)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] in
 theorem chainPullback_bdd
     (b : ∀ j, M j)
@@ -1974,8 +1974,8 @@ theorem chainPullback_bdd
     exact hb
 
 omit [NeZero (Module.finrank ℝ E)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_chain_limit
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
@@ -2053,8 +2053,8 @@ theorem exists_chain_data
     omega) c
 
 omit [NeZero (Module.finrank ℝ E)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_limits_diag
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
@@ -2187,8 +2187,8 @@ theorem exists_limits_diag
     (Geometry.isSigmaCompact_of_isOpen I (U n).isOpen)
   exact (hPφ n).choose_spec
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_limits_close
     (b : ∀ j, M j)
@@ -2398,8 +2398,8 @@ theorem half_ambient_le_tail
   rw [abs_le] at hbound'
   nlinarith [hbound'.2]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] [∀ j, SigmaCompactSpace (M j)] [∀ j, T2Space (M j)]
   [I.Boundaryless] [∀ j, IsRiemannianManifold I (M j)] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
@@ -2444,8 +2444,8 @@ theorem enorm_val_le_two
       (ENNReal.ofReal_le_ofReal hsqrt2) _
     _ = 2 * ‖v‖ₑ := by norm_num
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] [∀ j, SigmaCompactSpace (M j)] [∀ j, T2Space (M j)]
   [I.Boundaryless] [∀ j, IsRiemannianManifold I (M j)] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
@@ -2487,8 +2487,8 @@ theorem pathELength_val_le
   exact enorm_val_le_two b j₀ n gAmb gTail hAmbNorm (γ t)
     (mfderiv 𝓘(ℝ, ℝ) I γ t 1) (hlow _ _)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [∀ j, SigmaCompactSpace (M j)] [I.Boundaryless] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -2605,8 +2605,8 @@ theorem path_escape_core
   rw [hsplit]
   exact hRle
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [∀ j, SigmaCompactSpace (M j)] [I.Boundaryless] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -2644,8 +2644,8 @@ theorem mem_core_of_edist
     hγC hγ0 hγout
   exact (not_lt_of_ge hesc) hγlen
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [∀ j, SigmaCompactSpace (M j)] [I.Boundaryless] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -2696,8 +2696,8 @@ theorem baseRange_exhausts
   obtain ⟨x, _, hx⟩ := hcore
   exact ⟨x, hx⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [∀ j, SigmaCompactSpace (M j)] [I.Boundaryless] in
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -2737,8 +2737,8 @@ theorem finiteRange_exhausts
   exact (Manifold.riemannianEDist_triangle (I := I) (x := O) (y := z) (z := q)).trans
     (add_le_add le_rfl hq)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tailRangeExhausts
@@ -2840,8 +2840,8 @@ theorem tailRangeExhausts
     (gTail := gTail) (hgTail := hgTail) (g := g) (hnorm := hnorm) (O := O)
     (hcenter := hcenter) (hlow := hlow) (hfinite := hfinite) (z := z) (r := r) hr
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
 theorem tailLimitComplete
     [∀ j, ProperSpace (M j)]
@@ -3320,8 +3320,8 @@ def chainAmbientConv
   rw [← chainPullback_zero (I := I) Ψ g (U n) (hU n)]
   exact hn₀ n hn 0 K hK
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 def tailAmbientConv
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))
@@ -3393,8 +3393,8 @@ def tailAmbientConv
     (tailCenter b j₀ 0) g gTail hgTail
   exact tailFlatSup_lt (I := I) b j₀ Ψ g hU gInf hclose
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 def ballSystemOfData
     (b : ∀ j, M j) (r ε : ℕ → ℝ) (hr : ∀ j, 0 < r j) (hε : ∀ j, 0 ≤ ε j)
     (p : ℕ → ℕ)
@@ -3429,8 +3429,8 @@ def ballSystemOfData
         (hr j) le_rfl (hε j) (hgrow j) hdata hsource)
   exact ballSystem b r hr Ψ hsrc hmap
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def directedBallSystem
     (b : ∀ j, M j)
     (Ψ : ∀ j, PartialDiffeomorph I I (M j) (M (j + 1)) (∞ : WithTop ℕ∞))

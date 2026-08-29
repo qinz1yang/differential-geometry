@@ -78,8 +78,8 @@ omit [NeZero (Module.finrank Real E)] in
   let : T2Space (TangentBundle I Y.M) := Y.t2TangentBundle
   exact NormalCoordinates.framedMetric_zero (I := I) Y.metric c
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem radialEnorm_framed
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
     (v : E) :

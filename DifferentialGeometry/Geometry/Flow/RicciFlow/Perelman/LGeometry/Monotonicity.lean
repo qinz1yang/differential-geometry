@@ -27,8 +27,8 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank Real E)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem redLength_ray_K
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -137,8 +137,8 @@ noncomputable def lRedJac
     (Z : TangentSpace I x) (tau : Real) : Real :=
   Real.exp (lRedLog S T x Z tau)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRedLog_hasDeriv
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -186,8 +186,8 @@ theorem lRedLog_hasDeriv
   rw [hcoef] at hout
   with_unfolding_all exact hout
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRedJac_hasDeriv
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -205,8 +205,8 @@ theorem lRedJac_hasDeriv
           (Module.finrank Real E : Real) / (2 * tau))) tau := by
   with_unfolding_all exact (lRedLog_hasDeriv S hS T x htau hZ).exp
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRedLog_deriv_le
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -251,8 +251,8 @@ theorem lRedLog_deriv_le
   rw [(lExpLog_hasDeriv S hS T x htau hZ).deriv] at hbound
   linarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRedJac_deriv_le
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -297,8 +297,8 @@ theorem lRedJac_deriv_le
   rw [(lRedLog_hasDeriv S hS T x htau hZ).deriv] at hlog
   exact mul_nonpos_of_nonneg_of_nonpos (Real.exp_pos _).le hlog
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRedJac_deriv_le0
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -431,8 +431,8 @@ theorem lRedJac_deriv_le0
   · simpa only [alpha, b] using hIint
   · simpa only [alpha, b] using hRint
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRedJac_anti
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)

@@ -856,7 +856,7 @@ theorem hgLip_gSeqExt
       obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I)
         (refRes (I := I) Φ R k)
         (⟨x, hxU⟩ : SourceDomain (I := I) Φ k)
-      have hinv : MetricInverseInBasis_gen (I := I)
+      have hinv : MetricInverseInBasisGen (I := I)
           (refRes (I := I) Φ R k)
           (⟨x, hxU⟩ : SourceDomain (I := I) Φ k) basis
           (identityInvMetric (Idx := Fin (Module.finrank Real
@@ -871,7 +871,7 @@ theorem hgLip_gSeqExt
           - metricTensorField (I := I)
             ((gSeqExt (I := I) Φ R bf hsrc htgt k t).restrictOpen (I := I)
               (sourceOpen (I := I) Φ k))
-          = tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H) (I := I)
+          = tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H) (I := I)
               (M := SourceDomain (I := I) Φ k) (∞ : WithTop ℕ∞) χ' hχ'
               (metricTensorField (I := I) (srcMetric (I := I) Φ hsrc htgt k s)
                 - metricTensorField (I := I) (srcMetric (I := I) Φ hsrc htgt k t)) := by

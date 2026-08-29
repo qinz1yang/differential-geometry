@@ -230,12 +230,12 @@ lemma continuous_sqrt_g_inner_gradFun_self
         (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x))) := by
   have hcont := TangentBundle.continuous_g_inner_of_smooth_sections
     (I := I) (M := M) g
-    (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hf⟩)
-    (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hf⟩)
+    (DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨_, hf⟩)
+    (DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨_, hf⟩)
   have hcoe : (fun x : M => g.inner x
-        ((DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hf⟩ :
+        ((DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨_, hf⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hf⟩ :
+          ((DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) =
       (fun x : M => g.inner x
         (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g f x)

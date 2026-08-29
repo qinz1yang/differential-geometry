@@ -156,7 +156,7 @@ lemma innerModelCLMRS_smul_right
 
 private def bundleCLERS (r s : ℕ) (b : M) :
     TensorRSSpace r s I b ≃L[ℝ] TensorRSModel r s ℝ E :=
-  Tensor0SBundle.tensorRSSpace_continuousLinearEquiv
+  Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv
     (𝕜 := ℝ) (E := E) (I := I) (M := M) r s b
 
 private def bundleToModelCLMRS (r s : ℕ) (b : M) :
@@ -453,7 +453,7 @@ theorem tensorRSRiemannianInnerCLM_isVonNBounded
       {v : TensorRSSpace r s I b |
         tensorRSRiemannianInnerCLM (I := I) (M := M) g r s b v v < 1} := by
   set e : TensorRSSpace r s I b ≃L[ℝ] TensorRSModel r s ℝ E :=
-    Tensor0SBundle.tensorRSSpace_continuousLinearEquiv
+    Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv
       (𝕜 := ℝ) (E := E) (I := I) (M := M) r s b with he_def
   have hModel := innerModelRS_diagonal_sublevel_isVonNBounded
     (I := I) (M := M) g r s b
@@ -492,8 +492,8 @@ theorem tensorRSRiemannianInnerCLM_isVonNBounded
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 noncomputable def tensorRSRiemannianMetric
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     Bundle.RiemannianMetric (E := fun b : M => TensorRSSpace r s I b) where
@@ -524,7 +524,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 @[reducible]
-noncomputable def tensorRS_riemannianBundle
+noncomputable def tensorRSRiemannianBundle
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
   ⟨tensorRSRiemannianMetric (I := I) (M := M) g r s⟩

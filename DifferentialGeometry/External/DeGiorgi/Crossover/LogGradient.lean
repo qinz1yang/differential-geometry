@@ -26,7 +26,7 @@ variable {d : ℕ} [NeZero d]
 
 local notation "E" => EuclideanSpace ℝ (Fin d)
 local notation "Cmo" =>
-  ((volume.real (Metric.ball (0 : E) 1)) ^ (-(1 / 2 : ℝ)) * C_poinc_val d)
+  ((volume.real (Metric.ball (0 : E) 1)) ^ (-(1 / 2 : ℝ)) * CPoincVal d)
 
 /-! ### Logarithmic Gradient Bound for Supersolutions
 
@@ -56,7 +56,7 @@ Proof strategy:
 --   (1) Φ_ε(0) = 0
 --   (2) ContDiff ℝ ⊤ Φ_ε
 --   (3) |Φ_ε'| ≤ M_ε for some M_ε
--- These feed into sobolev_chain_rule / MemW1pWitness.comp_smooth_bounded.
+-- These feed into sobolev_chain_rule / MemW1pWitness.compSmoothBounded.
 
 /-- Smooth regularized reciprocal for the chain rule.
 
@@ -647,7 +647,7 @@ private theorem build_test_function_eps
             (mul_le_mul (hCφ' x) (hCg x) (norm_nonneg _) hCφ'_nn) (by norm_num)
       _ = 2 * Cφ' * Cg := by ring
   obtain ⟨C₁, hC₁_nn, hC₁⟩ := hφsq_grad_bdd
-  let hw_prod := hw_Φu.mul_smooth_bounded_p (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ
+  let hw_prod := hw_Φu.mulSmoothBoundedP (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ
     hφsq hC₀_nn hC₁_nn hC₀ hC₁
   set f_scaled := fun x => (1 / ε) * φ x ^ 2
   have hf_smooth : ContDiff ℝ (⊤ : ℕ∞) f_scaled := contDiff_const.mul hφsq
@@ -689,7 +689,7 @@ private theorem build_test_function_eps
     dsimp [f_scaled]
     exact (tsupport_smul_subset_right (fun _ : E => 1 / ε) (fun x => φ x ^ 2)).trans hφsq_sub
   let hw_f_univ : MemW1pWitness 2 f_scaled Set.univ :=
-    MemW1pWitness.of_contDiff_hasCompactSupport (p := 2) hf_smooth hf_cs
+    MemW1pWitness.ofContDiffHasCompactSupport (p := 2) hf_smooth hf_cs
   let hw_f : MemW1pWitness 2 f_scaled Ω :=
     hw_f_univ.restrict hΩ (by intro x hx; simp)
   have hprod_cs : HasCompactSupport (fun x => φ x ^ 2 * Φ (u x)) := by
@@ -739,14 +739,14 @@ private theorem build_test_function_eps
       hw_prod.weakGrad x i =
         φ x ^ 2 * (deriv Φ (u x) * hw_u.weakGrad x i) +
           (fderiv ℝ (fun y => φ y ^ 2) x) (EuclideanSpace.single i 1) * Φ (u x) := by
-    simp [hw_prod, hw_Φu, MemW1pWitness.mul_smooth_bounded_p,
+    simp [hw_prod, hw_Φu, MemW1pWitness.mulSmoothBoundedP,
       comp_smooth_bounded_witness, smul_eq_mul,
       mul_left_comm, mul_comm]
   have hf_grad :
       hw_f.weakGrad x i =
         (fderiv ℝ f_scaled x) (EuclideanSpace.single i 1) := by
     simp [hw_f, hw_f_univ, MemW1pWitness.restrict,
-      MemW1pWitness.of_contDiff_hasCompactSupport]
+      MemW1pWitness.ofContDiffHasCompactSupport]
   have hf_scaled_deriv :
       (fderiv ℝ f_scaled x) (EuclideanSpace.single i 1) =
         (1 / ε) * (fderiv ℝ (fun y => φ y ^ 2) x) (EuclideanSpace.single i 1) := by

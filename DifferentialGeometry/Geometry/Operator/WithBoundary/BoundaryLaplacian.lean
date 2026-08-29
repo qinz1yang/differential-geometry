@@ -30,7 +30,7 @@ def boundaryLaplacian
     {f : BoundaryManifold I M → ℝ}
     (hf : ContMDiff hI.boundaryI 𝓘(ℝ, ℝ) ∞ f) :
     BoundaryManifold I M → ℝ :=
-  Δ_g (I := hI.boundaryI) (inducedMetric (I := I) (M := M) g) ⟨_, hf⟩
+  ΔG (I := hI.boundaryI) (inducedMetric (I := I) (M := M) g) ⟨_, hf⟩
 
 omit [FiniteDimensional ℝ E] in
 @[simp] lemma boundaryLaplacian_def
@@ -39,7 +39,7 @@ omit [FiniteDimensional ℝ E] in
     (hf : ContMDiff hI.boundaryI 𝓘(ℝ, ℝ) ∞ f)
     (x : BoundaryManifold I M) :
     boundaryLaplacian (I := I) (M := M) g hf x =
-      Δ_g (I := hI.boundaryI) (inducedMetric (I := I) (M := M) g) ⟨_, hf⟩ x := rfl
+      ΔG (I := hI.boundaryI) (inducedMetric (I := I) (M := M) g) ⟨_, hf⟩ x := rfl
 
 omit [FiniteDimensional ℝ E] in
 theorem boundaryLaplacian_contMDiff

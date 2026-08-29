@@ -142,11 +142,11 @@ theorem exists_smooth_global_approx_of_unitBallExtension
       MemLp (unitBallExtension (d := d) u) (ENNReal.ofReal p) volume ∧
       (∀ i : Fin d, MemLp (fun x => Gext x i) (ENNReal.ofReal p) volume) ∧
       (∫⁻ x, (ENNReal.ofReal |unitBallExtension (d := d) u x|) ^ p ∂volume)
-        ≤ C_unitBallExtensionFun d *
+        ≤ CUnitBallExtensionFun d *
           ∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal |u x|) ^ p ∂volume ∧
       (∫⁻ x, (ENNReal.ofReal ‖Gext x‖) ^ p ∂volume)
         ≤ (∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal ‖hw.weakGrad x‖) ^ p ∂volume) +
-          C_unitBallExtensionGrad d p *
+          CUnitBallExtensionGrad d p *
             (∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal |u x|) ^ p ∂volume +
              ∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal ‖hw.weakGrad x‖) ^ p ∂volume) ∧
       ∃ Φ : ℕ → E → ℝ,
@@ -174,11 +174,11 @@ theorem exists_smooth_global_approx_of_unitBallExtension
         MemLp (unitBallExtension (d := d) (ψ n)) (ENNReal.ofReal p) volume ∧
         (∀ i : Fin d, MemLp (fun x => Gψ x i) (ENNReal.ofReal p) volume) ∧
         (∫⁻ x, (ENNReal.ofReal |unitBallExtension (d := d) (ψ n) x|) ^ p ∂volume)
-          ≤ C_unitBallExtensionFun d *
+          ≤ CUnitBallExtensionFun d *
             ∫⁻ x in B, (ENNReal.ofReal |ψ n x|) ^ p ∂volume ∧
         (∫⁻ x, (ENNReal.ofReal ‖Gψ x‖) ^ p ∂volume)
           ≤ (∫⁻ x in B, (ENNReal.ofReal ‖fderiv ℝ (ψ n) x‖) ^ p ∂volume) +
-            C_unitBallExtensionGrad d p *
+            CUnitBallExtensionGrad d p *
               (∫⁻ x in B, (ENNReal.ofReal |ψ n x|) ^ p ∂volume +
                ∫⁻ x in B, (ENNReal.ofReal ‖fderiv ℝ (ψ n) x‖) ^ p ∂volume) ∧
         ∃ Φ : ℕ → E → ℝ,
@@ -199,7 +199,7 @@ theorem exists_smooth_global_approx_of_unitBallExtension
   have hG_bound : ∀ n,
       (∫⁻ x, (ENNReal.ofReal ‖G n x‖) ^ p ∂volume)
         ≤ (∫⁻ x in B, (ENNReal.ofReal ‖fderiv ℝ (ψ n) x‖) ^ p ∂volume) +
-          C_unitBallExtensionGrad d p *
+          CUnitBallExtensionGrad d p *
             (∫⁻ x in B, (ENNReal.ofReal |ψ n x|) ^ p ∂volume +
              ∫⁻ x in B, (ENNReal.ofReal ‖fderiv ℝ (ψ n) x‖) ^ p ∂volume) :=
     fun n => (Classical.choose_spec (h_step n)).2.2.2.1
@@ -223,7 +223,7 @@ theorem exists_smooth_global_approx_of_unitBallExtension
   -- Function energy bound (doesn't need MemLp)
   have huExt_fun_bound :
       (∫⁻ x, (ENNReal.ofReal |unitBallExtension (d := d) u x|) ^ p ∂volume)
-        ≤ C_unitBallExtensionFun d *
+        ≤ CUnitBallExtensionFun d *
           ∫⁻ x in B, (ENNReal.ofReal |u x|) ^ p ∂volume := by
     have h0 := lintegral_rpow_abs_unitBallExtension_sub_le_local (d := d) (p := p)
       (by linarith : 0 < p) (u := u) (v := fun _ => 0)
@@ -306,7 +306,7 @@ theorem exists_smooth_global_approx_of_unitBallExtension
           (fun x => ψ nm.1 x - ψ nm.2 x) x‖) ^ p ∂volume ≤
           (∫⁻ x in B, (ENNReal.ofReal ‖fderiv ℝ (fun x => ψ nm.1 x - ψ nm.2 x) x‖) ^ p
             ∂volume) +
-          C_unitBallExtensionGrad d p *
+          CUnitBallExtensionGrad d p *
             (∫⁻ x in B, (ENNReal.ofReal |ψ nm.1 x - ψ nm.2 x|) ^ p ∂volume +
              ∫⁻ x in B, (ENNReal.ofReal ‖fderiv ℝ (fun x => ψ nm.1 x - ψ nm.2 x) x‖) ^ p
               ∂volume) :=
@@ -316,7 +316,7 @@ theorem exists_smooth_global_approx_of_unitBallExtension
         ∫⁻ x, (ENNReal.ofReal |G nm.1 x i - G nm.2 x i|) ^ p ∂volume ≤
           (∫⁻ x in B, (ENNReal.ofReal ‖fderiv ℝ (fun x => ψ nm.1 x - ψ nm.2 x) x‖) ^ p
             ∂volume) +
-          C_unitBallExtensionGrad d p *
+          CUnitBallExtensionGrad d p *
             (∫⁻ x in B, (ENNReal.ofReal |ψ nm.1 x - ψ nm.2 x|) ^ p ∂volume +
              ∫⁻ x in B, (ENNReal.ofReal ‖fderiv ℝ (fun x => ψ nm.1 x - ψ nm.2 x) x‖) ^ p
               ∂volume) :=
@@ -452,8 +452,8 @@ theorem exists_smooth_global_approx_of_unitBallExtension
         rw [ENNReal.zero_rpow_of_pos hp0]]
       exact hH_pair.ennrpow_const p
     -- Combine: bound = grad_pair + C * (fun_pair + grad_pair), all → 0
-    have hC_ne_top : C_unitBallExtensionGrad d p ≠ ⊤ := by
-      unfold C_unitBallExtensionGrad
+    have hC_ne_top : CUnitBallExtensionGrad d p ≠ ⊤ := by
+      unfold CUnitBallExtensionGrad
       exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top
         (ENNReal.rpow_ne_top_of_nonneg (by linarith) (by simp))
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds ?_
@@ -617,12 +617,12 @@ theorem exists_smooth_global_approx_of_unitBallExtension
     -- Define the RHS as a function of n
     let RHS : ℕ → ℝ≥0∞ := fun n =>
       (∫⁻ x in B, (ENNReal.ofReal ‖fderiv ℝ (ψ n) x‖) ^ p ∂volume) +
-        C_unitBallExtensionGrad d p *
+        CUnitBallExtensionGrad d p *
           (∫⁻ x in B, (ENNReal.ofReal |ψ n x|) ^ p ∂volume +
            ∫⁻ x in B, (ENNReal.ofReal ‖fderiv ℝ (ψ n) x‖) ^ p ∂volume)
     let RHS_lim : ℝ≥0∞ :=
       (∫⁻ x in B, (ENNReal.ofReal ‖hw.weakGrad x‖) ^ p ∂volume) +
-        C_unitBallExtensionGrad d p *
+        CUnitBallExtensionGrad d p *
           (∫⁻ x in B, (ENNReal.ofReal |u x|) ^ p ∂volume +
            ∫⁻ x in B, (ENNReal.ofReal ‖hw.weakGrad x‖) ^ p ∂volume)
     -- bound(ψ n) → bound(u)
@@ -867,8 +867,8 @@ theorem exists_smooth_global_approx_of_unitBallExtension
         convert hgradVec_norm_tendsto.ennrpow_const p using 1
         ext n
         exact hAn_eq n
-      have hC_ne_top : C_unitBallExtensionGrad d p ≠ ⊤ := by
-        unfold C_unitBallExtensionGrad
+      have hC_ne_top : CUnitBallExtensionGrad d p ≠ ⊤ := by
+        unfold CUnitBallExtensionGrad
         exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top
           (ENNReal.rpow_ne_top_of_nonneg (by linarith) (by simp))
       have hsum := hFn_tendsto.add hAn_tendsto
@@ -892,7 +892,7 @@ theorem exists_smooth_global_approx_of_unitBallExtension
 
 /-- Packaged explicit unit-ball `W^{1,p}` extension witness, assuming the single
 global smoothing theorem above. -/
-noncomputable def unitBallExtension_memW1pWitness
+noncomputable def unitBallExtensionMemW1pWitness
     {p : ℝ} (hp : 1 < p) {u : E → ℝ}
     (hw : MemW1pWitness (ENNReal.ofReal p) u (Metric.ball (0 : E) 1)) :
     MemW1pWitness (ENNReal.ofReal p) (unitBallExtension (d := d) u) Set.univ :=
@@ -917,11 +917,11 @@ theorem exists_unitBall_W1p_extension
       HasCompactSupport (unitBallExtension (d := d) u) ∧
       (∀ x ∈ Metric.ball (0 : E) 1, unitBallExtension (d := d) u x = u x) ∧
       (∫⁻ x, (ENNReal.ofReal |unitBallExtension (d := d) u x|) ^ p ∂volume)
-        ≤ C_unitBallExtensionFun d *
+        ≤ CUnitBallExtensionFun d *
           ∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal |u x|) ^ p ∂volume ∧
       (∫⁻ x, (ENNReal.ofReal ‖hwExt.weakGrad x‖) ^ p ∂volume)
         ≤ (∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal ‖hw.weakGrad x‖) ^ p ∂volume) +
-          C_unitBallExtensionGrad d p *
+          CUnitBallExtensionGrad d p *
             (∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal |u x|) ^ p ∂volume +
              ∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal ‖hw.weakGrad x‖) ^ p ∂volume) := by
   -- Build the witness directly from exists_smooth_global_approx (single Classical.choose)

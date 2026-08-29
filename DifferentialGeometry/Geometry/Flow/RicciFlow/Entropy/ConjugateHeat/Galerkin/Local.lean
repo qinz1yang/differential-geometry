@@ -1143,7 +1143,7 @@ theorem galPde_on
     hderiv.congr_deriv (hderivSeries.trans hseriesW)
   have hWscalar :
       TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) W.toSection x =
-        Δ_g (I := I) h ⟨_, hf⟩ x + (zeta : M → Real) x * f x := by
+        ΔG (I := I) h ⟨_, hf⟩ x + (zeta : M → Real) x * f x := by
     simp only [W, SmoothCcTensor.toSection_add, TensorRSField.scalar0_add,
       Pi.add_apply, rawLap_cc_scalar (I := I) (M := M) q U x,
       scalarLapDiff_eq (I := I) (M := M) q h U x,
@@ -1152,7 +1152,7 @@ theorem galPde_on
     ring
   have hlap :
       laplacianAt (I := I) (flowG (I := I) S) ((T : Real) - t) f x =
-        Δ_g (I := I) h ⟨_, hf⟩ x := by
+        ΔG (I := I) h ⟨_, hf⟩ x := by
     simpa only [h, flowG, SolutionOn.family] using
       (laplacianAt_eq_delta (I := I) (M := M)
         (flowG (I := I) S) ((T : Real) - t) hf (by rfl) x)

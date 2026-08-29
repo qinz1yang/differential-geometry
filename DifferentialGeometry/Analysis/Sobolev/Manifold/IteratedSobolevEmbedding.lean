@@ -270,7 +270,7 @@ lemma pOne_ge_one {p : ℝ} (hp_one : 1 ≤ p) (hp_dim : p < (d : ℝ)) :
   le_trans hp_one (pOne_ge_p hp_one hp_dim)
 
 noncomputable def subcriticalConstantBase (d : ℕ) [NeZero d] (p : ℝ) : ℝ :=
-  DeGiorgi.C_gns d p * (d : ℝ)
+  DeGiorgi.CGns d p * (d : ℝ)
 
 lemma subcriticalConstantBase_nonneg (d : ℕ) [NeZero d] (p : ℝ) :
     0 ≤ subcriticalConstantBase d p := by
@@ -327,7 +327,7 @@ theorem MemWkp_subcritical_iterated
       intro f hf_compact hf_supp hf
       have h_subcritical :
           eLpNorm f p_1_enn (volume.restrict Ω) ≤
-            ENNReal.ofReal (DeGiorgi.C_gns d p) * (d : ℝ≥0∞) *
+            ENNReal.ofReal (DeGiorgi.CGns d p) * (d : ℝ≥0∞) *
               iteratedWeakSobolevNorm (d := d) 1 p_enn f Ω := by
         have h := eLpNorm_p_star_le_const_mul_wkpNorm_of_memWkp (d := d)
           hp_one hp_dim hΩ_open (f := f) hf hf_compact hf_supp
@@ -343,7 +343,7 @@ theorem MemWkp_subcritical_iterated
         refine lt_of_le_of_lt h_subcritical ?_
         have h_wkp_lt_top : iteratedWeakSobolevNorm (d := d) 1 p_enn f Ω < ⊤ :=
           wkpNorm_lt_top_of_memWkp hf
-        have h_first : (ENNReal.ofReal (DeGiorgi.C_gns d p) : ℝ≥0∞) ≠ ⊤ := ENNReal.ofReal_ne_top
+        have h_first : (ENNReal.ofReal (DeGiorgi.CGns d p) : ℝ≥0∞) ≠ ⊤ := ENNReal.ofReal_ne_top
         have h_d_top : (d : ℝ≥0∞) ≠ ⊤ := ENNReal.natCast_ne_top _
         refine ENNReal.mul_lt_top ?_ h_wkp_lt_top
         exact ENNReal.mul_lt_top h_first.lt_top h_d_top.lt_top
@@ -355,10 +355,10 @@ theorem MemWkp_subcritical_iterated
       · rw [wkpNorm_zero]
         rw [subcriticalConstant_zero]
         unfold subcriticalConstantBase
-        have hC_nn : 0 ≤ DeGiorgi.C_gns d p := DeGiorgi.C_gns_nonneg d p
+        have hC_nn : 0 ≤ DeGiorgi.CGns d p := DeGiorgi.C_gns_nonneg d p
         have hd_nn : 0 ≤ (d : ℝ) := Nat.cast_nonneg _
-        rw [show ENNReal.ofReal (DeGiorgi.C_gns d p * (d : ℝ)) =
-            ENNReal.ofReal (DeGiorgi.C_gns d p) * (d : ℝ≥0∞) from by
+        rw [show ENNReal.ofReal (DeGiorgi.CGns d p * (d : ℝ)) =
+            ENNReal.ofReal (DeGiorgi.CGns d p) * (d : ℝ≥0∞) from by
           rw [ENNReal.ofReal_mul hC_nn, ENNReal.ofReal_natCast]]
         exact h_subcritical
   | succ k ih =>
@@ -377,7 +377,7 @@ theorem MemWkp_subcritical_iterated
           MemWkp.le_of_le (Nat.succ_le_succ (Nat.zero_le _)) hf
         have h_subcritical :
             eLpNorm f p_1_enn (volume.restrict Ω) ≤
-              ENNReal.ofReal (DeGiorgi.C_gns d p) * (d : ℝ≥0∞) *
+              ENNReal.ofReal (DeGiorgi.CGns d p) * (d : ℝ≥0∞) *
                 iteratedWeakSobolevNorm (d := d) 1 p_enn f Ω := by
           have h := eLpNorm_p_star_le_const_mul_wkpNorm_of_memWkp (d := d)
             hp_one hp_dim hΩ_open (f := f) hf1 hf_compact hf_supp
@@ -400,9 +400,9 @@ theorem MemWkp_subcritical_iterated
         · rw [MemWkp_zero]; exact ⟨hf_aem, h_eLp_lt_top⟩
         · rw [wkpNorm_zero, subcriticalConstant_zero]
           unfold subcriticalConstantBase
-          have hC_nn : 0 ≤ DeGiorgi.C_gns d p := DeGiorgi.C_gns_nonneg d p
-          rw [show ENNReal.ofReal (DeGiorgi.C_gns d p * (d : ℝ)) =
-              ENNReal.ofReal (DeGiorgi.C_gns d p) * (d : ℝ≥0∞) from by
+          have hC_nn : 0 ≤ DeGiorgi.CGns d p := DeGiorgi.C_gns_nonneg d p
+          rw [show ENNReal.ofReal (DeGiorgi.CGns d p * (d : ℝ)) =
+              ENNReal.ofReal (DeGiorgi.CGns d p) * (d : ℝ≥0∞) from by
             rw [ENNReal.ofReal_mul hC_nn, ENNReal.ofReal_natCast]]
           exact h_subcritical
       let g : Fin d → EuN → ℝ :=

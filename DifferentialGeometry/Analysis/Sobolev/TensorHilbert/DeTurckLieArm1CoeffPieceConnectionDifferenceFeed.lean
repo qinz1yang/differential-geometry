@@ -92,7 +92,7 @@ theorem riemannianMetric_inner_left_injective (g : SmoothRiemannianMetric I M) (
 private def lieArm1SharpModel (g₁ : SmoothRiemannianMetric I M) (x : M)
     (k : Fin (Module.finrank ℝ E)) : TangentSpace I x :=
   cometricLmodel (I := I) g₁ x
-    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) ((Module.finBasis ℝ E).cDualBasis k))
+    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) ((Module.finBasis ℝ E).cDualBasis k))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -232,9 +232,9 @@ theorem lieArm1Piece_toModel (g₀ g₁ : SmoothRiemannianMetric I M)
   refine Finset.sum_congr rfl fun k _ => ?_
   set w : Fin 4 → E := lieArm1TraceArg (I := I) g₁ σ' x m k with hw
   set D₂ : Tensor0SSpace 2 I x :=
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (w 0) with hD₂
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (w 0) with hD₂
   set om : Tensor0SSpace 1 I x :=
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) D₂ (w 1) with hom
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) D₂ (w 1) with hom
   set kE : E := tangentSpaceModelContinuousLinearEquiv (I := I) x
     (K x ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 2))
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 3))) with hkE

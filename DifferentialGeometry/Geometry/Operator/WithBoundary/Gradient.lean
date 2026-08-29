@@ -551,19 +551,19 @@ theorem gradFun_contMDiffOn_interior
     rw [hset_eq]
     exact hsm
 
-abbrev grad_g_with_boundary
+abbrev gradGWithBoundary
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) :
     ∀ x : M, TangentSpace I x :=
   gradFun (I := I) g f
 
 @[simp] lemma grad_g_with_boundary_apply
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M) :
-    grad_g_with_boundary (I := I) g f x = gradFun (I := I) g f x := rfl
+    gradGWithBoundary (I := I) g f x = gradFun (I := I) g f x := rfl
 
 theorem grad_g_with_boundary_contMDiffOn_interior (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
     ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-      (fun x : M => TotalSpace.mk' E x (grad_g_with_boundary (I := I) g f x))
+      (fun x : M => TotalSpace.mk' E x (gradGWithBoundary (I := I) g f x))
       (I.interior M) :=
   gradFun_contMDiffOn_interior (I := I) g hf
 
@@ -573,7 +573,7 @@ theorem tangentSectionAction_grad_g_with_boundary_eq_inner
     {f : M → ℝ}
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     tangentSectionAction (I := I) X f x =
-      g.inner x (X x) (grad_g_with_boundary (I := I) g f x) := by
+      g.inner x (X x) (gradGWithBoundary (I := I) g f x) := by
   rw [grad_g_with_boundary_apply]
   rw [inner_gradFun_right (I := I) g f x (X x)]
   rfl
@@ -584,37 +584,37 @@ theorem tangentSectionAction_grad_g_with_boundary_eq_inner_left
     {f : M → ℝ}
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     tangentSectionAction (I := I) X f x =
-      g.inner x (grad_g_with_boundary (I := I) g f x) (X x) := by
+      g.inner x (gradGWithBoundary (I := I) g f x) (X x) := by
   rw [tangentSectionAction_grad_g_with_boundary_eq_inner (I := I) g X x]
-  exact g.symm x (X x) (grad_g_with_boundary (I := I) g f x)
+  exact g.symm x (X x) (gradGWithBoundary (I := I) g f x)
 
 
 theorem inner_grad_g_with_boundary_symm
     (g : SmoothRiemannianMetric I M)
     {f h : M → ℝ} (x : M) :
-    g.inner x (grad_g_with_boundary (I := I) g f x)
-        (grad_g_with_boundary (I := I) g h x) =
-      g.inner x (grad_g_with_boundary (I := I) g h x)
-        (grad_g_with_boundary (I := I) g f x) :=
+    g.inner x (gradGWithBoundary (I := I) g f x)
+        (gradGWithBoundary (I := I) g h x) =
+      g.inner x (gradGWithBoundary (I := I) g h x)
+        (gradGWithBoundary (I := I) g f x) :=
   g.symm x _ _
 
 lemma support_grad_g_with_boundary_subset
     (g : SmoothRiemannianMetric I M) (f : M → ℝ) :
-    Function.support (fun x : M => grad_g_with_boundary (I := I) g f x) ⊆
+    Function.support (fun x : M => gradGWithBoundary (I := I) g f x) ⊆
       tsupport f :=
   support_gradFun_subset (I := I) g f
 
 lemma grad_g_with_boundary_eq_zero_of_eventuallyEq_zero
     (g : SmoothRiemannianMetric I M) {f : M → ℝ} {x : M}
     (hf : f =ᶠ[𝓝 x] (fun _ : M => (0 : ℝ))) :
-    grad_g_with_boundary (I := I) g f x = (0 : TangentSpace I x) :=
+    gradGWithBoundary (I := I) g f x = (0 : TangentSpace I x) :=
   gradFun_eq_zero_of_eventuallyEq_zero (I := I) g hf
 
 lemma hasCompactSupport_grad_g_with_boundary
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf_cs : HasCompactSupport f) :
     IsCompact
-      (tsupport (fun x : M => grad_g_with_boundary (I := I) g f x)) := by
+      (tsupport (fun x : M => gradGWithBoundary (I := I) g f x)) := by
   refine IsCompact.of_isClosed_subset (hf_cs : IsCompact (tsupport f))
     (isClosed_tsupport _) ?_
   refine closure_minimal ?_ (isClosed_tsupport _)

@@ -132,7 +132,7 @@ theorem component0S_product_gen
     (A : Tensor0SSpace s I x) (B : Tensor0SSpace q I x)
     (slots : Fin (s + q) -> Idx) :
     component0S (I := I) basis
-        (Bundle.continuousMultilinearMap.product_fun
+        (Bundle.continuousMultilinearMap.productFun
           (𝕜 := 𝕜) (F := E) (E := TangentSpace I) A B) slots =
       component0S (I := I) basis A (slots ∘ Fin.castAdd q) *
         component0S (I := I) basis B (slots ∘ Fin.natAdd s) := by
@@ -149,7 +149,7 @@ section Mixed
 variable {r s : Nat}
 variable (basis : Module.Basis Idx 𝕜 (TangentSpace I x))
 
-def componentRS_gen
+def componentRSGen
     (T : TensorRSSpace r s I x)
     (upper : Fin r -> Idx) (lower : Fin s -> Idx) : 𝕜 :=
   component0S (I := I) basis (T (basisTensor0S (I := I) basis upper)) lower
@@ -159,7 +159,7 @@ omit [DecidableEq Idx] in
 theorem componentRS_apply_gen
     (T : TensorRSSpace r s I x)
     (upper : Fin r -> Idx) (lower : Fin s -> Idx) :
-    componentRS_gen (I := I) basis T upper lower =
+    componentRSGen (I := I) basis T upper lower =
       (T (basisTensor0S (I := I) basis upper))
         (fun a => basis (lower a)) :=
   rfl
@@ -169,8 +169,8 @@ theorem componentRS_gen_congr_slots
     (T : TensorRSSpace r s I x)
     {upper upper' : Fin r -> Idx} {lower lower' : Fin s -> Idx}
     (hu : upper = upper') (hl : lower = lower') :
-    componentRS_gen (I := I) basis T upper lower =
-      componentRS_gen (I := I) basis T upper' lower' := by
+    componentRSGen (I := I) basis T upper lower =
+      componentRSGen (I := I) basis T upper' lower' := by
   rw [hu, hl]
 
 omit [DecidableEq Idx] in
@@ -180,7 +180,7 @@ theorem componentRS_apply_input_eq_sum
     component0S (I := I) basis (T input) lower =
       ∑ upper : Fin r -> Idx,
         component0S (I := I) basis input upper *
-          componentRS_gen (I := I) basis T upper lower := by
+          componentRSGen (I := I) basis T upper lower := by
   have hinput :
       (∑ upper : Fin r -> Idx,
         component0S (I := I) basis input upper • basisTensor0S (I := I) basis upper) =
@@ -195,7 +195,7 @@ theorem componentRS_apply_input_eq_sum
           rw [hinput]
     _ = ∑ upper : Fin r -> Idx,
         component0S (I := I) basis input upper *
-          componentRS_gen (I := I) basis T upper lower := by
+          componentRSGen (I := I) basis T upper lower := by
           let inputSum : Tensor0SSpace r I x :=
             ∑ upper : Fin r -> Idx,
               component0S (I := I) basis input upper •
@@ -203,7 +203,7 @@ theorem componentRS_apply_input_eq_sum
           change component0S (I := I) basis (T inputSum) lower =
             ∑ upper : Fin r -> Idx,
               component0S (I := I) basis input upper *
-                componentRS_gen (I := I) basis T upper lower
+                componentRSGen (I := I) basis T upper lower
           rw [← congrFun (coordMap0S_apply (I := I) basis (T inputSum)) lower]
           dsimp [inputSum]
           rw [map_sum]
@@ -213,8 +213,8 @@ omit [DecidableEq Idx] in
 theorem extRS_basis_gen
     {A B : TensorRSSpace r s I x}
     (h : ∀ upper : Fin r -> Idx, ∀ lower : Fin s -> Idx,
-      componentRS_gen (I := I) basis A upper lower =
-        componentRS_gen (I := I) basis B upper lower) :
+      componentRSGen (I := I) basis A upper lower =
+        componentRSGen (I := I) basis B upper lower) :
     A = B := by
   classical
   apply ContinuousLinearMap.ext
@@ -225,11 +225,11 @@ theorem extRS_basis_gen
     component0S (I := I) basis (A input) lower =
         ∑ upper : Fin r -> Idx,
           component0S (I := I) basis input upper *
-            componentRS_gen (I := I) basis A upper lower :=
+            componentRSGen (I := I) basis A upper lower :=
       componentRS_apply_input_eq_sum (I := I) basis A input lower
     _ = ∑ upper : Fin r -> Idx,
           component0S (I := I) basis input upper *
-            componentRS_gen (I := I) basis B upper lower := by
+            componentRSGen (I := I) basis B upper lower := by
       refine Finset.sum_congr rfl fun upper _ => ?_
       rw [h upper lower]
     _ = component0S (I := I) basis (B input) lower :=

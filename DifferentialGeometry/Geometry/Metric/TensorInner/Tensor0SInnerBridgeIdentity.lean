@@ -238,7 +238,7 @@ private theorem chartTensorInnerOnChartBasis_eq_chartTensorInnerPointwise_compos
     (g : SmoothRiemannianMetric I M) (α : M) (b : M) :
     ∀ (s : ℕ) (T S : Tensor0SModel s ℝ E),
       chartTensorInnerOnChartBasis (I := I) (M := M) s g α b T S =
-        chartTensorInnerPointwise_0s (I := I) (M := M) s g α b
+        chartTensorInnerPointwise0s (I := I) (M := M) s g α b
           (T.compContinuousLinearMap (fun _ : Fin s =>
             chartTrivializationLinearMapSymm (I := I) (M := M) α b))
           (S.compContinuousLinearMap (fun _ : Fin s =>
@@ -829,7 +829,7 @@ theorem tensorInnerPointwise_0s_bridge_identity
       b ∈ (trivializationAt E (TangentSpace I) α).baseSet →
       ∀ (T S : Tensor0SModel s ℝ E),
       covariantTensorInnerPointwise (I := I) (M := M) s g b T S =
-        chartTensorInnerPointwise_0s (I := I) (M := M) s g α b
+        chartTensorInnerPointwise0s (I := I) (M := M) s g α b
           (T.compContinuousLinearMap (fun _ : Fin s =>
             chartTrivializationLinearMapSymm (I := I) (M := M) α b))
           (S.compContinuousLinearMap (fun _ : Fin s =>

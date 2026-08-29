@@ -190,7 +190,7 @@ private theorem traceSucc_fib
   exact congrArg (Tensor0SSpace.toModel D)
     (traceSucc_tuple p
       (cometricLmodel (I := I) g x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis k)))
       ((Module.finBasis ℝ E) k) (Fin.cons (m 0) (Fin.tail m)))
 
@@ -278,7 +278,7 @@ private lemma combinedTrace42Model_apply_symbolic
       modelDoubleTrace (E := E) 2 L
           (ContinuousMultilinearMap.domDomCongr koszulSlotPerm D) mm =
         ∑ k : Fin (Module.finrank ℝ E),
-          D (Fin.cons (L (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          D (Fin.cons (L (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
               ![mm 0, mm 1, (Module.finBasis ℝ E) k]) := by
     intro mm

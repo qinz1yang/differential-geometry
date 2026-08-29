@@ -85,7 +85,7 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
       (∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 D x
           ![u, cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             w, (Module.finBasis ℝ E) k]) =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
@@ -96,14 +96,14 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
     rw [show (∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 D x
           ![u, cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             w, (Module.finBasis ℝ E) k]) =
       ∑ k : Fin (Module.finrank ℝ E),
         quadrilinearMapSlotBilinearAt (E := E) (unitModel (I := I) (M := M) g₀ 4 D x)
           1 3 (by decide) ![u, 0, w, 0]
           (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           ((Module.finBasis ℝ E) k) from
       Finset.sum_congr rfl (fun k _ => (hpack13 u w _ _).symm)]
@@ -114,7 +114,7 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
       unitModel (I := I) (M := M) g₀ 4 D x
         ![(chartModelBasis E) i, (chartModelBasis E) j,
           cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)),
           (Module.finBasis ℝ E) k]) =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
@@ -126,7 +126,7 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
         unitModel (I := I) (M := M) g₀ 4 D x
           ![(chartModelBasis E) i, (chartModelBasis E) j,
             cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             (Module.finBasis ℝ E) k]) =
       ∑ k : Fin (Module.finrank ℝ E),
@@ -134,7 +134,7 @@ private lemma lieArm2_operatorFieldApplication_value_invGram
           2 3 (by decide)
           ![(chartModelBasis E) i, (chartModelBasis E) j, 0, 0]
           (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           ((Module.finBasis ℝ E) k) from
       Finset.sum_congr rfl (fun k _ =>

@@ -46,7 +46,7 @@ lemma chartTensorInner_tensorTrivProj_eq_tensorInner_toFun
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (S : SmoothCcTensor g r s) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
         (tensorTrivProj (I := I) (M := M) g r s S α b)
         (tensorTrivProj (I := I) (M := M) g r s S α b) =
       tensorInnerPointwise (I := I) (M := M) g r s b

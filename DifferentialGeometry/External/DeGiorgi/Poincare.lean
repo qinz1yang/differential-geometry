@@ -14,12 +14,12 @@ variable {d : ℕ} [NeZero d]
 
 local notation "E" => EuclideanSpace ℝ (Fin d)
 
-noncomputable def C_poinc_val (d : ℕ) : ℝ :=
+noncomputable def CPoincVal (d : ℕ) : ℝ :=
   2 ^ (d + 1) * d
 
 omit [NeZero d] in
-theorem C_poinc_val_pos (hd : 0 < d) : 0 < C_poinc_val d := by
-  unfold C_poinc_val
+theorem C_poinc_val_pos (hd : 0 < d) : 0 < CPoincVal d := by
+  unfold CPoincVal
   positivity
 
 /-- Pointwise Euclidean norm of the classical gradient of a smooth scalar
@@ -1368,7 +1368,7 @@ theorem poincare_smooth_unitBall
     {u : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) :
     eLpNorm (fun x => u x - ⨍ y in Metric.ball (0 : E) 1, u y ∂volume)
       (ENNReal.ofReal p) (volume.restrict (Metric.ball (0 : E) 1)) ≤
-    ENNReal.ofReal (C_poinc_val d) *
+    ENNReal.ofReal (CPoincVal d) *
       eLpNorm (fun x => ‖fderiv ℝ u x‖) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball (0 : E) 1)) := by
   set B := Metric.ball (0 : E) 1
@@ -1765,9 +1765,9 @@ theorem poincare_smooth_unitBall
         gcongr
     _ = ENNReal.ofReal (C_rep * M) * eLpNorm g (ENNReal.ofReal p) μ := by
         rw [← mul_assoc, ← ENNReal.ofReal_mul (by positivity)]
-    _ ≤ ENNReal.ofReal (C_poinc_val d) * eLpNorm g (ENNReal.ofReal p) μ := by
+    _ ≤ ENNReal.ofReal (CPoincVal d) * eLpNorm g (ENNReal.ofReal p) μ := by
         gcongr
-        simp only [C_rep, M, C_poinc_val]
+        simp only [C_rep, M, CPoincVal]
         have hd_pos : (0 : ℝ) < d := Nat.cast_pos.mpr (NeZero.pos d)
         have hvol_pos : (0 : ℝ) < (volume (Metric.ball (0 : E) 1)).toReal :=
           ENNReal.toReal_pos (measure_ball_pos volume 0 one_pos).ne' measure_ball_lt_top.ne

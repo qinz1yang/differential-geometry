@@ -24,7 +24,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 
-noncomputable def tensorRSChartE_section_repr (r s : ℕ) (α : M)
+noncomputable def tensorRSChartESectionRepr (r s : ℕ) (α : M)
     (T : Π b : M, TensorRSSpace r s I b) (b : M) : TensorRSModel r s ℝ E :=
   (trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b (T b)
@@ -32,7 +32,7 @@ noncomputable def tensorRSChartE_section_repr (r s : ℕ) (α : M)
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 @[simp] lemma tensorRSChartE_section_repr_apply (r s : ℕ) (α : M)
     (T : Π b : M, TensorRSSpace r s I b) (b : M) :
-    tensorRSChartE_section_repr (I := I) r s α T b =
+    tensorRSChartESectionRepr (I := I) r s α T b =
       (trivializationAt (TensorRSModel r s ℝ E)
           (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b (T b) :=
   rfl
@@ -40,11 +40,11 @@ omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 lemma tensorRSChartE_section_repr_add (r s : ℕ) (α : M)
     (T₁ T₂ : Π b : M, TensorRSSpace r s I b) :
-    tensorRSChartE_section_repr (I := I) r s α (T₁ + T₂) =
-      tensorRSChartE_section_repr (I := I) r s α T₁ +
-        tensorRSChartE_section_repr (I := I) r s α T₂ := by
+    tensorRSChartESectionRepr (I := I) r s α (T₁ + T₂) =
+      tensorRSChartESectionRepr (I := I) r s α T₁ +
+        tensorRSChartESectionRepr (I := I) r s α T₂ := by
   funext b
-  unfold tensorRSChartE_section_repr
+  unfold tensorRSChartESectionRepr
   change (trivializationAt (TensorRSModel r s ℝ E)
         (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
         ((T₁ + T₂) b) = _
@@ -56,10 +56,10 @@ lemma tensorRSChartE_section_repr_add (r s : ℕ) (α : M)
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 lemma tensorRSChartE_section_repr_smul (r s : ℕ) (α : M) (c : ℝ)
     (T : Π b : M, TensorRSSpace r s I b) :
-    tensorRSChartE_section_repr (I := I) r s α (c • T) =
-      c • tensorRSChartE_section_repr (I := I) r s α T := by
+    tensorRSChartESectionRepr (I := I) r s α (c • T) =
+      c • tensorRSChartESectionRepr (I := I) r s α T := by
   funext b
-  unfold tensorRSChartE_section_repr
+  unfold tensorRSChartESectionRepr
   change (trivializationAt (TensorRSModel r s ℝ E)
         (fun y : M => TensorRSSpace r s I y) α).continuousLinearMapAt ℝ b
         ((c • T) b) = _
@@ -78,7 +78,7 @@ noncomputable def tensorRSIntrinsicChartCLM (r s : ℕ) (α : M)
     TangentSpace I b →L[ℝ] TensorRSSpace r s I b :=
   (tensorRSChartFiberFromModel (I := I) r s α b).comp
     ((fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α T ∘ (extChartAt I α).symm)
+        (tensorRSChartESectionRepr (I := I) r s α T ∘ (extChartAt I α).symm)
         (extChartAt I α b)).comp
       (trivToE (I := I) α b))
 
@@ -88,7 +88,7 @@ lemma tensorRSIntrinsicChartCLM_apply (r s : ℕ) (α : M)
     tensorRSIntrinsicChartCLM (I := I) r s α T b v =
       tensorRSChartFiberFromModel (I := I) r s α b
         (fderiv ℝ
-          (tensorRSChartE_section_repr (I := I) r s α T ∘ (extChartAt I α).symm)
+          (tensorRSChartESectionRepr (I := I) r s α T ∘ (extChartAt I α).symm)
           (extChartAt I α b) (trivToE (I := I) α b v)) := by
   classical
   unfold tensorRSIntrinsicChartCLM
@@ -98,33 +98,33 @@ omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 lemma tensorRSIntrinsicChartCLM_add_section (r s : ℕ) (α : M)
     (T₁ T₂ : Π b : M, TensorRSSpace r s I b) (b : M)
     (h₁ : DifferentiableAt ℝ
-      (tensorRSChartE_section_repr (I := I) r s α T₁ ∘ (extChartAt I α).symm)
+      (tensorRSChartESectionRepr (I := I) r s α T₁ ∘ (extChartAt I α).symm)
       (extChartAt I α b))
     (h₂ : DifferentiableAt ℝ
-      (tensorRSChartE_section_repr (I := I) r s α T₂ ∘ (extChartAt I α).symm)
+      (tensorRSChartESectionRepr (I := I) r s α T₂ ∘ (extChartAt I α).symm)
       (extChartAt I α b)) :
     tensorRSIntrinsicChartCLM (I := I) r s α (T₁ + T₂) b =
       tensorRSIntrinsicChartCLM (I := I) r s α T₁ b +
         tensorRSIntrinsicChartCLM (I := I) r s α T₂ b := by
   classical
   have hsum_pull :
-      (tensorRSChartE_section_repr (I := I) r s α (T₁ + T₂) ∘
+      (tensorRSChartESectionRepr (I := I) r s α (T₁ + T₂) ∘
           (extChartAt I α).symm) =
-        (tensorRSChartE_section_repr (I := I) r s α T₁ ∘
+        (tensorRSChartESectionRepr (I := I) r s α T₁ ∘
             (extChartAt I α).symm) +
-          (tensorRSChartE_section_repr (I := I) r s α T₂ ∘
+          (tensorRSChartESectionRepr (I := I) r s α T₂ ∘
             (extChartAt I α).symm) := by
     funext y
     exact congrFun (tensorRSChartE_section_repr_add (I := I) r s α T₁ T₂)
       ((extChartAt I α).symm y)
   have hfd : fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α (T₁ + T₂) ∘
+        (tensorRSChartESectionRepr (I := I) r s α (T₁ + T₂) ∘
           (extChartAt I α).symm) (extChartAt I α b) =
       fderiv ℝ
-          (tensorRSChartE_section_repr (I := I) r s α T₁ ∘
+          (tensorRSChartESectionRepr (I := I) r s α T₁ ∘
             (extChartAt I α).symm) (extChartAt I α b) +
         fderiv ℝ
-          (tensorRSChartE_section_repr (I := I) r s α T₂ ∘
+          (tensorRSChartESectionRepr (I := I) r s α T₂ ∘
             (extChartAt I α).symm) (extChartAt I α b) := by
     rw [hsum_pull]
     exact fderiv_add h₁ h₂
@@ -141,24 +141,24 @@ omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 lemma tensorRSIntrinsicChartCLM_smul_section (r s : ℕ) (α : M)
     (c : ℝ) (T : Π b : M, TensorRSSpace r s I b) (b : M)
     (hT : DifferentiableAt ℝ
-      (tensorRSChartE_section_repr (I := I) r s α T ∘ (extChartAt I α).symm)
+      (tensorRSChartESectionRepr (I := I) r s α T ∘ (extChartAt I α).symm)
       (extChartAt I α b)) :
     tensorRSIntrinsicChartCLM (I := I) r s α (c • T) b =
       c • tensorRSIntrinsicChartCLM (I := I) r s α T b := by
   classical
   have hsmul_pull :
-      (tensorRSChartE_section_repr (I := I) r s α (c • T) ∘
+      (tensorRSChartESectionRepr (I := I) r s α (c • T) ∘
           (extChartAt I α).symm) =
-        c • (tensorRSChartE_section_repr (I := I) r s α T ∘
+        c • (tensorRSChartESectionRepr (I := I) r s α T ∘
           (extChartAt I α).symm) := by
     funext y
     exact congrFun (tensorRSChartE_section_repr_smul (I := I) r s α c T)
       ((extChartAt I α).symm y)
   have hfd : fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α (c • T) ∘
+        (tensorRSChartESectionRepr (I := I) r s α (c • T) ∘
           (extChartAt I α).symm) (extChartAt I α b) =
       c • fderiv ℝ
-          (tensorRSChartE_section_repr (I := I) r s α T ∘
+          (tensorRSChartESectionRepr (I := I) r s α T ∘
             (extChartAt I α).symm) (extChartAt I α b) := by
     rw [hsmul_pull]
     exact fderiv_const_smul hT c
@@ -192,7 +192,7 @@ lemma tangentSlotCLM_other (n : ℕ) {b : M}
   unfold tangentSlotCLM
   simp [h]
 
-noncomputable def tangentCompCLML_E (n : ℕ) (b : M)
+noncomputable def tangentCompCLMLE (n : ℕ) (b : M)
     (Φ : Fin n → (TangentSpace I b →L[ℝ] TangentSpace I b)) :
     ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ →L[ℝ]
       ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ :=
@@ -203,11 +203,11 @@ noncomputable def tangentCompCLML_E (n : ℕ) (b : M)
 noncomputable def tensorSlotSubstCLM (n : ℕ) (b : M)
     (Φ : Fin n → (TangentSpace I b →L[ℝ] TangentSpace I b)) :
     Tensor0SSpace n I b →L[ℝ] Tensor0SSpace n I b :=
-  ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) n b).symm
+  ((tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b).symm
       : ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ →L[ℝ]
           Tensor0SSpace n I b).comp
-    ((tangentCompCLML_E (I := I) (M := M) n b Φ).comp
-      ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) n b)
+    ((tangentCompCLMLE (I := I) (M := M) n b Φ).comp
+      ((tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b)
           : Tensor0SSpace n I b →L[ℝ]
             ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ))
 
@@ -218,7 +218,7 @@ lemma tensorSlotSubstCLM_apply (n : ℕ) (b : M)
     Tensor0SSpace.eval (tensorSlotSubstCLM (I := I) n b Φ τ) m =
       Tensor0SSpace.eval τ (fun i => Φ i (m i)) := by
   classical
-  unfold tensorSlotSubstCLM tangentCompCLML_E
+  unfold tensorSlotSubstCLM tangentCompCLMLE
   rfl
 
 noncomputable def chartTensorRSInputSlotCorrection (r s : ℕ)
@@ -419,10 +419,10 @@ lemma chartTensorRSCovariantDerivative_add (r s : ℕ)
     (T₁ T₂ : Π b : M, TensorRSSpace r s I b)
     (X : Π b : M, TangentSpace I b) (b : M)
     (h₁ : DifferentiableAt ℝ
-      (tensorRSChartE_section_repr (I := I) r s α T₁ ∘ (extChartAt I α).symm)
+      (tensorRSChartESectionRepr (I := I) r s α T₁ ∘ (extChartAt I α).symm)
       (extChartAt I α b))
     (h₂ : DifferentiableAt ℝ
-      (tensorRSChartE_section_repr (I := I) r s α T₂ ∘ (extChartAt I α).symm)
+      (tensorRSChartESectionRepr (I := I) r s α T₂ ∘ (extChartAt I α).symm)
       (extChartAt I α b)) :
     chartTensorRSCovariantDerivative (I := I) r s g α (T₁ + T₂) X b =
       chartTensorRSCovariantDerivative (I := I) r s g α T₁ X b
@@ -471,7 +471,7 @@ lemma chartTensorRSCovariantDerivative_smul (r s : ℕ)
     (T : Π b : M, TensorRSSpace r s I b)
     (X : Π b : M, TangentSpace I b) (b : M)
     (hT : DifferentiableAt ℝ
-      (tensorRSChartE_section_repr (I := I) r s α T ∘ (extChartAt I α).symm)
+      (tensorRSChartESectionRepr (I := I) r s α T ∘ (extChartAt I α).symm)
       (extChartAt I α b)) :
     chartTensorRSCovariantDerivative (I := I) r s g α (c • T) X b =
       c • chartTensorRSCovariantDerivative (I := I) r s g α T X b := by

@@ -191,9 +191,9 @@ theorem hasWeakRiemannianGradLp_congr_ae
         (fun x : M => g.inner x (G x) (X x)) := by
       filter_upwards [hG] with x hx
       rw [hx]
-    have hRHS : (fun x : M => u' x * divergence_g (I := I) g X x)
+    have hRHS : (fun x : M => u' x * divergenceG (I := I) g X x)
         =ᵐ[riemannianVolumeMeasure I M g]
-        (fun x : M => u x * divergence_g (I := I) g X x) := by
+        (fun x : M => u x * divergenceG (I := I) g X x) := by
       filter_upwards [hu] with x hx
       rw [hx]
     rw [integral_congr_ae hLHS, integral_congr_ae hRHS]

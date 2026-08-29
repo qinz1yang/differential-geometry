@@ -46,7 +46,7 @@ private lemma input_slot_pulled_eq_kernel_repr_eventually
       (fun y : E =>
         inputSlotChartKernel (I := I) g r s α B.toFun k
           ((extChartAt I α).symm y)
-          ((tensorRSChartE_section_repr (I := I) r s α
+          ((tensorRSChartESectionRepr (I := I) r s α
             (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm) y)) := by
   classical
   have hU_open :
@@ -79,7 +79,7 @@ private lemma input_slot_pulled_eq_kernel_repr_eventually
         ((extChartAt I α).symm y) k) =
     inputSlotChartKernel (I := I) g r s α B.toFun k
       ((extChartAt I α).symm y)
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
         (fun y' : M => T.toSection y') ((extChartAt I α).symm y))
   exact h_factor
 
@@ -100,7 +100,7 @@ private lemma output_slot_pulled_eq_kernel_repr_eventually
       (fun y : E =>
         outputSlotChartKernel (I := I) g r s α B.toFun l
           ((extChartAt I α).symm y)
-          ((tensorRSChartE_section_repr (I := I) r s α
+          ((tensorRSChartESectionRepr (I := I) r s α
             (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm) y)) := by
   classical
   have hU_open :
@@ -133,7 +133,7 @@ private lemma output_slot_pulled_eq_kernel_repr_eventually
         ((extChartAt I α).symm y) l) =
     outputSlotChartKernel (I := I) g r s α B.toFun l
       ((extChartAt I α).symm y)
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
         (fun y' : M => T.toSection y') ((extChartAt I α).symm y))
   exact h_factor
 

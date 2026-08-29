@@ -435,8 +435,8 @@ theorem lK_sq
     _ = ∫ rho in (0 : Real)..b ^ 2, k rho := by
       simpa [k] using hsub
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [SigmaCompactSpace M] in
 theorem lLagMul_deriv
@@ -471,8 +471,8 @@ theorem lLagMul_deriv
   apply hscaled.congr_deriv
   ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [SigmaCompactSpace M] in
 theorem lK_energy_eq
@@ -502,8 +502,8 @@ theorem lK_energy_eq
   rw [lRegAction, lK]
   linarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 theorem lRayLag_int
     (S : SolutionOn (I := I) (M := M) D)
@@ -532,8 +532,8 @@ theorem lRayLag_int
     simpa only [U] using lRegDomain_seg S T x Z hbdom hs.1 hs.2
   exact (hlag.continuousOn.mono hseg).intervalIntegrable_of_Icc hb.le
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [SigmaCompactSpace M] in
 theorem lRayHam_int
@@ -593,8 +593,8 @@ theorem lRayHam_int
   rw [hpoint']
   ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [SigmaCompactSpace M] in
 theorem lK_ray_energy

@@ -78,11 +78,11 @@ theorem laplacian_exponentialTimeRescale
     (rate center : ℝ) (u : ℝ → M → ℝ)
     (hu : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × M => u p.1 p.2)) (t : ℝ) (x : M) :
-    Δ_g (I := I) g
+    ΔG (I := I) g
         (smoothScalarSlice (I := I) g (exponentialTimeRescale rate center u)
           (contMDiff_exponentialTimeRescale rate center u hu) t).toContMDiffMap x =
       Real.exp (rate * t - center) *
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x := by
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x := by
   let ut := smoothScalarSlice (I := I) g u hu t
   let vt := smoothScalarSlice (I := I) g (exponentialTimeRescale rate center u)
     (contMDiff_exponentialTimeRescale rate center u hu) t
@@ -96,7 +96,7 @@ theorem laplacian_exponentialTimeRescale
   exact laplacian_const_smul (I := I) (LeviCivita (I := I) g) g
     (Real.exp (rate * t - center))
     (fun y => ut.smooth.mdifferentiable (by simp) y)
-    ((grad_g (I := I) g ut.toContMDiffMap).mdifferentiable x)
+    ((gradG (I := I) g ut.toContMDiffMap).mdifferentiable x)
 
 theorem exponential_time_rescale_supersolution
     (g : SmoothRiemannianMetric I M)
@@ -107,9 +107,9 @@ theorem exponential_time_rescale_supersolution
     (hpos : ∀ t x, 0 < u t x)
     {t : ℝ} {x : M}
     (hpde :
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
-    Δ_g (I := I) g
+    ΔG (I := I) g
         (smoothScalarSlice (I := I) g (exponentialTimeRescale rate center u)
           (contMDiff_exponentialTimeRescale rate center u hu) t).toContMDiffMap x ≤
       deriv (fun s => exponentialTimeRescale rate center u s x) t := by

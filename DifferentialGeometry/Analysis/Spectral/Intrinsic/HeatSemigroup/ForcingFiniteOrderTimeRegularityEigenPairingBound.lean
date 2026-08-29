@@ -45,11 +45,11 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 private local instance tensorRSModelNormedAddCommGroup_local :
     NormedAddCommGroup (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup 0 2
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup 0 2
 
 private local instance tensorRSModelNormedSpace_local :
     NormedSpace ℝ (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace 0 2
+  Tensor0SBundle.tensorRSModelNormedSpace 0 2
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -349,10 +349,10 @@ private theorem contMDiffWithinAt_curriedSection_prod_ofOrder_local {N : WithTop
       (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)) N
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)
         (E := fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace n I y) p.1
-        (tensor0S_curry (I := I) (M := M) n p.1 (T p))) s p₀ := by
+        (tensor0SCurry (I := I) (M := M) n p.1 (T p))) s p₀ := by
   let _ : TopologicalSpace (TotalSpace (Tensor0SBundle.Tensor0SModel (n + 1) ℝ E)
       (fun y : M => Tensor0SBundle.Tensor0SSpace (n + 1) I y)) :=
-    tensor0SBundle_topology (n + 1)
+    tensor0SBundleTopology (n + 1)
   rw [Bundle.contMDiffWithinAt_totalSpace
     (F := E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)
     (E := fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace n I y)
@@ -382,7 +382,7 @@ private theorem contMDiffWithinAt_curriedSection_prod_ofOrder_local {N : WithTop
       (fun _ : M => T p) p₀.1 p.1 hb
     change (trivializationAt (E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)
         (fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace n I y) p₀.1
-        ⟨p.1, tensor0S_curry (I := I) (M := M) n p.1 (T p)⟩).2 =
+        ⟨p.1, tensor0SCurry (I := I) (M := M) n p.1 (T p)⟩).2 =
       (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (n + 1) => E) ℝ)
         ((trivializationAt (Tensor0SBundle.Tensor0SModel (n + 1) ℝ E)
           (fun y : M => Tensor0SBundle.Tensor0SSpace (n + 1) I y) p₀.1 ⟨p.1, T p⟩).2)
@@ -391,7 +391,7 @@ private theorem contMDiffWithinAt_curriedSection_prod_ofOrder_local {N : WithTop
       (fun _ : M => T p₀) p₀.1 p₀.1 (mem_baseSet_trivializationAt _ _ _)
     change (trivializationAt (E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)
         (fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace n I y) p₀.1
-        ⟨p₀.1, tensor0S_curry (I := I) (M := M) n p₀.1 (T p₀)⟩).2 =
+        ⟨p₀.1, tensor0SCurry (I := I) (M := M) n p₀.1 (T p₀)⟩).2 =
       (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (n + 1) => E) ℝ)
         ((trivializationAt (Tensor0SBundle.Tensor0SModel (n + 1) ℝ E)
           (fun y : M => Tensor0SBundle.Tensor0SSpace (n + 1) I y) p₀.1 ⟨p₀.1, T p₀⟩).2)
@@ -459,18 +459,18 @@ private theorem contMDiffWithinAt_section_apply_prod_ofOrder_local {N : WithTop 
         (fun p : M × ℝ =>
           TotalSpace.mk' (Tensor0SBundle.Tensor0SModel n ℝ E)
             (E := fun x : M => Tensor0SBundle.Tensor0SSpace n I x) p.1
-            ((tensor0S_curry (I := I) (M := M) n p.1 (T p)) (v 0 p))) s p₀ :=
+            ((tensor0SCurry (I := I) (M := M) n p.1 (T p)) (v 0 p))) s p₀ :=
       ContMDiffWithinAt.clm_bundle_apply (𝕜 := ℝ) (n := N)
         (F₁ := E) (F₂ := Tensor0SBundle.Tensor0SModel n ℝ E)
         (E₁ := fun x : M => TangentSpace I x)
         (E₂ := fun x : M => Tensor0SBundle.Tensor0SSpace n I x)
         (IM := I.prod 𝓘(ℝ, ℝ)) (IB := I)
-        (b := Prod.fst) (ϕ := fun p : M × ℝ => tensor0S_curry (I := I) (M := M) n p.1 (T p))
+        (b := Prod.fst) (ϕ := fun p : M × ℝ => tensor0SCurry (I := I) (M := M) n p.1 (T p))
         (v := fun p : M × ℝ => v 0 p)
         hCurry (hv 0)
     have hRec := contMDiffWithinAt_section_apply_prod_ofOrder_local n
       (s := s) (p₀ := p₀)
-      (fun p : M × ℝ => (tensor0S_curry (I := I) (M := M) n p.1 (T p)) (v 0 p))
+      (fun p : M × ℝ => (tensor0SCurry (I := I) (M := M) n p.1 (T p)) (v 0 p))
       hApplied
       (fun (i : Fin n) (p : M × ℝ) => v i.succ p)
       (fun i => hv i.succ)
@@ -508,14 +508,14 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T)),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) N
         (fun p : M × ℝ =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) n g α p.1 (TT p) (SS p))
+          chartTensorInnerPointwise0s (I := I) (M := M) n g α p.1 (TT p) (SS p))
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
   intro n
   induction n with
   | zero =>
       intro TT SS hT hS
       have heq : (fun p : M × ℝ =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) 0 g α p.1 (TT p) (SS p)) =
+          chartTensorInnerPointwise0s (I := I) (M := M) 0 g α p.1 (TT p) (SS p)) =
           fun p : M × ℝ =>
             ((TT p) (fun i => Fin.elim0 i)) * ((SS p) (fun i => Fin.elim0 i)) := by
         funext p
@@ -549,12 +549,12 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder_local
   | succ n ih =>
       intro TT SS hT hS
       have heq : (fun p : M × ℝ =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) (n + 1) g α p.1 (TT p) (SS p)) =
+          chartTensorInnerPointwise0s (I := I) (M := M) (n + 1) g α p.1 (TT p) (SS p)) =
           fun p : M × ℝ =>
             ∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
                 (chartGramMatrix (I := I) g α p.1)⁻¹ i j *
-                  chartTensorInnerPointwise_0s (I := I) (M := M) n g α p.1
+                  chartTensorInnerPointwise0s (I := I) (M := M) n g α p.1
                     ((TT p).curryLeft ((chartModelBasis E) i))
                     ((SS p).curryLeft ((chartModelBasis E) j)) := by
         funext p
@@ -761,7 +761,7 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
   have hCR : ∀ α : M, ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, Tensor0SBundle.TensorRSModel 0 2 ℝ E)
       ((kk : ℕ) : WithTop ℕ∞)
       (fun p : M × ℝ =>
-        DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr (I := I) 0 2 α
+        DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) 0 2 α
           (fun z : M => (Sfam p.2).toSection z) p.1)
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
     intro α p hp
@@ -798,10 +798,10 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
         Bundle.Trivialization.continuousLinearMapAt_apply,
         Bundle.Trivialization.coe_linearMapAt_of_mem _ hpbase]
   have hChartCommute : ∀ (α : M) (x : M), x ∈ (chartAt H α).source → ∀ t ∈ Set.Icc (0 : ℝ) T,
-      DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr (I := I) 0 2 α
+      DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) 0 2 α
           (fun z : M => Tensor0SBundle.TensorRSSpace.ofModel (jetD z t)) x =
         iteratedDerivWithin j
-          (fun s => DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+          (fun s => DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
             (I := I) 0 2 α (fun z : M => (Sfam s).toSection z) x)
           (Set.Icc (0 : ℝ) T) t := by
     intro α x hx t ht
@@ -809,25 +809,25 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
     set Φ : Tensor0SBundle.TensorRSModel 0 2 ℝ E →L[ℝ] Tensor0SBundle.TensorRSModel 0 2 ℝ E :=
       ((trivializationAt (Tensor0SBundle.TensorRSModel 0 2 ℝ E)
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 2 I y) α).continuousLinearMapAt ℝ x).comp
-        ((Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) 0 2 x).symm
+        ((Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) 0 2 x).symm
           : Tensor0SBundle.TensorRSModel 0 2 ℝ E →L[ℝ] Tensor0SBundle.TensorRSSpace 0 2 I x)
       with hΦ
     have hΦeq : ∀ s : ℝ, Φ ((Sfam s).toFun x) =
-        DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+        DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
           (I := I) 0 2 α (fun z : M => (Sfam s).toSection z) x := by
       intro s
       rw [hΦ, ContinuousLinearMap.comp_apply,
         DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply]
-      have hsymm : ((Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) 0 2 x).symm
+      have hsymm : ((Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) 0 2 x).symm
           : Tensor0SBundle.TensorRSModel 0 2 ℝ E →L[ℝ] Tensor0SBundle.TensorRSSpace 0 2 I x)
           ((Sfam s).toFun x) = (Sfam s).toSection x := by
-        change (Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) 0 2 x).symm
-            ((Tensor0SBundle.tensorRSSpace_continuousLinearEquiv (I := I) 0 2 x)
+        change (Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) 0 2 x).symm
+            ((Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv (I := I) 0 2 x)
               ((Sfam s).toSection x)) = (Sfam s).toSection x
-        exact (Tensor0SBundle.tensorRSSpace_continuousLinearEquiv
+        exact (Tensor0SBundle.tensorRSSpaceContinuousLinearEquiv
           (I := I) 0 2 x).symm_apply_apply _
       rw [hsymm]
-    have hΦLHS : DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+    have hΦLHS : DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
           (I := I) 0 2 α (fun z : M => Tensor0SBundle.TensorRSSpace.ofModel (jetD z t)) x =
         Φ (jetD x t) := by
       rw [DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr_apply, hΦ,
@@ -843,20 +843,20 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
   have hChartJet : ∀ α : M, ContMDiffOn (I.prod 𝓘(ℝ, ℝ))
       𝓘(ℝ, Tensor0SBundle.TensorRSModel 0 2 ℝ E) ((0 : ℕ) : WithTop ℕ∞)
       (fun p : M × ℝ =>
-        DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr (I := I) 0 2 α
+        DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) 0 2 α
           (fun z : M => Tensor0SBundle.TensorRSSpace.ofModel (jetD z p.2)) p.1)
       ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
     intro α
     have hCRj : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, Tensor0SBundle.TensorRSModel 0 2 ℝ E)
         ((0 + j : ℕ) : WithTop ℕ∞)
         (fun p : M × ℝ =>
-          DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr (I := I) 0 2 α
+          DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr (I := I) 0 2 α
             (fun z : M => (Sfam p.2).toSection z) p.1)
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) :=
       (hCR α).of_le (by exact_mod_cast (by omega : 0 + j ≤ kk))
     have hvecjet := vec_iteratedPartialSnd_set_contMDiffOn_Icc_finiteOrder
       (V := Tensor0SBundle.TensorRSModel 0 2 ℝ E) (U := (chartAt H α).source) hT
-      (fun x s => DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+      (fun x s => DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
         (I := I) 0 2 α (fun z : M => (Sfam s).toSection z) x) j 0 hCRj
     refine hvecjet.congr ?_
     intro p hp
@@ -934,7 +934,7 @@ private theorem smoothCcTensorPath_timeJet_selfPairing_continuousOn
     have hbridge : ∀ p ∈ (chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T,
         DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
             (jetD p.1 p.2) (jetD p.1 p.2) =
-          chartTensorInnerPointwise_0s (I := I) (M := M) (0 + 2) g₀ α p.1
+          chartTensorInnerPointwise0s (I := I) (M := M) (0 + 2) g₀ α p.1
             (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 (jetD p.1 p.2))
             (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 (jetD p.1 p.2)) := by
       rintro ⟨y, u⟩ ⟨hy, _⟩

@@ -63,8 +63,8 @@ private theorem lRegState_contOn
   · intro s hs
     exact (halpha.2.2 s hs).2.2.1
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRegWitness_eq
@@ -172,8 +172,8 @@ theorem lRegWitness_eq
   intro s hs
   exact congrArg TotalSpace.proj (hsub hs).1
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRegSol_eqOn
@@ -304,8 +304,8 @@ theorem lRegSol_eqOn
   intro s hs
   exact congrArg TotalSpace.proj (hsub hs).1
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem lRegData_congr
@@ -371,8 +371,8 @@ theorem lRegData_congr
   refine ⟨heta.1, hmd, hdiff, ?_⟩
   rw [hcov, heta.2.2.2, hpos, hvel]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem exists_lPhaseFlow
@@ -490,8 +490,8 @@ theorem exists_lPhaseFlow
       (Phi (z, s)).1 ∈ interior (extChartAt I x0).target
     exact hmem
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem exists_lPhaseAt
@@ -648,8 +648,8 @@ theorem exists_lPhaseAt
       (Phi (z, s)).1 ∈ interior (extChartAt I x0).target
     exact hmem
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem exists_lPhaseComp
@@ -861,8 +861,8 @@ theorem lPhaseSeed_vel
         (I := I) (M := M) hgamma x0 hsrc
   simpa only [Function.comp_def, lVelocity] using hcoord.symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_lRegFamily
@@ -1022,8 +1022,8 @@ theorem exists_lRegFamily
         (lVelocity (I := I) gamma s) := by
       rw [hfield.eq_of_nhds]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRegFamily_step_of
@@ -1318,8 +1318,8 @@ theorem lRegFamily_step_of
       ((hcurves Z (hWV hZ)).2.2 s hsJ)
   · exact lRegData_congr S T s (hbetaEta s hsK) (hetaReg Z hZ s hsK)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRegFamily_step
@@ -1364,8 +1364,8 @@ theorem lRegFamily_step
       (by simpa only [z0] using hz0U) Phi hPhi0 hPhiSmooth hPhiDeriv hPhiMap
   exact ⟨epsilon, hepsilon, W, hWopen, hZ0W, hWV, beta, hbeta, hcurves'⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRegFamily_extend
@@ -1678,8 +1678,8 @@ theorem lRegCurve_eqIcc
   intro s hs
   exact heq ⟨by linarith [hs.1], by linarith [hs.2]⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRegCurve_smooth
@@ -1704,8 +1704,8 @@ theorem lRegCurve_smooth
   exact lRegCurve_eqOn S hS T hKopen hKconn h0K
     (hcurves p.1 hp'.1) hp'.2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRegCurve_smoothAt
@@ -1743,8 +1743,8 @@ theorem lRegJointDom_open
   exact ⟨fun s => alpha (q.1, s), K, hKopen, hKconn, h0K, hq.2,
     hcurves q.1 hq.1⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRegCurve_smoothOn
@@ -1756,8 +1756,8 @@ theorem lRegCurve_smoothOn
   intro p hp
   exact (lRegCurve_smooth S hS T x hp).contMDiffWithinAt
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRegCurve_c1On
@@ -1839,8 +1839,8 @@ noncomputable def lExp
     (x : M) (Z : TangentSpace I x) (tau : Real) : M :=
   lRegCurve S T x Z (Real.sqrt tau)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem lExp_vel_sqrt
@@ -1931,8 +1931,8 @@ theorem lExpPosDom_open
     reparam ⁻¹' lRegJointDom S T x)
   exact hopen
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lExp_smoothOn
@@ -1956,8 +1956,8 @@ theorem lExp_smoothOn
   simpa only [lExp, reparam, Function.comp_def] using
     hcomp.contMDiffWithinAt
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_lExpFamily

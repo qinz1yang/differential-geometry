@@ -409,8 +409,8 @@ private lemma chartLeviCivitaParallelCLM_chartBasisVecFiber_opNorm_le_factors
         C_Jinv * C_χ * (C_J * C_Jinv * ‖(chartModelBasis E) j‖) := by ring
   linarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem chartLeviCivitaParallelCLM_chartBasisVec_opNorm_isBounded_on_pouTsupport
     (g : SmoothRiemannianMetric I M) (α : M) :
     letI cg : Bundle.ContinuousRiemannianMetric E (TangentSpace I : M → Type _) :=
@@ -481,21 +481,21 @@ private lemma tensorSlotSubstCLM_apply_norm_le (n : ℕ) (b : M)
   classical
   have hsubst_eq :
       tensorSlotSubstCLM (I := I) n b Φ x =
-        (tensor0SSpace_continuousLinearEquiv (I := I) (M := M) n b).symm
+        (tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b).symm
           ((ContinuousMultilinearMap.compContinuousLinearMapL
               (𝕜 := ℝ) (E := fun _ : Fin n => E) (F := ℝ) Φ)
-            ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) n b) x)) := by
-    change ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) n b).symm
+            ((tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b) x)) := by
+    change ((tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b).symm
           : ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ →L[ℝ]
               Tensor0SSpace n I b).comp
-        ((tangentCompCLML_E (I := I) (M := M) n b Φ).comp
-          ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) n b)
+        ((tangentCompCLMLE (I := I) (M := M) n b Φ).comp
+          ((tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b)
             : Tensor0SSpace n I b →L[ℝ]
               ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ)) x =
-        (tensor0SSpace_continuousLinearEquiv (I := I) (M := M) n b).symm
+        (tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b).symm
           ((ContinuousMultilinearMap.compContinuousLinearMapL
               (𝕜 := ℝ) (E := fun _ : Fin n => E) (F := ℝ) Φ)
-            ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) n b) x))
+            ((tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b) x))
     rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
     rfl
   rw [hsubst_eq]
@@ -508,22 +508,22 @@ private lemma tensorSlotSubstCLM_apply_norm_le (n : ℕ) (b : M)
     ContinuousMultilinearMap.norm_compContinuousLinearMapL_le
       (𝕜 := ℝ) (E := fun _ : Fin n => E) ℝ Φ
   have hCLEx_nn :
-      0 ≤ ‖(tensor0SSpace_continuousLinearEquiv (I := I) (M := M) n b) x‖ :=
+      0 ≤ ‖(tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b) x‖ :=
     norm_nonneg _
   have hCLM_le :
       ‖(ContinuousMultilinearMap.compContinuousLinearMapL
             (𝕜 := ℝ) (E := fun _ : Fin n => E) (F := ℝ) Φ)
-          ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) n b) x)‖ ≤
+          ((tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b) x)‖ ≤
         ‖ContinuousMultilinearMap.compContinuousLinearMapL
             (𝕜 := ℝ) (E := fun _ : Fin n => E) (F := ℝ) Φ‖ *
-          ‖(tensor0SSpace_continuousLinearEquiv (I := I) (M := M) n b) x‖ :=
+          ‖(tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b) x‖ :=
     ContinuousLinearMap.le_opNorm _ _
   have hCLM_le' :
       ‖(ContinuousMultilinearMap.compContinuousLinearMapL
             (𝕜 := ℝ) (E := fun _ : Fin n => E) (F := ℝ) Φ)
-          ((tensor0SSpace_continuousLinearEquiv (I := I) (M := M) n b) x)‖ ≤
+          ((tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b) x)‖ ≤
         (∏ i : Fin n, ‖Φ i‖) *
-          ‖(tensor0SSpace_continuousLinearEquiv (I := I) (M := M) n b) x‖ :=
+          ‖(tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b) x‖ :=
     hCLM_le.trans (mul_le_mul_of_nonneg_right hopBound hCLEx_nn)
   rw [tensor0SSpace_continuousLinearEquiv_norm_apply (𝕜 := ℝ) (E := E)
       (I := I) (M := M) n b x] at hCLM_le'

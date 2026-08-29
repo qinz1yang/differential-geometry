@@ -73,8 +73,8 @@ lemma radialJacobi_li
   rw [hfield]
   exact hmapped
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem radial_wronsk_zero
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]

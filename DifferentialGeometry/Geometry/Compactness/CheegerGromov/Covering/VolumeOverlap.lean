@@ -76,9 +76,9 @@ theorem ricci_dim1_bddBelow (h1 : Module.finrank ℝ E = 1)
 
 end Dim1
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
-def volInput_of_bg
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+def volInputOfBg
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (bg : SeqBoundedGeometry (I := I) X)
     (hd : InjRadiusDecayInput (I := I) X) (hreal : hd.RealizesEdist)
@@ -176,7 +176,7 @@ def volInput_of_bg
   exact segBall_card (I := I) (X.obj k).metric hEnorm hq hRic hr hcap
     centers hsep' z J hJz'
 
-def packInput_of_bg
+def packInputOfBg
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (bg : SeqBoundedGeometry (I := I) X)
     (hd : InjRadiusDecayInput (I := I) X) (hreal : hd.RealizesEdist)
@@ -189,7 +189,7 @@ def packInput_of_bg
   A := fun r =>
     if hr : 0 ≤ r then
       let vc :=
-        (volInput_of_bg (I := I) X bg hd hreal hcpl hconn
+        (volInputOfBg (I := I) X bg hd hreal hcpl hconn
           (r + 1) (by linarith)).1
       vc.Imult (r / hd.lambda D r)
     else
@@ -203,7 +203,7 @@ def packInput_of_bg
       have hs_ne : s ≠ 0 := ne_of_gt hs
       have hr0 : 0 < r + 1 := by linarith
       let out :=
-        volInput_of_bg (I := I) X bg hd hreal hcpl hconn (r + 1) hr0
+        volInputOfBg (I := I) X bg hd hreal hcpl hconn (r + 1) hr0
       let vc : VolumeComparisonInput (I := I) X := out.1
       have hvc : vc.dist = hd.dist := out.2
       have hmul_eq : (r / s) * s = r := div_mul_cancel₀ r hs_ne

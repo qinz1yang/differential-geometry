@@ -420,7 +420,7 @@ private theorem jointTotalSpace0S_smulScalar_local {d : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) p.1 (c p • A p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -445,11 +445,11 @@ private theorem dLieEvalScalar_section_contMDiff
     (U : ContMDiffSection I (Tensor0SBundle.Tensor0SModel 0 ℝ E) ∞
       (fun x : M => Tensor0SBundle.Tensor0SSpace 0 I x)) :
     ContMDiff I 𝓘(ℝ, ℝ) ∞
-      (fun x : M => Tensor0SBundle.tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) x (U x)) := by
+      (fun x : M => Tensor0SBundle.tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) x (U x)) := by
   have h := TensorMultilinear.contMDiff_section_apply (I := I) (M := M) (n := 0)
     (fun x => U x) U.contMDiff (fun i => i.elim0) (fun i => i.elim0)
   refine h.congr (fun x => ?_)
-  rw [Tensor0SBundle.tensor0SSpace_evalScalar, ContinuousLinearMap.comp_apply,
+  rw [Tensor0SBundle.tensor0SSpaceEvalScalar, ContinuousLinearMap.comp_apply,
     ContinuousMultilinearMap.apply_apply]
   exact congrArg _ (Subsingleton.elim _ _)
 
@@ -477,7 +477,7 @@ private theorem dLieEmbedRS_section_contMDiff {d : ℕ}
   intro U
   have hscalar := dLieEvalScalar_section_contMDiff (I := I) U
   have hsmul := ContMDiff.smul_section
-    (f := fun x : M => Tensor0SBundle.tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) x (U x))
+    (f := fun x : M => Tensor0SBundle.tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) x (U x))
     (s := fun x : M => A x) hscalar hA
   refine hsmul.congr (fun x => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel d ℝ E)
@@ -553,12 +553,12 @@ private theorem dLiePack0S_family_jointContMDiffOn {d : ℕ} {S : Set ℝ}
   · intro U
     have hscalar : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
         (fun p : M × ℝ =>
-          Tensor0SBundle.tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) p.1 (U p.1))
+          Tensor0SBundle.tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) p.1 (U p.1))
         ((Set.univ : Set M) ×ˢ S) :=
       (dLieEvalScalar_section_contMDiff (I := I) U).comp_contMDiffOn contMDiffOn_fst
     have hsmul := jointTotalSpace0S_smulScalar_local (I := I) (d := d) (S := S)
       (fun p : M × ℝ =>
-        Tensor0SBundle.tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) p.1 (U p.1))
+        Tensor0SBundle.tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) p.1 (U p.1))
       hscalar A hA
     refine hsmul.congr (fun p _ => ?_)
     rfl
@@ -904,7 +904,7 @@ private theorem dLieDiagTrace_eval (g₁ : SmoothRiemannianMetric I M) (p : ℕ)
   rw [Tensor0SBundle.Tensor0SSpace.eval_sum]
   refine Finset.sum_congr rfl (fun e _ => ?_)
   rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
-    (T := (Tensor0SBundle.tensor0S_curry (I := I) (M := M) (p + 1) x D)
+    (T := (Tensor0SBundle.tensor0SCurry (I := I) (M := M) (p + 1) x D)
       (smoothOrthoFrame (I := I) g₁ x e x))
     (v0 := smoothOrthoFrame (I := I) g₁ x e x) (vs := u)]
   rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
@@ -1647,7 +1647,7 @@ private theorem dLieWEndoA_apply_jointContMDiffOn (g₀ : SmoothRiemannianMetric
   have happ := ContMDiffOn.clm_bundle_apply (b := Prod.fst) hsharpField hι
   refine happ.congr (fun p hp => ?_)
   refine congrArg (fun t => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1 t) ?_
-  have hform : Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 p.1 (Z p.1)
+  have hform : Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 p.1 (Z p.1)
       ((show Tensor0SBundle.Tensor0SSpace 0 I p.1 →L[ℝ]
           Tensor0SBundle.Tensor0SSpace 2 I p.1 from
         (covGrad (I := I) (M := M) g₀ 0 1 (F p.2)).toSection p.1)
@@ -1664,7 +1664,7 @@ private theorem dLieWEndoA_apply_jointContMDiffOn (g₀ : SmoothRiemannianMetric
       funext j
       refine Fin.cases rfl (fun j => j.elim0) j
     have e1 : Tensor0SBundle.Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 p.1 (Z p.1)
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 p.1 (Z p.1)
           ((show Tensor0SBundle.Tensor0SSpace 0 I p.1 →L[ℝ]
               Tensor0SBundle.Tensor0SSpace 2 I p.1 from
             (covGrad (I := I) (M := M) g₀ 0 1 (F p.2)).toSection p.1)
@@ -1742,7 +1742,7 @@ private theorem dLieWEndoB_apply_jointContMDiffOn (g₀ : SmoothRiemannianMetric
   have hι2 := interiorProductField_jointContMDiffOn_vecJoint (I := I) (s := 1)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (X := fun p : M × ℝ => Z p.1) hZjoint
-    (α := fun p : M × ℝ => Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 2 p.1
+    (α := fun p : M × ℝ => Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 2 p.1
       ((PDE.DeTurck.deTurckVF (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg : Π b : M, TangentSpace I b) p.1)
       (metricConnectionDifferenceLoweredFib (I := I)
@@ -1752,8 +1752,8 @@ private theorem dLieWEndoB_apply_jointContMDiffOn (g₀ : SmoothRiemannianMetric
     (inverseMetricSharpField_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ') hι2
   refine hsharp.congr (fun p hp => ?_)
   refine congrArg (fun t => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1 t) ?_
-  have hform : Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 p.1 (Z p.1)
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 2 p.1
+  have hform : Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 p.1 (Z p.1)
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 2 p.1
         ((PDE.DeTurck.deTurckVF (I := I)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg : Π b : M, TangentSpace I b) p.1)
         (metricConnectionDifferenceLoweredFib (I := I)
@@ -1772,8 +1772,8 @@ private theorem dLieWEndoB_apply_jointContMDiffOn (g₀ : SmoothRiemannianMetric
       funext j
       refine Fin.cases rfl (fun j => j.elim0) j
     have e1 : Tensor0SBundle.Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 p.1 (Z p.1)
-          (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 2 p.1
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 p.1 (Z p.1)
+          (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 2 p.1
             ((PDE.DeTurck.deTurckVF (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) g_bg :
                 Π b : M, TangentSpace I b) p.1)

@@ -286,7 +286,7 @@ theorem mixed01_connLap
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from
           connLaplacianMixed (E := E) (I := I) (M := M) g 0 1 S.toSection x)
           (unitZeroSec (I := I) (M := M) x)) =
-      connLaplacian_oneForm (I := I) g (ccTensorOneForm (I := I) g S) x := by
+      connLaplacianOneForm (I := I) g (ccTensorOneForm (I := I) g S) x := by
   classical
   let w : ContMDiffSection I (Tensor0SModel 1 ℝ E) ∞
       (fun y : M => Tensor0SSpace 1 I y) :=
@@ -316,7 +316,7 @@ theorem mixed01_connLap
 omit [CompactSpace M] [SigmaCompactSpace M] in
 theorem sharp_connLap
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 1) (x : M) :
-    connLaplacian_vector (I := I) g
+    connLaplacianVector (I := I) g
         (fun y : M => inverseMetricSharpFib (I := I) g y
           (unitEvalSection (I := I) (M := M) g 1 S y)) x =
       inverseMetricSharpFib (I := I) g x

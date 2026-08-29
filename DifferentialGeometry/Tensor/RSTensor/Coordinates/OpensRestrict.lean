@@ -94,7 +94,7 @@ noncomputable def restrictOpen0S {E : Type*} [NormedAddCommGroup E] [NormedSpace
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := V) (n := (∞ : WithTop ℕ∞)) s :=
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  letI := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := V) s
   { toFun := fun x =>
       Tensor0SBundle.Tensor0SSpace.ofModel (I := I) (x := x)

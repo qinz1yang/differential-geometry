@@ -30,7 +30,7 @@ theorem paraNablaRmNormSq
         (paraSolution (I := I) S τ R hR hτ) 1 s x =
       (R⁻¹) ^ 3 *
         nablaKRm04NormSqIntrinsic S 1 (paraTime τ R s) x := by
-  let := tensor0SBundle_topology
+  let := tensor0SBundleTopology
     (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4
   have hconn :
       (paraSolution (I := I) S τ R hR hτ).family.connection s =

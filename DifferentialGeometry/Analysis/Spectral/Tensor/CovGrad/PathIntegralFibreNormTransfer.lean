@@ -77,7 +77,7 @@ theorem tensorPointwiseNorm_smul
     tensorPointwiseNorm (I := I) (M := M) g r s x (a • S) =
       |a| * tensorPointwiseNorm (I := I) (M := M) g r s x S := by
   have : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    Tensor0SBundle.tensorRSModel_normedSpace r s
+    Tensor0SBundle.tensorRSModelNormedSpace r s
   unfold tensorPointwiseNorm
   rw [tensorInnerPointwise_smul_left, tensorInnerPointwise_smul_right]
   rw [show a * (a * tensorInnerPointwise (I := I) (M := M) g r s x S S) =
@@ -114,7 +114,7 @@ theorem tensorPointwiseNorm_continuous
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) :
     Continuous (tensorPointwiseNorm (I := I) (M := M) g r s x) := by
   have : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    Tensor0SBundle.tensorRSModel_normedSpace r s
+    Tensor0SBundle.tensorRSModelNormedSpace r s
   have : FiniteDimensional ℝ (TensorRSModel r s ℝ E) :=
     Tensor0SBundle.tensorRSModel_finiteDimensional r s
   set b : TensorRSModel r s ℝ E → TensorRSModel r s ℝ E → ℝ :=

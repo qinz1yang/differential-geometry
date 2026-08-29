@@ -421,7 +421,7 @@ theorem ricciTensor_polar
   rw [hp1, hp2, h_sym]
   ring
 
-def smoothCandidate_identification_target
+def smoothCandidateIdentificationTarget
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
     Prop :=
   gradInnerLaplacianCandidateUnconditional (I := I) (M := M) g φ
@@ -431,7 +431,7 @@ def smoothCandidate_identification_target
 
 theorem smoothCase_via_candidate_identification
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g)
-    (h_identify : smoothCandidate_identification_target
+    (h_identify : smoothCandidateIdentificationTarget
       (I := I) (M := M) g φ v) :
     gradInnerCLM (I := I) (M := M) g φ
         (smoothToH1Compl (I := I) (M := M) g v) =
@@ -441,7 +441,7 @@ theorem smoothCase_via_candidate_identification
             (smoothToH1Compl_mem_laplacianDomainPow_two
               (I := I) (M := M) g v))) := by
   rw [gradInnerCLM_smoothToH1Compl_eq_H1ComplToLp_resolvent_smoothCandidate]
-  unfold smoothCandidate_identification_target at h_identify
+  unfold smoothCandidateIdentificationTarget at h_identify
   rw [h_identify]
 
 end GradInnerLaplacianVariational

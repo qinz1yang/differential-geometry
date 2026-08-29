@@ -118,7 +118,7 @@ def ricciGradCoupleAt {x : M}
     Tensor0SSpace.product dScalar Ric
 
 def ricciGradCoupleSq
-    (g : Real -> SmoothMetric_gen I M)
+    (g : Real -> SmoothMetricGen I M)
     (scalar : Real -> M -> Real)
     (Ric : Real -> (x : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) 2 x)
@@ -144,7 +144,7 @@ theorem ricciGradCoupleSq_exp_inner
     (t : Real) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (G.metric t) x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (G.metric t) x basis gInv)
     (hnabla :
       nablaRicNormSq t x =
         normSq0S (I := I) (G.metric t) x 3 (nablaRic t x))
@@ -208,8 +208,8 @@ theorem ricciMixed_eq_gradNorm
     (t : Real) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (G.metric t) x basis gInv)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen
+    (hinv : MetricInverseInBasisGen (I := I) (G.metric t) x basis gInv)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
       (I := I) (G.connection t) (G.metric t))
     (hRicNabla :
       TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I)
@@ -239,9 +239,9 @@ theorem ricciMixed_eq_gradNorm
             (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) (scalar t) x)
             (RicSec x)) =
         inner0S (I := I) (G.metric t) x 2
-          ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+          ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x
               (nablaRicSec x))
-            (cotangentSharp_gen (I := I) (G.metric t) x
+            (cotangentSharpGen (I := I) (G.metric t) x
               (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) (scalar t)
                 x)))
           (RicSec x) := by
@@ -250,7 +250,7 @@ theorem ricciMixed_eq_gradNorm
       (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) (scalar t) x)
         (RicSec x)
   have hsharp :
-      cotangentSharp_gen (I := I) (G.metric t) x
+      cotangentSharpGen (I := I) (G.metric t) x
           (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) (scalar t) x) =
             W := by
     simpa [W, DifferentialGeometry.Geometry.Curvature.gradientAt] using
@@ -261,7 +261,7 @@ theorem ricciMixed_eq_gradNorm
       RicSec nablaRicSec hRicNabla duRicNorm hdu (x := x) W
   have hinner_du :
       2 * inner0S (I := I) (G.metric t) x 2
-          ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+          ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x
               (nablaRicSec x)) W)
           (RicSec x) =
         duRicNorm x (fun _ : Fin 1 => W) := by
@@ -287,7 +287,7 @@ theorem ricciMixed_eq_gradNorm
             (DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) (scalar t) x)
             (RicSec x))
         = 2 * inner0S (I := I) (G.metric t) x 2
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x
                 (nablaRicSec x)) W)
             (RicSec x) := by
               rw [hcontract, hsharp]
@@ -319,8 +319,8 @@ theorem ricciMixed_eq_tfGrad
     (t : Real) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (G.metric t) x basis gInv)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen
+    (hinv : MetricInverseInBasisGen (I := I) (G.metric t) x basis gInv)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
       (I := I) (G.connection t) (G.metric t))
     (hRicNabla :
       TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I)
@@ -454,7 +454,7 @@ theorem ricciGradCoupleSq_exp_mixed
     (t : Real) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (G.metric t) x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (G.metric t) x basis gInv)
     (hnabla :
       nablaRicNormSq t x =
         normSq0S (I := I) (G.metric t) x 3 (nablaRic t x))
@@ -866,7 +866,7 @@ theorem pinch_quotient_evolution_of_mixed_term_identity
       Idx -> Idx -> Real)
     (hinv : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
-      MetricInverseInBasis_gen (I := I) (G.metric (t : Real)) x
+      MetricInverseInBasisGen (I := I) (G.metric (t : Real)) x
         (basis t x) (gInv t x))
     (hnabla : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -966,7 +966,7 @@ theorem pinch_quotient_evolution_of_tensor_sections
       Idx -> Idx -> Real)
     (hinv : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
-      MetricInverseInBasis_gen (I := I) (G.metric (t : Real)) x
+      MetricInverseInBasisGen (I := I) (G.metric (t : Real)) x
         (basis t x) (gInv t x))
     (hnabla : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (x : M),
@@ -979,7 +979,7 @@ theorem pinch_quotient_evolution_of_tensor_sections
         normSq0S (I := I) (G.metric (t : Real)) x 2
           (RicSec (t : Real) x))
     (hmc : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D),
-      DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
         (I := I) (G.connection (t : Real)) (G.metric (t : Real)))
     (hRicNabla : forall (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime
       D),

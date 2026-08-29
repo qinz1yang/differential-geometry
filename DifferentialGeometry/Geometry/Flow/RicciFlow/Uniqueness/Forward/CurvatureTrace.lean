@@ -78,7 +78,7 @@ theorem ricci_eq_trace_rm04 (g : SmoothRiemannianMetric I M) {x : M}
   classical
   set basis := Module.finBasis Real (TangentSpace I x) with hbasisdef
   set gInv := basisInvMetric (I := I) g x basis with hgInvdef
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis gInv :=
+  have hinv : MetricInverseInBasisGen (I := I) g x basis gInv :=
     basisInvMetric_real (I := I) g x basis
   refine tensor0SSpace_ext (𝕜 := Real) 2 x fun u => ?_
   set L : ContinuousMultilinearMap Real (fun _ : Fin 2 => TangentSpace I x) Real :=
@@ -147,7 +147,7 @@ private theorem trace_sub (g : SmoothRiemannianMetric I M) {x : M} {s : Nat}
   classical
   set basis := Module.finBasis Real (TangentSpace I x) with hbasisdef
   set gInv := basisInvMetric (I := I) g x basis with hgInvdef
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis gInv :=
+  have hinv : MetricInverseInBasisGen (I := I) g x basis gInv :=
     basisInvMetric_real (I := I) g x basis
   refine tensor0SSpace_ext (𝕜 := Real) s x fun tail => ?_
   have key : ∀ T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) (s + 2) x,
@@ -233,7 +233,7 @@ private theorem exists_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
         (TangentSpace I x),
       ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
   classical
-  let D := (tangentMetricData_gen (I := I) g x).metric
+  let D := (tangentMetricDataGen (I := I) g x).metric
   let _ : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let _ : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -245,8 +245,8 @@ private theorem exists_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
   have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
     MetricFiberData.toCore_inner D (ob i) (ob j)
   change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricData_gen.inner_eq_gen
-    (tangentMetricData_gen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
+  rw [← TangentMetricDataGen.inner_eq_gen
+    (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
   change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
   rw [← hinner]
   exact ob.inner_eq_ite i j
@@ -256,7 +256,7 @@ private theorem onFrame_inv {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hON : ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0) :
-    MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
+    MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)) := by
   intro i j
   constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
 

@@ -146,12 +146,12 @@ lemma limitFun_decomp
     (fun x => wkpChartFun (f n) x -
         manifoldLimitFun (I := I) (M := M) hp_one h_cauchy x) =
       fun x =>
-        ∑ β ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+        ∑ β ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
             (I := I) (M := M),
           chartPullback I β
             (chartErr (I := I) (M := M) hp_one h_cauchy n β) x := by
   classical
-  let S := DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+  let S := DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
     (I := I) (M := M)
   funext x
   have h_iter := congrFun
@@ -191,7 +191,7 @@ theorem limitFun_tendsto
       atTop (𝓝 0) := by
   classical
   let ρ := DifferentialGeometry.Integral.Measure.chartAtlasPOU I M
-  let S := DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+  let S := DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
     (I := I) (M := M)
   let K : M → Set M := fun β => tsupport ((ρ β : C^∞⟮I, M; ℝ⟯) : M → ℝ)
   have hK_compact : ∀ β : M, IsCompact (K β) := fun _ =>

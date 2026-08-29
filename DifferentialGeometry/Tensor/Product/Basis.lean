@@ -25,7 +25,7 @@ theorem finrank_tensorProduct' :
     Module.finrank 𝕜 (F₁ ⊗[𝕜] F₂) = Module.finrank 𝕜 F₁ * Module.finrank 𝕜 F₂ :=
   Module.finrank_tensorProduct
 
-noncomputable def tensorProduct_basis {d₁ d₂ : ℕ}
+noncomputable def tensorProductBasis {d₁ d₂ : ℕ}
     (b₁ : Module.Basis (Fin d₁) 𝕜 F₁) (b₂ : Module.Basis (Fin d₂) 𝕜 F₂) :
     Module.Basis (Fin d₁ × Fin d₂) 𝕜 (F₁ ⊗[𝕜] F₂) :=
   b₁.tensorProduct b₂
@@ -35,21 +35,21 @@ omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 F₁] [FiniteDimensional 𝕜 
 theorem tensorProduct_basis_apply {d₁ d₂ : ℕ}
     (b₁ : Module.Basis (Fin d₁) 𝕜 F₁) (b₂ : Module.Basis (Fin d₂) 𝕜 F₂)
     (i : Fin d₁) (j : Fin d₂) :
-    tensorProduct_basis b₁ b₂ (i, j) = b₁ i ⊗ₜ b₂ j :=
+    tensorProductBasis b₁ b₂ (i, j) = b₁ i ⊗ₜ b₂ j :=
   Module.Basis.tensorProduct_apply b₁ b₂ i j
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 F₁] [FiniteDimensional 𝕜 F₂] in
 theorem tensorProduct_basis_apply' {d₁ d₂ : ℕ}
     (b₁ : Module.Basis (Fin d₁) 𝕜 F₁) (b₂ : Module.Basis (Fin d₂) 𝕜 F₂)
     (p : Fin d₁ × Fin d₂) :
-    tensorProduct_basis b₁ b₂ p = b₁ p.1 ⊗ₜ b₂ p.2 :=
+    tensorProductBasis b₁ b₂ p = b₁ p.1 ⊗ₜ b₂ p.2 :=
   Module.Basis.tensorProduct_apply' b₁ b₂ p
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 F₁] [FiniteDimensional 𝕜 F₂] in
 theorem tensorProduct_basis_repr_tmul {d₁ d₂ : ℕ}
     (b₁ : Module.Basis (Fin d₁) 𝕜 F₁) (b₂ : Module.Basis (Fin d₂) 𝕜 F₂)
     (v : F₁) (w : F₂) (i : Fin d₁) (j : Fin d₂) :
-    (tensorProduct_basis b₁ b₂).repr (v ⊗ₜ w) (i, j) = b₁.repr v i * b₂.repr w j := by
+    (tensorProductBasis b₁ b₂).repr (v ⊗ₜ w) (i, j) = b₁.repr v i * b₂.repr w j := by
   change (b₁.tensorProduct b₂).repr (v ⊗ₜ w) (i, j) = _
   rw [Module.Basis.tensorProduct_repr_tmul_apply, smul_eq_mul, mul_comm]
 
@@ -93,7 +93,7 @@ theorem contMDiff_tensorProductSection_iff_coord
       (fun x => TotalSpace.mk' (F₁ ⊗[𝕜] F₂) x (f x)) ↔
     ∀ p : Fin d₁ × Fin d₂, ∀ x₀ : B,
       ContMDiffAt IB 𝓘(𝕜, 𝕜) n
-        (fun x => (tensorProduct_basis b₁ b₂).repr
+        (fun x => (tensorProductBasis b₁ b₂).repr
           (trivializationAt (F₁ ⊗[𝕜] F₂)
             (fun x => E₁ x ⊗[𝕜] E₂ x) x₀ ⟨x, f x⟩).2 p) x₀ := by
   let := _root_.Bundle.TensorProduct.tensorFiberTopology 𝕜 F₁ F₂ E₁ E₂
@@ -102,7 +102,7 @@ theorem contMDiff_tensorProductSection_iff_coord
   let : ChartedSpace (ModelProd HB (F₁ ⊗[𝕜] F₂))
       (TotalSpace (F₁ ⊗[𝕜] F₂) (fun x => E₁ x ⊗[𝕜] E₂ x)) :=
     FiberBundle.chartedSpace
-  set Bb := tensorProduct_basis b₁ b₂
+  set Bb := tensorProductBasis b₁ b₂
   constructor
   · intro hf p x₀
     have hsec := (contMDiffAt_section x₀).mp hf.contMDiffAt

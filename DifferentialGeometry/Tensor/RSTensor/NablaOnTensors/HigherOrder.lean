@@ -22,14 +22,14 @@ variable [FiniteDimensional 𝕜 E]
 
 section Model
 
-noncomputable def totalCovDeriv_tensor0SModelAt (s : ℕ)
+noncomputable def totalCovDerivTensor0SModelAt (s : ℕ)
     (Dα : E →L[𝕜] Tensor0SModel s 𝕜 E) (Γ : E →L[𝕜] E →L[𝕜] E)
     (α : Tensor0SModel s 𝕜 E) : Tensor0SModel (s + 1) 𝕜 E :=
   ContinuousLinearMap.uncurryLeft
     (𝕜 := 𝕜) (n := s) (Ei := fun _ : Fin (s + 1) => E) (G := 𝕜)
     (LinearMap.toContinuousLinearMap
       { toFun := fun X =>
-          covariantDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) s
+          covariantDerivTensor0SModelAt (𝕜 := 𝕜) (E := E) s
             (Dα X) (Γ X) α
         map_add' := by
           intro X Y
@@ -52,10 +52,10 @@ noncomputable def totalCovDeriv_tensor0SModelAt (s : ℕ)
 theorem totalCovDeriv_tensor0SModelAt_apply_cons (s : ℕ)
     (Dα : E →L[𝕜] Tensor0SModel s 𝕜 E) (Γ : E →L[𝕜] E →L[𝕜] E)
     (α : Tensor0SModel s 𝕜 E) (X : E) (slots : Fin s → E) :
-    totalCovDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) s Dα Γ α
+    totalCovDerivTensor0SModelAt (𝕜 := 𝕜) (E := E) s Dα Γ α
         (Fin.cons X slots) =
-      covariantDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) s (Dα X) (Γ X) α slots := by
-  unfold totalCovDeriv_tensor0SModelAt
+      covariantDerivTensor0SModelAt (𝕜 := 𝕜) (E := E) s (Dα X) (Γ X) α slots := by
+  unfold totalCovDerivTensor0SModelAt
   rw [ContinuousLinearMap.uncurryLeft_apply]
   rfl
 
@@ -86,10 +86,10 @@ noncomputable def totalNabla0SFun (s : ℕ)
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (x₀ : M) : Tensor0SSpace (s + 1) I x₀ := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (s + 1)
+  letI := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (s + 1)
   exact (trivializationAt (Tensor0SModel (s + 1) 𝕜 E)
     (fun x : M => Tensor0SSpace (s + 1) I x) x₀).symm x₀
-    (totalCovDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) s
+    (totalCovDerivTensor0SModelAt (𝕜 := 𝕜) (E := E) s
       (fderivWithin 𝕜
         (tensor0SModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
           s x₀ (fun x => α x))
@@ -117,7 +117,7 @@ abbrev TotalNabla0SRegular (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s) : Prop :=
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+  letI := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
     (s + 1)
   ContMDiff I (I.prod 𝓘(𝕜, Tensor0SModel (s + 1) 𝕜 E)) (∞ : WithTop ℕ∞)
     (fun x : M =>
@@ -134,7 +134,7 @@ noncomputable def totalNabla0S (s : ℕ)
       s cov α) :
     Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (s + 1) :=
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
+  letI := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
     (s + 1)
   ⟨totalNabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
     s cov α, hreg⟩
@@ -163,7 +163,7 @@ theorem totalNabla0SFun_apply_tangentConstInChart (s : ℕ)
         (Fin.cons (tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ X x₀)
           (fun a : Fin s => tangentConstInChart (𝕜 := 𝕜) (I := I) x₀ (slots a) x₀))
       =
-    covariantDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) s
+    covariantDerivTensor0SModelAt (𝕜 := 𝕜) (E := E) s
       (fderivWithin 𝕜
         (tensor0SModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
           s x₀ (fun x => α x))
@@ -275,7 +275,7 @@ theorem totalNabla0SFun_apply_section (s : ℕ)
             tangentConstInChart (𝕜 := 𝕜) (I := I) x (slotsModel a) x)) := by
           rw [hinput]
     _ =
-      covariantDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) s
+      covariantDerivTensor0SModelAt (𝕜 := 𝕜) (E := E) s
         (fderivWithin 𝕜
           (tensor0SModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
             s x (fun x => α x))
@@ -510,7 +510,7 @@ noncomputable def totalNabla20S (s : ℕ)
       s cov α hreg1)
     hreg2
 
-noncomputable def totalNabla20S_succSucc (s : ℕ)
+noncomputable def totalNabla20SSuccSucc (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)

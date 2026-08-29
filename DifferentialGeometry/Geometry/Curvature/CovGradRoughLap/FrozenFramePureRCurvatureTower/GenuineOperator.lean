@@ -159,7 +159,7 @@ private lemma covGradBundleEquiv_symm_apply_eq_curry
     (τ : TensorRSSpace 0 (m + 1) I x) (w : TangentSpace I x) (d : Tensor0SSpace 0 I x) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace m I x from
       ((covGradBundleEquiv (I := I) (M := M) 0 m x).symm τ) w) d =
-      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x
+      tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) m x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from τ) d) w := by
   apply tensor0SSpace_ext (𝕜 := ℝ) m x
   intro v'
@@ -168,7 +168,7 @@ private lemma covGradBundleEquiv_symm_apply_eq_curry
         ((covGradBundleEquiv (I := I) (M := M) 0 m x).symm τ) w) d) v' = _
   rw [covGradBundleEquiv_symm_apply_eval (I := I) (M := M) 0 m x τ w d v']
   change _ = Tensor0SSpace.eval
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) m x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from τ) d) w) v'
   rw [TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from τ) d) w v']
@@ -188,7 +188,7 @@ private lemma pureRDirCLMTensor_covGradEquiv_eval
         Tensor0SSpace.eval
           (riemannOp (Tensor0SNabla.tensor0SCovariantDerivative I M m (LeviCivita (I := I) g)) x
             (B i x) (v 0)
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) m x
               ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from τ) d) (B i x)))
           (Matrix.vecTail v) := by
   classical
@@ -222,7 +222,7 @@ private lemma pureREndoOpFibVal_eval
         Tensor0SSpace.eval
           (riemannOp (Tensor0SNabla.tensor0SCovariantDerivative I M m (LeviCivita (I := I) g)) x
             (B i x) (v 0)
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x S (B i x)))
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) m x S (B i x)))
           (Matrix.vecTail v) := by
   rw [pureRDirCLMTensor_covGradEquiv_eval (I := I) (M := M) g m B x
     (unitScalarRSLift (I := I) (M := M) x S) (unitZeroSec (I := I) (M := M) x) v]
@@ -260,13 +260,13 @@ private theorem pureREndoOpFibFun_add
     pureREndoOpFibFun, pureREndoOpFibVal_eval (I := I) (M := M) g m
       (smoothOrthoFrame (I := I) g x) x S' v, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [show tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x (S + S')
+  rw [show tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) m x (S + S')
           (smoothOrthoFrame (I := I) g x i x) =
-        tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x S
+        tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) m x S
             (smoothOrthoFrame (I := I) g x i x) +
-          tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x S'
+          tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) m x S'
             (smoothOrthoFrame (I := I) g x i x) from by
-    rw [map_add (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x),
+    rw [map_add (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) m x),
       add_apply]]
   rw [map_add (riemannOp (Tensor0SNabla.tensor0SCovariantDerivative I M m
     (LeviCivita (I := I) g)) x (smoothOrthoFrame (I := I) g x i x) (v 0)),
@@ -289,11 +289,11 @@ private theorem pureREndoOpFibFun_smul
     pureREndoOpFibFun, pureREndoOpFibVal_eval (I := I) (M := M) g m
       (smoothOrthoFrame (I := I) g x) x S v, Finset.smul_sum]
   refine Finset.sum_congr rfl (fun i _ => ?_)
-  rw [show tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x (c • S)
+  rw [show tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) m x (c • S)
           (smoothOrthoFrame (I := I) g x i x) =
-        c • tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x S
+        c • tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) m x S
           (smoothOrthoFrame (I := I) g x i x) from by
-    rw [map_smul (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x),
+    rw [map_smul (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) m x),
       smul_apply]]
   rw [map_smul (riemannOp (Tensor0SNabla.tensor0SCovariantDerivative I M m
     (LeviCivita (I := I) g)) x (smoothOrthoFrame (I := I) g x i x) (v 0)),
@@ -380,7 +380,7 @@ theorem pureRGenuineDiffOp_zero_succ_toSection_unit_eval
         Tensor0SSpace.eval
           (riemannOp (Tensor0SNabla.tensor0SCovariantDerivative I M m (LeviCivita (I := I) g)) x
             (smoothOrthoFrame (I := I) g x i x) (v 0)
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) m x
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) m x
               ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from W.toSection x)
                 (unitZeroSec (I := I) (M := M) x))
               (smoothOrthoFrame (I := I) g x i x)))

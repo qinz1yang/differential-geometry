@@ -83,7 +83,7 @@ private lemma perChartCompConstant_bound
       g r s (2 * k) α (Idx, Jdx))).2 i
 
 private noncomputable def aggregateConstant : ℝ :=
-  ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
     ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
       ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
         perChartCompConstant (I := I) (M := M) g r s k α Idx Jdx

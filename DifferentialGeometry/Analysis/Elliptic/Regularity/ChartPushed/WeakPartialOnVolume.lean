@@ -198,14 +198,14 @@ theorem chartPushedWeakPartialLp_smoothToH1Compl_eq_partial
     (j : Fin (Module.finrank ℝ E))
     (v : SmoothScalar g) :
     ((chartPushedWeakPartialLp (I := I) (M := M) g α j
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j)
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j)
         (smoothToH1Compl (I := I) (M := M) g v)) : EuclN → ℝ) =ᵐ[
       (chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
       chartPushedPartial (I := I) (M := M) g α j v := by
   have h_identity := chartPushedWeakPartialLp_smoothToH1Compl
     (I := I) (M := M) g α j
-    (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) v
+    (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) v
   rw [h_identity]
   unfold chartPushedPartialLp
   exact MeasureTheory.MemLp.coeFn_toLp _
@@ -238,16 +238,16 @@ theorem chartPushedWeakPartialLp_locally_memLp
     {K : Set EuclN} (hK_compact : IsCompact K)
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
     MemLp (((chartPushedWeakPartialLp (I := I) (M := M) g α j
-      (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+      (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
      ) : EuclN → ℝ))
       2 ((volume : Measure EuclN).restrict K) := by
   classical
   have hf_memLp_weighted := MeasureTheory.Lp.memLp
     (chartPushedWeakPartialLp (I := I) (M := M) g α j
-      (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h)
+      (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h)
   have hf_strong : StronglyMeasurable
       (((chartPushedWeakPartialLp (I := I) (M := M) g α j
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
        ) : EuclN → ℝ)) :=
     Lp.stronglyMeasurable _
   exact memLp_of_chartPulledWeighted_on_compact (I := I) (M := M) g α
@@ -412,30 +412,30 @@ private lemma chartPushedWeakPartial_lp_tendsto_of_smoothApprox
       (fun y =>
         chartPushedPartial (I := I) (M := M) g α j (v n) y -
           ((chartPushedWeakPartialLp (I := I) (M := M) g α j
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j)
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j)
             u_h) : EuclN → ℝ) y) 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))) atTop (𝓝 0) := by
   classical
   have h_cwpL_tendsto : Tendsto (fun n => chartPushedWeakPartialLp
         (I := I) (M := M) g α j
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j)
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j)
         (smoothToH1Compl (I := I) (M := M) g (v n))) atTop
       (𝓝 (chartPushedWeakPartialLp (I := I) (M := M) g α j
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h)) := by
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h)) := by
     have h_cont :
         Continuous (chartPushedWeakPartialLp (I := I) (M := M) g α j
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j)) :=
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j)) :=
       chartPushedWeakPartialLp_continuous (I := I) (M := M) g α j _
     exact (h_cont.tendsto _).comp h_tendsto
   have h_smoothCase : ∀ n, chartPushedWeakPartialLp (I := I) (M := M) g α j
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j)
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j)
         (smoothToH1Compl (I := I) (M := M) g (v n)) =
         chartPushedPartialLp (I := I) (M := M) g α j (v n)
           (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)) := fun n =>
     chartPushedWeakPartialLp_smoothToH1Compl (I := I) (M := M) g α j _ (v n)
   rw [show (fun n => chartPushedWeakPartialLp (I := I) (M := M) g α j
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j)
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j)
         (smoothToH1Compl (I := I) (M := M) g (v n))) =
       (fun n => chartPushedPartialLp (I := I) (M := M) g α j (v n)
         (chartPushedPartial_memLp (I := I) (M := M) g α j (v n))) from
@@ -444,18 +444,18 @@ private lemma chartPushedWeakPartial_lp_tendsto_of_smoothApprox
       Tendsto (fun n => ‖chartPushedPartialLp (I := I) (M := M) g α j (v n)
           (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)) -
         chartPushedWeakPartialLp (I := I) (M := M) g α j
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h‖)
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h‖)
       atTop (𝓝 0) := by
     have h_sub : Tendsto (fun n => chartPushedPartialLp
           (I := I) (M := M) g α j (v n)
           (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)) -
         chartPushedWeakPartialLp (I := I) (M := M) g α j
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h)
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h)
         atTop (𝓝 0) := by
       have := h_cwpL_tendsto.sub
         (tendsto_const_nhds (x := chartPushedWeakPartialLp
           (I := I) (M := M) g α j
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h))
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h))
       simpa using this
     have hnorm := (continuous_norm.tendsto (0 :
       Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
@@ -466,35 +466,35 @@ private lemma chartPushedWeakPartial_lp_tendsto_of_smoothApprox
       eLpNorm (((chartPushedPartialLp (I := I) (M := M) g α j (v n)
             (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)) -
           chartPushedWeakPartialLp (I := I) (M := M) g α j
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
          ) : EuclN → ℝ)) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) =
       ENNReal.ofReal ‖chartPushedPartialLp (I := I) (M := M) g α j (v n)
           (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)) -
         chartPushedWeakPartialLp (I := I) (M := M) g α j
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h‖ := by
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h‖ := by
     intro n
     rw [Lp.norm_def]
     have h_sub_aeEq := MeasureTheory.Lp.coeFn_sub
       (chartPushedPartialLp (I := I) (M := M) g α j (v n)
         (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)))
       (chartPushedWeakPartialLp (I := I) (M := M) g α j
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h)
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h)
     have h_eLp_congr := MeasureTheory.eLpNorm_congr_ae h_sub_aeEq (p := 2)
     rw [← h_eLp_congr]
     rw [ENNReal.ofReal_toReal
       ((Lp.memLp (chartPushedPartialLp (I := I) (M := M) g α j (v n)
         (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)) -
         chartPushedWeakPartialLp (I := I) (M := M) g α j
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j)
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j)
           u_h)).eLpNorm_lt_top.ne)]
   have h_lp_eLpNorm_tendsto :
       Tendsto (fun n =>
         eLpNorm (((chartPushedPartialLp (I := I) (M := M) g α j (v n)
             (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)) -
           chartPushedWeakPartialLp (I := I) (M := M) g α j
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
          ) : EuclN → ℝ)) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))) atTop (𝓝 0) := by
@@ -504,34 +504,34 @@ private lemma chartPushedWeakPartial_lp_tendsto_of_smoothApprox
         eLpNorm (((chartPushedPartialLp (I := I) (M := M) g α j (v n)
             (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)) -
           chartPushedWeakPartialLp (I := I) (M := M) g α j
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
          ) : EuclN → ℝ)) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))) =
         (fun n => ENNReal.ofReal ‖chartPushedPartialLp (I := I) (M := M) g α j (v n)
             (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)) -
           chartPushedWeakPartialLp (I := I) (M := M) g α j
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h‖) :=
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h‖) :=
       funext h_eLpNorm_eq
     rw [h_funeq]; exact h_comp
   have h_aeEq_diff : ∀ n,
       (((chartPushedPartialLp (I := I) (M := M) g α j (v n)
             (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)) -
           chartPushedWeakPartialLp (I := I) (M := M) g α j
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
        ) : EuclN → ℝ)) =ᵐ[
           (chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α)]
         fun y => chartPushedPartial (I := I) (M := M) g α j (v n) y -
           ((chartPushedWeakPartialLp (I := I) (M := M) g α j
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
            ) : EuclN → ℝ) y := by
     intro n
     have h_sub_coeFn := MeasureTheory.Lp.coeFn_sub
       (chartPushedPartialLp (I := I) (M := M) g α j (v n)
         (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)))
       (chartPushedWeakPartialLp (I := I) (M := M) g α j
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h)
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h)
     have h_partialLp_coeFn :
         (((chartPushedPartialLp (I := I) (M := M) g α j (v n)
             (chartPushedPartial_memLp (I := I) (M := M) g α j (v n))
@@ -545,30 +545,30 @@ private lemma chartPushedWeakPartial_lp_tendsto_of_smoothApprox
             (chartPushedPartial_memLp (I := I) (M := M) g α j (v n))
            ) : EuclN → ℝ) y -
           ((chartPushedWeakPartialLp (I := I) (M := M) g α j
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
            ) : EuclN → ℝ) y) =ᵐ[
           (chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α)]
         fun y => chartPushedPartial (I := I) (M := M) g α j (v n) y -
           ((chartPushedWeakPartialLp (I := I) (M := M) g α j
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
            ) : EuclN → ℝ) y := by
       filter_upwards [h_partialLp_coeFn] with y hy
       show ((chartPushedPartialLp (I := I) (M := M) g α j (v n)
             (chartPushedPartial_memLp (I := I) (M := M) g α j (v n))
            ) : EuclN → ℝ) y -
           ((chartPushedWeakPartialLp (I := I) (M := M) g α j
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
            ) : EuclN → ℝ) y =
         chartPushedPartial (I := I) (M := M) g α j (v n) y -
           ((chartPushedWeakPartialLp (I := I) (M := M) g α j
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
            ) : EuclN → ℝ) y
       rw [hy]
     have h_pi_form : (((chartPushedPartialLp (I := I) (M := M) g α j (v n)
             (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)) -
           chartPushedWeakPartialLp (I := I) (M := M) g α j
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
          ) : EuclN → ℝ)) =ᵐ[
           (chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α)]
@@ -576,7 +576,7 @@ private lemma chartPushedWeakPartial_lp_tendsto_of_smoothApprox
               (chartPushedPartial_memLp (I := I) (M := M) g α j (v n))
            ) : EuclN → ℝ) y -
           ((chartPushedWeakPartialLp (I := I) (M := M) g α j
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
            ) : EuclN → ℝ) y := by
       filter_upwards [h_sub_coeFn] with y hy
       rfl
@@ -585,14 +585,14 @@ private lemma chartPushedWeakPartial_lp_tendsto_of_smoothApprox
       eLpNorm (((chartPushedPartialLp (I := I) (M := M) g α j (v n)
             (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)) -
           chartPushedWeakPartialLp (I := I) (M := M) g α j
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
          ) : EuclN → ℝ)) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) =
       eLpNorm
         (fun y => chartPushedPartial (I := I) (M := M) g α j (v n) y -
           ((chartPushedWeakPartialLp (I := I) (M := M) g α j
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
            ) : EuclN → ℝ) y) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) := fun n =>
@@ -601,14 +601,14 @@ private lemma chartPushedWeakPartial_lp_tendsto_of_smoothApprox
         eLpNorm (((chartPushedPartialLp (I := I) (M := M) g α j (v n)
             (chartPushedPartial_memLp (I := I) (M := M) g α j (v n)) -
           chartPushedWeakPartialLp (I := I) (M := M) g α j
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
          ) : EuclN → ℝ)) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))) =
       (fun n => eLpNorm
         (fun y => chartPushedPartial (I := I) (M := M) g α j (v n) y -
           ((chartPushedWeakPartialLp (I := I) (M := M) g α j
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
            ) : EuclN → ℝ) y) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α))) :=
@@ -698,7 +698,7 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_compact
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) j
       (((chartPushedWeakPartialLp (I := I) (M := M) g α j
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
        ) : EuclN → ℝ))
       (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
         ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ)) Ω := by
@@ -751,7 +751,7 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_compact
         (fun y =>
           chartPushedPartial (I := I) (M := M) g α j (v n) y -
             ((chartPushedWeakPartialLp (I := I) (M := M) g α j
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j)
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j)
               u_h) : EuclN → ℝ) y) 2
         ((volume : Measure EuclN).restrict Ω))
       atTop (𝓝 0) := by
@@ -761,7 +761,7 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_compact
             (fun y =>
               chartPushedPartial (I := I) (M := M) g α j (v n) y -
                 ((chartPushedWeakPartialLp (I := I) (M := M) g α j
-                  (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j)
+                  (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j)
                   u_h) : EuclN → ℝ) y) 2
               ((chartPulledWeightedMeasure (I := I) g α).restrict
                 (chartTargetEuclid (I := I) (M := M) α))) atTop (𝓝 0) := by
@@ -784,7 +784,7 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_compact
     with hg_n_chart_def
   set g_lim_chart : EuclN → ℝ :=
     ((chartPushedWeakPartialLp (I := I) (M := M) g α j
-      (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+      (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
      ) : EuclN → ℝ)
     with hg_lim_chart_def
   have hu_n_aestrong_w : ∀ n,

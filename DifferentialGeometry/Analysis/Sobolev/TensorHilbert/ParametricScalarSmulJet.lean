@@ -36,14 +36,14 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private theorem rank_zero_one (x : M) (c : Tensor0SSpace 0 I x) :
-    tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x c •
+    tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x c •
         Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
           (I := I) (M := M) ∞ x = c := by
-  apply (tensor0SSpace_continuousLinearEquiv 0 x).injective
+  apply (tensor0SSpaceContinuousLinearEquiv 0 x).injective
   apply ContinuousMultilinearMap.ext
   intro v
   change Tensor0SSpace.toModel
-      (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x c •
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x c •
         Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
           (I := I) (M := M) ∞ x) v = Tensor0SSpace.toModel c v
   rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul,
@@ -59,7 +59,7 @@ private theorem rank_zero_one (x : M) (c : Tensor0SSpace 0 I x) :
 
 noncomputable def scalarCc (g : SmoothRiemannianMetric I M)
     (zeta : C^∞⟮I, M; ℝ⟯) : SmoothCcTensor g 0 0 where
-  toSection := tensorRSField_smulByFun ∞ (zeta : M → ℝ) zeta.contMDiff
+  toSection := tensorRSFieldSmulByFun ∞ (zeta : M → ℝ) zeta.contMDiff
     ((Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
       (I := I) (M := M) ∞).toTensorRSField ∞)
   hasCompactSupport := HasCompactSupport.of_compactSpace _
@@ -185,7 +185,7 @@ private theorem joint_rs_smul {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (TensorRSModel r s ℝ E)
         (E := fun x : M => TensorRSSpace r s I x) p.1 (f p • A p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let := tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]

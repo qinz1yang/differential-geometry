@@ -1443,10 +1443,10 @@ private lemma connectionDifferenceSection_eq_cometricRaiseSlot0Field' (g₀ g₁
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x u)
           (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ k))) := by
     rw [cometricRaiseSlot0Fib_clm_apply (I := I) g₀ 1 x D om]
-    rw [show (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (1 + 1) x
+    rw [show (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (1 + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) D YZ : ℝ) =
         Tensor0SSpace.toModel
-          (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (1 + 1) x
+          (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (1 + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) D)
           (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ k)) from by
       rw [Tensor0SSpace.toModel_apply_model_vector]

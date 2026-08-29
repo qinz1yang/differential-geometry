@@ -467,7 +467,7 @@ private lemma alignedPrincipalEndoCcross_trace_eq
   rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
   refine Finset.sum_congr rfl fun k _ => ?_
   let d := cometricLmodel (I := I) gop x
-    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
       ((Module.finBasis ℝ E).cDualBasis k))
   let b := (Module.finBasis ℝ E) k
   have h := alignedPrincipalEndoCcross_inner_secondKoszul (I := I) (M := M)
@@ -854,11 +854,11 @@ noncomputable def reindexCoeffFib (σ' : Equiv.Perm (Fin 4)) (x : M)
     (A : Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x) :
     Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
   A.comp
-    ((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) 4
+    ((Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) 4
       x).symm.toContinuousLinearMap.comp
       (((ContinuousMultilinearMap.domDomCongrₗᵢ ℝ E ℝ
             σ').toContinuousLinearEquiv.toContinuousLinearMap).comp
-        (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) 4 x).toContinuousLinearMap))
+        (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) 4 x).toContinuousLinearMap))
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in

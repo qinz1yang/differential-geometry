@@ -32,8 +32,8 @@ private local instance instBorelTangent (x : M) :
     BorelSpace (TangentSpace I x) := ⟨rfl⟩
 
 omit [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 def SegInt [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
   (g : SmoothRiemannianMetric I M)
@@ -43,8 +43,8 @@ def SegInt [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
   {v | ∃ c : ℝ, 1 < c ∧ c • v ∈ SegDom (I := I) g hEnorm x}
 
 omit [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem mem_segInt [PseudoEMetricSpace M] [IsRiemannianManifold I M]
     [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -56,8 +56,8 @@ theorem mem_segInt [PseudoEMetricSpace M] [IsRiemannianManifold I M]
       ∃ c : ℝ, 1 < c ∧ c • v ∈ SegDom (I := I) g hEnorm x :=
   Iff.rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem segInt_subset [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -74,8 +74,8 @@ theorem segInt_subset [ConnectedSpace M] [PseudoEMetricSpace M]
   have h := segDom_smul (I := I) g hEnorm hcv hs0 hs1
   simpa only [smul_smul, inv_mul_cancel₀ hc0.ne', one_smul] using h
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem segInt_smul [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -92,8 +92,8 @@ theorem segInt_smul [ConnectedSpace M] [PseudoEMetricSpace M]
   simpa only [smul_smul, mul_comm] using
     (segDom_smul (I := I) g hEnorm hcv hs0 hs1)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem measurableSet_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -129,8 +129,8 @@ theorem measurableSet_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
   rw [hEq]
   exact MeasurableSet.biUnion (Set.to_countable Q) fun q _ => hA q
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem exp_inj_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -381,8 +381,8 @@ theorem exp_inj_segInt [ConnectedSpace M] [PseudoEMetricSpace M]
     _ = L • z := congrArg (fun y : E => L • y) huz.symm
     _ = w := hLz
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segInt_no_conj [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -413,8 +413,8 @@ theorem segInt_no_conj [PseudoEMetricSpace M]
   simpa only [smul_smul, inv_mul_cancel₀ hc0.ne', one_smul] using hno
 
 omit [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segEnd_ray_sub [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
@@ -444,8 +444,8 @@ theorem segEnd_ray_sub [PseudoEMetricSpace M]
     exact haD
 
 omit [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segEnd_zero [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]

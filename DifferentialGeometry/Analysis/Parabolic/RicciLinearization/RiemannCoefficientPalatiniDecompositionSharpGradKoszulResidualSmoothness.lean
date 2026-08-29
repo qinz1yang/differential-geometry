@@ -252,7 +252,7 @@ private lemma bdSGKMvWeight_unitModel_gen (g₀ g₁ : SmoothRiemannianMetric I 
             (koszulCovecCc (I := I) g₀ P))).toSection x)
         (unitTensor (I := I) (M := M) x)) =
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRS_domDomCongr σ
+          tensorRSDomDomCongr σ
             ((ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 κ3)
               (koszulCovecCc (I := I) g₀ P)).toSection x))
@@ -784,7 +784,7 @@ private lemma bdXiChain_toModel (g₀ : SmoothRiemannianMetric I M)
       (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X)).toSection x) D) =
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-        tensorRS_domDomCongr armPairTraceSlotPerm6
+        tensorRSDomDomCongr armPairTraceSlotPerm6
           ((slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x)) D) from by
     rw [rsDomDomCongrSection_toSection]]
   rw [toModel_rsDomDomCongr_apply (I := I) (M := M) armPairTraceSlotPerm6

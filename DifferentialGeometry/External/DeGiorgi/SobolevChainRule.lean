@@ -541,7 +541,7 @@ private theorem sobolev_chain_rule_ball
       (fun x => deriv Φ (u x) * hw.weakGrad x i)
       (fun x => Φ (u x))
       (Metric.ball x₀ R) := by
-  set hwU := hw.rescale_to_unitBall hR with hwU_def
+  set hwU := hw.rescaleToUnitBall hR with hwU_def
   -- hwU is a witness for ũ(z) = u(x₀ + R·z) on ball(0,1),
   -- with hwU.weakGrad z i = R * hw.weakGrad (x₀ + R·z) i.
   have hUB := sobolev_chain_rule_unitBall hwU i Φ hΦ hΦ0 hΦ'_bdd
@@ -609,7 +609,7 @@ private theorem sobolev_chain_rule_ball
       ContinuousLinearMap.id_apply, map_smul, smul_eq_mul]
   have hgrad_eq : ∀ z : E, hwU.weakGrad z i = R * hw.weakGrad (x₀ + R • z) i := by
     intro z
-    simp [hwU_def, MemW1pWitness.rescale_to_unitBall, smul_eq_mul]
+    simp [hwU_def, MemW1pWitness.rescaleToUnitBall, smul_eq_mul]
   -- LHS of hUB_applied becomes:
   --   ∫ z in B₁, Φ(u(T z)) * R * (fderiv ℝ φ (T z))(single i 1)
   -- = R * ∫ z in B₁, Φ(u(T z)) * (fderiv ℝ φ (T z))(single i 1)

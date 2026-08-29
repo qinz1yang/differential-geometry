@@ -37,7 +37,7 @@ local notation "EuclN" =>
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [BoundarylessManifold I M] in
 private lemma tensorChartComp_eq_zero_of_notMem_finset
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (S : SmoothCcTensor g r s)
-    {α : M} (hα : α ∉ chartAtlasPOU_finset (I := I) (M := M))
+    {α : M} (hα : α ∉ chartAtlasPOUFinset (I := I) (M := M))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     tensorChartComp (I := I) (M := M) g r s S α Idx Jdx = (fun _ => (0 : ℝ)) := by
@@ -55,7 +55,7 @@ private lemma wtwokTwoNorm_zero_rawTensorConnLap_eq_finset_sum
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     wtwokTwoNorm (I := I) (M := M) g 0
         (rawTensorConnLapSmooth (I := I) g r s T) =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
           ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 0 2
@@ -67,7 +67,7 @@ private lemma wtwokTwoNorm_zero_rawTensorConnLap_eq_finset_sum
     (rawTensorConnLapSmooth (I := I) g r s T)]
   rw [show (2 * 0 : ℕ) = 0 from by norm_num]
   rw [tsum_eq_sum
-    (s := chartAtlasPOU_finset (I := I) (M := M))
+    (s := chartAtlasPOUFinset (I := I) (M := M))
     (f := fun α : M =>
       ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
         ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),

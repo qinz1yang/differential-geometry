@@ -1059,7 +1059,7 @@ theorem exists_smooth_W1p_oneShot_on_unitBall
   let udil : E → ℝ := DeGiorgi.unitBallDilate (d := d) lam u
   let v : E → ℝ := fun x => η.toFun x * udil x
   let hwDil : MemW1pWitness (ENNReal.ofReal p) udil Ω :=
-    MemW1pWitness.unitBallDilate_largeBall (d := d) (p := p) hp_le hlam_gt_one hw
+    MemW1pWitness.unitBallDilateLargeBall (d := d) (p := p) hp_le hlam_gt_one hw
   have hη_bound : ∀ x, |η.toFun x| ≤ 1 := by
     intro x
     rw [abs_of_nonneg (η.nonneg x)]
@@ -1071,7 +1071,7 @@ theorem exists_smooth_W1p_oneShot_on_unitBall
     dsimp [C1]
     exact mul_nonneg (by positivity) (inv_nonneg.mpr hmid_pos.le)
   let hwLoc : MemW1pWitness (ENNReal.ofReal p) v Ω :=
-    MemW1pWitness.mul_smooth_bounded_p (d := d) (p := ENNReal.ofReal p) hq_ge_one isOpen_ball hwDil
+    MemW1pWitness.mulSmoothBoundedP (d := d) (p := ENNReal.ofReal p) hq_ge_one isOpen_ball hwDil
       η.smooth zero_le_one hC1_nonneg hη_bound (by
         intro x
         simpa [C1] using η.grad_bound x)
@@ -1105,8 +1105,8 @@ theorem exists_smooth_W1p_oneShot_on_unitBall
       fderiv_apply_zero_outside_of_tsupport_subset
         (Ω := Metric.closedBall (0 : E) ((1 + lam) / 2))
         (hf := η.smooth) η.support_subset hx i
-    simp [hwLoc, MemW1pWitness.mul_smooth_bounded_p, hwDil,
-      MemW1pWitness.unitBallDilate_largeBall, udil, DeGiorgi.unitBallDilate,
+    simp [hwLoc, MemW1pWitness.mulSmoothBoundedP, hwDil,
+      MemW1pWitness.unitBallDilateLargeBall, udil, DeGiorgi.unitBallDilate,
       PiLp.toLp_apply, hηx, hηdx]
   rcases exists_smooth_W1p_approx_of_supportedWitness
       (d := d) (Ω := Ω) (K := Metric.closedBall (0 : E) ((1 + lam) / 2))
@@ -1253,7 +1253,7 @@ theorem exists_smooth_W1p_oneShot_on_unitBall
     rw [hΩ_ind]
     change hwLoc.weakGrad x i - hw.weakGrad x i =
       lam⁻¹ * DeGiorgi.unitBallDilate (d := d) lam (fun y => hw.weakGrad y i) x - hw.weakGrad x i
-    simp [hwLoc, MemW1pWitness.mul_smooth_bounded_p, hwDil, MemW1pWitness.unitBallDilate_largeBall,
+    simp [hwLoc, MemW1pWitness.mulSmoothBoundedP, hwDil, MemW1pWitness.unitBallDilateLargeBall,
       v, udil, DeGiorgi.unitBallDilate, hηx, hηdx, smul_eq_mul]
   have hgrad_final :
       ∀ i : Fin d,

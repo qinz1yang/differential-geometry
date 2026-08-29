@@ -157,8 +157,8 @@ theorem exists_radialJacobi_radius
     exact radialJacobiField_eq (I := I) g p x w v]
   exact h x w hx hw t₀ ht₀
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_radialJacobi_zero_radius
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]

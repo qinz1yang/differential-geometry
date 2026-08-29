@@ -62,7 +62,7 @@ theorem tensor_positive_definite_on_of_nonnegative_of_strict_supersolution
     (hcovInf : ∀ t : Real, CovariantDerivative.ContMDiffCovariantDerivativeLocally
       (cov t) (∞ : WithTop ℕ∞))
     (hmc : ∀ t : Real,
-      DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
         (I := I) (cov t) (G t))
     (hspatial : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S) :
     TwoTensorFamilyPositiveDefiniteOn (I := I) (M := M)

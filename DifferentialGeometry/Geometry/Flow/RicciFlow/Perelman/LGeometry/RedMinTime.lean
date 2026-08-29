@@ -54,8 +54,8 @@ theorem redMinVal_eq
     · rintro _ ⟨z, rfl⟩
       exact hmin z
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_redMin_vec [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (K T : Real)
@@ -101,8 +101,8 @@ theorem exists_redMin_vec [ConnectedSpace M]
       x y alpha0 halpha0 halpha00 halpha0b
   exact ⟨y, Z, hZmin, hZend, redMinVal_eq S T x y tau hy, hy⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] [T2Space (TangentBundle I M)]
   [SigmaCompactSpace M] in
 theorem redMinAct_eq
@@ -302,8 +302,8 @@ private theorem lRegAct_tail_ge
   simpa only [intervalIntegral.integral_const, smul_eq_mul, lRegAction,
     mul_comm] using hmono
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem redMinAct_ord [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (K T sigma : Real)

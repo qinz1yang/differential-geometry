@@ -42,17 +42,17 @@ private local instance tensorRSRiemannianNormedAddCommGroup_local
   (h.g.toCore b).toNormedAddCommGroupOfTopology
     (h.g.continuousAt b) (h.g.isVonNBounded b)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
-  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
-  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
+  Bundle.continuousMultilinearMap.mixedInstNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixedInstNormedSpace in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem tensorChartComponentRaw_abs_le_riemannianFibreNorm
     (g_bg : SmoothRiemannianMetric I M) (s : ℕ) (α : M)
     {K : Set M} (hK : IsCompact K) (hKsub : K ⊆ (chartAt H α).source) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 s
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (T : SmoothCcTensor g_bg 0 s) (b : M), b ∈ K →
       ∀ (Jdx : Fin s → Fin (Module.finrank ℝ E)),
         |tensorChartComponentRaw (I := I) (M := M) g_bg 0 s T α
@@ -60,7 +60,7 @@ theorem tensorChartComponentRaw_abs_le_riemannianFibreNorm
           C * ‖T.toSection b‖ := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 s
   obtain ⟨Cop, hCop_pos, hCop_bound⟩ :=
     tensorRSChartFiberToModel_opNorm_isBounded_on_compact
       (I := I) (M := M) g_bg 0 s α hK hKsub
@@ -387,10 +387,10 @@ theorem chartPreimage_image_isCompact_subset_chartSource
     rw [← hy'_eq]
     exact symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) α (hKsub hy'_mem)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
-  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
-  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
+  Bundle.continuousMultilinearMap.mixedInstNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixedInstNormedSpace in
 omit [CompactSpace M] [BoundarylessManifold I M] in
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem covDerivLowerOrderTerm_abs_le_riemannianFibreNorm
@@ -398,7 +398,7 @@ theorem covDerivLowerOrderTerm_abs_le_riemannianFibreNorm
     {K_eucl : Set (EuclideanSpace ℝ (Fin (Module.finrank ℝ E)))}
     (hK : IsCompact K_eucl) (hKsub : K_eucl ⊆ chartTargetEuclid (I := I) (M := M) α) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 s
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (T : SmoothCcTensor g_bg 0 s)
       (m : Fin (Module.finrank ℝ E)) (Jdx : Fin s → Fin (Module.finrank ℝ E))
       (y' : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))), y' ∈ K_eucl →
@@ -407,7 +407,7 @@ theorem covDerivLowerOrderTerm_abs_le_riemannianFibreNorm
           C * ‖T.toSection ((extChartAt I α).symm ((toEuclidean (E := E)).symm y'))‖ := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 s
   obtain ⟨hImg_cpt, hImg_sub⟩ :=
     chartPreimage_image_isCompact_subset_chartSource (I := I) (M := M) α hK hKsub
   obtain ⟨Craw, hCraw_nn, hCraw_bd⟩ :=
@@ -560,10 +560,10 @@ theorem covDerivComponentEuclid_eqOn_rawComponent_covGrad
   rw [hJ0, hJtail] at hform
   rw [hform]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
-  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
-  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
+  Bundle.continuousMultilinearMap.mixedInstNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixedInstNormedSpace in
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 theorem euclidPartial_covDerivComponentEuclid_abs_le
@@ -575,7 +575,7 @@ theorem euclidPartial_covDerivComponentEuclid_abs_le
       b ∈ (fun y'' => (extChartAt I α).symm ((toEuclidean (E := E)).symm y'')) '' K_eucl →
       ∀ (Jdx : Fin 4 → Fin (Module.finrank ℝ E)),
         letI : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 4 I bb) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 4
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 4
         |tensorChartComponentRaw (I := I) (M := M) g_bg 0 4 T α
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Jdx b| ≤ Craw4 * ‖T.toSection b‖)
     (CLO3 : ℝ)
@@ -583,7 +583,7 @@ theorem euclidPartial_covDerivComponentEuclid_abs_le
       (m : Fin (Module.finrank ℝ E)) (Jdx : Fin 3 → Fin (Module.finrank ℝ E))
       (z : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))), z ∈ K_eucl →
         letI : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 3 I bb) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 3
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 3
         |covDerivLowerOrderTerm (I := I) (M := M) g_bg 0 3 T α m
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Jdx z| ≤
           CLO3 * ‖T.toSection ((extChartAt I α).symm ((toEuclidean (E := E)).symm z))‖)
@@ -591,9 +591,9 @@ theorem euclidPartial_covDerivComponentEuclid_abs_le
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E))
     {y' : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))} (hy' : y' ∈ K_eucl) :
     letI : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 4 I bb) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 4
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 4
     letI : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 3 I bb) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 3
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 3
     |euclidPartial (E := E) c
         (covDerivComponentEuclid (I := I) (M := M) g_bg 0 2 α S a
           (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Jdx) y'| ≤
@@ -604,9 +604,9 @@ theorem euclidPartial_covDerivComponentEuclid_abs_le
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y'))‖ := by
   classical
   let inst4 : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 4 I bb) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 4
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 4
   let inst3 : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 3 I bb) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 3
   have hy'_tgt : y' ∈ chartTargetEuclid (I := I) (M := M) α := hKsub hy'
   set b₀ : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y') with hb₀_def
   have hb₀_img : b₀ ∈ (fun y'' => (extChartAt I α).symm ((toEuclidean (E := E)).symm y'')) ''
@@ -632,10 +632,10 @@ theorem euclidPartial_covDerivComponentEuclid_abs_le
   refine (abs_sub _ _).trans ?_
   exact add_le_add h_raw4 h_lo3
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
-  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
-  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
+  Bundle.continuousMultilinearMap.mixedInstNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixedInstNormedSpace in
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 theorem euclidPartial2_chartPushedRaw_abs_le_aux
@@ -647,7 +647,7 @@ theorem euclidPartial2_chartPushedRaw_abs_le_aux
       b ∈ (fun y'' => (extChartAt I α).symm ((toEuclidean (E := E)).symm y'')) '' K_eucl →
       ∀ (Jdx : Fin 4 → Fin (Module.finrank ℝ E)),
         letI : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 4 I bb) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 4
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 4
         |tensorChartComponentRaw (I := I) (M := M) g_bg 0 4 T α
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Jdx b| ≤ Craw4 * ‖T.toSection b‖)
     (Craw3 : ℝ) (hCraw3_nn : 0 ≤ Craw3)
@@ -655,7 +655,7 @@ theorem euclidPartial2_chartPushedRaw_abs_le_aux
       b ∈ (fun y'' => (extChartAt I α).symm ((toEuclidean (E := E)).symm y'')) '' K_eucl →
       ∀ (Jdx : Fin 3 → Fin (Module.finrank ℝ E)),
         letI : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 3 I bb) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 3
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 3
         |tensorChartComponentRaw (I := I) (M := M) g_bg 0 3 T α
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Jdx b| ≤ Craw3 * ‖T.toSection b‖)
     (Craw2 : ℝ)
@@ -663,7 +663,7 @@ theorem euclidPartial2_chartPushedRaw_abs_le_aux
       b ∈ (fun y'' => (extChartAt I α).symm ((toEuclidean (E := E)).symm y'')) '' K_eucl →
       ∀ (Jdx : Fin 2 → Fin (Module.finrank ℝ E)),
         letI : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 2 I bb) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 2
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 2
         |tensorChartComponentRaw (I := I) (M := M) g_bg 0 2 T α
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Jdx b| ≤ Craw2 * ‖T.toSection b‖)
     (CLO3 : ℝ)
@@ -671,7 +671,7 @@ theorem euclidPartial2_chartPushedRaw_abs_le_aux
       (m : Fin (Module.finrank ℝ E)) (Jdx : Fin 3 → Fin (Module.finrank ℝ E))
       (z : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))), z ∈ K_eucl →
         letI : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 3 I bb) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 3
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 3
         |covDerivLowerOrderTerm (I := I) (M := M) g_bg 0 3 T α m
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Jdx z| ≤
           CLO3 * ‖T.toSection ((extChartAt I α).symm ((toEuclidean (E := E)).symm z))‖)
@@ -680,7 +680,7 @@ theorem euclidPartial2_chartPushedRaw_abs_le_aux
       (m : Fin (Module.finrank ℝ E)) (Jdx : Fin 2 → Fin (Module.finrank ℝ E))
       (z : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))), z ∈ K_eucl →
         letI : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 2 I bb) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 2
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 2
         |covDerivLowerOrderTerm (I := I) (M := M) g_bg 0 2 T α m
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Jdx z| ≤
           CLO2 * ‖T.toSection ((extChartAt I α).symm ((toEuclidean (E := E)).symm z))‖)
@@ -688,23 +688,23 @@ theorem euclidPartial2_chartPushedRaw_abs_le_aux
     (hCval_bd : ∀ (a c : Fin (Module.finrank ℝ E))
       (p1 : Fin 0 → Fin (Module.finrank ℝ E)) (Jdx p2 : Fin 2 → Fin (Module.finrank ℝ E))
       (z : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))), z ∈ K_eucl →
-        |secondCovDerivLO_valueCoeff (I := I) (M := M) g_bg 0 2 α a c
+        |secondCovDerivLOValueCoeff (I := I) (M := M) g_bg 0 2 α a c
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) p1 Jdx p2 z| ≤ Cval)
     (Cgrd : ℝ) (hCgrd_nn : 0 ≤ Cgrd)
     (hCgrd_bd : ∀ (a : Fin (Module.finrank ℝ E))
       (p1 : Fin 0 → Fin (Module.finrank ℝ E)) (Jdx p2 : Fin 2 → Fin (Module.finrank ℝ E))
       (z : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))), z ∈ K_eucl →
-        |secondCovDerivLO_gradCoeff (I := I) (M := M) g_bg 0 2 α a
+        |secondCovDerivLOGradCoeff (I := I) (M := M) g_bg 0 2 α a
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) p1 Jdx p2 z| ≤ Cgrd)
     (S : SmoothCcTensor g_bg 0 2) (c a : Fin (Module.finrank ℝ E))
     (Jdx : Fin 2 → Fin (Module.finrank ℝ E))
     {y' : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))} (hy' : y' ∈ K_eucl) :
     letI : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 4 I bb) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 4
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 4
     letI : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 3 I bb) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 3
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 3
     letI : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 2 I bb) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 2
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 2
     |euclidPartial (E := E) c
         (euclidPartial (E := E) a
           (chartPushedRaw I α
@@ -725,11 +725,11 @@ theorem euclidPartial2_chartPushedRaw_abs_le_aux
             + ‖S.toSection ((extChartAt I α).symm ((toEuclidean (E := E)).symm y'))‖)) := by
   classical
   let inst4 : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 4 I bb) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 4
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 4
   let inst3 : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 3 I bb) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 3
   let inst2 : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 2 I bb) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 2
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 2
   have hy'_tgt : y' ∈ chartTargetEuclid (I := I) (M := M) α := hKsub hy'
   set b₀ : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y') with hb₀_def
   have hb₀_img : b₀ ∈ (fun y'' => (extChartAt I α).symm ((toEuclidean (E := E)).symm y'')) ''
@@ -742,11 +742,11 @@ theorem euclidPartial2_chartPushedRaw_abs_le_aux
       (covDerivComponentEuclid (I := I) (M := M) g_bg 0 2 α S a
         (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) Jdx) y' with hA_def
   set Bsum : ℝ := ∑ p : (Fin 0 → Fin (Module.finrank ℝ E)) × (Fin 2 → Fin (Module.finrank ℝ E)),
-      secondCovDerivLO_valueCoeff (I := I) (M := M) g_bg 0 2 α a c
+      secondCovDerivLOValueCoeff (I := I) (M := M) g_bg 0 2 α a c
           (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) p.1 Jdx p.2 y' *
         rawComponentEuclid (I := I) (M := M) g_bg 0 2 α S p.1 p.2 y' with hBsum_def
   set Dsum : ℝ := ∑ p : (Fin 0 → Fin (Module.finrank ℝ E)) × (Fin 2 → Fin (Module.finrank ℝ E)),
-      secondCovDerivLO_gradCoeff (I := I) (M := M) g_bg 0 2 α a
+      secondCovDerivLOGradCoeff (I := I) (M := M) g_bg 0 2 α a
           (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) p.1 Jdx p.2 y' *
         euclidPartial (E := E) c
           (rawComponentEuclid (I := I) (M := M) g_bg 0 2 α S p.1 p.2) y' with hDsum_def
@@ -769,7 +769,7 @@ theorem euclidPartial2_chartPushedRaw_abs_le_aux
   have hN1_nn : 0 ≤ N1 := norm_nonneg _
   have h_val_term : ∀ p : (Fin 0 → Fin (Module.finrank ℝ E)) ×
         (Fin 2 → Fin (Module.finrank ℝ E)),
-      |secondCovDerivLO_valueCoeff (I := I) (M := M) g_bg 0 2 α a c
+      |secondCovDerivLOValueCoeff (I := I) (M := M) g_bg 0 2 α a c
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) p.1 Jdx p.2 y' *
           rawComponentEuclid (I := I) (M := M) g_bg 0 2 α S p.1 p.2 y'| ≤
         Cval * (Craw2 * N0) := by
@@ -786,7 +786,7 @@ theorem euclidPartial2_chartPushedRaw_abs_le_aux
     rw [Finset.sum_const, nsmul_eq_mul, Finset.card_univ, ← hNpairs_def]; ring_nf; rfl
   have h_grad_term : ∀ p : (Fin 0 → Fin (Module.finrank ℝ E)) ×
         (Fin 2 → Fin (Module.finrank ℝ E)),
-      |secondCovDerivLO_gradCoeff (I := I) (M := M) g_bg 0 2 α a
+      |secondCovDerivLOGradCoeff (I := I) (M := M) g_bg 0 2 α a
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) p.1 Jdx p.2 y' *
           euclidPartial (E := E) c
             (rawComponentEuclid (I := I) (M := M) g_bg 0 2 α S p.1 p.2) y'| ≤
@@ -822,10 +822,10 @@ theorem euclidPartial2_chartPushedRaw_abs_le_aux
   refine (abs_sub _ _).trans ?_
   exact add_le_add h_dc ((abs_add_le _ _).trans (add_le_add h_val_sum h_grad_sum))
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
-  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
-  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
+  Bundle.continuousMultilinearMap.mixedInstNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixedInstNormedSpace in
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -833,17 +833,17 @@ theorem iteratedCovGrad_norm_le_jetSum
     (g_bg : SmoothRiemannianMetric I M) (S : SmoothCcTensor g_bg 0 2) (x : M)
     (j : ℕ) (hj : j < 3) :
     letI : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 (2 + j) I bb) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 (2 + j)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 (2 + j)
     ‖(iteratedCovGrad (I := I) (M := M) g_bg 0 2 j S).toSection x‖ ≤
       iteratedCovGradJetSum (I := I) g_bg S x := by
   rw [iteratedCovGradJetSum]
   have hsummand_nn : ∀ i ∈ Finset.range 3,
       0 ≤ (letI : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 (2 + i) I bb) :=
-            Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 (2 + i)
+            Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 (2 + i)
           ‖(iteratedCovGrad (I := I) (M := M) g_bg 0 2 i S).toSection x‖) := by
     intro i _
     let : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 (2 + i) I bb) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 (2 + i)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 (2 + i)
     exact norm_nonneg _
   exact Finset.single_le_sum hsummand_nn (Finset.mem_range.mpr hj)
 
@@ -856,14 +856,14 @@ theorem secondCovDerivLO_valueCoeff_uniform_bound
     ∃ Cval : ℝ, 0 ≤ Cval ∧ ∀ (a c : Fin (Module.finrank ℝ E))
       (p1 : Fin 0 → Fin (Module.finrank ℝ E)) (Jdx p2 : Fin 2 → Fin (Module.finrank ℝ E))
       (z : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))), z ∈ K_eucl →
-        |secondCovDerivLO_valueCoeff (I := I) (M := M) g_bg 0 2 α a c
+        |secondCovDerivLOValueCoeff (I := I) (M := M) g_bg 0 2 α a c
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) p1 Jdx p2 z| ≤ Cval := by
   classical
   have h_bound : ∀ (acIJ : (Fin (Module.finrank ℝ E)) × (Fin (Module.finrank ℝ E)) ×
         ((Fin 0 → Fin (Module.finrank ℝ E)) × (Fin 2 → Fin (Module.finrank ℝ E)) ×
           (Fin 2 → Fin (Module.finrank ℝ E)))),
       ∃ Cv : ℝ, 0 ≤ Cv ∧ ∀ z ∈ K_eucl,
-        |secondCovDerivLO_valueCoeff (I := I) (M := M) g_bg 0 2 α acIJ.1 acIJ.2.1
+        |secondCovDerivLOValueCoeff (I := I) (M := M) g_bg 0 2 α acIJ.1 acIJ.2.1
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) acIJ.2.2.1
             acIJ.2.2.2.1 acIJ.2.2.2.2 z| ≤ Cv := by
     rintro ⟨a, c, p1, Jdx, p2⟩
@@ -889,14 +889,14 @@ theorem secondCovDerivLO_gradCoeff_uniform_bound
     ∃ Cgrd : ℝ, 0 ≤ Cgrd ∧ ∀ (a : Fin (Module.finrank ℝ E))
       (p1 : Fin 0 → Fin (Module.finrank ℝ E)) (Jdx p2 : Fin 2 → Fin (Module.finrank ℝ E))
       (z : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))), z ∈ K_eucl →
-        |secondCovDerivLO_gradCoeff (I := I) (M := M) g_bg 0 2 α a
+        |secondCovDerivLOGradCoeff (I := I) (M := M) g_bg 0 2 α a
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) p1 Jdx p2 z| ≤ Cgrd := by
   classical
   have h_bound : ∀ (aIJ : (Fin (Module.finrank ℝ E)) ×
         ((Fin 0 → Fin (Module.finrank ℝ E)) × (Fin 2 → Fin (Module.finrank ℝ E)) ×
           (Fin 2 → Fin (Module.finrank ℝ E)))),
       ∃ Cg : ℝ, 0 ≤ Cg ∧ ∀ z ∈ K_eucl,
-        |secondCovDerivLO_gradCoeff (I := I) (M := M) g_bg 0 2 α aIJ.1
+        |secondCovDerivLOGradCoeff (I := I) (M := M) g_bg 0 2 α aIJ.1
             (fun _ : Fin 0 => (0 : Fin (Module.finrank ℝ E))) aIJ.2.1
             aIJ.2.2.1 aIJ.2.2.2 z| ≤ Cg := by
     rintro ⟨a, p1, Jdx, p2⟩
@@ -913,10 +913,10 @@ theorem secondCovDerivLO_gradCoeff_uniform_bound
   subst hp1
   exact (hCg_bd (a, _, Jdx, p2) z hz).trans (Finset.le_sup' Cg (Finset.mem_univ _))
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
-  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
-  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
+  Bundle.continuousMultilinearMap.mixedInstNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixedInstNormedSpace in
 omit [CompactSpace M] [SigmaCompactSpace M] in
 omit [BoundarylessManifold I M] in
 theorem euclidPartial2_chartPushedRaw_abs_le_jetSum
@@ -957,11 +957,11 @@ theorem euclidPartial2_chartPushedRaw_abs_le_jetSum
     by positivity, ?_⟩
   intro S c a Jdx y' hy'
   let inst4 : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 4 I bb) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 4
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 4
   let inst3 : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 3 I bb) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 3
   let inst2 : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 2 I bb) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 2
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 2
   set b₀ : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y') with hb₀_def
   set R : ℝ := iteratedCovGradJetSum (I := I) g_bg S b₀ with hR_def
   set N0 : ℝ := ‖S.toSection b₀‖ with hN0_def
@@ -1001,10 +1001,10 @@ theorem euclidPartial2_chartPushedRaw_abs_le_jetSum
     _ = (Craw4 + CLO3 + Npairs * (Cval * Craw2) + 2 * (Npairs * (Cgrd * (Craw3 + CLO2)))) * R := by
         ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
-  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
-  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
+  Bundle.continuousMultilinearMap.mixedInstNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixedInstNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem reprDiffChartCompOnE_abs_le_riemannianFibreNorm
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
@@ -1014,14 +1014,14 @@ theorem reprDiffChartCompOnE_abs_le_riemannianFibreNorm
     (α : M) {K : Set E} (hK : IsCompact K)
     (hKsub : K ⊆ interior ((extChartAt I α).target : Set E)) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 2
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 2
     ∃ C : ℝ, 0 ≤ C ∧ ∀ y ∈ K, ∀ l b : Fin (Module.finrank ℝ E),
       |reprDiffChartCompOnE (I := I) g_bg hu₁ hu₂ α l b y| ≤
         C * ‖(realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂).toSection
           ((extChartAt I α).symm y)‖ := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 2 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 2
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 2
   set S : SmoothCcTensor g_bg 0 2 :=
     realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂ with hS_def
   obtain ⟨hImg_cpt, hImg_sub⟩ :=
@@ -1058,10 +1058,10 @@ theorem reprDiffChartCompOnE_abs_le_riemannianFibreNorm
         exact (abs_add_le _ _).trans (add_le_add h_lb h_bl)
     _ = Craw * N := by ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
-  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
-  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
+  Bundle.continuousMultilinearMap.mixedInstNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixedInstNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem partialDeriv_reprDiffChartCompOnE_abs_le
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
@@ -1093,9 +1093,9 @@ theorem partialDeriv_reprDiffChartCompOnE_abs_le
   refine ⟨Craw1 + CLO, by positivity, ?_⟩
   intro y hy l b a
   let inst3 : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 (2 + 1) I bb) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 (2 + 1)
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 (2 + 1)
   let inst2 : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 2 I bb) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 2
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 2
   set b₀ : M := (extChartAt I α).symm y with hb₀_def
   have hb₀_img : b₀ ∈ (extChartAt I α).symm '' K := ⟨y, hy, rfl⟩
   set N1 : ℝ := ‖(covGrad (I := I) (M := M) g_bg 0 2 S).toSection b₀‖ with hN1_def
@@ -1106,11 +1106,11 @@ theorem partialDeriv_reprDiffChartCompOnE_abs_le
   have hR_nn : 0 ≤ R := iteratedCovGradJetSum_nonneg (I := I) g_bg S b₀
   have hsummand_nn : ∀ i ∈ Finset.range 3,
       0 ≤ (letI : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 (2 + i) I bb) :=
-            Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 (2 + i)
+            Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 (2 + i)
           ‖(iteratedCovGrad (I := I) (M := M) g_bg 0 2 i S).toSection b₀‖) := by
     intro i _
     let : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 (2 + i) I bb) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 (2 + i)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 (2 + i)
     exact norm_nonneg _
   have hN0_le : N0 ≤ R := by
     have h := Finset.single_le_sum hsummand_nn (Finset.mem_range.mpr (by norm_num : (0 : ℕ) < 3))
@@ -1292,10 +1292,10 @@ theorem partialDeriv2_reprDiffChartCompOnE_abs_le
         mul_le_mul_of_nonneg_left ((abs_add_le _ _).trans (add_le_add h_lb h_bl)) (by norm_num)
     _ = C2 * R := by ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
-  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
-  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
+  Bundle.continuousMultilinearMap.mixedInstNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixedInstNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem hcovgrad_jet_bound_holds
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
@@ -1324,7 +1324,7 @@ theorem hcovgrad_jet_bound_holds
               ((extChartAt I α).symm y)) := by
   classical
   let : Bundle.RiemannianBundle (fun bb : M => TensorRSSpace 0 2 I bb) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g_bg 0 2
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g_bg 0 2
   set S : SmoothCcTensor g_bg 0 2 :=
     realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂ with hS_def
   obtain ⟨C0, hC0_nn, hC0_bd⟩ :=

@@ -91,50 +91,50 @@ private local instance tensorRSRiemannianNormedAddCommGroup_local
   (h.g.toCore b).toNormedAddCommGroupOfTopology
     (h.g.continuousAt b) (h.g.isVonNBounded b)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 def gSupVal (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) : ℝ :=
   letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   ⨆ x : M, ‖T.toSection x‖
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 lemma bddAbove_section_norm_range
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (hk : 2 * k > Module.finrank ℝ E) (T : SmoothCcTensor g r s) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     BddAbove (Set.range (fun x : M => ‖T.toSection x‖)) := by
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   obtain ⟨C, _, hC⟩ := tensorPouSobolevHilbert_embedding_Ck (I := I) (M := M)
     (g := g) (r := r) (s := s) (k := k) (m := 0) (by omega)
   exact ⟨C * ‖SmoothCcTensor.toHs (g := g) (r := r) (s := s) (2 * k) T‖,
     by rintro _ ⟨x, rfl⟩; exact hC T x⟩
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma gSupVal_nonneg (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) : 0 ≤ gSupVal (I := I) (M := M) g r s T := by
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   rcases isEmpty_or_nonempty M with hM | hM
   · rw [gSupVal, Real.iSup_of_isEmpty]
   · rw [gSupVal]; exact Real.iSup_nonneg (fun x => norm_nonneg _)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma gSupVal_zero (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     gSupVal (I := I) (M := M) g r s 0 = 0 := by
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   rw [gSupVal]
   have hz : (fun x : M => ‖(0 : SmoothCcTensor g r s).toSection x‖)
       = fun _ => (0 : ℝ) := by
@@ -144,28 +144,28 @@ lemma gSupVal_zero (g : SmoothRiemannianMetric I M) (r s : ℕ) :
   · rw [Real.iSup_of_isEmpty]
   · rw [ciSup_const]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 lemma gSupVal_neg (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) :
     gSupVal (I := I) (M := M) g r s (-T) = gSupVal (I := I) (M := M) g r s T := by
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   rw [gSupVal, gSupVal]
   congr 1; funext x
   rw [smoothCcTensor_toSection_neg_apply, norm_neg]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 lemma gSupVal_add_le (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (hk : 2 * k > Module.finrank ℝ E) (S T : SmoothCcTensor g r s) :
     gSupVal (I := I) (M := M) g r s (S + T) ≤
       gSupVal (I := I) (M := M) g r s S + gSupVal (I := I) (M := M) g r s T := by
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   rcases isEmpty_or_nonempty M with hM | hM
   · simp only [gSupVal]
     rw [Real.iSup_of_isEmpty, Real.iSup_of_isEmpty, Real.iSup_of_isEmpty]; norm_num
@@ -179,15 +179,15 @@ lemma gSupVal_add_le (g : SmoothRiemannianMetric I M) (r s k : ℕ)
       rw [smoothCcTensor_toSection_add_apply]; exact norm_add_le _ _
     exact le_trans hpt (add_le_add (le_ciSup hbS x) (le_ciSup hbT x))
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 lemma gSupVal_smul_le (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (hk : 2 * k > Module.finrank ℝ E) (c : ℝ) (T : SmoothCcTensor g r s) :
     gSupVal (I := I) (M := M) g r s (c • T) ≤
       |c| * gSupVal (I := I) (M := M) g r s T := by
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   rcases isEmpty_or_nonempty M with hM | hM
   · simp only [gSupVal]
     rw [Real.iSup_of_isEmpty, Real.iSup_of_isEmpty, mul_zero]
@@ -200,8 +200,8 @@ lemma gSupVal_smul_le (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     rw [hpt]
     exact mul_le_mul_of_nonneg_left (le_ciSup hbT x) (abs_nonneg c)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 lemma gSupVal_smul (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (hk : 2 * k > Module.finrank ℝ E) (c : ℝ) (T : SmoothCcTensor g r s) :
@@ -353,8 +353,8 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 
 end CSupTensor
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 def gSupAddGroupSeminorm (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (hk : 2 * k > Module.finrank ℝ E) :
     AddGroupSeminorm (CSupTensor g r s k) where
@@ -373,8 +373,8 @@ def gSupAddGroupSeminorm (g : SmoothRiemannianMetric I M) (r s k : ℕ)
       gSupVal (I := I) (M := M) g r s S.toCc
     rw [CSupTensor.toCc_neg, gSupVal_neg]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 @[reducible] noncomputable def csupSeminormedAddCommGroup
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (hk : 2 * k > Module.finrank ℝ E) :
@@ -382,8 +382,8 @@ attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
   AddGroupSeminorm.toSeminormedAddCommGroup
     (gSupAddGroupSeminorm (I := I) (M := M) g r s k hk)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 lemma csupSeminormedAddCommGroup_norm
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -391,8 +391,8 @@ lemma csupSeminormedAddCommGroup_norm
     @norm _ (csupSeminormedAddCommGroup (I := I) (M := M) g r s k hk).toNorm S =
       gSupVal (I := I) (M := M) g r s S.toCc := rfl
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 @[reducible] noncomputable def csupNormedSpace
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (hk : 2 * k > Module.finrank ℝ E) :
@@ -437,8 +437,8 @@ instance instCSupBanachCompleteSpace
   (inferInstance :
     CompleteSpace (UniformSpace.Completion (CSupTensor g r s k)))
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 noncomputable def smoothToC0Lin
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (hk : 2 * k > Module.finrank ℝ E) :
@@ -451,8 +451,8 @@ noncomputable def smoothToC0Lin
       UniformSpace.Completion (CSupTensor g r s k)).toLinearMap.comp
     (CSupTensor.ofHs (g := g) (r := r) (s := s) (k := k))
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 lemma norm_smoothToC0Lin
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -473,8 +473,8 @@ lemma norm_smoothToC0Lin
   rw [hval, csupSeminormedAddCommGroup_norm (I := I) (M := M) g r s k hk]
   rfl
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 lemma norm_coe_toCompl_eq_toHs
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -490,8 +490,8 @@ lemma norm_coe_toCompl_eq_toHs
     cases S; rfl
   rw [hrhs, hS]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 lemma exists_smoothToC0Lin_norm_le
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -501,7 +501,7 @@ lemma exists_smoothToC0Lin_norm_le
         ‖smoothToC0Lin (I := I) (M := M) g r s k hk S‖ ≤
           C * ‖(S : TensorPouSobolevHilbert g r s (2 * k))‖ := by
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   obtain ⟨C, hCpos, hC⟩ := tensorPouSobolevHilbert_embedding_Ck (I := I) (M := M)
     (g := g) (r := r) (s := s) (k := k) (m := 0) (by omega)
   refine ⟨C, hCpos, fun S => ?_⟩
@@ -515,8 +515,8 @@ lemma exists_smoothToC0Lin_norm_le
       (mul_nonneg (le_of_lt hCpos) (norm_nonneg _))
     exact hC S.toCcTensor x
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 noncomputable def tensorHsToC0
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
     (hk : 2 * k > Module.finrank ℝ E) :
@@ -527,8 +527,8 @@ noncomputable def tensorHsToC0
       DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs g r s (2 * k) →L[ℝ]
         TensorPouSobolevHilbert g r s (2 * k)).toLinearMap
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 lemma denseRange_toComplL_toLinearMap
     (g : SmoothRiemannianMetric I M) (r s k : ℕ) :
@@ -547,8 +547,8 @@ lemma denseRange_toComplL_toLinearMap
   rw [hcoe]
   exact UniformSpace.Completion.denseRange_coe
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem tensorHsToC0_coe
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -567,8 +567,8 @@ theorem tensorHsToC0_coe
     ⟨C, hC⟩ S
   exact h
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem tensorHsToC0_norm_apply_le
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -581,8 +581,8 @@ theorem tensorHsToC0_norm_apply_le
   exact LinearMap.norm_extendOfNorm_apply_le
     (denseRange_toComplL_toLinearMap (I := I) (M := M) g r s k) C hC u
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem tensorHsToC0_opNorm_le
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)
@@ -594,8 +594,8 @@ theorem tensorHsToC0_opNorm_le
     (denseRange_toComplL_toLinearMap (I := I) (M := M) g r s k)
     (le_of_lt hCpos) hC
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem tensorHsToC0_norm_le_of_norm_le
     (g : SmoothRiemannianMetric I M) (r s k : ℕ)

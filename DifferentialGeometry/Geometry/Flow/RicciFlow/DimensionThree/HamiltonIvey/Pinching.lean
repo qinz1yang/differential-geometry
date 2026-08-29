@@ -791,15 +791,15 @@ private theorem scalarLowerBarrier_le_shifted_scalar
     let basis : Module.Basis (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
       Real
         (TangentSpace I x) :=
-      DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+      DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
     let gInv :
         DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
           DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
       fun k l =>
-        DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+        DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
           (I := I) (S'.family.metric t) x k l (extChartAt I x x)
     have hinv :
-        Tensor0SBundle.MetricInverseInBasis_gen (I := I) (S'.family.metric t) x
+        Tensor0SBundle.MetricInverseInBasisGen (I := I) (S'.family.metric t) x
           basis gInv := by
       simpa [basis, gInv] using
         Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center

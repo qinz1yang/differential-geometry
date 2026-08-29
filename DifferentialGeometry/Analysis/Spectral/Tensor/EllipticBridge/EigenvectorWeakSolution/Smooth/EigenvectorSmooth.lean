@@ -143,13 +143,13 @@ lemma tensorChartComponentRaw_eigenvectorSmoothChart_self
     (chosenComp_hsupp (I := I) (M := M) g r s i α) P hy
 
 noncomputable def eigenvectorSmooth : SmoothCcTensor g r s :=
-  ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
     eigenvectorSmoothChart (I := I) (M := M) g r s i α
 
 omit [CompleteSpace E] in
 lemma eigenvectorSmooth_eq :
     eigenvectorSmooth (I := I) (M := M) g r s i =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         eigenvectorSmoothChart (I := I) (M := M) g r s i α := rfl
 
 omit [CompleteSpace E] in

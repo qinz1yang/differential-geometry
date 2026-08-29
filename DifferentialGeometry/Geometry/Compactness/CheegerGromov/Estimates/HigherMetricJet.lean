@@ -35,8 +35,8 @@ local instance formNormedSpace :
     NormedSpace Real (E →L[Real] E →L[Real] Real) :=
   ContinuousLinearMap.toNormedSpace
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E]
   [T2Space (TangentBundle I M)] in
 theorem intrMetricJet_abs_le
@@ -111,8 +111,8 @@ theorem intrMetricJet_abs_le
         ring
       rw [hsum]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrMetricJet_tube
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
@@ -190,8 +190,8 @@ theorem intrMetricJet_tube
   simpa only [IntrJetAtom.eval, intrLaunchJet] using
     hjets.1 k hk 1 (by constructor <;> norm_num)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrMetric_deriv_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)

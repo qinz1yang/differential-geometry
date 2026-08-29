@@ -176,7 +176,7 @@ private theorem derivNorm_pair_cont
         (hUo.mem_nhds hxU)
     filter_upwards [hregN] with p hp
     let basis := hframe.toBasisAt hp.2
-    have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I)
+    have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I)
         (g_fam p.1.1) p.2 basis (fun i j ↦ (Gm p)⁻¹ i j) := by
       have hunit : IsUnit (Gm p).det := isUnit_iff_ne_zero.2 (hdetne p hp.2)
       intro i j
@@ -433,7 +433,7 @@ private theorem metric1_pair_cont
       (hUo.mem_nhds hxU)
   filter_upwards [hregN] with p hp
   let basis := hframe.toBasisAt hp.2
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I)
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I)
       (g_fam p.1.1) p.2 basis (fun r s ↦ (Gm p)⁻¹ r s) := by
     have hunit : IsUnit (Gm p).det := isUnit_iff_ne_zero.2 (hdetne p hp.2)
     intro r s

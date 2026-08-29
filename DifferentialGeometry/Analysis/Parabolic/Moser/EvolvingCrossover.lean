@@ -198,7 +198,7 @@ theorem early_localizedSpacetimeMeasure_centered_log_superlevel_tail_of_evolving
       evolvingCutoffMass
         (I := I) (M := M) g deviationCutoff.toFun t ≤ Wdeviation)
     (hpde : ∀ t ∈ Icc a τ, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     (localizedSpacetimeMeasure (I := I) (M := M) deviationCutoff a τ).real
         {z | evolvingLocalizedAverage
@@ -264,7 +264,7 @@ theorem late_localizedSpacetimeMeasure_centered_log_sublevel_tail_of_evolving_su
       evolvingCutoffMass
         (I := I) (M := M) g deviationCutoff.toFun t ≤ Wdeviation)
     (hpde : ∀ t ∈ Icc τ b, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     (localizedSpacetimeMeasure (I := I) (M := M) deviationCutoff τ b).real
         {z | Real.log (u z.1 z.2) <
@@ -330,7 +330,7 @@ theorem early_localizedSpacetimeMeasure_log_superlevel_tail_of_exponentialTimeRe
       evolvingLogCenterDrift
         (I := I) (M := M) g averagingCutoff Ccenter H t ≤ rate)
     (hpde : ∀ t ∈ Icc a τ, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s ↦ u s x) t) :
     let center := evolvingLocalizedAverage
       (I := I) (M := M) g averagingCutoff
@@ -394,7 +394,7 @@ theorem late_localizedSpacetimeMeasure_log_sublevel_tail_of_exponentialTimeResca
       evolvingLogCenterDrift
         (I := I) (M := M) g averagingCutoff Ccenter H t ≤ rate)
     (hpde : ∀ t ∈ Icc τ b, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s ↦ u s x) t) :
     let center := evolvingLocalizedAverage
       (I := I) (M := M) g averagingCutoff

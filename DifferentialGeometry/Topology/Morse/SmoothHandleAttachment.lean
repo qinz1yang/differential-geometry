@@ -223,23 +223,23 @@ noncomputable def sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart {n : ℕ}
       ((intoUpper.comp (hlow.invFun.comp hlow.toFun)).comp flowRetract)
       (intoUpper.comp flowRetract) (Set.range ι) := by
     let P : (Set.Icc (0 : ℝ) 1) × SublevelSpace f (c + data.ε) → SublevelSpace f (c + data.ε) :=
-      fun p => intoUpper (hlow.left_inv (p.1, flowRetract p.2))
+      fun p => intoUpper (hlow.leftInv (p.1, flowRetract p.2))
     have hPcont : Continuous P := by
       have hpair : Continuous (fun p : (Set.Icc (0 : ℝ) 1) × SublevelSpace f (c + data.ε) =>
           (p.1, flowRetract p.2)) := by
         exact continuous_fst.prodMk (flowRetract.continuous.comp continuous_snd)
-      exact intoUpper.continuous.comp (hlow.left_inv.toHomotopy.continuous.comp hpair)
+      exact intoUpper.continuous.comp (hlow.leftInv.toHomotopy.continuous.comp hpair)
     refine { toHomotopy := { toFun := ContinuousMap.mk P hPcont, map_zero_left := ?_, map_one_left := ?_ }, prop' := ?_ }
     · intro y
-      change intoUpper (hlow.left_inv (0, flowRetract y)) =
+      change intoUpper (hlow.leftInv (0, flowRetract y)) =
         intoUpper ((hlow.invFun.comp hlow.toFun) (flowRetract y))
-      exact congrArg intoUpper (hlow.left_inv.map_zero_left (flowRetract y))
+      exact congrArg intoUpper (hlow.leftInv.map_zero_left (flowRetract y))
     · intro y
-      change intoUpper (hlow.left_inv (1, flowRetract y)) = intoUpper (flowRetract y)
-      exact congrArg intoUpper (hlow.left_inv.map_one_left (flowRetract y))
+      change intoUpper (hlow.leftInv (1, flowRetract y)) = intoUpper (flowRetract y)
+      exact congrArg intoUpper (hlow.leftInv.map_one_left (flowRetract y))
     · intro t x hx
       rcases hx with ⟨y, rfl⟩
-      change intoUpper (hlow.left_inv (t, flowRetract (ι y))) =
+      change intoUpper (hlow.leftInv (t, flowRetract (ι y))) =
         intoUpper ((hlow.invFun.comp hlow.toFun) (flowRetract (ι y)))
       have hfr : flowRetract (ι y) = sublevelInclusionLE hg_le (c - data.ε) y := by
         apply Subtype.ext
@@ -250,7 +250,7 @@ noncomputable def sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart {n : ℕ}
       have hz : flowRetract (ι y) ∈ Set.range (sublevelInclusionLE hg_le (c - data.ε)) := by
         rw [hfr]
         exact Set.mem_range.mpr ⟨y, rfl⟩
-      exact congrArg intoUpper (hlow.left_inv.prop t (flowRetract (ι y)) hz)
+      exact congrArg intoUpper (hlow.leftInv.prop t (flowRetract (ι y)) hz)
   let L : ContinuousMap.HomotopyRel
       ((intoUpper.comp (hlow.invFun.comp hlow.toFun)).comp flowRetract)
       (ContinuousMap.id (SublevelSpace f (c + data.ε))) (Set.range ι) :=
@@ -267,16 +267,16 @@ noncomputable def sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart {n : ℕ}
   let H₃ : ContinuousMap.HomotopyRel (toFun.comp invFun)
       (ContinuousMap.id (CellAdjunctionSpace k φ)) (Set.range j) := by
     let Q : (Set.Icc (0 : ℝ) 1) × CellAdjunctionSpace k φ → CellAdjunctionSpace k φ :=
-      fun p => hAdj.symm (hcast (hlow.right_inv (p.1, hcast.symm (hAdj p.2))))
+      fun p => hAdj.symm (hcast (hlow.rightInv (p.1, hcast.symm (hAdj p.2))))
     have hQcont : Continuous Q := by
       have hpair : Continuous (fun p : (Set.Icc (0 : ℝ) 1) × CellAdjunctionSpace k φ =>
           (p.1, hcast.symm (hAdj p.2))) := by
         exact continuous_fst.prodMk (hcast.symm.continuous_toFun.comp (hAdj.continuous_toFun.comp continuous_snd))
       exact (hAdj.symm.continuous_toFun.comp (hcast.continuous_toFun.comp
-        (hlow.right_inv.toHomotopy.continuous.comp hpair)))
+        (hlow.rightInv.toHomotopy.continuous.comp hpair)))
     refine { toHomotopy := { toFun := ContinuousMap.mk Q hQcont, map_zero_left := ?_, map_one_left := ?_ }, prop' := ?_ }
     · intro z
-      change hAdj.symm (hcast (hlow.right_inv (0, hcast.symm (hAdj z)))) =
+      change hAdj.symm (hcast (hlow.rightInv (0, hcast.symm (hAdj z)))) =
         hAdj.symm (hcast (hlow.toFun (flowRetract (intoUpper (hlow.invFun (hcast.symm (hAdj z)))))))
       have hflowfix : flowRetract (intoUpper (hlow.invFun (hcast.symm (hAdj z)))) =
           hlow.invFun (hcast.symm (hAdj z)) := by
@@ -287,36 +287,36 @@ noncomputable def sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart {n : ℕ}
           exact (hcast.symm (hAdj z)).2)),
           curveAt_zero v hcomplete ((hlow.invFun (hcast.symm (hAdj z))).1)]
       calc
-        hAdj.symm (hcast (hlow.right_inv (0, hcast.symm (hAdj z)))) =
+        hAdj.symm (hcast (hlow.rightInv (0, hcast.symm (hAdj z)))) =
             hAdj.symm (hcast ((hlow.toFun.comp hlow.invFun) (hcast.symm (hAdj z)))) := by
-          exact congrArg (fun w => hAdj.symm (hcast w)) (hlow.right_inv.map_zero_left (hcast.symm (hAdj z)))
+          exact congrArg (fun w => hAdj.symm (hcast w)) (hlow.rightInv.map_zero_left (hcast.symm (hAdj z)))
         _ = hAdj.symm (hcast (hlow.toFun (hlow.invFun (hcast.symm (hAdj z))))) := rfl
         _ = hAdj.symm (hcast (hlow.toFun (flowRetract
               (intoUpper (hlow.invFun (hcast.symm (hAdj z))))))) := by rw [hflowfix]
         _ = toFun (invFun z) := rfl
     · intro z
-      change hAdj.symm (hcast (hlow.right_inv (1, hcast.symm (hAdj z)))) = z
+      change hAdj.symm (hcast (hlow.rightInv (1, hcast.symm (hAdj z)))) = z
       calc
-        hAdj.symm (hcast (hlow.right_inv (1, hcast.symm (hAdj z)))) =
+        hAdj.symm (hcast (hlow.rightInv (1, hcast.symm (hAdj z)))) =
             hAdj.symm (hcast (hcast.symm (hAdj z))) := by
-          exact congrArg (fun w => hAdj.symm (hcast w)) (hlow.right_inv.map_one_left (hcast.symm (hAdj z)))
+          exact congrArg (fun w => hAdj.symm (hcast w)) (hlow.rightInv.map_one_left (hcast.symm (hAdj z)))
         _ = hAdj.symm (hAdj z) := by
           exact congrArg hAdj.symm (hcast.right_inv (hAdj z))
         _ = z := hAdj.left_inv z
     · intro t z hz
       rcases hz with ⟨x, rfl⟩
-      change hAdj.symm (hcast (hlow.right_inv (t, hcast.symm (hAdj (j x))))) =
+      change hAdj.symm (hcast (hlow.rightInv (t, hcast.symm (hAdj (j x))))) =
         hAdj.symm (hcast (hlow.toFun (flowRetract (intoUpper (hlow.invFun (hcast.symm (hAdj (j x))))))))
       have hz₀ : hcast.symm (hAdj (j x)) = sublevelUnionInclusion (c - data.ε) U₀ x := by
         apply Subtype.ext
         change (hAdj (j x)).1 = x.1
         simpa [j] using congrArg Subtype.val (hAdjLower x)
-      have hrel : hlow.right_inv (t, hcast.symm (hAdj (j x))) =
+      have hrel : hlow.rightInv (t, hcast.symm (hAdj (j x))) =
           (hlow.toFun.comp hlow.invFun) (hcast.symm (hAdj (j x))) := by
         have hmem : hcast.symm (hAdj (j x)) ∈ Set.range (sublevelUnionInclusion (c - data.ε) U₀) := by
           rw [hz₀]
           exact Set.mem_range.mpr ⟨x, rfl⟩
-        exact hlow.right_inv.prop t (hcast.symm (hAdj (j x))) hmem
+        exact hlow.rightInv.prop t (hcast.symm (hAdj (j x))) hmem
       have hflowfix : flowRetract (intoUpper (hlow.invFun (hcast.symm (hAdj (j x))))) =
           hlow.invFun (hcast.symm (hAdj (j x))) := by
         apply Subtype.ext
@@ -326,7 +326,7 @@ noncomputable def sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart {n : ℕ}
           exact (hcast.symm (hAdj (j x))).2)),
           curveAt_zero v hcomplete ((hlow.invFun (hcast.symm (hAdj (j x)))).1)]
       calc
-        hAdj.symm (hcast (hlow.right_inv (t, hcast.symm (hAdj (j x))))) =
+        hAdj.symm (hcast (hlow.rightInv (t, hcast.symm (hAdj (j x))))) =
             hAdj.symm (hcast ((hlow.toFun.comp hlow.invFun) (hcast.symm (hAdj (j x))))) := by
           exact congrArg (fun w => hAdj.symm (hcast w)) hrel
         _ = hAdj.symm (hcast (hlow.toFun (hlow.invFun (hcast.symm (hAdj (j x)))))) := rfl
@@ -375,8 +375,8 @@ noncomputable def sublevelCellAdjunctionHomotopyEquivUnderOfMorseChart {n : ℕ}
               exact congrArg intoUpper (hlow.map_fromBase_apply x)
             _ = ι x := by
               exact Subtype.ext (by rfl))
-      left_inv := L.cast h₀.symm rfl
-      right_inv := H₃ }
+      leftInv := L.cast h₀.symm rfl
+      rightInv := H₃ }
 
 theorem sublevelTransport_diffeomorph_of_setImage {m : ℕ} {H : Type} [TopologicalSpace H]
     {M : Type} [TopologicalSpace M] [ChartedSpace H M]

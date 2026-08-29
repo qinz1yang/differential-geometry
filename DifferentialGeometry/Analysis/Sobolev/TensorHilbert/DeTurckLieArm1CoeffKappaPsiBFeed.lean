@@ -50,7 +50,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 private def lieArm1LowFixField (g₀ g_bg : SmoothRiemannianMetric I M) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 3 :=
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
+  letI := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
   ⟨fun x => metricConnectionDifferenceLoweredFib (I := I) g₀ g₀ g_bg x,
     metricConnectionDifferenceLoweredFib_contMDiff (I := I) g₀ g₀ g_bg⟩
 
@@ -63,7 +63,7 @@ private def lieArm1LowFix (g₀ g_bg : SmoothRiemannianMetric I M) : SmoothCcTen
 private def lieArm1PbLowField (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
     (gA gB : SmoothRiemannianMetric I M) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 3 :=
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
+  letI := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
   ⟨fun x => ccBilinConnectionDifferenceLoweredFib (I := I) g₀ P gA gB x,
     ccBilinConnectionDifferenceLoweredFib_contMDiff (I := I) g₀ P gA gB⟩
 
@@ -223,7 +223,7 @@ lemma lieArm1_connectionDifference_antisymm (gA gB : SmoothRiemannianMetric I M)
 
 private def metricConnectionDifferenceLoweredField (g₁ g_bg : SmoothRiemannianMetric I M) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 3 :=
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
+  letI := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
   ⟨fun x => metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x,
     metricConnectionDifferenceLoweredFib_contMDiff (I := I) g₁ g₁ g_bg⟩
 
@@ -386,14 +386,14 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma lieArm1_interior_product_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (w : Fin s → TangentSpace I x) :
     Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D)
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D)
         (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (w k)) =
       Tensor0SSpace.toModel D
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
           (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (w k))) := by
   have h1 : Tensor0SSpace.toModel
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) =
-      Tensor0SBundle.model_interior_product (𝕜 := ℝ) (E := E) s
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D) =
+      Tensor0SBundle.modelInteriorProduct (𝕜 := ℝ) (E := E) s
         (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
         (Tensor0SSpace.toModel D) := rfl
   rw [h1]
@@ -442,10 +442,10 @@ private lemma lieArm1_connectionDifferenceSection_eq_raise_lowered (g₀ g₁ : 
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x u)
           (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ k))) := by
     rw [Tensor0SSpace.eval_eq, cometricRaiseSlot0Fib_clm_apply (I := I) g₀ 1 x D om]
-    rw [show (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (1 + 1) x
+    rw [show (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (1 + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) D YZ : ℝ) =
         Tensor0SSpace.toModel
-          (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (1 + 1) x
+          (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (1 + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) D)
           (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ k)) from by
       rw [Tensor0SSpace.toModel_apply_tangent, Tensor0SSpace.eval_eq]]
@@ -548,10 +548,10 @@ private theorem lieArm1_pbLow_raise_eq (g₀ : SmoothRiemannianMetric I M)
       ccTensorBilinSymm (I := I) g₀ P x
         (PDE.DeTurck.connectionDifference (I := I) gA gB x (YZ 0) (YZ 1)) u := by
     rw [Tensor0SSpace.eval_eq, cometricRaiseSlot0Fib_clm_apply (I := I) g₀ 1 x D om]
-    rw [show (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (1 + 1) x
+    rw [show (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (1 + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) D YZ : ℝ) =
         Tensor0SSpace.toModel
-          (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (1 + 1) x
+          (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (1 + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) D)
           (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ k)) from by
       rw [Tensor0SSpace.toModel_apply_tangent, Tensor0SSpace.eval_eq]]

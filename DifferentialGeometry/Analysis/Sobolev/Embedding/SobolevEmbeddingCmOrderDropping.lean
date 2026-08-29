@@ -1136,7 +1136,7 @@ private lemma covGrad_per_alpha_inner_bound
           ‖iteratedFDeriv ℝ l
             (covDerivLowerOrderCoeff (I := I) (M := M) g r s α m Idx0 p.1 Jdx0 p.2) z‖
             ≤ Γfun α)
-    (hΓmax_ge : ∀ α ∈ chartAtlasPOU_activeFinset I M, Γfun α ≤ Γmax)
+    (hΓmax_ge : ∀ α ∈ chartAtlasPOUActiveFinset I M, Γfun α ≤ Γmax)
     (Cmax : ℝ) (hCmax_def : Cmax = combinedConst E r s σ Γmax)
     {lhsInner rhsInner : M → ℝ≥0∞}
     (hlhsInner_def : lhsInner = fun α =>
@@ -1181,7 +1181,7 @@ private lemma covGrad_per_alpha_inner_bound
   have hCmax_nn_aux : 0 ≤ combinedConst E r s σ Γmax :=
     combinedConst_nonneg (E := E) r s σ hΓmax_nn
   simp only [rawPull_eq (I := I) (M := M)]
-  by_cases hα : α ∈ chartAtlasPOU_activeFinset I M
+  by_cases hα : α ∈ chartAtlasPOUActiveFinset I M
   · have hΓ : ∀ (m : Fin (Module.finrank ℝ E))
         (Idx0 : Fin r → Fin (Module.finrank ℝ E))
         (Jdx0 : Fin s → Fin (Module.finrank ℝ E))
@@ -1277,7 +1277,7 @@ theorem exists_covGrad_tensorPouSobolevHsNorm_le
             (covDerivLowerOrderCoeff (I := I) (M := M) g r s α m Idx0 p.1 Jdx0 p.2) z‖ ≤ Γ :=
     fun α => exists_lowerOrderCoeff_uniform_bound (I := I) (M := M) g r s α (2 * σ)
   choose Γfun hΓfun_nn hΓfun using hΓexists
-  set actF : Finset M := chartAtlasPOU_activeFinset I M with hactF_def
+  set actF : Finset M := chartAtlasPOUActiveFinset I M with hactF_def
   set Γmax : ℝ := ∑ α ∈ actF, Γfun α with hΓmax_def
   have hΓmax_nn : 0 ≤ Γmax := Finset.sum_nonneg (fun α _ => hΓfun_nn α)
   have hΓmax_ge : ∀ α ∈ actF, Γfun α ≤ Γmax :=
@@ -1428,8 +1428,8 @@ theorem iteratedCovGradSobolevNorm_le_baseSpectral
     _ ≤ C * ‖SmoothCcTensor.toHs (g := g) (r := r) (s := s) (2 * k) T‖ :=
         mul_le_mul_of_nonneg_left hmono hC_nn
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem iteratedCovGrad_toSobolev_embedding_Cm_singleNorm
     (g : SmoothRiemannianMetric I M) (r s k m : ℕ)
@@ -1438,7 +1438,7 @@ theorem iteratedCovGrad_toSobolev_embedding_Cm_singleNorm
       ∀ (T : SmoothCcTensor g r s) (x : M),
         (∑ j ∈ Finset.range (m + 1),
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + j)
             ‖(iteratedCovGrad g r s j T).toSection x‖)) ≤
           C * ‖SmoothCcTensor.toHs (g := g) (r := r) (s := s) (2 * k) T‖ := by
   classical
@@ -1476,8 +1476,8 @@ theorem iteratedCovGrad_toSobolev_embedding_Cm_singleNorm
         mul_le_mul_of_nonneg_left h_sum_le (le_of_lt hC0_pos)
     _ ≤ C0 * (Csum + 1) * N := by nlinarith [hN_nn, hC0_pos.le, hCsum_nn]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem iteratedCovGrad_toSobolev_embedding_C2_singleNorm
     (g : SmoothRiemannianMetric I M) (k : ℕ)
@@ -1486,7 +1486,7 @@ theorem iteratedCovGrad_toSobolev_embedding_C2_singleNorm
       ∀ (T : SmoothCcTensor g 0 2) (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 (2 + j)
             ‖(iteratedCovGrad g 0 2 j T).toSection x‖)) ≤
           C * ‖SmoothCcTensor.toHs (g := g) (r := 0) (s := 2) (2 * k) T‖ := by
   have h_super' : 2 * k > Module.finrank ℝ E + 2 * 2 := by omega

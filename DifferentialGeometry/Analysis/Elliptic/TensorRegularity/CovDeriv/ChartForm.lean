@@ -39,7 +39,7 @@ noncomputable def covChartMetricGram
       (Fin s → Fin (Module.finrank ℝ E))) :
     EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
   fun y =>
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α
       ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
       (tensorChartBasisElement (E := E) r s P.1 P.2)
       (tensorChartBasisElement (E := E) r s Q.1 Q.2)
@@ -52,7 +52,7 @@ lemma covChartMetricGram_def
       (Fin s → Fin (Module.finrank ℝ E)))
     (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) :
     covChartMetricGram (I := I) (M := M) g r s α P Q y =
-      chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α
+      chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
         (tensorChartBasisElement (E := E) r s P.1 P.2)
         (tensorChartBasisElement (E := E) r s Q.1 Q.2) := rfl
@@ -94,7 +94,7 @@ theorem covChartMetricGram_contDiffOn
   classical
   have hbase : ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M =>
-        chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+        chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
           (tensorChartBasisElement (E := E) r s P.1 P.2)
           (tensorChartBasisElement (E := E) r s Q.1 Q.2))
       (trivializationAt E (TangentSpace I) α).baseSet :=
@@ -105,7 +105,7 @@ theorem covChartMetricGram_contDiffOn
       (extChartAt I α).target := contMDiffOn_extChartAt_symm (I := I) α
   have hcomp_E : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ) ∞
       ((fun b : M =>
-          chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+          chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
             (tensorChartBasisElement (E := E) r s P.1 P.2)
             (tensorChartBasisElement (E := E) r s Q.1 Q.2)) ∘
         (extChartAt I α).symm)
@@ -113,7 +113,7 @@ theorem covChartMetricGram_contDiffOn
     hbase.comp hsymm (extChartAt_symm_mapsTo_baseSet (I := I) (M := M) α)
   have hcontDiff_E : ContDiffOn ℝ ∞
       ((fun b : M =>
-          chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+          chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
             (tensorChartBasisElement (E := E) r s P.1 P.2)
             (tensorChartBasisElement (E := E) r s Q.1 Q.2)) ∘
         (extChartAt I α).symm)
@@ -121,7 +121,7 @@ theorem covChartMetricGram_contDiffOn
     hcomp_E.contDiffOn
   have hcomp_eucl : ContDiffOn ℝ ∞
       (((fun b : M =>
-            chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+            chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
               (tensorChartBasisElement (E := E) r s P.1 P.2)
               (tensorChartBasisElement (E := E) r s Q.1 Q.2)) ∘
           (extChartAt I α).symm) ∘
@@ -140,12 +140,12 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Bound
 private lemma chartTensorInnerPointwise_rs_model_eq_component_sum
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α b : M)
     (X Y : TensorRSModel r s ℝ E) :
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b X Y =
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b X Y =
       ∑ P : (Fin r → Fin (Module.finrank ℝ E)) ×
             (Fin s → Fin (Module.finrank ℝ E)),
         ∑ Q : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
-          chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+          chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
               (tensorChartBasisElement (E := E) r s P.1 P.2)
               (tensorChartBasisElement (E := E) r s Q.1 Q.2) *
             (tensorChartComponentProjection (E := E) r s P.1 P.2 X *
@@ -172,7 +172,7 @@ private lemma chartTensorInnerPointwise_rs_model_eq_component_sum
           tensorChartBasisElement (E := E) r s Q.1 Q.2)]
     exact tensorRSModel_eq_sum_basis (E := E) r s Y
   conv_lhs => rw [hX]
-  rw [show chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+  rw [show chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
         (∑ P : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
           tensorChartComponentProjection (E := E) r s P.1 P.2 X •
@@ -180,18 +180,18 @@ private lemma chartTensorInnerPointwise_rs_model_eq_component_sum
       ∑ P : (Fin r → Fin (Module.finrank ℝ E)) ×
             (Fin s → Fin (Module.finrank ℝ E)),
         tensorChartComponentProjection (E := E) r s P.1 P.2 X *
-          chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+          chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
             (tensorChartBasisElement (E := E) r s P.1 P.2) Y from ?_]
   · refine Finset.sum_congr rfl (fun P _ => ?_)
-    rw [show chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+    rw [show chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
           (tensorChartBasisElement (E := E) r s P.1 P.2) Y =
-        chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+        chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
           (tensorChartBasisElement (E := E) r s P.1 P.2)
           (∑ Q : (Fin r → Fin (Module.finrank ℝ E)) ×
                 (Fin s → Fin (Module.finrank ℝ E)),
             tensorChartComponentProjection (E := E) r s Q.1 Q.2 Y •
               tensorChartBasisElement (E := E) r s Q.1 Q.2) from by rw [← hY]]
-    rw [show chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+    rw [show chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
           (tensorChartBasisElement (E := E) r s P.1 P.2)
           (∑ Q : (Fin r → Fin (Module.finrank ℝ E)) ×
                 (Fin s → Fin (Module.finrank ℝ E)),
@@ -200,7 +200,7 @@ private lemma chartTensorInnerPointwise_rs_model_eq_component_sum
         ∑ Q : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
           tensorChartComponentProjection (E := E) r s Q.1 Q.2 Y *
-            chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+            chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
               (tensorChartBasisElement (E := E) r s P.1 P.2)
               (tensorChartBasisElement (E := E) r s Q.1 Q.2) from ?_]
     · rw [Finset.mul_sum]
@@ -239,7 +239,7 @@ private lemma tensorInnerPointwise_toModel_eq_chart
     (X Y : TensorRSSpace r s I b) :
     tensorInnerPointwise (I := I) (M := M) g r s b
         (TensorRSSpace.toModel X) (TensorRSSpace.toModel Y) =
-      chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+      chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
         ((trivializationAt (TensorRSModel r s ℝ E)
             (fun z : M => TensorRSSpace r s I z) α).continuousLinearMapAt ℝ b X)
         ((trivializationAt (TensorRSModel r s ℝ E)
@@ -273,7 +273,7 @@ lemma tensorInnerPointwise_toModel_eq_component_sum
             (Fin s → Fin (Module.finrank ℝ E)),
         ∑ Q : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
-          chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+          chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
               (tensorChartBasisElement (E := E) r s P.1 P.2)
               (tensorChartBasisElement (E := E) r s Q.1 Q.2) *
             (wrappedComponentProj (I := I) (M := M) r s α b P.1 P.2 X *
@@ -555,7 +555,7 @@ theorem tensorCovDerivPointwiseInner_chart_eq_component_sum
               (Fin s → Fin (Module.finrank ℝ E)),
           ∑ Q : (Fin r → Fin (Module.finrank ℝ E)) ×
                 (Fin s → Fin (Module.finrank ℝ E)),
-            chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+            chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
                 (tensorChartBasisElement (E := E) r s P.1 P.2)
                 (tensorChartBasisElement (E := E) r s Q.1 Q.2) *
               ((euclidPartial (E := E) i
@@ -617,7 +617,7 @@ theorem tensorCovDerivPointwiseInner_chart_eq_component_sum
           ∑ Q : (Fin r → Fin (Module.finrank ℝ E)) ×
                 (Fin s → Fin (Module.finrank ℝ E)),
             chartInvGramEuclid (I := I) g α i j y *
-              chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+              chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
                   (tensorChartBasisElement (E := E) r s P.1 P.2)
                   (tensorChartBasisElement (E := E) r s Q.1 Q.2) *
                 ((euclidPartial (E := E) i
@@ -666,7 +666,7 @@ theorem tensorCovDerivPointwiseInner_chart_eq_component_sum
               (Fin s → Fin (Module.finrank ℝ E)),
           ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
             chartInvGramEuclid (I := I) g α i j y *
-              chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+              chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
                   (tensorChartBasisElement (E := E) r s P.1 P.2)
                   (tensorChartBasisElement (E := E) r s Q.1 Q.2) *
                 ((euclidPartial (E := E) i
@@ -697,7 +697,7 @@ theorem tensorCovDerivPointwiseInner_chart_eq_component_sum
           (Fin s → Fin (Module.finrank ℝ E))) → ℝ :=
     fun ij PQ =>
       chartInvGramEuclid (I := I) g α ij.1 ij.2 y *
-        chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+        chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
             (tensorChartBasisElement (E := E) r s PQ.1.1 PQ.1.2)
             (tensorChartBasisElement (E := E) r s PQ.2.1 PQ.2.2) *
           ((euclidPartial (E := E) ij.1
@@ -725,7 +725,7 @@ theorem tensorCovDerivPointwiseInner_chart_eq_component_sum
             ∑ Q : (Fin r → Fin (Module.finrank ℝ E)) ×
                   (Fin s → Fin (Module.finrank ℝ E)),
               chartInvGramEuclid (I := I) g α i j y *
-                chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+                chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
                     (tensorChartBasisElement (E := E) r s P.1 P.2)
                     (tensorChartBasisElement (E := E) r s Q.1 Q.2) *
                   ((euclidPartial (E := E) i
@@ -757,7 +757,7 @@ theorem tensorCovDerivPointwiseInner_chart_eq_component_sum
                 (Fin s → Fin (Module.finrank ℝ E)),
             ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
               chartInvGramEuclid (I := I) g α i j y *
-                chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+                chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
                     (tensorChartBasisElement (E := E) r s P.1 P.2)
                     (tensorChartBasisElement (E := E) r s Q.1 Q.2) *
                   ((euclidPartial (E := E) i

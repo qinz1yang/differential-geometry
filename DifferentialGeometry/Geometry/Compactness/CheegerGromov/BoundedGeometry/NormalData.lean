@@ -103,8 +103,8 @@ theorem normal_chart_radius_lt_decay_scale {X : PointedRiemannianSeq.{u, uE, uH}
 
 end InjRadiusDecayInput
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 structure IntrinsicBallChartData
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hd : InjRadiusDecayInput (I := I) X)
@@ -192,8 +192,8 @@ structure IntrinsicBallChartData
         intrFrameMetric (I := I) (X.obj k).metric hEnorm x z v v ≤
           2 * ‖v‖ ^ 2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def IntrinsicBallChartData.normalChart
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
@@ -268,8 +268,8 @@ noncomputable def IntrinsicBallChartData.normalChart
     (mul_pos d.ratio_pos
       (hd.mu_pos (hd.dist k x (X.obj k).basepoint)))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 @[simp] theorem IntrinsicBallChartData.normal_chart_radius
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -310,8 +310,8 @@ omit [CompleteSpace E] in
       d.ratio * hd.mu (hd.dist k x (X.obj k).basepoint) := by
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 structure NormalChartData
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hd : InjRadiusDecayInput (I := I) X) where
@@ -371,8 +371,8 @@ structure NormalChartData
 
 namespace NormalChartData
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem radius_le_global
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -395,8 +395,8 @@ theorem radius_le_global
     (hd.mu_antitone (hreal.dist_nonneg k x (X.obj k).basepoint))
     d.ratio_pos.le
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem metric_eq_intr
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -486,8 +486,8 @@ theorem metric_eq_intr
   rw [NormalBallChart.metric_apply, intrFrameMetric_apply,
     d.hom_eq k x hcomplete hz, hD]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem readout_mem
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -727,8 +727,8 @@ def chartOverlapOn
 
 end BoundedGeometryNormalData
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def IntrinsicBallChartData.toChartData
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjRadiusDecayInput (I := I) X}
@@ -780,8 +780,8 @@ noncomputable def IntrinsicBallChartData.toChartData
     intro z hz
     exact (d.chart k x).hom_eq hz
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem IntrinsicBallChartData.normal_equiv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -854,8 +854,8 @@ theorem IntrinsicBallChartData.normal_equiv
   rw [d.normal_chart_radius k x] at hz
   exact d.intr_equiv k x z hz v
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem exists_intrinsic_ball_chart_data
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
@@ -982,8 +982,8 @@ theorem exists_intrinsic_ball_chart_data
     exact (hcontrol k x).1 z
       (Metric.ball_subset_ball (hr₁'.le.trans hr₁_le_r₀) hz) v
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem exists_normal_chart_data
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
@@ -999,8 +999,8 @@ theorem exists_normal_chart_data
     exists_intrinsic_ball_chart_data (I := I) X hcomplete hconn hgeom hd hreal
   exact ⟨d.toChartData⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_bounded_geometry_normal_data
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)

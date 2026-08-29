@@ -25,7 +25,7 @@ lemma coordinateFrameAt_isLocalFrame_one (x₀ : M) :
     I (1 : WithTop ℕ∞) (Module.finBasis Real E)
 
 theorem coordinateFrameAt_toBasis_eq_finBasis (x₀ : M) :
-    coordinateFrameAt_toBasis (I := I) x₀ = Module.finBasis Real E := by
+    coordinateFrameAtToBasis (I := I) x₀ = Module.finBasis Real E := by
   ext i
   rw [coordinateFrameAt_toBasis_apply]
   rw [coordinateFrameAt_apply_of_mem (I := I) (coordinateFrameAt_mem (I := I) x₀) i]
@@ -224,17 +224,17 @@ theorem modelDeriv_eq_coordDeriv0SAt {s : ℕ}
       (n := (⊤ : WithTop ℕ∞)) s) :
     ModelDerivEqCoordDeriv0SAt (I := I) X x₀ (fun x => α x) := by
   classical
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H)
     (I := I) (M := M) s
-  let := Tensor0SBundle.tensor0SBundle_fiber (𝕜 := Real) (E := E) (H := H)
+  let := Tensor0SBundle.tensor0SBundleFiber (𝕜 := Real) (E := E) (H := H)
     (I := I) (M := M) s
   let := Tensor0SBundle.tensor0SBundle_vector (𝕜 := Real) (E := E) (H := H)
     (I := I) (M := M) s
   let : NormedSpace Real
       (ContinuousMultilinearMap Real (fun _ : Fin s => E) Real) :=
-    Tensor0SBundle.tensor0SModel_normedSpace (𝕜 := Real) (E := E) s
+    Tensor0SBundle.tensor0SModelNormedSpace (𝕜 := Real) (E := E) s
   let : NormedSpace Real (Tensor0SModel s Real E) :=
-    Tensor0SBundle.tensor0SModel_normedSpace (𝕜 := Real) (E := E) s
+    Tensor0SBundle.tensor0SModelNormedSpace (𝕜 := Real) (E := E) s
   intro slots
   let z₀ : E := extChartAt I x₀ x₀
   let S : Set E := ((extChartAt I x₀).symm ⁻¹' Set.univ) ∩ Set.range I
@@ -371,10 +371,10 @@ theorem nabla0S_coordFrame_slots {s : ℕ}
             x₀ (X x₀) (slots a) k *
             coordComponent0SAt (I := I) (α x₀) (Function.update slots a k) := by
   classical
-  simp only [nabla0SFun, TensorLieDeriv.mcovariantDeriv_tensor0SFromConnection,
-    TensorLieDeriv.mcovariantDeriv_tensor0SWithinFromConnection]
+  simp only [nabla0SFun, TensorLieDeriv.mcovariantDerivTensor0SFromConnection,
+    TensorLieDeriv.mcovariantDerivTensor0SWithinFromConnection]
   rw [← tensor0SModelAt_coordComponent0SAt (I := I) x₀
-    (TensorLieDeriv.mcovariantDeriv_tensor0SWithin
+    (TensorLieDeriv.mcovariantDerivTensor0SWithin
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (⊤ : WithTop ℕ∞)) s X
       (connectionEndomorphismInChart (𝕜 := Real) (I := I) cov (fun x => X x) x₀)

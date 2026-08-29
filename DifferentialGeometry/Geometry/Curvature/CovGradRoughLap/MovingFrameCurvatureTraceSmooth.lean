@@ -327,7 +327,7 @@ private lemma genericTensor0S_curry_covGradBundleEquiv_unit
     (s : ℕ) (x : M)
     (Φ : TangentSpace I x →L[ℝ] TensorRSSpace 0 s I x)
     (v : TangentSpace I x) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
           (unitZeroSec (I := I) (M := M) x)) v =
@@ -372,7 +372,7 @@ omit [CompactSpace M] [I.Boundaryless] in
 private lemma tensor0S_curry_genuineCurvPureRFib_unit
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (v : TangentSpace I x) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           genuineCurvPureRFib (I := I) (M := M) g s S x)
           (unitZeroSec (I := I) (M := M) x)) v =
@@ -520,9 +520,9 @@ private noncomputable def pureRValuedBilinAt
   haveI : T2Space (TangentSpace I y) := inferInstanceAs (T2Space E)
   haveI : FiniteDimensional ℝ (TangentSpace I y) := inferInstanceAs (FiniteDimensional ℝ E)
   letI : TopologicalSpace (TensorRSSpace 0 s I y) :=
-    tensorRSSpace_topologicalSpace 0 s y
-  letI : AddCommGroup (TensorRSSpace 0 s I y) := tensorRSSpace_addCommGroup 0 s y
-  letI : Module ℝ (TensorRSSpace 0 s I y) := tensorRSSpace_module 0 s y
+    tensorRSSpaceTopologicalSpace 0 s y
+  letI : AddCommGroup (TensorRSSpace 0 s I y) := tensorRSSpaceAddCommGroup 0 s y
+  letI : Module ℝ (TensorRSSpace 0 s I y) := tensorRSSpaceModule 0 s y
   letI : ContinuousAdd (TensorRSSpace 0 s I y) := tensorRSSpace_continuousAdd 0 s y
   letI : ContinuousSMul ℝ (TensorRSSpace 0 s I y) := tensorRSSpace_continuousSMul 0 s y
   letI : AddCommMonoid (TensorRSSpace 0 s I y →L[ℝ] TensorRSSpace 0 s I y) :=

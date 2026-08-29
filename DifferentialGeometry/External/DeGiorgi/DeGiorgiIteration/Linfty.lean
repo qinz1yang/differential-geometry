@@ -237,15 +237,15 @@ theorem deGiorgiEnergySeq_zero_le_integral_sq_posPartZero_on_unitBall
 the abstract initial De Giorgi recurrence threshold. This still depends on the
 one-step coefficient `K`; later PDE-facing theorems will substitute the
 specific `K` coming from pre-iteration. -/
-noncomputable def C_DeGiorgiSmallness (d : ℕ) (K : ℝ) : ℝ :=
+noncomputable def CDeGiorgiSmallness (d : ℕ) (K : ℝ) : ℝ :=
   (K * (2 : ℝ) ^ (6 + 8 / (d : ℝ))) ^ ((d : ℝ) / 4) *
     (deGiorgiRecurrenceBase d) ^ (((d : ℝ) ^ 2) / 8)
 
 omit [NeZero d] in
 theorem C_DeGiorgiSmallness_pos
     {K : ℝ} (hK : 0 < K) :
-    0 < C_DeGiorgiSmallness d K := by
-  rw [C_DeGiorgiSmallness]
+    0 < CDeGiorgiSmallness d K := by
+  rw [CDeGiorgiSmallness]
   have hA_pos : 0 < K * (2 : ℝ) ^ (6 + 8 / (d : ℝ)) := by
     positivity
   have hB_pos : 0 < deGiorgiRecurrenceBase d := by
@@ -256,8 +256,8 @@ theorem C_DeGiorgiSmallness_pos
 omit [NeZero d] in
 theorem C_DeGiorgiSmallness_mono
     {K₁ K₂ : ℝ} (hK₁_nonneg : 0 ≤ K₁) (hK : K₁ ≤ K₂) :
-    C_DeGiorgiSmallness d K₁ ≤ C_DeGiorgiSmallness d K₂ := by
-  rw [C_DeGiorgiSmallness, C_DeGiorgiSmallness]
+    CDeGiorgiSmallness d K₁ ≤ CDeGiorgiSmallness d K₂ := by
+  rw [CDeGiorgiSmallness, CDeGiorgiSmallness]
   have hpow_nonneg : 0 ≤ (2 : ℝ) ^ (6 + 8 / (d : ℝ)) := by
     positivity
   have harg_le :
@@ -281,9 +281,9 @@ theorem C_DeGiorgiSmallness_mono
 omit [NeZero d] in
 theorem C_DeGiorgiSmallness_mul_right
     {K t : ℝ} (hK : 0 ≤ K) (ht : 0 ≤ t) :
-    C_DeGiorgiSmallness d (K * t) =
-      C_DeGiorgiSmallness d K * t ^ ((d : ℝ) / 4) := by
-  rw [C_DeGiorgiSmallness, C_DeGiorgiSmallness]
+    CDeGiorgiSmallness d (K * t) =
+      CDeGiorgiSmallness d K * t ^ ((d : ℝ) / 4) := by
+  rw [CDeGiorgiSmallness, CDeGiorgiSmallness]
   have hpow_nonneg : 0 ≤ (2 : ℝ) ^ (6 + 8 / (d : ℝ)) := by
     positivity
   have hKt_nonneg : 0 ≤ K * (2 : ℝ) ^ (6 + 8 / (d : ℝ)) := by
@@ -312,7 +312,7 @@ theorem deGiorgi_exact_height_threshold_on_unitBall
     (hK : 0 < K)
     (hI₀_pos :
       0 < ∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ 2 ∂volume) :
-    0 < C_DeGiorgiSmallness d K *
+    0 < CDeGiorgiSmallness d K *
       Real.sqrt (∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ 2 ∂volume) := by
   exact mul_pos
     (C_DeGiorgiSmallness_pos (d := d) hK)
@@ -354,17 +354,17 @@ It packages the assembly step from `IsSubsolution` to the concrete
 De Giorgi recurrence data used by the closeout layer: a positive one-step
 coefficient `K`, integrability of the truncated energies on the canonical balls,
 and the nonlinear recurrence itself. -/
-noncomputable def K_DeGiorgi_subsolution
+noncomputable def KDeGiorgiSubsolution
     (d : ℕ) [NeZero d]
     (A : EllipticCoeff d (Metric.ball (0 : AmbientSpace d) 1)) : ℝ :=
-  (C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * (2 * (Mst : ℝ)) ^ 2) + 1
+  (CGns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * (2 * (Mst : ℝ)) ^ 2) + 1
 
 theorem K_DeGiorgi_subsolution_pos
     (A : EllipticCoeff d (Metric.ball (0 : E) 1)) :
-    0 < K_DeGiorgi_subsolution d A := by
-  rw [K_DeGiorgi_subsolution]
+    0 < KDeGiorgiSubsolution d A := by
+  rw [KDeGiorgiSubsolution]
   have hnonneg :
-      0 ≤ (C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * (2 * (Mst : ℝ)) ^ 2) := by
+      0 ≤ (CGns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * (2 * (Mst : ℝ)) ^ 2) := by
     have hratio_nonneg : 0 ≤ ellipticityRatio A + 1 := by
       linarith [A.ellipticityRatio_nonneg]
     have htmp_nonneg : 0 ≤ (ellipticityRatio A + 1) * (2 * (Mst : ℝ)) ^ 2 := by
@@ -375,15 +375,15 @@ theorem K_DeGiorgi_subsolution_pos
     exact mul_nonneg (sq_nonneg _) hfactor_nonneg
   linarith
 
-noncomputable def C_DeGiorgi_subsolution
+noncomputable def CDeGiorgiSubsolution
     (d : ℕ) [NeZero d]
     (A : EllipticCoeff d (Metric.ball (0 : AmbientSpace d) 1)) : ℝ :=
-  C_DeGiorgiSmallness d (K_DeGiorgi_subsolution d A)
+  CDeGiorgiSmallness d (KDeGiorgiSubsolution d A)
 
 theorem C_DeGiorgi_subsolution_pos
     (A : EllipticCoeff d (Metric.ball (0 : E) 1)) :
-    0 < C_DeGiorgi_subsolution d A := by
-  rw [C_DeGiorgi_subsolution]
+    0 < CDeGiorgiSubsolution d A := by
+  rw [CDeGiorgiSubsolution]
   exact C_DeGiorgiSmallness_pos (d := d) (K_DeGiorgi_subsolution_pos (d := d) A)
 
 theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
@@ -391,7 +391,7 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
     (A : EllipticCoeff d (Metric.ball (0 : E) 1))
     {u : E → ℝ}
     (hsub : IsSubsolution A u) :
-    0 < K_DeGiorgi_subsolution d A ∧
+    0 < KDeGiorgiSubsolution d A ∧
       ∀ {lamStar : ℝ}, 0 < lamStar →
         IntegrableOn (fun x => |positivePartSub u lamStar x| ^ 2)
           (Metric.ball (0 : E) (1 / 2 : ℝ)) volume ∧
@@ -400,7 +400,7 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
             (Metric.ball (0 : E) (deGiorgiRadius n)) volume) ∧
         (∀ n,
           deGiorgiEnergySeq u (0 : E) lamStar (n + 1) ≤
-            K_DeGiorgi_subsolution d A /
+            KDeGiorgiSubsolution d A /
               ((deGiorgiRadius n - deGiorgiRadius (n + 1)) ^ 2 *
                 (deGiorgiLevel lamStar (n + 1) - deGiorgiLevel lamStar n) ^ (4 / (d : ℝ))) *
               deGiorgiEnergySeq u (0 : E) lamStar n ^ (1 + 2 / (d : ℝ))) := by
@@ -429,7 +429,7 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
               atTop (nhds 0)) := by
     intro θ
     let huShift : MemW1pWitness 2 (fun x => u x - θ) (Metric.ball (0 : E) 1) :=
-      hu1.sub_const isOpen_ball θ
+      hu1.subConst isOpen_ball θ
     rcases exists_smooth_W12_approx_on_unitBall (d := d) huShift with
       ⟨ψ, hψ_smooth, hψ_compact, hψ_fun, hψ_grad⟩
     refine ⟨ψ, ?_, hψ_compact, hψ_fun, ?_⟩
@@ -438,10 +438,10 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
     · intro i
       simpa [huShift] using hψ_grad i
   let Kraw : ℝ :=
-    (C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * (2 * (Mst : ℝ)) ^ 2)
-  let K : ℝ := K_DeGiorgi_subsolution d A
+    (CGns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * (2 * (Mst : ℝ)) ^ 2)
+  let K : ℝ := KDeGiorgiSubsolution d A
   have hK_eq : K = Kraw + 1 := by
-    dsimp [K, Kraw, K_DeGiorgi_subsolution]
+    dsimp [K, Kraw, KDeGiorgiSubsolution]
   have hKraw_nonneg : 0 ≤ Kraw := by
     dsimp [Kraw]
     have hratio_nonneg : 0 ≤ ellipticityRatio A + 1 := by
@@ -464,7 +464,7 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
       IntegrableOn (fun x => |positivePartSub u lamStar x| ^ 2)
         (Metric.ball (0 : E) (1 / 2 : ℝ)) volume := by
     let hwStar1 : MemW1pWitness 2 (positivePartSub u lamStar) (Metric.ball (0 : E) 1) :=
-      positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := 1)
+      positivePartSubMemW1pWitnessOnBall (d := d) (x₀ := (0 : E)) (s := 1)
         zero_lt_one hu1 lamStar (happroxUnit lamStar)
     have hStarInt1 :
         IntegrableOn (fun x => |positivePartSub u lamStar x| ^ 2)
@@ -480,7 +480,7 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
     intro n
     let θ : ℝ := deGiorgiLevel lamStar n
     let hwθ1 : MemW1pWitness 2 (positivePartSub u θ) (Metric.ball (0 : E) 1) :=
-      positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := 1)
+      positivePartSubMemW1pWitnessOnBall (d := d) (x₀ := (0 : E)) (s := 1)
         zero_lt_one hu1 θ (happroxUnit θ)
     have hθInt1 :
         IntegrableOn (fun x => |positivePartSub u θ x| ^ 2)
@@ -616,7 +616,7 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
         (d := d) hd hs hr hrs huS happroxBallTheta hθl hη hη_nonneg
         hη_eq_one hη_bound hη_sub_ball_s
     let hwθ1 : MemW1pWitness 2 (positivePartSub u θ) (Metric.ball (0 : E) 1) :=
-      positivePartSub_memW1pWitness_on_ball (d := d) (x₀ := (0 : E)) (s := 1)
+      positivePartSubMemW1pWitnessOnBall (d := d) (x₀ := (0 : E)) (s := 1)
         zero_lt_one hu1 θ (happroxUnit θ)
     let hwθs : MemW1pWitness 2 (positivePartSub u θ) (Metric.ball (0 : E) s) :=
       hwθ1.restrict isOpen_ball (Metric.ball_subset_ball (le_of_lt hs_lt_one))
@@ -762,11 +762,11 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
       exact measure_ball_lt_top.ne
     have hpre_raw :
         Ilam ≤
-          (C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *
+          (CGns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *
             ((((lam - θ) ^ 2)⁻¹ * Iθ) ^ (2 / (d : ℝ))) * Iθ := by
       have hsob' :
           Ilam ≤
-            (C_gns d 2) ^ 2 *
+            (CGns d 2) ^ 2 *
               (∫ x in Metric.ball (0 : E) s, ‖hwηθ.weakGrad x‖ ^ 2 ∂volume) *
               ((volume.restrict (Metric.ball (0 : E) s)).real {x | lam < u x}) ^ (2 / (d : ℝ)) := by
         simpa [Ilam, deGiorgiEnergySeq, r, lam] using hsob
@@ -777,7 +777,7 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
           (Ilam := Ilam)
           (Iθ := Iθ)
           (G := ∫ x in Metric.ball (0 : E) s, ‖hwηθ.weakGrad x‖ ^ 2 ∂volume)
-          (Csob := (C_gns d 2) ^ 2)
+          (Csob := (CGns d 2) ^ 2)
           (Cenergy := 8 * (ellipticityRatio A + 1) * Cη ^ 2)
           hθl (sq_nonneg _) hCenergy_nonneg hIθ_nonneg hθ_int hsob'
           henergy (by simp [Iθ, deGiorgiEnergySeq, s, θ])
@@ -822,7 +822,7 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
             congr 1
             ring
     have hcoeff_eq :
-        (C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) *
+        (CGns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) *
             ((2 * (Mst : ℝ)) ^ 2 * ((s - r) ^ 2)⁻¹)) *
             ((lam - θ) ^ (4 / (d : ℝ)))⁻¹ =
           Kraw * ((s - r) ^ 2 * (lam - θ) ^ (4 / (d : ℝ)))⁻¹ := by
@@ -832,24 +832,24 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
         rw [mul_comm]
       ring
     have hrewrite :
-        (C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *
+        (CGns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *
             ((((lam - θ) ^ 2)⁻¹ * Iθ) ^ (2 / (d : ℝ))) * Iθ =
           Kraw / ((s - r) ^ 2 * (lam - θ) ^ (4 / (d : ℝ))) * Iθ ^ (1 + 2 / (d : ℝ)) := by
       rw [hCη_sq]
       rw [Real.mul_rpow (by positivity) hIθ_nonneg]
       rw [hpow_gap]
       have hstep :
-          (C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) *
+          (CGns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) *
             ((2 * (Mst : ℝ)) ^ 2 * (((s - r) ^ 2)⁻¹))) *
               ((lam - θ) ^ (-(4 / (d : ℝ))) * Iθ ^ (2 / (d : ℝ))) * Iθ =
-            (C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) *
+            (CGns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) *
               ((2 * (Mst : ℝ)) ^ 2 * (((s - r) ^ 2)⁻¹))) *
               (lam - θ) ^ (-(4 / (d : ℝ))) * (Iθ ^ (2 / (d : ℝ)) * Iθ) := by
         ring
       rw [hstep, hIθ_pow]
       rw [Real.rpow_neg hgap_pos.le, div_eq_mul_inv]
       have hcoeff_mul :
-          ((C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) *
+          ((CGns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) *
               ((2 * (Mst : ℝ)) ^ 2 * ((s - r) ^ 2)⁻¹)) *
               ((lam - θ) ^ (4 / (d : ℝ)))⁻¹) *
               Iθ ^ (1 + 2 / (d : ℝ)) =
@@ -868,7 +868,7 @@ theorem deGiorgi_iteration_package_on_unitBall_of_subsolution
     calc
       deGiorgiEnergySeq u (0 : E) lamStar (n + 1) = Ilam := by
           rfl
-      _ ≤ (C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *
+      _ ≤ (CGns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *
             ((((lam - θ) ^ 2)⁻¹ * Iθ) ^ (2 / (d : ℝ))) * Iθ := hpre_raw
       _ = Kraw / ((s - r) ^ 2 * (lam - θ) ^ (4 / (d : ℝ))) * Iθ ^ (1 + 2 / (d : ℝ)) := hrewrite
       _ ≤ K / ((s - r) ^ 2 * (lam - θ) ^ (4 / (d : ℝ))) * Iθ ^ (1 + 2 / (d : ℝ)) := by
@@ -897,7 +897,7 @@ theorem deGiorgi_initial_energy_small_of_height_bound
     (hK : 0 < K) (hLamStar : 0 < lamStar)
     (hI₀_nonneg : 0 ≤ I₀)
     (hheight :
-      C_DeGiorgiSmallness d K * Real.sqrt I₀ ≤ lamStar) :
+      CDeGiorgiSmallness d K * Real.sqrt I₀ ≤ lamStar) :
     I₀ ≤
       (deGiorgiRecurrenceCoeff d K lamStar) ^ (-(1 : ℝ) / (2 / (d : ℝ))) *
         (deGiorgiRecurrenceBase d) ^ (-(1 : ℝ) / (2 / (d : ℝ)) ^ 2) := by
@@ -912,16 +912,16 @@ theorem deGiorgi_initial_energy_small_of_height_bound
   have hB_pos : 0 < B := by
     dsimp [B, deGiorgiRecurrenceBase]
     positivity
-  have hSmall_pos : 0 < C_DeGiorgiSmallness d K := by
-    rw [C_DeGiorgiSmallness]
+  have hSmall_pos : 0 < CDeGiorgiSmallness d K := by
+    rw [CDeGiorgiSmallness]
     exact mul_pos (Real.rpow_pos_of_pos hA_pos _) (Real.rpow_pos_of_pos hB_pos _)
-  have hSmall_nonneg : 0 ≤ C_DeGiorgiSmallness d K := by
+  have hSmall_nonneg : 0 ≤ CDeGiorgiSmallness d K := by
     exact hSmall_pos.le
   have hheight_sq :
-      (C_DeGiorgiSmallness d K * Real.sqrt I₀) ^ 2 ≤ lamStar ^ 2 := by
+      (CDeGiorgiSmallness d K * Real.sqrt I₀) ^ 2 ≤ lamStar ^ 2 := by
     exact sq_le_sq' (by nlinarith [hLamStar.le, hSmall_nonneg, Real.sqrt_nonneg I₀]) hheight
   have hsq :
-      (C_DeGiorgiSmallness d K) ^ 2 * I₀ ≤ lamStar ^ 2 := by
+      (CDeGiorgiSmallness d K) ^ 2 * I₀ ≤ lamStar ^ 2 := by
     nlinarith [hheight_sq, Real.sq_sqrt hI₀_nonneg]
   have hE1 : (-(1 : ℝ) / (2 / (d : ℝ))) = -((d : ℝ) / 2) := by
     field_simp [hd_ne]
@@ -957,11 +957,11 @@ theorem deGiorgi_initial_energy_small_of_height_bound
     rw [← Real.rpow_add hB_pos]
     rw [show ((d : ℝ) ^ 2) / 4 + -(((d : ℝ) ^ 2) / 4) = 0 by ring, Real.rpow_zero]
   have hthreshold :
-      (C_DeGiorgiSmallness d K) ^ 2 *
+      (CDeGiorgiSmallness d K) ^ 2 *
           ((deGiorgiRecurrenceCoeff d K lamStar) ^ (-(1 : ℝ) / (2 / (d : ℝ))) *
             (deGiorgiRecurrenceBase d) ^ (-(1 : ℝ) / (2 / (d : ℝ)) ^ 2)) =
         lamStar ^ 2 := by
-    rw [C_DeGiorgiSmallness, deGiorgiRecurrenceCoeff, hE1, hE2]
+    rw [CDeGiorgiSmallness, deGiorgiRecurrenceCoeff, hE1, hE2]
     change (A ^ ((d : ℝ) / 4) * B ^ (((d : ℝ) ^ 2) / 8)) ^ 2 *
           ((A * lamStar ^ (-(4 / (d : ℝ)))) ^ (-((d : ℝ) / 2)) *
             B ^ (-(((d : ℝ) ^ 2) / 4))) =
@@ -989,18 +989,18 @@ theorem deGiorgi_initial_energy_small_of_height_bound
             rw [hA_cancel, hB_cancel]
             simp
   have hgoal_mul :
-      (C_DeGiorgiSmallness d K) ^ 2 * I₀ ≤
-        (C_DeGiorgiSmallness d K) ^ 2 *
+      (CDeGiorgiSmallness d K) ^ 2 * I₀ ≤
+        (CDeGiorgiSmallness d K) ^ 2 *
           ((deGiorgiRecurrenceCoeff d K lamStar) ^ (-(1 : ℝ) / (2 / (d : ℝ))) *
             (deGiorgiRecurrenceBase d) ^ (-(1 : ℝ) / (2 / (d : ℝ)) ^ 2)) := by
     calc
-      (C_DeGiorgiSmallness d K) ^ 2 * I₀ ≤ lamStar ^ 2 := hsq
-      _ = (C_DeGiorgiSmallness d K) ^ 2 *
+      (CDeGiorgiSmallness d K) ^ 2 * I₀ ≤ lamStar ^ 2 := hsq
+      _ = (CDeGiorgiSmallness d K) ^ 2 *
             ((deGiorgiRecurrenceCoeff d K lamStar) ^ (-(1 : ℝ) / (2 / (d : ℝ))) *
               (deGiorgiRecurrenceBase d) ^ (-(1 : ℝ) / (2 / (d : ℝ)) ^ 2)) := by
             symm
             exact hthreshold
-  have hSmall_sq_pos : 0 < (C_DeGiorgiSmallness d K) ^ 2 := by
+  have hSmall_sq_pos : 0 < (CDeGiorgiSmallness d K) ^ 2 := by
     positivity
   exact le_of_mul_le_mul_left hgoal_mul hSmall_sq_pos
 
@@ -1008,8 +1008,8 @@ theorem deGiorgi_initial_energy_small_of_height_bound
 
 The current choice is a simple global normalization compatible with the
 preceding pre-iteration bounds and height-threshold lemma. -/
-noncomputable def C_DeGiorgi (d : ℕ) [NeZero d] : ℝ :=
-  (C_gns d 2) ^ 2
+noncomputable def CDeGiorgi (d : ℕ) [NeZero d] : ℝ :=
+  (CGns d 2) ^ 2
 
 omit [NeZero d] in
 /-- Small-data De Giorgi endpoint: if the canonical De Giorgi energy sequence
@@ -1153,7 +1153,7 @@ theorem linfty_subsolution_DeGiorgi_ae_of_unitBall_height_bound
             (deGiorgiLevel lamStar (n + 1) - deGiorgiLevel lamStar n) ^ (4 / (d : ℝ))) *
           deGiorgiEnergySeq u x₀ lamStar n ^ (1 + 2 / (d : ℝ)))
     (hheight :
-      C_DeGiorgiSmallness d K *
+      CDeGiorgiSmallness d K *
         Real.sqrt (∫ x in Metric.ball x₀ 1, |max (u x) 0| ^ 2 ∂volume) ≤
           lamStar) :
     ∀ᵐ x ∂(volume.restrict (Metric.ball x₀ (1 / 2 : ℝ))),
@@ -1187,7 +1187,7 @@ theorem linfty_subsolution_DeGiorgi
         (Metric.ball (0 : E) 1) volume) :
     ∀ᵐ x ∂(volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))),
       max (u x) 0 ≤
-        C_DeGiorgi_subsolution d A *
+        CDeGiorgiSubsolution d A *
           Real.sqrt (∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ 2 ∂volume) := by
   let I₀ : ℝ := ∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ 2 ∂volume
   have hI₀_nonneg : 0 ≤ I₀ := by
@@ -1222,23 +1222,23 @@ theorem linfty_subsolution_DeGiorgi
       exact (tendsto_const_nhds : Tendsto (fun _ : ℕ => (0 : ℝ)) atTop (nhds 0))
     filter_upwards [hzero_ae] with x hx
     have hrhs_zero :
-        C_DeGiorgi_subsolution d A * Real.sqrt I₀ = 0 := by
+        CDeGiorgiSubsolution d A * Real.sqrt I₀ = 0 := by
       simp [I₀, hI₀_zero]
     rw [hrhs_zero]
     simp [hx]
   · have hI₀_pos : 0 < I₀ := lt_of_le_of_ne hI₀_nonneg (by simpa [eq_comm] using hI₀_zero)
-    let lamStar : ℝ := C_DeGiorgi_subsolution d A * Real.sqrt I₀
+    let lamStar : ℝ := CDeGiorgiSubsolution d A * Real.sqrt I₀
     have hLamStar : 0 < lamStar := by
       dsimp [lamStar, I₀]
       exact deGiorgi_exact_height_threshold_on_unitBall
-        (d := d) (K := K_DeGiorgi_subsolution d A) hK hI₀_pos
+        (d := d) (K := KDeGiorgiSubsolution d A) hK hI₀_pos
     obtain ⟨hStarInt, htail⟩ := hiter hLamStar
     obtain ⟨hAint, hpre⟩ := htail
     simpa [lamStar, I₀] using
       (linfty_subsolution_DeGiorgi_ae_of_unitBall_height_bound
-        (d := d) (u := u) (x₀ := (0 : E)) (K := K_DeGiorgi_subsolution d A)
+        (d := d) (u := u) (x₀ := (0 : E)) (K := KDeGiorgiSubsolution d A)
         (lamStar := lamStar) hd hK hLamStar hposInt hStarInt hAint hpre
-        (by simp [lamStar, I₀, C_DeGiorgi_subsolution]))
+        (by simp [lamStar, I₀, CDeGiorgiSubsolution]))
 
 /-- Existence of a threshold realizing the De Giorgi `L∞` estimate. -/
 theorem linfty_subsolution_DeGiorgi_exists_threshold
@@ -1251,7 +1251,7 @@ theorem linfty_subsolution_DeGiorgi_exists_threshold
         (Metric.ball (0 : E) 1) volume) :
     ∃ lamStar : ℝ,
       0 < lamStar ∧
-      C_DeGiorgi_subsolution d A *
+      CDeGiorgiSubsolution d A *
         Real.sqrt (∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ 2 ∂volume) ≤
           lamStar ∧
       ∀ᵐ x ∂(volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))),
@@ -1266,7 +1266,7 @@ theorem linfty_subsolution_DeGiorgi_exists_threshold
   by_cases hI₀_zero : I₀ = 0
   · refine ⟨1, by norm_num, ?_, ?_⟩
     · have hsmall_zero :
-          C_DeGiorgi_subsolution d A * Real.sqrt I₀ = 0 := by
+          CDeGiorgiSubsolution d A * Real.sqrt I₀ = 0 := by
         simp [I₀, hI₀_zero]
       rw [hsmall_zero]
       norm_num
@@ -1276,50 +1276,50 @@ theorem linfty_subsolution_DeGiorgi_exists_threshold
         rw [show (∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ 2 ∂volume) = I₀ by rfl, hI₀_zero]
         simp
       have hsmall_zero' :
-          C_DeGiorgi_subsolution d A *
+          CDeGiorgiSubsolution d A *
               Real.sqrt (∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ 2 ∂volume) = 0 := by
         rw [hsqrt_zero]
         ring
       have hx_pair :
           u x ≤
-              C_DeGiorgi_subsolution d A *
+              CDeGiorgiSubsolution d A *
                 Real.sqrt (∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ 2 ∂volume) ∧
             0 ≤
-              C_DeGiorgi_subsolution d A *
+              CDeGiorgiSubsolution d A *
                 Real.sqrt (∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ 2 ∂volume) := by
         simpa using hx
       rw [hsmall_zero'] at hx_pair
       have hx_zero : max (u x) 0 ≤ 0 := by
         exact max_le_iff.mpr ⟨hx_pair.1, le_rfl⟩
       linarith
-  · let lamStar : ℝ := C_DeGiorgi_subsolution d A * Real.sqrt I₀
+  · let lamStar : ℝ := CDeGiorgiSubsolution d A * Real.sqrt I₀
     have hLamStar : 0 < lamStar := by
       have hI₀_pos : 0 < I₀ := lt_of_le_of_ne hI₀_nonneg (by simpa [eq_comm] using hI₀_zero)
       dsimp [lamStar, I₀]
       exact deGiorgi_exact_height_threshold_on_unitBall
-        (d := d) (K := K_DeGiorgi_subsolution d A)
+        (d := d) (K := KDeGiorgiSubsolution d A)
         (K_DeGiorgi_subsolution_pos (d := d) A) hI₀_pos
     refine ⟨lamStar, hLamStar, le_rfl, ?_⟩
     simpa [lamStar, I₀] using hbound
 
-noncomputable def K_DeGiorgi_subsolution_normalized
+noncomputable def KDeGiorgiSubsolutionNormalized
     (d : ℕ) [NeZero d] : ℝ :=
-  2 * (C_gns d 2) ^ 2 * (8 * (2 * (Mst : ℝ)) ^ 2) + 1
+  2 * (CGns d 2) ^ 2 * (8 * (2 * (Mst : ℝ)) ^ 2) + 1
 
 theorem K_DeGiorgi_subsolution_normalized_pos :
-    0 < K_DeGiorgi_subsolution_normalized d := by
-  rw [K_DeGiorgi_subsolution_normalized]
+    0 < KDeGiorgiSubsolutionNormalized d := by
+  rw [KDeGiorgiSubsolutionNormalized]
   positivity
 
-noncomputable def C_DeGiorgi_subsolution_normalized
+noncomputable def CDeGiorgiSubsolutionNormalized
     (d : ℕ) [NeZero d] : ℝ :=
-  C_DeGiorgiSmallness d (K_DeGiorgi_subsolution_normalized d)
+  CDeGiorgiSmallness d (KDeGiorgiSubsolutionNormalized d)
 
 theorem C_DeGiorgi_subsolution_le_normalized
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1)) :
-    C_DeGiorgi_subsolution d A.1 ≤
-      C_DeGiorgi_subsolution_normalized d * A.1.Λ ^ ((d : ℝ) / 4) := by
-  let c : ℝ := (C_gns d 2) ^ 2 * (8 * (2 * (Mst : ℝ)) ^ 2)
+    CDeGiorgiSubsolution d A.1 ≤
+      CDeGiorgiSubsolutionNormalized d * A.1.Λ ^ ((d : ℝ) / 4) := by
+  let c : ℝ := (CGns d 2) ^ 2 * (8 * (2 * (Mst : ℝ)) ^ 2)
   have hc_nonneg : 0 ≤ c := by
     dsimp [c]
     positivity
@@ -1328,31 +1328,31 @@ theorem C_DeGiorgi_subsolution_le_normalized
   have hratio_eq : ellipticityRatio A.1 = A.1.Λ := by
     exact NormalizedEllipticCoeff.ellipticityRatio_eq_Λ (A := A)
   have hK_formula :
-      K_DeGiorgi_subsolution d A.1 = c * (A.1.Λ + 1) + 1 := by
-    rw [K_DeGiorgi_subsolution, hratio_eq]
+      KDeGiorgiSubsolution d A.1 = c * (A.1.Λ + 1) + 1 := by
+    rw [KDeGiorgiSubsolution, hratio_eq]
     dsimp [c]
     ring
   have hK0_formula :
-      K_DeGiorgi_subsolution_normalized d = 2 * c + 1 := by
-    rw [K_DeGiorgi_subsolution_normalized]
+      KDeGiorgiSubsolutionNormalized d = 2 * c + 1 := by
+    rw [KDeGiorgiSubsolutionNormalized]
     dsimp [c]
     ring
   have hK_le :
-      K_DeGiorgi_subsolution d A.1 ≤
-        K_DeGiorgi_subsolution_normalized d * A.1.Λ := by
+      KDeGiorgiSubsolution d A.1 ≤
+        KDeGiorgiSubsolutionNormalized d * A.1.Λ := by
     rw [hK_formula, hK0_formula]
     nlinarith
   have hmono :
-      C_DeGiorgi_subsolution d A.1 ≤
-        C_DeGiorgiSmallness d (K_DeGiorgi_subsolution_normalized d * A.1.Λ) := by
-    rw [C_DeGiorgi_subsolution]
+      CDeGiorgiSubsolution d A.1 ≤
+        CDeGiorgiSmallness d (KDeGiorgiSubsolutionNormalized d * A.1.Λ) := by
+    rw [CDeGiorgiSubsolution]
     exact C_DeGiorgiSmallness_mono (d := d)
       (K_DeGiorgi_subsolution_pos (d := d) A.1).le hK_le
   calc
-    C_DeGiorgi_subsolution d A.1 ≤
-        C_DeGiorgiSmallness d (K_DeGiorgi_subsolution_normalized d * A.1.Λ) := hmono
-    _ = C_DeGiorgi_subsolution_normalized d * A.1.Λ ^ ((d : ℝ) / 4) := by
-        rw [C_DeGiorgi_subsolution_normalized]
+    CDeGiorgiSubsolution d A.1 ≤
+        CDeGiorgiSmallness d (KDeGiorgiSubsolutionNormalized d * A.1.Λ) := hmono
+    _ = CDeGiorgiSubsolutionNormalized d * A.1.Λ ^ ((d : ℝ) / 4) := by
+        rw [CDeGiorgiSubsolutionNormalized]
         exact C_DeGiorgiSmallness_mul_right (d := d)
           (K_DeGiorgi_subsolution_normalized_pos (d := d)).le A.1.Λ_nonneg
 
@@ -1368,14 +1368,14 @@ theorem linfty_subsolution_DeGiorgi_normalized
         (Metric.ball (0 : E) 1) volume) :
     ∀ᵐ x ∂(volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))),
       max (u x) 0 ≤
-        C_DeGiorgi_subsolution_normalized d *
+        CDeGiorgiSubsolutionNormalized d *
           A.1.Λ ^ ((d : ℝ) / 4) *
           Real.sqrt (∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ 2 ∂volume) := by
   let I₀ : ℝ := ∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ 2 ∂volume
   have hsqrt_nonneg : 0 ≤ Real.sqrt I₀ := Real.sqrt_nonneg I₀
   have hconst :
-      C_DeGiorgi_subsolution d A.1 * Real.sqrt I₀ ≤
-        C_DeGiorgi_subsolution_normalized d *
+      CDeGiorgiSubsolution d A.1 * Real.sqrt I₀ ≤
+        CDeGiorgiSubsolutionNormalized d *
           A.1.Λ ^ ((d : ℝ) / 4) * Real.sqrt I₀ :=
     mul_le_mul_of_nonneg_right
       (C_DeGiorgi_subsolution_le_normalized (d := d) A) hsqrt_nonneg

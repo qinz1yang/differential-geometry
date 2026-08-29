@@ -113,7 +113,7 @@ theorem const_cov_eq_contr
     exact (tangentSpaceModelContinuousLinearEquiv
       (I := 𝓘(Real, E)) p).symm_apply_apply w
   have hrepr :
-      chartE_section_repr (I := 𝓘(Real, E)) a W =
+      chartESectionRepr (I := 𝓘(Real, E)) a W =
         fun _ : E ↦ w := by
     funext p
     rw [chartE_section_repr_eq_trivToE]

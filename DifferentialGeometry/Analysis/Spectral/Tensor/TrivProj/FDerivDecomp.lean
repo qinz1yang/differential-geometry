@@ -36,7 +36,7 @@ lemma tensorTrivProj_eq_tensorRSChartE_section_repr
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M) :
     tensorTrivProj (I := I) (M := M) g r s S α =
-      tensorRSChartE_section_repr (I := I) r s α (fun b => S.toSection b) := by
+      tensorRSChartESectionRepr (I := I) r s α (fun b => S.toSection b) := by
   funext x
   rfl
 

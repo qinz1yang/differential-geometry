@@ -42,11 +42,11 @@ theorem nabla0S_product_realizes {s q : ℕ}
       q cov B nablaB) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + q) cov
-      (tensor0SField_product (∞ : WithTop ℕ∞) A B)
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B)
       (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv s q)
-          (tensor0SField_product (∞ : WithTop ℕ∞) nablaA B)
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) nablaA B)
         + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv s q)
-          (tensor0SField_product (∞ : WithTop ℕ∞) A nablaB)) := by
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) A nablaB)) := by
   classical
   intro X x slots
   let V : Fin (s + q) -> ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -65,11 +65,11 @@ theorem nabla0S_product_realizes {s q : ℕ}
   rw [show slots = (fun a : Fin (s + q) => V a x) from hslots.symm, hmain]
   change
     (Tensor0SSpace.domDomCongr
-        (tensor0SField_product (∞ : WithTop ℕ∞) nablaA B x)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) nablaA B x)
         (leibnizLeftEquiv s q))
         (Fin.cons (X x) (fun a : Fin (s + q) => V a x)) +
       (Tensor0SSpace.domDomCongr
-        (tensor0SField_product (∞ : WithTop ℕ∞) A nablaB x)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) A nablaB x)
         (leibnizRightEquiv s q))
         (Fin.cons (X x) (fun a : Fin (s + q) => V a x)) = _
   rw [Tensor0SSpace.domDomCongr_apply, Tensor0SSpace.domDomCongr_apply,

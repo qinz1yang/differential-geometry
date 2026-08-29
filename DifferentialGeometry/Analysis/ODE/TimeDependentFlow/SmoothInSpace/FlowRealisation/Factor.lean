@@ -163,7 +163,7 @@ theorem leviCivita_flowerScalepoint_eq_chartFderiv_add_corrections
                 ((centeredChartTangentEquiv (I := I) (Φ_fam t x))
                   (mfderiv I I (Φ_fam t : M → M) x u)))
           + christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x u)) :=
   leviCivita_basepoint_eq_rawFderiv_add_corrections (I := I) g (Φ_fam t x)

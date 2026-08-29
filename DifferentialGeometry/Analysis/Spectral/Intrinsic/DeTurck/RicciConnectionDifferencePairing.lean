@@ -36,22 +36,22 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
-private def ricciQuadraticPermutation_cycleZeroThreeOneTwo : Equiv.Perm (Fin 4) :=
+private def ricciQuadraticPermutationCycleZeroThreeOneTwo : Equiv.Perm (Fin 4) :=
   ⟨![3, 2, 0, 1], ![2, 3, 1, 0], by decide, by decide⟩
 
-private def ricciQuadraticPermutation_swapBlocks : Equiv.Perm (Fin 4) :=
+private def ricciQuadraticPermutationSwapBlocks : Equiv.Perm (Fin 4) :=
   ⟨![2, 3, 0, 1], ![2, 3, 0, 1], by decide, by decide⟩
 
-private def ricciQuadraticPermutation_cycleZeroThreeTwo : Equiv.Perm (Fin 4) :=
+private def ricciQuadraticPermutationCycleZeroThreeTwo : Equiv.Perm (Fin 4) :=
   ⟨![3, 1, 0, 2], ![2, 1, 3, 0], by decide, by decide⟩
 
-private def ricciQuadraticPermutation_cycleZeroOneThreeTwo : Equiv.Perm (Fin 4) :=
+private def ricciQuadraticPermutationCycleZeroOneThreeTwo : Equiv.Perm (Fin 4) :=
   ⟨![1, 3, 0, 2], ![2, 0, 3, 1], by decide, by decide⟩
 
-private def ricciQuadraticPermutation_cycleZeroOneTwo : Equiv.Perm (Fin 4) :=
+private def ricciQuadraticPermutationCycleZeroOneTwo : Equiv.Perm (Fin 4) :=
   ⟨![1, 2, 0, 3], ![2, 0, 1, 3], by decide, by decide⟩
 
-private def ricciQuadraticPermutation_swapZeroTwo : Equiv.Perm (Fin 4) :=
+private def ricciQuadraticPermutationSwapZeroTwo : Equiv.Perm (Fin 4) :=
   ⟨![2, 1, 0, 3], ![2, 1, 0, 3], by decide, by decide⟩
 
 private def ricPerm3012 : Equiv.Perm (Fin 4) :=
@@ -60,10 +60,10 @@ private def ricPerm3012 : Equiv.Perm (Fin 4) :=
 private def ricPerm2013 : Equiv.Perm (Fin 4) :=
   ⟨![2, 0, 1, 3], ![1, 2, 0, 3], by decide, by decide⟩
 
-private def ricciQuadraticPermutation_swapZeroOne : Equiv.Perm (Fin 3) :=
+private def ricciQuadraticPermutationSwapZeroOne : Equiv.Perm (Fin 3) :=
   ⟨![1, 0, 2], ![1, 0, 2], by decide, by decide⟩
 
-private def ricciQuadraticPermutation_rotateInputs : Equiv.Perm (Fin 3) :=
+private def ricciQuadraticPermutationRotateInputs : Equiv.Perm (Fin 3) :=
   ⟨![1, 2, 0], ![2, 0, 1], by decide, by decide⟩
 
 omit [NormedAddCommGroup E] [NormedSpace Real E] [FiniteDimensional Real E]
@@ -120,7 +120,7 @@ private theorem ricciReindexCoeffFibGen_innerContractionSwapPerm_eq_comp
     {s : ℕ} (x : M)
     (A : Tensor0SSpace 2 I x →L[Real] Tensor0SSpace s I x) :
     reindexCoeffFibGen (I := I) 2 s innerContractionSwapPerm x A =
-      A.comp (slotPermCLM (I := I) perm2_10 x) := by
+      A.comp (slotPermCLM (I := I) perm210 x) := by
   apply ContinuousLinearMap.ext
   intro D
   rw [reindexCoeffFibGen_apply, ContinuousLinearMap.comp_apply, slotPermCLM_apply]
@@ -129,40 +129,40 @@ private theorem ricciReindexCoeffFibGen_innerContractionSwapPerm_eq_comp
 private def ricQuad0 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 4
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeOneTwo)
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeOneTwo)
     (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
       (connectionDifferenceContravariantInsertionField (I := I) g gm)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne)
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne)
         (connectionDifferenceContrInsertionInnerField (I := I) g gm)))
 
 private def ricQuad1 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   reindexCoeffGen (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks)
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
         (connectionDifferenceContravariantInsertionField (I := I) g gm)
         (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-          (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne)
+          (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne)
           (connectionDifferenceContrInsertionInnerField (I := I) g gm))))
     innerContractionSwapPerm
 
 private def ricQuad2 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 4
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeTwo)
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeTwo)
     (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
       (connectionDifferenceContravariantInsertionField (I := I) g gm)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs)
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
         (connectionDifferenceContrInsertionInnerField (I := I) g gm)))
 
 private def ricQuad3 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   reindexCoeffGen (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneThreeTwo)
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneThreeTwo)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
         (connectionDifferenceContravariantInsertionField (I := I) g gm)
         (connectionDifferenceContrInsertionInnerField (I := I) g gm)))
@@ -171,7 +171,7 @@ private def ricQuad3 (g gm : SmoothRiemannianMetric I M) :
 private def ricQuad4 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   ccOperatorFieldComp (I := I) (M := M) g 2 4 4
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneTwo)
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneTwo)
     (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
       (connectionDifferenceContravariantInsertionField (I := I) g gm)
       (connectionDifferenceContrInsertionInnerField (I := I) g gm))
@@ -180,11 +180,11 @@ private def ricQuad5 (g gm : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 4 :=
   reindexCoeffGen (I := I) (M := M) g 2 4
     (ccOperatorFieldComp (I := I) (M := M) g 2 4 4
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroTwo)
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroTwo)
       (ccOperatorFieldComp (I := I) (M := M) g 2 3 4
         (connectionDifferenceContravariantInsertionField (I := I) g gm)
         (ccOperatorFieldComp (I := I) (M := M) g 2 3 3
-          (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs)
+          (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
           (connectionDifferenceContrInsertionInnerField (I := I) g gm))))
     innerContractionSwapPerm
 
@@ -241,16 +241,16 @@ theorem ricciKer_split (g gm : SmoothRiemannianMetric I M) :
       connectionDifferenceGradContrInsertionField_toSection, ricDer0, ricDer1,
       permCoeff_toSection]
     simp only [ricciReindexCoeffFibGen_innerContractionSwapPerm_eq_comp]
-    rw [show ricciQuadraticPermutation_cycleZeroThreeOneTwo = perm4_3201 from rfl,
-      show ricciQuadraticPermutation_swapBlocks = perm4_2301 from rfl,
-      show ricciQuadraticPermutation_cycleZeroThreeTwo = perm4_3102 from rfl,
-      show ricciQuadraticPermutation_cycleZeroOneThreeTwo = perm4_1302 from rfl,
-      show ricciQuadraticPermutation_cycleZeroOneTwo = perm4_1203 from rfl,
-      show ricciQuadraticPermutation_swapZeroTwo = perm4_2103 from rfl,
-      show ricPerm3012 = perm4_3012 from rfl,
-      show ricPerm2013 = perm4_2013 from rfl,
-      show ricciQuadraticPermutation_swapZeroOne = perm3_102 from rfl,
-      show ricciQuadraticPermutation_rotateInputs = perm3_120 from rfl]
+    rw [show ricciQuadraticPermutationCycleZeroThreeOneTwo = perm43201 from rfl,
+      show ricciQuadraticPermutationSwapBlocks = perm42301 from rfl,
+      show ricciQuadraticPermutationCycleZeroThreeTwo = perm43102 from rfl,
+      show ricciQuadraticPermutationCycleZeroOneThreeTwo = perm41302 from rfl,
+      show ricciQuadraticPermutationCycleZeroOneTwo = perm41203 from rfl,
+      show ricciQuadraticPermutationSwapZeroTwo = perm42103 from rfl,
+      show ricPerm3012 = perm43012 from rfl,
+      show ricPerm2013 = perm42013 from rfl,
+      show ricciQuadraticPermutationSwapZeroOne = perm3102 from rfl,
+      show ricciQuadraticPermutationRotateInputs = perm3120 from rfl]
     unfold linearizedRicciConnectionDifferenceOrder0CLM
     simp only [ContinuousLinearMap.comp_assoc]
   rw [hraw, ricciCovariantDerivativeConnectionDifferenceKernel]
@@ -464,7 +464,7 @@ def ricciCovariantDerivativeConnectionDifferenceFlux (g gm : SmoothRiemannianMet
       (metricComparisonEndomorphismField (I := I) (M := M) g gm) 0 W
   let P : SmoothCcTensor g 0 4 :=
     pairProd4 (I := I) (M := M) g W WR
-  P - domDomCongrSection (I := I) g ricciQuadraticPermutation_cycleZeroOneTwo P
+  P - domDomCongrSection (I := I) g ricciQuadraticPermutationCycleZeroOneTwo P
 
 omit [NeZero (Module.finrank Real E)] [BoundarylessManifold I M]
   [SigmaCompactSpace M] in
@@ -491,10 +491,10 @@ theorem ricciCovariantDerivativeConnectionDifferenceFlux_unitModel (g gm : Smoot
   rw [ricciCovariantDerivativeConnectionDifferenceFlux, ricUnit_sub]
   change unitModel (I := I) (M := M) g 4 P x v -
       unitModel (I := I) (M := M) g 4
-        (domDomCongrSection (I := I) g ricciQuadraticPermutation_cycleZeroOneTwo P) x v = _
+        (domDomCongrSection (I := I) g ricciQuadraticPermutationCycleZeroOneTwo P) x v = _
   rw [domDomCongrSection_unitModel,
     ContinuousMultilinearMap.domDomCongr_apply]
-  have hv : (fun i => v (ricciQuadraticPermutation_cycleZeroOneTwo i)) = ![v 1, v 2, v 0, v 3] := by
+  have hv : (fun i => v (ricciQuadraticPermutationCycleZeroOneTwo i)) = ![v 1, v 2, v 0, v 3] := by
     funext i
     fin_cases i <;> rfl
   rw [hv]
@@ -534,22 +534,22 @@ theorem ricciFlux_riemannianFiberNormSq (g gm : SmoothRiemannianMetric I M)
   rw [ricciCovariantDerivativeConnectionDifferenceFlux]
   change riemannianFiberNormSq (I := I) (M := M) g 0 (4 + j) x
       ((iteratedCovGrad (I := I) g 0 4 j
-        (Q - domDomCongrSection (I := I) g ricciQuadraticPermutation_cycleZeroOneTwo Q)).toSection x) ≤ _
+        (Q - domDomCongrSection (I := I) g ricciQuadraticPermutationCycleZeroOneTwo Q)).toSection x) ≤ _
   rw [iteratedCovGrad_sub, SmoothCcTensor.toSection_sub]
   have hadd := riemannianFiberNormSq_sub_le
     (I := I) (M := M) g 0 (4 + j) x
     ((iteratedCovGrad (I := I) g 0 4 j Q).toSection x)
     ((iteratedCovGrad (I := I) g 0 4 j
-      (domDomCongrSection (I := I) g ricciQuadraticPermutation_cycleZeroOneTwo Q)).toSection x)
+      (domDomCongrSection (I := I) g ricciQuadraticPermutationCycleZeroOneTwo Q)).toSection x)
   have hperm :=
     riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection
-      (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneTwo Q j x
+      (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneTwo Q j x
   calc
     _ ≤ 2 * riemannianFiberNormSq (I := I) (M := M) g 0 (4 + j) x
           ((iteratedCovGrad (I := I) g 0 4 j Q).toSection x) +
         2 * riemannianFiberNormSq (I := I) (M := M) g 0 (4 + j) x
           ((iteratedCovGrad (I := I) g 0 4 j
-            (domDomCongrSection (I := I) g ricciQuadraticPermutation_cycleZeroOneTwo Q)).toSection x) := hadd
+            (domDomCongrSection (I := I) g ricciQuadraticPermutationCycleZeroOneTwo Q)).toSection x) := hadd
     _ = 4 * riemannianFiberNormSq (I := I) (M := M) g 0 (4 + j) x
           ((iteratedCovGrad (I := I) g 0 4 j Q).toSection x) := by
       rw [hperm]
@@ -623,13 +623,13 @@ private lemma ricInterior_eval (s : Nat) (x : M)
     (v : TangentSpace I x) (D : Tensor0SSpace (s + 1) I x)
     (w : Fin s → TangentSpace I x) :
     Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := Real) (I := I) s x v D) w =
+        (Tensor0SBundle.interiorProduct (𝕜 := Real) (I := I) s x v D) w =
       Tensor0SSpace.toModel D
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
           (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (w k))) := by
   have h : Tensor0SSpace.toModel
-      (Tensor0SBundle.interior_product (𝕜 := Real) (I := I) s x v D) =
-      Tensor0SBundle.model_interior_product (𝕜 := Real) (E := E) s
+      (Tensor0SBundle.interiorProduct (𝕜 := Real) (I := I) s x v D) =
+      Tensor0SBundle.modelInteriorProduct (𝕜 := Real) (E := E) s
         (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
         (Tensor0SSpace.toModel D) := rfl
   rw [h]
@@ -659,7 +659,7 @@ private lemma ricRS13_pair (x : M) (B : TensorRSSpace 1 3 I x)
       ((Module.finBasis Real E).cDualBasis i)
           (rs13ContrVec (I := I) (M := M) x B v) =
         (TensorRSSpace.toModel B
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := Real) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := Real) (E := E)
             ((Module.finBasis Real E).cDualBasis i))) v := by
     intro i
     rw [rs13ContrVec, ricCDual_coord (Module.finBasis Real E) i]
@@ -667,12 +667,12 @@ private lemma ricRS13_pair (x : M) (B : TensorRSSpace 1 3 I x)
     rw [show (∑ j : Fin (Module.finrank Real E),
         LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord i)
           (((TensorRSSpace.toModel B
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := Real) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := Real) (E := E)
                 ((Module.finBasis Real E).cDualBasis j))) v) •
             (Module.finBasis Real E) j)) =
         ∑ j : Fin (Module.finrank Real E),
           ((TensorRSSpace.toModel B
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := Real) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := Real) (E := E)
                 ((Module.finBasis Real E).cDualBasis j))) v) *
             ((Module.finBasis Real E).repr
               ((Module.finBasis Real E) j) i) from
@@ -691,7 +691,7 @@ private lemma ricRS13_pair (x : M) (B : TensorRSSpace 1 3 I x)
       ∑ i : Fin (Module.finrank Real E),
         (Tensor0SSpace.toModel beta
           (Fin.cons ((Module.finBasis Real E) i) ![])) •
-          Tensor0SBundle.model_covectorOfCLM (𝕜 := Real) (E := E)
+          Tensor0SBundle.modelCovectorOfCLM (𝕜 := Real) (E := E)
             ((Module.finBasis Real E).cDualBasis i) := by
     refine ContinuousMultilinearMap.ext (fun w => ?_)
     rw [sum_apply]
@@ -714,7 +714,7 @@ private lemma ricRS13_pair (x : M) (B : TensorRSSpace 1 3 I x)
         Tensor0SSpace.toModel beta
             (Fin.cons ((Module.finBasis Real E) i) ![]) *
           (TensorRSSpace.toModel B
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := Real) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := Real) (E := E)
               ((Module.finBasis Real E).cDualBasis i))) v := by
     rw [show Tensor0SSpace.toModel beta
         (fun _ : Fin 1 => rs13ContrVec (I := I) (M := M) x B v) =
@@ -776,11 +776,11 @@ theorem connRaise_eq (g gm : SmoothRiemannianMetric I M) :
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x u)
           (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ k))) := by
     rw [cometricRaiseSlot0Fib_clm_apply (I := I) g 1 x D om]
-    rw [show (Tensor0SBundle.interior_product (𝕜 := Real) (I := I)
+    rw [show (Tensor0SBundle.interiorProduct (𝕜 := Real) (I := I)
             (1 + 1) x (inverseMetricSharpFib (I := I) g x om) D YZ :
           Real) =
         Tensor0SSpace.toModel
-          (Tensor0SBundle.interior_product (𝕜 := Real) (I := I)
+          (Tensor0SBundle.interiorProduct (𝕜 := Real) (I := I)
             (1 + 1) x (inverseMetricSharpFib (I := I) g x om) D) YZ from
       rfl]
     rw [ricInterior_eval (I := I) (M := M) (1 + 1) x
@@ -890,7 +890,7 @@ theorem ricciConnectionDifferenceCovariantDerivativeTensor_pairing (g gm : Smoot
     rw [cometricRaiseSlot0Fib_clm_apply,
       inverseMetricSharpFib_g0FlatCLM]
     change Tensor0SSpace.toModel
-      (Tensor0SBundle.interior_product (𝕜 := Real) (I := I) 3 x r D) q =
+      (Tensor0SBundle.interiorProduct (𝕜 := Real) (I := I) 3 x r D) q =
         Tensor0SSpace.toModel D
           ![tangentSpaceModelContinuousLinearEquiv (I := I) x r,
             tangentSpaceModelContinuousLinearEquiv (I := I) x p,

@@ -57,8 +57,8 @@ private lemma pull_lip_of_raw
   rw [heq]
   exact hφ.comp (toEuclidean (E := E)).lipschitz
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [IsManifold I ∞ M] in
 theorem intrinsic_lip_cont
     [IsManifold I ∞ M] [T2Space M]
@@ -91,22 +91,22 @@ private theorem global_lip_ibp
         (riemannianVolumeMeasure (I := I) (M := M) g) ∧
       ∫ x, tangentSectionAction (I := I) X u x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-        -∫ x, u x * divergence_g (I := I) g X x
+        -∫ x, u x * divergenceG (I := I) g X x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   let ρ : SmoothPartitionOfUnity M I M (Set.univ : Set M) :=
     chartAtlasPOU I M
-  let S : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  let S : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   let φ : M → M → ℝ := fun α x => ρ α x * u x
   have hρsub : ρ.IsSubordinate (fun α : M => (chartAt H α).source) := by
     simpa only [ρ] using chartAtlasPOU_isSubordinate I M
   have hu_cont : Continuous u := intrinsic_lip_cont (I := I) g hu
-  have hdiv_cont : Continuous (divergence_g (I := I) g X) :=
+  have hdiv_cont : Continuous (divergenceG (I := I) g X) :=
     (divergence_g_contMDiff (I := I) g X).continuous
   have : IsFiniteMeasureOnCompacts
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
-  have hudiv_int : Integrable (fun x => u x * divergence_g (I := I) g X x)
+  have hudiv_int : Integrable (fun x => u x * divergenceG (I := I) g X x)
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     (hu_cont.mul hdiv_cont).integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)
@@ -125,13 +125,13 @@ private theorem global_lip_ibp
     Classical.choose_spec (hφ_lip α)
   have hstep_a :
       ∑ α ∈ S, ∫ x,
-          (u x * divergence_g (I := I) g X x) * ρ α x
+          (u x * divergenceG (I := I) g X x) * ρ α x
             ∂(chartLocalMeasure (I := I) g α) =
-        ∫ x, u x * divergence_g (I := I) g X x
+        ∫ x, u x * divergenceG (I := I) g X x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     simpa only [S, ρ] using chart_sum_integral (I := I) (M := M) g _ hudiv_int
   have hstep_b : ∀ α ∈ S,
-      ∫ x, (u x * divergence_g (I := I) g X x) * ρ α x
+      ∫ x, (u x * divergenceG (I := I) g X x) * ρ α x
           ∂(chartLocalMeasure (I := I) g α) =
         ∫ x, localDivergence (I := I) g α X x * φ α x
           ∂(chartLocalMeasure (I := I) g α) := by
@@ -220,13 +220,13 @@ private theorem global_lip_ibp
           S heach).symm
       _ = _ := integral_congr_ae hact_ae
   have hdiv_eq :
-      ∫ x, u x * divergence_g (I := I) g X x
+      ∫ x, u x * divergenceG (I := I) g X x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
         -∫ x, tangentSectionAction (I := I) X u x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     calc
       _ = ∑ α ∈ S, ∫ x,
-          (u x * divergence_g (I := I) g X x) * ρ α x
+          (u x * divergenceG (I := I) g X x) * ρ α x
             ∂(chartLocalMeasure (I := I) g α) := hstep_a.symm
       _ = ∑ α ∈ S, ∫ x, localDivergence (I := I) g α X x * φ α x
             ∂(chartLocalMeasure (I := I) g α) :=
@@ -298,7 +298,7 @@ theorem grad_norm_aesm
   let q : M → M → ℝ := fun α x =>
     ∑ i, ∑ j, gram α i j x * part α j x * part α i x
   let ρ : M → M → ℝ := fun α x => (chartAtlasPOU I M α) x
-  let S : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  let S : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   let qsum : M → ℝ := fun x => ∑ α ∈ S, ρ α x * q α x
   have hsource (α : M) : MeasurableSet (source α) := by
     simpa only [source] using (chartAt H α).open_source.measurableSet

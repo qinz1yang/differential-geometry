@@ -31,16 +31,16 @@ private theorem deriv_repr_comp_nat
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _)) (t : ℝ)
     (hgamma : MDifferentiableAt (modelWithCornersSelf ℝ ℝ) I gamma t) :
-    deriv (chartE_section_repr (I := I) (gamma t) (fun x : M => Y x) ∘ gamma) t =
+    deriv (chartESectionRepr (I := I) (gamma t) (fun x : M => Y x) ∘ gamma) t =
       fderiv ℝ
-          (chartE_section_repr (I := I) (gamma t) (fun x : M => Y x) ∘
+          (chartESectionRepr (I := I) (gamma t) (fun x : M => Y x) ∘
             (extChartAt I (gamma t)).symm)
           (extChartAt I (gamma t) (gamma t))
         (deriv (chartCurve (I := I) (gamma t) gamma) t) := by
   classical
   set a : M := gamma t with ha_def
   set f : E → E :=
-    chartE_section_repr (I := I) a (fun x : M => Y x) ∘
+    chartESectionRepr (I := I) a (fun x : M => Y x) ∘
       (extChartAt I a).symm with hf_def
   set u : ℝ → E := chartCurve (I := I) a gamma with hu_def
   have hgood : a ∈ chartLeviCivitaGoodSet (I := I) a :=
@@ -73,7 +73,7 @@ private theorem deriv_repr_comp_nat
       exact mem_chart_source H (gamma t)
     exact hgamma.continuousAt.preimage_mem_nhds (hopen.mem_nhds hmem)
   have heq : (f ∘ u) =ᶠ[nhds t]
-      chartE_section_repr (I := I) a (fun x : M => Y x) ∘ gamma := by
+      chartESectionRepr (I := I) a (fun x : M => Y x) ∘ gamma := by
     filter_upwards [hsrc_nhds] with s hs
     simp only [Function.comp_apply, hf_def, hu_def, chartCurve]
     rw [PartialEquiv.left_inv (extChartAt I a) hs]
@@ -118,7 +118,7 @@ theorem covAlong_sec
   rw [chartLeviCivita_apply (I := I) g a (fun x : M => Y x) hgood v]
   rw [covDerivAlong_def, chartCovDerivAlong_def]
   have hrep : chartRepAt (I := I) gamma (fun r => Y (gamma r)) t =
-      chartE_section_repr (I := I) a (fun x : M => Y x) ∘ gamma := by
+      chartESectionRepr (I := I) a (fun x : M => Y x) ∘ gamma := by
     funext s
     rfl
   rw [hrep]
@@ -128,18 +128,18 @@ theorem covAlong_sec
   have hchris :
       chartChristoffelContraction (I := I) g a
           (deriv (chartCurve (I := I) a gamma) t)
-          ((chartE_section_repr (I := I) a (fun x : M => Y x) ∘ gamma) t)
+          ((chartESectionRepr (I := I) a (fun x : M => Y x) ∘ gamma) t)
           (chartCurve (I := I) a gamma t) =
         christoffelCorrection (I := I) g a a
-          (chartE_section_repr (I := I) a (fun x : M => Y x) a) v := by
+          (chartESectionRepr (I := I) a (fun x : M => Y x) a) v := by
     rw [correction_eq_contr (I := I) g a a
-      (chartE_section_repr (I := I) a (fun x : M => Y x) a) v]
+      (chartESectionRepr (I := I) a (fun x : M => Y x) a) v]
     rw [hvel]
     rw [Function.comp_apply, ← ha_def, chartCurve, ← ha_def]
   have hderiv :
-      deriv (chartE_section_repr (I := I) a (fun x : M => Y x) ∘ gamma) t =
+      deriv (chartESectionRepr (I := I) a (fun x : M => Y x) ∘ gamma) t =
         fderiv ℝ
-            (chartE_section_repr (I := I) a (fun x : M => Y x) ∘
+            (chartESectionRepr (I := I) a (fun x : M => Y x) ∘
               (extChartAt I a).symm)
             (extChartAt I a a) (trivToE (I := I) a a v) := by
     rw [hvel]
@@ -566,12 +566,12 @@ private theorem covAlong_nat_cross
       (trivializationAt E (TangentSpace I) (gamma t)).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) (gamma t)
   have hYmd : MDiffAt
-      (chartE_section_repr (I := I) (gamma t) (fun x : M => Y x)) (gamma t) :=
+      (chartESectionRepr (I := I) (gamma t) (fun x : M => Y x)) (gamma t) :=
     (mdifferentiableAt_section_iff_chartE I (gamma t) (fun x : M => Y x) hbase).mp
       Y.mdifferentiableAt
   have hYrep :
       chartRepAt (I := I) gamma Yalong t =
-        chartE_section_repr (I := I) (gamma t) (fun x : M => Y x) ∘ gamma := by
+        chartESectionRepr (I := I) (gamma t) (fun x : M => Y x) ∘ gamma := by
     funext s
     rfl
   have hYdiff : DifferentiableAt ℝ

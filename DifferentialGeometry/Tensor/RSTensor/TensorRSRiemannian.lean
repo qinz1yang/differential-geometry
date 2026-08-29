@@ -27,14 +27,14 @@ def componentL2SqRS
     (basis : Module.Basis Idx Real (TangentSpace I x))
     {r s : Nat} (A : TensorRSSpace r s I x) : Real :=
   ∑ upper : Fin r -> Idx, ∑ lower : Fin s -> Idx,
-    (componentRS_gen (I := I) basis A upper lower) ^ 2
+    (componentRSGen (I := I) basis A upper lower) ^ 2
 
 theorem normSqRS_identity_eq_componentL2SqRS
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M) (r s : Nat)
+    (g : SmoothMetricGen I M) (x : M) (r s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A : TensorRSSpace r s I x) :
     normSqRS (I := I) (g := g) (x := x) r s A =
       componentL2SqRS (I := I) basis A := by
@@ -52,7 +52,7 @@ theorem normSqRS_identity_eq_componentL2SqRS
         ((adjointRS (I := I) (g := g) (x := x) r s A)
           (A (basisTensor0S (I := I) basis upper))) upper =
       ∑ lower : Fin s -> Idx,
-        (componentRS_gen (I := I) basis A upper lower) ^ 2
+        (componentRSGen (I := I) basis A upper lower) ^ 2
   rw [tensor0SBasis_repr]
   rw [← inner0S_basisTensor_right_identity (I := I) g x r basis hinv
     ((adjointRS (I := I) (g := g) (x := x) r s A)
@@ -66,21 +66,21 @@ theorem normSqRS_identity_eq_componentL2SqRS
   apply Finset.sum_congr rfl
   intro lower _
   change
-    componentRS_gen (I := I) basis A upper lower *
-        componentRS_gen (I := I) basis A upper lower =
-      (componentRS_gen (I := I) basis A upper lower) ^ 2
+    componentRSGen (I := I) basis A upper lower *
+        componentRSGen (I := I) basis A upper lower =
+      (componentRSGen (I := I) basis A upper lower) ^ 2
   ring
 
 theorem normSqRS_one_two_identity_eq_sum
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A : TensorRSSpace 1 2 I x) :
     normSqRS (I := I) (g := g) (x := x) 1 2 A =
       ∑ k : Idx, ∑ i : Idx, ∑ j : Idx,
-        (componentRS_gen (I := I) basis A (fun _ : Fin 1 => k)
+        (componentRSGen (I := I) basis A (fun _ : Fin 1 => k)
           (fun q : Fin 2 => if q = 0 then i else j)) ^ 2 := by
   rw [normSqRS_identity_eq_componentL2SqRS (I := I) g x 1 2 basis hinv A]
   unfold componentL2SqRS
@@ -95,40 +95,40 @@ theorem componentRS_sq_le_componentL2SqRS
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (A : TensorRSSpace r s I x)
     (upper : Fin r -> Idx) (lower : Fin s -> Idx) :
-    (componentRS_gen (I := I) basis A upper lower) ^ 2 <=
+    (componentRSGen (I := I) basis A upper lower) ^ 2 <=
       componentL2SqRS (I := I) basis A := by
   classical
   unfold componentL2SqRS
   have h_lower :
-      (componentRS_gen (I := I) basis A upper lower) ^ 2 <=
+      (componentRSGen (I := I) basis A upper lower) ^ 2 <=
         ∑ lower' : Fin s -> Idx,
-          (componentRS_gen (I := I) basis A upper lower') ^ 2 := by
+          (componentRSGen (I := I) basis A upper lower') ^ 2 := by
     exact Finset.single_le_sum
       (fun lower' _ => sq_nonneg
-        (componentRS_gen (I := I) basis A upper lower'))
+        (componentRSGen (I := I) basis A upper lower'))
       (by simp)
   have h_upper :
       (∑ lower' : Fin s -> Idx,
-          (componentRS_gen (I := I) basis A upper lower') ^ 2) <=
+          (componentRSGen (I := I) basis A upper lower') ^ 2) <=
         ∑ upper' : Fin r -> Idx, ∑ lower' : Fin s -> Idx,
-          (componentRS_gen (I := I) basis A upper' lower') ^ 2 := by
+          (componentRSGen (I := I) basis A upper' lower') ^ 2 := by
     exact Finset.single_le_sum
       (fun upper' _ =>
         Finset.sum_nonneg
           (fun lower' _ => sq_nonneg
-            (componentRS_gen (I := I) basis A upper' lower')))
+            (componentRSGen (I := I) basis A upper' lower')))
       (by simp)
   exact h_lower.trans h_upper
 
 theorem abs_componentRS_le_sqrt_normSqRS
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothMetric_gen I M) (x : M) (r s : Nat)
+    (g : SmoothMetricGen I M) (x : M) (r s : Nat)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hinv :
-      MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+      MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A : TensorRSSpace r s I x)
     (upper : Fin r -> Idx) (lower : Fin s -> Idx) :
-    |componentRS_gen (I := I) basis A upper lower| <=
+    |componentRSGen (I := I) basis A upper lower| <=
       Real.sqrt (normSqRS (I := I) (g := g) (x := x) r s A) := by
   classical
   have hcomp_nonneg :
@@ -138,14 +138,14 @@ theorem abs_componentRS_le_sqrt_normSqRS
       (fun upper' _ =>
         Finset.sum_nonneg
           (fun lower' _ => sq_nonneg
-            (componentRS_gen (I := I) basis A upper' lower')))
+            (componentRSGen (I := I) basis A upper' lower')))
   have hnorm_nonneg :
       0 <= normSqRS (I := I) (g := g) (x := x) r s A := by
     rw [normSqRS_identity_eq_componentL2SqRS
       (I := I) g x r s basis hinv A]
     exact hcomp_nonneg
   have hsq :
-      |componentRS_gen (I := I) basis A upper lower| ^ 2 <=
+      |componentRSGen (I := I) basis A upper lower| ^ 2 <=
         (Real.sqrt (normSqRS (I := I) (g := g) (x := x) r s A)) ^ 2 := by
     rw [sq_abs, Real.sq_sqrt hnorm_nonneg,
       normSqRS_identity_eq_componentL2SqRS
@@ -153,19 +153,19 @@ theorem abs_componentRS_le_sqrt_normSqRS
     exact componentRS_sq_le_componentL2SqRS
       (I := I) basis A upper lower
   have hsq_no_abs :
-      (componentRS_gen (I := I) basis A upper lower) ^ 2 <=
+      (componentRSGen (I := I) basis A upper lower) ^ 2 <=
         (Real.sqrt (normSqRS (I := I) (g := g) (x := x) r s A)) ^ 2 := by
     simpa [sq_abs] using hsq
   exact abs_le_of_sq_le_sq hsq_no_abs (Real.sqrt_nonneg _)
 
 theorem sqrt_normSqRS_apply
-    (g : SmoothMetric_gen I M) {x : M} {r s : Nat}
+    (g : SmoothMetricGen I M) {x : M} {r s : Nat}
     (A : TensorRSSpace r s I x) (input : Tensor0SSpace r I x) :
     Real.sqrt (normSq0S (I := I) g x s (A input)) <=
       Real.sqrt (normSqRS (I := I) (g := g) (x := x) r s A) *
         Real.sqrt (normSq0S (I := I) g x r input) := by
   classical
-  let D := (tangentMetricData_gen (I := I) g x).metric
+  let D := (tangentMetricDataGen (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -179,12 +179,12 @@ theorem sqrt_normSqRS_apply
     have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
       MetricFiberData.toCore_inner D (ob i) (ob j)
     change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-    rw [← TangentMetricData_gen.inner_eq_gen
-      (tangentMetricData_gen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
+    rw [← TangentMetricDataGen.inner_eq_gen
+      (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
     change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
     rw [← hinner]
     exact ob.inner_eq_ite i j
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j
@@ -194,7 +194,7 @@ theorem sqrt_normSqRS_apply
         ∑ lower : Fin s -> Fin (Module.finrank Real (TangentSpace I x)),
           (∑ upper : Fin r -> Fin (Module.finrank Real (TangentSpace I x)),
             component0S (I := I) basis input upper *
-              componentRS_gen (I := I) basis A upper lower) ^ 2 := by
+              componentRSGen (I := I) basis A upper lower) ^ 2 := by
     rw [normSq0S_identity_eq_sum_sq (I := I) g x s basis hinv]
     apply Finset.sum_congr rfl
     intro lower _
@@ -208,35 +208,35 @@ theorem sqrt_normSqRS_apply
       normSqRS (I := I) (g := g) (x := x) r s A =
         ∑ upper : Fin r -> Fin (Module.finrank Real (TangentSpace I x)),
           ∑ lower : Fin s -> Fin (Module.finrank Real (TangentSpace I x)),
-            (componentRS_gen (I := I) basis A upper lower) ^ 2 := by
+            (componentRSGen (I := I) basis A upper lower) ^ 2 := by
     rw [normSqRS_identity_eq_componentL2SqRS (I := I) g x r s basis hinv A]
     rfl
   have hsq :
       (∑ lower : Fin s -> Fin (Module.finrank Real (TangentSpace I x)),
           (∑ upper : Fin r -> Fin (Module.finrank Real (TangentSpace I x)),
             component0S (I := I) basis input upper *
-              componentRS_gen (I := I) basis A upper lower) ^ 2) <=
+              componentRSGen (I := I) basis A upper lower) ^ 2) <=
         (∑ upper : Fin r -> Fin (Module.finrank Real (TangentSpace I x)),
           ∑ lower : Fin s -> Fin (Module.finrank Real (TangentSpace I x)),
-            (componentRS_gen (I := I) basis A upper lower) ^ 2) *
+            (componentRSGen (I := I) basis A upper lower) ^ 2) *
           (∑ upper : Fin r -> Fin (Module.finrank Real (TangentSpace I x)),
             (component0S (I := I) basis input upper) ^ 2) := by
     calc
       (∑ lower : Fin s -> Fin (Module.finrank Real (TangentSpace I x)),
           (∑ upper : Fin r -> Fin (Module.finrank Real (TangentSpace I x)),
             component0S (I := I) basis input upper *
-              componentRS_gen (I := I) basis A upper lower) ^ 2)
+              componentRSGen (I := I) basis A upper lower) ^ 2)
           <= ∑ lower : Fin s -> Fin (Module.finrank Real (TangentSpace I x)),
             (∑ upper : Fin r -> Fin (Module.finrank Real (TangentSpace I x)),
               (component0S (I := I) basis input upper) ^ 2) *
             (∑ upper : Fin r -> Fin (Module.finrank Real (TangentSpace I x)),
-              (componentRS_gen (I := I) basis A upper lower) ^ 2) := by
+              (componentRSGen (I := I) basis A upper lower) ^ 2) := by
             apply Finset.sum_le_sum
             intro lower _
             exact Finset.sum_mul_sq_le_sq_mul_sq Finset.univ _ _
       _ = (∑ upper : Fin r -> Fin (Module.finrank Real (TangentSpace I x)),
               ∑ lower : Fin s -> Fin (Module.finrank Real (TangentSpace I x)),
-                (componentRS_gen (I := I) basis A upper lower) ^ 2) *
+                (componentRSGen (I := I) basis A upper lower) ^ 2) *
             (∑ upper : Fin r -> Fin (Module.finrank Real (TangentSpace I x)),
               (component0S (I := I) basis input upper) ^ 2) := by
             rw [← Finset.mul_sum, Finset.sum_comm]
@@ -247,18 +247,18 @@ theorem sqrt_normSqRS_apply
         (∑ lower : Fin s -> Fin (Module.finrank Real (TangentSpace I x)),
           (∑ upper : Fin r -> Fin (Module.finrank Real (TangentSpace I x)),
             component0S (I := I) basis input upper *
-              componentRS_gen (I := I) basis A upper lower) ^ 2)
+              componentRSGen (I := I) basis A upper lower) ^ 2)
         <= Real.sqrt
           ((∑ upper : Fin r -> Fin (Module.finrank Real (TangentSpace I x)),
               ∑ lower : Fin s -> Fin (Module.finrank Real (TangentSpace I x)),
-                (componentRS_gen (I := I) basis A upper lower) ^ 2) *
+                (componentRSGen (I := I) basis A upper lower) ^ 2) *
             (∑ upper : Fin r -> Fin (Module.finrank Real (TangentSpace I x)),
               (component0S (I := I) basis input upper) ^ 2)) :=
       Real.sqrt_le_sqrt hsq
     _ = Real.sqrt
           (∑ upper : Fin r -> Fin (Module.finrank Real (TangentSpace I x)),
             ∑ lower : Fin s -> Fin (Module.finrank Real (TangentSpace I x)),
-              (componentRS_gen (I := I) basis A upper lower) ^ 2) *
+              (componentRSGen (I := I) basis A upper lower) ^ 2) *
         Real.sqrt
           (∑ upper : Fin r -> Fin (Module.finrank Real (TangentSpace I x)),
             (component0S (I := I) basis input upper) ^ 2) := by

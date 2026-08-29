@@ -125,7 +125,7 @@ theorem heatMass_deriv_zero
       apply MeasureTheory.integral_congr_ae
       exact hae
     rw [hint_congr]
-    have htoFun : du_smooth.toFun = Δ_g (I := I) g u_smooth.toContMDiffMap := by
+    have htoFun : du_smooth.toFun = ΔG (I := I) g u_smooth.toContMDiffMap := by
       rw [← congrArg SmoothScalar.toFun hlap]
       exact SmoothScalar.laplacian_toFun u_smooth
     rw [htoFun]

@@ -335,7 +335,7 @@ theorem genuineTrace_le_of
               slot0Curry (I := I) (M := M) g x s eF K₀
                 ((covGrad (I := I) (M := M) g 0 s S).toSection x) i)
               (unitZeroSec (I := I) (M := M) x) =
-            tensor0S_curry (I := I) (M := M) s x
+            tensor0SCurry (I := I) (M := M) s x
               ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
                 (covGrad (I := I) (M := M) g 0 s S).toSection x)
                 (unitZeroSec (I := I) (M := M) x)) (eF i) := by
@@ -545,7 +545,7 @@ theorem exists_uniform_genuineCurvTracePureR_fiberNormSq_bound
               slot0Curry (I := I) (M := M) g x s eF K₀
                 ((covGrad (I := I) (M := M) g 0 s S).toSection x) i)
               (unitZeroSec (I := I) (M := M) x) =
-            tensor0S_curry (I := I) (M := M) s x
+            tensor0SCurry (I := I) (M := M) s x
               ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
                 (covGrad (I := I) (M := M) g 0 s S).toSection x)
                 (unitZeroSec (I := I) (M := M) x)) (eF i) := by

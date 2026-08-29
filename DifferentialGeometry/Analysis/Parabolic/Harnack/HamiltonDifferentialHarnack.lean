@@ -24,7 +24,7 @@ variable [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 private abbrev deltaLegacy
     (g : SmoothRiemannianMetric I M) {f : M → ℝ}
     (hf : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ f) : M → ℝ :=
-  Δ_g (I := I) g ⟨f, hf⟩
+  ΔG (I := I) g ⟨f, hf⟩
 
 omit [SigmaCompactSpace M] in
 private theorem deltaLegacy_contMDiff
@@ -209,7 +209,7 @@ theorem normGradSq_log_heat_evolution_identity
     DifferentialGeometry.Geometry.Curvature.bochner_pointwise_grad_normSq_of_boundaryless
     (I := I) g hslice_ft x
   have hbochner' : deltaLegacy (I := I) g (hNslice t ht) x =
-      2 * frobeniusSq_grad_vector (I := I) g (fun b => gradFun (I := I) g (fun y => f t y) b) x +
+      2 * frobeniusSqGradVector (I := I) g (fun b => gradFun (I := I) g (fun y => f t y) b) x +
         2 * ricciTensor (I := I) g x (gradFun (I := I) g (fun y => f t y) x) (gradFun (I := I) g
           (fun y => f t y) x) +
         2 * g.inner x (gradFun (I := I) g (fun y => f t y) x) (gradFun (I := I) g (deltaLegacy
@@ -234,7 +234,7 @@ theorem normGradSq_log_heat_evolution_identity
         deltaLegacy (I := I) g (hNslice t ht) x =
       2 * g.inner x (gradientFun (I := I) g (fun y => Real.log (u t y)) x)
           (gradientFun (I := I) g (N t) x) -
-        2 * frobeniusSq_grad_vector (I := I) g (fun b => gradFun (I := I) g (fun y => f t y) b) x -
+        2 * frobeniusSqGradVector (I := I) g (fun b => gradFun (I := I) g (fun y => f t y) b) x -
         2 * ricciTensor (I := I) g x (gradFun (I := I) g (fun y => f t y) x)
           (gradFun (I := I) g (fun y => f t y) x) := by
     rw [hder_N]
@@ -249,10 +249,10 @@ theorem normGradSq_log_heat_evolution_identity
       rfl
     rw [hΔf_eq]
     ring
-  have hfrob : frobeniusSq_grad_vector (I := I) g (fun b => gradFun (I := I) g
+  have hfrob : frobeniusSqGradVector (I := I) g (fun b => gradFun (I := I) g
     (fun y => f t y) b) x =
       chartHessFrobeniusSq (I := I) g (fun y => Real.log (u t y)) x := by
-    change frobeniusSq_grad_vector (I := I) g (fun b => gradFun (I := I) g
+    change frobeniusSqGradVector (I := I) g (fun b => gradFun (I := I) g
       (fun y => f t y) b) x = chartHessFrobeniusSq (I := I) g (fun y => f t y) x
     exact frobeniusSq_grad_vector_eq_chartHessFrobeniusSq (I := I) g hslice_ft x
   rw [hfrob] at hmain
@@ -1491,7 +1491,7 @@ theorem heat_solution_hamilton_differential_harnack_of_ricci_lower_bound
     (hu : ContMDiff (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞ (fun p : ℝ × M => u p.1 p.2))
     (hpos : ∀ t x, 0 < u t x)
     (hpde : ∀ t x, deriv (fun s => u s x) t =
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x)
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x)
     {t : ℝ} (ht : 0 < t) (x : M) :
     g.inner x (gradientFun (I := I) g (u t) x) (gradientFun (I := I) g (u t) x) / (u t x ^ 2) -
       Real.exp (2 * K * t) * (deriv (fun s => u s x) t / u t x) ≤
@@ -1520,9 +1520,9 @@ theorem heat_solution_hamilton_differential_harnack_of_ricci_lower_bound
       have hder : HasDerivAt (fun s => u s x) (deriv (fun s => u s x) τ) τ :=
         (ContDiff.differentiable hslice_cd (by norm_num) τ).hasDerivAt
       have hlap : laplacianAt (I := I) Gfam τ (u τ) x =
-          Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu τ).toContMDiffMap x := by
+          ΔG (I := I) g (smoothScalarSlice (I := I) g u hu τ).toContMDiffMap x := by
         change laplacianAt (I := I) Gfam τ (smoothScalarSlice (I := I) g u hu τ).toFun x =
-          Δ_g (I := I) g
+          ΔG (I := I) g
             ⟨(smoothScalarSlice (I := I) g u hu τ).toFun,
               (smoothScalarSlice (I := I) g u hu τ).smooth⟩ x
         rw [laplacianAt_eq_delta (I := I) Gfam τ (smoothScalarSlice (I := I) g u hu τ).smooth

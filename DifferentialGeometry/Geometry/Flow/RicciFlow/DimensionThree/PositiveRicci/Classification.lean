@@ -40,7 +40,7 @@ theorem hamilton_constant_positive_sectional_curvature_of_injectivity_radius_bou
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
     (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     (hscalar : forall t : Real, t ∈ P.D.carrier →
       forall x : M, 0 < P.S.scalar t x)
     (hpinch : hamiltonPinchingEstimate (I := I) P)
@@ -70,10 +70,10 @@ theorem hamilton_constant_positive_sectional_curvature_of_injectivity_radius_bou
     hamiltonSourceDerivativeInput (I := I) h0omega hM.1 P hD Q hsel hrm hwindow
   let seed : MetricCompactSeed (I := I) (X.atZero (I := I)) :=
     metricSeedOfBG (I := I) (X.atZero (I := I))
-      hcpl hderiv.at_zero_geom hinj hconn
+      hcpl hderiv.atZeroGeom hinj hconn
   have hd : Nonempty (BoundedGeometryNormalData (I := I) (X.atZero (I := I)) seed.decay) :=
     exists_bounded_geometry_normal_data (I := I) (X.atZero (I := I))
-      hcpl hconn hderiv.at_zero_geom seed.decay seed.realizes
+      hcpl hconn hderiv.atZeroGeom seed.decay seed.realizes
   let canon : CanonicalMetricCompactness (I := I) (X.atZero (I := I)) :=
     seed.higherRegularityCanonicalMetricCompactness (Classical.choice hd) hcpl hconn
   have hcanonConn :
@@ -89,8 +89,8 @@ theorem hamilton_constant_positive_sectional_curvature_of_injectivity_radius_bou
       ConnectedSpace d.data.L.M :=
     flow_upgrade_data_connected (I := I) d hcanonConn
   have hzero : (0 : Real) ∈ X.D.carrier := by
-    change (0 : Real) ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0
-    exact ⟨neg_nonpos.mpr (sq_nonneg hamilton_reference_radius), le_rfl⟩
+    change (0 : Real) ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0
+    exact ⟨neg_nonpos.mpr (sq_nonneg hamiltonReferenceRadius), le_rfl⟩
   let mc := canon.compactness.compSubseq d.φ d.hφ
   exact constant_positive_sectional_curvature_of_smooth_cgh
     (I := I) (M := M) h0omega hM P hD Q hsel hscalar hpinch
@@ -109,7 +109,7 @@ theorem hamilton_constant_positive_sectional_curvature_of_volume_noncollapse
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
     (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     (hscalar : forall t : Real, t ∈ P.D.carrier →
       forall x : M, 0 < P.S.scalar t x)
     (hpinch : hamiltonPinchingEstimate (I := I) P)
@@ -140,7 +140,7 @@ theorem hamilton_constant_positive_sectional_curvature_of_volume_noncollapse
   let hderiv : FlowDerivativeInput (I := I) X :=
     hamiltonSourceDerivativeInput (I := I) h0omega hM.1 P hD Q hsel hrm hwindow
   have hinj : FlowerScaleInjBound (I := I) X :=
-    flowInj_of_vol (I := I) X hcpl hconn hderiv.at_zero_geom V hvol
+    flowInjOfVol (I := I) X hcpl hconn hderiv.atZeroGeom V hvol
   exact hamilton_constant_positive_sectional_curvature_of_injectivity_radius_bound
     (I := I) (M := M) h0omega hM P hD Q hsel hrm hwindow
     hscalar hpinch hinj
@@ -156,7 +156,7 @@ theorem hamilton_constant_positive_sectional_curvature_of_pinching
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
     (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     (hscalar : ∀ t : Real, t ∈ P.D.carrier →
       ∀ x : M, 0 < P.S.scalar t x)
     (hpinch : hamiltonPinchingEstimate (I := I) P) :
@@ -195,7 +195,7 @@ theorem hamilton_admits_constant_positive_sectional_curvature
       (I := I) (M := M) h0omega hM g0 hg0 P hD
   have hrm : hamiltonRiemannCurvatureBound (I := I) P Q :=
     hamilton_rescaled_curvature_bound (I := I) (M := M) hM g0 P Q hsel hric
-  have hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius :=
+  have hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius :=
     hamilton_reference_radius_window (I := I) P Q hsel
   have hscalar :
       ∀ t : Real, t ∈ P.D.carrier → ∀ x : M, 0 < P.S.scalar t x :=

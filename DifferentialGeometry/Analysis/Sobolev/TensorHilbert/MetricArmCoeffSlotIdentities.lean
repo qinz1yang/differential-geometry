@@ -91,7 +91,7 @@ theorem armSlotEndoCc_succ
       (armSlotFib (I := I) (M := M) s x (A x)) :
         Tensor0SSpace (s + 1) I x →L[ℝ]
           Tensor0SSpace (s + 1 + 1) I x)
-      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x)
+      ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x)
         (Tensor0SSpace.ofModel
           (ContinuousMultilinearMap.domDomCongr
             (Equiv.swap (0 : Fin (s + 1 + 1)) 1)
@@ -100,7 +100,7 @@ theorem armSlotEndoCc_succ
           (m (((Equiv.swap (0 : Fin (s + 1 + 1 + 1)) 1).trans
             (Equiv.swap (1 : Fin (s + 1 + 1 + 1)) 2)) 0)))) =
     armSlotFib (I := I) (M := M) s x (A x)
-      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x)
+      ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x)
         (Tensor0SSpace.ofModel
           (ContinuousMultilinearMap.domDomCongr
             (Equiv.swap (0 : Fin (s + 1 + 1)) 1)

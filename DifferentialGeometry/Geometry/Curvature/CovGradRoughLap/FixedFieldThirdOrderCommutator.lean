@@ -208,7 +208,7 @@ private lemma tensorCov_toFun_sub (g : SmoothRiemannianMetric I M) (k : ℕ)
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private lemma curry_covGrad_unit_read (g : SmoothRiemannianMetric I M) (k : ℕ)
     (P : SmoothCcTensor g 0 k) (y : M) (w : TangentSpace I y) :
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) k y
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) k y
         ((show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace (k + 1) I y from
           (covGrad (I := I) (M := M) g 0 k P).toSection y)
           (unitZeroSec (I := I) (M := M) y))) w =
@@ -222,7 +222,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private lemma slotRead_covGrad_dir (g : SmoothRiemannianMetric I M) (k : ℕ)
     (P : SmoothCcTensor g 0 k) (y : M) (w : TangentSpace I y) :
     tensor0SToTensorRS (I := I) (M := M) y
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) k y
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) k y
           ((show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace (k + 1) I y from
             (covGrad (I := I) (M := M) g 0 k P).toSection y)
             (unitZeroSec (I := I) (M := M) y))) w) =
@@ -235,7 +235,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 private lemma slotRead_covGrad_section (g : SmoothRiemannianMetric I M) (k : ℕ)
     (P : SmoothCcTensor g 0 k) (B : Π b : M, TangentSpace I b) :
     (fun y : M => tensor0SToTensorRS (I := I) (M := M) y
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) k y
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) k y
           ((show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace (k + 1) I y from
             (covGrad (I := I) (M := M) g 0 k P).toSection y)
             (unitZeroSec (I := I) (M := M) y))) (B y))) =
@@ -267,7 +267,7 @@ private lemma covApply_covApplyCovGradCc_slot_read
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
         covApply (tensorCov (I := I) g 0 s) V
           (fun y : M => tensor0SToTensorRS (I := I) (M := M) y
-            ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s y
+            ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s y
               ((show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace (s + 1) I y from
                 (covApplyCovGradCc (I := I) (M := M) g s S hVs).toSection y)
                 (unitZeroSec (I := I) (M := M) y))) (X y))) x)
@@ -290,7 +290,7 @@ private lemma covApply_covApplyCovGradCc_slot_read
   have hXV := covApply_contMDiff (cov := LeviCivita (I := I) g) hVs hXs
   have hρ0 := slotRead_covGrad_section (I := I) (M := M) g s S X
   have hρ1 : (fun y : M => tensor0SToTensorRS (I := I) (M := M) y
-      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s y
+      ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s y
         ((show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace (s + 1) I y from
           (covApplyCovGradCc (I := I) (M := M) g s S hVs).toSection y)
           (unitZeroSec (I := I) (M := M) y))) (X y))) =
@@ -310,7 +310,7 @@ private lemma covApply_covApplyCovGradCc_slot_read
     rw [tensor0SAsRS_sub (I := I) (M := M) s y]
     rw [tensor0SAsRS_rs_unit (I := I) (M := M) s y]
     rw [show tensor0SToTensorRS (I := I) (M := M) y
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s y
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s y
           ((show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace (s + 1) I y from
             (covGrad (I := I) (M := M) g 0 s S).toSection y)
             (unitZeroSec (I := I) (M := M) y)))
@@ -323,13 +323,13 @@ private lemma covApply_covApplyCovGradCc_slot_read
     rfl
   rw [show covApply (tensorCov (I := I) g 0 s) V
       (fun y : M => tensor0SToTensorRS (I := I) (M := M) y
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s y
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s y
           ((show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace (s + 1) I y from
             (covApplyCovGradCc (I := I) (M := M) g s S hVs).toSection y)
             (unitZeroSec (I := I) (M := M) y))) (X y))) x =
       (tensorCov (I := I) g 0 s).toFun
         (fun y : M => tensor0SToTensorRS (I := I) (M := M) y
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s y
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s y
             ((show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace (s + 1) I y from
               (covApplyCovGradCc (I := I) (M := M) g s S hVs).toSection y)
               (unitZeroSec (I := I) (M := M) y))) (X y))) x (V x) from rfl]
@@ -353,7 +353,7 @@ private lemma covApplyCovGradCc_connection_slot_read
     (hXs : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun b : M => (⟨b, X b⟩ : TotalSpace E (TangentSpace I))))
     (x : M) :
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (covApplyCovGradCc (I := I) (M := M) g s S hVs).toSection x)
           (unitZeroSec (I := I) (M := M) x)))
@@ -376,12 +376,12 @@ private lemma covApplyCovGradCc_connection_slot_read
     (covApply (LeviCivita (I := I) g) V X)
   have hM3c := tensor0S_curry_covApply_slot0_leibniz_fib (I := I) (M := M) g s
     (covGrad (I := I) (M := M) g 0 s S) hVs hXV x
-  have hq2pre : (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+  have hq2pre : (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         (covApplyCovGradCc (I := I) (M := M) g s S hVs).toSection x)
         (unitZeroSec (I := I) (M := M) x)))
       ((LeviCivita (I := I) g).toFun X x (V x)) =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           covApply (tensorCov (I := I) g 0 (s + 1)) V
             (fun y : M => (covGrad (I := I) (M := M) g 0 s S).toSection y) x)
@@ -390,7 +390,7 @@ private lemma covApplyCovGradCc_connection_slot_read
   rw [hq2pre, hM3c]
   rw [show covApply (tensorCov (I := I) g 0 s) V
       (fun y : M => tensor0SToTensorRS (I := I) (M := M) y
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s y
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s y
           ((show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace (s + 1) I y from
             (covGrad (I := I) (M := M) g 0 s S).toSection y)
             (unitZeroSec (I := I) (M := M) y)))
@@ -400,7 +400,7 @@ private lemma covApplyCovGradCc_connection_slot_read
           (covApply (LeviCivita (I := I) g) V X)
           (fun z : M => S.toSection z)) x (V x) from by
     rw [covApply_apply, hρ0']]
-  rw [show (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+  rw [show (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         (covGrad (I := I) (M := M) g 0 s S).toSection x)
         (unitZeroSec (I := I) (M := M) x)))
@@ -449,12 +449,12 @@ private lemma secondCovDeriv_covGrad_sub_covGrad_secondCovDeriv_slot0_expansion
     (hXs : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun b : M => (⟨b, X b⟩ : TotalSpace E (TangentSpace I))))
     (x : M) :
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           tensorSecondCovDeriv (I := I) g 0 (s + 1) V V
             (fun y : M => (covGrad (I := I) (M := M) g 0 s S).toSection y) x)
           (unitZeroSec (I := I) (M := M) x))) (X x) -
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (covGrad (I := I) (M := M) g 0 s
             (secondCovDerivCc (I := I) (M := M) g s hVs S)).toSection x)
@@ -551,7 +551,7 @@ private lemma secondCovDeriv_covGrad_sub_covGrad_secondCovDeriv_slot0_expansion
   have hT3 : (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
       covApply (tensorCov (I := I) g 0 s) (covApply (LeviCivita (I := I) g) V V)
         (fun y : M => tensor0SToTensorRS (I := I) (M := M) y
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s y
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s y
             ((show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace (s + 1) I y from
               (covGrad (I := I) (M := M) g 0 s S).toSection y)
               (unitZeroSec (I := I) (M := M) y))) (X y))) x)
@@ -563,13 +563,13 @@ private lemma secondCovDeriv_covGrad_sub_covGrad_secondCovDeriv_slot0_expansion
         (unitZeroSec (I := I) (M := M) x) := by
     rw [show covApply (tensorCov (I := I) g 0 s) (covApply (LeviCivita (I := I) g) V V)
         (fun y : M => tensor0SToTensorRS (I := I) (M := M) y
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s y
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s y
             ((show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace (s + 1) I y from
               (covGrad (I := I) (M := M) g 0 s S).toSection y)
               (unitZeroSec (I := I) (M := M) y))) (X y))) x =
         (tensorCov (I := I) g 0 s).toFun
           (fun y : M => tensor0SToTensorRS (I := I) (M := M) y
-            ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s y
+            ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s y
               ((show Tensor0SSpace 0 I y →L[ℝ] Tensor0SSpace (s + 1) I y from
                 (covGrad (I := I) (M := M) g 0 s S).toSection y)
                 (unitZeroSec (I := I) (M := M) y))) (X y))) x
@@ -796,13 +796,13 @@ theorem secondCovDeriv_covGrad_sub_covGrad_secondCovDeriv_slot0_eq
       (fun b : M => (⟨b, X b⟩ : TotalSpace E (TangentSpace I))))
     (x : M) (m : Fin s → E) :
     Tensor0SSpace.toModel
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
             tensorSecondCovDeriv (I := I) g 0 (s + 1) V V
               (fun y : M => (covGrad (I := I) (M := M) g 0 s S).toSection y) x)
             (unitZeroSec (I := I) (M := M) x))) (X x)) m -
       Tensor0SSpace.toModel
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
             (covGrad (I := I) (M := M) g 0 s
               (secondCovDerivCc (I := I) (M := M) g s hVs S)).toSection x)

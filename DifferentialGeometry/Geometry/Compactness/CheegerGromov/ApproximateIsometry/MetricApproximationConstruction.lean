@@ -770,8 +770,8 @@ variable {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M'] [IsManifold I �
   [T2Space M'] [T2Space (TangentBundle I M')] [SigmaCompactSpace M']
   [ConnectedSpace M'] [T3Space M']
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [CompleteSpace E] in
 theorem centerOfMass_diag
     [Module.Finite ℝ E]
@@ -789,8 +789,8 @@ theorem centerOfMass_diag
   rw [mul_zero] at hd
   exact dist_le_zero.mp hd
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 theorem chartCm_diag
     [Module.Finite ℝ E]
@@ -806,8 +806,8 @@ theorem chartCm_diag
     ((NormalCoordinates.normalChartAt (I := I) g p).symm z) (fun _ => rfl)]
   exact NormalCoordinates.normalChartAt_right_inv (I := I) g p hz
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [CompleteSpace E] in
 theorem centerOfMass_delta
     [Module.Finite ℝ E]
@@ -838,8 +838,8 @@ theorem centerOfMass_delta
   exact ((centerOfMass.unique (I := I) (g := g) (μ := μ) (pts := pts) (join := join)
     (p := p) (r := r) h) (pts i0) hmin).symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 theorem diagEventuallyEqId
     [Module.Finite ℝ E]
@@ -859,8 +859,8 @@ theorem diagEventuallyEqId
   filter_upwards [hV.mem_nhds hxV] with z hz
   rw [hagree z hz, chartCm_diag (I := I) g (μfun z) join p r z (hVtgt hz) (H z hz)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 omit [CompleteSpace E] in
 theorem cmDeltaOfBump
@@ -952,8 +952,8 @@ theorem sqrtNormSq_le_of_comp
     _ = (Fintype.card Idx : ℝ) * c := by
         rw [Real.sqrt_sq (by positivity)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [T2Space M'] [SigmaCompactSpace M'] [ConnectedSpace M'] [T3Space M'] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem mfderivNormalCenter
@@ -1392,8 +1392,8 @@ variable [NeZero (Module.finrank Real F)] [CompleteSpace F]
 variable {G : Type uH} [TopologicalSpace G]
 variable {J' : ModelWithCorners Real F G} [J'.Boundaryless]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ F)] in
 theorem edistLeOfEquivOn (Y : PointedRiemannianManifold.{u, uE, uH} (I := J')) (x : Y.M)
     {U : Set F} {v : F}
@@ -1451,8 +1451,8 @@ theorem edistLeOfEquivOn (Y : PointedRiemannianManifold.{u, uE, uH} (I := J')) (
         rw [Real.volume_Icc]
         norm_num
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ F)] in
 theorem normLowerOfSep (Y : PointedRiemannianManifold.{u, uE, uH} (I := J')) (x : Y.M)
     {U : Set F} {v : F}
@@ -1496,8 +1496,8 @@ theorem normLowerOfSep (Y : PointedRiemannianManifold.{u, uE, uH} (I := J')) (x 
   rw [div_le_iff₀ (by positivity : (0 : ℝ) < Real.sqrt 2)]
   linarith [hle]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real F)] in
 theorem normLowerOfSepExp
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := J')) (x : Y.M)
@@ -1558,8 +1558,8 @@ variable [NeZero (Module.finrank Real F)] [CompleteSpace F]
 variable {G : Type uH} [TopologicalSpace G]
 variable {J' : ModelWithCorners Real F G} [J'.Boundaryless]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem seqChartNorm_ge
     {Z : PointedRiemannianSeq.{u, uE, uH} (I := J')}
     (hd : InjRadiusDecayInput (I := J') Z) {D : Real} (hD : 0 < D)
@@ -1630,8 +1630,8 @@ variable [NeZero (Module.finrank Real F)] [CompleteSpace F]
 variable {G : Type uH} [TopologicalSpace G]
 variable {J' : ModelWithCorners Real F G} [J'.Boundaryless]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ F)] in
 theorem normLowerOfSepFramed
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := J')) (x : Y.M)
@@ -1708,8 +1708,8 @@ theorem normLowerOfSepFramed
   rw [div_le_iff₀ (by positivity : (0 : ℝ) < Real.sqrt 2)]
   linarith [hle]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem normLowerOfSepFramedExp
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := J')) (x : Y.M)
     {U : Set F} {v : F}
@@ -1785,8 +1785,8 @@ theorem normLowerOfSepFramedExp
   rw [one_smul]
   exact hlam
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem seqFramedChartNorm_ge
     {Z : PointedRiemannianSeq.{u, uE, uH} (I := J')}
     (hd : InjRadiusDecayInput (I := J') Z) {D : Real} (hD : 0 < D)
@@ -1859,8 +1859,8 @@ variable {M' : Type u} [TopologicalSpace M'] [ChartedSpace H M'] [IsManifold I �
 variable [RiemannianBundle (fun x : M' => TangentSpace I x)]
 variable [PseudoEMetricSpace M'] [IsRiemannianManifold I M'] [CompleteSpace M']
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] in
 theorem chartCm_contDiffOn
     [Module.Finite ℝ E]

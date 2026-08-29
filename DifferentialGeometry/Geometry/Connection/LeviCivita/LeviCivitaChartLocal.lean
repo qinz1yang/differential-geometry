@@ -223,18 +223,18 @@ lemma christoffelCorrection_smul
 def chartLeviCivitaInnerCLM (g : SmoothRiemannianMetric I M)
     (α : M) (σ : Π x : M, TangentSpace I x) (x : M) :
     TangentSpace I x →L[ℝ] E :=
-  (fderiv ℝ (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+  (fderiv ℝ (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
       (extChartAt I α x)).comp (trivToE (I := I) α x) +
-  christoffelCorrection (I := I) g α x (chartE_section_repr (I := I) α σ x)
+  christoffelCorrection (I := I) g α x (chartESectionRepr (I := I) α σ x)
 
 lemma chartLeviCivitaInnerCLM_apply
     (g : SmoothRiemannianMetric I M) (α : M)
     (σ : Π x : M, TangentSpace I x) (x : M) (v : TangentSpace I x) :
     chartLeviCivitaInnerCLM (I := I) g α σ x v =
-      fderiv ℝ (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+      fderiv ℝ (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
           (extChartAt I α x) (trivToE (I := I) α x v) +
         christoffelCorrection (I := I) g α x
-          (chartE_section_repr (I := I) α σ x) v := by
+          (chartESectionRepr (I := I) α σ x) v := by
   classical
   unfold chartLeviCivitaInnerCLM
   rw [add_apply, ContinuousLinearMap.comp_apply]
@@ -263,10 +263,10 @@ lemma chartLeviCivita_apply (g : SmoothRiemannianMetric I M)
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) (v : TangentSpace I x) :
     chartLeviCivita (I := I) g α σ x v =
       trivFromE (I := I) α x
-        (fderiv ℝ (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+        (fderiv ℝ (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
             (extChartAt I α x) (trivToE (I := I) α x v) +
           christoffelCorrection (I := I) g α x
-            (chartE_section_repr (I := I) α σ x) v) := by
+            (chartESectionRepr (I := I) α σ x) v) := by
   classical
   rw [chartLeviCivita_eq_of_mem (I := I) g α σ hx]
   rw [ContinuousLinearMap.comp_apply]
@@ -278,7 +278,7 @@ lemma differentiableAt_chartE_pullback_of_MDiff
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     (hσ : MDiffAt (T% σ) x) :
     DifferentiableAt ℝ
-      (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
       (extChartAt I α x) :=
   (mdifferentiableAt_section_iff_chartE_fderiv (I := I) α σ
     (chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx)
@@ -301,44 +301,44 @@ lemma chartLeviCivita_add (g : SmoothRiemannianMetric I M) (α : M)
   rw [← map_add]
   congr 1
   have hsum_pull :
-      (chartE_section_repr (I := I) α (σ + σ') ∘ (extChartAt I α).symm) =
-        (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm) +
-          (chartE_section_repr (I := I) α σ' ∘ (extChartAt I α).symm) := by
+      (chartESectionRepr (I := I) α (σ + σ') ∘ (extChartAt I α).symm) =
+        (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm) +
+          (chartESectionRepr (I := I) α σ' ∘ (extChartAt I α).symm) := by
     funext y
-    change chartE_section_repr (I := I) α (σ + σ') ((extChartAt I α).symm y) =
-      chartE_section_repr (I := I) α σ ((extChartAt I α).symm y) +
-        chartE_section_repr (I := I) α σ' ((extChartAt I α).symm y)
+    change chartESectionRepr (I := I) α (σ + σ') ((extChartAt I α).symm y) =
+      chartESectionRepr (I := I) α σ ((extChartAt I α).symm y) +
+        chartESectionRepr (I := I) α σ' ((extChartAt I α).symm y)
     exact chartE_section_repr_add (I := I) α σ σ' ((extChartAt I α).symm y)
   have hdiff_σ : DifferentiableAt ℝ
-      (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
       (extChartAt I α x) :=
     differentiableAt_chartE_pullback_of_MDiff (I := I) α hx hσ
   have hdiff_σ' : DifferentiableAt ℝ
-      (chartE_section_repr (I := I) α σ' ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α σ' ∘ (extChartAt I α).symm)
       (extChartAt I α x) :=
     differentiableAt_chartE_pullback_of_MDiff (I := I) α hx hσ'
   have hfderiv_split :
       fderiv ℝ
-          (chartE_section_repr (I := I) α (σ + σ') ∘ (extChartAt I α).symm)
+          (chartESectionRepr (I := I) α (σ + σ') ∘ (extChartAt I α).symm)
           (extChartAt I α x) =
         fderiv ℝ
-            (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+            (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
             (extChartAt I α x) +
           fderiv ℝ
-              (chartE_section_repr (I := I) α σ' ∘ (extChartAt I α).symm)
+              (chartESectionRepr (I := I) α σ' ∘ (extChartAt I α).symm)
               (extChartAt I α x) := by
     rw [hsum_pull]
     exact fderiv_add hdiff_σ hdiff_σ'
   have hsec_add :
-      chartE_section_repr (I := I) α (σ + σ') x =
-        chartE_section_repr (I := I) α σ x +
-          chartE_section_repr (I := I) α σ' x :=
+      chartESectionRepr (I := I) α (σ + σ') x =
+        chartESectionRepr (I := I) α σ x +
+          chartESectionRepr (I := I) α σ' x :=
     chartE_section_repr_add (I := I) α σ σ' x
   rw [hfderiv_split]
   rw [hsec_add]
   rw [christoffelCorrection_add (I := I) g α x
-        (chartE_section_repr (I := I) α σ x)
-        (chartE_section_repr (I := I) α σ' x) v]
+        (chartESectionRepr (I := I) α σ x)
+        (chartESectionRepr (I := I) α σ' x) v]
   rw [add_apply]
   abel
 
@@ -357,29 +357,29 @@ lemma chartLeviCivita_leibniz (g : SmoothRiemannianMetric I M) (α : M)
       chartLeviCivita_apply (I := I) g α σ hx v,
       ContinuousLinearMap.smulRight_apply]
   have hsmul_pull :
-      (chartE_section_repr (I := I) α (f • σ) ∘ (extChartAt I α).symm) =
+      (chartESectionRepr (I := I) α (f • σ) ∘ (extChartAt I α).symm) =
         ((f ∘ (extChartAt I α).symm) •
-          (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)) := by
+          (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)) := by
     funext y
     have heq :
-        chartE_section_repr (I := I) α (f • σ) ((extChartAt I α).symm y) =
+        chartESectionRepr (I := I) α (f • σ) ((extChartAt I α).symm y) =
           f ((extChartAt I α).symm y) •
-            chartE_section_repr (I := I) α σ ((extChartAt I α).symm y) := by
+            chartESectionRepr (I := I) α σ ((extChartAt I α).symm y) := by
       have hpt :
-          chartE_section_repr (I := I) α
+          chartESectionRepr (I := I) α
               (fun z => f z • σ z)
               ((extChartAt I α).symm y) =
             f ((extChartAt I α).symm y) •
-              chartE_section_repr (I := I) α σ ((extChartAt I α).symm y) :=
+              chartESectionRepr (I := I) α σ ((extChartAt I α).symm y) :=
         chartE_section_repr_smul_function (I := I) α f σ
           ((extChartAt I α).symm y)
       exact hpt
-    change chartE_section_repr (I := I) α (f • σ) ((extChartAt I α).symm y) =
+    change chartESectionRepr (I := I) α (f • σ) ((extChartAt I α).symm y) =
       f ((extChartAt I α).symm y) •
-        chartE_section_repr (I := I) α σ ((extChartAt I α).symm y)
+        chartESectionRepr (I := I) α σ ((extChartAt I α).symm y)
     exact heq
   have hdiff_σ : DifferentiableAt ℝ
-      (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
       (extChartAt I α x) :=
     differentiableAt_chartE_pullback_of_MDiff (I := I) α hx hσ
   have hdiff_f : DifferentiableAt ℝ (f ∘ (extChartAt I α).symm)
@@ -417,14 +417,14 @@ lemma chartLeviCivita_leibniz (g : SmoothRiemannianMetric I M) (α : M)
     exact hf_at.differentiableAt
   have hfderiv_split :
       fderiv ℝ
-          (chartE_section_repr (I := I) α (f • σ) ∘ (extChartAt I α).symm)
+          (chartESectionRepr (I := I) α (f • σ) ∘ (extChartAt I α).symm)
           (extChartAt I α x) =
         (f ∘ (extChartAt I α).symm) (extChartAt I α x) •
             fderiv ℝ
-              (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+              (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
               (extChartAt I α x) +
           (fderiv ℝ (f ∘ (extChartAt I α).symm) (extChartAt I α x)).smulRight
-            ((chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+            ((chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
                 (extChartAt I α x)) := by
     rw [hsmul_pull]
     exact fderiv_smul hdiff_f hdiff_σ
@@ -436,35 +436,35 @@ lemma chartLeviCivita_leibniz (g : SmoothRiemannianMetric I M) (α : M)
   have hfφ : (f ∘ (extChartAt I α).symm) (extChartAt I α x) = f x := by
     change f ((extChartAt I α).symm (extChartAt I α x)) = f x
     rw [hxφ_inv]
-  have hσφ : (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
-        (extChartAt I α x) = chartE_section_repr (I := I) α σ x := by
-    change chartE_section_repr (I := I) α σ
+  have hσφ : (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
+        (extChartAt I α x) = chartESectionRepr (I := I) α σ x := by
+    change chartESectionRepr (I := I) α σ
         ((extChartAt I α).symm (extChartAt I α x)) =
-      chartE_section_repr (I := I) α σ x
+      chartESectionRepr (I := I) α σ x
     rw [hxφ_inv]
   rw [hfφ, hσφ] at hfderiv_split
   have hLfd_apply :
       fderiv ℝ
-          (chartE_section_repr (I := I) α (f • σ) ∘ (extChartAt I α).symm)
+          (chartESectionRepr (I := I) α (f • σ) ∘ (extChartAt I α).symm)
           (extChartAt I α x) (trivToE (I := I) α x v) =
         f x • fderiv ℝ
-            (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+            (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
             (extChartAt I α x) (trivToE (I := I) α x v) +
           fderiv ℝ (f ∘ (extChartAt I α).symm) (extChartAt I α x)
               (trivToE (I := I) α x v) •
-            chartE_section_repr (I := I) α σ x := by
+            chartESectionRepr (I := I) α σ x := by
     rw [hfderiv_split]
     rw [add_apply, smul_apply,
         ContinuousLinearMap.smulRight_apply]
   have hsec_smul :
-      chartE_section_repr (I := I) α (f • σ) x =
-        f x • chartE_section_repr (I := I) α σ x :=
+      chartESectionRepr (I := I) α (f • σ) x =
+        f x • chartESectionRepr (I := I) α σ x :=
     chartE_section_repr_smul_function (I := I) α f σ x
   have hChristoffel_lhs :
       christoffelCorrection (I := I) g α x
-          (chartE_section_repr (I := I) α (f • σ) x) v =
+          (chartESectionRepr (I := I) α (f • σ) x) v =
         f x • christoffelCorrection (I := I) g α x
-            (chartE_section_repr (I := I) α σ x) v := by
+            (chartESectionRepr (I := I) α σ x) v := by
     rw [hsec_smul, christoffelCorrection_smul]
   have hxsrc_chart : x ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hx
@@ -480,24 +480,24 @@ lemma chartLeviCivita_leibniz (g : SmoothRiemannianMetric I M) (α : M)
       mvfderiv (I := I) f x v = (mfderiv I 𝓘(ℝ) f x) v := rfl
   rw [hLfd_apply, hChristoffel_lhs]
   have hreorg :
-      (f x • fderiv ℝ (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+      (f x • fderiv ℝ (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
           (extChartAt I α x) (trivToE (I := I) α x v) +
         fderiv ℝ (f ∘ (extChartAt I α).symm) (extChartAt I α x)
-          (trivToE (I := I) α x v) • chartE_section_repr (I := I) α σ x) +
+          (trivToE (I := I) α x v) • chartESectionRepr (I := I) α σ x) +
       f x • christoffelCorrection (I := I) g α x
-              (chartE_section_repr (I := I) α σ x) v =
-      f x • (fderiv ℝ (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+              (chartESectionRepr (I := I) α σ x) v =
+      f x • (fderiv ℝ (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
           (extChartAt I α x) (trivToE (I := I) α x v) +
           christoffelCorrection (I := I) g α x
-              (chartE_section_repr (I := I) α σ x) v) +
+              (chartESectionRepr (I := I) α σ x) v) +
       fderiv ℝ (f ∘ (extChartAt I α).symm) (extChartAt I α x)
-        (trivToE (I := I) α x v) • chartE_section_repr (I := I) α σ x := by
+        (trivToE (I := I) α x v) • chartESectionRepr (I := I) α σ x := by
     rw [smul_add]; abel
   rw [hreorg]
   rw [map_add, map_smul, map_smul]
   congr 1
   have htriv_round :
-      trivFromE (I := I) α x (chartE_section_repr (I := I) α σ x) = σ x := by
+      trivFromE (I := I) α x (chartESectionRepr (I := I) α σ x) = σ x := by
     rw [chartE_section_repr_eq_trivToE]
     exact trivFromE_trivToE (I := I) α
       (chartLeviCivitaGoodSet_mem_baseSet (I := I) hx) (σ x)

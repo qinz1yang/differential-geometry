@@ -39,10 +39,10 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 noncomputable def domDomCongrFibRank (d : ℕ) (σ : Equiv.Perm (Fin d)) (x : M) :
     Tensor0SBundle.Tensor0SSpace d I x →L[ℝ] Tensor0SBundle.Tensor0SSpace d I x :=
-  (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) d x).symm.toContinuousLinearMap.comp
+  (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) d x).symm.toContinuousLinearMap.comp
     (((ContinuousMultilinearMap.domDomCongrₗᵢ ℝ E ℝ
           σ).toContinuousLinearEquiv.toContinuousLinearMap).comp
-      (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) d x).toContinuousLinearMap)
+      (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) d x).toContinuousLinearMap)
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
@@ -121,11 +121,11 @@ theorem modelProdCLM_apply (p q : ℕ)
 noncomputable def tensor0SProdKappaFib {p q : ℕ} (x : M)
     (κ : Tensor0SBundle.Tensor0SSpace q I x) :
     Tensor0SBundle.Tensor0SSpace p I x →L[ℝ] Tensor0SBundle.Tensor0SSpace (p + q) I x :=
-  (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) (p + q)
+  (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) (p + q)
       x).symm.toContinuousLinearMap.comp
     (((modelProdCLM (E := E) p q).flip
         (Tensor0SBundle.Tensor0SSpace.toModel κ)).comp
-      (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) p x).toContinuousLinearMap)
+      (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) p x).toContinuousLinearMap)
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]

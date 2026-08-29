@@ -113,16 +113,16 @@ lemma fun_eq_finset_sum_pou_mul
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (u : M → ℝ) :
     u = fun x =>
-      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M),
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
           : C^∞⟮I, M; ℝ⟯) x * u x := by
   classical
   funext x
   have hsum := chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x
-  have h_eq : ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
+  have h_eq : ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M),
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) x * u x =
-      (∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
+      (∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M),
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ) x) * u x := by
     rw [Finset.sum_mul]
   rw [h_eq, hsum, one_mul]

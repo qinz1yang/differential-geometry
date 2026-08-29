@@ -299,7 +299,7 @@ theorem normSq0S_neg
       Tensor0SBundle.normSq0S (I := I) gRef x s T := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gRef x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gRef x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) gRef basis hON

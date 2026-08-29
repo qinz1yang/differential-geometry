@@ -149,7 +149,7 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
           (tensorChartComponentScalar (I := I) (M := M) g r s S α Idx Jdx) b)
         (gradFun (I := I) g
           (tensorChartComponentScalar (I := I) (M := M) g r s S α Idx Jdx) b) ≤
-      chartInvGramMatrix_l1Sum (I := I) (M := M) g α b *
+      chartInvGramMatrixL1Sum (I := I) (M := M) g α b *
         ∑ k : Fin (Module.finrank ℝ E),
           (partialDeriv (E := E) k (scalarOnE (I := I) α
             (tensorChartComponentScalar (I := I) (M := M)
@@ -160,7 +160,7 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
       (x := b) hu_mdiff_at hb_chart_src
     rw [hz_def]
     exact this
-  have h_l1Sum_le : chartInvGramMatrix_l1Sum (I := I) (M := M) g α b ≤ M_Ginv :=
+  have h_l1Sum_le : chartInvGramMatrixL1Sum (I := I) (M := M) g α b ≤ M_Ginv :=
     hM_Ginv_le b hb
   have h_leibniz : ∀ k : Fin (Module.finrank ℝ E),
       partialDeriv (E := E) k (scalarOnE (I := I) α
@@ -349,8 +349,8 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
         ρ_z ^ 2 * (4 * C_proj ^ 2 * Tcov_sum + 4 * C_proj ^ 2 * Tchr_sum) := by
     refine h_sum_sq_le'.trans ?_
     linarith
-  have h_l1Sum_nn : 0 ≤ chartInvGramMatrix_l1Sum (I := I) (M := M) g α b := by
-    unfold chartInvGramMatrix_l1Sum
+  have h_l1Sum_nn : 0 ≤ chartInvGramMatrixL1Sum (I := I) (M := M) g α b := by
+    unfold chartInvGramMatrixL1Sum
     exact Finset.sum_nonneg (fun _ _ => abs_nonneg _)
   have h_sum_sq_nn : 0 ≤ ∑ k : Fin (Module.finrank ℝ E),
         (partialDeriv (E := E) k (scalarOnE (I := I) α
@@ -367,7 +367,7 @@ theorem g_inner_gradFun_le_pou_weighted_atoms_on_pouTsupport
         ρ_z ^ 2 *
           (4 * C_proj ^ 2 * Tcov_sum + 4 * C_proj ^ 2 * Tchr_sum)) := by
     refine h_step_grad3.trans ?_
-    have h1 : chartInvGramMatrix_l1Sum (I := I) (M := M) g α b *
+    have h1 : chartInvGramMatrixL1Sum (I := I) (M := M) g α b *
         ∑ k : Fin (Module.finrank ℝ E),
           (partialDeriv (E := E) k (scalarOnE (I := I) α
             (tensorChartComponentScalar (I := I) (M := M)

@@ -51,8 +51,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -178,7 +178,7 @@ private theorem curvatureDecompositionMonomialCoeffField_eq_pairTrace (g₀ g₁
         (rsDomDomCongrSection (I := I) (M := M) g₀ 4 6 (curvatureDecompositionSlotPerm σ)
           (slotExtendIter (I := I) (M := M) g₀ 0 2 4 S)).toSection x) G) =
         ((show Tensor0SSpace 4 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRS_domDomCongr (curvatureDecompositionSlotPerm σ)
+          tensorRSDomDomCongr (curvatureDecompositionSlotPerm σ)
             ((slotExtendIter (I := I) (M := M) g₀ 0 2 4 S).toSection x)) G) from by
       rw [rsDomDomCongrSection_toSection]]
     rw [toModel_rsDomDomCongr_apply (I := I) (M := M) (curvatureDecompositionSlotPerm σ)

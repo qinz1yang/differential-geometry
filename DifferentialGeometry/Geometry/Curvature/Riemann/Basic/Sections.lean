@@ -183,7 +183,7 @@ theorem riemannCurvatureAt_apply_smooth
     {x : M}
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
     riemannCurvatureAt cov hcov x α (vec3 (X x) (Y x) (Z x)) =
-      cotangentToDual_gen α
+      cotangentToDualGen α
         (connectionRiemannCurvatureField cov
           (fun p : M => X p) (fun p : M => Y p) (fun p : M => Z p) x) := by
   obtain ⟨Xc, hXc, hXcx⟩ :=
@@ -209,7 +209,7 @@ theorem riemannCurvatureAt_apply_smooth
       (I := I) cov hcov Xc X Yc Y Zc Z hXcx hYcx hZcx
   rw [riemannCurvatureAt_apply_const]
   simpa [riemannCurvatureAux_eq_connectionRiemannCurvatureField] using
-    congrArg (cotangentToDual_gen α) (hraw.trans hsmooth)
+    congrArg (cotangentToDualGen α) (hraw.trans hsmooth)
 
 theorem riemannCurvature04At_apply_smooth
     (g : SmoothRiemannianMetric I M)
@@ -225,7 +225,7 @@ theorem riemannCurvature04At_apply_smooth
           (fun p : M => X p) (fun p : M => Y p) (fun p : M => Z p) x) := by
   have h13 :=
     riemannCurvatureAt_apply_smooth (I := I) cov hcov X Y Z
-      (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) (W x)))
+      (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (W x)))
   rw [riemannCurvature04At_eq_lower_riemannCurvatureAt]
   simpa [tangentFlatLinear_apply_gen] using h13
 
@@ -233,9 +233,9 @@ private theorem riemannCurvatureAt_contMDiff
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
     [T2Space M] :
-    letI := tensorRSBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+    letI := tensorRSBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) 1 3
-    letI := tensorRSBundle_fiber (𝕜 := Real) (E := E) (H := H) (I := I)
+    letI := tensorRSBundleFiber (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) 1 3
     letI := tensorRSBundle_vector (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) 1 3
@@ -250,9 +250,9 @@ private theorem riemannCurvatureAt_contMDiff
   classical
   have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     simpa using (inferInstance : IsManifold I ∞ M)
-  let := tensorRSBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  let := tensorRSBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 1 3
-  let := tensorRSBundle_fiber (𝕜 := Real) (E := E) (H := H) (I := I)
+  let := tensorRSBundleFiber (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 1 3
   let := tensorRSBundle_vector (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 1 3
@@ -279,7 +279,7 @@ private theorem riemannCurvatureAt_contMDiff
     intro ρ σ
     let eTan := trivializationAt E (TangentSpace I : M → Type _) x₀
     let βρ : Tensor0SModel 1 Real E :=
-      (continuousMultilinearMap_basis (𝕜 := Real) (F := E) bE 1) ρ
+      (continuousMultilinearMapBasis (𝕜 := Real) (F := E) bE 1) ρ
     let βsec : (p : M) → Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) 1 p :=
       fun p : M => Tensor0SSpace.constInChart
@@ -314,7 +314,7 @@ private theorem riemannCurvatureAt_contMDiff
       simpa [Rsec] using
         curvField_contMDiffAt (I := I) cov hcov Xs Ys Zs x₀
     have hscalar : ContMDiffAt I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
-        (fun p : M => cotangentToDual_gen (I := I) (βsec p) (Rsec p)) x₀ := by
+        (fun p : M => cotangentToDualGen (I := I) (βsec p) (Rsec p)) x₀ := by
       have hEval := TensorMultilinear.contMDiffAt_section_apply_gen
         (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (n := 1) (x₀ := x₀) (T := βsec) hβ
@@ -350,7 +350,7 @@ private theorem riemannCurvatureAt_contMDiff
       riemannCurvatureAt_apply_smooth (I := I) cov hcov Xs Ys Zs
         (βsec p)
     calc
-      G p ((continuousMultilinearMap_basis (𝕜 := Real) (F := E) bE 1) ρ)
+      G p ((continuousMultilinearMapBasis (𝕜 := Real) (F := E) bE 1) ρ)
           (fun a : Fin 3 => bE (σ a))
           =
         (riemannCurvatureAt (I := I) cov hcov p (βsec p))
@@ -360,7 +360,7 @@ private theorem riemannCurvatureAt_contMDiff
       _ = riemannCurvatureAt (I := I) cov hcov p (βsec p)
           (vec3 (I := I) (Xs p) (Ys p) (Zs p)) := by
           rw [hslots]
-      _ = cotangentToDual_gen (I := I) (βsec p) (Rsec p) := by
+      _ = cotangentToDualGen (I := I) (βsec p) (Rsec p) := by
           simpa [Rsec] using hsmooth
   simpa [G, e] using hG
 
@@ -394,7 +394,7 @@ theorem rm13Section_apply_const
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (X Y Z : TangentSpace I x) :
     rm13Section (I := I) (M := M) cov hcov x α (vec3 X Y Z) =
-      cotangentToDual_gen α
+      cotangentToDualGen α
         (connectionRiemannCurvatureField cov
           (tangentConstAt (I := I) x X) (tangentConstAt (I := I) x Y)
           (tangentConstAt (I := I) x Z) x) := by
@@ -410,7 +410,7 @@ theorem rm13Section_apply_smooth
     {x : M}
     (α : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
     rm13Section (I := I) (M := M) cov hcov x α (vec3 (X x) (Y x) (Z x)) =
-      cotangentToDual_gen α
+      cotangentToDualGen α
         (connectionRiemannCurvatureField cov
           (fun p : M => X p) (fun p : M => Y p) (fun p : M => Z p) x) := by
   rw [rm13Section_apply]
@@ -421,7 +421,7 @@ private theorem riemannCurvature04At_contMDiff
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov ∞)
     [T2Space M] :
-    letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+    letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) 4
     ContMDiff I (I.prod 𝓘(Real, Tensor0SModel 4 Real E)) (∞ : WithTop ℕ∞)
       (fun x : M =>
@@ -432,7 +432,7 @@ private theorem riemannCurvature04At_contMDiff
   classical
   have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
     simpa using (inferInstance : IsManifold I ∞ M)
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 4
   let := TangentBundle.contMDiffVectorBundle (I := I) (M := M)
     (n := (∞ : WithTop ℕ∞))
@@ -570,8 +570,8 @@ noncomputable def ricciSection
   by
     haveI : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by
       simpa using (inferInstance : IsManifold I ∞ M)
-    exact tensorRSField_applyInput (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞
-      (contract_TensorRSField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+    exact tensorRSFieldApplyInput (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞
+      (contractTensorRSField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (n := ∞) 0 2 (rm13Section (I := I) (M := M) cov hcov))
       (Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞)
 
@@ -589,8 +589,8 @@ theorem ricciSection_apply
       Tensor0SField.one0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) ∞ x =
         scalarOne0S (I := I) x := by
     rfl
-  simp [ricciSection, ricciCurvatureAt, ricciFromRm13At, contract_TensorRSField,
-    contract_TensorRSField_fun, hone]
+  simp [ricciSection, ricciCurvatureAt, ricciFromRm13At, contractTensorRSField,
+    contractTensorRSFieldFun, hone]
 
 theorem ricciSection_eq_trace
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))

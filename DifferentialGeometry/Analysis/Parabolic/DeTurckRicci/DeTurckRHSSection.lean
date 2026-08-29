@@ -106,7 +106,7 @@ private theorem deTurckRHSModelFun_eval
 
 def deTurckRHSField (g_bg g : SmoothRiemannianMetric I M) :
     Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 2 :=
-  letI := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  letI := tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := ∞)
   ⟨fun x => deTurckRHSModelFun (I := I) g_bg g x, by
     let d := Module.finrank ℝ E

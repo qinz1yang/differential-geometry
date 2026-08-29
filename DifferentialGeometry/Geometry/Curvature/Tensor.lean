@@ -128,7 +128,7 @@ def scalarOne0S (x : M) : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I
 
 def ricciFromRm13At {x : M} (Rm13 : Tensor13At (I := I) (M := M) x) :
     Tensor02At (I := I) (M := M) x :=
-  (contract_trace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2 x Rm13)
+  (contractTrace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2 x Rm13)
     (scalarOne0S (I := I) x)
 
 
@@ -232,7 +232,7 @@ def rm13Comp
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E ∞ frame u)
     (x : M) (a b c d : Idx) : Real :=
-  Rm13 x (dualToCotangent_gen (hframe.coeff a x)) (vec3 (frame b x) (frame c x) (frame d x))
+  Rm13 x (dualToCotangentGen (hframe.coeff a x)) (vec3 (frame b x) (frame c x) (frame d x))
 
 structure CurvatureSections where
   rm13 : Tensor13Section (I := I) (M := M)

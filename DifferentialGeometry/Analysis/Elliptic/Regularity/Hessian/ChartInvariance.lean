@@ -834,7 +834,7 @@ theorem smoothTensorPairingChart_eq_hessPairingChart_of_invariance
 def chartFrobeniusSqGradVectorBridge
     (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ) (x : M) : Prop :=
   chartHessFrobeniusSqOnChartAlpha (I := I) (M := M) g α f x =
-    frobeniusSq_grad_vector (I := I) g
+    frobeniusSqGradVector (I := I) g
       (fun b : M => gradFun (I := I) g f b) x
 
 omit [CompactSpace M] in
@@ -844,7 +844,7 @@ omit [T2Space M] [SigmaCompactSpace M] in
     (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ) (x : M) :
     chartFrobeniusSqGradVectorBridge (I := I) (M := M) g α f x ↔
       chartHessFrobeniusSqOnChartAlpha (I := I) (M := M) g α f x =
-        frobeniusSq_grad_vector (I := I) g
+        frobeniusSqGradVector (I := I) g
           (fun b : M => gradFun (I := I) g f b) x := Iff.rfl
 
 omit [CompactSpace M] in

@@ -317,8 +317,8 @@ private lemma continuousOn_velocityWithin_totalSpace_C1
   intro t _ht
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 theorem pathELength_eq_arcLength_riemannianBundle
@@ -404,8 +404,8 @@ theorem pathELength_eq_arcLength_riemannianBundle
     rfl
   rw [h_arcLength, h_intInterval, ← h_Icc_Ioc]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [Bundle.RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
   [T2Space M] [SigmaCompactSpace M] in
@@ -587,8 +587,8 @@ theorem pathELength_eq_arcLength
     rfl
   rw [h_arcLength, h_intInterval, ← h_Icc_Ioc]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 theorem riemannianEDist_le_arcLength

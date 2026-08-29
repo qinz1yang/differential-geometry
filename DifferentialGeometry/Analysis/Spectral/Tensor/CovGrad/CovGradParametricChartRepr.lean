@@ -37,11 +37,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance tensorRSModelNormedAddCommGroup_local (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance tensorRSModelNormedSpace_local (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -56,7 +56,7 @@ private theorem chartRepr_jointContMDiffOn
       ((Set.univ : Set M) ×ˢ S)) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, TensorRSModel r s ℝ E) ∞
       (fun p : M × ℝ =>
-        DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+        DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
           (I := I) r s α (fun z : M => (F p.2).toSection z) p.1)
       (((trivializationAt (TensorRSModel r s ℝ E)
           (fun y : M => TensorRSSpace r s I y) α).baseSet) ×ˢ S) := by
@@ -122,7 +122,7 @@ theorem chartRepr_euclid_jointContDiffWithinAt
     {t₀ : ℝ} {y₀ : E} (ht₀ : t₀ ∈ S)
     (hy₀ : y₀ ∈ (extChartAt I α).target) :
     ContDiffWithinAt ℝ ∞
-      (fun q : ℝ × E => DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+      (fun q : ℝ × E => DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
         (I := I) r s α (fun z : M => (F q.1).toSection z) ((extChartAt I α).symm q.2))
       (S ×ˢ (extChartAt I α).target) (t₀, y₀) := by
   classical
@@ -155,7 +155,7 @@ theorem chartRepr_euclid_jointContDiffWithinAt
       exact hsymm_w.comp (t₀, y₀) contMDiffWithinAt_snd (fun q hq => hq.2)
     · exact contMDiffWithinAt_fst
   have hbase_w : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, TensorRSModel r s ℝ E) ∞
-      (fun p : M × ℝ => DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+      (fun p : M × ℝ => DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
         (I := I) r s α (fun z : M => (F p.2).toSection z) p.1)
       ((chartAt H α).source ×ˢ S) ((φ.symm y₀ : M), t₀) :=
     hbase ((φ.symm y₀ : M), t₀) ⟨hx0src, ht₀⟩
@@ -168,12 +168,12 @@ theorem chartRepr_euclid_jointContDiffWithinAt
     rwa [extChartAt_source] at this
   have hcomp : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E))
       𝓘(ℝ, TensorRSModel r s ℝ E) ∞
-      (fun q : ℝ × E => DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+      (fun q : ℝ × E => DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
         (I := I) r s α (fun z : M => (F q.1).toSection z) (φ.symm q.2))
       (S ×ˢ φ.target) (t₀, y₀) :=
     hbase_w.comp (t₀, y₀) hmove hmaps
   have hself : ContMDiffWithinAt 𝓘(ℝ, ℝ × E) 𝓘(ℝ, TensorRSModel r s ℝ E) ∞
-      (fun q : ℝ × E => DifferentialGeometry.Geometry.Connection.tensorRSChartE_section_repr
+      (fun q : ℝ × E => DifferentialGeometry.Geometry.Connection.tensorRSChartESectionRepr
         (I := I) r s α (fun z : M => (F q.1).toSection z) (φ.symm q.2))
       (S ×ˢ φ.target) (t₀, y₀) := by
     rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hcomp

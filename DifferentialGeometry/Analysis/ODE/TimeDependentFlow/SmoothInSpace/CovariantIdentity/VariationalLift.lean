@@ -56,10 +56,10 @@ theorem chartLeviCivita_flat_add_christoffel
     (hX : MDiffAt (T% X) x) (v : TangentSpace I x) :
     (LeviCivita (I := I) g).toFun X x v
       = trivFromE (I := I) α x
-          (fderiv ℝ (chartE_section_repr (I := I) α X ∘ (extChartAt I α).symm)
+          (fderiv ℝ (chartESectionRepr (I := I) α X ∘ (extChartAt I α).symm)
               (extChartAt I α x) (trivToE (I := I) α x v)
             + christoffelCorrection (I := I) g α x
-                (chartE_section_repr (I := I) α X x) v) := by
+                (chartESectionRepr (I := I) α X x) v) := by
   rw [LeviCivita_chart_apply (I := I) g α hx hX v]
   rw [chartLeviCivita_apply (I := I) g α X hx v]
 
@@ -72,12 +72,12 @@ theorem chartLeviCivita_flat_eq_sub_christoffel
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α)
     (hX : MDiffAt (T% X) x) (v : TangentSpace I x) :
     trivFromE (I := I) α x
-        (fderiv ℝ (chartE_section_repr (I := I) α X ∘ (extChartAt I α).symm)
+        (fderiv ℝ (chartESectionRepr (I := I) α X ∘ (extChartAt I α).symm)
           (extChartAt I α x) (trivToE (I := I) α x v))
       = (LeviCivita (I := I) g).toFun X x v
           - trivFromE (I := I) α x
               (christoffelCorrection (I := I) g α x
-                (chartE_section_repr (I := I) α X x) v) := by
+                (chartESectionRepr (I := I) α X x) v) := by
   have hsplit := chartLeviCivita_flat_add_christoffel (I := I) g α X hx hX v
   rw [map_add] at hsplit
   rw [hsplit]

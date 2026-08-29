@@ -640,7 +640,7 @@ private lemma integrable_triple_helper
   exact full_int.restrict
 
 
-noncomputable def iteratedDiffChartBilinearData_step
+noncomputable def iteratedDiffChartBilinearDataStep
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g} (m : ℕ)
     (D_m : IteratedDiffChartBilinearData (I := I) (M := M) g α u_h m)
@@ -664,7 +664,7 @@ noncomputable def iteratedDiffChartBilinearData_step
           chartImagePOUTsupport (I := I) (M := M) α)]
         (fun _ : EuclN => (0 : ℝ))) :
     IteratedDiffChartBilinearData (I := I) (M := M) g α u_h (m + 1) :=
-  IteratedDiffChartBilinearData.mk_from_hypotheses
+  IteratedDiffChartBilinearData.mkFromHypotheses
     (Fin.snoc D_m.directions l)
     (fChartEffStep (I := I) (M := M) g α u_h m D_m.directions D_m.diffChartForcing l)
     (fChartEffStep_memLp_two_weighted (I := I) (M := M)

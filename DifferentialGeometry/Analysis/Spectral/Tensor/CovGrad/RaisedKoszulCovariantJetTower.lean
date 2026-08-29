@@ -163,12 +163,12 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma interior_product_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (w : Fin s → E) :
     Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) w =
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D) w =
       Tensor0SSpace.toModel D
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) w) := by
   have h1 : Tensor0SSpace.toModel
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) =
-      Tensor0SBundle.model_interior_product (𝕜 := ℝ) (E := E) s
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D) =
+      Tensor0SBundle.modelInteriorProduct (𝕜 := ℝ) (E := E) s
         (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
         (Tensor0SSpace.toModel D) := rfl
   rw [h1]
@@ -238,10 +238,10 @@ private lemma fiberNormSqComponent_cometricRaiseSlot0Field_eq
     rw [cometricRaiseSlot0Field_toSection]
     rw [cometricRaiseSlot0Fib_clm_apply (I := I) g₀ s x D (g0FlatCLM (I := I) g₀ x (e (K 0)))]
     rw [inverseMetricSharpFib_g0FlatCLM (I := I) g₀ x (e (K 0))]
-    rw [show (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (s + 1) x (e (K 0)) D
+    rw [show (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (s + 1) x (e (K 0)) D
             (fun k => e (J k)) : ℝ) =
         Tensor0SSpace.toModel
-          (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (s + 1) x (e (K 0)) D)
+          (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (s + 1) x (e (K 0)) D)
           (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (e (J k))) from
       (Tensor0SSpace.toModel_apply_tangent _ _).symm]
     rw [interior_product_toModel_eval (I := I) (M := M) (s + 1) x (e (K 0)) D

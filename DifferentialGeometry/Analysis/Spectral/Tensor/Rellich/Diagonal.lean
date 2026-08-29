@@ -43,7 +43,7 @@ theorem tensorChartComponentScalar_measurable
   exact hsmooth.continuous.measurable
 
 private abbrev Triple (r s : ℕ) :=
-  { α : M // α ∈ chartAtlasPOU_finset (I := I) (M := M) } ×
+  { α : M // α ∈ chartAtlasPOUFinset (I := I) (M := M) } ×
     (Fin r → Fin (Module.finrank ℝ E)) ×
     (Fin s → Fin (Module.finrank ℝ E))
 
@@ -202,7 +202,7 @@ theorem tensorChartComponent_rellich_extraction_of_uniform_bound
             g r s (S n).toCcTensor α Idx Jdx) ≤
         ENNReal.ofReal R) :
     ∃ φ : ℕ → ℕ, StrictMono φ ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ (Idx : Fin r → Fin (Module.finrank ℝ E))
           (Jdx : Fin s → Fin (Module.finrank ℝ E)),
         ∃ u_lim : M → ℝ,
@@ -237,7 +237,7 @@ theorem tensorChartComponent_rellich_extraction
             g r s (S n).toCcTensor α Idx Jdx) ≤
         ENNReal.ofReal R) :
     ∃ φ : ℕ → ℕ, StrictMono φ ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ (Idx : Fin r → Fin (Module.finrank ℝ E))
           (Jdx : Fin s → Fin (Module.finrank ℝ E)),
         ∃ u_lim : M → ℝ,
@@ -255,7 +255,7 @@ theorem tensorChartComponent_rellich_extraction_restricted
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {S : ℕ → SmoothCcTensorH1 g r s}
     {R : ℝ}
-    (hu_bdd : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hu_bdd : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ (Idx : Fin r → Fin (Module.finrank ℝ E))
           (Jdx : Fin s → Fin (Module.finrank ℝ E)) (n : ℕ),
       wkpNormChart (I := I) (M := M) 1 2
@@ -263,7 +263,7 @@ theorem tensorChartComponent_rellich_extraction_restricted
             g r s (S n).toCcTensor α Idx Jdx) ≤
         ENNReal.ofReal R) :
     ∃ φ : ℕ → ℕ, StrictMono φ ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ (Idx : Fin r → Fin (Module.finrank ℝ E))
           (Jdx : Fin s → Fin (Module.finrank ℝ E)),
         ∃ u_lim : M → ℝ,

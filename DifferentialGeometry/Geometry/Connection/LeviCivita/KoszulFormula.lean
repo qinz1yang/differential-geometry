@@ -1062,7 +1062,7 @@ theorem leviCivitaConnectionOfMetric_inner_eq_koszulScalar_tangent
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem leviCivitaConnectionOfMetric_isMetricCompatible
     (g : SmoothRiemannianMetric I M) :
-    IsMetricCompatible_gen (I := I) (leviCivitaConnectionOfMetric (I := I) g) g := by
+    IsMetricCompatibleGen (I := I) (leviCivitaConnectionOfMetric (I := I) g) g := by
   intro x X Y Z hX hY hZ
   change directionalDerivAlong (I := I) X
       (fun y : M => g.inner y (Y y) (Z y)) x =

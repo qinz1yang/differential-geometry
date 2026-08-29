@@ -113,7 +113,7 @@ private theorem cometricTrace_eq
       metricTraceFirstTwo0STensor (I := I) g D := by
   classical
   obtain ⟨basis, hbasis, horth⟩ := centeredBasis (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
@@ -156,7 +156,7 @@ private theorem exists_trace31
   | succ k ih =>
       obtain ⟨e, he⟩ := ih
       let cov := leviCivitaConnectionOfMetric (I := I) g
-      have hmc : IsMetricCompatible_gen (I := I) cov g := by
+      have hmc : IsMetricCompatibleGen (I := I) cov g := by
         exact leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g
       have hA := iterCov_realizes (I := I) g A k
       have hreindex := totalNabla0SRealizes_domDomCongr (I := I) cov e _ _ hA
@@ -191,7 +191,7 @@ private theorem trace31_norm_le
       (iterCov (I := I) g 3 A k)) x)
   rw [Tensor0SField.domDomCongr_apply] at htrace
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric
         (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) g basis hON
@@ -239,7 +239,7 @@ private theorem reverseJetThree
       hrev1' hfwd1' hjet2 hjet3
   intro x _
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₀ x
-  have hinv : MetricInverseInBasis_gen (I := I) g₀ x basis
+  have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
   rw [metricCovDerivNorm_eq_iterCov (I := I) gBase g₀ 3 basis hinv]
@@ -593,7 +593,7 @@ theorem uniformConnectionDifferenceZero
     positivity
   intro x
   obtain ⟨basis, _hbasis, horth⟩ := centeredBasis (I := I) g₀ x
-  have hinv : MetricInverseInBasis_gen (I := I) g₀ x basis
+  have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
@@ -702,7 +702,7 @@ theorem uniformConnectionDifferenceOne
     positivity
   intro x
   obtain ⟨basis, _hbasis, horth⟩ := centeredBasis (I := I) g₀ x
-  have hinv : MetricInverseInBasis_gen (I := I) g₀ x basis
+  have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using
@@ -859,7 +859,7 @@ theorem uniformConnectionDifferenceTwo
     positivity
   intro x
   obtain ⟨basis, _hbasis, horth⟩ := centeredBasis (I := I) g₀ x
-  have hinv : MetricInverseInBasis_gen (I := I) g₀ x basis
+  have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using

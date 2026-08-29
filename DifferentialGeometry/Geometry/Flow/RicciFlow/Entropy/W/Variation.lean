@@ -367,11 +367,11 @@ theorem w_rev_square
   let q0 : M -> Real := fun x =>
     g.inner x (gradientFun (I := I) g (f s) x)
       (gradientFun (I := I) g (f s) x)
-  let L0 : M -> Real := Δ_g (I := I) g ⟨_, hf⟩
+  let L0 : M -> Real := ΔG (I := I) g ⟨_, hf⟩
   let ft0 : M -> Real := fun x =>
     L0 x - q0 x + R0 x - (n : Real) / (2 * s)
   let Rt0 : M -> Real := fun x =>
-    -(Δ_g (I := I) g ⟨_, (metricScalar_smooth (I := I) (M := M) g)⟩ x +
+    -(ΔG (I := I) g ⟨_, (metricScalar_smooth (I := I) (M := M) g)⟩ x +
       2 * normSq0S (I := I) g x 2
         (metricRicciAt (I := I) (M := M) g x))
   let qt0 : M -> Real := fun x =>
@@ -398,10 +398,10 @@ theorem w_rev_square
       (metricScalarAt (I := I) (M := M) g)
     exact metricScalar_smooth (I := I) (M := M) g
   have hLf (x : M) :
-      laplacianAt (I := I) G s (f s) x = Δ_g (I := I) g ⟨_, hf⟩ x := by
+      laplacianAt (I := I) G s (f s) x = ΔG (I := I) g ⟨_, hf⟩ x := by
     exact laplacianAt_eq_delta (I := I) G s hf hconn x
   have hLR (x : M) :
-      laplacianAt (I := I) G s (R s) x = Δ_g (I := I) g ⟨_, hR⟩ x := by
+      laplacianAt (I := I) G s (R s) x = ΔG (I := I) g ⟨_, hR⟩ x := by
     exact laplacianAt_eq_delta (I := I) G s hR hconn x
   have hric (x : M) :
       S.ricci (T - s) x = metricRicciAt (I := I) (M := M) g x := by

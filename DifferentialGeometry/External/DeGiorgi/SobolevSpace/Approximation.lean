@@ -95,7 +95,7 @@ theorem fderiv_apply_zero_outside_of_tsupport_subset
 
 /-- Zero-extension of a compactly supported local `W^{1,p}` witness to all of
 `ℝ^d`, using the `MemW01p` approximation sequence on the source open set. -/
-noncomputable def zeroExtend_memW1pWitness_p
+noncomputable def zeroExtendMemW1pWitnessP
     {Ω : Set E} (hΩ : IsOpen Ω)
     {p : ℝ} (hp : 1 < p)
     {v : E → ℝ}
@@ -1262,7 +1262,7 @@ private theorem tsupport_mul_smooth_bounded_p_weakGrad_component_subset
     (i : Fin d) :
     tsupport
         (fun x =>
-          (MemW1pWitness.mul_smooth_bounded_p
+          (MemW1pWitness.mulSmoothBoundedP
             (d := d) (p := p) hp hΩ hw hη hC₀ hC₁ hη_bound hη_grad_bound).weakGrad x i) ⊆
       tsupport η := by
   have hfirst :
@@ -1274,7 +1274,7 @@ private theorem tsupport_mul_smooth_bounded_p_weakGrad_component_subset
       tsupport (fun x => (fderiv ℝ η x) (EuclideanSpace.single i 1) * u x) ⊆
         tsupport (fun x => (fderiv ℝ η x) (EuclideanSpace.single i 1))).trans <|
       (tsupport_fderiv_apply_subset ℝ (EuclideanSpace.single i 1)).trans subset_rfl
-  simpa [MemW1pWitness.mul_smooth_bounded_p, PiLp.toLp_apply, smul_eq_mul] using
+  simpa [MemW1pWitness.mulSmoothBoundedP, PiLp.toLp_apply, smul_eq_mul] using
     (tsupport_add
       (fun x => η x * hw.weakGrad x i)
       (fun x => (fderiv ℝ η x) (EuclideanSpace.single i 1) * u x)).trans
@@ -1534,7 +1534,7 @@ theorem memW01p_of_memW1p_of_tsupport_subset
       simp [C₁, hzero]
   let v : E → ℝ := fun x => η x * u x
   let hwCut :=
-    MemW1pWitness.mul_smooth_bounded_p
+    MemW1pWitness.mulSmoothBoundedP
       (d := d) (p := ENNReal.ofReal p) hp_enn hΩ hw hη_smooth
       zero_le_one hC₁_nonneg hη_bound hη_grad_bound
   have hv_eq_u : v = u := by
@@ -1566,7 +1566,7 @@ theorem sobolev_of_memW01p_univ
     (hu : MemW01p (ENNReal.ofReal p) u Set.univ volume) :
     ∃ hw : MemW1pWitness (ENNReal.ofReal p) u Set.univ volume,
       eLpNorm u (ENNReal.ofReal ((d : ℝ) * p / ((d : ℝ) - p))) volume ≤
-        ENNReal.ofReal (C_gns d p) *
+        ENNReal.ofReal (CGns d p) *
           eLpNorm (fun x => ‖hw.weakGrad x‖) (ENNReal.ofReal p) volume := by
   rcases hu with ⟨_, hw, φ, hφ_smooth, hφ_cpt, _hφ_sub, hφ_fun, hφ_grad⟩
   refine ⟨hw, ?_⟩

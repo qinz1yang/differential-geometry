@@ -184,7 +184,7 @@ theorem cubic_reaction_sub_pinching_term_nonneg_at
     simpa [ricciCube] using
       (ricciCubeInv_diag (I := I) (S.base.metric t) horth hdiag0)
   have hinv :
-      MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis
+      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
         DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I)
       (S.base.metric t) basis horth

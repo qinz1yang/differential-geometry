@@ -108,8 +108,8 @@ lemma linearizedRicciThreeArmHjoint_zero (g₀ : SmoothRiemannianMetric I M)
     Bundle.contMDiff_zeroSection ℝ (fun z : M => Tensor0SBundle.TensorRSSpace 3 2 I z)
   exact (hzero.comp contMDiff_fst).contMDiffOn
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem exists_Csob_sub_pointwise_jet3_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -121,7 +121,7 @@ theorem exists_Csob_sub_pointwise_jet3_le
         ∀ x : M,
           (∑ j ∈ Finset.range 3,
               (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-                Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+                Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
               ‖(iteratedCovGrad (I := I) g₀ 0 2 j (T - T')).toSection x‖)) ≤ Csub * R := by
   classical
   set k : ℕ := Module.finrank ℝ E / 2 + 3 with hk_def
@@ -174,7 +174,7 @@ theorem exists_Csob_sub_pointwise_jet3_le
     exact mul_le_mul_of_nonneg_left hSumBudget hCh_nn
   calc (∑ j ∈ Finset.range 3,
           (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-            Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+            Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
           ‖(iteratedCovGrad (I := I) g₀ 0 2 j W).toSection x‖))
       ≤ Cc * Mn := hCol
     _ ≤ Cc * (Ch * (((4 * k + 1 : ℕ) : ℝ) * (2 * R))) :=
@@ -195,7 +195,7 @@ theorem ricciArmOrder1KoszulCoeff_operatorFieldApplication_eq
             ((show Tensor0SBundle.Tensor0SSpace 0 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 3 I x from
               W.toSection x) (unitTensor (I := I) (M := M) x))
             (Fin.cons (cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)))
               ![(Module.finBasis ℝ E) k,
                 tangentSpaceModelContinuousLinearEquiv (I := I) x
@@ -238,8 +238,8 @@ theorem ricciArmOrder1KoszulCoeff_operatorFieldApplication_eq
   funext j
   fin_cases j <;> rfl
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 def corrFieldDataSpec (g₀ : SmoothRiemannianMetric I M)
     (T T' : SmoothCcTensor g₀ 0 2)
     {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
@@ -302,8 +302,8 @@ def corrFieldDataSpec (g₀ : SmoothRiemannianMetric I M)
     linearizedRicciConnectionDifferenceOrder1Coeff (I := I) g₀ T T' hδ hδ' s
       - linearizedRicciArm1BaseCoeff (I := I) g₀ T T' hδ hδ' s)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_corrFieldChristoffelConst (g₀ : SmoothRiemannianMetric I M) :
     ∀ (T T' : SmoothCcTensor g₀ 0 2)
         {δ : ℝ} (hδ : metricCauchySchwarzBound (I := I) (M := M) g₀
@@ -393,7 +393,7 @@ theorem exists_corrFieldChristoffelConst (g₀ : SmoothRiemannianMetric I M) :
                     ((ricciArmOrder0CurvCoeff (I := I) (M := M) g₀
                       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toSection x))) := by
           let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 2 2 I b) :=
-            Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 2 2
+            Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 2 2
           rw [← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x _,
             ← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x _,
             ← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x _,
@@ -450,7 +450,7 @@ theorem exists_corrFieldChristoffelConst (g₀ : SmoothRiemannianMetric I M) :
                 ((ricciArmOrder1KoszulCoeff (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s)).toSection x)) := by
           let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 3 2 I b) :=
-            Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 3 2
+            Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 3 2
           rw [← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x _,
             ← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x _,
             ← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x _]
@@ -697,8 +697,8 @@ theorem exists_arm1Base_metricPerturbationPath_riemannianFiberNormSq_ballUniform
   refine hΛarm1 T T' hδ_le hδ hδ'_le hδ' s hs x ?_
   exact hCsob T T' hR hTball hT'ball s hs x
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_arm0_arm1_corrField_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -744,7 +744,7 @@ theorem exists_arm0_arm1_corrField_riemannianFiberNormSq_ballUniform
             (((exists_arm0_arm1_corrField_data (I := I) g₀ T T' hδ hδ').choose s).toSection
               x)) := by
       let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 2 2 I b) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 2 2
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 2 2
       rw [← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x _,
         ← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x _,
         ← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x _]
@@ -769,7 +769,7 @@ theorem exists_arm0_arm1_corrField_riemannianFiberNormSq_ballUniform
               s).toSection
               x)) := by
       let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 3 2 I b) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 3 2
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 3 2
       rw [← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x _,
         ← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x _,
         ← norm_toSection_eq_sqrt_riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x _]

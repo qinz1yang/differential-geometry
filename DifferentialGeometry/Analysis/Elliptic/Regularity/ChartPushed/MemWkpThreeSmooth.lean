@@ -174,32 +174,32 @@ theorem chartPushed_chosenFirstPartial_memWkp_two_two
       (I := I) (M := M) α
   have hΩ''_in_chart' : Ω'' ⊆ chartTargetEuclid (I := I) (M := M) α :=
     subset_trans subset_closure hΩ''_in_chart
-  have h_D_uChart_eq_base : D.u_chart =
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+  have h_D_uChart_eq_base : D.uChart =
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
         (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1
-          hu_h)).weak_partial i := by
+          hu_h)).weakPartial i := by
     rfl
   have h_D_uChart_ae_zero_off_K_α :
       ∀ᵐ y ∂((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α \ K_α)),
-        D.u_chart y = 0 := by
+        D.uChart y = 0 := by
     rw [h_D_uChart_eq_base]
     exact base_weak_partial_ae_zero_off_K_α (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain
         (I := I) (M := M) g 1 hu_h) i
   have h_D_uChart_memWkp22_chart :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-        (d := Module.finrank ℝ E) 2 2 D.u_chart
+        (d := Module.finrank ℝ E) 2 2 D.uChart
         (chartTargetEuclid (I := I) (M := M) α) :=
     MemWkp_two_extend_via_cutoff (E := E) 2
       h_chart_open hΩ''_open hΩ''_in_chart' hK_α_compact hK_in_Ω''
       h_D_uChart_memWkp22_Ω'' h_D_uChart_ae_zero_off_K_α
   have h_D_uChart_ae_eq_chosen :
-      D.u_chart =ᵐ[(volume : Measure EuclN).restrict
+      D.uChart =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
       chartPushedChosenFirstPartial (I := I) (M := M) g α u_h i := by
-    have h_eq : D.u_chart = (((chartPushedWeakPartialLp (I := I) (M := M) g α i
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h
+    have h_eq : D.uChart = (((chartPushedWeakPartialLp (I := I) (M := M) g α i
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h
        ) : EuclN → ℝ)) := by
       rw [h_D_uChart_eq_base]
       exact

@@ -100,8 +100,8 @@ private theorem lscAt_of_seq
     liminf_le_of_frequently_le' (Frequently.of_forall hqmem)
   exact (not_lt_of_ge (hlim.trans hlimle)) ha
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
 private theorem exists_cost_curve
     [ConnectedSpace M]
@@ -157,8 +157,8 @@ private theorem exists_cost_curve
   exact ⟨beta n, hbeta n, hbetaa n, by simpa only [b] using hbetab n,
     by simpa only [b] using hn⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
 private theorem lCost_param_usc
     [ConnectedSpace M]
@@ -180,8 +180,8 @@ private theorem lCost_param_usc
     (fun s hs ↦ hslab (sqrt_back_mem (T := T) htau.le s hs))
     A halphaA (fun n ↦ (q n).2) hx
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
 private theorem lCost_y_usc
     [ConnectedSpace M]
@@ -332,7 +332,7 @@ private theorem redVolume_chart_sum
     (tau : Real) (htau : 0 < tau)
     (hslab : Icc (T - tau) T ⊆ D.regular) :
     redVolume S T x tau =
-      ∑ alpha ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ alpha ∈ chartAtlasPOUFinset (I := I) (M := M),
         chartRedTerm (I := I) S tau (T, x) alpha := by
   classical
   let F : M → ENNReal := fun y ↦ ENNReal.ofReal (redDensity S T x y tau)
@@ -542,7 +542,7 @@ theorem redVolume_lsc
     LowerSemicontinuousAt
       (fun p : Real × M ↦ redVolume S p.1 p.2 tau) (T, x) := by
   classical
-  let K : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  let K : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   have hsum : LowerSemicontinuousAt
       (fun p : Real × M ↦
         ∑ alpha ∈ K, chartRedTerm (I := I) S tau p alpha) (T, x) := by

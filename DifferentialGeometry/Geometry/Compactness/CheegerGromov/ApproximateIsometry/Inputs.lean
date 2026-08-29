@@ -142,8 +142,8 @@ theorem normalMetric_zero
   rw [normalCoordMetric_apply (I := I), expMapDiffeo_zero (I := I)]
   exact normalChartAt_metric_pullback_at_origin (I := I) Y.metric c v w
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
 theorem radialEnorm_normal
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x : Y.M)
@@ -423,8 +423,8 @@ theorem sharp_norm_le
   norm_num at hbound ⊢
   exact hbound
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem abs_apply_le
     {Y : PointedRiemannianManifold.{u, uE, uH} (I := I)} {x : Y.M}

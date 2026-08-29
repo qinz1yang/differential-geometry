@@ -22,7 +22,7 @@ local notation "E" => EuclideanSpace ℝ (Fin d)
 namespace SmoothDiffeoBounded
 
 def derivBoundMaxOne {Ω Ω' : Set E} (Φ : SmoothDiffeoBounded d Ω Ω') : ℝ :=
-  max Φ.deriv_bound 1
+  max Φ.derivBound 1
 
 lemma derivBoundMaxOne_pos {Ω Ω' : Set E} (Φ : SmoothDiffeoBounded d Ω Ω') :
     0 < Φ.derivBoundMaxOne := by
@@ -37,7 +37,7 @@ lemma derivBoundMaxOne_ge_one {Ω Ω' : Set E}
 
 lemma deriv_bound_le_derivBoundMaxOne {Ω Ω' : Set E}
     (Φ : SmoothDiffeoBounded d Ω Ω') :
-    Φ.deriv_bound ≤ Φ.derivBoundMaxOne :=
+    Φ.derivBound ≤ Φ.derivBoundMaxOne :=
   le_max_left _ _
 
 lemma norm_iteratedFDeriv_comp_toFun_le

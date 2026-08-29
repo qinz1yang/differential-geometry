@@ -1168,7 +1168,7 @@ theorem cometricRaiseSlot0Fib_metricPerturbationPath_jointContMDiffOn (s : ℕ)
   refine hraise.congr (fun p hp => ?_)
   change TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)
       (E := fun z : M => Tensor0SBundle.Tensor0SSpace (s + 1) I z) p.1
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (s + 1) p.1 (sharpβ p) (Y p)) =
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (s + 1) p.1 (sharpβ p) (Y p)) =
     TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)
       (E := fun z : M => Tensor0SBundle.Tensor0SSpace (s + 1) I z) p.1
       ((show Tensor0SBundle.Tensor0SSpace 1 I p.1 →L[ℝ]
@@ -1852,7 +1852,7 @@ theorem comRaise_of_family (s : ℕ)
   refine hraise.congr (fun p _ => ?_)
   change TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)
       (E := fun z : M => Tensor0SBundle.Tensor0SSpace (s + 1) I z) p.1
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (s + 1) p.1
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (s + 1) p.1
         (sharpβ p) (Y p)) =
     TotalSpace.mk' (Tensor0SBundle.Tensor0SModel (s + 1) ℝ E)
       (E := fun z : M => Tensor0SBundle.Tensor0SSpace (s + 1) I z) p.1

@@ -194,14 +194,14 @@ private lemma numerator_secondOrder_decomp
           ((volume : Measure EuclN).restrict Ω))
     (hΩ_open : IsOpen Ω)
     (h_base_wp_int : ∀ i : Fin (Module.finrank ℝ E),
-      IntegrableOn ((chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
-      (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)).weak_partial i) K
+      IntegrableOn ((chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
+      (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)).weakPartial i) K
         (volume : Measure EuclN))
-    (h_base_uc_int : IntegrableOn (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
-      (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)).u_chart K
+    (h_base_uc_int : IntegrableOn (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
+      (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)).uChart K
         (volume : Measure EuclN))
-    (h_base_fc_int : IntegrableOn (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
-      (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)).f_chart K
+    (h_base_fc_int : IntegrableOn (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
+      (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)).fChart K
         (volume : Measure EuclN))
     (h_chosenFChartDeriv_int : ∀ l : Fin (Module.finrank ℝ E),
       IntegrableOn (chosenFChartDeriv (I := I) (M := M) g α hu_h l)
@@ -217,8 +217,8 @@ private lemma numerator_secondOrder_decomp
     (h_int_C1_pair : ∀ i j,
       Integrable (fun y => (fderiv ℝ (weightedInvGramSecondDerivOnEuclid
             (I := I) g α i j l₁ l₂) y) (EuclideanSpace.single j 1) *
-          (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
-      (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)).weak_partial i y
+          (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
+      (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)).weakPartial i y
         * ψ y)
         ((volume : Measure EuclN).restrict Ω))
     (h_int_C2_pair : ∀ i j,
@@ -261,9 +261,9 @@ private lemma numerator_secondOrder_decomp
       (-
          ∫ y in Ω,
             (fderiv ℝ (densityOnEuclid (I := I) g α) y) (EuclideanSpace.single l₂ 1) *
-            (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+            (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
               (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1
-                hu_h)).weak_partial l₁ y * ψ y ∂(volume : Measure EuclN)) +
+                hu_h)).weakPartial l₁ y * ψ y ∂(volume : Measure EuclN)) +
      ∫ y in Ω,
      (fderiv ℝ (densityOnEuclid (I := I) g α) y) (EuclideanSpace.single l₂ 1) *
      chosenFChartDeriv (I := I) (M := M) g α hu_h l₁ y * ψ y
@@ -275,9 +275,9 @@ private lemma numerator_secondOrder_decomp
             ∫ y in Ω,
               (fderiv ℝ (weightedInvGramSecondDerivOnEuclid (I := I) g α i j l₁ l₂) y)
                 (EuclideanSpace.single j 1) *
-              (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+              (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
               (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1
-                hu_h)).weak_partial i y * ψ y
+                hu_h)).weakPartial i y * ψ y
               ∂(volume : Measure EuclN)) +
       (∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
             ∫ y in Ω, weightedInvGramSecondDerivOnEuclid (I := I) g α i j l₁ l₂ y *
@@ -296,24 +296,24 @@ private lemma numerator_secondOrder_decomp
       (-
          ∫ y in Ω,
             (fderiv ℝ (densityDerivOnEuclid (I := I) g α l₁) y) (EuclideanSpace.single l₂ 1) *
-            (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
-              (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)).u_chart y
+            (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
+              (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)).uChart y
                 * ψ y ∂(volume : Measure EuclN)) +
       (-
          ∫ y in Ω, densityDerivOnEuclid (I := I) g α l₁ y *
-            (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+            (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
               (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1
-                hu_h)).weak_partial l₂ y * ψ y ∂(volume : Measure EuclN)) +
+                hu_h)).weakPartial l₂ y * ψ y ∂(volume : Measure EuclN)) +
      ∫ y in Ω,
      (fderiv ℝ (densityDerivOnEuclid (I := I) g α l₁) y) (EuclideanSpace.single l₂ 1) *
-     (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
-       (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)).f_chart y * ψ y
+     (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
+       (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)).fChart y * ψ y
          ∂(volume : Measure EuclN) +
      ∫ y in Ω, densityDerivOnEuclid (I := I) g α l₁ y *
      chosenFChartDeriv (I := I) (M := M) g α hu_h l₂ y * ψ y
      ∂(volume : Measure EuclN) := by
   let D_base : ChartBilinearH1ComplData (I := I) (M := M) g α :=
-    chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+    chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)
   let I_num : ℝ := ∫ y in Ω,
     effectiveSourceChartSecondOrderNumerator (I := I) (M := M) g α l₁ l₂ hu_h y * ψ y
@@ -332,7 +332,7 @@ private lemma numerator_secondOrder_decomp
       ∂(volume : Measure EuclN)
   let N_A3 : ℝ := ∫ y in Ω,
     (fderiv ℝ (densityOnEuclid (I := I) g α) y) (EuclideanSpace.single l₂ 1) *
-    D_base.weak_partial l₁ y * ψ y ∂(volume : Measure EuclN)
+    D_base.weakPartial l₁ y * ψ y ∂(volume : Measure EuclN)
   let N_B1 : ℝ := ∫ y in Ω,
     (fderiv ℝ (densityOnEuclid (I := I) g α) y) (EuclideanSpace.single l₂ 1) *
     chosenFChartDeriv (I := I) (M := M) g α hu_h l₁ y * ψ y
@@ -344,7 +344,7 @@ private lemma numerator_secondOrder_decomp
     ∫ y in Ω,
       (fderiv ℝ (weightedInvGramSecondDerivOnEuclid (I := I) g α i j l₁ l₂) y)
         (EuclideanSpace.single j 1) *
-      D_base.weak_partial i y * ψ y
+      D_base.weakPartial i y * ψ y
       ∂(volume : Measure EuclN)
   let C2 : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun i j =>
     ∫ y in Ω, weightedInvGramSecondDerivOnEuclid (I := I) g α i j l₁ l₂ y *
@@ -362,12 +362,12 @@ private lemma numerator_secondOrder_decomp
       ∂(volume : Measure EuclN)
   let N_D1 : ℝ := ∫ y in Ω,
     (fderiv ℝ (densityDerivOnEuclid (I := I) g α l₁) y) (EuclideanSpace.single l₂ 1) *
-    D_base.u_chart y * ψ y ∂(volume : Measure EuclN)
+    D_base.uChart y * ψ y ∂(volume : Measure EuclN)
   let N_D2 : ℝ := ∫ y in Ω, densityDerivOnEuclid (I := I) g α l₁ y *
-    D_base.weak_partial l₂ y * ψ y ∂(volume : Measure EuclN)
+    D_base.weakPartial l₂ y * ψ y ∂(volume : Measure EuclN)
   let N_E1 : ℝ := ∫ y in Ω,
     (fderiv ℝ (densityDerivOnEuclid (I := I) g α l₁) y) (EuclideanSpace.single l₂ 1) *
-    D_base.f_chart y * ψ y ∂(volume : Measure EuclN)
+    D_base.fChart y * ψ y ∂(volume : Measure EuclN)
   let N_E2 : ℝ := ∫ y in Ω, densityDerivOnEuclid (I := I) g α l₁ y *
     chosenFChartDeriv (I := I) (M := M) g α hu_h l₂ y * ψ y
     ∂(volume : Measure EuclN)
@@ -390,7 +390,7 @@ private lemma numerator_secondOrder_decomp
               (I := I) (M := M) g α u_h i l₁ j y *
             ψ y) +
       (- (densityDerivOnEuclid (I := I) g α l₂ y *
-            D_base.weak_partial l₁ y * ψ y)) +
+            D_base.weakPartial l₁ y * ψ y)) +
       densityDerivOnEuclid (I := I) g α l₂ y *
         chosenFChartDeriv (I := I) (M := M) g α hu_h l₁ y * ψ y +
       densityOnEuclid (I := I) g α y *
@@ -399,7 +399,7 @@ private lemma numerator_secondOrder_decomp
         ∑ j : Fin (Module.finrank ℝ E),
           (fderiv ℝ (weightedInvGramSecondDerivOnEuclid (I := I) g α i j l₁ l₂) y)
               (EuclideanSpace.single j 1) *
-            D_base.weak_partial i y * ψ y) +
+            D_base.weakPartial i y * ψ y) +
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramSecondDerivOnEuclid (I := I) g α i j l₁ l₂ y *
@@ -418,10 +418,10 @@ private lemma numerator_secondOrder_decomp
               (I := I) (M := M) g α u_h i l₂ j y *
             ψ y) +
       (- (densitySecondDerivOnEuclid (I := I) g α l₁ l₂ y *
-            D_base.u_chart y * ψ y)) +
+            D_base.uChart y * ψ y)) +
       (- (densityDerivOnEuclid (I := I) g α l₁ y *
-            D_base.weak_partial l₂ y * ψ y)) +
-      densitySecondDerivOnEuclid (I := I) g α l₁ l₂ y * D_base.f_chart y * ψ y +
+            D_base.weakPartial l₂ y * ψ y)) +
+      densitySecondDerivOnEuclid (I := I) g α l₁ l₂ y * D_base.fChart y * ψ y +
       densityDerivOnEuclid (I := I) g α l₁ y *
         chosenFChartDeriv (I := I) (M := M) g α hu_h l₂ y * ψ y := by
     intro y
@@ -442,7 +442,7 @@ private lemma numerator_secondOrder_decomp
         ψ y
   let int_A3 : EuclN → ℝ := fun y =>
     - (densityDerivOnEuclid (I := I) g α l₂ y *
-        D_base.weak_partial l₁ y * ψ y)
+        D_base.weakPartial l₁ y * ψ y)
   let int_B1 : EuclN → ℝ := fun y =>
     densityDerivOnEuclid (I := I) g α l₂ y *
       chosenFChartDeriv (I := I) (M := M) g α hu_h l₁ y * ψ y
@@ -453,7 +453,7 @@ private lemma numerator_secondOrder_decomp
     ∑ j : Fin (Module.finrank ℝ E),
       (fderiv ℝ (weightedInvGramSecondDerivOnEuclid (I := I) g α i j l₁ l₂) y)
           (EuclideanSpace.single j 1) *
-        D_base.weak_partial i y * ψ y
+        D_base.weakPartial i y * ψ y
   let int_C2 : EuclN → ℝ := fun y => ∑ i : Fin (Module.finrank ℝ E),
     ∑ j : Fin (Module.finrank ℝ E),
       weightedInvGramSecondDerivOnEuclid (I := I) g α i j l₁ l₂ y *
@@ -472,13 +472,13 @@ private lemma numerator_secondOrder_decomp
         ψ y
   let int_D1 : EuclN → ℝ := fun y =>
     - (densitySecondDerivOnEuclid (I := I) g α l₁ l₂ y *
-        D_base.u_chart y * ψ y)
+        D_base.uChart y * ψ y)
   let int_D2 : EuclN → ℝ := fun y =>
     - (densityDerivOnEuclid (I := I) g α l₁ y *
-        D_base.weak_partial l₂ y * ψ y)
+        D_base.weakPartial l₂ y * ψ y)
   let int_E1 : EuclN → ℝ := fun y =>
     densitySecondDerivOnEuclid (I := I) g α l₁ l₂ y *
-      D_base.f_chart y * ψ y
+      D_base.fChart y * ψ y
   let int_E2 : EuclN → ℝ := fun y =>
     densityDerivOnEuclid (I := I) g α l₁ y *
       chosenFChartDeriv (I := I) (M := M) g α hu_h l₂ y * ψ y
@@ -553,7 +553,7 @@ private lemma numerator_secondOrder_decomp
   have eq_intA3 : (∫ y in Ω, int_A3 y ∂(volume : Measure EuclN)) = - N_A3 := by
     change (∫ y in Ω,
         - (densityDerivOnEuclid (I := I) g α l₂ y *
-          D_base.weak_partial l₁ y * ψ y)
+          D_base.weakPartial l₁ y * ψ y)
         ∂(volume : Measure EuclN)) = - N_A3
     rw [MeasureTheory.integral_neg]
     rfl
@@ -568,7 +568,7 @@ private lemma numerator_secondOrder_decomp
             (fderiv ℝ (weightedInvGramSecondDerivOnEuclid
               (I := I) g α i j l₁ l₂) y)
               (EuclideanSpace.single j 1) *
-              D_base.weak_partial i y * ψ y
+              D_base.weakPartial i y * ψ y
         ∂(volume : Measure EuclN)) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), C1 i j
@@ -628,14 +628,14 @@ private lemma numerator_secondOrder_decomp
   have eq_intD1 : (∫ y in Ω, int_D1 y ∂(volume : Measure EuclN)) = - N_D1 := by
     change (∫ y in Ω,
         - (densitySecondDerivOnEuclid (I := I) g α l₁ l₂ y *
-          D_base.u_chart y * ψ y)
+          D_base.uChart y * ψ y)
         ∂(volume : Measure EuclN)) = - N_D1
     rw [MeasureTheory.integral_neg]
     rfl
   have eq_intD2 : (∫ y in Ω, int_D2 y ∂(volume : Measure EuclN)) = - N_D2 := by
     change (∫ y in Ω,
         - (densityDerivOnEuclid (I := I) g α l₁ y *
-          D_base.weak_partial l₂ y * ψ y)
+          D_base.weakPartial l₂ y * ψ y)
         ∂(volume : Measure EuclN)) = - N_D2
     rw [MeasureTheory.integral_neg]
   have eq_intE1 : (∫ y in Ω, int_E1 y ∂(volume : Measure EuclN)) = N_E1 := rfl
@@ -673,7 +673,7 @@ theorem twice_differentiated_variational_identity_holds
   classical
   let Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α
   have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
-  let D_base := chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M)
+  let D_base := chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M)
     g α (laplacianDomainPow_succ_subset_laplacianDomain
       (I := I) (M := M) g 1 hu_h)
   have h_base_f_chart_memW1p :=
@@ -752,13 +752,13 @@ theorem twice_differentiated_variational_identity_holds
     densityOnEuclid_contDiffOn (I := I) g α
   have h_A2 :
       (∫ y in Ω, densityOnEuclid (I := I) g α y *
-          D_base.weak_partial l₁ y *
+          D_base.weakPartial l₁ y *
           (fderiv ℝ ψ y) (EuclideanSpace.single l₂ 1)
           ∂(volume : Measure EuclN))
         = -((∫ y in Ω,
               (fderiv ℝ (densityOnEuclid (I := I) g α) y)
                 (EuclideanSpace.single l₂ 1) *
-                D_base.weak_partial l₁ y * ψ y
+                D_base.weakPartial l₁ y * ψ y
               ∂(volume : Measure EuclN))
           + (∫ y in Ω, densityOnEuclid (I := I) g α y *
                 chosenSecondPartialChartPushedU
@@ -788,13 +788,13 @@ theorem twice_differentiated_variational_identity_holds
     fun i j => weightedInvGramDerivOnEuclid_contDiffOn (I := I) g α i j l₁
   have h_pair_C : ∀ i j : Fin (Module.finrank ℝ E),
       (∫ y in Ω, weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
-          D_base.weak_partial i y *
+          D_base.weakPartial i y *
           (fderiv ℝ ψ y) (EuclideanSpace.single l₂ 1)
           ∂(volume : Measure EuclN))
         = -((∫ y in Ω,
               (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l₁) y)
                 (EuclideanSpace.single l₂ 1) *
-                D_base.weak_partial i y * ψ y
+                D_base.weakPartial i y * ψ y
               ∂(volume : Measure EuclN))
           + (∫ y in Ω, weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
                 chosenSecondPartialChartPushedU
@@ -807,28 +807,28 @@ theorem twice_differentiated_variational_identity_holds
     densityDerivOnEuclid_contDiffOn (I := I) g α l₁
   have h_D :
       (∫ y in Ω, densityDerivOnEuclid (I := I) g α l₁ y *
-          D_base.u_chart y *
+          D_base.uChart y *
           (fderiv ℝ ψ y) (EuclideanSpace.single l₂ 1)
           ∂(volume : Measure EuclN))
         = -((∫ y in Ω,
               (fderiv ℝ (densityDerivOnEuclid (I := I) g α l₁) y)
                 (EuclideanSpace.single l₂ 1) *
-                D_base.u_chart y * ψ y
+                D_base.uChart y * ψ y
               ∂(volume : Measure EuclN))
           + (∫ y in Ω, densityDerivOnEuclid (I := I) g α l₁ y *
-                D_base.weak_partial l₂ y * ψ y
+                D_base.weakPartial l₂ y * ψ y
               ∂(volume : Measure EuclN))) :=
     per_pair_ibp_base_u_chart (I := I) (M := M) g α hu_h l₂
       h_dc_l₁_contDiffOn hψ_smooth hψ_cs hψ_supp
   have h_E :
       (∫ y in Ω, densityDerivOnEuclid (I := I) g α l₁ y *
-          D_base.f_chart y *
+          D_base.fChart y *
           (fderiv ℝ ψ y) (EuclideanSpace.single l₂ 1)
           ∂(volume : Measure EuclN))
         = -((∫ y in Ω,
               (fderiv ℝ (densityDerivOnEuclid (I := I) g α l₁) y)
                 (EuclideanSpace.single l₂ 1) *
-                D_base.f_chart y * ψ y
+                D_base.fChart y * ψ y
               ∂(volume : Measure EuclN))
           + (∫ y in Ω, densityDerivOnEuclid (I := I) g α l₁ y *
                 chosenFChartDeriv (I := I) (M := M) g α hu_h l₂ y * ψ y
@@ -857,14 +857,14 @@ theorem twice_differentiated_variational_identity_holds
       (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
-            D_base.weak_partial i y *
+            D_base.weakPartial i y *
             (fderiv ℝ ψl₂ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN)) =
       (∫ y in Ω,
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
-              D_base.weak_partial i y *
+              D_base.weakPartial i y *
               (fderiv ℝ (ψj j) y) (EuclideanSpace.single l₂ 1))
         ∂(volume : Measure EuclN)) := by
     refine setIntegral_congr_fun hΩ_open.measurableSet (fun y _ => ?_)
@@ -938,7 +938,7 @@ theorem twice_differentiated_variational_identity_holds
       (I := I) (M := M) g α hu_h i l j hK_compact hK_in).integrable
       (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   have h_base_wp_int : ∀ i : Fin (Module.finrank ℝ E),
-      IntegrableOn (D_base.weak_partial i) K (volume : Measure EuclN) :=
+      IntegrableOn (D_base.weakPartial i) K (volume : Measure EuclN) :=
     fun i => (D_base.weak_partial_locally_memLp i K hK_compact hK_in).integrable
       (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   have h_int_A1_pair : ∀ i j,
@@ -975,7 +975,7 @@ theorem twice_differentiated_variational_identity_holds
       hh₁_cont hh₁_supp
   have h_int_C_pair : ∀ i j,
       Integrable (fun y => weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
-          D_base.weak_partial i y *
+          D_base.weakPartial i y *
           (fderiv ℝ (ψj j) y) (EuclideanSpace.single l₂ 1))
         ((volume : Measure EuclN).restrict Ω) := fun i j => by
     let h₁ : EuclN → ℝ := fun y =>
@@ -1013,13 +1013,13 @@ theorem twice_differentiated_variational_identity_holds
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
-              D_base.weak_partial i y *
+              D_base.weakPartial i y *
               (fderiv ℝ (ψj j) y) (EuclideanSpace.single l₂ 1))
         ∂(volume : Measure EuclN) =
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           ∫ y in Ω, weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
-            D_base.weak_partial i y *
+            D_base.weakPartial i y *
             (fderiv ℝ (ψj j) y) (EuclideanSpace.single l₂ 1)
             ∂(volume : Measure EuclN) := by
     rw [integral_finsetSum _ (fun i _ =>
@@ -1056,7 +1056,7 @@ theorem twice_differentiated_variational_identity_holds
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           ∫ y in Ω, weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
-            D_base.weak_partial i y *
+            D_base.weakPartial i y *
             (fderiv ℝ (ψj j) y) (EuclideanSpace.single l₂ 1)
             ∂(volume : Measure EuclN)
         =
@@ -1065,7 +1065,7 @@ theorem twice_differentiated_variational_identity_holds
           (-((∫ y in Ω,
                 (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l₁) y)
                   (EuclideanSpace.single l₂ 1) *
-                  D_base.weak_partial i y * ψj j y
+                  D_base.weakPartial i y * ψj j y
                 ∂(volume : Measure EuclN))
             + (∫ y in Ω, weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
                   chosenSecondPartialChartPushedU
@@ -1140,7 +1140,7 @@ theorem twice_differentiated_variational_identity_holds
       Integrable (fun y =>
           (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l₁) y)
             (EuclideanSpace.single l₂ 1) *
-          D_base.weak_partial i y * ψj j y)
+          D_base.weakPartial i y * ψj j y)
         ((volume : Measure EuclN).restrict Ω) := fun i j => by
     have hh₁_cont : Continuous (ψj j) := (hψj_smooth j).continuous
     have hh₁_supp : tsupport (ψj j) ⊆ K :=
@@ -1223,7 +1223,7 @@ theorem twice_differentiated_variational_identity_holds
           (-((∫ y in Ω,
                 (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l₁) y)
                   (EuclideanSpace.single l₂ 1) *
-                  D_base.weak_partial i y * ψj j y
+                  D_base.weakPartial i y * ψj j y
                 ∂(volume : Measure EuclN))
             + (∫ y in Ω, weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
                   chosenSecondPartialChartPushedU
@@ -1234,7 +1234,7 @@ theorem twice_differentiated_variational_identity_holds
               ∫ y in Ω,
                 (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l₁) y)
                   (EuclideanSpace.single l₂ 1) *
-                  D_base.weak_partial i y * ψj j y
+                  D_base.weakPartial i y * ψj j y
                 ∂(volume : Measure EuclN))
           + (∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
@@ -1248,7 +1248,7 @@ theorem twice_differentiated_variational_identity_holds
           (-(∫ y in Ω,
               (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l₁) y)
                 (EuclideanSpace.single l₂ 1) *
-              D_base.weak_partial i y * ψj j y
+              D_base.weakPartial i y * ψj j y
               ∂(volume : Measure EuclN))
             + -(∫ y in Ω, weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
                 chosenSecondPartialChartPushedU
@@ -1258,7 +1258,7 @@ theorem twice_differentiated_variational_identity_holds
           -(∫ y in Ω,
               (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l₁) y)
                 (EuclideanSpace.single l₂ 1) *
-              D_base.weak_partial i y * ψj j y
+              D_base.weakPartial i y * ψj j y
               ∂(volume : Measure EuclN))) +
         (∑ j : Fin (Module.finrank ℝ E),
           -(∫ y in Ω, weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
@@ -1286,7 +1286,7 @@ theorem twice_differentiated_variational_identity_holds
     ∫ y in Ω,
       (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l₁) y)
         (EuclideanSpace.single l₂ 1) *
-      D_base.weak_partial i y * ψj j y
+      D_base.weakPartial i y * ψj j y
       ∂(volume : Measure EuclN)
   let γ_sub2 : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun i j =>
     ∫ y in Ω, weightedInvGramDerivOnEuclid (I := I) g α i j l₁ y *
@@ -1512,7 +1512,7 @@ theorem twice_differentiated_variational_identity_holds
     ∫ y in Ω,
       (fderiv ℝ (weightedInvGramSecondDerivOnEuclid (I := I) g α i j l₁ l₂) y)
         (EuclideanSpace.single j 1) *
-      D_base.weak_partial i y * ψ y
+      D_base.weakPartial i y * ψ y
       ∂(volume : Measure EuclN)
   let C2 : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ := fun i j =>
     ∫ y in Ω, weightedInvGramSecondDerivOnEuclid (I := I) g α i j l₁ l₂ y *
@@ -1537,13 +1537,13 @@ theorem twice_differentiated_variational_identity_holds
     intro i j
     have h_rewrite : γ_sub1 i j =
         ∫ y in Ω, weightedInvGramSecondDerivOnEuclid (I := I) g α i j l₁ l₂ y *
-          D_base.weak_partial i y *
+          D_base.weakPartial i y *
           (fderiv ℝ ψ y) (EuclideanSpace.single j 1)
           ∂(volume : Measure EuclN) := by
       change (∫ y in Ω,
           (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l₁) y)
             (EuclideanSpace.single l₂ 1) *
-          D_base.weak_partial i y * ψj j y
+          D_base.weakPartial i y * ψj j y
           ∂(volume : Measure EuclN)) = _
       rfl
     rw [h_rewrite]
@@ -1657,7 +1657,7 @@ theorem twice_differentiated_variational_identity_holds
     rw [h_α1_sub2_eq]; exact h_lhs1_swap_to_sum
   let N_A3 : ℝ := ∫ y in Ω,
     (fderiv ℝ (densityOnEuclid (I := I) g α) y) (EuclideanSpace.single l₂ 1) *
-    D_base.weak_partial l₁ y * ψ y ∂(volume : Measure EuclN)
+    D_base.weakPartial l₁ y * ψ y ∂(volume : Measure EuclN)
   let N_B1 : ℝ := ∫ y in Ω,
     (fderiv ℝ (densityOnEuclid (I := I) g α) y) (EuclideanSpace.single l₂ 1) *
     chosenFChartDeriv (I := I) (M := M) g α hu_h l₁ y * ψ y
@@ -1667,17 +1667,17 @@ theorem twice_differentiated_variational_identity_holds
     ∂(volume : Measure EuclN)
   let N_D1 : ℝ := ∫ y in Ω,
     (fderiv ℝ (densityDerivOnEuclid (I := I) g α l₁) y) (EuclideanSpace.single l₂ 1) *
-    D_base.u_chart y * ψ y ∂(volume : Measure EuclN)
+    D_base.uChart y * ψ y ∂(volume : Measure EuclN)
   let N_D2 : ℝ := ∫ y in Ω, densityDerivOnEuclid (I := I) g α l₁ y *
-    D_base.weak_partial l₂ y * ψ y ∂(volume : Measure EuclN)
+    D_base.weakPartial l₂ y * ψ y ∂(volume : Measure EuclN)
   let N_E1 : ℝ := ∫ y in Ω,
     (fderiv ℝ (densityDerivOnEuclid (I := I) g α l₁) y) (EuclideanSpace.single l₂ 1) *
-    D_base.f_chart y * ψ y ∂(volume : Measure EuclN)
+    D_base.fChart y * ψ y ∂(volume : Measure EuclN)
   let N_E2 : ℝ := ∫ y in Ω, densityDerivOnEuclid (I := I) g α l₁ y *
     chosenFChartDeriv (I := I) (M := M) g α hu_h l₂ y * ψ y
     ∂(volume : Measure EuclN)
   have h_A2_named :
-      (∫ y in Ω, densityOnEuclid (I := I) g α y * D_base.weak_partial l₁ y *
+      (∫ y in Ω, densityOnEuclid (I := I) g α y * D_base.weakPartial l₁ y *
         (fderiv ℝ ψ y) (EuclideanSpace.single l₂ 1) ∂(volume : Measure EuclN))
       = -(N_A3 + I_lhs2_target) := h_A2
   have h_B_named :
@@ -1686,11 +1686,11 @@ theorem twice_differentiated_variational_identity_holds
         (fderiv ℝ ψ y) (EuclideanSpace.single l₂ 1) ∂(volume : Measure EuclN))
       = -(N_B1 + N_B2) := h_B
   have h_D_named :
-      (∫ y in Ω, densityDerivOnEuclid (I := I) g α l₁ y * D_base.u_chart y *
+      (∫ y in Ω, densityDerivOnEuclid (I := I) g α l₁ y * D_base.uChart y *
         (fderiv ℝ ψ y) (EuclideanSpace.single l₂ 1) ∂(volume : Measure EuclN))
       = -(N_D1 + N_D2) := h_D
   have h_E_named :
-      (∫ y in Ω, densityDerivOnEuclid (I := I) g α l₁ y * D_base.f_chart y *
+      (∫ y in Ω, densityDerivOnEuclid (I := I) g α l₁ y * D_base.fChart y *
         (fderiv ℝ ψ y) (EuclideanSpace.single l₂ 1) ∂(volume : Measure EuclN))
       = -(N_E1 + N_E2) := h_E
   let I_num : ℝ := ∫ y in Ω,
@@ -1698,11 +1698,11 @@ theorem twice_differentiated_variational_identity_holds
     ∂(volume : Measure EuclN)
   have h_psi_cont : Continuous ψ := hψ_smooth.continuous
   have h_psi_supp : tsupport ψ ⊆ K := le_refl _
-  have h_base_uc_int : IntegrableOn D_base.u_chart K (volume : Measure EuclN) :=
+  have h_base_uc_int : IntegrableOn D_base.uChart K (volume : Measure EuclN) :=
     (base_u_chart_locally_memLp (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)
       hK_compact hK_meas hK_in).integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-  have h_base_fc_int : IntegrableOn D_base.f_chart K (volume : Measure EuclN) :=
+  have h_base_fc_int : IntegrableOn D_base.fChart K (volume : Measure EuclN) :=
     (base_f_chart_locally_memLp (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain (I := I) (M := M) g 1 hu_h)
       hK_compact hK_meas hK_in).integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
@@ -1719,7 +1719,7 @@ theorem twice_differentiated_variational_identity_holds
     have h_memLp_K : MemLp (chosenFChartDeriv (I := I) (M := M) g α hu_h l) 2
         ((volume : Measure EuclN).restrict K) := by
       change MemLp (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-        (d := Module.finrank ℝ E) 2 l D_base.f_chart Ω) 2 _
+        (d := Module.finrank ℝ E) 2 l D_base.fChart Ω) 2 _
       rw [← h_K_eq]; exact h_global.restrict K
     exact h_memLp_K.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   have h_fChartDeriv2_int :
@@ -1767,7 +1767,7 @@ theorem twice_differentiated_variational_identity_holds
   have h_int_C1_pair : ∀ i j,
       Integrable (fun y => (fderiv ℝ (weightedInvGramSecondDerivOnEuclid
             (I := I) g α i j l₁ l₂) y) (EuclideanSpace.single j 1) *
-          D_base.weak_partial i y * ψ y)
+          D_base.weakPartial i y * ψ y)
         ((volume : Measure EuclN).restrict Ω) := fun i j => by
     have h_ai_cont_on := fderiv_apply_continuousOn_of_contDiffOn hΩ_open
       (h_d2aij_contDiffOn i j) (EuclideanSpace.single j (1 : ℝ))

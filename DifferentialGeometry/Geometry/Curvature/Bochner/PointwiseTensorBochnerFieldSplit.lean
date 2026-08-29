@@ -32,13 +32,13 @@ omit [CompactSpace M] in
 lemma pointwiseTensorCurv_eq_covGradRoughLapCurv_gen
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) :
     pointwiseTensorCurv (I := I) (M := M) g s S =
-      covGradRoughLapCurv_gen (I := I) (M := M) g s S := rfl
+      covGradRoughLapCurvGen (I := I) (M := M) g s S := rfl
 
 omit [CompactSpace M] in
 lemma tensor0S_curry_pointwiseTensorCurv_eq_genuine_add_obstruction
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     (x : M) (w : TangentSpace I x) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (pointwiseTensorCurv (I := I) (M := M) g s S).toSection x)
           (unitZeroSec (I := I) (M := M) x)) w =
@@ -46,12 +46,12 @@ lemma tensor0S_curry_pointwiseTensorCurv_eq_genuine_add_obstruction
         tensor3rdCurvGenuine (I := I) g 0 s (smoothExtensionTangent (I := I) x w)
           (fun y : M => S.toSection y) x)
         (unitZeroSec (I := I) (M := M) x) +
-        (covGradRoughLapTraceDiscrepancy_gen (I := I) (M := M) g s S x w +
+        (covGradRoughLapTraceDiscrepancyGen (I := I) (M := M) g s S x w +
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
             tensor3rdCurvBracket (I := I) g 0 s (smoothExtensionTangent (I := I) x w)
               (fun y : M => S.toSection y) x)
             (unitZeroSec (I := I) (M := M) x) -
-          covGradRoughLapMovingFrameResidual_gen (I := I) (M := M) g s S x w) := by
+          covGradRoughLapMovingFrameResidualGen (I := I) (M := M) g s S x w) := by
   rw [pointwiseTensorCurv_eq_covGradRoughLapCurv_gen (I := I) (M := M) g s S]
   rw [covGradRoughLapCurv_curry_eq_discrepancy_add_curv_sub_residual_gen
     (I := I) (M := M) g s S x w]
@@ -100,12 +100,12 @@ noncomputable def bracketThirdCurvFieldFib
     (m : Fin s → E) : ℝ :=
   ∑ a : Fin n, g.inner x (e a) w •
     Tensor0SSpace.toModel
-      (covGradRoughLapTraceDiscrepancy_gen (I := I) (M := M) g s S x (e a) +
+      (covGradRoughLapTraceDiscrepancyGen (I := I) (M := M) g s S x (e a) +
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
           tensor3rdCurvBracket (I := I) g 0 s (smoothExtensionTangent (I := I) x (e a))
             (fun y : M => S.toSection y) x)
           (unitZeroSec (I := I) (M := M) x) -
-        covGradRoughLapMovingFrameResidual_gen (I := I) (M := M) g s S x (e a)) m
+        covGradRoughLapMovingFrameResidualGen (I := I) (M := M) g s S x (e a)) m
 
 omit [CompactSpace M] in
 theorem pointwiseTensorCurv_toSection_eq_genuine_add_bracket_field

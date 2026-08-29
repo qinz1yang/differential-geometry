@@ -352,7 +352,7 @@ theorem localizedSpacetimeRpowNorm_le_canonicalEarlyBombieriGiustiReverseCost_of
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc A τ, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     ∀ k {p : ℝ}, 0 < p → p < p₀ →
       localizedSpacetimeRpowNorm (I := I) (M := M)
@@ -428,7 +428,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalBombieriGiustiThre
         outer.toFun x ^ 2)
     (hmass : 0 < cutoffMass (I := I) (M := M) averagingCutoff)
     (hpde : ∀ t ∈ Icc A τ, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t)
     (hsummable : Summable (fun k : ℕ =>
       (3 / 4 : ℝ) ^ k *
@@ -458,7 +458,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalBombieriGiustiThre
   have hv := contMDiff_exponentialTimeRescale rate center u hu
   have hvpos := exponentialTimeRescale_pos rate center u hpos
   have hvpde : ∀ t ∈ Icc A τ, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g v hv t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g v hv t).toContMDiffMap x ≤
         deriv (fun q => v q x) t := by
     intro t ht x
     exact centered_exponential_time_rescale_supersolution
@@ -532,7 +532,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalBombieriGiustiThre
         outer.toFun x ^ 2)
     (hmass : 0 < cutoffMass (I := I) (M := M) averagingCutoff)
     (hpde : ∀ t ∈ Icc A τ, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     let rate := logCenterDrift (I := I) (M := M) g averagingCutoff
     let center := shiftedLogCenter (I := I) (M := M) g averagingCutoff

@@ -1181,7 +1181,7 @@ theorem exactUnitBallExtensionGrad_bound
     (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ) :
     (∫⁻ x, (ENNReal.ofReal ‖exactUnitBallExtensionGrad (d := d) ψ x‖) ^ p ∂volume)
       ≤ (∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal ‖fderiv ℝ ψ x‖) ^ p ∂volume) +
-          C_unitBallExtensionGrad d p *
+          CUnitBallExtensionGrad d p *
             (∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal |ψ x|) ^ p ∂volume +
              ∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal ‖fderiv ℝ ψ x‖) ^ p ∂volume) := by
   have hψ_smooth1 : ContDiff ℝ 1 ψ := hψ_smooth.of_le (by simp)
@@ -1234,10 +1234,10 @@ theorem exactUnitBallExtensionGrad_bound
           (ENNReal.ofReal ‖fderiv ℝ (unitBallExtension (d := d) ψ) x‖) ^ p ∂volume := by
           rw [lintegral_indicator Metric.isOpen_ball.measurableSet]
     _ ≤ (∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal ‖fderiv ℝ ψ x‖) ^ p ∂volume) +
-          C_unitBallExtensionGrad d p *
+          CUnitBallExtensionGrad d p *
             (∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal |ψ x|) ^ p ∂volume +
              ∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal ‖fderiv ℝ ψ x‖) ^ p ∂volume) := by
-          simpa [C_unitBallExtensionGrad] using hest.2
+          simpa [CUnitBallExtensionGrad] using hest.2
 
 
 /-- Smooth-input interface smoothing for the explicit extension operator.
@@ -1258,11 +1258,11 @@ theorem smooth_input_unitBallExtension_smoothing
       MemLp (unitBallExtension (d := d) ψ) (ENNReal.ofReal p) volume ∧
       (∀ i : Fin d, MemLp (fun x => Gψ x i) (ENNReal.ofReal p) volume) ∧
       (∫⁻ x, (ENNReal.ofReal |unitBallExtension (d := d) ψ x|) ^ p ∂volume)
-        ≤ C_unitBallExtensionFun d *
+        ≤ CUnitBallExtensionFun d *
           ∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal |ψ x|) ^ p ∂volume ∧
       (∫⁻ x, (ENNReal.ofReal ‖Gψ x‖) ^ p ∂volume)
         ≤ (∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal ‖fderiv ℝ ψ x‖) ^ p ∂volume) +
-          C_unitBallExtensionGrad d p *
+          CUnitBallExtensionGrad d p *
             (∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal |ψ x|) ^ p ∂volume +
              ∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal ‖fderiv ℝ ψ x‖) ^ p ∂volume) ∧
       ∃ Φ : ℕ → E → ℝ,
@@ -1348,7 +1348,7 @@ theorem smooth_input_unitBallExtension_smoothing
   have hest := smooth_unitBallExtension_W1p_estimate (d := d) (p := p) hp.le hψ_smooth1
   have hfun_bound :
       (∫⁻ x, (ENNReal.ofReal |unitBallExtension (d := d) ψ x|) ^ p ∂volume)
-        ≤ C_unitBallExtensionFun d *
+        ≤ CUnitBallExtensionFun d *
           ∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal |ψ x|) ^ p ∂volume := by
     have hfun_support :
         (fun x => (ENNReal.ofReal |unitBallExtension (d := d) ψ x|) ^ p) =

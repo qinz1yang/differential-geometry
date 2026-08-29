@@ -106,7 +106,7 @@ structure ShiBarrierCutoffData
     ∀ n, ContinuousOn
       (fun p : Real × M => chi n p.1 p.2)
       (Set.Icc 0 T ×ˢ support n)
-  lower_support :
+  lowerSupport :
     ∀ n t, t ∈ Set.Icc 0 T → 0 < t → ∀ x,
       0 < chi n t x →
         ShiCutoffLowerSupportAt
@@ -157,7 +157,7 @@ def toBarrierAt
     intro n
     exact (cut.joint_cont n).mono fun p hp =>
       ⟨hp.1, Set.mem_univ p.2⟩
-  lower_support := by
+  lowerSupport := by
     intro n t ht htpos x _hx
     refine
       { phi := cut.chi n

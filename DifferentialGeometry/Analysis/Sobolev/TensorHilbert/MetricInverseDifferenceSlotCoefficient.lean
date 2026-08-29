@@ -296,8 +296,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_covGrad_inverseMetricDifferenceSlotCoefficient_le
     (g₀ : SmoothRiemannianMetric I M) :
@@ -309,7 +309,7 @@ theorem riemannianFiberNormSq_covGrad_inverseMetricDifferenceSlotCoefficient_le
       (x : M),
       letI instTens : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       letI : ∀ b : M, NormedAddCommGroup (TensorRSSpace 0 3 I b) :=
         fun b => tensorRSRiemannianNormedAddCommGroup (I := I) 0 3 (h := instTens) b
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 3 x
@@ -319,7 +319,7 @@ theorem riemannianFiberNormSq_covGrad_inverseMetricDifferenceSlotCoefficient_le
   classical
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   let : ∀ b : M, NormedAddCommGroup (TensorRSSpace 0 3 I b) :=
     fun b => tensorRSRiemannianNormedAddCommGroup (I := I) 0 3 (h := instTens) b
   obtain ⟨C₀, hC₀0, hpw⟩ := sqrt_inner_endoCov_gInvDiffRaisedField_le (I := I) (M := M) g₀
@@ -378,27 +378,27 @@ theorem riemannianFiberNormSq_covGrad_inverseMetricDifferenceSlotCoefficient_le
 
 end HilbertFirstDerivativeBound
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 theorem norm_toSection_eq_sqrt_riemannianFiberNormSq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M) (W : SmoothCcTensor g r s) :
     letI instTens : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     letI : ∀ b : M, NormedAddCommGroup (TensorRSSpace r s I b) :=
       fun b => tensorRSRiemannianNormedAddCommGroup (I := I) r s (h := instTens) b
     ‖(W.toSection x : TensorRSSpace r s I x)‖ =
       Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r s x (W.toSection x)) := by
   let instTens : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   let : ∀ b : M, NormedAddCommGroup (TensorRSSpace r s I b) :=
     fun b => tensorRSRiemannianNormedAddCommGroup (I := I) r s (h := instTens) b
   rw [norm_eq_sqrt_tensorInnerPointwise (I := I) (M := M) g r s x (W.toSection x),
     riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r s x (W.toSection x)]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -409,14 +409,14 @@ theorem norm_iteratedCovGrad_inverseMetricDifferenceSlotCoefficient_le_envelope_
     (hbound : metricCauchySchwarzBound (I := I) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ) (x : M)
       (R : ℝ) :
     letI instTens : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 2 2 I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 2 2
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 2 2
     letI : ∀ b : M, NormedAddCommGroup (TensorRSSpace 2 2 I b) :=
       fun b => tensorRSRiemannianNormedAddCommGroup (I := I) 2 2 (h := instTens) b
     ‖((iteratedCovGrad (I := I) g₀ 2 2 0 (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x :
         TensorRSSpace 2 2 I x)‖ ≤
       (Module.finrank ℝ E : ℝ) * (1 + R) ^ 0 := by
   let instTens : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 2 2 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 2 2
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 2 2
   let : ∀ b : M, NormedAddCommGroup (TensorRSSpace 2 2 I b) :=
     fun b => tensorRSRiemannianNormedAddCommGroup (I := I) 2 2 (h := instTens) b
   rw [iteratedCovGrad_zero, pow_zero, mul_one,
@@ -440,8 +440,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
 theorem norm_iteratedCovGrad_inverseMetricDifferenceSlotCoefficient_le_envelope_one
     (g₀ : SmoothRiemannianMetric I M) :
@@ -452,12 +452,12 @@ theorem norm_iteratedCovGrad_inverseMetricDifferenceSlotCoefficient_le_envelope_
         {R : ℝ}
       (_hR0 : 0 ≤ R)
       (_hjet : letI inst3 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 3 I b) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
         letI : ∀ b : M, NormedAddCommGroup (TensorRSSpace 0 3 I b) :=
           fun b => tensorRSRiemannianNormedAddCommGroup (I := I) 0 3 (h := inst3) b
         ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x : TensorRSSpace 0 3 I x)‖ ≤ R),
       letI inst23 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 2 3 I b) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 2 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 2 3
       letI : ∀ b : M, NormedAddCommGroup (TensorRSSpace 2 3 I b) :=
         fun b => tensorRSRiemannianNormedAddCommGroup (I := I) 2 3 (h := inst23) b
       ‖((iteratedCovGrad (I := I) g₀ 2 2 1 (inverseMetricDifferenceSlotCoefficient (I := I) g₀ g₁)).toSection x :
@@ -466,11 +466,11 @@ theorem norm_iteratedCovGrad_inverseMetricDifferenceSlotCoefficient_le_envelope_
   refine ⟨C, hC0, ?_⟩
   intro g₁ T δ hδ hδ0 h hbound x R hR0 hjet
   let inst3 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 3 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   let : ∀ b : M, NormedAddCommGroup (TensorRSSpace 0 3 I b) :=
     fun b => tensorRSRiemannianNormedAddCommGroup (I := I) 0 3 (h := inst3) b
   let inst23 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 2 3 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 2 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 2 3
   let : ∀ b : M, NormedAddCommGroup (TensorRSSpace 2 3 I b) :=
     fun b => tensorRSRiemannianNormedAddCommGroup (I := I) 2 3 (h := inst23) b
   have hb := hbnd g₁ T hδ hδ0 h hbound x
@@ -701,7 +701,7 @@ theorem connectionDifferenceGInvCompositeFib_contMDiff (g₀ g₁ : SmoothRieman
     (φ := fun x : M => (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
       connectionDifferenceGInvCompositeFib (I := I) g₀ g₁ x))
   intro om
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   have hsec : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SSpace 2 I z) x

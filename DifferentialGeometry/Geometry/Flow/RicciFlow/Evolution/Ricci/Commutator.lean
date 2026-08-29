@@ -59,7 +59,7 @@ private theorem contractedCurvatureAction_left_eq
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
     (hinvAt :
-      Tensor0SBundle.MetricInverseInBasis_gen
+      Tensor0SBundle.MetricInverseInBasisGen
         (I := I) (M := M) g x basis gInvAt)
     (t : Real) (i j : Idx)
     (hLower : DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) g x (Rm13 t x)
@@ -117,7 +117,7 @@ private theorem contractedCurvatureAction_right_eq
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
     (hinvAt :
-      Tensor0SBundle.MetricInverseInBasis_gen
+      Tensor0SBundle.MetricInverseInBasisGen
         (I := I) (M := M) g x basis gInvAt)
     (t : Real) (i j : Idx)
     (hLower : DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) g x (Rm13 t x)
@@ -238,7 +238,7 @@ theorem ricciSecondDerivativeCommutatorsInFrame_of_tensor0S_ricciIdentity
   classical
   intro t x i j
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasis_gen
+      Tensor0SBundle.MetricInverseInBasisGen
         (I := I) (M := M) (S.family.metric (t : Real)) x
         (hframe.toBasisAt (hcover x))
         (fun a b : Idx => gInv (t : Real) x a b) :=
@@ -521,7 +521,7 @@ theorem ricciSecCommLocId
   classical
   intro t x hx i j
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasis_gen
+      Tensor0SBundle.MetricInverseInBasisGen
         (I := I) (M := M) (S.family.metric (t : Real)) x
         (hframe.toBasisAt hx)
         (fun a b : Idx => gInv (t : Real) x a b) :=
@@ -1142,7 +1142,7 @@ theorem ricciVariationExpandedRHS_eq_evolutionRHS_of_commutators
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (hcomm : RicciContractedCommutatorsInFrame
       (I := I) S Rm04 gInv frame nabla2Ric) :
-    RicciVariationExpandedRHS_eq_evolutionRHS
+    RicciVariationExpandedRHSEqEvolutionRHS
       (I := I) S Rm04 gInv frame nabla2Ric := by
   intro t x i j
   have hleft := (hcomm t x i j).1
@@ -1168,11 +1168,11 @@ def ricciSecondDerivativeCommute
   forall t x a b i j,
     secondDerivRic t x a b i j = commutedSecondDerivRic t x a b i j
 
-def ricciVariationGaugeTerms_cancel
+def ricciVariationGaugeTermsCancel
     (gaugeTerms : Real -> M -> Idx -> Idx -> Real) : Prop :=
   forall t x i j, gaugeTerms t x i j = 0
 
-def ricciCurvatureTerms_eq
+def ricciCurvatureTermsEq
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (Rm04 : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I) (M := M))
@@ -1195,7 +1195,7 @@ theorem ricciEvolutionEquationInFrame_of_variation_expanded
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (h_var : RicciVariationFormulaInFrameOn (I := I) S frame
       (nablaGammaDtFromNabla2RicInFrame (M := M) gInv nabla2Ric))
-    (h_reduce : RicciVariationExpandedRHS_eq_evolutionRHS
+    (h_reduce : RicciVariationExpandedRHSEqEvolutionRHS
       (I := I) S Rm04 gInv frame nabla2Ric) :
     RicciEvolutionEquationInFrame (I := I) S Rm04 gInv frame
       (roughLapRicInFrame (M := M) gInv nabla2Ric) := by
@@ -1217,7 +1217,7 @@ theorem ricciEvolutionEquationInFrameOnLocal_of_variation_expanded
     (nabla2Ric : Real -> M -> Idx -> Idx -> Idx -> Idx -> Real)
     (h_var : RicciVariationFormulaInFrameOnLocal (I := I) S frame u
       (nablaGammaDtFromNabla2RicInFrame (M := M) gInv nabla2Ric))
-    (h_reduce : RicciVariationExpandedRHS_eq_evolutionRHS
+    (h_reduce : RicciVariationExpandedRHSEqEvolutionRHS
       (I := I) S Rm04 gInv frame nabla2Ric) :
     RicciEvolutionEquationInFrameOnLocal
       (I := I) S Rm04 gInv frame u

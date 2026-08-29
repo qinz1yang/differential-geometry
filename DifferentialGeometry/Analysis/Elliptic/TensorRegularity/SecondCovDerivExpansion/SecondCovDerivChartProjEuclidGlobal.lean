@@ -40,7 +40,7 @@ private def secondCovDerivChartGlobalGradCorrectionCoeff
     EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
   fun y =>
     (if m = l then
-      secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y
+      secondCovDerivLOGradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y
      else 0) +
     (if m = k then
       covDerivLowerOrderCoeff (I := I) (M := M) g r s α l Idx I' Jdx J' y
@@ -55,7 +55,7 @@ private def secondCovDerivChartGlobalValueCorrectionCoeff
     (J' : Fin s → Fin (Module.finrank ℝ E)) :
     EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) → ℝ :=
   fun y =>
-    secondCovDerivLO_valueCoeff (I := I) (M := M) g r s α k l Idx I' Jdx J' y +
+    secondCovDerivLOValueCoeff (I := I) (M := M) g r s α k l Idx I' Jdx J' y +
     ∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
           (Fin s → Fin (Module.finrank ℝ E)),
       covDerivLowerOrderCoeff (I := I) (M := M) g r s α l Idx p.1 Jdx p.2 y *
@@ -79,7 +79,7 @@ private lemma GlobalCorr_eu_contDiffOn
   have h1 : ContDiffOn ℝ ∞
       (fun y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) =>
         if m = l then
-          secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y
+          secondCovDerivLOGradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y
         else 0)
       (chartTargetEuclid (I := I) (M := M) α) := by
     by_cases h : m = l
@@ -117,7 +117,7 @@ private lemma GlobalCorr0_eu_contDiffOn
   classical
   unfold secondCovDerivChartGlobalValueCorrectionCoeff
   have h1 : ContDiffOn ℝ ∞
-      (secondCovDerivLO_valueCoeff (I := I) (M := M) g r s α k l Idx I' Jdx J')
+      (secondCovDerivLOValueCoeff (I := I) (M := M) g r s α k l Idx I' Jdx J')
       (chartTargetEuclid (I := I) (M := M) α) :=
     secondCovDerivLO_valueCoeff_contDiffOn
       (I := I) (M := M) g r s α k l Idx I' Jdx J'
@@ -183,10 +183,10 @@ private lemma chartPushedRaw_S_k_packed_eqOn
   let _ : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   let _ : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   obtain ⟨S_k_ext, U, hU_open, hb₀_U, hU_sub_good, hU_eq⟩ :=
     covApply_covRS_chartBasis_globalSmoothExtension
       (I := I) (M := M) g r s α T₀ k (b₀ := b₀) hb₀
@@ -380,10 +380,10 @@ private lemma LHS_eq_covDerivComponentEuclid_S_k_packed
   let _ : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   let _ : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   set S_k_packed : SmoothCcTensor g r s :=
     packageAsCcG (I := I) (M := M) g r s S_k_ext with hS_k_packed_def
   have hb_src : b ∈ (extChartAt I α).source :=
@@ -564,12 +564,12 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
                   (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α Idx Jdx))) y
             + (∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
                     (Fin s → Fin (Module.finrank ℝ E)),
-                secondCovDerivLO_valueCoeff (I := I) (M := M) g r s α k l
+                secondCovDerivLOValueCoeff (I := I) (M := M) g r s α k l
                     Idx p.1 Jdx p.2 y *
                   rawComponentEuclid (I := I) (M := M) g r s α T₀ p.1 p.2 y)
             + (∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
                     (Fin s → Fin (Module.finrank ℝ E)),
-                secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α k
+                secondCovDerivLOGradCoeff (I := I) (M := M) g r s α k
                     Idx p.1 Jdx p.2 y *
                   euclidPartial (E := E) l
                     (rawComponentEuclid (I := I) (M := M) g r s α T₀ p.1 p.2) y) :=
@@ -669,12 +669,12 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
     have hSecVal_rewrite :
         (∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
                 (Fin s → Fin (Module.finrank ℝ E)),
-          secondCovDerivLO_valueCoeff (I := I) (M := M) g r s α k l
+          secondCovDerivLOValueCoeff (I := I) (M := M) g r s α k l
               Idx p.1 Jdx p.2 y *
             rawComponentEuclid (I := I) (M := M) g r s α T₀ p.1 p.2 y) =
         ∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
-          secondCovDerivLO_valueCoeff (I := I) (M := M) g r s α k l
+          secondCovDerivLOValueCoeff (I := I) (M := M) g r s α k l
               Idx p.1 Jdx p.2 y *
             chartPushedRaw I α
               (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α p.1 p.2) y := by
@@ -683,13 +683,13 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
     have hSecGrad_rewrite :
         (∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
                 (Fin s → Fin (Module.finrank ℝ E)),
-          secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α k
+          secondCovDerivLOGradCoeff (I := I) (M := M) g r s α k
               Idx p.1 Jdx p.2 y *
             euclidPartial (E := E) l
               (rawComponentEuclid (I := I) (M := M) g r s α T₀ p.1 p.2) y) =
         ∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
-          secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α k
+          secondCovDerivLOGradCoeff (I := I) (M := M) g r s α k
               Idx p.1 Jdx p.2 y *
             euclidPartial (E := E) l
               (chartPushedRaw I α
@@ -705,7 +705,7 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
             euclidPartial (E := E) m
               (chartPushedRaw I α
                 (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α I' J')) y) =
-          secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y *
+          secondCovDerivLOGradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y *
             euclidPartial (E := E) l
               (chartPushedRaw I α
                 (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α I' J')) y +
@@ -721,7 +721,7 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
               (chartPushedRaw I α
                 (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α I' J')) y =
           (if m = l then
-            secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y
+            secondCovDerivLOGradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y
           else 0) *
             euclidPartial (E := E) m
               (chartPushedRaw I α
@@ -740,12 +740,12 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
       have hFirstSum :
           (∑ m : Fin (Module.finrank ℝ E),
             (if m = l then
-              secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y
+              secondCovDerivLOGradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y
             else 0) *
               euclidPartial (E := E) m
                 (chartPushedRaw I α
                   (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α I' J')) y) =
-          secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y *
+          secondCovDerivLOGradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y *
             euclidPartial (E := E) l
               (chartPushedRaw I α
                 (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α I' J')) y := by
@@ -785,7 +785,7 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
                 (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α I' J')) y) =
         (∑ I' : Fin r → Fin (Module.finrank ℝ E),
           ∑ J' : Fin s → Fin (Module.finrank ℝ E),
-          (secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y *
+          (secondCovDerivLOGradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y *
               euclidPartial (E := E) l
                 (chartPushedRaw I α
                   (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α I' J')) y +
@@ -800,7 +800,7 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
     have hDoubleSum_to_pair :
         (∑ I' : Fin r → Fin (Module.finrank ℝ E),
           ∑ J' : Fin s → Fin (Module.finrank ℝ E),
-          (secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y *
+          (secondCovDerivLOGradCoeff (I := I) (M := M) g r s α k Idx I' Jdx J' y *
               euclidPartial (E := E) l
                 (chartPushedRaw I α
                   (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α I' J')) y +
@@ -810,7 +810,7 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
                   (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α I' J')) y)) =
         ∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
-          (secondCovDerivLO_gradCoeff (I := I) (M := M) g r s α k Idx p.1 Jdx p.2 y *
+          (secondCovDerivLOGradCoeff (I := I) (M := M) g r s α k Idx p.1 Jdx p.2 y *
               euclidPartial (E := E) l
                 (chartPushedRaw I α
                   (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α p.1 p.2)) y +
@@ -831,7 +831,7 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
               (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α I' J') y) =
         ∑ q : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
-          (secondCovDerivLO_valueCoeff (I := I) (M := M) g r s α k l Idx q.1 Jdx q.2 y +
+          (secondCovDerivLOValueCoeff (I := I) (M := M) g r s α k l Idx q.1 Jdx q.2 y +
             ∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
                   (Fin s → Fin (Module.finrank ℝ E)),
               covDerivLowerOrderCoeff (I := I) (M := M) g r s α l Idx p.1 Jdx p.2 y *
@@ -846,7 +846,7 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
     have hGC0_split :
         ∑ q : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
-          (secondCovDerivLO_valueCoeff (I := I) (M := M) g r s α k l Idx q.1 Jdx q.2 y +
+          (secondCovDerivLOValueCoeff (I := I) (M := M) g r s α k l Idx q.1 Jdx q.2 y +
             ∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
                   (Fin s → Fin (Module.finrank ℝ E)),
               covDerivLowerOrderCoeff (I := I) (M := M) g r s α l Idx p.1 Jdx p.2 y *
@@ -855,7 +855,7 @@ theorem secondCovDeriv_chartα_proj_eq_iteratedFDeriv_T₀_eqOn
               (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α q.1 q.2) y =
         (∑ q : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
-          secondCovDerivLO_valueCoeff (I := I) (M := M) g r s α k l Idx q.1 Jdx q.2 y *
+          secondCovDerivLOValueCoeff (I := I) (M := M) g r s α k l Idx q.1 Jdx q.2 y *
             chartPushedRaw I α
               (tensorChartComponentRaw (I := I) (M := M) g r s T₀ α q.1 q.2) y)
         + ∑ q : (Fin r → Fin (Module.finrank ℝ E)) ×

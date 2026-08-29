@@ -143,7 +143,7 @@ theorem t02Norm_eq_iterCov {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
     (gRef : SmoothRiemannianMetric I M) (a : ℕ) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gRef x basis
+    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric (Idx := Idx))) :
     tensor02CovDerivNormWith (I := I) a A gRef gRef x
       = Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + a)

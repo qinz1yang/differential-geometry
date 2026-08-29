@@ -236,7 +236,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_const_mul_h1Norm
               (‖S‖₊ : ℝ≥0∞) := by
             rw [(ENNReal.ofReal_add hC₀_nn
               (mul_nonneg (Nat.cast_nonneg _) hC_env_total_nn)).symm]
-  set finS : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hfinS_def
+  set finS : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hfinS_def
   choose Cβ hCβ_nn hCβ_le using hper_β
   refine ⟨∑ β ∈ finS, Cβ β, Finset.sum_nonneg (fun β _ => hCβ_nn β), ?_⟩
   intro S Idx Jdx
@@ -256,7 +256,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_const_mul_h1Norm
         (chartPushed (I := I) (M := M) (chartAtlasPOU I M) β u)
         (chartTargetEuclid (I := I) (M := M) β) = 0 := by
     intro β hβ
-    have hβ' : β ∉ chartAtlasPOU_finset (I := I) (M := M) := by
+    have hβ' : β ∉ chartAtlasPOUFinset (I := I) (M := M) := by
       rw [hfinS_def] at hβ; exact hβ
     have hρ_zero : ∀ x : M,
         ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x = 0 :=

@@ -218,7 +218,7 @@ theorem diffStep_norm_le
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
   have : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
-  let D := (tangentMetricData_gen (I := I) g₂ x).metric
+  let D := (tangentMetricDataGen (I := I) g₂ x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -231,12 +231,12 @@ theorem diffStep_norm_le
     have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
       MetricFiberData.toCore_inner D (ob i) (ob j)
     change g₂.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-    rw [← TangentMetricData_gen.inner_eq_gen
-      (tangentMetricData_gen (I := I) g₂ x) (ob.toBasis i) (ob.toBasis j)]
+    rw [← TangentMetricDataGen.inner_eq_gen
+      (tangentMetricDataGen (I := I) g₂ x) (ob.toBasis i) (ob.toBasis j)]
     change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
     rw [← hinner]
     exact ob.inner_eq_ite i j
-  have hinv : MetricInverseInBasis_gen (I := I) g₂ x basis
+  have hinv : MetricInverseInBasisGen (I := I) g₂ x basis
       (identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j
@@ -400,7 +400,7 @@ private theorem connectionDifferenceTensor_normSqRS_swap
         (I := I) cov' cov x) := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₀ x
-  have hinv : MetricInverseInBasis_gen (I := I) g₀ x basis
+  have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j
     constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
@@ -414,14 +414,14 @@ private theorem connectionDifferenceTensor_normSqRS_swap
   have hlow : low = (fun q : Fin 2 => if q = 0 then low 0 else low 1) := by
     funext q; fin_cases q <;> rfl
   have hc1 :
-      componentRS_gen (I := I) basis (connectionDifferenceTensorAt (I := I) cov cov' x) up low
+      componentRSGen (I := I) basis (connectionDifferenceTensorAt (I := I) cov cov' x) up low
         = basis.coord (up 0)
           ((CovariantDerivative.difference cov cov' x (basis (low 1))) (basis (low 0))) := by
     rw [componentRS_gen_congr_slots basis
       (connectionDifferenceTensorAt (I := I) cov cov' x) hup hlow]
     exact componentRS_connectionDifferenceTensorAt (I := I) basis cov cov' (low 0) (low 1) (up 0)
   have hc2 :
-      componentRS_gen (I := I) basis (connectionDifferenceTensorAt (I := I) cov' cov x) up low
+      componentRSGen (I := I) basis (connectionDifferenceTensorAt (I := I) cov' cov x) up low
         = basis.coord (up 0)
           ((CovariantDerivative.difference cov' cov x (basis (low 1))) (basis (low 0))) := by
     rw [componentRS_gen_congr_slots basis
@@ -538,7 +538,7 @@ theorem covStepDiff_norm_le
       (by decide : ((1 : WithTop ℕ∞) + 1) ≤ ∞)
   have : ContMDiffVectorBundle 1 E (TangentSpace I : M -> Type _) I :=
     TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := 1)
-  let D := (tangentMetricData_gen (I := I) g₂ x).metric
+  let D := (tangentMetricDataGen (I := I) g₂ x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -551,12 +551,12 @@ theorem covStepDiff_norm_le
     have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
       MetricFiberData.toCore_inner D (ob i) (ob j)
     change g₂.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-    rw [← TangentMetricData_gen.inner_eq_gen
-      (tangentMetricData_gen (I := I) g₂ x) (ob.toBasis i) (ob.toBasis j)]
+    rw [← TangentMetricDataGen.inner_eq_gen
+      (tangentMetricDataGen (I := I) g₂ x) (ob.toBasis i) (ob.toBasis j)]
     change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
     rw [← hinner]
     exact ob.inner_eq_ite i j
-  have hinv : MetricInverseInBasis_gen (I := I) g₂ x basis
+  have hinv : MetricInverseInBasisGen (I := I) g₂ x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j
     constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
@@ -810,10 +810,10 @@ omit [T2Space M] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 private theorem exists_g_onbasis (g : SmoothRiemannianMetric I M) (x : M) :
     ∃ basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real (TangentSpace I x),
       (∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0) ∧
-        MetricInverseInBasis_gen (I := I) g x basis
+        MetricInverseInBasisGen (I := I) g x basis
           (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
   classical
-  let D := (tangentMetricData_gen (I := I) g x).metric
+  let D := (tangentMetricDataGen (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -826,11 +826,11 @@ private theorem exists_g_onbasis (g : SmoothRiemannianMetric I M) (x : M) :
     have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
       MetricFiberData.toCore_inner D (ob i) (ob j)
     change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-    rw [← TangentMetricData_gen.inner_eq_gen
-      (tangentMetricData_gen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
+    rw [← TangentMetricDataGen.inner_eq_gen
+      (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
     change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
     rw [← hinner]; exact ob.inner_eq_ite i j
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j
     constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
@@ -1127,7 +1127,7 @@ theorem volumeMeasure_cross_le
   classical
   have vsum : ∀ (g : SmoothRiemannianMetric I M) (F : M → ℝ≥0∞), Measurable F →
       ∫⁻ x, F x ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), ∫⁻ x,
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), ∫⁻ x,
           ENNReal.ofReal ((chartAtlasPOU I M α : M → ℝ) x) * F x
             ∂(chartLocalMeasure (I := I) g α) := by
     intro g F hF

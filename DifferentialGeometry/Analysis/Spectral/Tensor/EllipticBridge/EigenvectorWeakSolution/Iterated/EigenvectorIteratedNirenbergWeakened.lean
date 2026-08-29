@@ -44,11 +44,11 @@ private def eigenvectorIteratedChartBilinearH1ComplData
       (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀)
       (chartTargetEuclid (I := I) (M := M) α)) :
     ChartBilinearH1ComplData (I := I) (M := M) g α where
-  u_chart :=
+  uChart :=
     eigenvectorChartIteratedPartial (I := I) (M := M)
       g r s i α P₀ m D_m.directions
-  f_chart := D_m.diffChartForcing
-  weak_partial := fun j =>
+  fChart := D_m.diffChartForcing
+  weakPartial := fun j =>
     chosenWeakPartial' (d := Module.finrank ℝ E) 2 j
       (eigenvectorChartIteratedPartial (I := I) (M := M)
         g r s i α P₀ m D_m.directions)
@@ -180,7 +180,7 @@ private def eigenvectorIteratedChartBilinearH1ComplData
       rw [h_principal_eq] at h_in
       exact h_in
 
-def eigenvectorIteratedTensorChartBilinearData_toData
+def eigenvectorIteratedTensorChartBilinearDataToData
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) {m : ℕ}
@@ -215,10 +215,10 @@ theorem eigenvectorChartIteratedPartial_memWkp_two_two
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   set D : TensorChartBilinearH1ComplData (I := I) (M := M) g r s α P₀ :=
-    eigenvectorIteratedTensorChartBilinearData_toData
+    eigenvectorIteratedTensorChartBilinearDataToData
       (I := I) (M := M) g r s i α P₀ D_m h_parent
     with hD_def
-  have hD_u_chart : D.u_chart =
+  have hD_u_chart : D.uChart =
       eigenvectorChartIteratedPartial (I := I) (M := M)
         g r s i α P₀ m D_m.directions := rfl
   set K : Set EuclN := chartPouKernel (I := I) (M := M) α with hK_def
@@ -270,32 +270,32 @@ theorem eigenvectorChartIteratedPartial_memWkp_two_two
       hΩ''_open hΩ''_compact_closure hR₀_pos h_room
   have h_uChart_memWkp_two_Ω'' :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-        (d := Module.finrank ℝ E) 2 2 D.u_chart Ω'' := by
+        (d := Module.finrank ℝ E) 2 2 D.uChart Ω'' := by
     refine ⟨h_uChart_memW1p, fun j => ?_⟩
     have hΩ''_in_chart : Ω'' ⊆ chartTargetEuclid (I := I) (M := M) α :=
       fun y hy => h_closureΩ''_in_chart (subset_closure hy)
     have h_dwp_weak_uChart_Ω'' : DeGiorgi.HasWeakPartialDeriv
-        (d := Module.finrank ℝ E) j (D.weak_partial j) D.u_chart Ω'' :=
+        (d := Module.finrank ℝ E) j (D.weakPartial j) D.uChart Ω'' :=
       DeGiorgi.HasWeakPartialDeriv.restrict hΩ''_open hΩ''_in_chart
         (D.weak_partial_isWeakPartial j)
     have h_chosen_partial : DeGiorgi.HasWeakPartialDeriv
         (d := Module.finrank ℝ E) j
         (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-          2 j D.u_chart Ω'') D.u_chart Ω'' :=
+          2 j D.uChart Ω'') D.uChart Ω'' :=
       DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_isWeakPartial_of_mem
         h_uChart_memW1p j
     have h_chosen_loc : MeasureTheory.LocallyIntegrable
         (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-          2 j D.u_chart Ω'') ((volume : Measure EuclN).restrict Ω'') :=
+          2 j D.uChart Ω'') ((volume : Measure EuclN).restrict Ω'') :=
       (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'_memLp_of_mem
         h_uChart_memW1p j).locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-    have h_dwp_loc : MeasureTheory.LocallyIntegrable (D.weak_partial j)
+    have h_dwp_loc : MeasureTheory.LocallyIntegrable (D.weakPartial j)
         ((volume : Measure EuclN).restrict Ω'') :=
       (h_wp_memW1p j).1.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     have h_ae :
         DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
-          2 j D.u_chart Ω'' =ᵐ[(volume : Measure EuclN).restrict Ω'']
-            D.weak_partial j :=
+          2 j D.uChart Ω'' =ᵐ[(volume : Measure EuclN).restrict Ω'']
+            D.weakPartial j :=
       DeGiorgi.HasWeakPartialDeriv.ae_eq hΩ''_open h_chosen_partial
         h_dwp_weak_uChart_Ω'' h_chosen_loc h_dwp_loc
     rw [DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.one_iff_memW1p]

@@ -70,7 +70,7 @@ private lemma iterCovGrad_unit_eq_iterCov
             (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ) from rfl,
         ← ccTensorMultilinear_apply (I := I) gBase
           (metricCcTensor (I := I) (M := M) gBase h) x]
-      let _ := Tensor0SBundle.tensor0SBundle_topology
+      let _ := Tensor0SBundle.tensor0SBundleTopology
         (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
       unfold ccTensorMultilinear metricCcTensor
       unfold MixedSection.toMultilinearSection MixedSection.fromMultilinearSection
@@ -187,22 +187,22 @@ private lemma riemannianFiberNormSq_eq_normSq0S_unit
      simp)
 
 omit [NeZero (Module.finrank ℝ E)] in
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace
-  Bundle.continuousMultilinearMap.mixed_instNormedAddCommGroup
-  Bundle.continuousMultilinearMap.mixed_instNormedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace
+  Bundle.continuousMultilinearMap.mixedInstNormedAddCommGroup
+  Bundle.continuousMultilinearMap.mixedInstNormedSpace in
 theorem normBridge (h gBase : SmoothRiemannianMetric I M) (j : ℕ) (x : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) gBase 0 (2 + j)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) gBase 0 (2 + j)
     ‖((iteratedCovGrad gBase 0 2 j (metricCcTensor (I := I) (M := M) gBase h)).toSection x :
         TensorRSSpace 0 (2 + j) I x)‖ =
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) gBase x (j + 2)
         (metricCovDeriv (I := I) h gBase j x)) := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) gBase 0 (2 + j)
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) gBase 0 (2 + j)
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gBase x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gBase x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gBase x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) gBase basis hON

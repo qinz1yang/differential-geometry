@@ -101,8 +101,8 @@ theorem chartPhaseVF_orbit_uniqueness_Icc_left
     (v := fun _ z => chartPhaseVF (I := I) g α z) (s := fun _ => K) (K := L)
     (fun t _ => hLip) hc₁_cont hc₁_deriv hc₁_in_K hc₂_cont hc₂_deriv hc₂_in_K h_eq_at_b
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace M] in
 theorem endpointCont_of_lim
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -515,8 +515,8 @@ theorem endpointCont_of_lim
     _ = (extChartAt I y).symm (extChartAt I y (η (s - b))) := by rw [huη_s]
     _ = η (s - b) := hround_η
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem hasEndpointContinuation_of_complete
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {aL b c : ℝ}
@@ -535,8 +535,8 @@ theorem hasEndpointContinuation_of_complete
   exact endpointCont_of_lim (I := I) g y haLb hc_nonneg hγ_smooth hSpeedBound
     hSpeedSq hγ hy_metric
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace M] in
 theorem endpointCont_compact
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]

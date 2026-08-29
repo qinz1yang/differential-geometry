@@ -113,8 +113,8 @@ private theorem fiberNormSqComponent_cometricTraced_eq
     (fun j => e (J j)) using 1
   exact Tensor0SSpace.eval_eq _ _
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
 private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnectionDifferenceFib_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ) (hB : 0 ≤ B) :
@@ -129,7 +129,7 @@ private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnect
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle
                 (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B →
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
             (show Tensor0SBundle.TensorRSSpace 2 2 I x from
@@ -160,7 +160,7 @@ private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnect
     le_trans (by positivity) (le_max_left _ _), ?_⟩
   intro g₁ P htie δc hδc_le hbound x henv
   let instT3 : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 3 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   have hboundm : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ P)
     δm := by
     intro y v w'
@@ -178,7 +178,7 @@ private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnect
   subst hnE
   set G : ℝ :=
     (letI : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 3 I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
     ‖(show Tensor0SBundle.TensorRSSpace 0 3 I x from
       (iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x)‖) with hG_def
   have hG_nn : 0 ≤ G := by
@@ -190,11 +190,11 @@ private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnect
     have hterms : ∀ k ∈ Finset.range 3, 0 ≤
         (letI : Bundle.RiemannianBundle
             (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
         ‖(iteratedCovGrad (I := I) g₀ 0 2 k P).toSection x‖) := by
       intro k _
       let : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
       exact norm_nonneg _
     exact le_trans (Finset.single_le_sum hterms
       (show (1 : ℕ) ∈ Finset.range 3 from Finset.mem_range.mpr (by norm_num))) henv
@@ -441,8 +441,8 @@ private theorem exists_uniformBound_riemannianFiberNormSq_linearizedRicciConnect
           ring
   exact ⟨le_trans hO0 (le_max_left _ _), le_trans hO1 (le_max_right _ _)⟩
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_uniformBound_sqrt_riemannianFiberNormSq_linRicciConnectionDifferenceCoeff_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -510,8 +510,8 @@ theorem exists_uniformBound_sqrt_riemannianFiberNormSq_linRicciConnectionDiffere
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x) := rfl
     rw [h1]
     exact Real.sqrt_le_sqrt hmain.2
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
 theorem ricci_coeff_riemannianFiberNormSq_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ) (hB : 0 ≤ B) :
@@ -526,7 +526,7 @@ theorem ricci_coeff_riemannianFiberNormSq_le
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle
                 (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B →
         riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
             (show Tensor0SBundle.TensorRSSpace 2 2 I x from

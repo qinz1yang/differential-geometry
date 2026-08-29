@@ -25,11 +25,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance parallelAlgebraicTensor04NormedAddCommGroup (x : M) :
     NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
-  Tensor0SBundle.tensor0SSpace_normedAddCommGroup 4 x
+  Tensor0SBundle.tensor0SSpaceNormedAddCommGroup 4 x
 
 private local instance parallelAlgebraicTensor04NormedSpace (x : M) :
     NormedSpace Real (Tensor04At (I := I) (M := M) x) :=
-  Tensor0SBundle.tensor0SSpace_normedSpace 4 x
+  Tensor0SBundle.tensor0SSpaceNormedSpace 4 x
 
 private local instance parallelAlgebraicTensor04AddCommGroup (x : M) :
     AddCommGroup (Tensor04At (I := I) (M := M) x) :=

@@ -341,11 +341,11 @@ private theorem spectralPartialSum_ccTensorBilinSymm_tendsto
   have hF_L2 : Tendsto (fun n => (F n : TensorL2 0 2 g)) atTop (𝓝 u) :=
     spectralPartialSum_toL2_tendsto (I := I) (M := M) g u
   have hsum := chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x
-  have hexists : ∃ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hexists : ∃ β ∈ chartAtlasPOUFinset (I := I) (M := M),
       0 < ((chartAtlasPOU I M) β : C^∞⟮I, M; ℝ⟯) x := by
     by_contra hcon
     push Not at hcon
-    have hzero : ∀ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+    have hzero : ∀ β ∈ chartAtlasPOUFinset (I := I) (M := M),
         ((chartAtlasPOU I M) β : M → ℝ) x = 0 := by
       intro β hβ
       have hle := hcon β hβ
@@ -701,11 +701,11 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (eigenvectorSmooth
 
 private local instance tensorRSModel02NormedAddCommGroup_local :
     NormedAddCommGroup (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup 0 2
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup 0 2
 
 private local instance tensorRSModel02NormedSpace_local :
     NormedSpace ℝ (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace 0 2
+  Tensor0SBundle.tensorRSModelNormedSpace 0 2
 
 def eigenRawIncrementMode
     (g : SmoothRiemannianMetric I M)

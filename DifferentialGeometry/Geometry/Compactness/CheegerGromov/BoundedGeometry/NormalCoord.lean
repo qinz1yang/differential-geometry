@@ -35,8 +35,8 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intr_metric_eq
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
@@ -105,8 +105,8 @@ theorem intr_metric_eq
   intro z hz
   exact intrFrameMetric_eq (I := I) Y.metric hEnorm x (z := z) hz
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_intr_eq_ball
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
@@ -279,8 +279,8 @@ theorem framed_rm04_of_seq
     (radialCurve (I := I) (X.obj k).metric x
       (normalFrame (I := I) (X.obj k).metric x z) t)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intr_rm04_of_seq
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -448,8 +448,8 @@ theorem framed_metric_jacobi
   rfl
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem framed_rm04_bounds
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)
@@ -622,8 +622,8 @@ private lemma quarter_models {K s : Real} (hs : 0 ≤ s)
   rw [hscale]
   constructor <;> nlinarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_intr_radii
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -804,8 +804,8 @@ theorem exists_intr_radii
   rw [hmetric]
   constructor <;> nlinarith [sq_nonneg ‖v‖]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_intr_branches
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -900,8 +900,8 @@ theorem exists_intr_branches
       (by norm_num) hlower
   exact branch_of_not_conj (I := I) (X.obj k).metric hEnorm hnot
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_intr_localOn
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -984,8 +984,8 @@ theorem exists_intr_localOn
   exact intrFrame_localOn (I := I) (X.obj k).metric hEnorm x
     (Metric.ball (0 : E) r₀) (hbranch k x)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_intr_control
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -1342,8 +1342,8 @@ theorem framedMetric_continuousAt_zero
     exact framedMetric_eq_pullback_normalCoordMetric (I := I) Y x z hz
   exact hF.congr hev.symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma exists_close_ball
     (f : E → E →L[Real] E →L[Real] Real)

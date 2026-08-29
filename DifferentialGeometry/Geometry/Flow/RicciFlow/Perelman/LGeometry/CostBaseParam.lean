@@ -313,8 +313,8 @@ theorem chart_head_act_lim
   rw [heqAct] at hlim
   simpa only [beta, v] using hlim
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
 theorem lCost_lt_x_event
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)

@@ -46,14 +46,14 @@ private local instance : BorelSpace E := ⟨rfl⟩
 private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 def closedGBall (g : SmoothRiemannianMetric I M) (x : M) (R : ℝ) : Set E :=
   {v : E | Real.sqrt (g.inner x (show TangentSpace I x from v)
     (show TangentSpace I x from v)) ≤ R}
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 theorem isClosed_closedGBall (g : SmoothRiemannianMetric I M) (x : M) (R : ℝ) :
@@ -64,8 +64,8 @@ theorem isClosed_closedGBall (g : SmoothRiemannianMetric I M) (x : M) (R : ℝ) 
       with_unfolding_all exact continuous_gInner_self (I := I) g x
     exact isClosed_le (Real.continuous_sqrt.comp hcont) continuous_const
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     [T2Space (TangentBundle I M)] in
 theorem isCompact_closedGBall (g : SmoothRiemannianMetric I M) (x : M) (R : ℝ) :
@@ -110,8 +110,8 @@ theorem isCompact_closedGBall (g : SmoothRiemannianMetric I M) (x : M) (R : ℝ)
   simpa [Metric.mem_ball, dist_eq_norm, sub_zero] using
     lt_of_le_of_lt (hnorm.trans hle) (lt_add_one _)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem ball_sub_image_segDom_closed [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -144,8 +144,8 @@ theorem ball_sub_image_segDom_closed [ConnectedSpace M] [PseudoEMetricSpace M]
     exact ⟨hv.1, hgBallE hv.2⟩
   exact hcovE.trans (Set.image_mono hsub)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segBall_vol_le_int
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -193,8 +193,8 @@ theorem segBall_vol_le_int
     (hK.image hFcont).measurableSet
   exact (measure_mono hcov).trans himg
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segDom_not_conj
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -299,8 +299,8 @@ theorem segDom_not_conj
       rfl
     rwa [← htv] at hn
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem expJacDensity_eq_ncd0_mul_transverse
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -334,10 +334,10 @@ theorem expJacDensity_eq_ncd0_mul_transverse
     simp [modelBasisFor, e, Module.Basis.reindex_apply]
   let vE : E := (tangentSpaceModelContinuousLinearEquiv (I := I) x) v
   let : NormedAddCommGroup (TangentSpace 𝓘(ℝ, E) vE) :=
-    Tensor0SBundle.tangentSpace_normedAddCommGroup
+    Tensor0SBundle.tangentSpaceNormedAddCommGroup
       (I := 𝓘(ℝ, E)) (M := E) vE
   let : NormedSpace ℝ (TangentSpace 𝓘(ℝ, E) vE) :=
-    Tensor0SBundle.tangentSpace_normedSpace
+    Tensor0SBundle.tangentSpaceNormedSpace
       (I := 𝓘(ℝ, E)) (M := E) vE
   have hjac : ∀ (u : E),
       intrinsicJacobi (I := I) g hEnorm x v (show TangentSpace I x from u) 1 =
@@ -461,8 +461,8 @@ theorem expJacDensity_eq_ncd0_mul_transverse
   rw [hncd]
   rw [← hdetC]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem transverseDensity_le_hyp
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -507,8 +507,8 @@ theorem transverseDensity_le_hyp
     exact ge_of_tendsto hlim hev
   rwa [div_le_one hpos] at hRatioLE
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)] in
@@ -529,8 +529,8 @@ private lemma symmL_eq_sum_chartBasis (α : M) (y : M) (c : E) :
     _ = ∑ k, (chartModelBasis E).repr c k • chartBasisVecFiber (I := I) α k y := by
           rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)] in
@@ -578,8 +578,8 @@ private lemma chartRep_inner_eq
   rw [chartGramMatrix_apply]
   ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem intrinsicJacobi_chartRep_differentiableAt
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -609,8 +609,8 @@ theorem intrinsicJacobi_chartRep_differentiableAt
   rw [hγ] at h'
   exact h'
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma continuousAt_sum {ι : Type*} [Fintype ι]
     (F : ℝ → ι → ℝ) (t₀ : ℝ)
     (hF : ∀ i, ContinuousAt (fun t => F t i) t₀) :
@@ -627,8 +627,8 @@ private lemma continuousAt_sum {ι : Type*} [Fintype ι]
     change ContinuousAt ((fun t => F t a) + (fun t => ∑ i ∈ s, F t i)) t₀
     exact (hF a).add ih
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma continuousAt_prod {ι : Type*} [Fintype ι]
     (F : ℝ → ι → ℝ) (t₀ : ℝ)
     (hF : ∀ i, ContinuousAt (fun t => F t i) t₀) :
@@ -645,8 +645,8 @@ private lemma continuousAt_prod {ι : Type*} [Fintype ι]
     change ContinuousAt ((fun t => F t a) * (fun t => ∏ i ∈ s, F t i)) t₀
     exact (hF a).mul ih
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma continuousAt_double_sum {ι κ : Type*} [Fintype ι] [Fintype κ]
     (F : ℝ → ι → κ → ℝ) (t₀ : ℝ)
     (hF : ∀ i j, ContinuousAt (fun t => F t i j) t₀) :
@@ -657,8 +657,8 @@ private lemma continuousAt_double_sum {ι κ : Type*} [Fintype ι] [Fintype κ]
   intro j
   exact hF i j
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem curveDensity_jacobiFrame_continuousAt
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -770,8 +770,8 @@ theorem curveDensity_jacobiFrame_continuousAt
     Real.continuous_sqrt.continuousAt.comp hdet
   with_unfolding_all exact hsqrt
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma transverseDensity_le_hyp_at_one
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -834,8 +834,8 @@ private lemma transverseDensity_le_hyp_at_one
   have hc := le_of_tendsto hlim hev
   rwa [div_le_one hpos] at hc
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem expJacDensity_le_of_perpOrthonormalFrame
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -860,8 +860,8 @@ theorem expJacDensity_le_of_perpOrthonormalFrame
   rw [hfac]
   exact mul_le_mul_of_nonneg_left hT hncd
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem expJacDensity_le
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -884,8 +884,8 @@ theorem expJacDensity_le
   exact expJacDensity_le_of_perpOrthonormalFrame (I := I) g hEnorm x hv hvne w hON hperp
     q hq hd hRic
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma hypSn_scale_one (q r : ℝ) : r * hypSn (q * r) 1 = hypSn q r := by
   by_cases hq : q = 0
   · subst q
@@ -898,15 +898,15 @@ private lemma hypSn_scale_one (q r : ℝ) : r * hypSn (q * r) 1 = hypSn q r := b
       rw [if_neg hq, if_neg hqr]
       field_simp
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma hypDensity_scale_one (q r : ℝ) (d : ℕ) :
     r ^ d * hypDensity (q * r) d 1 = hypDensity q d r := by
   simp only [hypDensity]
   rw [← mul_pow, hypSn_scale_one]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma hypDensity_scaled_nonneg {q r : ℝ} (hq : 0 ≤ q) (hr : 0 < r) (d : ℕ) :
     0 ≤ hypDensity (q * r) d 1 := by
   have hqr : 0 ≤ q * r := mul_nonneg hq hr.le
@@ -916,8 +916,8 @@ private lemma hypDensity_scaled_nonneg {q r : ℝ} (hq : 0 ≤ q) (hr : 0 < r) (
     · exact (hypSn_pos hqr (by norm_num : (0 : ℝ) < 1)).le
   exact pow_nonneg hsn d
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma radial_model_lintegral
     (q : ℝ) {d : ℕ} (hq : 0 ≤ q) {R : ℝ} (hR : 0 < R) :
     (∫⁻ r : Ioi (0 : ℝ) in Iic (⟨R, hR⟩ : Ioi (0 : ℝ)),
@@ -954,8 +954,8 @@ private lemma radial_model_lintegral
   · filter_upwards [] with r
     exact ENNReal.ofReal_lt_top
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma hypSn_one_continuous : Continuous (fun q' : ℝ => hypSn q' 1) := by
   rw [continuous_iff_continuousAt]
   intro q₀
@@ -994,16 +994,16 @@ private lemma hypSn_one_continuous : Continuous (fun q' : ℝ => hypSn q' 1) := 
       simp [hypSn, hq'ne]
     exact ContinuousAt.congr hc_quot hfun.symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma hypDensity_scale_continuous (q : ℝ) (d : ℕ) :
     Continuous (fun r : ℝ => hypDensity (q * r) d 1) := by
   have h1 : Continuous (fun q' : ℝ => hypDensity q' d 1) := by
     with_unfolding_all exact hypSn_one_continuous.pow d
   exact h1.comp (continuous_const.mul continuous_id)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma ball_model_lintegral
     (q R : ℝ) (hq : 0 ≤ q) (hR : 0 < R) :
     ∫⁻ w in Metric.closedBall (0 : E) R,
@@ -1071,8 +1071,8 @@ private lemma ball_model_lintegral
     _ = ((modelHaar (E := E)).toSphere Set.univ) * ENNReal.ofReal (hypRadVol q d R) := by
           rw [lintegral_const, mul_comm]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma radial_model_lintegral_scaled
     (q : ℝ) {d : ℕ} (hq : 0 ≤ q) {R c : ℝ} (hR : 0 < R) (hc : 0 < c) :
     (∫⁻ r : Ioi (0 : ℝ) in Iic (⟨R / c, div_pos hR hc⟩ : Ioi (0 : ℝ)),
@@ -1178,8 +1178,8 @@ private lemma radial_model_lintegral_scaled
         exact hypDensity_scale_one q s d
       rw [hrad]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma radial_model_lintegral_scaled_mul
     (q : ℝ) {d : ℕ} (hq : 0 ≤ q) {R c : ℝ} (hR : 0 < R) (hc : 0 < c) {A : ℝ} (hA : 0 ≤ A) :
     (∫⁻ r : Ioi (0 : ℝ) in Iic (⟨R / c, div_pos hR hc⟩ : Ioi (0 : ℝ)),
@@ -1211,8 +1211,8 @@ private lemma radial_model_lintegral_scaled_mul
           rw [← ENNReal.ofReal_mul hA]
           rw [← mul_assoc]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem gBall_model_int
     (g : SmoothRiemannianMetric I M)
@@ -1401,8 +1401,8 @@ theorem gBall_model_int
       * ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) R) := by
           rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma segBall_vol_le_explicit
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -1486,8 +1486,8 @@ private lemma segBall_vol_le_explicit
         * ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) R) := by
           simpa [F] using hstep4
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segBall_vol_le [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -1506,8 +1506,8 @@ theorem segBall_vol_le [ConnectedSpace M] [PseudoEMetricSpace M]
         * ENNReal.ofReal (hypRadVol q (Module.finrank ℝ E - 1) R) := by
   exact segBall_vol_le_explicit (I := I) g hEnorm x hq hR hd hRic
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segBall_vol_fin [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -1565,8 +1565,8 @@ theorem segBall_vol_fin [ConnectedSpace M] [PseudoEMetricSpace M]
     lt_of_le_of_lt hmono' (by rw [hconst]; exact hfin)
   exact lt_of_le_of_lt (by simpa [K] using hV) hKfin
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 private lemma expMapIntrinsic_eq_scaled
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1590,8 +1590,8 @@ private lemma expMapIntrinsic_eq_scaled
     _ = intrinsicGeodesic (I := I) g hEnorm x (ℓ⁻¹ • v) ℓ := by
           rw [intrinsicGeodesic_smul (I := I) g hEnorm x (ℓ⁻¹ • v) ℓ]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
 omit [RiemannianBundle (fun x : M ↦ TangentSpace I x)] in
@@ -1612,8 +1612,8 @@ private lemma gUnit_speedSq_one
     _ = 1 := by
           rw [inv_mul_cancel₀ hℓ, one_pow]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 private lemma segDom_ext_dist
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1659,8 +1659,8 @@ private lemma segDom_ext_dist
   rw [← ENNReal.ofReal_toReal hfin]
   rw [hmem, hsqrt]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 private lemma segDom_same_length
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1682,8 +1682,8 @@ private lemma segDom_same_length
   congr 1
   rw [hvw]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
   [IsManifold I ∞ M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)] in
@@ -1707,8 +1707,8 @@ private lemma mfderiv_shift_apply
       = (mfderiv 𝓘(ℝ, ℝ) I γ (a + T)) (1 : ℝ)
   simp
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 private lemma expMapIntrinsic_injective_early
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1898,8 +1898,8 @@ private lemma expMapIntrinsic_injective_early
         rw [smul_smul, mul_inv_cancel₀ hℓne, one_smul]
   exact hv
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 private lemma intrinsicGeodesic_smul_general
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1939,8 +1939,8 @@ private lemma intrinsicGeodesic_smul_general
       _ = intrinsicGeodesic (I := I) g hEnorm p v (c * t) := by
             rw [mul_comm]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
   [TopologicalSpace M] in
@@ -1961,8 +1961,8 @@ private lemma mfderiv_div_const
     with_unfolding_all exact hf
   exact hlin.mfderiv
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 private lemma intrinsicJacobi_smul
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -2018,8 +2018,8 @@ private lemma intrinsicJacobi_smul
   rw [smul_apply, ContinuousLinearMap.id_apply]
   exact ContinuousLinearMap.map_smul (mfderiv 𝓘(ℝ, ℝ) I G 0) c⁻¹ (1 : ℝ)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
   [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)] in
@@ -2071,8 +2071,8 @@ private lemma curveDensity_smul
     _ = c ^ Fintype.card ι * curveDensity (I := I) g γ V t := by
           simp [curveDensity, curveGram]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
   [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)] in
@@ -2092,8 +2092,8 @@ private lemma curveDensity_congr_eval
     exact h j
   simp [hi, hj]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private lemma expJacDensity_radial_scaled
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -2236,8 +2236,8 @@ variable [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (y : M) ↦ TangentSpace I y)]
@@ -2438,8 +2438,8 @@ theorem segBall_area_eq [ConnectedSpace M] [PseudoEMetricSpace M]
           {y : M | riemannianEDist I x y < ENNReal.ofReal R} :=
         measure_mono hKi_image
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segBall_vol_rel
     [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]

@@ -47,8 +47,8 @@ lemma normGradSqFun_nonneg
 
 namespace BochnerInternal
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma contMDiff_g_inner_aux
     (g : SmoothRiemannianMetric I M)
@@ -91,7 +91,7 @@ theorem normGradSqFun_continuous [I.Boundaryless]
   let fs : C^∞⟮I, M; ℝ⟯ := ⟨f, hf⟩
   have h :=
     TangentBundle.continuous_g_inner_of_smooth_sections (I := I) (M := M) g
-      (grad_g (I := I) g fs) (grad_g (I := I) g fs)
+      (gradG (I := I) g fs) (gradG (I := I) g fs)
   refine h.congr ?_
   intro b
   change g.inner b (gradFun (I := I) g f b) (gradFun (I := I) g f b) =
@@ -106,7 +106,7 @@ theorem normGradSqFun_contMDiff [I.Boundaryless]
   let fs : C^∞⟮I, M; ℝ⟯ := ⟨f, hf⟩
   have h :=
     contMDiff_g_inner_of_smooth_sections (I := I) (M := M) g
-      (grad_g (I := I) g fs) (grad_g (I := I) g fs)
+      (gradG (I := I) g fs) (gradG (I := I) g fs)
   refine h.congr ?_
   intro b
   change g.inner b (gradFun (I := I) g f b) (gradFun (I := I) g f b) =

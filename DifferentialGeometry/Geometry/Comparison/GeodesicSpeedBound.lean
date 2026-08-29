@@ -349,8 +349,8 @@ theorem isGeodesicOn_speedSq_const
 
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] [PseudoEMetricSpace M]
   [IsRiemannianManifold I M] in
@@ -405,8 +405,8 @@ theorem maximalGeodesic_edist_le_speed_mul_time
 
 variable [CompleteSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [T2Space M] [SigmaCompactSpace M] [CompleteSpace M] in
 theorem maximalGeodesic_cauchySeq_of_tendsto_sup
@@ -520,8 +520,8 @@ theorem maximalGeodesic_limit_exists_tangent_speed_eq
     rw [hs_def]; exact Real.mul_self_sqrt hratio_nn
   rw [step1, hs_sq, div_mul_cancel₀ _ hc_ne]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] in
@@ -560,8 +560,8 @@ theorem curve_edist_le_speed_mul_time
   exact (riemannianEDist_le_pathELength (I := I) (γ := γ) (a := s) (b := t)
     hγ_smooth rfl rfl hst).trans h_pathLen_le
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
   [CompleteSpace M] in
@@ -645,8 +645,8 @@ theorem curve_cauchy_speed
             rw [ENNReal.ofReal_lt_ofReal_iff hδ₀_pos]; exact h_cts_lt
       _ < ε := hδ₀_ofReal_lt
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] in
 theorem curve_exists_limit_of_bounded_speed
@@ -660,8 +660,8 @@ theorem curve_exists_limit_of_bounded_speed
   exact cauchy_map_iff_exists_tendsto.mp
     (curve_cauchy_speed (I := I) hab hc_nonneg hγ_smooth hSpeedBound)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
   [CompleteSpace M] in
@@ -680,8 +680,8 @@ theorem curve_lim_of_compact
     rw [le_principal_iff, mem_map]
     exact hγK)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
  [PseudoEMetricSpace M] [IsRiemannianManifold I M]
   [CompleteSpace M] in
@@ -699,8 +699,8 @@ theorem eventually_mem_nhds_of_tendsto_riemannianEDist
   filter_upwards [hev] with a ha
   exact hc ha
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [IsManifold I ∞ M]
     [T2Space M] [SigmaCompactSpace M] [CompleteSpace M] in
 theorem tendsto_riemannianEDist_of_tendsto_metric_nhds
@@ -714,8 +714,8 @@ theorem tendsto_riemannianEDist_of_tendsto_metric_nhds
   rw [IsRiemannianManifold.out (I := I) (f a) p, riemannianEDist_comm] at ha
   exact ha.le
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
  [CompleteSpace M] in
 theorem eventually_mem_nhds_of_tendsto_metric_nhds
@@ -726,8 +726,8 @@ theorem eventually_mem_nhds_of_tendsto_metric_nhds
   exact eventually_mem_nhds_of_tendsto_riemannianEDist (I := I) hs
     (tendsto_riemannianEDist_of_tendsto_metric_nhds (I := I) h)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
  [CompleteSpace M] in
 theorem tendsto_nhds_of_tendsto_metric_nhds

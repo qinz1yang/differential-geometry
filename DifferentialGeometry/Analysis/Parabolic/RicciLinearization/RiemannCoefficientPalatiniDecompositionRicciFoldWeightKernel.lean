@@ -218,7 +218,7 @@ private lemma bdBackgroundRArmWeight_toModel (g₀ : SmoothRiemannianMetric I M)
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀))).toSection x) D) =
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRS_domDomCongr (Equiv.swap (1 : Fin 6) 3)
+          tensorRSDomDomCongr (Equiv.swap (1 : Fin 6) 3)
             ((slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)).toSection x)) D) from by
       rw [rsDomDomCongrSection_toSection]]
@@ -539,7 +539,7 @@ private lemma bdRicciFoldWeight_unitModel_gen (g₀ : SmoothRiemannianMetric I M
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2 R4) S)).toSection x)
         (unitTensor (I := I) (M := M) x)) =
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRS_domDomCongr σ
+          tensorRSDomDomCongr σ
             ((ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2 R4) S).toSection x))
           (unitTensor (I := I) (M := M) x)) from by
@@ -1008,7 +1008,7 @@ lemma bdRicciFoldXi_smul (g₀ : SmoothRiemannianMetric I M)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X)).toSection x) D) =
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRS_domDomCongr armPairTraceSlotPerm6
+          tensorRSDomDomCongr armPairTraceSlotPerm6
             ((slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x)) D) from by
       rw [rsDomDomCongrSection_toSection]]
     rw [toModel_rsDomDomCongr_apply (I := I) (M := M) armPairTraceSlotPerm6
@@ -1438,7 +1438,7 @@ private lemma bdAACommBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
   set α := p₀.1 with hα
   set e := trivializationAt (Tensor0SModel 2 ℝ E)
     (fun z : M => Tensor0SSpace 2 I z) α with he
-  set Bcmm := continuousMultilinearMap_basis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
+  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
@@ -1474,13 +1474,13 @@ private lemma bdAACommBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
         (congrFun (Trivialization.coe_linearMapAt_of_mem (R := ℝ) (e := e) hqbase) _).symm
       rw [hcoe]
       have hfiber :
-          (tensor0SSpace_continuousLinearEquiv (I := I) 2 q.1).symm
+          (tensor0SSpaceContinuousLinearEquiv (I := I) 2 q.1).symm
               (Tensor0SSpace.toModel
                 (connectionDifferenceAACommBiContrFib (I := I) g₀
                   (gfam q.2) q.1 (Y q.1))) =
             connectionDifferenceAACommBiContrFib (I := I) g₀
               (gfam q.2) q.1 (Y q.1) :=
-        (tensor0SSpace_continuousLinearEquiv (I := I) 2 q.1).symm_apply_apply _
+        (tensor0SSpaceContinuousLinearEquiv (I := I) 2 q.1).symm_apply_apply _
       rw [← hfiber]
       have happly := TensorMultilinear.tensor0SBundle_linearMapAt_apply_of_mem (I := I) α q.1
         hqbase

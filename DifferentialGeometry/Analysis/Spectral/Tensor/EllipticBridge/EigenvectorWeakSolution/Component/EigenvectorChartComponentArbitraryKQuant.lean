@@ -174,7 +174,7 @@ omit [CompleteSpace E] in
 private lemma wkpNorm_eigenvectorChartComponentFun_eq_zero_of_notMem
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
-    {α : M} (hα : α ∉ chartAtlasPOU_activeFinset I M)
+    {α : M} (hα : α ∉ chartAtlasPOUActiveFinset I M)
     (P₀ : TensorCompIdx (E := E) r s) (K' : ℕ) :
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) K' 2
         (eigenvectorChartComponentFun (I := I) (M := M)
@@ -702,8 +702,8 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
                   g r s) i‖ :=
       h_w1_of_idx.trans (hC_IH_bd α P₀ i)
     have h_f_chart_eq :
-        (eigenvectorIteratedTensorChartBilinearData_toData
-            (I := I) (M := M) g r s i α P₀ D_m h_parent_m2).f_chart =
+        (eigenvectorIteratedTensorChartBilinearDataToData
+            (I := I) (M := M) g r s i α P₀ D_m h_parent_m2).fChart =
           eigenvectorChartRHSDiff (I := I) (M := M)
             g r s i α P₀ (m + 1) idx := by
       change D_m.diffChartForcing = eigenvectorChartRHSDiff (I := I) (M := M)
@@ -728,8 +728,8 @@ private lemma eigenvector_chartComponent_wkpNorm_step_perPair
       exact hC_p5_bd idx i
     have h_eLp_weighted_bd :
         eLpNorm
-            ((eigenvectorIteratedTensorChartBilinearData_toData
-                (I := I) (M := M) g r s i α P₀ D_m h_parent_m2).f_chart)
+            ((eigenvectorIteratedTensorChartBilinearDataToData
+                (I := I) (M := M) g r s i α P₀ D_m h_parent_m2).fChart)
             2 ((chartPulledWeightedMeasure (I := I) g α).restrict
                 (chartTargetEuclid (I := I) (M := M) α))
           ≤ ENNReal.ofReal (C_cmp * C_p5 idx *
@@ -1030,23 +1030,23 @@ private theorem eigenvector_chartComponent_wkpNorm_pm_uniform_β_unconditional
         (eigenvector_chartComponent_wkpNorm_step_perPair
           (I := I) (M := M) g r s m C_IH hC_IH_nn hC_IH_bd
             α P₀).choose_spec.2
-      refine ⟨∑ α ∈ chartAtlasPOU_activeFinset I M,
+      refine ⟨∑ α ∈ chartAtlasPOUActiveFinset I M,
         ∑ P₀ : TensorCompIdx (E := E) r s, C_step α P₀, ?_, ?_⟩
       · exact Finset.sum_nonneg fun α _ =>
           Finset.sum_nonneg fun P₀ _ => hC_step_nn α P₀
       intro α P₀ i
-      by_cases hα : α ∈ chartAtlasPOU_activeFinset I M
+      by_cases hα : α ∈ chartAtlasPOUActiveFinset I M
       · have hμ_inv_nn : (0 : ℝ) ≤ (i.fst.val)⁻¹ :=
           sharpDiff_eigen_inv_nonneg (I := I) (M := M) g r s i
         have h_step_le : C_step α P₀ ≤
-            ∑ α' ∈ chartAtlasPOU_activeFinset I M,
+            ∑ α' ∈ chartAtlasPOUActiveFinset I M,
               ∑ P₀' : TensorCompIdx (E := E) r s, C_step α' P₀' := by
           have h1 : C_step α P₀ ≤ ∑ P₀' : TensorCompIdx (E := E) r s,
               C_step α P₀' :=
             Finset.single_le_sum (f := fun P₀' => C_step α P₀')
               (fun P₀' _ => hC_step_nn α P₀') (Finset.mem_univ P₀)
           have h2 : (∑ P₀' : TensorCompIdx (E := E) r s, C_step α P₀') ≤
-              ∑ α' ∈ chartAtlasPOU_activeFinset I M,
+              ∑ α' ∈ chartAtlasPOUActiveFinset I M,
                 ∑ P₀' : TensorCompIdx (E := E) r s, C_step α' P₀' :=
             Finset.single_le_sum
               (f := fun α' => ∑ P₀' : TensorCompIdx (E := E) r s,
@@ -1055,14 +1055,14 @@ private theorem eigenvector_chartComponent_wkpNorm_pm_uniform_β_unconditional
                 (fun P₀' _ => hC_step_nn α' P₀')) hα
           exact h1.trans h2
         have h_real_le : C_step α P₀ * (i.fst.val)⁻¹ ^ (m + 2) ≤
-            (∑ α' ∈ chartAtlasPOU_activeFinset I M,
+            (∑ α' ∈ chartAtlasPOUActiveFinset I M,
               ∑ P₀' : TensorCompIdx (E := E) r s, C_step α' P₀') *
               (i.fst.val)⁻¹ ^ (m + 2) :=
           mul_le_mul_of_nonneg_right h_step_le (pow_nonneg hμ_inv_nn _)
         have h_const_le :
             ENNReal.ofReal (C_step α P₀ * (i.fst.val)⁻¹ ^ (m + 2)) ≤
               ENNReal.ofReal
-                ((∑ α' ∈ chartAtlasPOU_activeFinset I M,
+                ((∑ α' ∈ chartAtlasPOUActiveFinset I M,
                   ∑ P₀' : TensorCompIdx (E := E) r s, C_step α' P₀') *
                   (i.fst.val)⁻¹ ^ (m + 2)) :=
           ENNReal.ofReal_le_ofReal h_real_le

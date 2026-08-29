@@ -1278,7 +1278,7 @@ theorem wkpNormChart_le_const_mul_intrinsicLpComponents_smooth_uniform
   let : MeasurableSpace M := borel M
   have : BorelSpace M := ⟨rfl⟩
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M)
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M)
   set Cα : M → ℝ := fun α => Classical.choose
     (wkpNorm_chartPushed_le_const_mul_per_α (I := I) (M := M) g α hp_one hp_top)
   have hCα_nn : ∀ α : M, 0 ≤ Cα α :=

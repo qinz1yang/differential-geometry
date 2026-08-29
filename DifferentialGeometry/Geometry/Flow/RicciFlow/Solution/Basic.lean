@@ -162,7 +162,7 @@ def MetricCompatibleOn
     (G : SolutionFamily (I := I) (M := M))
     (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval) : Prop :=
   forall t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.FlowTime D,
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
       (G.connection (t : Real)) (G.metric (t : Real))
 
 end SolutionFamily
@@ -370,7 +370,7 @@ def ricciPair04 {x : M}
     DifferentialGeometry.Geometry.Curvature.Tensor04At (I := I) (M := M) x :=
   (Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x).symm
-    ((Bundle.continuousMultilinearMap.product_fun
+    ((Bundle.continuousMultilinearMap.productFun
         (𝕜 := Real) (B := M) (F := E) (E := TangentSpace I)
         (s := 2) (q := 2) (x := x)
         (Tensor0SBundle.tensor0SSpaceFiberContinuousLinearEquiv

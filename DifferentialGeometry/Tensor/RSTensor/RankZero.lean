@@ -19,7 +19,7 @@ variable {n : WithTop ℕ∞} [IsManifold I 1 M] [IsManifold I (n + 1) M]
 noncomputable def TensorRSField.rs0 {s : ℕ}
     (T : TensorRSField n 0 s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)) :
     Tensor0SField n s (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) :=
-  tensorRSField_applyInput (𝕜 := 𝕜) (E := E) (H := H)
+  tensorRSFieldApplyInput (𝕜 := 𝕜) (E := E) (H := H)
     (I := I) (M := M) n T
       (Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) n)
 
@@ -36,15 +36,15 @@ theorem TensorRSField.rs0_apply {s : ℕ}
 omit [IsManifold I (n + 1) M] in
 private theorem rankZero_eq_smul_one
     (x : M) (c : Tensor0SSpace 0 I x) :
-    c = tensor0SSpace_evalScalar (𝕜 := 𝕜) (I := I) (M := M) x c •
+    c = tensor0SSpaceEvalScalar (𝕜 := 𝕜) (I := I) (M := M) x c •
       Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
         (I := I) (M := M) n x := by
-  apply (tensor0SSpace_continuousLinearEquiv 0 x).injective
+  apply (tensor0SSpaceContinuousLinearEquiv 0 x).injective
   apply ContinuousMultilinearMap.ext
   intro v
   change Tensor0SSpace.toModel c v =
     Tensor0SSpace.toModel
-      (tensor0SSpace_evalScalar (𝕜 := 𝕜) (I := I) (M := M) x c •
+      (tensor0SSpaceEvalScalar (𝕜 := 𝕜) (I := I) (M := M) x c •
         Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
           (I := I) (M := M) n x) v
   rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul,
@@ -67,10 +67,10 @@ theorem TensorRSField.toRS0_rs0 {s : ℕ}
   intro c
   rw [Tensor0SField.toRS0_apply, TensorRSField.rs0_apply]
   calc
-    tensor0SSpace_evalScalar (𝕜 := 𝕜) (I := I) (M := M) x c •
+    tensor0SSpaceEvalScalar (𝕜 := 𝕜) (I := I) (M := M) x c •
           T x (Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
             (I := I) (M := M) n x) =
-        T x (tensor0SSpace_evalScalar (𝕜 := 𝕜) (I := I) (M := M) x c •
+        T x (tensor0SSpaceEvalScalar (𝕜 := 𝕜) (I := I) (M := M) x c •
           Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
             (I := I) (M := M) n x) := by
           rw [map_smul]
@@ -83,7 +83,7 @@ theorem TensorRSField.rs0_toRS0 {s : ℕ}
   apply ContMDiffSection.ext
   intro x
   rw [TensorRSField.rs0_apply, Tensor0SField.toRS0_apply]
-  have hone : tensor0SSpace_evalScalar (𝕜 := 𝕜) (I := I) (M := M) x
+  have hone : tensor0SSpaceEvalScalar (𝕜 := 𝕜) (I := I) (M := M) x
       (Tensor0SField.one0 (𝕜 := 𝕜) (E := E) (H := H)
         (I := I) (M := M) n x) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply]

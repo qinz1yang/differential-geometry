@@ -205,7 +205,7 @@ open DifferentialGeometry.MixedSection
 
 variable {s : ℕ}
 
-noncomputable def multilinearBundle_mixedBundle_equiv
+noncomputable def multilinearBundleMixedBundleEquiv
     {EM : Type*} [NormedAddCommGroup EM] [NormedSpace ℝ EM]
     {HM : Type*} [TopologicalSpace HM]
     {IM : ModelWithCorners ℝ EM HM}

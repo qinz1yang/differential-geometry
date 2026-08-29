@@ -47,26 +47,26 @@ local notation "μhalf" => (volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ)))
 
 /-- The weakened forward-stage constant that honestly absorbs the finite-measure
 `L^p` to `L^{p₀}` upgrade on the unit ball. -/
-noncomputable def C_weakHarnack0Forward
+noncomputable def CWeakHarnack0Forward
     (d : ℕ) [NeZero d] (_hd : 2 < (d : ℝ)) : ℝ :=
   let _ := _hd
-  (C_weakHarnack0 d * (volume.real (Metric.ball (0 : AmbientSpace d) 1) + 1)) ^
+  (CWeakHarnack0 d * (volume.real (Metric.ball (0 : AmbientSpace d) 1) + 1)) ^
     (moserChi d)
 
 theorem one_le_C_weakHarnack0Forward
     (hd : 2 < (d : ℝ)) :
-    1 ≤ C_weakHarnack0Forward (d := d) hd := by
-  unfold C_weakHarnack0Forward
+    1 ≤ CWeakHarnack0Forward (d := d) hd := by
+  unfold CWeakHarnack0Forward
   have hbase : 1 ≤
-      C_weakHarnack0 d * (volume.real (Metric.ball (0 : E) 1) + 1) := by
-    have hC : 1 ≤ C_weakHarnack0 d := one_le_C_weakHarnack0 (d := d)
+      CWeakHarnack0 d * (volume.real (Metric.ball (0 : E) 1) + 1) := by
+    have hC : 1 ≤ CWeakHarnack0 d := one_le_C_weakHarnack0 (d := d)
     have hV : 1 ≤ volume.real (Metric.ball (0 : E) 1) + 1 := by
       have hV_nonneg : 0 ≤ volume.real (Metric.ball (0 : E) 1) := by
         exact measureReal_nonneg
       linarith
     calc
       (1 : ℝ) = 1 * 1 := by ring
-      _ ≤ C_weakHarnack0 d * (volume.real (Metric.ball (0 : E) 1) + 1) := by
+      _ ≤ CWeakHarnack0 d * (volume.real (Metric.ball (0 : E) 1) + 1) := by
           exact mul_le_mul hC hV (by positivity) (by positivity)
   exact Real.one_le_rpow hbase (moserChi_pos (d := d) hd).le
 
@@ -677,14 +677,14 @@ noncomputable def superExactPowerCutoffRegWitness
       MemW1pWitness 2
         (fun x => superExactShiftReg ε a (u x))
         (Metric.ball (0 : E) 1) :=
-    MemW1pWitness.comp_smooth_bounded (d := d) Metric.isOpen_ball hu1
+    MemW1pWitness.compSmoothBounded (d := d) Metric.isOpen_ball hu1
       (superExactShiftReg ε a)
       (superExactShiftReg_contDiff (ε := ε) (a := a) hε)
       (superExactShiftReg_zero (ε := ε) (a := a) hε)
       (superExactShiftReg_deriv_bounded (ε := ε) (a := a) hε ha)
   have hCη_nonneg : 0 ≤ Cη := by
     exact le_trans (norm_nonneg _) (hη_grad_bound (0 : E))
-  exact hwReg.mul_smooth_bounded Metric.isOpen_ball hη
+  exact hwReg.mulSmoothBounded Metric.isOpen_ball hη
     (C₀ := 1) (C₁ := Cη) (by norm_num) hCη_nonneg hη_bound hη_grad_bound
 
 noncomputable def superExactTestCutoffRegWitness
@@ -701,7 +701,7 @@ noncomputable def superExactTestCutoffRegWitness
       MemW1pWitness 2
         (fun x => superExactShiftReg ε a (u x))
         (Metric.ball (0 : E) 1) :=
-    MemW1pWitness.comp_smooth_bounded (d := d) Metric.isOpen_ball hu1
+    MemW1pWitness.compSmoothBounded (d := d) Metric.isOpen_ball hu1
       (superExactShiftReg ε a)
       (superExactShiftReg_contDiff (ε := ε) (a := a) hε)
       (superExactShiftReg_zero (ε := ε) (a := a) hε)
@@ -709,9 +709,9 @@ noncomputable def superExactTestCutoffRegWitness
   have hCη_nonneg : 0 ≤ Cη := by
     exact le_trans (norm_nonneg _) (hη_grad_bound (0 : E))
   let hwηReg :=
-    hwReg.mul_smooth_bounded Metric.isOpen_ball hη
+    hwReg.mulSmoothBounded Metric.isOpen_ball hη
       (C₀ := 1) (C₁ := Cη) (by norm_num) hCη_nonneg hη_bound hη_grad_bound
-  exact hwηReg.mul_smooth_bounded Metric.isOpen_ball hη
+  exact hwηReg.mulSmoothBounded Metric.isOpen_ball hη
     (C₀ := 1) (C₁ := Cη) (by norm_num) hCη_nonneg hη_bound hη_grad_bound
 
 lemma superExactPowerCutoffRegWitness_grad
@@ -727,7 +727,7 @@ lemma superExactPowerCutoffRegWitness_grad
       η x * deriv (superExactShiftReg ε a) (u x) * hu1.weakGrad x i +
         (fderiv ℝ η x) (EuclideanSpace.single i 1) * superExactShiftReg ε a (u x) := by
   simp only [superExactPowerCutoffRegWitness,
-    MemW1pWitness.mul_smooth_bounded, MemW1pWitness.comp_smooth_bounded,
+    MemW1pWitness.mulSmoothBounded, MemW1pWitness.compSmoothBounded,
     WithLp.ofLp_add, WithLp.ofLp_smul, smul_eq_mul, Pi.add_apply, Pi.smul_apply]
   ring
 
@@ -745,7 +745,7 @@ lemma superExactTestCutoffRegWitness_grad
         superExactShiftReg ε a (u x) +
       η x ^ 2 * deriv (superExactShiftReg ε a) (u x) * hu1.weakGrad x i := by
   simp only [superExactTestCutoffRegWitness,
-    MemW1pWitness.mul_smooth_bounded, MemW1pWitness.comp_smooth_bounded,
+    MemW1pWitness.mulSmoothBounded, MemW1pWitness.compSmoothBounded,
     WithLp.ofLp_add, WithLp.ofLp_smul, smul_eq_mul, Pi.add_apply, Pi.smul_apply]
   ring
 
@@ -755,7 +755,7 @@ noncomputable def superEtaWitness
     (hη_sub_ball : tsupport η ⊆ Metric.ball (0 : E) s) :
     MemW1pWitness 2 η (Metric.ball (0 : E) 1) := by
   let hwUniv : MemW1pWitness 2 η Set.univ :=
-    MemW1pWitness.of_contDiff_hasCompactSupport (p := 2) hη
+    MemW1pWitness.ofContDiffHasCompactSupport (p := 2) hη
       (hasCompactSupport_of_tsupport_subset_ball (f := η) hη_sub_ball)
   exact hwUniv.restrict Metric.isOpen_ball (by intro x hx; simp)
 
@@ -848,7 +848,7 @@ noncomputable def superExactTestCutoffWitness
   change MemW1pWitness 2
     (fun x => η x * superExactPowerCutoff η u ε a x)
     (Metric.ball (0 : E) 1)
-  exact hwPow.mul_smooth_bounded (η := η) Metric.isOpen_ball hη
+  exact hwPow.mulSmoothBounded (η := η) Metric.isOpen_ball hη
       (C₀ := 1) (C₁ := Cη) (by norm_num) hCη_nonneg hη_bound hη_grad_bound
 
 lemma superExactTestCutoffWitness_grad

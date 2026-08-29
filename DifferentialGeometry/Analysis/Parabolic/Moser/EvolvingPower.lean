@@ -55,7 +55,7 @@ theorem caccioppoli_evolving_positive_rpow_of_supersolution
     (htrace : ∀ x : M,
       -traceTimeDerivMetric (I := I) g t x ≤ B)
     (hpde : ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     (2 * (1 - q) / q) *
         evolvingLocalizedDirichletEnergy
@@ -203,7 +203,7 @@ theorem weighted_caccioppoli_evolving_positive_rpow_of_supersolution
     (htrace : ∀ t ∈ Icc a b, ∀ x : M,
       -traceTimeDerivMetric (I := I) g t x ≤ B)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     weight a * evolvingLocalizedL2Mass
           (I := I) (M := M) g cutoff (fun s x => u s x ^ (q / 2)) a -
@@ -345,7 +345,7 @@ theorem backward_caccioppoli_evolving_inner_energy_positive_rpow_of_supersolutio
     (htrace : ∀ t ∈ Icc a b, ∀ x : M,
       -traceTimeDerivMetric (I := I) g t x ≤ B)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hrhs_le : ∀ t ∈ Icc a t₁,
       (∫ s in t..b,
@@ -456,7 +456,7 @@ theorem caccioppoli_evolving_rpow_of_subsolution
     (hweight_nonneg : ∀ t ∈ Icc a b, 0 ≤ weight t)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x + source t x) :
     weight b * evolvingLocalizedL2Mass
           (I := I) (M := M) g cutoff (fun s x => u s x ^ q) b -
@@ -523,7 +523,7 @@ theorem evolving_rpow_moser_step_le
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x + source t x)
     (hrhs_le : ∀ t ∈ Icc t₀ t₁,
       (∫ s in a..t,
@@ -560,7 +560,7 @@ theorem evolving_rpow_moser_step_le
     simpa only [sourceq] using contMDiff_rpowSource_of_pos hu hsource hpos q
   have hpdeq : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x ^ q) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
             (smoothScalarSlice (I := I) (g t)
               (fun s x => u s x ^ q) huq t).toContMDiffMap x +
           sourceq t x := by
@@ -605,7 +605,7 @@ theorem evolving_rpow_moser_step_homogeneous_le
     (hB : 0 ≤ B) (hD : 0 ≤ D) (hK : 0 ≤ K) (hL : 0 ≤ L)
     (hpde : ∀ s ∈ Icc a t₁, ∀ x : M,
       deriv (fun r => u r x) s ≤
-        Δ_g (I := I) (g s)
+        ΔG (I := I) (g s)
           (smoothScalarSlice (I := I) (g s) u hu s).toContMDiffMap x)
     (hcutoff_le : ∀ x : M, cutoff x ^ 2 ≤ outer x ^ 2)
     (hgrad : ∀ s ∈ Icc a t₁, ∀ x : M,

@@ -273,7 +273,7 @@ theorem wmp_section_sec
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (cov t) (∞ : WithTop ℕ∞))
     (hmc : ∀ t : Real,
-      DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (cov t) (G t))
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (cov t) (G t))
     (hS : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S) :
     TwoTensorFamilyNonnegativeOn (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) S) (Set.Icc 0 T) := by
@@ -313,7 +313,7 @@ structure TensorWMPInput
     CovariantDerivative.ContMDiffCovariantDerivativeLocally
       (cov t) (∞ : WithTop ℕ∞)
   hmc : ∀ t : Real,
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (cov t) (G t)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (cov t) (G t)
   spatial : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S
 
 theorem tensor_wmp

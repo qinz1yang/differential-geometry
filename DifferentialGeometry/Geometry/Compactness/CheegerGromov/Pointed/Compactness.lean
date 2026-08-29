@@ -1155,7 +1155,7 @@ def unrepoint
     simpa only [PointedRiemannianCGMaps.unrepoint_source,
       MetricSourceData.unrepoint_supOn] using Cd.converges K hK p ε hε
 
-noncomputable def of_derivNormSupOn
+noncomputable def ofDerivNormSupOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
@@ -1202,7 +1202,7 @@ noncomputable def ofRestrictPullback
               (Φ := Φ) (k := k) (hσsrc k)
               (referenceMetric k)).derivNormSupOn (I := I) K p) < ε) :
     MetricCGConvergenceData (I := I) Φ :=
-  MetricCGConvergenceData.of_derivNormSupOn (I := I)
+  MetricCGConvergenceData.ofDerivNormSupOn (I := I)
     (D := fun k => MetricSourceData.ofRestrictPullback (I := I)
       (Φ := Φ) (k := k) (hσsrc k) (referenceMetric k))
     hconv
@@ -1236,7 +1236,7 @@ def unrepoint
     PointedRiemannianCGConverges (I := I) X L subseq (Φ.unrepoint b hbase) where
   metrics := C.metrics.unrepoint b hbase
 
-noncomputable def of_derivNormSupOn
+noncomputable def ofDerivNormSupOn
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {L : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat -> Nat}
@@ -1249,7 +1249,7 @@ noncomputable def of_derivNormSupOn
           exists k0 : Nat, forall k : Nat, k0 <= k ->
             (D k).derivNormSupOn (I := I) K p < ε) :
     PointedRiemannianCGConverges (I := I) X L subseq Φ where
-  metrics := MetricCGConvergenceData.of_derivNormSupOn (I := I) hconv
+  metrics := MetricCGConvergenceData.ofDerivNormSupOn (I := I) hconv
 
 noncomputable def ofRestrictPullback
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

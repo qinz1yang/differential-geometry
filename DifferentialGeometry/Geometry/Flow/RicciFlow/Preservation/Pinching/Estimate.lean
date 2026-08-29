@@ -553,14 +553,14 @@ private theorem ricciNorm_coordCont
   intro p hp
   have hbasis :
       ∀ i : Idx,
-        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x0 hp.2) i =
+        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x0 hp.2) i =
           frame i p.2 := by
     intro i
     simp [frame, DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis_apply]
   have hnorm :=
     ricciNormSq_basis (I := I) S gInv frame
       (t := p.1) (x := p.2)
-      (basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x0 hp.2)
+      (basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x0 hp.2)
       (hinv := by
         simpa [gInv, coordInv] using
           DifferentialGeometry.Tensor.Coordinates.gInvBasisAt (I := I) (S.family.metric p.1) x0

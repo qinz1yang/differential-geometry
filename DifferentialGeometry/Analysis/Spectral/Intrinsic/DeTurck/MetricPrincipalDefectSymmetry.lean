@@ -117,7 +117,7 @@ theorem metricPrincipalDefect_symm_zero
         unitModel (I := I) (M := M) g₀ 4 W x
           ![v 0, v 1,
             cometricLmodel (I := I) g x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             (Module.finBasis ℝ E) k] := by
     rw [hTHraw]
@@ -132,19 +132,19 @@ theorem metricPrincipalDefect_symm_zero
         ((∑ k : Fin (Module.finrank ℝ E),
             unitModel (I := I) (M := M) g₀ 4 W x
               ![cometricLmodel (I := I) g x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)),
                 v 0, v 1, (Module.finBasis ℝ E) k]
           + ∑ k : Fin (Module.finrank ℝ E),
               unitModel (I := I) (M := M) g₀ 4 W x
                 ![cometricLmodel (I := I) g x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)),
                   v 1, v 0, (Module.finBasis ℝ E) k])
         - ∑ k : Fin (Module.finrank ℝ E),
             unitModel (I := I) (M := M) g₀ 4 W x
               (Fin.cons (cometricLmodel (I := I) g x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)))
                 (Fin.cons ((Module.finBasis ℝ E) k) v))) := by
     rw [hRACraw, Finset.sum_sub_distrib, Finset.sum_add_distrib]
@@ -161,36 +161,36 @@ theorem metricPrincipalDefect_symm_zero
       unitModel (I := I) (M := M) g₀ 4 W x
         ![v 0,
           cometricLmodel (I := I) g x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)),
           v 1, (Module.finBasis ℝ E) k] =
       ∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 W x
           ![cometricLmodel (I := I) g x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             v 0, v 1, (Module.finBasis ℝ E) k] :=
     Finset.sum_congr rfl fun k _ => hWsymm x (v 0)
       (cometricLmodel (I := I) g x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis k)))
       (v 1) ((Module.finBasis ℝ E) k)
   have hswapB : ∑ k : Fin (Module.finrank ℝ E),
       unitModel (I := I) (M := M) g₀ 4 W x
         ![v 1,
           cometricLmodel (I := I) g x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)),
           v 0, (Module.finBasis ℝ E) k] =
       ∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 W x
           ![cometricLmodel (I := I) g x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)),
             v 1, v 0, (Module.finBasis ℝ E) k] :=
     Finset.sum_congr rfl fun k _ => hWsymm x (v 1)
       (cometricLmodel (I := I) g x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis k)))
       (v 0) ((Module.finBasis ℝ E) k)
   rw [hswapA, hswapB]

@@ -55,10 +55,10 @@ private theorem contMDiffWithinAt_curriedSection_prod_ofOrder {N : WithTop ℕ�
       (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)) N
       (fun p : M × ℝ => TotalSpace.mk' (E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)
         (E := fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace n I y) p.1
-        (tensor0S_curry (I := I) (M := M) n p.1 (T p))) s p₀ := by
+        (tensor0SCurry (I := I) (M := M) n p.1 (T p))) s p₀ := by
   let : TopologicalSpace (TotalSpace (Tensor0SBundle.Tensor0SModel (n + 1) ℝ E)
       (fun y : M => Tensor0SBundle.Tensor0SSpace (n + 1) I y)) :=
-    tensor0SBundle_topology (n + 1)
+    tensor0SBundleTopology (n + 1)
   rw [Bundle.contMDiffWithinAt_totalSpace
     (F := E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)
     (E := fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace n I y)
@@ -88,7 +88,7 @@ private theorem contMDiffWithinAt_curriedSection_prod_ofOrder {N : WithTop ℕ�
       (fun _ : M => T p) p₀.1 p.1 hb
     change (trivializationAt (E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)
         (fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace n I y) p₀.1
-        ⟨p.1, tensor0S_curry (I := I) (M := M) n p.1 (T p)⟩).2 =
+        ⟨p.1, tensor0SCurry (I := I) (M := M) n p.1 (T p)⟩).2 =
       (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (n + 1) => E) ℝ)
         ((trivializationAt (Tensor0SBundle.Tensor0SModel (n + 1) ℝ E)
           (fun y : M => Tensor0SBundle.Tensor0SSpace (n + 1) I y) p₀.1 ⟨p.1, T p⟩).2)
@@ -97,7 +97,7 @@ private theorem contMDiffWithinAt_curriedSection_prod_ofOrder {N : WithTop ℕ�
       (fun _ : M => T p₀) p₀.1 p₀.1 (mem_baseSet_trivializationAt _ _ _)
     change (trivializationAt (E →L[ℝ] Tensor0SBundle.Tensor0SModel n ℝ E)
         (fun y : M => TangentSpace I y →L[ℝ] Tensor0SBundle.Tensor0SSpace n I y) p₀.1
-        ⟨p₀.1, tensor0S_curry (I := I) (M := M) n p₀.1 (T p₀)⟩).2 =
+        ⟨p₀.1, tensor0SCurry (I := I) (M := M) n p₀.1 (T p₀)⟩).2 =
       (continuousMultilinearCurryLeftEquiv ℝ (fun _ : Fin (n + 1) => E) ℝ)
         ((trivializationAt (Tensor0SBundle.Tensor0SModel (n + 1) ℝ E)
           (fun y : M => Tensor0SBundle.Tensor0SSpace (n + 1) I y) p₀.1 ⟨p₀.1, T p₀⟩).2)
@@ -170,18 +170,18 @@ private theorem contMDiffWithinAt_section_apply_prod_ofOrder {N : WithTop ℕ∞
         (fun p : M × ℝ =>
           TotalSpace.mk' (Tensor0SBundle.Tensor0SModel n ℝ E)
             (E := fun x : M => Tensor0SBundle.Tensor0SSpace n I x) p.1
-            ((tensor0S_curry (I := I) (M := M) n p.1 (T p)) (v 0 p))) s p₀ :=
+            ((tensor0SCurry (I := I) (M := M) n p.1 (T p)) (v 0 p))) s p₀ :=
       ContMDiffWithinAt.clm_bundle_apply (𝕜 := ℝ) (n := N)
         (F₁ := E) (F₂ := Tensor0SBundle.Tensor0SModel n ℝ E)
         (E₁ := fun x : M => TangentSpace I x)
         (E₂ := fun x : M => Tensor0SBundle.Tensor0SSpace n I x)
         (IM := I.prod 𝓘(ℝ, ℝ)) (IB := I)
-        (b := Prod.fst) (ϕ := fun p : M × ℝ => tensor0S_curry (I := I) (M := M) n p.1 (T p))
+        (b := Prod.fst) (ϕ := fun p : M × ℝ => tensor0SCurry (I := I) (M := M) n p.1 (T p))
         (v := fun p : M × ℝ => v 0 p)
         hCurry (hv 0)
     have hRec := contMDiffWithinAt_section_apply_prod_ofOrder n
       (s := s) (p₀ := p₀)
-      (fun p : M × ℝ => (tensor0S_curry (I := I) (M := M) n p.1 (T p)) (v 0 p))
+      (fun p : M × ℝ => (tensor0SCurry (I := I) (M := M) n p.1 (T p)) (v 0 p))
       hApplied
       (fun (i : Fin n) (p : M × ℝ) => v i.succ p)
       (fun i => hv i.succ)
@@ -219,14 +219,14 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T)),
       ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) N
         (fun p : M × ℝ =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) n g α p.1 (TT p) (SS p))
+          chartTensorInnerPointwise0s (I := I) (M := M) n g α p.1 (TT p) (SS p))
         ((chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T) := by
   intro n
   induction n with
   | zero =>
       intro TT SS hT hS
       have heq : (fun p : M × ℝ =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) 0 g α p.1 (TT p) (SS p)) =
+          chartTensorInnerPointwise0s (I := I) (M := M) 0 g α p.1 (TT p) (SS p)) =
           fun p : M × ℝ =>
             ((TT p) (fun i => Fin.elim0 i)) * ((SS p) (fun i => Fin.elim0 i)) := by
         funext p
@@ -260,12 +260,12 @@ private theorem chartTensorInnerPointwise_0s_jointContMDiffOn_args_ofOrder
   | succ n ih =>
       intro TT SS hT hS
       have heq : (fun p : M × ℝ =>
-          chartTensorInnerPointwise_0s (I := I) (M := M) (n + 1) g α p.1 (TT p) (SS p)) =
+          chartTensorInnerPointwise0s (I := I) (M := M) (n + 1) g α p.1 (TT p) (SS p)) =
           fun p : M × ℝ =>
             ∑ i : Fin (Module.finrank ℝ E),
               ∑ j : Fin (Module.finrank ℝ E),
                 (chartGramMatrix (I := I) g α p.1)⁻¹ i j *
-                  chartTensorInnerPointwise_0s (I := I) (M := M) n g α p.1
+                  chartTensorInnerPointwise0s (I := I) (M := M) n g α p.1
                     ((TT p).curryLeft ((chartModelBasis E) i))
                     ((SS p).curryLeft ((chartModelBasis E) j)) := by
         funext p
@@ -398,7 +398,7 @@ theorem tensorInnerPointwise_pair_section_jointContMDiffOn
   have hbridge : ∀ p ∈ (chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T,
       DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
           ((A p.2).toFun p.1) ((B p.2).toFun p.1) =
-        chartTensorInnerPointwise_0s (I := I) (M := M) (0 + 2) g₀ α p.1
+        chartTensorInnerPointwise0s (I := I) (M := M) (0 + 2) g₀ α p.1
           (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 ((A p.2).toFun p.1))
           (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 ((B p.2).toFun p.1)) := by
     rintro ⟨y, u⟩ ⟨hy, _⟩

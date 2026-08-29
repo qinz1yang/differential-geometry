@@ -497,45 +497,45 @@ private theorem bilinear_identity_of_supp_in_chartTarget
   have h_green := green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
     (I := I) g hψM hf hf_cs
   have h_LHS_swap_eq : ∀ x : M,
-      g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+      g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨_, hψM⟩ :
+          ((gradG (I := I) g ⟨_, hψM⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
-      g.inner x ((grad_g (I := I) g ⟨_, hψM⟩ :
+      g.inner x ((gradG (I := I) g ⟨_, hψM⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨_, hf⟩ :
+          ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) :=
     fun x => g.symm x _ _
   have h_green_swap :
-      ∫ x, g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+      ∫ x, g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨_, hψM⟩ :
+          ((gradG (I := I) g ⟨_, hψM⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      -∫ x, chartTestPullback (I := I) (M := M) α ψ x * Δ_g (I := I) g ⟨_, hf⟩ x
+      -∫ x, chartTestPullback (I := I) (M := M) α ψ x * ΔG (I := I) g ⟨_, hf⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     rw [MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall h_LHS_swap_eq)]
     exact h_green
   set u : M → ℝ := fun x => g.inner x
-      ((grad_g (I := I) g ⟨_, hf⟩ :
+      ((gradG (I := I) g ⟨_, hf⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-      ((grad_g (I := I) g ⟨_, hψM⟩ :
+      ((gradG (I := I) g ⟨_, hψM⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) with hu_def
   set v : M → ℝ := fun x =>
-      chartTestPullback (I := I) (M := M) α ψ x * Δ_g (I := I) g ⟨_, hf⟩ x with hv_def
+      chartTestPullback (I := I) (M := M) α ψ x * ΔG (I := I) g ⟨_, hf⟩ x with hv_def
   have hu_cont : Continuous u := by
     have h_eq_action : u = tangentSectionAction (I := I)
-        (grad_g (I := I) g ⟨_, hψM⟩) f := by
+        (gradG (I := I) g ⟨_, hψM⟩) f := by
       funext x
       rw [hu_def]
       change g.inner x
-        ((grad_g (I := I) g (⟨f, hf⟩ : C^∞⟮I, M; ℝ⟯) :
+        ((gradG (I := I) g (⟨f, hf⟩ : C^∞⟮I, M; ℝ⟯) :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g
+        ((gradG (I := I) g
           (⟨chartTestPullback α ψ, hψM⟩ : C^∞⟮I, M; ℝ⟯) : Cₛ^∞⟮I; E,
           (TangentSpace I : M → Type _)⟯) x) =
         mfderiv I 𝓘(ℝ, ℝ) f x
-          ((grad_g (I := I) g
+          ((gradG (I := I) g
             (⟨chartTestPullback α ψ, hψM⟩ : C^∞⟮I, M; ℝ⟯) :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
       rw [grad_g_apply (I := I) g (⟨f, hf⟩ : C^∞⟮I, M; ℝ⟯) x]
@@ -549,27 +549,27 @@ private theorem bilinear_identity_of_supp_in_chartTarget
         (gradFun (I := I) g (chartTestPullback (I := I) (M := M) α ψ) x)
     rw [h_eq_action]
     exact (tangentSectionAction_contMDiff (I := I)
-      (grad_g (I := I) g ⟨_, hψM⟩) hf).continuous
+      (gradG (I := I) g ⟨_, hψM⟩) hf).continuous
   have hu_supp : tsupport u ⊆ (chartAt H α).source := by
     have h_subset_grad_f :
         Function.support u ⊆ Function.support
-          (fun x : M => ((grad_g (I := I) g ⟨_, hf⟩ :
+          (fun x : M => ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) := by
       intro x hx
       change u x ≠ 0 at hx
-      change ((grad_g (I := I) g (⟨f, hf⟩ : C^∞⟮I, M; ℝ⟯) :
+      change ((gradG (I := I) g (⟨f, hf⟩ : C^∞⟮I, M; ℝ⟯) :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) ≠ 0
       intro hx_zero
       apply hx
       rw [hu_def]
       change g.inner x
-        ((grad_g (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨_, hψM⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) = 0
+        ((gradG (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
+        ((gradG (I := I) g ⟨_, hψM⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) = 0
       rw [hx_zero]
       rw [ContinuousLinearMap.map_zero]
       rfl
     have h_grad_f_supp_sub : Function.support
-        (fun x : M => ((grad_g (I := I) g ⟨_, hf⟩ :
+        (fun x : M => ((gradG (I := I) g ⟨_, hf⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) ⊆
         tsupport f := by
       intro x hx
@@ -580,7 +580,7 @@ private theorem bilinear_identity_of_supp_in_chartTarget
   have hv_cont : Continuous v := by
     have h_test_cont : Continuous (chartTestPullback (I := I) (M := M) α ψ) :=
       hψM.continuous
-    have h_lap_cont : Continuous (Δ_g (I := I) g ⟨_, hf⟩) :=
+    have h_lap_cont : Continuous (ΔG (I := I) g ⟨_, hf⟩) :=
       (Δ_g_contMDiff (I := I) g ⟨_, hf⟩).continuous
     exact h_test_cont.mul h_lap_cont
   have hv_supp : tsupport v ⊆ (chartAt H α).source := by
@@ -592,7 +592,7 @@ private theorem bilinear_identity_of_supp_in_chartTarget
       rw [Function.mem_support]
       intro hx_zero
       apply hx
-      change chartTestPullback (I := I) (M := M) α ψ x * Δ_g (I := I) g ⟨_, hf⟩ x = 0
+      change chartTestPullback (I := I) (M := M) α ψ x * ΔG (I := I) g ⟨_, hf⟩ x = 0
       rw [hx_zero]; ring
     exact (closure_minimal h_supp_v (isClosed_tsupport _)).trans
       (chartTestPullback_tsupport_subset_chart_source
@@ -623,7 +623,7 @@ private theorem bilinear_identity_of_supp_in_chartTarget
         · rw [hx_def, (extChartAt I α).right_inv h_target]
           exact (toEuclidean (E := E)).apply_symm_apply y
       have h_grad_zero :
-          ((grad_g (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
+          ((gradG (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
             (0 : TangentSpace I x) := by
         change gradFun (I := I) g f x = (0 : TangentSpace I x)
         by_contra h
@@ -633,8 +633,8 @@ private theorem bilinear_identity_of_supp_in_chartTarget
       have h_u_zero : u x = 0 := by
         rw [hu_def]
         change g.inner x
-          ((grad_g (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨_, hψM⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) = 0
+          ((gradG (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
+          ((gradG (I := I) g ⟨_, hψM⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) = 0
         rw [h_grad_zero, ContinuousLinearMap.map_zero]
         rfl
       have hy_not_in_chartPull_tsupp :
@@ -703,16 +703,16 @@ private theorem bilinear_identity_of_supp_in_chartTarget
     have h_negDens :
         negDensityLaplacianPullback (I := I) g hf α y =
           -(densityOnEuclid (I := I) g α y) *
-            (Δ_g (I := I) g ⟨_, hf⟩) ((extChartAt I α).symm
+            (ΔG (I := I) g ⟨_, hf⟩) ((extChartAt I α).symm
               ((toEuclidean (E := E)).symm y)) :=
       negDensityLaplacianPullback_apply_of_mem (I := I) g hf α hy
     change densityOnEuclid (I := I) g α y *
-          (chartTestPullback (I := I) (M := M) α ψ x * Δ_g (I := I) g ⟨_, hf⟩ x) =
+          (chartTestPullback (I := I) (M := M) α ψ x * ΔG (I := I) g ⟨_, hf⟩ x) =
         -negDensityLaplacianPullback (I := I) g hf α y * ψ y
     rw [h_test_simp, h_negDens]
     change densityOnEuclid (I := I) g α y *
-          (ψ y * Δ_g (I := I) g ⟨_, hf⟩ x) =
-        -(-(densityOnEuclid (I := I) g α y) * Δ_g (I := I) g ⟨_, hf⟩ x) * ψ y
+          (ψ y * ΔG (I := I) g ⟨_, hf⟩ x) =
+        -(-(densityOnEuclid (I := I) g α y) * ΔG (I := I) g ⟨_, hf⟩ x) * ψ y
     ring
   have h_RHS_setInt_eq :
       ∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -844,25 +844,25 @@ private lemma negDensityLaplacianPullback_support_subset
     set x : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hx_def
     have h_target : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target :=
       toEuclidean_symm_mem_target (I := I) hy_in
-    have h_lap_ne : (Δ_g (I := I) g ⟨_, hf⟩) x ≠ 0 := by
+    have h_lap_ne : (ΔG (I := I) g ⟨_, hf⟩) x ≠ 0 := by
       intro h0
       apply hy
       rw [h0]; ring
-    have hx_in_tsupp_lap : x ∈ tsupport (Δ_g (I := I) g ⟨_, hf⟩) :=
+    have hx_in_tsupp_lap : x ∈ tsupport (ΔG (I := I) g ⟨_, hf⟩) :=
       subset_tsupport _ h_lap_ne
     have h_lap_supp_sub_grad :
-        tsupport (Δ_g (I := I) g ⟨_, hf⟩) ⊆ tsupport
-          (fun x : M => ((grad_g (I := I) g ⟨_, hf⟩ :
+        tsupport (ΔG (I := I) g ⟨_, hf⟩) ⊆ tsupport
+          (fun x : M => ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) := by
-      change tsupport (divergence_g (I := I) g (grad_g (I := I) g ⟨_, hf⟩)) ⊆
+      change tsupport (divergenceG (I := I) g (gradG (I := I) g ⟨_, hf⟩)) ⊆
         tsupport
-          (fun x : M => ((grad_g (I := I) g ⟨_, hf⟩ :
+          (fun x : M => ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
       exact tsupport_divergence_g_subset (I := I) g _
     have h_grad_supp_sub_tsupp_f :
-        tsupport (fun x : M => ((grad_g (I := I) g ⟨_, hf⟩ :
+        tsupport (fun x : M => ((gradG (I := I) g ⟨_, hf⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) ⊆ tsupport f := by
-      have h_subset : Function.support (fun x : M => ((grad_g (I := I) g ⟨_, hf⟩ :
+      have h_subset : Function.support (fun x : M => ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) ⊆ tsupport f := by
         intro x hx
         change x ∈ Function.support (gradFun (I := I) g f) at hx

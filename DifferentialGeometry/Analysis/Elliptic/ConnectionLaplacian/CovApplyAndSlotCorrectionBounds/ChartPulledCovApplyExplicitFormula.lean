@@ -55,19 +55,19 @@ theorem chart_pulled_covApply_explicit_formula
       letI _h_top : TopologicalSpace
           (TotalSpace (TensorRSModel r s ℝ E)
             (fun x : M => TensorRSSpace r s I x)) :=
-        tensorRSBundle_topology r s
+        tensorRSBundleTopology r s
       letI _h_fib : FiberBundle (TensorRSModel r s ℝ E)
           (fun x : M => TensorRSSpace r s I x) :=
-        tensorRSBundle_fiber r s
+        tensorRSBundleFiber r s
       Cₛ^∞⟮I; TensorRSModel r s ℝ E,
         fun b => TensorRSSpace r s I b⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α) :
-    tensorRSChartE_section_repr (I := I) r s α
+    tensorRSChartESectionRepr (I := I) r s α
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g)) B.toFun T.toFun) b =
       fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α T.toFun ∘
+        (tensorRSChartESectionRepr (I := I) r s α T.toFun ∘
           (extChartAt I α).symm)
         (extChartAt I α b) (trivToE (I := I) α b (B.toFun b))
       + ∑ k : Fin r,
@@ -84,10 +84,10 @@ theorem chart_pulled_covApply_explicit_formula
   let _h_top : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   let _h_fib : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   have hb_baseRS : b ∈ (trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) α).baseSet :=
     good_set_mem_baseSet_rs (I := I) r s α hb
@@ -97,7 +97,7 @@ theorem chart_pulled_covApply_explicit_formula
     chartTensorRSCovariantDerivative_eq_abstract_on_chartLeviCivitaGoodSet (I := I) (M := M)
       g r s α T B (b := b) hb
   have hLHS_eq :
-      tensorRSChartE_section_repr (I := I) r s α
+      tensorRSChartESectionRepr (I := I) r s α
           (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
             (LeviCivita (I := I) g)) B.toFun T.toFun) b =
         (trivializationAt (TensorRSModel r s ℝ E)
@@ -154,21 +154,21 @@ theorem chart_pulled_covApply_explicit_formula_target
       letI _h_top : TopologicalSpace
           (TotalSpace (TensorRSModel r s ℝ E)
             (fun x : M => TensorRSSpace r s I x)) :=
-        tensorRSBundle_topology r s
+        tensorRSBundleTopology r s
       letI _h_fib : FiberBundle (TensorRSModel r s ℝ E)
           (fun x : M => TensorRSSpace r s I x) :=
-        tensorRSBundle_fiber r s
+        tensorRSBundleFiber r s
       Cₛ^∞⟮I; TensorRSModel r s ℝ E,
         fun b => TensorRSSpace r s I b⟯)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {y : E} (hy_target : y ∈ (extChartAt I α).target)
     (hy_good : (extChartAt I α).symm y ∈ chartLeviCivitaGoodSet (I := I) α) :
-    (tensorRSChartE_section_repr (I := I) r s α
+    (tensorRSChartESectionRepr (I := I) r s α
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g)) B.toFun T.toFun) ∘
           (extChartAt I α).symm) y =
       fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α T.toFun ∘
+        (tensorRSChartESectionRepr (I := I) r s α T.toFun ∘
           (extChartAt I α).symm) y
         (trivToE (I := I) α ((extChartAt I α).symm y)
           (B.toFun ((extChartAt I α).symm y)))
@@ -201,13 +201,13 @@ theorem chart_pulled_covApply_explicit_formula_target_smoothCc
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {y : E} (hy_target : y ∈ (extChartAt I α).target)
     (hy_good : (extChartAt I α).symm y ∈ chartLeviCivitaGoodSet (I := I) α) :
-    (tensorRSChartE_section_repr (I := I) r s α
+    (tensorRSChartESectionRepr (I := I) r s α
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g)) B.toFun
           (fun b : M => T.toSection b)) ∘
           (extChartAt I α).symm) y =
       fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
           (fun b : M => T.toSection b) ∘
           (extChartAt I α).symm) y
         (trivToE (I := I) α ((extChartAt I α).symm y)

@@ -66,8 +66,8 @@ private theorem iteratedCovGrad_convexPerturbation_norm_le
         · exact mul_le_mul habs_s hT (norm_nonneg _) zero_le_one
     _ = 2 * R := by ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem exists_Csob_convexPerturbation_pointwise_C2_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -79,7 +79,7 @@ theorem exists_Csob_convexPerturbation_pointwise_C2_le
         ∀ (s : ℝ), s ∈ Set.Icc (0 : ℝ) 1 → ∀ x : M,
           (∑ j ∈ Finset.range 3,
               (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-                Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+                Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
               ‖(iteratedCovGrad (I := I) g₀ 0 2 j
                   (convexPerturbation (I := I) g₀ T T' s)).toSection x‖)) ≤ Csob * R := by
   classical
@@ -129,7 +129,7 @@ theorem exists_Csob_convexPerturbation_pointwise_C2_le
     exact mul_le_mul_of_nonneg_left hSumBudget hCh_nn
   calc (∑ j ∈ Finset.range 3,
           (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-            Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+            Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
           ‖(iteratedCovGrad (I := I) g₀ 0 2 j W).toSection x‖))
       ≤ Cc * Mn := hCol
     _ ≤ Cc * (Ch * (((4 * k + 1 : ℕ) : ℝ) * (2 * R))) :=

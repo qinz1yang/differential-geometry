@@ -576,7 +576,7 @@ private lemma bareChartJetContent_le_sqrt_fiberNormSq_sum_uniform
     refine (hCi (iteratedCovGrad (I := I) g 0 2 i D) hz).trans ?_
     refine mul_le_mul_of_nonneg_left (le_of_eq ?_) hCi_nn
     let : Bundle.RiemannianBundle (fun w : M => TensorRSSpace 0 (2 + i) I w) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 (2 + i)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 (2 + i)
     rw [riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g 0 (2 + i)
       ((extChartAt I α).symm ((toEuclidean (E := E)).symm z))
       ((iteratedCovGrad (I := I) g 0 2 i D).toSection
@@ -1155,8 +1155,8 @@ theorem rawTensorConnLapSmooth_iteratedCovGrad_l2_tame
   exact l2RootSum_of_pointwise_iteratedCovGrad_jet (I := I) g₀ q (a + 2)
     (rawTensorConnLapSmooth (I := I) g₀ 0 2 W) W Cunif hCunif_nn hpt
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem deTurckArmDiff_supercritical_pointwise_jet_le
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -1221,11 +1221,11 @@ theorem deTurckArmDiff_supercritical_pointwise_jet_le
       _ ≤ Ch ^ 2 * (((4 * k + 1 : ℕ) : ℝ) * S) :=
           mul_le_mul_of_nonneg_left hJsq (by positivity)
   let inst0 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + 0) I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + 0)
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + 0)
   let inst1 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + 1) I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
   let inst2 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + 2) I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + 2)
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + 2)
   have hcolsq_le : (∑ q ∈ Finset.range 3,
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + q) x
         ((iteratedCovGrad (I := I) g₀ 0 2 q W).toSection x)) ≤ 3 * (Cc * Mn) ^ 2 := by

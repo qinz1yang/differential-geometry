@@ -1304,11 +1304,11 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 lemma lowerSlotInsert0Fib_curry (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (A : Tensor0SSpace 2 I x) :
     lowerSlotInsert0Fib (I := I) (M := M) x Λ A =
-      (Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x).symm
-        (((Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) A).comp Λ) := by
-  have hcurry : Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
+      (Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x).symm
+        (((Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) A).comp Λ) := by
+  have hcurry : Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
       (lowerSlotInsert0Fib (I := I) (M := M) x Λ A) =
-      ((Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) A).comp Λ := by
+      ((Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) A).comp Λ := by
     apply ContinuousLinearMap.ext
     intro v0
     apply Tensor0SSpace.toModel_injective (I := I)
@@ -1360,35 +1360,35 @@ theorem combinedLowerCoeff0Fib_contMDiff (g₁ g₁' : SmoothRiemannianMetric I 
       (combinedLowerCoeff0Fib (I := I) g₁ g₁' x (Y x))) =
       (fun x : M => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
       (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) x
-      ((Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x).symm
-        (((Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) (Y x)).comp (φ x)))) := by
+      ((Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x).symm
+        (((Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) (Y x)).comp (φ x)))) := by
     funext x
     rw [combinedLowerCoeff0Fib, lowerSlotInsert0Fib_curry]
   rw [heq]
   have hcurriedY : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SBundle.Tensor0SModel 1 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] Tensor0SBundle.Tensor0SModel 1 ℝ E)
         (E := fun z : M => TangentSpace I z →L[ℝ] Tensor0SBundle.Tensor0SSpace 1 I z) x
-        ((Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) (Y x))) :=
+        ((Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) (Y x))) :=
     fun x => TensorMultilinear.contMDiffAt_curriedSection_of_contMDiffAt_section (I := I) (M := M)
       (fun y : M => Y y) x (Y.contMDiff x)
   have hG : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SBundle.Tensor0SModel 1 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (E →L[ℝ] Tensor0SBundle.Tensor0SModel 1 ℝ E)
         (E := fun z : M => TangentSpace I z →L[ℝ] Tensor0SBundle.Tensor0SSpace 1 I z) x
-        (((Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) (Y x)).comp (φ x))) := by
+        (((Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) (Y x)).comp (φ x))) := by
     apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
       (F₁ := E) (V₁ := fun z : M => TangentSpace I z)
       (F₂ := Tensor0SBundle.Tensor0SModel 1 ℝ E)
         (V₂ := fun z : M => Tensor0SBundle.Tensor0SSpace 1 I z)
-      (φ := fun x => ((Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) (Y x)).comp
+      (φ := fun x => ((Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) (Y x)).comp
         (φ x))
     intro Z
     have heqZ : (fun x : M => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 1 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 1 I z) x
-        ((((Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) (Y x)).comp (φ x)) (Z x)))
+        ((((Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) (Y x)).comp (φ x)) (Z x)))
           =
         (fun x : M => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 1 ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace 1 I z) x
-        ((Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) (Y x) (φ x (Z x)))) := by
+        ((Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) (Y x) (φ x (Z x)))) := by
       funext x; rfl
     rw [heqZ]
     have hinner : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -1397,7 +1397,7 @@ theorem combinedLowerCoeff0Fib_contMDiff (g₁ g₁' : SmoothRiemannianMetric I 
       ContMDiff.clm_bundle_apply (b := id) hφ Z.contMDiff
     exact ContMDiff.clm_bundle_apply (b := id) hcurriedY hinner
   exact contMDiff_uncurriedSection_of_contMDiff_homSection (I := I) (M := M)
-    (fun x : M => ((Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) (Y x)).comp (φ x))
+    (fun x : M => ((Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) (Y x)).comp (φ x))
       hG
 
 noncomputable def combinedLowerCoeff0 (g₀ g₁ g₁' : SmoothRiemannianMetric I M) :
@@ -1563,63 +1563,63 @@ theorem ricciArmSubleadingCoeff_operatorFieldApplication_eq
           ∑ k : Fin (Module.finrank ℝ E),
             (unitModel (I := I) (M := M) g₀ 4 W x
                 (Fin.cons (cometricLmodel (I := I) g₁ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)))
                   ![v 0, v 1, (Module.finBasis ℝ E) k])
               + unitModel (I := I) (M := M) g₀ 4 W x
                   (Fin.cons (cometricLmodel (I := I) g₁ x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis k)))
                     ![v 1, v 0, (Module.finBasis ℝ E) k])
               - unitModel (I := I) (M := M) g₀ 4 W x
                   (Fin.cons (cometricLmodel (I := I) g₁ x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis k)))
                     (Fin.cons ((Module.finBasis ℝ E) k) v)))
         - (1 / 2 : ℝ) *
             ∑ k : Fin (Module.finrank ℝ E),
               (unitModel (I := I) (M := M) g₀ 4 W x
                   ![v 0, cometricLmodel (I := I) g₁ x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis k)), v 1, (Module.finBasis ℝ E) k]
                 + unitModel (I := I) (M := M) g₀ 4 W x
                     ![v 0, v 1, cometricLmodel (I := I) g₁ x
-                        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                           ((Module.finBasis ℝ E).cDualBasis k)), (Module.finBasis ℝ E) k]
                 - unitModel (I := I) (M := M) g₀ 4 W x
                     ![v 0, (Module.finBasis ℝ E) k, cometricLmodel (I := I) g₁ x
-                        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                           ((Module.finBasis ℝ E).cDualBasis k)), v 1])) -
       ((1 / 2 : ℝ) *
           ∑ k : Fin (Module.finrank ℝ E),
             (unitModel (I := I) (M := M) g₀ 4 W x
                 (Fin.cons (cometricLmodel (I := I) g₁' x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)))
                   ![v 0, v 1, (Module.finBasis ℝ E) k])
               + unitModel (I := I) (M := M) g₀ 4 W x
                   (Fin.cons (cometricLmodel (I := I) g₁' x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis k)))
                     ![v 1, v 0, (Module.finBasis ℝ E) k])
               - unitModel (I := I) (M := M) g₀ 4 W x
                   (Fin.cons (cometricLmodel (I := I) g₁' x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis k)))
                     (Fin.cons ((Module.finBasis ℝ E) k) v)))
         - (1 / 2 : ℝ) *
             ∑ k : Fin (Module.finrank ℝ E),
               (unitModel (I := I) (M := M) g₀ 4 W x
                   ![v 0, cometricLmodel (I := I) g₁' x
-                      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                         ((Module.finBasis ℝ E).cDualBasis k)), v 1, (Module.finBasis ℝ E) k]
                 + unitModel (I := I) (M := M) g₀ 4 W x
                     ![v 0, v 1, cometricLmodel (I := I) g₁' x
-                        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                           ((Module.finBasis ℝ E).cDualBasis k)), (Module.finBasis ℝ E) k]
                 - unitModel (I := I) (M := M) g₀ 4 W x
                     ![v 0, (Module.finBasis ℝ E) k, cometricLmodel (I := I) g₁' x
-                        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                           ((Module.finBasis ℝ E).cDualBasis k)), v 1])) := by
   classical
   have hsub : ∀ (A B : SmoothCcTensor g₀ 4 2),

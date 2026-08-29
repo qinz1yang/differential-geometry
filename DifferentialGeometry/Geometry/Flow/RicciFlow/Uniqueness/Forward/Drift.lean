@@ -34,7 +34,7 @@ private theorem drift_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
         (TangentSpace I x),
       ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
   classical
-  let D := (tangentMetricData_gen (I := I) g x).metric
+  let D := (tangentMetricDataGen (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -46,8 +46,8 @@ private theorem drift_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
   have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
     MetricFiberData.toCore_inner D (ob i) (ob j)
   change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricData_gen.inner_eq_gen
-    (tangentMetricData_gen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
+  rw [← TangentMetricDataGen.inner_eq_gen
+    (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
   change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
   rw [← hinner]
   exact ob.inner_eq_ite i j
@@ -57,7 +57,7 @@ private theorem drift_onFrame_inv {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) {x : M}
     (b : Module.Basis Idx Real (TangentSpace I x))
     (hON : ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0) :
-    MetricInverseInBasis_gen (I := I) g x b (identityInvMetric (Idx := Idx)) := by
+    MetricInverseInBasisGen (I := I) g x b (identityInvMetric (Idx := Idx)) := by
   intro i j
   constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
 
@@ -404,7 +404,7 @@ private theorem ricciLow_comp
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (X Y Z : TangentSpace I x) (l : Idx) :
     Tensor0SSpace.eval
         (lowerTri (I := I) (metricRicciAt (I := I) g x)
@@ -476,7 +476,7 @@ theorem ricciDrift_comp
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (i j k l : Idx) :
     Tensor0SSpace.eval (ricciDrift04 (I := I) g x)
         (vec4 (I := I) (basis i) (basis j) (basis k) (basis l)) =
@@ -556,7 +556,7 @@ theorem ricciDrift_low
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv) :
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv) :
     lowOfComp (I := I) g basis
         (fun i j k l =>
           (∑ p : Idx,

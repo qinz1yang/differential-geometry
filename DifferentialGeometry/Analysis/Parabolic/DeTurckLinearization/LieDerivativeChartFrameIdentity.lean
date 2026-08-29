@@ -31,7 +31,7 @@ private lemma chartCoeffOnE_alpha_eq_basis_comp_pullback_eventuallyEq
     (i : Fin (Module.finrank ℝ E)) :
     (chartCoeffOnE (I := I) α W i) =ᶠ[nhds (extChartAt I α x)]
       ((((chartModelBasis E).coord i).toContinuousLinearMap : E →L[ℝ] ℝ) ∘
-        chartE_section_repr (I := I) α (W : ∀ x : M, TangentSpace I x) ∘
+        chartESectionRepr (I := I) α (W : ∀ x : M, TangentSpace I x) ∘
         (extChartAt I α).symm) := by
   classical
   have hint : extChartAt I α x ∈ interior ((extChartAt I α).target : Set E) :=
@@ -50,7 +50,7 @@ private lemma chartCoeffOnE_alpha_eq_basis_comp_pullback_eventuallyEq
     exact hsource
   change chartCoeffOnE (I := I) α W i y =
     ((chartModelBasis E).coord i).toContinuousLinearMap
-      (chartE_section_repr (I := I) α (W : ∀ x : M, TangentSpace I x)
+      (chartESectionRepr (I := I) α (W : ∀ x : M, TangentSpace I x)
         ((extChartAt I α).symm y))
   change (chartModelBasis E).repr
       ((trivializationAt E (TangentSpace I) α)
@@ -65,7 +65,7 @@ private lemma differentiableAt_chartE_pullback_W_alpha
     (W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (α : M) {x : M} (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) :
     DifferentiableAt ℝ
-      (chartE_section_repr (I := I) α (W : ∀ x : M, TangentSpace I x) ∘
+      (chartESectionRepr (I := I) α (W : ∀ x : M, TangentSpace I x) ∘
         (extChartAt I α).symm) (extChartAt I α x) := by
   classical
   have hW_at : MDiffAt (T% fun y => W y) x := W.mdifferentiableAt
@@ -104,27 +104,27 @@ private lemma chart_christoffel_expansion_nabla_W_alpha_chartBasis
   rw [hLC_apply]
   rw [chartLeviCivita_apply (I := I) g α (W : ∀ x : M, TangentSpace I x) hx v]
   rw [show trivToE (I := I) α x (trivFromE (I := I) α x
-        (fderiv ℝ (chartE_section_repr (I := I) α
+        (fderiv ℝ (chartESectionRepr (I := I) α
             (W : ∀ x : M, TangentSpace I x) ∘ (extChartAt I α).symm)
             (extChartAt I α x) (trivToE (I := I) α x v) +
           christoffelCorrection (I := I) g α x
-            (chartE_section_repr (I := I) α
+            (chartESectionRepr (I := I) α
               (W : ∀ x : M, TangentSpace I x) x) v)) =
-        fderiv ℝ (chartE_section_repr (I := I) α
+        fderiv ℝ (chartESectionRepr (I := I) α
             (W : ∀ x : M, TangentSpace I x) ∘ (extChartAt I α).symm)
             (extChartAt I α x) (trivToE (I := I) α x v) +
           christoffelCorrection (I := I) g α x
-            (chartE_section_repr (I := I) α
+            (chartESectionRepr (I := I) α
               (W : ∀ x : M, TangentSpace I x) x) v from
       trivToE_trivFromE (I := I) α hx_base _]
   rw [map_add, Finsupp.add_apply]
   congr 1
   · rw [h_trivToE_v]
     rw [show ((chartModelBasis E).repr
-          (fderiv ℝ (chartE_section_repr (I := I) α (W : ∀ x : M, TangentSpace I x) ∘
+          (fderiv ℝ (chartESectionRepr (I := I) α (W : ∀ x : M, TangentSpace I x) ∘
             (extChartAt I α).symm) (extChartAt I α x) ((chartModelBasis E) j))) k =
         (((chartModelBasis E).coord k).toContinuousLinearMap)
-          (fderiv ℝ (chartE_section_repr (I := I) α (W : ∀ x : M, TangentSpace I x) ∘
+          (fderiv ℝ (chartESectionRepr (I := I) α (W : ∀ x : M, TangentSpace I x) ∘
             (extChartAt I α).symm) (extChartAt I α x) ((chartModelBasis E) j)) from by
       rw [← Module.Basis.coord_apply]; rfl]
     rw [← ContinuousLinearMap.comp_apply]
@@ -136,7 +136,7 @@ private lemma chart_christoffel_expansion_nabla_W_alpha_chartBasis
     have hev := chartCoeffOnE_alpha_eq_basis_comp_pullback_eventuallyEq (I := I) W α hx k
     rw [hev.fderiv_eq]
   · rw [christoffelCorrection_apply (I := I) g α x
-          (chartE_section_repr (I := I) α (W : ∀ x : M, TangentSpace I x) x) v]
+          (chartESectionRepr (I := I) α (W : ∀ x : M, TangentSpace I x) x) v]
     rw [h_trivToE_v]
     rw [show ((chartModelBasis E).repr
           (∑ i' : Fin (Module.finrank ℝ E),
@@ -144,7 +144,7 @@ private lemma chart_christoffel_expansion_nabla_W_alpha_chartBasis
               ∑ k' : Fin (Module.finrank ℝ E),
                 (((chartModelBasis E).repr ((chartModelBasis E) j)) i' *
                     ((chartModelBasis E).repr
-                      (chartE_section_repr (I := I) α
+                      (chartESectionRepr (I := I) α
                         (W : ∀ x : M, TangentSpace I x) x)) j' *
                     chartChristoffel (I := I) g α i' j' k' (extChartAt I α x)) •
                   (chartModelBasis E) k')) k =
@@ -153,7 +153,7 @@ private lemma chart_christoffel_expansion_nabla_W_alpha_chartBasis
             ∑ k' : Fin (Module.finrank ℝ E),
               (((chartModelBasis E).repr ((chartModelBasis E) j)) i' *
                   ((chartModelBasis E).repr
-                    (chartE_section_repr (I := I) α
+                    (chartESectionRepr (I := I) α
                       (W : ∀ x : M, TangentSpace I x) x)) j' *
                   chartChristoffel (I := I) g α i' j' k' (extChartAt I α x)) *
                 ((chartModelBasis E).repr ((chartModelBasis E) k')) k from by
@@ -171,14 +171,14 @@ private lemma chart_christoffel_expansion_nabla_W_alpha_chartBasis
         (∑ k' : Fin (Module.finrank ℝ E),
             (((chartModelBasis E).repr ((chartModelBasis E) j)) i' *
                 ((chartModelBasis E).repr
-                  (chartE_section_repr (I := I) α
+                  (chartESectionRepr (I := I) α
                     (W : ∀ x : M, TangentSpace I x) x)) j' *
                 chartChristoffel (I := I) g α i' j' k' (extChartAt I α x)) *
               ((chartModelBasis E).repr ((chartModelBasis E) k')) k) =
         ((chartModelBasis E).repr ((chartModelBasis E) j)) i' *
           chartChristoffel (I := I) g α i' j' k (extChartAt I α x) *
           ((chartModelBasis E).repr
-            (chartE_section_repr (I := I) α
+            (chartESectionRepr (I := I) α
               (W : ∀ x : M, TangentSpace I x) x)) j' := by
       intro i' j'
       rw [Finset.sum_eq_single k
@@ -193,7 +193,7 @@ private lemma chart_christoffel_expansion_nabla_W_alpha_chartBasis
           ∑ k' : Fin (Module.finrank ℝ E),
             (((chartModelBasis E).repr ((chartModelBasis E) j)) i' *
                 ((chartModelBasis E).repr
-                  (chartE_section_repr (I := I) α
+                  (chartESectionRepr (I := I) α
                     (W : ∀ x : M, TangentSpace I x) x)) j' *
                 chartChristoffel (I := I) g α i' j' k' (extChartAt I α x)) *
               ((chartModelBasis E).repr ((chartModelBasis E) k')) k =
@@ -202,7 +202,7 @@ private lemma chart_christoffel_expansion_nabla_W_alpha_chartBasis
           ((chartModelBasis E).repr ((chartModelBasis E) j)) i' *
             chartChristoffel (I := I) g α i' j' k (extChartAt I α x) *
             ((chartModelBasis E).repr
-              (chartE_section_repr (I := I) α
+              (chartESectionRepr (I := I) α
                 (W : ∀ x : M, TangentSpace I x) x)) j'
       from Finset.sum_congr rfl (fun i' _ => Finset.sum_congr rfl (fun j' _ => hkc i' j'))]
     rw [show
@@ -211,12 +211,12 @@ private lemma chart_christoffel_expansion_nabla_W_alpha_chartBasis
           ((chartModelBasis E).repr ((chartModelBasis E) j)) i' *
             chartChristoffel (I := I) g α i' j' k (extChartAt I α x) *
             ((chartModelBasis E).repr
-              (chartE_section_repr (I := I) α
+              (chartESectionRepr (I := I) α
                 (W : ∀ x : M, TangentSpace I x) x)) j' =
       ∑ j' : Fin (Module.finrank ℝ E),
           chartChristoffel (I := I) g α j j' k (extChartAt I α x) *
             ((chartModelBasis E).repr
-              (chartE_section_repr (I := I) α
+              (chartESectionRepr (I := I) α
                 (W : ∀ x : M, TangentSpace I x) x)) j' from by
       rw [Finset.sum_eq_single j
         (fun i' _ hne => by
@@ -231,7 +231,7 @@ private lemma chart_christoffel_expansion_nabla_W_alpha_chartBasis
       rw [hjj]; ring]
     have hrepr_chartCoeff : ∀ (j' : Fin (Module.finrank ℝ E)),
         ((chartModelBasis E).repr
-          (chartE_section_repr (I := I) α
+          (chartESectionRepr (I := I) α
             (W : ∀ x : M, TangentSpace I x) x)) j' =
         chartCoeff (I := I) α W j' x := by
       intro j'

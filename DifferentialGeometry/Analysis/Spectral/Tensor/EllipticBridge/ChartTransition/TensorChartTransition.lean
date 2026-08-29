@@ -74,15 +74,15 @@ private lemma coordChangeL_apply_eq_clmAt_symmL
       (rsTriv (E := E) (I := I) (M := M) r s α).continuousLinearMapAt ℝ x
         ((rsTriv (E := E) (I := I) (M := M) r s γ).symmL ℝ x w) := by
   let _ : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedAddCommGroup r s
+    tensorRSModelNormedAddCommGroup r s
   let _ : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedSpace r s
+    tensorRSModelNormedSpace r s
   let _ : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   let _ : FiberBundle (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   let _ : VectorBundle ℝ (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
@@ -106,15 +106,15 @@ private lemma tensorTrivProj_chartTransition
           (rsTriv (E := E) (I := I) (M := M) r s α) x)
         (tensorTrivProj (I := I) (M := M) g r s S γ x) := by
   let _ : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedAddCommGroup r s
+    tensorRSModelNormedAddCommGroup r s
   let _ : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedSpace r s
+    tensorRSModelNormedSpace r s
   let _ : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   let _ : FiberBundle (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   let _ : VectorBundle ℝ (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
@@ -130,15 +130,15 @@ def transitionCoeff
     (r s : ℕ) (γ α : M)
     (P₀ Q : TensorCompIdx (E := E) r s) (x : M) : ℝ :=
   let _ : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedAddCommGroup r s
+    tensorRSModelNormedAddCommGroup r s
   let _ : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedSpace r s
+    tensorRSModelNormedSpace r s
   let _ : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   let _ : FiberBundle (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   let _ : VectorBundle ℝ (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
@@ -158,15 +158,15 @@ private lemma contMDiffOn_rsCoordChangeL (r s : ℕ) (γ α : M) :
           TensorRSModel r s ℝ E →L[ℝ] TensorRSModel r s ℝ E))
       ((chartAt H γ).source ∩ (chartAt H α).source) := by
   let _ : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedAddCommGroup r s
+    tensorRSModelNormedAddCommGroup r s
   let _ : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedSpace r s
+    tensorRSModelNormedSpace r s
   let _ : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   let _ : FiberBundle (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   let _ : VectorBundle ℝ (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
@@ -188,9 +188,9 @@ lemma contMDiffOn_transitionCoeff
       (transitionCoeff (E := E) (I := I) (M := M) r s γ α P₀ Q)
       ((chartAt H γ).source ∩ (chartAt H α).source) := by
   let _ : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedAddCommGroup r s
+    tensorRSModelNormedAddCommGroup r s
   let _ : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedSpace r s
+    tensorRSModelNormedSpace r s
   have hcoord := contMDiffOn_rsCoordChangeL (E := E) (I := I) (M := M) r s γ α
   have hcoord_app : ContMDiffOn I
       (modelWithCornersSelf ℝ (TensorRSModel r s ℝ E)) ∞
@@ -221,9 +221,9 @@ theorem tensorChartComponentRaw_eq_transitionCoeff_sum
           tensorChartComponentRaw (I := I) (M := M) g r s S γ Q.1 Q.2 x := by
   classical
   let _ : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedAddCommGroup r s
+    tensorRSModelNormedAddCommGroup r s
   let _ : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedSpace r s
+    tensorRSModelNormedSpace r s
   obtain ⟨hxγ, hxα⟩ := hx
   rw [tensorChartComponentRaw_def (I := I) (M := M) g r s S α P₀.1 P₀.2]
   rw [tensorTrivProj_chartTransition (E := E) (I := I) (M := M)
@@ -361,7 +361,7 @@ private lemma exists_transitionCoeff_bound_on_pouTsupport_pair
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartAtlasPOU_tsupport_eq_empty_of_notMem_finset
-    {γ : M} (hγ : γ ∉ chartAtlasPOU_finset (I := I) (M := M)) :
+    {γ : M} (hγ : γ ∉ chartAtlasPOUFinset (I := I) (M := M)) :
     tsupport (fun x : M =>
         ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) = ∅ := by
   classical
@@ -378,7 +378,7 @@ private lemma chartAtlasPOU_tsupport_eq_empty_of_notMem_finset
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma pouTsupport_inter_eq_empty_of_left_notMem_finset
-    {γ : M} (hγ : γ ∉ chartAtlasPOU_finset (I := I) (M := M)) (α : M) :
+    {γ : M} (hγ : γ ∉ chartAtlasPOUFinset (I := I) (M := M)) (α : M) :
     tsupport (fun x : M =>
         ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ∩
       tsupport (fun x : M =>
@@ -389,7 +389,7 @@ private lemma pouTsupport_inter_eq_empty_of_left_notMem_finset
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma pouTsupport_inter_eq_empty_of_right_notMem_finset
-    (γ : M) {α : M} (hα : α ∉ chartAtlasPOU_finset (I := I) (M := M)) :
+    (γ : M) {α : M} (hα : α ∉ chartAtlasPOUFinset (I := I) (M := M)) :
     tsupport (fun x : M =>
         ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ∩
       tsupport (fun x : M =>
@@ -466,15 +466,15 @@ private lemma exists_transitionCoeff_uniform_bound_on_pouTsupport
             |transitionCoeff (E := E) (I := I) (M := M)
               r s γα.1 γα.2 P₀ Q b| ≤ K by
     obtain ⟨K, hK_nn, hK_le⟩ := h_aux
-      (chartAtlasPOU_finset (I := I) (M := M) ×ˢ
-        chartAtlasPOU_finset (I := I) (M := M))
+      (chartAtlasPOUFinset (I := I) (M := M) ×ˢ
+        chartAtlasPOUFinset (I := I) (M := M))
     refine ⟨K, hK_nn, ?_⟩
     intro γ α P₀ Q b hb
-    by_cases hγ : γ ∈ chartAtlasPOU_finset (I := I) (M := M)
-    · by_cases hα : α ∈ chartAtlasPOU_finset (I := I) (M := M)
+    by_cases hγ : γ ∈ chartAtlasPOUFinset (I := I) (M := M)
+    · by_cases hα : α ∈ chartAtlasPOUFinset (I := I) (M := M)
       · have hmem : (γ, α) ∈
-            chartAtlasPOU_finset (I := I) (M := M) ×ˢ
-              chartAtlasPOU_finset (I := I) (M := M) :=
+            chartAtlasPOUFinset (I := I) (M := M) ×ˢ
+              chartAtlasPOUFinset (I := I) (M := M) :=
           Finset.mem_product.mpr ⟨hγ, hα⟩
         exact hK_le (γ, α) hmem P₀ Q b hb
       · have h_empty := pouTsupport_inter_eq_empty_of_right_notMem_finset
@@ -653,15 +653,15 @@ private lemma exists_fderiv_chartTransition_uniform_bound_on_pouTsupport :
             ‖fderiv ℝ (extChartAt I γα.2 ∘ (extChartAt I γα.1).symm)
                 (extChartAt I γα.1 b)‖ ≤ K_jac by
     obtain ⟨K_jac, hK_nn, hK_le⟩ := h_aux
-      (chartAtlasPOU_finset (I := I) (M := M) ×ˢ
-        chartAtlasPOU_finset (I := I) (M := M))
+      (chartAtlasPOUFinset (I := I) (M := M) ×ˢ
+        chartAtlasPOUFinset (I := I) (M := M))
     refine ⟨K_jac, hK_nn, ?_⟩
     intro γ α b hb
-    by_cases hγ : γ ∈ chartAtlasPOU_finset (I := I) (M := M)
-    · by_cases hα : α ∈ chartAtlasPOU_finset (I := I) (M := M)
+    by_cases hγ : γ ∈ chartAtlasPOUFinset (I := I) (M := M)
+    · by_cases hα : α ∈ chartAtlasPOUFinset (I := I) (M := M)
       · have hmem : (γ, α) ∈
-            chartAtlasPOU_finset (I := I) (M := M) ×ˢ
-              chartAtlasPOU_finset (I := I) (M := M) :=
+            chartAtlasPOUFinset (I := I) (M := M) ×ˢ
+              chartAtlasPOUFinset (I := I) (M := M) :=
           Finset.mem_product.mpr ⟨hγ, hα⟩
         exact hK_le (γ, α) hmem b hb
       · have h_empty := pouTsupport_inter_eq_empty_of_right_notMem_finset

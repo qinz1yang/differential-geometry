@@ -121,8 +121,8 @@ private lemma tensor03_component_eq_eval
   rw [coframeS_zero_eq_unitZeroSec (I := I) (M := M) g₀ x e K₀]
   rfl
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem abs_tensor03_unit_eval_le_fibreNorm_mul_sqrt
@@ -130,7 +130,7 @@ theorem abs_tensor03_unit_eval_le_fibreNorm_mul_sqrt
     (W : TensorRSSpace 0 3 I x) (a b c : TangentSpace I x) :
     letI : Bundle.RiemannianBundle
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
     |Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from W)
           (unitZeroSec (I := I) (M := M) x))
@@ -141,7 +141,7 @@ theorem abs_tensor03_unit_eval_le_fibreNorm_mul_sqrt
   classical
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   obtain ⟨n, e, hpars, hexpand, hriemannianFiberNormSq⟩ := frame03_data (I := I) (M := M) g₀ x
   set vec : Fin 3 → TangentSpace I x := ![a, b, c] with hvec_def
   set Bcmm : ContinuousMultilinearMap ℝ (fun _ : Fin 3 => TangentSpace I x) ℝ :=
@@ -312,8 +312,8 @@ private lemma tensor04_component_eq_eval
   rw [coframeS_zero_eq_unitZeroSec (I := I) (M := M) g₀ x e K₀]
   rfl
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem abs_tensor04_unit_eval_le_fibreNorm_mul_sqrt
@@ -321,7 +321,7 @@ theorem abs_tensor04_unit_eval_le_fibreNorm_mul_sqrt
     (W : TensorRSSpace 0 4 I x) (a b c d : TangentSpace I x) :
     letI : Bundle.RiemannianBundle
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
     |Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from W)
           (unitZeroSec (I := I) (M := M) x))
@@ -332,7 +332,7 @@ theorem abs_tensor04_unit_eval_le_fibreNorm_mul_sqrt
   classical
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 4 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 4
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 4
   obtain ⟨n, e, hpars, hexpand, hriemannianFiberNormSq⟩ := frame04_data (I := I) (M := M) g₀ x
   set vec : Fin 4 → TangentSpace I x := ![a, b, c, d] with hvec_def
   set Bcmm : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => TangentSpace I x) ℝ :=
@@ -477,8 +477,8 @@ private lemma connectionDifference_inner_eq_half_covGrad3Eval
   exact connectionDifference_koszul_metricDiff (I := I) g₁ g₀
     X.mdifferentiableAt Y.mdifferentiableAt Z.mdifferentiableAt
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma abs_covGrad3Eval_le
@@ -486,7 +486,7 @@ private lemma abs_covGrad3Eval_le
     (P Q R : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     letI : Bundle.RiemannianBundle
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
     |covGrad3Eval (I := I) (M := M) g₀ T P Q R x| ≤
       ‖((covGrad (I := I) (M := M) g₀ 0 2 (ccTensor02Symm (I := I) g₀ T)).toSection x :
           Tensor0SBundle.TensorRSSpace 0 3 I x)‖ *
@@ -495,26 +495,26 @@ private lemma abs_covGrad3Eval_le
             Real.sqrt (g₀.inner x (R x) (R x)) := by
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   exact abs_tensor03_unit_eval_le_fibreNorm_mul_sqrt (I := I) (M := M) g₀ x
     ((covGrad (I := I) (M := M) g₀ 0 2 (ccTensor02Symm (I := I) g₀ T)).toSection x)
     (P x) (Q x) (R x)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private lemma norm_covGrad_symmS_le
     (g₀ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2) (x : M) :
     letI : Bundle.RiemannianBundle
         (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
     ‖((covGrad (I := I) (M := M) g₀ 0 2 (ccTensor02Symm (I := I) g₀ T)).toSection x :
         Tensor0SBundle.TensorRSSpace 0 3 I x)‖ ≤
       ‖((covGrad (I := I) (M := M) g₀ 0 2 T).toSection x :
           Tensor0SBundle.TensorRSSpace 0 3 I x)‖ := by
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   set Tsw : SmoothCcTensor g₀ 0 2 :=
     domDomCongrSection (I := I) g₀ (Equiv.swap 0 1) T with hTsw_def
   have hsymm : ccTensor02Symm (I := I) g₀ T = (1 / 2 : ℝ) • (T + Tsw) := rfl
@@ -562,8 +562,8 @@ private lemma norm_covGrad_symmS_le
   nlinarith only [htri, norm_nonneg ((covGrad (I := I) (M := M) g₀ 0 2 T).toSection x :
     Tensor0SBundle.TensorRSSpace 0 3 I x)]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem connectionDifference_gFibreNorm_le_iteratedCovGrad
     (g₀ : SmoothRiemannianMetric I M) :
@@ -576,7 +576,7 @@ theorem connectionDifference_gFibreNorm_le_iteratedCovGrad
       (x : M) (v w : TangentSpace I x),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v w)
           (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v w)) ≤
         C * ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
@@ -585,7 +585,7 @@ theorem connectionDifference_gFibreNorm_le_iteratedCovGrad
   classical
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   refine ⟨3, by norm_num, ?_⟩
   intro g₁ T h δ hδ hδ0 hbound x v w
   have hcoeff : 0 < 1 - δ := by linarith
@@ -726,8 +726,8 @@ theorem connectionDifference_gFibreNorm_le_iteratedCovGrad
     exact mul_le_mul_of_nonneg_right hf2 hNw_nn
   exact h3
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -740,7 +740,7 @@ theorem connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one
       (x : M) (v w : TangentSpace I x),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       Real.sqrt (g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v w)
           (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x v w)) ≤
         C * ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
@@ -749,7 +749,7 @@ theorem connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one
   classical
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   have hceil0 : 0 < 1 - δ₀ := by linarith
   refine ⟨(1 / (1 - δ₀)) * (3 / 2), by positivity, ?_⟩
   intro g₁ T h δ hδ hδ0 hbound x v w
@@ -927,8 +927,8 @@ private lemma fiberNormSqComponent_connectionDifferenceFib
     ContinuousMultilinearMap.compContinuousLinearMap_apply,
     ContinuousMultilinearMap.mkPiAlgebra_apply, Fin.prod_univ_one]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad
     (g₀ : SmoothRiemannianMetric I M) :
@@ -941,7 +941,7 @@ theorem connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad
       (x : M),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 2 x
           ((connectionDifferenceSection (I := I) g₁ g₀).toSection x) ≤
         C ^ 2 * ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
@@ -949,7 +949,7 @@ theorem connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad
   classical
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   obtain ⟨C₀, hC₀0, hpw⟩ := connectionDifference_gFibreNorm_le_iteratedCovGrad (I := I) (M := M) g₀
   refine ⟨Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 3) * C₀, by positivity, ?_⟩
   intro g₁ T δ hδ hδ0 h hbound x
@@ -1011,8 +1011,8 @@ theorem connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad
         push_cast
         ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad_of_lt_one
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -1025,7 +1025,7 @@ theorem connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad_of_
       (x : M),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       riemannianFiberNormSq (I := I) (M := M) g₀ 1 2 x
           ((connectionDifferenceSection (I := I) g₁ g₀).toSection x) ≤
         C ^ 2 * ‖((iteratedCovGrad (I := I) g₀ 0 2 1 T).toSection x :
@@ -1033,7 +1033,7 @@ theorem connectionDifferenceSection_riemannianFiberNormSq_le_iteratedCovGrad_of_
   classical
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   obtain ⟨C₀, hC₀0, hpw⟩ :=
     connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one (I := I) (M := M) g₀ hδ₀
   refine ⟨Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 3) * C₀, by positivity, ?_⟩

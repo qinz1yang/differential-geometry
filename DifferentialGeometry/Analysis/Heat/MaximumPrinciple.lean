@@ -463,7 +463,7 @@ theorem laplacian_nonpos_at_max
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {x_max : M} (h_max : ∀ x : M, f x ≤ f x_max) :
-    Δ_g (I := I) g ⟨_, hf⟩ x_max ≤ 0 := by
+    ΔG (I := I) g ⟨_, hf⟩ x_max ≤ 0 := by
   let _ := (inferInstance : (SigmaCompactSpace M))
   classical
   have h_trace_eq :=
@@ -527,7 +527,7 @@ theorem weak_maximum_principle_of_closed
     (h_t_diff : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M,
       HasDerivAt (fun s : ℝ => u s x) (Du t x) t)
     (h_ineq : ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M,
-      Du t x ≤ Δ_g (I := I) g ⟨u t, hu_smooth t⟩ x)
+      Du t x ≤ ΔG (I := I) g ⟨u t, hu_smooth t⟩ x)
     (h_init : ∀ x : M, u 0 x ≤ 0) :
     ∀ t ∈ Set.Icc (0 : ℝ) T, ∀ x : M, u t x ≤ 0 := by
   classical
@@ -582,7 +582,7 @@ theorem weak_maximum_principle_of_closed
       rw [hv1, hv2] at h
       linarith
     have h_laplacian_nonpos :
-        Δ_g (I := I) g ⟨u p₀.1, hu_smooth p₀.1⟩ p₀.2 ≤ 0 :=
+        ΔG (I := I) g ⟨u p₀.1, hu_smooth p₀.1⟩ p₀.2 ≤ 0 :=
       laplacian_nonpos_at_max (I := I) g (hu_smooth p₀.1) h_spatial_max
     have h_y_in_cone : -(p₀.1 / 2) ∈ posTangentConeAt
         (Set.Icc (0 : ℝ) (T - η)) p₀.1 := by

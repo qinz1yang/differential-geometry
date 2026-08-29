@@ -198,15 +198,15 @@ private theorem leviCivita_nablaDuSec_coordFrame_symm
     (hdu : DuFieldRealizes (I := I) u duSec)
     (x : M) (i j : CoordinateIdx (𝕜 := Real) E) :
     nablaDuSec x (vec2
-        (coordinateFrameAt_toBasis (I := I) x i)
-        (coordinateFrameAt_toBasis (I := I) x j)) =
+        (coordinateFrameAtToBasis (I := I) x i)
+        (coordinateFrameAtToBasis (I := I) x j)) =
     nablaDuSec x (vec2
-        (coordinateFrameAt_toBasis (I := I) x j)
-        (coordinateFrameAt_toBasis (I := I) x i)) := by
+        (coordinateFrameAtToBasis (I := I) x j)
+        (coordinateFrameAtToBasis (I := I) x i)) := by
   exact leviCivita_nablaDuSec_pointwise_symm_direct
     (I := I) g u hu duSec nablaDuSec hnabla hdu x
-    (coordinateFrameAt_toBasis (I := I) x i)
-    (coordinateFrameAt_toBasis (I := I) x j)
+    (coordinateFrameAtToBasis (I := I) x i)
+    (coordinateFrameAtToBasis (I := I) x j)
 
 private theorem leviCivita_nablaDuSec_pointwise_symm
     [T2Space M]
@@ -222,7 +222,7 @@ private theorem leviCivita_nablaDuSec_pointwise_symm
       nablaDuSec x (vec2 U V) = nablaDuSec x (vec2 V U) := by
   intro U V
   have hsymm := DifferentialGeometry.Tensor.Coordinates.tensor0S_two_symm_of_coordFrame
-    (I := I) (coordinateFrameAt_toBasis (I := I) x) (nablaDuSec x) ?_
+    (I := I) (coordinateFrameAtToBasis (I := I) x) (nablaDuSec x) ?_
   · exact hsymm U V
   intro i j
   have h := leviCivita_nablaDuSec_coordFrame_symm

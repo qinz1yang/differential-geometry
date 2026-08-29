@@ -65,7 +65,7 @@ theorem metricCovDerivNorm_eq_iterCov
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (h gRef : SmoothRiemannianMetric I M) (N : ℕ) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gRef x basis
+    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric (Idx := Idx))) :
     metricCovDerivNorm (I := I) N h gRef x =
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + N)
@@ -84,7 +84,7 @@ theorem metricDerivNorm_eq_iterCov
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (gk gInf gRef : SmoothRiemannianMetric I M) (N : ℕ) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gRef x basis
+    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric (Idx := Idx))) :
     metricDerivNorm (I := I) N gk gInf gRef x =
       Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + N)
@@ -139,7 +139,7 @@ theorem metricDerivNorm_self
   have h0 : metricDiffCovDerivAt (I := I) a g g gRef x = 0 := sub_self _
   rw [h0]
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gRef x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gRef x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) gRef basis hON

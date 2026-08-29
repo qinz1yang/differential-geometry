@@ -24,11 +24,11 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance parallelTensor02NormedAddCommGroup (x : M) :
     NormedAddCommGroup (Tensor0SSpace 2 I x) :=
-  Tensor0SBundle.tensor0SSpace_normedAddCommGroup 2 x
+  Tensor0SBundle.tensor0SSpaceNormedAddCommGroup 2 x
 
 private local instance parallelTensor02NormedSpace (x : M) :
     NormedSpace ℝ (Tensor0SSpace 2 I x) :=
-  Tensor0SBundle.tensor0SSpace_normedSpace 2 x
+  Tensor0SBundle.tensor0SSpaceNormedSpace 2 x
 
 private local instance parallelTensor02AddCommGroup (x : M) :
     AddCommGroup (Tensor0SSpace 2 I x) :=

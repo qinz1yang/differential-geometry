@@ -212,18 +212,18 @@ private theorem covariantDerivative_coordFrame_coeff
     have hcoeff_frame (a : CoordinateIdx (𝕜 := Real) E) :
         hframe.coeff m x₀ (frame a x₀) = if a = m then 1 else 0 := by
       rw [coordinateFrameAt_coeff_eq_toBasis_coord (I := I) x₀ (frame a x₀) m]
-      rw [show frame a x₀ = coordinateFrameAt_toBasis (I := I) x₀ a by
+      rw [show frame a x₀ = coordinateFrameAtToBasis (I := I) x₀ a by
         simp [frame]]
-      change ((coordinateFrameAt_toBasis (I := I) x₀).repr
-          ((coordinateFrameAt_toBasis (I := I) x₀) a)) m =
+      change ((coordinateFrameAtToBasis (I := I) x₀).repr
+          ((coordinateFrameAtToBasis (I := I) x₀) a)) m =
         if a = m then 1 else 0
       by_cases ham : a = m
       · subst ham
         have hb := congrArg (fun f => f a)
-          (Module.Basis.repr_self (coordinateFrameAt_toBasis (I := I) x₀) a)
+          (Module.Basis.repr_self (coordinateFrameAtToBasis (I := I) x₀) a)
         simpa [coordinateFrameAt_toBasis_apply] using hb
       · have hb := congrArg (fun f => f m)
-          (Module.Basis.repr_self (coordinateFrameAt_toBasis (I := I) x₀) a)
+          (Module.Basis.repr_self (coordinateFrameAtToBasis (I := I) x₀) a)
         simpa [coordinateFrameAt_toBasis_apply, Finsupp.single_apply, ham] using hb
     rw [show
       (∑ a : CoordinateIdx (𝕜 := Real) E,
@@ -632,10 +632,10 @@ theorem rm13_eval_eq_christoffelCurvCoord
     Rm13 x₀ alpha (vec3 (frame i x₀) (frame k x₀) (frame j x₀))
         = Rm13 x₀ alpha (vec3 (Xs x₀) (Ys x₀) (Zs x₀)) := by
           simp [hXx, hYx, hZx]
-    _ = cotangentToDual_gen (I := I) alpha
+    _ = cotangentToDualGen (I := I) alpha
         ((connectionRiemannCurvatureField (I := I) cov
           (fun p : M => Xs p) (fun p : M => Ys p) (fun p : M => Zs p)) x₀) := hRm_eval
-    _ = cotangentToDual_gen (I := I) alpha
+    _ = cotangentToDualGen (I := I) alpha
         ((connectionRiemannCurvatureField (I := I) cov
           (frame i) (frame k) (frame j)) x₀) := by
           rw [hcurv_smooth]
@@ -660,13 +660,13 @@ theorem rm13_coord_expand
     Rm13 x₀ alpha (vec3 X Y Z) =
       ∑ r : Fin 3 -> CoordinateIdx (𝕜 := Real) E,
         (∏ q : Fin 3,
-          (coordinateFrameAt_toBasis (I := I) x₀).repr
+          (coordinateFrameAtToBasis (I := I) x₀).repr
             (vec3 X Y Z q) (r q)) *
           (∑ m : CoordinateIdx (𝕜 := Real) E,
             christoffelCurvCoeffAt (I := I) cov x₀ (r 0) (r 1) (r 2) m *
               alpha (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ m x₀)) := by
   classical
-  let basis := coordinateFrameAt_toBasis (I := I) x₀
+  let basis := coordinateFrameAtToBasis (I := I) x₀
   let slot : Fin 3 -> TangentSpace I x₀ := vec3 X Y Z
   let g : (q : Fin 3) -> CoordinateIdx (𝕜 := Real) E -> TangentSpace I x₀ :=
     fun q i => basis.repr (slot q) i • basis i
@@ -683,7 +683,7 @@ theorem rm13_coord_expand
     _ =
       ∑ r : Fin 3 -> CoordinateIdx (𝕜 := Real) E,
         (∏ q : Fin 3,
-          (coordinateFrameAt_toBasis (I := I) x₀).repr
+          (coordinateFrameAtToBasis (I := I) x₀).repr
             (vec3 X Y Z q) (r q)) *
           (∑ m : CoordinateIdx (𝕜 := Real) E,
             christoffelCurvCoeffAt (I := I) cov x₀ (r 0) (r 1) (r 2) m *
@@ -726,7 +726,7 @@ theorem ricciFromRm13At_coordFrame_eq_christoffelRicciCoeffAt
           (coordinateFrameAt (I := I) x₀ j x₀)) =
       christoffelRicciCoeffAt (I := I) cov x₀ i j := by
   classical
-  let basis := coordinateFrameAt_toBasis (I := I) x₀
+  let basis := coordinateFrameAtToBasis (I := I) x₀
   rw [show coordinateFrameAt (I := I) x₀ i x₀ = basis i by
     simp [basis, coordinateFrameAt_toBasis_apply]]
   rw [show coordinateFrameAt (I := I) x₀ j x₀ = basis j by
@@ -735,32 +735,32 @@ theorem ricciFromRm13At_coordFrame_eq_christoffelRicciCoeffAt
   unfold christoffelRicciCoeffAt
   refine Finset.sum_congr rfl fun a _ => ?_
   have h := rm13_eval_eq_christoffelCurvCoord (I := I) cov hcov Rm13 x₀
-    (dualToCotangent_gen (I := I) (basis.coord a)) hRm hcurv a i j
+    (dualToCotangentGen (I := I) (basis.coord a)) hRm hcurv a i j
   have hcoord (m : CoordinateIdx (𝕜 := Real) E) :
-      ((coordinateFrameAt_toBasis (I := I) x₀).repr
+      ((coordinateFrameAtToBasis (I := I) x₀).repr
           (coordinateFrameAt (I := I) x₀ m x₀)) a =
         if m = a then 1 else 0 := by
     rw [show coordinateFrameAt (I := I) x₀ m x₀ =
-        (coordinateFrameAt_toBasis (I := I) x₀) m by
+        (coordinateFrameAtToBasis (I := I) x₀) m by
       simp [coordinateFrameAt_toBasis_apply]]
     by_cases hma : m = a
     · rw [hma]
       have hb := congrArg (fun f => f a)
-        (Module.Basis.repr_self (coordinateFrameAt_toBasis (I := I) x₀) a)
+        (Module.Basis.repr_self (coordinateFrameAtToBasis (I := I) x₀) a)
       simpa [coordinateFrameAt_toBasis_apply] using hb
     · have hb := congrArg (fun f => f a)
-        (Module.Basis.repr_self (coordinateFrameAt_toBasis (I := I) x₀) m)
+        (Module.Basis.repr_self (coordinateFrameAtToBasis (I := I) x₀) m)
       simpa [coordinateFrameAt_toBasis_apply, Finsupp.single_apply, hma] using hb
   have hsum :
       (∑ m : CoordinateIdx (𝕜 := Real) E,
           christoffelCurvCoeffAt (I := I) cov x₀ a i j m *
-            ((coordinateFrameAt_toBasis (I := I) x₀).repr
+            ((coordinateFrameAtToBasis (I := I) x₀).repr
               (coordinateFrameAt (I := I) x₀ m x₀)) a) =
         christoffelCurvCoeffAt (I := I) cov x₀ a i j a := by
     rw [show
         (∑ m : CoordinateIdx (𝕜 := Real) E,
             christoffelCurvCoeffAt (I := I) cov x₀ a i j m *
-              ((coordinateFrameAt_toBasis (I := I) x₀).repr
+              ((coordinateFrameAtToBasis (I := I) x₀).repr
                 (coordinateFrameAt (I := I) x₀ m x₀)) a) =
           ∑ m : CoordinateIdx (𝕜 := Real) E,
             (if m = a then christoffelCurvCoeffAt (I := I) cov x₀ a i j a
@@ -773,23 +773,23 @@ theorem ricciFromRm13At_coordFrame_eq_christoffelRicciCoeffAt
       · simp [hma]]
     simp
   have h' :
-      ((Rm13 x₀) (dualToCotangent_gen (I := I) (basis.coord a)))
+      ((Rm13 x₀) (dualToCotangentGen (I := I) (basis.coord a)))
           (vec3 (basis a) (basis i) (basis j)) =
         ∑ m : CoordinateIdx (𝕜 := Real) E,
           christoffelCurvCoeffAt (I := I) cov x₀ a i j m *
-            ((coordinateFrameAt_toBasis (I := I) x₀).repr
+            ((coordinateFrameAtToBasis (I := I) x₀).repr
               (coordinateFrameAt (I := I) x₀ m x₀)) a := by
     calc
-      ((Rm13 x₀) (dualToCotangent_gen (I := I) (basis.coord a)))
+      ((Rm13 x₀) (dualToCotangentGen (I := I) (basis.coord a)))
           (vec3 (basis a) (basis i) (basis j)) =
         ∑ m : CoordinateIdx (𝕜 := Real) E,
           christoffelCurvCoeffAt (I := I) cov x₀ a i j m *
-            (dualToCotangent_gen (I := I) (basis.coord a))
+            (dualToCotangentGen (I := I) (basis.coord a))
               (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ m x₀) := by
         simpa [basis, coordinateFrameAt_toBasis_apply] using h
       _ = ∑ m : CoordinateIdx (𝕜 := Real) E,
           christoffelCurvCoeffAt (I := I) cov x₀ a i j m *
-            ((coordinateFrameAt_toBasis (I := I) x₀).repr
+            ((coordinateFrameAtToBasis (I := I) x₀).repr
               (coordinateFrameAt (I := I) x₀ m x₀)) a := by
         refine Finset.sum_congr rfl (fun m _ => ?_)
         congr 1

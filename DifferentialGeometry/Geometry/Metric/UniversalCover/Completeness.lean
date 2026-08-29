@@ -91,8 +91,8 @@ open Manifold MeasureTheory
 
 variable [Nonempty M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Nonempty M] in
 omit [PseudoEMetricSpace M] [SecondCountableTopology M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -138,8 +138,8 @@ private theorem proj_pathELength_eq
   rw [hval]
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [Nonempty M] in
 omit [SecondCountableTopology M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -162,7 +162,7 @@ theorem proj_lipschitzWith_one [RegularSpace
           ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((liftedMetric (I := I) g).inner x' v v))) :
     letI : PseudoEMetricSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-      uc_pseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
+      ucPseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
     LipschitzWith 1
       (proj :
         DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M → M) := by
@@ -172,7 +172,7 @@ theorem proj_lipschitzWith_one [RegularSpace
     ⟨(liftedMetric (I := I) g).toRiemannianMetric⟩
   let hUCem : PseudoEMetricSpace
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-    uc_pseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
+    ucPseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
   have hUCRiem :
       IsRiemannianManifold I
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
@@ -206,8 +206,8 @@ theorem proj_lipschitzWith_one [RegularSpace
 end ProjLipschitz
 
 open Manifold MeasureTheory in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [InnerProductSpace ℝ E] [I.Boundaryless] [PseudoEMetricSpace M] in
 theorem tail_in_single_sheet
@@ -229,7 +229,7 @@ theorem tail_in_single_sheet
     (hCauchy :
       letI : PseudoEMetricSpace
           (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-        uc_pseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
+        ucPseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
       CauchySeq x')
     {y : M}
     (hlim : Filter.Tendsto (fun n => proj (x' n)) Filter.atTop (𝓝 y)) :
@@ -246,7 +246,7 @@ theorem tail_in_single_sheet
     ⟨(liftedMetric (I := I) g).toRiemannianMetric⟩
   let hUCem : PseudoEMetricSpace
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-    uc_pseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
+    ucPseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
   have hUCRiem :
       IsRiemannianManifold I
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
@@ -475,8 +475,8 @@ theorem sheet_homeomorph (y : M) :
   refine ⟨e.target, e.open_target, hyU, y', e.source, e.open_source, hy'e,
     hproj_y', e.toHomeomorphSourceTarget, trivial⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [InnerProductSpace ℝ E] [I.Boundaryless] [PseudoEMetricSpace M] in
 theorem lift_the_limit
@@ -498,7 +498,7 @@ theorem lift_the_limit
     (hCauchy :
       letI : PseudoEMetricSpace
           (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-        uc_pseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
+        ucPseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
       CauchySeq x')
     {y : M}
     (hlim : Filter.Tendsto (fun n => proj (x' n)) Filter.atTop (𝓝 y)) :
@@ -525,8 +525,8 @@ theorem lift_the_limit
   rw [hy'_symm] at hcomp
   exact hcomp.congr' htail_eq
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [InnerProductSpace ℝ E] [I.Boundaryless] in
 theorem completeSpace_of_complete [CompleteSpace M]
@@ -546,12 +546,12 @@ theorem completeSpace_of_complete [CompleteSpace M]
           ‖v‖ₑ = ENNReal.ofReal (Real.sqrt ((liftedMetric (I := I) g).inner x' v v))) :
     letI : PseudoEMetricSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-      uc_pseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
+      ucPseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
     CompleteSpace
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) := by
   let hUCem : PseudoEMetricSpace
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-    uc_pseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
+    ucPseudoEMetricSpace (I := I) (M := M) (liftedMetric (I := I) g)
   have hLip :
       LipschitzWith 1
         (proj :

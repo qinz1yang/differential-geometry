@@ -1003,23 +1003,23 @@ theorem connectionDifferenceContravariantInsertionField_eq_reindex_slotExtend_tw
     rw [slotExtendFib_apply_eval (I := I) (M := M) 1 2 x
       (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         (connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (e.symm (u 0)))
+      ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (e.symm (u 0)))
       (Matrix.vecTail u 0) (Matrix.vecTail (Matrix.vecTail u))]
     rw [show Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
           (connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x)
-            ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (e.symm (u 0)))
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x)
+            ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (e.symm (u 0)))
             (e.symm (Matrix.vecTail u 0))))
         (Matrix.vecTail (Matrix.vecTail u)) =
         Tensor0SSpace.toModel
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x)
-            ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (e.symm (u 0)))
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x)
+            ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (e.symm (u 0)))
             (e.symm (Matrix.vecTail u 0)))
           (fun _ : Fin 1 => ((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
             ((u 2 : E)) ((u 3 : E)) : TangentSpace I x) : E)) from rfl]
     rw [TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := 1)
-      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (e.symm (u 0)))
+      ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x) D' (e.symm (u 0)))
       (Matrix.vecTail u 0)
       (fun _ : Fin 1 => ((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x
         ((u 2 : E)) ((u 3 : E)) : TangentSpace I x) : E))]

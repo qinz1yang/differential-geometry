@@ -267,12 +267,12 @@ private lemma outputSlotChartKernel_apply_norm_le
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ M_F : ℝ, 0 ≤ M_F ∧
       ∀ (T : Π b' : M, TensorRSSpace r s I b') {b : M},
         b ∈ tsupport (fun x : M =>
@@ -283,7 +283,7 @@ theorem chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport
             M_F * ‖T b‖ := by
   classical
   let _ : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   have hK_cpt : IsCompact (tsupport (fun x : M =>
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :=
     pouTsupport_isCompact (I := I) (M := M) α
@@ -361,12 +361,12 @@ theorem chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem chartTensorRSOutputSlotCorrection_riemannian_norm_le_on_pouTsupport
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ M_F : ℝ, 0 ≤ M_F ∧
       ∀ (T : Π b' : M, TensorRSSpace r s I b') {b : M},
         b ∈ tsupport (fun x : M =>
@@ -377,7 +377,7 @@ theorem chartTensorRSOutputSlotCorrection_riemannian_norm_le_on_pouTsupport
             M_F * ‖T b‖ := by
   classical
   let _ : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   have hK_cpt : IsCompact (tsupport (fun x : M =>
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)) :=
     pouTsupport_isCompact (I := I) (M := M) α

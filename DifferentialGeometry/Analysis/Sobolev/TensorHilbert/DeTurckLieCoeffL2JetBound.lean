@@ -131,7 +131,7 @@ private theorem deTurckLieCovariantDerivativeInsertionField_eq_slotInsert_sum
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
             (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg))).toSection x)
       = (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-          tensorRS_domDomCongr (I := I) (M := M) (Equiv.swap (0 : Fin 2) 1)
+          tensorRSDomDomCongr (I := I) (M := M) (Equiv.swap (0 : Fin 2) 1)
             ((endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
               (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)).toSection x)) from rfl]
   rw [toModel_rsDomDomCongr_apply (I := I) (M := M) (Equiv.swap (0 : Fin 2) 1)

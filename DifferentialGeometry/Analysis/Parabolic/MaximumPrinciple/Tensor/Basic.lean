@@ -197,7 +197,7 @@ noncomputable def tensorBarrierSecFamily
     (epsilon delta t0 : Real) :
     TwoTensorSecFamily (I := I) (M := M) :=
   fun t =>
-    letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2
+    letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2
     S t + (epsilon * (delta + t - t0)) •
       Tensor0SBundle.metricTensorField (I := I) (G t)
 

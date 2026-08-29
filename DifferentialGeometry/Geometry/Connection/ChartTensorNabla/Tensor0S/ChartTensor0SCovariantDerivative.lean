@@ -35,7 +35,7 @@ omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space 
 lemma chartE_section_repr_chartParallelExtend
     (α b : M) (v : TangentSpace I b) {b' : M}
     (hb' : b' ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    chartE_section_repr (I := I) α
+    chartESectionRepr (I := I) α
         (chartParallelExtend (I := I) α b v) b' =
       trivToE (I := I) α b v := by
   classical
@@ -296,10 +296,10 @@ lemma chartTensor0SCovariantDerivative_succ_add (s : ℕ)
     (T₁ T₂ : Π b : M, Tensor0SSpace (s + 1) I b)
     (X : Π b : M, TangentSpace I b) (b : M)
     (h₁ : DifferentiableAt ℝ
-      (tensor0SChartE_section_repr (I := I) (s + 1) α T₁ ∘ (extChartAt I α).symm)
+      (tensor0SChartESectionRepr (I := I) (s + 1) α T₁ ∘ (extChartAt I α).symm)
       (extChartAt I α b))
     (h₂ : DifferentiableAt ℝ
-      (tensor0SChartE_section_repr (I := I) (s + 1) α T₂ ∘ (extChartAt I α).symm)
+      (tensor0SChartESectionRepr (I := I) (s + 1) α T₂ ∘ (extChartAt I α).symm)
       (extChartAt I α b)) :
     chartTensor0SCovariantDerivative (I := I) (s + 1) g α (T₁ + T₂) X b =
       chartTensor0SCovariantDerivative (I := I) (s + 1) g α T₁ X b
@@ -346,7 +346,7 @@ lemma chartTensor0SCovariantDerivative_succ_smul (s : ℕ)
     (T : Π b : M, Tensor0SSpace (s + 1) I b)
     (X : Π b : M, TangentSpace I b) (b : M)
     (hT : DifferentiableAt ℝ
-      (tensor0SChartE_section_repr (I := I) (s + 1) α T ∘ (extChartAt I α).symm)
+      (tensor0SChartESectionRepr (I := I) (s + 1) α T ∘ (extChartAt I α).symm)
       (extChartAt I α b)) :
     chartTensor0SCovariantDerivative (I := I) (s + 1) g α (c • T) X b =
       c • chartTensor0SCovariantDerivative (I := I) (s + 1) g α T X b := by

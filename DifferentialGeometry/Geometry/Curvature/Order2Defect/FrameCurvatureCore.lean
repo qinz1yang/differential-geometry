@@ -122,7 +122,7 @@ theorem frozenFrameTrace_eq_rawTensorConnLap_fixedFrame
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : Π b : M, TensorRSSpace r s I b) (x y : M) :
     frozenFrameTrace (I := I) g r s T x y =
-      rawTensorConnLap_fixedFrame (I := I) g r s (smoothOrthoFrame (I := I) g x) T y := by
+      rawTensorConnLapFixedFrame (I := I) g r s (smoothOrthoFrame (I := I) g x) T y := by
   rw [frozenFrameTrace_def, rawTensorConnLap_fixedFrame_def]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   rw [tensorSecondCovDeriv_def]

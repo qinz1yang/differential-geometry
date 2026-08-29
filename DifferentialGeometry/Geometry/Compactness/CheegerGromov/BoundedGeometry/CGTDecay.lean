@@ -148,9 +148,9 @@ noncomputable def riemSeqDist
     letI : EMetricSpace (X.obj k).M := (X.obj k).emetricSpace (I := I)
     (edist x y).toReal
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
-def injDecay_of_bg
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+def injDecayOfBg
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
     (hconn : ∀ k : Nat,
@@ -765,12 +765,12 @@ def injDecay_of_bg
       ConnectedSpace (X.obj k).M)
     (bg : SeqBoundedGeometry (I := I) X)
     (base : BaseInjBound (I := I) X) :
-    (injDecay_of_bg (I := I) X hcomplete hconn bg base).dist =
+    (injDecayOfBg (I := I) X hcomplete hconn bg base).dist =
       riemSeqDist (I := I) X := by
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem injDecay_realizes
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) X)
@@ -779,7 +779,7 @@ theorem injDecay_realizes
       ConnectedSpace (X.obj k).M)
     (bg : SeqBoundedGeometry (I := I) X)
     (base : BaseInjBound (I := I) X) :
-    (injDecay_of_bg (I := I) X hcomplete hconn bg base).RealizesEdist := by
+    (injDecayOfBg (I := I) X hcomplete hconn bg base).RealizesEdist := by
   refine ⟨?_, ?_⟩
   · intro k x y
     rw [injDecay_dist]
@@ -822,7 +822,7 @@ theorem exists_injDecay
     (bg : SeqBoundedGeometry (I := I) X)
     (base : BaseInjBound (I := I) X) :
     ∃ hd : InjRadiusDecayInput (I := I) X, hd.RealizesEdist :=
-  ⟨injDecay_of_bg (I := I) X hcomplete hconn bg base,
+  ⟨injDecayOfBg (I := I) X hcomplete hconn bg base,
     injDecay_realizes (I := I) X hcomplete hconn bg base⟩
 
 end HCGCompactness

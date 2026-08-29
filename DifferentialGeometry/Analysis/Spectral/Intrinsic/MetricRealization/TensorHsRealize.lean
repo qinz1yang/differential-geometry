@@ -84,8 +84,8 @@ theorem ccTensorBilin_apply (g : SmoothRiemannianMetric I M)
       ccTensorModel (I := I) g T x ![v, w] :=
   bilinFormToModel_symm_apply E (ccTensorModel (I := I) g T x) v w
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 theorem ccTensorBilin_abs_le_fibreNorm_mul_sqrt
@@ -93,14 +93,14 @@ theorem ccTensorBilin_abs_le_fibreNorm_mul_sqrt
     (v w : TangentSpace I x) :
     letI : Bundle.RiemannianBundle
         (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 2
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 2
     |smoothCcTensorBilinForm (I := I) g₀ T x v w| ≤
       ‖(T.toSection x : Tensor0SBundle.TensorRSSpace 0 2 I x)‖ *
         Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x w w) := by
   classical
   let instTens : Bundle.RiemannianBundle
       (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 2
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 2
   obtain ⟨n, e, _hn, horth, hpars, hexpand, hriemannianFiberNormSq⟩ :=
     tangent_frame_expansion (I := I) (M := M) g₀ x
   set B : TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ :=

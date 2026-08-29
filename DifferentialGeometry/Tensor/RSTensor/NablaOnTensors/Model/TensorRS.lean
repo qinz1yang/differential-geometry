@@ -63,14 +63,14 @@ theorem covariantDeriv_tensorRSModelWithin_eval_derivation {r s : ℕ}
     (hβ : DifferentiableWithinAt 𝕜 β u y)
     (hV : ∀ a : Fin s, DifferentiableWithinAt 𝕜 (V a) u y)
     (hu : UniqueDiffWithinAt 𝕜 u y) :
-    (covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E)
+    (covariantDerivTensorRSModelWithin (𝕜 := 𝕜) (E := E)
         r s X ΓX T u y (β y)) (fun a : Fin s => V a y)
       =
         fderivWithin 𝕜
           (fun z : E => (T z (β z)) (fun a : Fin s => V a z))
           u y (X y)
         - (T y
-          (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E)
+          (covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E)
             r X ΓX β u y))
           (fun a : Fin s => V a y)
         - ∑ a : Fin s,
@@ -83,20 +83,20 @@ theorem covariantDeriv_tensorRSModelWithin_eval_derivation {r s : ℕ}
   have hprod := fderivWithin_tensorRSModel_eval_slots
     (𝕜 := 𝕜) (E := E) (r := r) (s := s)
     T β V u y (X y) hT hβ hV hu
-  rw [covariantDeriv_tensorRSModelWithin]
+  rw [covariantDerivTensorRSModelWithin]
   rw [covariantDeriv_tensorRSModelAt_eval]
   rw [hprod]
   have hβcov :
       ((T y)
-        (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E)
+        (covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E)
           r X ΓX β u y)) (fun a : Fin s => V a y) =
         ((T y) (fderivWithin 𝕜 β u y (X y))) (fun a : Fin s => V a y) -
-          ((T y) ((lieDeriv_correctionL (𝕜 := 𝕜) (E := E) r (ΓX y)) (β y)))
+          ((T y) ((lieDerivCorrectionL (𝕜 := 𝕜) (E := E) r (ΓX y)) (β y)))
             (fun a : Fin s => V a y) := by
-    simp [covariantDeriv_tensor0SModelWithin, covariantDeriv_tensor0SModelAt,
+    simp [covariantDerivTensor0SModelWithin, covariantDerivTensor0SModelAt,
       lieDeriv_correctionL_apply]
   have hCorrS :
-      ((lieDeriv_correctionL (𝕜 := 𝕜) (E := E) s (ΓX y)) ((T y) (β y)))
+      ((lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s (ΓX y)) ((T y) (β y)))
           (fun a : Fin s => V a y) =
         ∑ a : Fin s,
           ((T y) (β y))
@@ -158,12 +158,12 @@ private theorem tensor0SModel_eval_update_basis_sum_modelRS {d s : ℕ}
 private theorem continuousMultilinearMap_basis_apply_basis {d s : ℕ}
     (basis : Module.Basis (Fin d) 𝕜 E)
     (upper lower : Fin s → Fin d) :
-    ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis s) upper)
+    ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis s) upper)
         (fun b : Fin s => basis (lower b)) =
       if upper = lower then 1 else 0 := by
   have h := continuousMultilinearMap_basis_repr
     (𝕜 := 𝕜) (F := E) basis s
-    ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis s) upper)
+    ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis s) upper)
     lower
   simpa [Module.Basis.repr_self, Finsupp.single_apply] using h.symm
 
@@ -263,7 +263,7 @@ theorem lieDeriv_correctionL_apply_basis_slots_expanded {d s : ℕ}
     (ΓX : E →L[𝕜] E)
     (α : Tensor0SModel (𝕜 := 𝕜) (E := E) s)
     (lower : Fin s → Fin d) :
-    ((lieDeriv_correctionL (𝕜 := 𝕜) (E := E) s ΓX α)
+    ((lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s ΓX α)
         (fun b : Fin s => basis (lower b))) =
       ∑ b : Fin s, ∑ k : Fin d,
         connectionEndomorphismCoeff basis ΓX (lower b) k *
@@ -282,15 +282,15 @@ theorem lieDeriv_correctionL_apply_basisTensor0S {d r : ℕ}
     (basis : Module.Basis (Fin d) 𝕜 E)
     (ΓX : E →L[𝕜] E)
     (upper : Fin r → Fin d) :
-    lieDeriv_correctionL (𝕜 := 𝕜) (E := E) r ΓX
-      ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper)
+    lieDerivCorrectionL (𝕜 := 𝕜) (E := E) r ΓX
+      ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r) upper)
     =
       ∑ a : Fin r, ∑ k : Fin d,
         connectionEndomorphismCoeff basis ΓX k (upper a) •
-          ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r)
+          ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r)
             (Function.update upper a k)) := by
   classical
-  apply (continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r).repr.injective
+  apply (continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r).repr.injective
   ext lower
   rw [continuousMultilinearMap_basis_repr]
   simp only [map_sum, map_smul, Module.Basis.repr_self]
@@ -299,7 +299,7 @@ theorem lieDeriv_correctionL_apply_basisTensor0S {d r : ℕ}
   rw [lieDeriv_correctionL_apply_slots]
   change
     (∑ a : Fin r,
-      ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper)
+      ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r) upper)
         (Function.update (fun b : Fin r => basis (lower b)) a (ΓX (basis (lower a))))) =
     ∑ a : Fin r,
       ∑ k : Fin d,
@@ -307,7 +307,7 @@ theorem lieDeriv_correctionL_apply_basisTensor0S {d r : ℕ}
           (if Function.update upper a k = lower then (1 : 𝕜) else 0)
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [tensor0SModel_eval_update_basis_sum_modelRS basis
-    ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper)
+    ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r) upper)
     (fun b : Fin r => basis (lower b)) a (ΓX (basis (lower a)))]
   simp only [connectionEndomorphismCoeff]
   trans
@@ -335,26 +335,26 @@ theorem covariantDeriv_tensorRSModelAt_apply_basis_slots {d r s : ℕ}
     (T : TensorRSModel r s 𝕜 E)
     (upper : Fin r → Fin d)
     (lower : Fin s → Fin d) :
-    (covariantDeriv_tensorRSModelAt
+    (covariantDerivTensorRSModelAt
         (𝕜 := 𝕜) (E := E) r s dT_X ΓX T
-        ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper))
+        ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r) upper))
       (fun b : Fin s => basis (lower b))
     =
       (dT_X
-        ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper))
+        ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r) upper))
         (fun b : Fin s => basis (lower b))
       +
       ∑ a : Fin r, ∑ k : Fin d,
         connectionEndomorphismCoeff basis ΓX k (upper a) *
           (T
-            ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r)
+            ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r)
               (Function.update upper a k)))
             (fun b : Fin s => basis (lower b))
       -
       ∑ b : Fin s, ∑ k : Fin d,
         connectionEndomorphismCoeff basis ΓX (lower b) k *
           (T
-            ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper))
+            ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r) upper))
             (Function.update
               (fun c : Fin s => basis (lower c))
               b
@@ -365,7 +365,7 @@ theorem covariantDeriv_tensorRSModelAt_apply_basis_slots {d r s : ℕ}
     (𝕜 := 𝕜) (E := E) basis ΓX upper
   have hlower_expanded := lieDeriv_correctionL_apply_basis_slots_expanded
     (𝕜 := 𝕜) (E := E) basis ΓX
-    (T ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper))
+    (T ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r) upper))
     lower
   rw [hupper, hlower_expanded]
   simp only [map_sum, map_smul,
@@ -380,30 +380,30 @@ theorem covDerivRS_sub_apply {d r s : ℕ}
     (T : TensorRSModel r s 𝕜 E)
     (upper : Fin r → Fin d)
     (lower : Fin s → Fin d) :
-    ((covariantDeriv_tensorRSModelAt
+    ((covariantDerivTensorRSModelAt
           (𝕜 := 𝕜) (E := E) r s dT_X ΓX T -
-        covariantDeriv_tensorRSModelAt
+        covariantDerivTensorRSModelAt
           (𝕜 := 𝕜) (E := E) r s dT_X ΓX' T)
-        ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper))
+        ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r) upper))
       (fun b : Fin s => basis (lower b))
     =
       (((∑ a : Fin r, ∑ k : Fin d,
         connectionEndomorphismCoeff basis ΓX k (upper a) *
           (T
-            ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r)
+            ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r)
               (Function.update upper a k)))
             (fun b : Fin s => basis (lower b))) -
         (∑ a : Fin r, ∑ k : Fin d,
         connectionEndomorphismCoeff basis ΓX' k (upper a) *
           (T
-            ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r)
+            ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r)
               (Function.update upper a k)))
             (fun b : Fin s => basis (lower b))))
       -
       ((∑ b : Fin s, ∑ k : Fin d,
         connectionEndomorphismCoeff basis ΓX (lower b) k *
           (T
-            ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper))
+            ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r) upper))
             (Function.update
               (fun c : Fin s => basis (lower c))
               b
@@ -411,7 +411,7 @@ theorem covDerivRS_sub_apply {d r s : ℕ}
         (∑ b : Fin s, ∑ k : Fin d,
         connectionEndomorphismCoeff basis ΓX' (lower b) k *
           (T
-            ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper))
+            ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r) upper))
             (Function.update
               (fun c : Fin s => basis (lower c))
               b
@@ -431,31 +431,31 @@ theorem covariantDeriv_tensorRSModelWithin_apply_basis_slots {d r s : ℕ}
     (x : E)
     (upper : Fin r → Fin d)
     (lower : Fin s → Fin d) :
-    (covariantDeriv_tensorRSModelWithin
+    (covariantDerivTensorRSModelWithin
         (𝕜 := 𝕜) (E := E) r s X ΓX T u x
-        ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper))
+        ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r) upper))
       (fun b : Fin s => basis (lower b))
     =
       (fderivWithin 𝕜 T u x (X x)
-        ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper))
+        ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r) upper))
         (fun b : Fin s => basis (lower b))
       +
       ∑ a : Fin r, ∑ k : Fin d,
         connectionEndomorphismCoeff basis (ΓX x) k (upper a) *
           (T x
-            ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r)
+            ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r)
               (Function.update upper a k)))
             (fun b : Fin s => basis (lower b))
       -
       ∑ b : Fin s, ∑ k : Fin d,
         connectionEndomorphismCoeff basis (ΓX x) (lower b) k *
           (T x
-            ((continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) basis r) upper))
+            ((continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) basis r) upper))
             (Function.update
               (fun c : Fin s => basis (lower c))
               b
               (basis k)) := by
-  unfold covariantDeriv_tensorRSModelWithin
+  unfold covariantDerivTensorRSModelWithin
   exact covariantDeriv_tensorRSModelAt_apply_basis_slots
     (𝕜 := 𝕜) (E := E) basis
     (fderivWithin 𝕜 T u x (X x)) (ΓX x) (T x) upper lower

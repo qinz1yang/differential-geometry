@@ -183,7 +183,7 @@ theorem connectionDifferenceFib_contMDiff (g₁ g₀ : SmoothRiemannianMetric I 
     (φ := fun x : M => (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
       connectionDifferenceFib (I := I) g₁ g₀ x))
   intro om
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   have hsec : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SSpace 2 I z) x
@@ -413,7 +413,7 @@ private lemma connectionDifferencePairing_covariantDerivative02_eval
         (fun i => Fin.elim0 i) = _
     rw [Tensor0SNabla.curriedSection_apply (s := 0) (T := W₁)]
     rw [show Tensor0SSpace.toModel
-          (tensor0S_curry (I := I) (M := M) 0 b (W₁ b) (Z b))
+          (tensor0SCurry (I := I) (M := M) 0 b (W₁ b) (Z b))
           (fun i => Fin.elim0 i) =
         Tensor0SSpace.toModel (W₁ b)
           (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (Z b))
@@ -428,7 +428,7 @@ private lemma connectionDifferencePairing_covariantDerivative02_eval
           (fun i => Fin.elim0 i)) = _
     rw [Tensor0SNabla.curriedSection_apply (s := 1) (T := V)]
     rw [show Tensor0SSpace.toModel
-          (tensor0S_curry (I := I) (M := M) 1 b (V b) (Y b))
+          (tensor0SCurry (I := I) (M := M) 1 b (V b) (Y b))
           (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (Z b))
             (fun i => Fin.elim0 i)) =
         Tensor0SSpace.toModel (V b)
@@ -454,7 +454,7 @@ private lemma connectionDifferencePairing_covariantDerivative02_eval
     have hW₁x : W₁ x = Tensor0SNabla.curriedSection I M V x (Y x) := rfl
     rw [hW₁x, Tensor0SNabla.curriedSection_apply]
     rw [show Tensor0SSpace.toModel
-          (tensor0S_curry (I := I) (M := M) 1 x (V x) (Y x))
+          (tensor0SCurry (I := I) (M := M) 1 x (V x) (Y x))
           (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x
             ((LeviCivita (I := I) g₀).toFun (fun b => Z b) x (X x)))
             (fun i => Fin.elim0 i)) =
@@ -552,7 +552,7 @@ private lemma connectionDifferencePairing_covariantDerivative01_eval
         (fun i => Fin.elim0 i) = _
     rw [Tensor0SNabla.curriedSection_apply (s := 0) (T := fun y : M => om y)]
     rw [show Tensor0SSpace.toModel
-          (tensor0S_curry (I := I) (M := M) 0 b (om b) (WYZ b))
+          (tensor0SCurry (I := I) (M := M) 0 b (om b) (WYZ b))
           (fun i => Fin.elim0 i) =
         Tensor0SSpace.toModel (om b)
           (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b (WYZ b))

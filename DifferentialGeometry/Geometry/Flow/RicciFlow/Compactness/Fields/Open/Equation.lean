@@ -94,7 +94,7 @@ theorem gInf_pde
     (RealTimeInterval.openWindowLeft a t₀ n)
     (RealTimeInterval.openWindowRight b t₀ n) hwin (cLow n) (hcLow n)
     (fun k s hs => hbound n k s hs) (fun q => hcovTail n q)
-    (OpenConvOut.at_window Φ co n) x v w htWin
+    (OpenConvOut.atWindow Φ co n) x v w htWin
   exact hd.hasDerivAt hn
 
 end OpenConvOut

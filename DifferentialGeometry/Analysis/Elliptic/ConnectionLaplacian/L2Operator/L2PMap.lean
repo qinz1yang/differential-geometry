@@ -72,17 +72,17 @@ def connLaplacianL2Action (g : SmoothRiemannianMetric I M) (r s : ℕ) :
             (fun z : M => (T₁ + T₂).toSection z)
             (T₁ + T₂).toSection.contMDiff_toFun) x
       have hLHS : (rawTensorConnLapSmooth (I := I) g r s (T₁ + T₂)).toSection x =
-          (tensorConnLaplacian_of_contMDiff (I := I) g r s (T₁ + T₂)
+          (tensorConnLaplacianOfContMDiff (I := I) g r s (T₁ + T₂)
             (rawTensorConnLap_contMDiff (I := I) g r s
               (fun z : M => (T₁ + T₂).toSection z)
               (T₁ + T₂).toSection.contMDiff_toFun)).toSection x := rfl
       have hRHS₁ : (rawTensorConnLapSmooth (I := I) g r s T₁).toSection x =
-          (tensorConnLaplacian_of_contMDiff (I := I) g r s T₁
+          (tensorConnLaplacianOfContMDiff (I := I) g r s T₁
             (rawTensorConnLap_contMDiff (I := I) g r s
               (fun z : M => T₁.toSection z)
               T₁.toSection.contMDiff_toFun)).toSection x := rfl
       have hRHS₂ : (rawTensorConnLapSmooth (I := I) g r s T₂).toSection x =
-          (tensorConnLaplacian_of_contMDiff (I := I) g r s T₂
+          (tensorConnLaplacianOfContMDiff (I := I) g r s T₂
             (rawTensorConnLap_contMDiff (I := I) g r s
               (fun z : M => T₂.toSection z)
               T₂.toSection.contMDiff_toFun)).toSection x := rfl
@@ -111,12 +111,12 @@ def connLaplacianL2Action (g : SmoothRiemannianMetric I M) (r s : ℕ) :
             (fun z : M => (c • T).toSection z)
             (c • T).toSection.contMDiff_toFun) x
       have hLHS : (rawTensorConnLapSmooth (I := I) g r s (c • T)).toSection x =
-          (tensorConnLaplacian_of_contMDiff (I := I) g r s (c • T)
+          (tensorConnLaplacianOfContMDiff (I := I) g r s (c • T)
             (rawTensorConnLap_contMDiff (I := I) g r s
               (fun z : M => (c • T).toSection z)
               (c • T).toSection.contMDiff_toFun)).toSection x := rfl
       have hRHS : (rawTensorConnLapSmooth (I := I) g r s T).toSection x =
-          (tensorConnLaplacian_of_contMDiff (I := I) g r s T
+          (tensorConnLaplacianOfContMDiff (I := I) g r s T
             (rawTensorConnLap_contMDiff (I := I) g r s
               (fun z : M => T.toSection z)
               T.toSection.contMDiff_toFun)).toSection x := rfl

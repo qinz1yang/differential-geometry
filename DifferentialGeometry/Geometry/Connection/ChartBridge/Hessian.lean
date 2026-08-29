@@ -379,11 +379,11 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
 private lemma chartE_section_repr_chartBasisVec_apply
     (x : M) (j : Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) x).baseSet) :
-    chartE_section_repr (I := I) x
+    chartESectionRepr (I := I) x
         (fun y : M => chartBasisVecFiber (I := I) x j y) b =
       (chartModelBasis E) j := by
   classical
-  unfold chartE_section_repr
+  unfold chartESectionRepr
   change trivToE (I := I) x b (chartBasisVecFiber (I := I) x j b) =
     (chartModelBasis E) j
   have h := trivToE_trivFromE (I := I) x hb ((chartModelBasis E) j)
@@ -397,11 +397,11 @@ private lemma chartE_section_repr_chartBasisVec_pullback_constOn
     (x : M) (j : Fin (Module.finrank ℝ E)) {y : E}
     (hy : (extChartAt I x).symm y ∈
         (trivializationAt E (TangentSpace I) x).baseSet) :
-    (chartE_section_repr (I := I) x
+    (chartESectionRepr (I := I) x
         (fun b : M => chartBasisVecFiber (I := I) x j b) ∘ (extChartAt I x).symm) y =
       (chartModelBasis E) j := by
   classical
-  change chartE_section_repr (I := I) x
+  change chartESectionRepr (I := I) x
       (fun b : M => chartBasisVecFiber (I := I) x j b) ((extChartAt I x).symm y) =
     (chartModelBasis E) j
   exact chartE_section_repr_chartBasisVec_apply (I := I) x j hy
@@ -569,7 +569,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
 private lemma fderiv_chartE_chartBasisVec_self_eq_zero
     [I.Boundaryless]
     (x : M) (j : Fin (Module.finrank ℝ E)) :
-    fderiv ℝ (chartE_section_repr (I := I) x
+    fderiv ℝ (chartESectionRepr (I := I) x
         (fun b : M => chartBasisVecFiber (I := I) x j b) ∘ (extChartAt I x).symm)
         (extChartAt I x x) = 0 := by
   classical
@@ -600,14 +600,14 @@ private lemma fderiv_chartE_chartBasisVec_self_eq_zero
       (isOpen_extChartAt_target (I := I) x) ?_
     exact (trivializationAt E (TangentSpace I) x).open_baseSet
   have hconstOn : ∀ y ∈ V,
-      (chartE_section_repr (I := I) x
+      (chartESectionRepr (I := I) x
           (fun b : M => chartBasisVecFiber (I := I) x j b) ∘ (extChartAt I x).symm) y =
         (chartModelBasis E) j := by
     intro y hy
     obtain ⟨_hy_target, hy_pre⟩ := hy
     rw [Set.mem_preimage] at hy_pre
     exact chartE_section_repr_chartBasisVec_pullback_constOn (I := I) x j hy_pre
-  have hev : (chartE_section_repr (I := I) x
+  have hev : (chartESectionRepr (I := I) x
       (fun b : M => chartBasisVecFiber (I := I) x j b) ∘ (extChartAt I x).symm) =ᶠ[𝓝
         (extChartAt I x x)]
       (fun _ : E => ((chartModelBasis E) j : E)) := by
@@ -696,7 +696,7 @@ private lemma LeviCivita_chartBasisVec_self_basis_apply
         (centeredChartTangentBasis (I := I) x i)]
   rw [fderiv_chartE_chartBasisVec_self_eq_zero (I := I) x j]
   rw [show
-        chartE_section_repr (I := I) x
+        chartESectionRepr (I := I) x
           (fun b : M => chartBasisVecFiber (I := I) x j b) x =
         (chartModelBasis E) j from
       chartE_section_repr_chartBasisVec_apply (I := I) x j
@@ -1088,7 +1088,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
 lemma fderiv_chartE_chartBasisVec_alpha_eq_zero [I.Boundaryless]
     (α : M) (j : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) :
-    fderiv ℝ (chartE_section_repr (I := I) α
+    fderiv ℝ (chartESectionRepr (I := I) α
         (fun b : M => chartBasisVecFiber (I := I) α j b) ∘ (extChartAt I α).symm)
         (extChartAt I α x) = 0 := by
   classical
@@ -1117,7 +1117,7 @@ lemma fderiv_chartE_chartBasisVec_alpha_eq_zero [I.Boundaryless]
       (isOpen_extChartAt_target (I := I) α) ?_
     exact (trivializationAt E (TangentSpace I) α).open_baseSet
   have hconstOn : ∀ y ∈ V,
-      (chartE_section_repr (I := I) α
+      (chartESectionRepr (I := I) α
           (fun b : M => chartBasisVecFiber (I := I) α j b) ∘ (extChartAt I α).symm) y =
         (chartModelBasis E) j := by
     intro y hy
@@ -1130,7 +1130,7 @@ lemma fderiv_chartE_chartBasisVec_alpha_eq_zero [I.Boundaryless]
         trivFromE (I := I) α ((extChartAt I α).symm y) ((chartModelBasis E) j) := rfl
     rw [heq]
     exact trivToE_trivFromE (I := I) α hy_pre ((chartModelBasis E) j)
-  have hev : (chartE_section_repr (I := I) α
+  have hev : (chartESectionRepr (I := I) α
       (fun b : M => chartBasisVecFiber (I := I) α j b) ∘ (extChartAt I α).symm) =ᶠ[𝓝
         (extChartAt I α x)]
       (fun _ : E => ((chartModelBasis E) j : E)) := by
@@ -1143,11 +1143,11 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [Boundary
 lemma chartE_section_repr_chartBasisVec_alpha_apply
     (α : M) (j : Fin (Module.finrank ℝ E)) {x : M}
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) :
-    chartE_section_repr (I := I) α
+    chartESectionRepr (I := I) α
         (fun b : M => chartBasisVecFiber (I := I) α j b) x =
       (chartModelBasis E) j := by
   classical
-  unfold chartE_section_repr
+  unfold chartESectionRepr
   change trivToE (I := I) α x (chartBasisVecFiber (I := I) α j x) =
     (chartModelBasis E) j
   have heq : chartBasisVecFiber (I := I) α j x =
@@ -1233,7 +1233,7 @@ lemma LeviCivita_chartBasisVec_alpha_basis_apply [I.Boundaryless]
         (chartBasisVecFiber (I := I) α i x)]
   rw [fderiv_chartE_chartBasisVec_alpha_eq_zero (I := I) α j hx]
   rw [show
-        chartE_section_repr (I := I) α
+        chartESectionRepr (I := I) α
           (fun b : M => chartBasisVecFiber (I := I) α j b) x =
         (chartModelBasis E) j from
       chartE_section_repr_chartBasisVec_alpha_apply (I := I) α j hx]

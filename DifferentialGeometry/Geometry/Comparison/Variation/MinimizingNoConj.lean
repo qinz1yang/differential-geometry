@@ -69,8 +69,8 @@ private theorem curveVel_affine
       map_smul (mfderiv 𝓘(ℝ, ℝ) I γ (a t)) c (1 : ℝ)
 
 omit [CompleteSpace E] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 private theorem tailCurve_eq
     [RiemannianBundle (fun y : M => TangentSpace I y)]
@@ -124,8 +124,8 @@ private theorem tailCurve_eq
       rfl
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem tailVel_one
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -161,8 +161,8 @@ private theorem tailVel_one
   exact hvel
 
 omit [CompleteSpace E] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem minSeg_edist
     [RiemannianBundle (fun y : M => TangentSpace I y)]
@@ -227,8 +227,8 @@ theorem minSeg_edist
     ((ENNReal.add_le_add_iff_right ENNReal.ofReal_ne_top).mp hsum)
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem minTail_edist
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -283,8 +283,8 @@ private theorem minTail_edist
   exact le_antisymm hright
     ((ENNReal.add_le_add_iff_left ENNReal.ofReal_ne_top).mp hsum)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem tail_not_conj_of_min
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -436,8 +436,8 @@ theorem tail_not_conj_of_min
   apply hrev_no
   simpa only [htail_end, hvec] using htail_rev
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem tail_no_conj
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]

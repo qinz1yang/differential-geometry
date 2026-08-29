@@ -62,7 +62,7 @@ theorem metricTrace_tensor0S_curry_apply_cons
     (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 1) x)
     (X : TangentSpace I x) (tail : Fin s -> TangentSpace I x) :
-    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A X) tail =
+    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A X) tail =
       A (Fin.cons X tail) := by
   exact Tensor0SBundle.tensor0S_curry_apply_cons
     (I := I) (M := M) s A X tail
@@ -136,7 +136,7 @@ private theorem trace04Event
       fun y : M =>
         ∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
-            inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+            inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
                 (extChartAt I x₀ y) *
               A y
                 (fun q : Fin 4 =>
@@ -145,10 +145,10 @@ private theorem trace04Event
   filter_upwards
     [(coordinateFrameSet_open (I := I) x₀).mem_nhds
       (coordinateFrameAt_mem (I := I) x₀)] with y hy
-  let basis := coordinateFrameAt_basis (I := I) x₀ hy
+  let basis := coordinateFrameAtBasis (I := I) x₀ hy
   let gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun i j =>
-      inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+      inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
         (extChartAt I x₀ y)
   have htrace :=
     metricTraceFirstTwo0STensor_apply (I := I) g
@@ -180,7 +180,7 @@ private theorem trace04Event
     _ =
       ∑ i : CoordinateIdx (𝕜 := Real) E,
         ∑ j : CoordinateIdx (𝕜 := Real) E,
-          inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+          inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
               (extChartAt I x₀ y) *
             A y
               (fun q : Fin 4 =>
@@ -210,7 +210,7 @@ private theorem trace04Coeff
         (fun y : M =>
           ∑ i : CoordinateIdx (𝕜 := Real) E,
             ∑ j : CoordinateIdx (𝕜 := Real) E,
-              inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+              inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
                   (extChartAt I x₀ y) *
                 A y
                   (fun q : Fin 4 =>
@@ -233,7 +233,7 @@ def trace04Field
       (n := (∞ : WithTop ℕ∞)) 4) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 := by
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 2
   let F : (p : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 p :=

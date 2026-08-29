@@ -34,12 +34,12 @@ private local instance : BorelSpace M := ⟨rfl⟩
 lemma chartAtlasPOU_finset_sum_eq_one
     [T2Space M] [CompactSpace M]
     (x : M) :
-    ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M),
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α : M → ℝ) x = 1 := by
   classical
   have hsubset :
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M).finsupport x ⊆
-        DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M) := by
+        DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M) := by
     intro α hα
     rw [DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset_mem]
     rw [SmoothPartitionOfUnity.mem_finsupport] at hα
@@ -60,7 +60,7 @@ theorem riemannianMeasure_lintegral_eq_chartLocalMeasure_of_supportIn
   rw [DifferentialGeometry.Integral.Measure.riemannianMeasure_lintegral_eq
     (I := I) g (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) hF]
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M) with hS_def
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have htsum_eq_finsum :
       ∑' β : M, ∫⁻ x, ENNReal.ofReal
               ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M β : M → ℝ) x)

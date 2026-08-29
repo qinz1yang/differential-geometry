@@ -164,7 +164,7 @@ private theorem riemannianFiberNormSq_twoSlotUnitEval_le
             (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w)
               (fun k : Fin s => em (J k)))) =
         ∑ a : Fin n, g.inner x (e a) w • Tensor0SSpace.toModel
-          (tensor0S_curry (I := I) (M := M) (s + 1) x Tu (e a))
+          (tensor0SCurry (I := I) (M := M) (s + 1) x Tu (e a))
           (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w)
             (fun k : Fin s => em (J k))) :=
       tensor0S_uncurry_cons_eval_of_expansion (I := I) (M := M) Tu
@@ -174,25 +174,25 @@ private theorem riemannianFiberNormSq_twoSlotUnitEval_le
     rw [hstep1]
     refine Finset.sum_congr rfl (fun a _ => ?_)
     have hstep2 : Tensor0SSpace.toModel
-          (tensor0S_curry (I := I) (M := M) (s + 1) x Tu (e a))
+          (tensor0SCurry (I := I) (M := M) (s + 1) x Tu (e a))
           (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w)
             (fun k : Fin s => em (J k))) =
         ∑ b : Fin n, g.inner x (e b) w • Tensor0SSpace.toModel
-          (tensor0S_curry (I := I) (M := M) s x
-            (tensor0S_curry (I := I) (M := M) (s + 1) x Tu (e a)) (e b))
+          (tensor0SCurry (I := I) (M := M) s x
+            (tensor0SCurry (I := I) (M := M) (s + 1) x Tu (e a)) (e b))
           (fun k : Fin s => em (J k)) :=
       tensor0S_uncurry_cons_eval_of_expansion (I := I) (M := M)
-        (tensor0S_curry (I := I) (M := M) (s + 1) x Tu (e a))
+        (tensor0SCurry (I := I) (M := M) (s + 1) x Tu (e a))
         (fun b => g.inner x (e b) w) e w (hexp w) (fun k : Fin s => em (J k))
     rw [hstep2, Finset.smul_sum]
     refine Finset.sum_congr rfl (fun b _ => ?_)
     have hcurry2 : Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) s x
-          (tensor0S_curry (I := I) (M := M) (s + 1) x Tu (e a)) (e b))
+        (tensor0SCurry (I := I) (M := M) s x
+          (tensor0SCurry (I := I) (M := M) (s + 1) x Tu (e a)) (e b))
         (fun k : Fin s => em (J k)) = D a b J := by
       rw [hD_def]
       have hcurry_b := TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
-        (tensor0S_curry (I := I) (M := M) (s + 1) x Tu (e a)) (em b)
+        (tensor0SCurry (I := I) (M := M) (s + 1) x Tu (e a)) (em b)
         (fun k : Fin s => em (J k))
       simp only [hem_def, ContinuousLinearEquiv.symm_apply_apply] at hcurry_b
       rw [hcurry_b]

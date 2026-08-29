@@ -53,7 +53,7 @@ structure FlowDerivBounds
 
 namespace FlowDerivBounds
 
-def at_time
+def atTime
     {X : PointedFlowSeq.{u, uE, uH} (I := I)}
     (h : FlowDerivBounds (I := I) X) {t : Real} (ht : t ∈ X.D.carrier) :
     SeqBoundedGeometry (I := I) (X.atTime (I := I) t) where
@@ -69,7 +69,7 @@ end FlowDerivBounds
 structure FlowDerivativeInput
     (X : PointedFlowSeq.{u, uE, uH} (I := I)) where
   spacetime : FlowDerivBounds (I := I) X
-  at_zero_geom : SeqBoundedGeometry (I := I) (X.atZero (I := I))
+  atZeroGeom : SeqBoundedGeometry (I := I) (X.atZero (I := I))
 
 
 end HCGCompactness

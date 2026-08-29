@@ -35,10 +35,12 @@ local instance (r : ℕ) : FiniteDimensional 𝕜
     (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜) :=
   continuousMultilinearMap_finiteDimensional r
 
-local instance (r : ℕ) : NormedAddCommGroup
+local instance instNormedAddCommGroupContinuousMultilinearMapFinContinuousLinearMapIdDifferentialGeometry
+    (r : ℕ) : NormedAddCommGroup
     (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜) :=
   inferInstance
-local instance (r : ℕ) : NormedSpace 𝕜
+local instance instNormedSpaceContinuousMultilinearMapFinContinuousLinearMapIdDifferentialGeometry
+    (r : ℕ) : NormedSpace 𝕜
     (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜) :=
   inferInstance
 

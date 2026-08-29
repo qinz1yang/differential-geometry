@@ -44,12 +44,12 @@ private theorem chartRep_sec_diff
   have hbase : α ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     FiberBundle.mem_baseSet_trivializationAt E (TangentSpace I) α
   have hrepr : ContMDiffAt I 𝓘(ℝ, E) ∞
-      (chartE_section_repr (I := I) α X) α :=
+      (chartESectionRepr (I := I) α X) α :=
     (contMDiffAt_section_iff_chartE I α X hbase).mp hX.contMDiffAt
   have hcomp : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞
-      ((chartE_section_repr (I := I) α X) ∘ γ) t :=
+      ((chartESectionRepr (I := I) α X) ∘ γ) t :=
     hrepr.comp t hγ.contMDiffAt
-  change DifferentiableAt ℝ ((chartE_section_repr (I := I) α X) ∘ γ) t
+  change DifferentiableAt ℝ ((chartESectionRepr (I := I) α X) ∘ γ) t
   exact (contMDiffAt_iff_contDiffAt.mp hcomp).differentiableAt (by simp)
 
 omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in

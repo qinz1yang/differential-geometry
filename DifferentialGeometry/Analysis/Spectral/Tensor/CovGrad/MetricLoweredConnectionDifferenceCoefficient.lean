@@ -116,7 +116,7 @@ theorem connectionDifferenceLoweredCovec_section_contMDiff (g₀ g₁ : SmoothRi
       (fun x : M => TotalSpace.mk' (Tensor0SModel 3 ℝ E)
         (E := fun z : M => Tensor0SSpace 3 I z) x (metricLoweredConnectionDifferenceCovector (I := I) g₀ g₁ x)) := by
   classical
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
   refine (contMDiff_multilinearSection_iff_coord (𝕜 := ℝ) (F := E)
       (E := (TangentSpace I : M → Type _)) (IB := I) (n := (∞ : WithTop ℕ∞)) (Module.finBasis ℝ E)
       (fun x : M => (metricLoweredConnectionDifferenceCovector (I := I) g₀ g₁ x :
@@ -150,7 +150,7 @@ theorem connectionDifferenceLoweredCovec_section_contMDiff (g₀ g₁ : SmoothRi
 
 def metricLoweredConnectionDifferenceField (g₀ g₁ : SmoothRiemannianMetric I M) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 3 :=
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
+  letI := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 3
   ⟨fun x => metricLoweredConnectionDifferenceCovector (I := I) g₀ g₁ x,
     connectionDifferenceLoweredCovec_section_contMDiff (I := I) g₀ g₁⟩
 
@@ -197,12 +197,12 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma interior_product_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (w : Fin s → E) :
     Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) w =
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D) w =
       Tensor0SSpace.toModel D
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) w) := by
   have h1 : Tensor0SSpace.toModel
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) =
-      Tensor0SBundle.model_interior_product (𝕜 := ℝ) (E := E) s
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D) =
+      Tensor0SBundle.modelInteriorProduct (𝕜 := ℝ) (E := E) s
         (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
         (Tensor0SSpace.toModel D) := rfl
   rw [h1]

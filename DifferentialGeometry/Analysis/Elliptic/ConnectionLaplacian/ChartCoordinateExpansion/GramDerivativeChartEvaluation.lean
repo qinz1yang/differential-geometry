@@ -58,7 +58,7 @@ lemma cometricFinBasisTrace_eq_chartInvGram_bilin
     (F : E →L[ℝ] E →L[ℝ] ℝ) :
     (∑ k₁ : Fin (Module.finrank ℝ E),
         F (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k₁)))
           ((Module.finBasis ℝ E) k₁)) =
       ∑ k₁ : Fin (Module.finrank ℝ E), ∑ l : Fin (Module.finrank ℝ E),
@@ -67,17 +67,17 @@ lemma cometricFinBasisTrace_eq_chartInvGram_bilin
   classical
   set L₁ : (E →L[ℝ] ℝ) →L[ℝ] E :=
     (cometricLmodel (I := I) g₁ x).comp
-      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)) with hL₁
+      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)) with hL₁
   set F' : (E →L[ℝ] ℝ) →L[ℝ] E →L[ℝ] ℝ := F.comp L₁ with hF'
   have hFapp : ∀ (φ : E →L[ℝ] ℝ) (v : E),
       F' φ v = F (cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)) v := by
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ)) v := by
     intro φ v
     rfl
   have htrace := (cDualBasis_trace_basis_indep (E := E) (chartModelBasis E) F').symm
   rw [show (∑ k₁ : Fin (Module.finrank ℝ E),
         F (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k₁)))
           ((Module.finBasis ℝ E) k₁)) =
       ∑ k₁ : Fin (Module.finrank ℝ E),
@@ -898,11 +898,11 @@ lemma euclidPartial_covDerivLowerOrderTerm02_center_eq_sum
         (fun y' => covDerivLowerOrderTerm (I := I) (M := M) g₀ 0 2 h x b ![] ![c, d] y')
         (toEuclidean (E := E) (extChartAt I x x)) =
       ∑ p : (Fin 0 → Fin (Module.finrank ℝ E)) × (Fin 2 → Fin (Module.finrank ℝ E)),
-        (secondCovDerivLO_valueCoeff (I := I) (M := M) g₀ 0 2 x b a ![] p.1 ![c, d] p.2
+        (secondCovDerivLOValueCoeff (I := I) (M := M) g₀ 0 2 x b a ![] p.1 ![c, d] p.2
               (toEuclidean (E := E) (extChartAt I x x)) *
             rawComponentEuclid (I := I) (M := M) g₀ 0 2 x h p.1 p.2
               (toEuclidean (E := E) (extChartAt I x x)) +
-          secondCovDerivLO_gradCoeff (I := I) (M := M) g₀ 0 2 x b ![] p.1 ![c, d] p.2
+          secondCovDerivLOGradCoeff (I := I) (M := M) g₀ 0 2 x b ![] p.1 ![c, d] p.2
               (toEuclidean (E := E) (extChartAt I x x)) *
             euclidPartial (E := E) a
               (rawComponentEuclid (I := I) (M := M) g₀ 0 2 x h p.1 p.2)

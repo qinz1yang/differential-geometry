@@ -31,10 +31,10 @@ private lemma chartTensorInnerPointwise_rs_model_basis_expand
     {ι : Type*} [Fintype ι]
     (basis : Module.Basis ι ℝ (TensorRSModel r s ℝ E))
     (T : TensorRSModel r s ℝ E) :
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T T =
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T T =
       ∑ i : ι, ∑ j : ι,
         (basis.coord i T) * (basis.coord j T) *
-          chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+          chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
             (basis i) (basis j) := by
   classical
   set a : ι → ℝ := fun i => basis.coord i T with ha_def
@@ -44,20 +44,20 @@ private lemma chartTensorInnerPointwise_rs_model_basis_expand
     · exact hrepr.symm
     · intros; rw [zero_smul]
   have hgen_left : ∀ (S : TensorRSModel r s ℝ E),
-      chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+      chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
         (∑ i : ι, a i • basis i) S =
         ∑ i : ι, (a i) *
-          chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+          chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
             (basis i) S := by
     intro S
     let LL : TensorRSModel r s ℝ E →ₗ[ℝ] ℝ :=
       { toFun := fun T' =>
-          chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T' S
+          chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T' S
         map_add' := fun T₁ T₂ =>
           chartTensorInnerPointwise_rs_model_add_left
             (I := I) (M := M) g r s α b T₁ T₂ S
         map_smul' := fun c T' => by
-          change chartTensorInnerPointwise_rs_model (I := I) (M := M)
+          change chartTensorInnerPointwiseRsModel (I := I) (M := M)
               g r s α b (c • T') S = c • _
           rw [chartTensorInnerPointwise_rs_model_smul_left]
           rfl }
@@ -70,21 +70,21 @@ private lemma chartTensorInnerPointwise_rs_model_basis_expand
     rw [LL.map_smul]
     rfl
   have hgen_right : ∀ (i : ι),
-      chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+      chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
         (basis i) (∑ j : ι, a j • basis j) =
         ∑ j : ι, (a j) *
-          chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+          chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
             (basis i) (basis j) := by
     intro i
     let RR : TensorRSModel r s ℝ E →ₗ[ℝ] ℝ :=
       { toFun := fun S' =>
-          chartTensorInnerPointwise_rs_model (I := I) (M := M)
+          chartTensorInnerPointwiseRsModel (I := I) (M := M)
             g r s α b (basis i) S'
         map_add' := fun S₁ S₂ =>
           chartTensorInnerPointwise_rs_model_add_right
             (I := I) (M := M) g r s α b (basis i) S₁ S₂
         map_smul' := fun c S' => by
-          change chartTensorInnerPointwise_rs_model (I := I) (M := M)
+          change chartTensorInnerPointwiseRsModel (I := I) (M := M)
               g r s α b (basis i) (c • S') = c • _
           rw [chartTensorInnerPointwise_rs_model_smul_right]
           rfl }
@@ -96,21 +96,21 @@ private lemma chartTensorInnerPointwise_rs_model_basis_expand
     intro j _
     rw [RR.map_smul]
     rfl
-  calc chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T T
-      = chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+  calc chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T T
+      = chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
           (∑ i : ι, a i • basis i) (∑ j : ι, a j • basis j) := by rw [← hT]
     _ = ∑ i : ι, (a i) *
-          chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+          chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
             (basis i) (∑ j : ι, a j • basis j) := hgen_left _
     _ = ∑ i : ι, (a i) *
           ∑ j : ι, (a j) *
-            chartTensorInnerPointwise_rs_model (I := I) (M := M)
+            chartTensorInnerPointwiseRsModel (I := I) (M := M)
               g r s α b (basis i) (basis j) := by
           refine Finset.sum_congr rfl ?_
           intro i _
           rw [hgen_right i]
     _ = ∑ i : ι, ∑ j : ι, (a i) * (a j) *
-          chartTensorInnerPointwise_rs_model (I := I) (M := M)
+          chartTensorInnerPointwiseRsModel (I := I) (M := M)
             g r s α b (basis i) (basis j) := by
           refine Finset.sum_congr rfl ?_
           intro i _
@@ -130,7 +130,7 @@ theorem chartTensorInnerPointwise_rs_model_quadratic_continuousOn
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
     ContinuousOn
       (fun bT : M × TensorRSModel r s ℝ E =>
-          chartTensorInnerPointwise_rs_model (I := I) (M := M)
+          chartTensorInnerPointwiseRsModel (I := I) (M := M)
             g r s α bT.1 bT.2 bT.2)
       ((trivializationAt E (TangentSpace I) α).baseSet ×ˢ Set.univ) := by
   classical
@@ -144,16 +144,16 @@ theorem chartTensorInnerPointwise_rs_model_quadratic_continuousOn
     with hbaseSet_def
   have hF_cont : ∀ i j : ι,
       ContinuousOn
-        (fun b : M => chartTensorInnerPointwise_rs_model
+        (fun b : M => chartTensorInnerPointwiseRsModel
           (I := I) (M := M) g r s α b (basis i) (basis j))
         baseSet := fun i j =>
     (chartTensorInnerPointwise_rs_model_contMDiffOn
         (I := I) (M := M) g r s α (basis i) (basis j)).continuousOn
   have hexpand : ∀ b T,
-      chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T T =
+      chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T T =
         ∑ i : ι, ∑ j : ι,
           (φ i T) * (φ j T) *
-            chartTensorInnerPointwise_rs_model
+            chartTensorInnerPointwiseRsModel
               (I := I) (M := M) g r s α b (basis i) (basis j) := by
     intro b T
     exact
@@ -164,7 +164,7 @@ theorem chartTensorInnerPointwise_rs_model_quadratic_continuousOn
         (fun bT : M × TensorRSModel r s ℝ E =>
             ∑ i : ι, ∑ j : ι,
               (φ i bT.2) * (φ j bT.2) *
-                chartTensorInnerPointwise_rs_model
+                chartTensorInnerPointwiseRsModel
                   (I := I) (M := M) g r s α bT.1 (basis i) (basis j))
         (baseSet ×ˢ Set.univ) := by
     refine continuousOn_finsetSum _ ?_
@@ -181,7 +181,7 @@ theorem chartTensorInnerPointwise_rs_model_quadratic_continuousOn
       ((hφ_cont j).comp continuous_snd).continuousOn
     have hF : ContinuousOn
         (fun bT : M × TensorRSModel r s ℝ E =>
-          chartTensorInnerPointwise_rs_model
+          chartTensorInnerPointwiseRsModel
             (I := I) (M := M) g r s α bT.1 (basis i) (basis j))
         (baseSet ×ˢ Set.univ) :=
       (hF_cont i j).comp continuousOn_fst (fun _ hp => hp.1)

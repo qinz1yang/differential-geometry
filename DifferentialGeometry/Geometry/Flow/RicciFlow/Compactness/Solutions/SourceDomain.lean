@@ -100,8 +100,8 @@ noncomputable def sourceFlowOf
     targetDomSigmaOf (I := I) Φ k hσtgt
   letI : T2Space (TargetDomain (I := I) Φ k) := targetDomT2 (I := I) Φ k
   exact
-    DifferentialGeometry.PDE.RicciFlow.solutionOn_pullback (I := I)
-      (solutionOn_restrictOpen (I := I) S (targetOpen (I := I) Φ k))
+    DifferentialGeometry.PDE.RicciFlow.solutionOnPullback (I := I)
+      (solutionOnRestrictOpen (I := I) S (targetOpen (I := I) Φ k))
       (sourceTargetDiff (I := I) Φ k)
 
 noncomputable def sourceFlow
@@ -173,8 +173,8 @@ noncomputable def sourceFlow
     targetDomSigmaOf (I := I) Φ k hσtgt
   letI : T2Space (TargetDomain (I := I) Φ k) := targetDomT2 (I := I) Φ k
   exact
-    DifferentialGeometry.PDE.RicciFlow.solutionOn_pullback (I := I)
-      (solutionOn_restrictOpen (I := I) (X.term (subseq k)).S (targetOpen (I := I) Φ k))
+    DifferentialGeometry.PDE.RicciFlow.solutionOnPullback (I := I)
+      (solutionOnRestrictOpen (I := I) (X.term (subseq k)).S (targetOpen (I := I) Φ k))
       (sourceTargetDiff (I := I) Φ k)
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -281,7 +281,7 @@ theorem isSoln_sourceFlowOf
     targetDomSigmaOf (I := I) Φ k hσtgt
   exact
     DifferentialGeometry.PDE.RicciFlow.isSolutionOn_pullback (I := I)
-      (solutionOn_restrictOpen (I := I) S (targetOpen (I := I) Φ k))
+      (solutionOnRestrictOpen (I := I) S (targetOpen (I := I) Φ k))
       (isSolutionOn_restrictOpen (I := I) S hS (targetOpen (I := I) Φ k))
       (sourceTargetDiff (I := I) Φ k)
 
@@ -368,7 +368,7 @@ theorem isSolutionOn_sourceFlow
     targetDomSigmaOf (I := I) Φ k hσtgt
   exact
     DifferentialGeometry.PDE.RicciFlow.isSolutionOn_pullback (I := I)
-      (solutionOn_restrictOpen (I := I) (X.term (subseq k)).S (targetOpen (I := I) Φ k))
+      (solutionOnRestrictOpen (I := I) (X.term (subseq k)).S (targetOpen (I := I) Φ k))
       (isSolutionOn_restrictOpen (I := I) (X.term (subseq k)).S
         (X.term (subseq k)).isSolution (targetOpen (I := I) Φ k))
       (sourceTargetDiff (I := I) Φ k)

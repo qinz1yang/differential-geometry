@@ -695,8 +695,8 @@ private def radialCurvTerm
 private def radialCurvTermFlat
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : Real) :
     Tensor0SBundle.Tensor0SSpace 1 I (radialCurve (I := I) g p x t) :=
-  Tensor0SBundle.dualToCotangent_gen (I := I)
-    (Tensor0SBundle.tangentFlatLinear_gen (I := I) g
+  Tensor0SBundle.dualToCotangentGen (I := I)
+    (Tensor0SBundle.tangentFlatLinearGen (I := I) g
       (radialCurve (I := I) g p x t)
       (radialCurvTerm (I := I) g p x w t))
 
@@ -705,7 +705,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private theorem radialCurvTermFlat_inner
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : Real) :
-    Tensor0SBundle.cotangentInner_gen (I := I) g
+    Tensor0SBundle.cotangentInnerGen (I := I) g
       (radialCurve (I := I) g p x t)
       (radialCurvTermFlat (I := I) g p x w t)
       (radialCurvTermFlat (I := I) g p x w t) =
@@ -738,7 +738,7 @@ private theorem radialCurvTermFlat_apply_eq_metricRm04StdAt
           (radialCurvTerm (I := I) g p x w t) W := by
     with_unfolding_all exact
       ((Tensor0SBundle.dualToCotangent_apply_gen
-        (Tensor0SBundle.tangentFlatLinear_gen (I := I) g
+        (Tensor0SBundle.tangentFlatLinearGen (I := I) g
           (radialCurve (I := I) g p x t) (radialCurvTerm (I := I) g p x w t)) W).trans
         (Tensor0SBundle.tangentFlatLinear_apply_gen (I := I) g
           (radialCurve (I := I) g p x t) (radialCurvTerm (I := I) g p x w t) W))
@@ -787,7 +787,7 @@ private theorem radialCurvTermFlat_normSq_eq_cotangentInner
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : Real) :
     Tensor0SBundle.normSq0S (I := I) g (radialCurve (I := I) g p x t) 1
         (radialCurvTermFlat (I := I) g p x w t) =
-      Tensor0SBundle.cotangentInner_gen (I := I) g
+      Tensor0SBundle.cotangentInnerGen (I := I) g
         (radialCurve (I := I) g p x t)
         (radialCurvTermFlat (I := I) g p x w t)
         (radialCurvTermFlat (I := I) g p x w t) := by
@@ -866,7 +866,7 @@ theorem radialCurvTermFlat_normSq_le_card
       (Fintype.card (Fin 1 -> Idx) : Real) * B ^ 2 := by
   classical
   have hinv :
-      Tensor0SBundle.MetricInverseInBasis_gen (I := I) g
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) g
         (radialCurve (I := I) g p x t) basis
         (Tensor0SBundle.identityInvMetric (Idx := Idx)) :=
     DifferentialGeometry.Geometry.Curvature.metricInverseInBasis_of_orthonormal
@@ -1128,7 +1128,7 @@ theorem curv_sq_of_flat_Ioo
     (g : SmoothRiemannianMetric I M) (p : M) (x w : E) {K b : Real}
     (hK : 0 ≤ K)
     (hcurv : ∀ t ∈ Ioo (0 : Real) b,
-      Real.sqrt (Tensor0SBundle.cotangentInner_gen (I := I) g
+      Real.sqrt (Tensor0SBundle.cotangentInnerGen (I := I) g
         (radialCurve (I := I) g p x t)
         (radialCurvTermFlat (I := I) g p x w t)
         (radialCurvTermFlat (I := I) g p x w t)) ≤
@@ -1277,7 +1277,7 @@ theorem exists_ode_Ico_of_flat
     ∃ r : Real, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r → ∀ {K b : Real},
       0 ≤ K → b ≤ 1 →
       (∀ t ∈ Ioo (0 : Real) b,
-        Real.sqrt (Tensor0SBundle.cotangentInner_gen (I := I) g
+        Real.sqrt (Tensor0SBundle.cotangentInnerGen (I := I) g
           (radialCurve (I := I) g p x t)
           (radialCurvTermFlat (I := I) g p x w t)
           (radialCurvTermFlat (I := I) g p x w t)) ≤
@@ -1643,8 +1643,8 @@ theorem exists_ode_rm04_jac0
     (d2_zero_of_jac0 (I := I) g p x w hJac0)
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_ode_rm04
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1690,8 +1690,8 @@ theorem exists_ode_rm04
   exact hODE x w hx₀ hw₀ hK hVb hb hlaunch hKbound hRm hJac0'
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_rm04_data
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1741,8 +1741,8 @@ theorem exists_rm04_data
     hODE x w hx₁ hw₁ hK hVb hb hlaunch hKbound hRm⟩
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_rm04_basis
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -1795,8 +1795,8 @@ theorem exists_rm04_basis
       hK hVb hb hlaunch hKbound hRm).2.2
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_rm04_pack
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -1872,8 +1872,8 @@ theorem rm04_Ioo_of_region
   exact hRmU _ (hcurve t ht)
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_ode_rm04_on
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]

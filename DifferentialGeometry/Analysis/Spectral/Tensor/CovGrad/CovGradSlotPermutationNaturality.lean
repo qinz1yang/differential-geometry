@@ -120,7 +120,7 @@ private lemma tensor0SChartE_section_repr_apply_tuple
     (s : ℕ) (α : M) (T : Π b : M, Tensor0SSpace s I b) (b : M)
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (v : Fin s → E) :
-    DifferentialGeometry.Geometry.Connection.tensor0SChartE_section_repr (I := I) s α T b v =
+    DifferentialGeometry.Geometry.Connection.tensor0SChartESectionRepr (I := I) s α T b v =
       tensor0SSpaceFiberContinuousLinearEquiv (I := I) (M := M) s b (T b)
         (fun i => (trivializationAt E (TangentSpace I) α).symmL ℝ b (v i)) := by
   classical
@@ -136,10 +136,10 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma tensor0SChartE_section_repr_domDomCongr
     (s : ℕ) (σ : Equiv.Perm (Fin s)) (α : M)
     (T : Π b : M, Tensor0SSpace s I b) (b : M) :
-    DifferentialGeometry.Geometry.Connection.tensor0SChartE_section_repr (I := I) s α
+    DifferentialGeometry.Geometry.Connection.tensor0SChartESectionRepr (I := I) s α
         (fun y => permuteTensor0S (I := I) (M := M) σ (T y)) b =
       ContinuousMultilinearMap.domDomCongr σ
-        (DifferentialGeometry.Geometry.Connection.tensor0SChartE_section_repr (I := I) s α T
+        (DifferentialGeometry.Geometry.Connection.tensor0SChartESectionRepr (I := I) s α T
           b) := by
   classical
   apply ContinuousMultilinearMap.ext
@@ -225,11 +225,11 @@ private lemma tensor0SIntrinsicChartCLM_domDomCongr
   set L : Tensor0SModel s ℝ E ≃L[ℝ] Tensor0SModel s ℝ E :=
     (ContinuousMultilinearMap.domDomCongrₗᵢ ℝ E ℝ σ).toContinuousLinearEquiv with hL
   have hpull :
-      (DifferentialGeometry.Geometry.Connection.tensor0SChartE_section_repr (I := I) s α
+      (DifferentialGeometry.Geometry.Connection.tensor0SChartESectionRepr (I := I) s α
           (fun y => permuteTensor0S (I := I) (M := M) σ (T y)) ∘
         (extChartAt I α).symm) =
       (⇑L) ∘
-        (DifferentialGeometry.Geometry.Connection.tensor0SChartE_section_repr (I := I) s α T ∘
+        (DifferentialGeometry.Geometry.Connection.tensor0SChartESectionRepr (I := I) s α T ∘
           (extChartAt I α).symm) := by
     funext z
     simp only [Function.comp_apply]
@@ -241,11 +241,11 @@ private lemma tensor0SIntrinsicChartCLM_domDomCongr
   rw [ContinuousLinearMap.comp_apply]
   rw [hL, ContinuousLinearEquiv.coe_coe, LinearIsometryEquiv.coe_toContinuousLinearEquiv]
   rw [show (ContinuousMultilinearMap.domDomCongrₗᵢ ℝ E ℝ σ)
-        ((fderiv ℝ (DifferentialGeometry.Geometry.Connection.tensor0SChartE_section_repr
+        ((fderiv ℝ (DifferentialGeometry.Geometry.Connection.tensor0SChartESectionRepr
             (I := I) s α T ∘ (extChartAt I α).symm) (extChartAt I α b))
           (DifferentialGeometry.Geometry.Connection.trivToE (I := I) α b v)) =
       ContinuousMultilinearMap.domDomCongr σ
-        ((fderiv ℝ (DifferentialGeometry.Geometry.Connection.tensor0SChartE_section_repr
+        ((fderiv ℝ (DifferentialGeometry.Geometry.Connection.tensor0SChartESectionRepr
             (I := I) s α T ∘ (extChartAt I α).symm) (extChartAt I α b))
           (DifferentialGeometry.Geometry.Connection.trivToE (I := I) α b v)) from rfl]
   rw [tensor0SChartFiberFromModel_domDomCongr (I := I) s σ α b hb]

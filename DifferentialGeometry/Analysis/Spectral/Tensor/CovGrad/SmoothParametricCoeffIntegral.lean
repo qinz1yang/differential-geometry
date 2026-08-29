@@ -255,14 +255,14 @@ theorem contMDiff_pathIntegralFib_of_jointContMDiff
     have hfibre : ContinuousOn (fun t : ℝ => ((Φ t).toSection x : TensorRSSpace r s I x)) S := by
       refine (Lx.symm.continuous.comp_continuousOn hLxslice).congr (fun t _ => ?_)
       exact (Lx.symm_apply_apply _).symm
-    exact (tensorRSSpace_continuousLinearEquiv (I := I) r s x).continuous.comp_continuousOn hfibre
+    exact (tensorRSSpaceContinuousLinearEquiv (I := I) r s x).continuous.comp_continuousOn hfibre
   have hIIm : IntervalIntegrable (fun t : ℝ => TensorRSSpace.toModel ((Φ t).toSection x))
       volume 0 1 := (hslice_cont.mono hSI).intervalIntegrable
   change (e ⟨x, pathIntegralFib (I := I) (M := M) g₀ r s Φ x⟩).2 = ∫ t in (0:ℝ)..1, g (x, t)
   rw [hreadoff]
   set K : TensorRSModel r s ℝ E →L[ℝ] TensorRSModel r s ℝ E :=
     (Lx.toContinuousLinearMap).comp
-      (tensorRSSpace_continuousLinearEquiv (I := I) r s x).symm.toContinuousLinearMap with hK
+      (tensorRSSpaceContinuousLinearEquiv (I := I) r s x).symm.toContinuousLinearMap with hK
   rw [pathIntegralFib]
   have hLxofM : Lx (TensorRSSpace.ofModel (I := I) (x := x)
       (∫ t in (0:ℝ)..1, TensorRSSpace.toModel ((Φ t).toSection x)))
@@ -274,9 +274,9 @@ theorem contMDiff_pathIntegralFib_of_jointContMDiff
     change (e ⟨x, (Φ t).toSection x⟩).2 = K (TensorRSSpace.toModel ((Φ t).toSection x))
     rw [hreadoff, hK, ContinuousLinearMap.comp_apply]
     change Lx ((Φ t).toSection x) = Lx _
-    rw [show (tensorRSSpace_continuousLinearEquiv (I := I) r s x).symm.toContinuousLinearMap
+    rw [show (tensorRSSpaceContinuousLinearEquiv (I := I) r s x).symm.toContinuousLinearMap
           (TensorRSSpace.toModel ((Φ t).toSection x)) = (Φ t).toSection x from
-        (tensorRSSpace_continuousLinearEquiv (I := I) r s x).symm_apply_apply _]
+        (tensorRSSpaceContinuousLinearEquiv (I := I) r s x).symm_apply_apply _]
   rw [hRHS, ContinuousLinearMap.intervalIntegral_comp_comm K hIIm]
 
 def pathIntegralCoeffField (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)

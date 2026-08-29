@@ -192,7 +192,7 @@ theorem tensor0SRiemannianInner_isVonNBounded
       {v : Tensor0SSpace s I b |
         tensor0SRiemannianInnerCLM (I := I) (M := M) g s b v v < 1} := by
   set e : Tensor0SSpace s I b ≃L[ℝ] Tensor0SModel s ℝ E :=
-    Tensor0SBundle.tensor0SSpace_continuousLinearEquiv
+    Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv
       (𝕜 := ℝ) (E := E) (I := I) (M := M) s b with he_def
   have hModel := innerModel_diagonal_sublevel_isVonNBounded
     (I := I) (M := M) g s b
@@ -260,7 +260,7 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
 @[reducible]
-noncomputable def tensor0S_riemannianBundle
+noncomputable def tensor0SRiemannianBundle
     (g : SmoothRiemannianMetric I M) (s : ℕ) :
     Bundle.RiemannianBundle (fun b : M => Tensor0SSpace s I b) :=
   ⟨tensor0SRiemannianMetric (I := I) (M := M) g s⟩

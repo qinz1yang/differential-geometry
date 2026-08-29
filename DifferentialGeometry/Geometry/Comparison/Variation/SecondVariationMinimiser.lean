@@ -124,8 +124,8 @@ variable [T2Space (TangentBundle I M)] [ConnectedSpace M]
   [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] [CompleteSpace E]
 
 omit [ConnectedSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] [CompleteSpace E]
@@ -159,8 +159,8 @@ theorem contMDiff_smul_bundleField
   exact map_smul _ _ _
 
 omit [ConnectedSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 theorem mdifferentiableAt_expMapIntrinsic_zero
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -202,8 +202,8 @@ theorem mdifferentiableAt_expMapIntrinsic_zero
   exact (expMap_contMDiffAt_zero (I := I) g p).mdifferentiableAt (by norm_num)
 
 omit [ConnectedSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 theorem exists_expVar_field
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -369,8 +369,8 @@ theorem exists_expVar_field
     rw [harg]
     exact expMapIntrinsic_zero (I := I) g hEnorm (γ L)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 theorem exists_expVar_fixEnd
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -391,8 +391,8 @@ theorem exists_expVar_fixEnd
     exists_expVar_field (I := I) g hEnorm γ V L hγ hVbundle
   exact ⟨f, hf, hcentral, hderiv, hfixL hVL⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 theorem exists_sqDeriv_field
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -436,8 +436,8 @@ theorem exists_sqDeriv_field
   rwa [hfield0] at hraw
 
 omit [ConnectedSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 theorem exists_variation_realising_field_via_exp
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -604,8 +604,8 @@ theorem exists_variation_realising_field_via_exp
     exact expMapIntrinsic_zero (I := I) g hEnorm (γ L)
 
 omit [ConnectedSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 theorem indexForm_nonneg_of_minimising_geodesic
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]

@@ -988,7 +988,7 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect
   rw [← h_eq]
   exact h_classical
 
-noncomputable def evenReflect_memW1pWitness_of_smooth_strictInterior
+noncomputable def evenReflectMemW1pWitnessOfSmoothStrictInterior
     {n : ℕ} [NeZero n]
     {x₀ : EuclideanSpace ℝ (Fin n)}
     {R : ℝ}
@@ -1437,23 +1437,23 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
   have hδ_tendsto : Filter.Tendsto δseq Filter.atTop (nhds (0 : ℝ)) := by
     rw [hδseq_def]
     exact tendsto_one_div_add_atTop_nhds_zero_nat
-  set f_seq : ℕ → EuclideanSpace ℝ (Fin n) → ℝ :=
+  set fSeq : ℕ → EuclideanSpace ℝ (Fin n) → ℝ :=
     fun k => shiftDownFun (n := n) (δseq k) f with hf_seq_def
-  have hf_seq_smooth : ∀ k, ContDiff ℝ (⊤ : ℕ∞) (f_seq k) := by
+  have hf_seq_smooth : ∀ k, ContDiff ℝ (⊤ : ℕ∞) (fSeq k) := by
     intro k; exact contDiff_shiftDownFun (n := n) (δseq k) hf
   have hf_seq_supp_open : ∀ k,
-      tsupport (f_seq k) ⊆
+      tsupport (fSeq k) ⊆
         DifferentialGeometry.Analysis.Sobolev.Euclidean.openHalfSpace := by
     intro k
     exact tsupport_shiftDownFun_subset_openHalfSpace (hδ_pos k) hf_supp
   have h_seq_ibp : ∀ k,
-      ∫ x in Ω, evenReflect n (f_seq k) x *
+      ∫ x in Ω, evenReflect n (fSeq k) x *
           (fderiv ℝ φ x) (EuclideanSpace.single i 1) =
-        -∫ x in Ω, evenReflectGrad n (f_seq k) x i * φ x := by
+        -∫ x in Ω, evenReflectGrad n (fSeq k) x i * φ x := by
     intro k
     have h_grad_seq :
-        DeGiorgi.HasWeakGrad (evenReflectGrad n (f_seq k))
-          (evenReflect n (f_seq k)) Ω :=
+        DeGiorgi.HasWeakGrad (evenReflectGrad n (fSeq k))
+          (evenReflect n (fSeq k)) Ω :=
       hasWeakGrad_evenReflectGrad_evenReflect (hf_seq_smooth k)
         (hf_seq_supp_open k) hΩ
     exact h_grad_seq i φ hφ_smooth hφ_compact hφ_sub
@@ -1489,7 +1489,7 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
   have h_LHS_tendsto :
       Filter.Tendsto
         (fun k : ℕ =>
-          ∫ x in Ω, evenReflect n (f_seq k) x *
+          ∫ x in Ω, evenReflect n (fSeq k) x *
             (fderiv ℝ φ x) (EuclideanSpace.single i 1))
         Filter.atTop
         (nhds (∫ x in Ω, evenReflect n f x *
@@ -1511,7 +1511,7 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
       (h_bound_LHS_cont.integrable_of_hasCompactSupport h_bound_LHS_supp).restrict
     have h_F_meas : ∀ k, AEStronglyMeasurable
         (fun x : EuclideanSpace ℝ (Fin n) =>
-          evenReflect n (f_seq k) x *
+          evenReflect n (fSeq k) x *
             (fderiv ℝ φ x) (EuclideanSpace.single i 1)) (volume.restrict Ω) := by
       intro k
       refine AEStronglyMeasurable.mul ?_ ?_
@@ -1525,29 +1525,29 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
       · exact (continuous_evenReflect hf.continuous).aestronglyMeasurable
       · exact hdφ_cont.aestronglyMeasurable
     have h_F_bound : ∀ k, ∀ᵐ x ∂(volume.restrict Ω),
-        ‖evenReflect n (f_seq k) x *
+        ‖evenReflect n (fSeq k) x *
           (fderiv ℝ φ x) (EuclideanSpace.single i 1)‖ ≤ bound_LHS x := by
       intro k
       refine Filter.Eventually.of_forall (fun x => ?_)
-      change ‖evenReflect n (f_seq k) x *
+      change ‖evenReflect n (fSeq k) x *
           (fderiv ℝ φ x) (EuclideanSpace.single i 1)‖ ≤
         C₀ * ‖(fderiv ℝ φ x) (EuclideanSpace.single i 1)‖
       rw [norm_mul]
-      have h1 : ‖evenReflect n (f_seq k) x‖ ≤ C₀ :=
+      have h1 : ‖evenReflect n (fSeq k) x‖ ≤ C₀ :=
         norm_evenReflect_shiftDownFun_le_sup (δseq k) hC₀_bound x
       have h2 : (0 : ℝ) ≤ ‖(fderiv ℝ φ x) (EuclideanSpace.single i 1)‖ :=
         norm_nonneg _
       exact mul_le_mul_of_nonneg_right h1 h2
     have h_F_lim : ∀ᵐ x ∂(volume.restrict Ω),
         Filter.Tendsto (fun k : ℕ =>
-            evenReflect n (f_seq k) x *
+            evenReflect n (fSeq k) x *
               (fderiv ℝ φ x) (EuclideanSpace.single i 1))
           Filter.atTop
           (nhds (evenReflect n f x *
             (fderiv ℝ φ x) (EuclideanSpace.single i 1))) := by
       refine Filter.Eventually.of_forall (fun x => ?_)
       have h_evRefl_lim :
-          Filter.Tendsto (fun k : ℕ => evenReflect n (f_seq k) x)
+          Filter.Tendsto (fun k : ℕ => evenReflect n (fSeq k) x)
             Filter.atTop (nhds (evenReflect n f x)) :=
         (tendsto_evenReflect_shiftDownFun (n := n) hf.continuous x).comp hδ_tendsto
       exact h_evRefl_lim.mul tendsto_const_nhds
@@ -1555,12 +1555,12 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
       bound_LHS h_F_meas h_bound_LHS_int h_F_bound h_F_lim
   have h_RHS_tendsto :
       Filter.Tendsto
-        (fun k : ℕ => -∫ x in Ω, evenReflectGrad n (f_seq k) x i * φ x)
+        (fun k : ℕ => -∫ x in Ω, evenReflectGrad n (fSeq k) x i * φ x)
         Filter.atTop
         (nhds (-∫ x in Ω, evenReflectGrad n f x i * φ x)) := by
     have h_inner :
         Filter.Tendsto
-          (fun k : ℕ => ∫ x in Ω, evenReflectGrad n (f_seq k) x i * φ x)
+          (fun k : ℕ => ∫ x in Ω, evenReflectGrad n (fSeq k) x i * φ x)
           Filter.atTop
           (nhds (∫ x in Ω, evenReflectGrad n f x i * φ x)) := by
       set bound_RHS : EuclideanSpace ℝ (Fin n) → ℝ :=
@@ -1580,29 +1580,29 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
         (h_bound_RHS_cont.integrable_of_hasCompactSupport h_bound_RHS_supp).restrict
       have h_G_meas : ∀ k, AEStronglyMeasurable
           (fun x : EuclideanSpace ℝ (Fin n) =>
-            evenReflectGrad n (f_seq k) x i * φ x) (volume.restrict Ω) := by
+            evenReflectGrad n (fSeq k) x i * φ x) (volume.restrict Ω) := by
         intro k
         refine AEStronglyMeasurable.mul ?_ ?_
         · exact aestronglyMeasurable_evenReflectGrad_component_of_contDiff
             (hf_seq_smooth k) i |>.mono_measure (Measure.restrict_le_self)
         · exact hφ_smooth.continuous.aestronglyMeasurable
       have h_G_bound : ∀ k, ∀ᵐ x ∂(volume.restrict Ω),
-          ‖evenReflectGrad n (f_seq k) x i * φ x‖ ≤ bound_RHS x := by
+          ‖evenReflectGrad n (fSeq k) x i * φ x‖ ≤ bound_RHS x := by
         intro k
         refine Filter.Eventually.of_forall (fun x => ?_)
-        change ‖evenReflectGrad n (f_seq k) x i * φ x‖ ≤ C₁ * ‖φ x‖
+        change ‖evenReflectGrad n (fSeq k) x i * φ x‖ ≤ C₁ * ‖φ x‖
         rw [norm_mul]
-        have h1 : ‖evenReflectGrad n (f_seq k) x i‖ ≤ C₁ :=
+        have h1 : ‖evenReflectGrad n (fSeq k) x i‖ ≤ C₁ :=
           norm_evenReflectGrad_shiftDownFun_apply_le_sup (δseq k) hf hC₁_bound x i
         have h2 : (0 : ℝ) ≤ ‖φ x‖ := norm_nonneg _
         exact mul_le_mul_of_nonneg_right h1 h2
       have h_G_lim : ∀ᵐ x ∂(volume.restrict Ω),
           Filter.Tendsto (fun k : ℕ =>
-              evenReflectGrad n (f_seq k) x i * φ x)
+              evenReflectGrad n (fSeq k) x i * φ x)
             Filter.atTop
             (nhds (evenReflectGrad n f x i * φ x)) := by
         have h_ae : ∀ᵐ x ∂volume,
-            Filter.Tendsto (fun k : ℕ => evenReflectGrad n (f_seq k) x i)
+            Filter.Tendsto (fun k : ℕ => evenReflectGrad n (fSeq k) x i)
               Filter.atTop (nhds (evenReflectGrad n f x i)) :=
           tendsto_evenReflectGrad_shiftDownFun_ae hf i |>.mp
             (Filter.Eventually.of_forall (fun x h_lim_δ =>
@@ -1613,15 +1613,15 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
     exact h_inner.neg
   have h_lhs_eq_rhs :
       (fun k : ℕ =>
-          ∫ x in Ω, evenReflect n (f_seq k) x *
+          ∫ x in Ω, evenReflect n (fSeq k) x *
             (fderiv ℝ φ x) (EuclideanSpace.single i 1)) =
-        fun k : ℕ => -∫ x in Ω, evenReflectGrad n (f_seq k) x i * φ x := by
+        fun k : ℕ => -∫ x in Ω, evenReflectGrad n (fSeq k) x i * φ x := by
     funext k
     exact h_seq_ibp k
   have h_LHS_eq_lim :
       Filter.Tendsto
         (fun k : ℕ =>
-          ∫ x in Ω, evenReflect n (f_seq k) x *
+          ∫ x in Ω, evenReflect n (fSeq k) x *
             (fderiv ℝ φ x) (EuclideanSpace.single i 1))
         Filter.atTop
         (nhds (-∫ x in Ω, evenReflectGrad n f x i * φ x)) := by
@@ -1629,7 +1629,7 @@ theorem hasWeakGrad_evenReflectGrad_evenReflect_closedHalfSpace
     exact h_RHS_tendsto
   exact tendsto_nhds_unique h_LHS_tendsto h_LHS_eq_lim
 
-noncomputable def evenReflect_memW1pWitness_of_smooth_closedHalfSpace
+noncomputable def evenReflectMemW1pWitnessOfSmoothClosedHalfSpace
     {n : ℕ} [NeZero n]
     {x₀ : EuclideanSpace ℝ (Fin n)}
     {R : ℝ}

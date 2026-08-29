@@ -43,9 +43,9 @@ private theorem toRS0_sub {x : M} (A B : Tensor0SSpace 0 I x) :
       Tensor0SSpace.toRS0 A - Tensor0SSpace.toRS0 B := by
   apply ContinuousLinearMap.ext
   intro c
-  change (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x) c • (A - B) =
-    (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x) c • A -
-      (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x) c • B
+  change (tensor0SSpaceEvalScalar (𝕜 := Real) (I := I) (M := M) x) c • (A - B) =
+    (tensor0SSpaceEvalScalar (𝕜 := Real) (I := I) (M := M) x) c • A -
+      (tensor0SSpaceEvalScalar (𝕜 := Real) (I := I) (M := M) x) c • B
   exact smul_sub _ _ _
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] [I.Boundaryless]
@@ -56,7 +56,7 @@ private theorem normSq0S_nonneg
     0 <= normSq0S (I := I) g x s A := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     intro i j
@@ -69,8 +69,8 @@ theorem lapDiffCore_pair_sq
     (v : ScalarH2Core (I := I) (M := M) q) :
     ‖lapDiffCore (I := I) (M := M) q h v -
         lapDiffCore (I := I) (M := M) q k v‖ ^ 2 =
-      ∫ x, (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
-            Δ_g (I := I) k ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x) ^ 2
+      ∫ x, (ΔG (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
+            ΔG (I := I) k ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x) ^ 2
         ∂(riemannianVolumeMeasure (I := I) (M := M) q) := by
   change ‖SmoothCcTensor.toL2
       (lapDiffSec (I := I) (M := M) q h v) -
@@ -101,8 +101,8 @@ theorem lapDiff_pair_energy
         (Module.finrank Real E : Real) *
             HCGCompactness.metricDerivNormSupOn
               (I := I) Set.univ 1 h k k <= (1 / 2 : Real) →
-          ∫ x, (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x -
-                Δ_g (I := I) k ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
+          ∫ x, (ΔG (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x -
+                ΔG (I := I) k ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
               ∂(riemannianVolumeMeasure (I := I) (M := M) q) <=
             C *
               (HCGCompactness.metricDerivNormSupOn
@@ -129,7 +129,7 @@ theorem lapDiff_pair_energy
   let duNorm : M → Real := fun x =>
     normSq0S (I := I) k x 1 (duSec (I := I) f hf x)
   let lhs : M → Real := fun x =>
-    (Δ_g (I := I) h ⟨_, hf⟩ x - Δ_g (I := I) k ⟨_, hf⟩ x) ^ 2
+    (ΔG (I := I) h ⟨_, hf⟩ x - ΔG (I := I) k ⟨_, hf⟩ x) ^ 2
   let energy : M → Real := fun x => HessNorm x + duNorm x
   have hHessEq : HessNorm = fun x =>
       chartHessFrobeniusSq (I := I) k f x := by
@@ -198,8 +198,8 @@ theorem lapDiff_pair_energy
         CX * ‖v‖ ^ 2 := by
     simpa only [energy, HessNorm, duNorm, f, hf] using hcross v hv
   calc
-    (∫ x, (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x -
-          Δ_g (I := I) k ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
+    (∫ x, (ΔG (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x -
+          ΔG (I := I) k ⟨_, (reprScalar0_smooth (I := I) (M := M) v hv)⟩ x) ^ 2
         ∂(riemannianVolumeMeasure (I := I) (M := M) q)) =
         ∫ x, lhs x ∂(riemannianVolumeMeasure (I := I) (M := M) q) := by
       rfl

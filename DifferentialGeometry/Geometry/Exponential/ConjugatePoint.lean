@@ -148,8 +148,8 @@ private theorem jacobi_comp_affine
   simp only [map_smul, smul_apply, smul_smul]
   rw [← smul_add, hJ (c * t + d), smul_zero]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
 private theorem intrinsicGeodesic_smooth
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
@@ -174,8 +174,8 @@ private theorem intrinsicGeodesic_smooth
   exact hcomp
 
 omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrGeo_reverse
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -247,8 +247,8 @@ theorem intrGeo_reverse
   ring
 
 omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrGeo_rev_vel
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -307,8 +307,8 @@ theorem intrGeo_rev_vel
       congrArg Neg.neg hzeroE
 
 omit [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem exp_pair_reverse
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -657,8 +657,8 @@ private theorem exp_pair_reverse
         rw [← hK1]
         exact g.symm p _ _
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 def IsConjVec
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -672,8 +672,8 @@ def IsConjVec
           ((tangentSpaceModelContinuousLinearEquiv (I := I) p).symm b)) x
         ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, E)) x).symm w)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
 theorem isConjVec_iff
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
@@ -719,8 +719,8 @@ theorem isConjVec_iff
   · rintro ⟨w, hwne, hw0⟩
     exact ⟨w, hw0, hwne⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem conjVec_reverse
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
@@ -798,8 +798,8 @@ theorem conjVec_reverse
     exact sub_eq_zero.mp hsub
 
 omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem isConjVec_iff_jacobi
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -817,8 +817,8 @@ theorem isConjVec_iff_jacobi
   rw [intrinsic_jacobi_one (I := I) g hEnorm p x w]
   with_unfolding_all rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
 theorem jacobiVar_zero
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
@@ -837,8 +837,8 @@ theorem jacobiVar_zero
   rw [hconst, mfderiv_const]
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
 theorem jacobiVar_smul
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
@@ -880,8 +880,8 @@ theorem jacobiVar_smul
   rfl
 
 omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem conjVec_jacobi_at
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]

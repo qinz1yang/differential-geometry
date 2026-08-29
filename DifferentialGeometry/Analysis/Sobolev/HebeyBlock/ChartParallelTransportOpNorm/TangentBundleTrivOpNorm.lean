@@ -18,8 +18,8 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] in
 private lemma exists_W_and_constant_tangent
     (g : SmoothRiemannianMetric I M)
@@ -124,8 +124,8 @@ private lemma exists_W_and_constant_tangent
       _ = C₂ * C₁ * ‖T‖ := by ring
   exact ContinuousLinearMap.opNorm_le_bound _ (by positivity) h_norm_T
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] in
 theorem chartTriv_opNorm_isBounded_on_compact
     (g : SmoothRiemannianMetric I M) (α : M) {K : Set M} (hK : IsCompact K)

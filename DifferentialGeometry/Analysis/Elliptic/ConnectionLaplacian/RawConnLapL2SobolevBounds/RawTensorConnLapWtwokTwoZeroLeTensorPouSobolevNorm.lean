@@ -231,7 +231,7 @@ private lemma tensorPouSobolevNormSqAgg_eq_finset_sum
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (T : SmoothCcTensor g r s) :
     tensorPouSobolevNormSqAgg (I := I) (M := M) g T =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
             (Fin s → Fin (Module.finrank ℝ E)),
           ∑ j ∈ Finset.range 3,
@@ -246,7 +246,7 @@ private lemma tensorPouSobolevNormSqAgg_eq_finset_sum
               ∂(volume : Measure EuclN) := by
   classical
   unfold tensorPouSobolevNormSqAgg
-  rw [tsum_eq_sum (s := chartAtlasPOU_finset (I := I) (M := M))]
+  rw [tsum_eq_sum (s := chartAtlasPOUFinset (I := I) (M := M))]
   intro α hα
   have hρ_zero : ∀ x : M,
       (chartAtlasPOU I M α : M → ℝ) x = 0 := fun x =>
@@ -277,7 +277,7 @@ private lemma wtwokTwoNorm_zero_rawTensorConnLap_collapsed
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     wtwokTwoNorm (I := I) (M := M) g 0
         (rawTensorConnLapSmooth (I := I) g r s T) =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
           ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
             eLpNorm
@@ -290,7 +290,7 @@ private lemma wtwokTwoNorm_zero_rawTensorConnLap_collapsed
     (rawTensorConnLapSmooth (I := I) g r s T)]
   rw [show (2 * 0 : ℕ) = 0 from by norm_num]
   rw [tsum_eq_sum
-    (s := chartAtlasPOU_finset (I := I) (M := M))
+    (s := chartAtlasPOUFinset (I := I) (M := M))
     (f := fun α : M =>
       ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
         ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
@@ -1366,7 +1366,7 @@ theorem wtwokTwoNorm_zero_rawTensorConnLap_le_tensorPouSobolevNorm_one
           C * tensorPouSobolevNorm (I := I) (M := M) g 1 T := by
   classical
   set n := Module.finrank ℝ E with hn_def
-  set S : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hS_def
+  set S : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have h_each : ∀ α : M, ∃ K : ℝ, 0 ≤ K ∧
       ∀ (T : SmoothCcTensor g r s)
         (Idx : Fin r → Fin n)

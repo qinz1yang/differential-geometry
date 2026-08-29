@@ -144,14 +144,14 @@ private lemma Λgrad_apply_of_mem
     (i : Fin (Module.finrank ℝ E)) {y : EuclN}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     Λgrad (I := I) (M := M) g α i y =
-      gradInnerCoefI_M (I := I) (M := M) g α i
+      gradInnerCoefIM (I := I) (M := M) g α i
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) := by
   unfold Λgrad
   have h_tgt : (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target := by
     rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy; exact hy
   classical
   change (if (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target then
-      gradInnerCoefI_M (I := I) (M := M) g α i
+      gradInnerCoefIM (I := I) (M := M) g α i
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
     else 0) = _
   rw [if_pos h_tgt]

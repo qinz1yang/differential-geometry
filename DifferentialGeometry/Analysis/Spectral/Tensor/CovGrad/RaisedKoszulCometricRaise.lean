@@ -39,15 +39,15 @@ def cometricRaiseSlot0FieldFun (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
 noncomputable def cometricRaiseSlot0FieldSection (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
     (S : SmoothCcTensor g₀ 0 (s + 2)) :=
   letI : NormedAddCommGroup (TensorRSModel 1 (s + 1) ℝ E) :=
-    Tensor0SBundle.tensorRSModel_normedAddCommGroup 1 (s + 1)
+    Tensor0SBundle.tensorRSModelNormedAddCommGroup 1 (s + 1)
   letI : NormedSpace ℝ (TensorRSModel 1 (s + 1) ℝ E) :=
-    Tensor0SBundle.tensorRSModel_normedSpace 1 (s + 1)
+    Tensor0SBundle.tensorRSModelNormedSpace 1 (s + 1)
   letI : TopologicalSpace (TotalSpace (TensorRSModel 1 (s + 1) ℝ E)
       (fun y : M => TensorRSSpace 1 (s + 1) I y)) :=
-    Tensor0SBundle.tensorRSBundle_topology 1 (s + 1)
+    Tensor0SBundle.tensorRSBundleTopology 1 (s + 1)
   letI : FiberBundle (TensorRSModel 1 (s + 1) ℝ E)
       (fun y : M => TensorRSSpace 1 (s + 1) I y) :=
-    Tensor0SBundle.tensorRSBundle_fiber 1 (s + 1)
+    Tensor0SBundle.tensorRSBundleFiber 1 (s + 1)
   letI : VectorBundle ℝ (TensorRSModel 1 (s + 1) ℝ E)
       (fun y : M => TensorRSSpace 1 (s + 1) I y) :=
     Tensor0SBundle.tensorRSBundle_vector 1 (s + 1)
@@ -83,7 +83,7 @@ lemma cometricRaiseSlot0Fib_clm_apply (g₀ : SmoothRiemannianMetric I M) (s : �
     (D : Tensor0SSpace (s + 2) I x) (om : Tensor0SSpace 1 I x) :
     (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         cometricRaiseSlot0Fib g₀ s x D) om =
-      Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (s + 1) x
+      Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (s + 1) x
         (inverseMetricSharpFib (I := I) g₀ x om) D := by
   rfl
 

@@ -617,7 +617,7 @@ theorem localCovariantDerivTensor0SAt_constInChart_contMDiffAt
   rw [contMDiffAt_section]
   let g : M -> Tensor0SModel r 𝕜 E := fun p : M => (e ⟨p, F p⟩).2
   change ContMDiffAt I 𝓘(𝕜, Tensor0SModel r 𝕜 E) (∞ : WithTop ℕ∞) g x₀
-  let B := continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) b r
+  let B := continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) b r
   rw [show g = fun p : M => B.equivFun.symm (B.equivFun (g p)) from
       funext fun p => (B.equivFun.symm_apply_apply (g p)).symm]
   exact (B.equivFun.symm.toContinuousLinearEquiv.toContinuousLinearMap.contMDiffAt).comp x₀
@@ -937,7 +937,7 @@ theorem nabla0S_reg (s : ℕ)
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s) :
     Nabla0SRegular (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s cov X α := by
-  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+  let := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) s
   let F : (p : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) s p :=

@@ -41,7 +41,7 @@ theorem component0S_product
     (A : Tensor0SSpace s I x) (B : Tensor0SSpace q I x)
     (slots : Fin (s + q) -> Idx) :
     component0S (I := I) basis
-        (Bundle.continuousMultilinearMap.product_fun
+        (Bundle.continuousMultilinearMap.productFun
           (𝕜 := Real) (F := E) (E := TangentSpace I) A B) slots =
       component0S (I := I) basis A (slots ∘ Fin.castAdd q) *
         component0S (I := I) basis B (slots ∘ Fin.natAdd s) := by

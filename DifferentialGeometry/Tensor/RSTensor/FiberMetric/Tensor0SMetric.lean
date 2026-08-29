@@ -395,7 +395,7 @@ def tensor0SMetricStep
       (Tensor0SSpace s I x) inferInstance inferInstance inferInstance hTopAdd0 hContSMul0
       inferInstance inferInstance inferInstance).finiteDimensional
   MetricFiberData.pullback
-    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x).toLinearEquiv
+    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x).toLinearEquiv
     (@MetricFiberData.homCLM
       (TangentSpace I x) (Tensor0SSpace s I x)
       inferInstance inferInstance inferInstance inferInstance inferInstance inferInstance
@@ -892,7 +892,7 @@ omit [FiniteDimensional ℝ E] in
 private theorem tensor0S_curry_one_apply
     {x : M} (A : Tensor0SSpace 2 I x)
     (X Y : TangentSpace I x) :
-    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A X)
+    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x A X)
         (fun _ : Fin 1 => Y) =
       A (fun a : Fin 2 => if a = 0 then X else Y) := by
   change
@@ -912,7 +912,7 @@ omit [FiniteDimensional ℝ E] in
 private theorem tensor0S_curry_apply_cons
     {x : M} (s : Nat) (A : Tensor0SSpace (s + 1) I x)
     (X : TangentSpace I x) (tail : Fin s -> TangentSpace I x) :
-    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A X) tail =
+    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A X) tail =
       A (Fin.cons X tail) := by
   change
     (((continuousMultilinearCurryLeftEquiv Real
@@ -987,21 +987,21 @@ theorem normSq0S_two_eq_coord
     MetricFiberData.homFlatLinear
       (tangentMetricData (I := I) g x).metric
       (cotangentMetricData (I := I) g x)
-      ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap)
-      ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap) =
+      ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap)
+      ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap) =
       ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
         gInv i k * gInv j l *
           A (fun a : Fin 2 => if a = 0 then basis i else basis j) *
             A (fun a : Fin 2 => if a = 0 then basis k else basis l)
   rw [hom_normSq_eq_basis (I := I) g x basis gInv hinv
     (cotangentMetricData (I := I) g x)
-    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap)]
+    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap)]
   calc
     (∑ i : Idx, ∑ k : Idx,
         gInv i k *
           (cotangentMetricData (I := I) g x).inner
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A) (basis i))
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A) (basis k)))
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x A) (basis i))
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x A) (basis k)))
         = ∑ i : Idx, ∑ k : Idx, ∑ j : Idx, ∑ l : Idx,
             gInv i k *
               (gInv j l *
@@ -1098,22 +1098,22 @@ theorem inner0S_two_eq_coord_direct
     MetricFiberData.homFlatLinear
       (tangentMetricData (I := I) g x).metric
       (cotangentMetricData (I := I) g x)
-      ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap)
-      ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x B).toLinearMap) =
+      ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap)
+      ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x B).toLinearMap) =
       ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
         gInv i k * gInv j l *
           A (fun a : Fin 2 => if a = 0 then basis i else basis j) *
             B (fun a : Fin 2 => if a = 0 then basis k else basis l)
   rw [hom_inner_eq_basis (I := I) g x basis gInv hinv
     (cotangentMetricData (I := I) g x)
-    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap)
-    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x B).toLinearMap)]
+    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x A).toLinearMap)
+    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x B).toLinearMap)]
   calc
     (∑ i : Idx, ∑ k : Idx,
         gInv i k *
           (cotangentMetricData (I := I) g x).inner
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x A) (basis i))
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x B) (basis k)))
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x A) (basis i))
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x B) (basis k)))
         = ∑ i : Idx, ∑ k : Idx, ∑ j : Idx, ∑ l : Idx,
             gInv i k *
               (gInv j l *
@@ -1213,8 +1213,8 @@ private theorem tensor0SMetricStep_inner_eq_coordStep
       ∑ i : Idx, ∑ j : Idx,
         gInv i j *
           D.inner
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j)) := by
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x B) (basis j)) := by
   classical
   have hTopAdd0 : IsTopologicalAddGroup (Tensor0SSpace s I x) :=
     Bundle.continuousMultilinearMap.instIsTopologicalAddGroup
@@ -1258,16 +1258,16 @@ private theorem tensor0SMetricStep_inner_eq_coordStep
   change
     MetricFiberData.homFlatLinear
       (tangentMetricData (I := I) g x).metric D
-      ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A).toLinearMap)
-      ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B).toLinearMap) =
+      ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A).toLinearMap)
+      ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x B).toLinearMap) =
       ∑ i : Idx, ∑ j : Idx,
         gInv i j *
           D.inner
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
   rw [hom_inner_eq_basis (I := I) g x basis gInv hinv D
-    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A).toLinearMap)
-    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B).toLinearMap)]
+    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A).toLinearMap)
+    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x B).toLinearMap)]
   apply Finset.sum_congr rfl
   intro i _
   apply Finset.sum_congr rfl
@@ -1289,9 +1289,9 @@ private theorem coordInner0S_succ_summand_eq
       B (fun a : Fin (s + 1) =>
         basis (((Fin.cons j tailJ : Fin (s + 1) -> Idx) a))) =
       (gInv i j * (∏ a : Fin s, gInv (tailI a) (tailJ a)) *
-          ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+          ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
             (fun a : Fin s => basis (tailI a))) *
-        ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+        ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
           (fun a : Fin s => basis (tailJ a)) := by
   rw [Fin.prod_univ_succ]
   rw [tensor0S_curry_apply_cons, tensor0S_curry_apply_cons]
@@ -1320,8 +1320,8 @@ private theorem coordInner0S_succ_eq
       ∑ i : Idx, ∑ j : Idx,
         gInv i j *
           coordInner0S (I := I) (x := x) s gInv
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
             basis := by
   classical
   unfold coordInner0S tensor0SComponent
@@ -1351,9 +1351,9 @@ private theorem coordInner0S_succ_eq
     _ =
         ∑ tailI : Fin s -> Idx, ∑ j : Idx, ∑ tailJ : Fin s -> Idx,
           (gInv i j * (∏ a : Fin s, gInv (tailI a) (tailJ a)) *
-              ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+              ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
                 (fun a : Fin s => basis (tailI a))) *
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
               (fun a : Fin s => basis (tailJ a)) := by
           apply Finset.sum_congr rfl
           intro tailI _
@@ -1365,9 +1365,9 @@ private theorem coordInner0S_succ_eq
     _ =
         ∑ j : Idx, ∑ tailI : Fin s -> Idx, ∑ tailJ : Fin s -> Idx,
           (gInv i j * (∏ a : Fin s, gInv (tailI a) (tailJ a)) *
-              ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+              ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
                 (fun a : Fin s => basis (tailI a))) *
-            ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+            ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
               (fun a : Fin s => basis (tailJ a)) := by
           rw [Finset.sum_comm]
     _ =
@@ -1375,9 +1375,9 @@ private theorem coordInner0S_succ_eq
           gInv i j *
             ∑ tailI : Fin s -> Idx, ∑ tailJ : Fin s -> Idx,
               (∏ a : Fin s, gInv (tailI a) (tailJ a)) *
-                ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
+                ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A) (basis i))
                   (fun a : Fin s => basis (tailI a)) *
-                  ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
+                  ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x B) (basis j))
                     (fun a : Fin s => basis (tailJ a)) := by
           apply Finset.sum_congr rfl
           intro j _
@@ -1417,9 +1417,9 @@ theorem inner0S_eq_coord
               ∑ i : Idx, ∑ j : Idx,
                 gInv i j *
                   coordInner0S (I := I) (x := x) (s + 1) gInv
-                    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) (s + 1) x A)
+                    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) (s + 1) x A)
                       (basis i))
-                    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) (s + 1) x B)
+                    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) (s + 1) x B)
                       (basis j))
                     basis
           rw [tensor0SMetricStep_inner_eq_coordStep (I := I) g x (s + 1)
@@ -1431,15 +1431,15 @@ theorem inner0S_eq_coord
           change
             gInv i j *
                 inner0S (I := I) g x (s + 1)
-                  (((tensor0S_curry (I := I) (𝕜 := Real) (M := M) (s + 1) x A)
+                  (((tensor0SCurry (I := I) (𝕜 := Real) (M := M) (s + 1) x A)
                     (basis i)))
-                  (((tensor0S_curry (I := I) (𝕜 := Real) (M := M) (s + 1) x B)
+                  (((tensor0SCurry (I := I) (𝕜 := Real) (M := M) (s + 1) x B)
                     (basis j))) =
               gInv i j *
                 coordInner0S (I := I) (x := x) (s + 1) gInv
-                  (((tensor0S_curry (I := I) (𝕜 := Real) (M := M) (s + 1) x A)
+                  (((tensor0SCurry (I := I) (𝕜 := Real) (M := M) (s + 1) x A)
                     (basis i)))
-                  (((tensor0S_curry (I := I) (𝕜 := Real) (M := M) (s + 1) x B)
+                  (((tensor0SCurry (I := I) (𝕜 := Real) (M := M) (s + 1) x B)
                     (basis j)))
                   basis
           rw [ih]

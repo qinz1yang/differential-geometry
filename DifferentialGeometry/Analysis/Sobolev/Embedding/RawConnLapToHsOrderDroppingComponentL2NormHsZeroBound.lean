@@ -335,7 +335,7 @@ theorem exists_sum_componentL2Norm_sq_le_tensorPouSobolevHsNormSq_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ T : Integral.L2.SmoothCcTensor g r s,
-        (∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
+        (∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M),
             ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
               ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
                 ((MeasureTheory.eLpNorm
@@ -345,7 +345,7 @@ theorem exists_sum_componentL2Norm_sq_le_tensorPouSobolevHsNormSq_zero
                       (I := I) (M := M) g)).toReal) ^ 2) ≤
           C * (tensorPouSobolevHsNormSq (I := I) (M := M) g 0 T).toReal := by
   classical
-  set Sf : Finset M := DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+  set Sf : Finset M := DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
     (I := I) (M := M) with hSf_def
   choose Cα hCα_nn hCα using fun α (_ : α ∈ Sf) =>
     sq_eLpNorm_scalar_le_const_mul_hsNorm_zero_summand (I := I) (M := M) (E := E) g r s α

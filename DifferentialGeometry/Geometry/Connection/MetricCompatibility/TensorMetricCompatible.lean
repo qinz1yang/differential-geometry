@@ -37,11 +37,11 @@ lemma scalarFn_eq_toModel_elim0
   change tensor0Iso I M x (T x) = (Tensor0SSpace.toModel (T x)) (fun i => Fin.elim0 i)
   rw [tensor0Iso]
   change (continuousMultilinearCurryFin0 ℝ E ℝ)
-      ((tensor0SSpace_continuousLinearEquiv (I := I) 0 x) (T x)) =
+      ((tensor0SSpaceContinuousLinearEquiv (I := I) 0 x) (T x)) =
     (Tensor0SSpace.toModel (T x)) (fun i => Fin.elim0 i)
   rw [continuousMultilinearCurryFin0_apply]
-  change (tensor0SSpace_continuousLinearEquiv (I := I) 0 x) (T x) (0 : Fin 0 → E) =
-    (tensor0SSpace_continuousLinearEquiv (I := I) 0 x) (T x) (fun i => Fin.elim0 i)
+  change (tensor0SSpaceContinuousLinearEquiv (I := I) 0 x) (T x) (0 : Fin 0 → E) =
+    (tensor0SSpaceContinuousLinearEquiv (I := I) 0 x) (T x) (fun i => Fin.elim0 i)
   congr 1
   exact Subsingleton.elim _ _
 
@@ -173,7 +173,7 @@ omit [Module.Finite ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [T2
     [BoundarylessManifold I M] in
 lemma toModel_tensor0S_curry_eq_curryLeft {s : ℕ} {x : M}
     (A : Tensor0SSpace (s + 1) I x) (v : TangentSpace I x) :
-    Tensor0SSpace.toModel (tensor0S_curry (I := I) (M := M) s x A v) =
+    Tensor0SSpace.toModel (tensor0SCurry (I := I) (M := M) s x A v) =
       (Tensor0SSpace.toModel A).curryLeft
         (tangentSpaceModelContinuousLinearEquiv (I := I) x v) := by
   refine ContinuousMultilinearMap.ext (fun m => ?_)
@@ -604,7 +604,7 @@ lemma tensor0SCovariantDerivative_curriedSection_hom_leibniz
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (v : TangentSpace I x) :
     tensor0SCovariantDerivative I M s (LeviCivita (I := I) g)
         (fun y : M => curriedSection I M W y (Y y)) x v =
-      tensor0S_curry (I := I) (M := M) s x
+      tensor0SCurry (I := I) (M := M) s x
           (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v)
           (Y x) +
         curriedSection I M W x
@@ -626,7 +626,7 @@ lemma tensor0SCovariantDerivative_curriedSection_hom_leibniz
     (cov_V := tensor0SCovariantDerivative I M s (LeviCivita (I := I) g))
     (τ := curriedSection I M W) (x := x) hC
     (V_field := fun y => Vfield y) (Y := fun y => Y y) hVfield hYfield
-  have hsucc : tensor0S_curry (I := I) (M := M) s x
+  have hsucc : tensor0SCurry (I := I) (M := M) s x
       (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v) =
       HomConnection.homBundleCovariantDerivativeFun (I := I) (M := M)
         (F := Tensor0SModel s ℝ E)
@@ -635,7 +635,7 @@ lemma tensor0SCovariantDerivative_curriedSection_hom_leibniz
         (cov_V := tensor0SCovariantDerivative I M s (LeviCivita (I := I) g))
         (τ := curriedSection I M W) x v := by
     rw [tensor0SCovariantDerivative_succ_eq, tensor0SCovariantDerivative_succ_apply]
-    exact (tensor0S_curry (I := I) (M := M) s x).apply_symm_apply _
+    exact (tensor0SCurry (I := I) (M := M) s x).apply_symm_apply _
   rw [hsucc]
   rw [show v = Vfield x from hVx.symm]
   rw [hHom]
@@ -663,7 +663,7 @@ lemma tensor0SCovariantDerivative_succ_consEval_peel
   have hleib := tensor0SCovariantDerivative_curriedSection_hom_leibniz
     (I := I) (M := M) g s W hW Y v
   have hterm1 : Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) s x
+        (tensor0SCurry (I := I) (M := M) s x
           (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v) (Y x)) m =
       Tensor0SSpace.toModel
         (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) W x v)
@@ -853,25 +853,25 @@ private lemma tensorMetricCompatDiff_succ_eq_sum
     (LeviCivita (I := I) g).toFun (fun y => E_ a y) x v with homgW_def
   have hWleib : ∀ a : Fin n,
       tensor0SCovariantDerivative I M s (LeviCivita (I := I) g) (WC a) x v =
-        tensor0S_curry (I := I) (M := M) s x Pw (E_ a x) +
+        tensor0SCurry (I := I) (M := M) s x Pw (E_ a x) +
           curriedSection I M W x (omgW a) := by
     intro a
     exact tensor0SCovariantDerivative_curriedSection_hom_leibniz
       (I := I) (M := M) g s W hW (E_ a) v
   have hTleib : ∀ a : Fin n,
       tensor0SCovariantDerivative I M s (LeviCivita (I := I) g) (TC a) x v =
-        tensor0S_curry (I := I) (M := M) s x Pt (E_ a x) +
+        tensor0SCurry (I := I) (M := M) s x Pt (E_ a x) +
           curriedSection I M T x (omgW a) := by
     intro a
     exact tensor0SCovariantDerivative_curriedSection_hom_leibniz
       (I := I) (M := M) g s T hT (E_ a) v
   have hcurryW : ∀ a : Fin n, Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) s x Pw (E_ a x)) =
+        (tensor0SCurry (I := I) (M := M) s x Pw (E_ a x)) =
       (Tensor0SSpace.toModel Pw).curryLeft
         (tangentSpaceModelContinuousLinearEquiv (I := I) x (E_ a x)) := fun a =>
     toModel_tensor0S_curry_eq_curryLeft (I := I) (M := M) Pw (E_ a x)
   have hcurryT : ∀ a : Fin n, Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) s x Pt (E_ a x)) =
+        (tensor0SCurry (I := I) (M := M) s x Pt (E_ a x)) =
       (Tensor0SSpace.toModel Pt).curryLeft
         (tangentSpaceModelContinuousLinearEquiv (I := I) x (E_ a x)) := fun a =>
     toModel_tensor0S_curry_eq_curryLeft (I := I) (M := M) Pt (E_ a x)

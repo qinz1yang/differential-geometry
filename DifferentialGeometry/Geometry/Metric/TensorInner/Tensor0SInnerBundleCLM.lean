@@ -98,7 +98,7 @@ def innerModelCLM
 private def bundleCLE (s : ℕ) (b : M) :
     Tensor0SSpace s I b ≃L[ℝ]
       Tensor0SModel s ℝ E :=
-  Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (𝕜 := ℝ) (E := E) (I := I) (M := M) s b
+  Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (𝕜 := ℝ) (E := E) (I := I) (M := M) s b
 
 private def bundleToModelCLM (s : ℕ) (b : M) :
     Tensor0SSpace s I b →L[ℝ]

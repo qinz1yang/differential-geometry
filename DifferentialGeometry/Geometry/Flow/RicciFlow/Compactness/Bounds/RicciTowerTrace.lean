@@ -47,7 +47,7 @@ theorem exists_ric_trace
   | succ k ih =>
       obtain ⟨e, he⟩ := ih
       let cov := leviCivitaConnectionOfMetric (I := I) g
-      have hmc : IsMetricCompatible_gen (I := I) cov g := by
+      have hmc : IsMetricCompatibleGen (I := I) cov g := by
         exact leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g
       have hRm := iterCov_realizes (I := I) g Rm k
       have hreindex := totalNabla0SRealizes_domDomCongr (I := I) cov e _ _ hRm
@@ -78,7 +78,7 @@ theorem iterRic_normSq_le
       (iterCov (I := I) g 4 Rm k)) x)
   rw [Tensor0SField.domDomCongr_apply] at htrace
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) g basis hON

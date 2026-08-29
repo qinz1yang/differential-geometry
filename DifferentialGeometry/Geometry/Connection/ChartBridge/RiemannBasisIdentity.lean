@@ -329,7 +329,7 @@ private lemma fderiv_chartE_section_repr_eq_zero_of_eventuallyEq [I.Boundaryless
     {X : Π b : M, TangentSpace I b} {U : Set M}
     (hU_open : IsOpen U) (hxU : x ∈ U)
     (hX_eq : ∀ y ∈ U, X y = chartBasisVecFiber (I := I) x j y) :
-    fderiv ℝ (chartE_section_repr (I := I) x X ∘ (extChartAt I x).symm)
+    fderiv ℝ (chartESectionRepr (I := I) x X ∘ (extChartAt I x).symm)
         (extChartAt I x x) = 0 := by
   classical
   have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) x :=
@@ -351,16 +351,16 @@ private lemma fderiv_chartE_section_repr_eq_zero_of_eventuallyEq [I.Boundaryless
   have hopen_V : IsOpen V :=
     ContinuousOn.isOpen_inter_preimage hcont_symm (isOpen_extChartAt_target (I := I) x) hU_open
   have hev :
-      (chartE_section_repr (I := I) x X ∘ (extChartAt I x).symm) =ᶠ[𝓝 (extChartAt I x x)]
-        (chartE_section_repr (I := I) x
+      (chartESectionRepr (I := I) x X ∘ (extChartAt I x).symm) =ᶠ[𝓝 (extChartAt I x x)]
+        (chartESectionRepr (I := I) x
           (fun b : M => chartBasisVecFiber (I := I) x j b) ∘ (extChartAt I x).symm) := by
     filter_upwards [hopen_V.mem_nhds hxV] with y hy
     obtain ⟨_hy_tgt, hy_pre⟩ := hy
     rw [Set.mem_preimage] at hy_pre
-    change chartE_section_repr (I := I) x X ((extChartAt I x).symm y) =
-      chartE_section_repr (I := I) x
+    change chartESectionRepr (I := I) x X ((extChartAt I x).symm y) =
+      chartESectionRepr (I := I) x
         (fun b : M => chartBasisVecFiber (I := I) x j b) ((extChartAt I x).symm y)
-    unfold chartE_section_repr
+    unfold chartESectionRepr
     rw [hX_eq ((extChartAt I x).symm y) hy_pre]
   rw [hev.fderiv_eq]
   exact fderiv_chartE_chartBasisVec_alpha_eq_zero (I := I) x j hx_good

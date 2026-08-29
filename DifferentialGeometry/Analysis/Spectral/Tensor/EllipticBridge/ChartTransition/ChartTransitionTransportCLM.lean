@@ -458,12 +458,12 @@ private lemma exists_eLpNorm_transportFun_bound
   classical
   obtain ⟨C, hC_nn, hC⟩ :=
     exists_bound_transportCoeffPushed (I := I) (M := M) r s β α P₀ Q
-  set Kchg : ℝ := (1 / D.Φ.jacobian_lower_bound) ^ (1 / (2 : ℝ≥0∞).toReal)
+  set Kchg : ℝ := (1 / D.Φ.jacobianLowerBound) ^ (1 / (2 : ℝ≥0∞).toReal)
     with hKchg_def
-  have hjLB_pos : 0 < D.Φ.jacobian_lower_bound := D.Φ.jacobian_lower_bound_pos
+  have hjLB_pos : 0 < D.Φ.jacobianLowerBound := D.Φ.jacobian_lower_bound_pos
   have hKchg_nn : 0 ≤ Kchg := by
     rw [hKchg_def]
-    have h_inv_nn : (0 : ℝ) ≤ 1 / D.Φ.jacobian_lower_bound := by positivity
+    have h_inv_nn : (0 : ℝ) ≤ 1 / D.Φ.jacobianLowerBound := by positivity
     exact Real.rpow_nonneg h_inv_nn _
   refine ⟨C * Kchg, mul_nonneg hC_nn hKchg_nn, fun f => ?_⟩
   have h_pointwise : ∀ y, ‖transportFun (I := I) (M := M) r s β α P₀ Q f y‖ ≤

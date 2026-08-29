@@ -37,7 +37,7 @@ theorem open_upgrade_of_canonical_metric_compactness
         MetricComplete (I := I) (d.data.L.atTime (I := I) t) := by
   classical
   let mc := canon.compactness
-  let Phi := pointedCGHMaps_of_manifold (I := I) X
+  let Phi := pointedCGHMapsOfManifold (I := I) X
     mc.limit mc.subseq mc.maps
   let : TopologicalSpace mc.limit.M := mc.limit.topology
   let : ChartedSpace H mc.limit.M := mc.limit.charted

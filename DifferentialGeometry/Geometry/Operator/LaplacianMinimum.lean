@@ -519,7 +519,7 @@ private theorem fderiv_fderiv_self_nonneg_of_isLocalMin
 private theorem cov_gradient_inner_self_nonneg_at_spatial_min
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     {f : M -> Real} {x : M}
     (hmin : IsLocalMin f x)
     (hx : I.IsInteriorPoint x)
@@ -585,7 +585,7 @@ private theorem cov_gradient_inner_self_nonneg_at_spatial_min
 theorem laplacian_nonneg_at_spatial_min_of_metricCompatible_of_isInteriorPoint
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     {f : M -> Real} {x : M}
     (hmin : IsLocalMin f x)
     (hx : I.IsInteriorPoint x)
@@ -607,7 +607,7 @@ theorem laplacian_nonneg_at_spatial_min_of_metricCompatible
     [I.Boundaryless]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     {f : M -> Real} {x : M}
     (hmin : IsLocalMin f x)
     (hf : MDifferentiableAt I 𝓘(Real, Real) f x)
@@ -623,7 +623,7 @@ theorem laplacianNonnegativeAtSpatialMin_of_metricCompatible
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g) :
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g) :
     LaplacianNonnegativeAtSpatialMin (I := I) cov g := by
   intro f x hmin hf hf_near hgrad
   exact laplacian_nonneg_at_spatial_min_of_metricCompatible

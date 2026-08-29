@@ -156,7 +156,7 @@ omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] [T2Space M] [Sig
 private lemma curry_covGradBundleEquiv_unit
     (s : ℕ) (x : M) (Φ : TangentSpace I x →L[ℝ] TensorRSSpace 0 s I x)
     (v : TangentSpace I x) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
           (unitZeroSec (I := I) (M := M) x)) v =
@@ -166,7 +166,7 @@ private lemma curry_covGradBundleEquiv_unit
   apply Tensor0SSpace.toModel_injective
   refine ContinuousMultilinearMap.ext (fun m => ?_)
   rw [show Tensor0SSpace.toModel
-      (tensor0S_curry (I := I) (M := M) s x
+      (tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
           (unitZeroSec (I := I) (M := M) x)) v) m =
@@ -400,7 +400,7 @@ lemma riemannianFiberNormSq_succ_eq_sum_bareSlot0Curry_of_orthoFrame
       ∑ a : Fin n,
         riemannianFiberNormSq (I := I) (M := M) g 0 s x
           (tensor0SToTensorRS (I := I) (M := M) x
-            (tensor0S_curry (I := I) (M := M) s x
+            (tensor0SCurry (I := I) (M := M) s x
               ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
                 (unitZeroSec (I := I) (M := M) x)) (e a))) := by
   classical

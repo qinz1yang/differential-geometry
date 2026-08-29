@@ -39,9 +39,9 @@ theorem connTraceAction_coord
       ∑ p : CoordinateIdx (𝕜 := Real) E,
         (∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
-            inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+            inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
                 (extChartAt I x₀ x) *
-              componentRS (I := I) (coordinateFrameAt_basis (I := I) x₀ hx)
+              componentRS (I := I) (coordinateFrameAtBasis (I := I) x₀ hx)
                 (A x) (fun _ : Fin 1 => p)
                 (fun q : Fin 2 => if q = 0 then i else j)) *
           mvfderiv (I := I) potential x
@@ -71,7 +71,7 @@ def connTraceRawDiv
     (A : Tensor0SBundle.TensorRSField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 1 2) : M -> Real :=
   fun x =>
-    DifferentialGeometry.Integral.DivergenceTheorem.divergence_g
+    DifferentialGeometry.Integral.DivergenceTheorem.divergenceG
       (I := I) g (DifferentialGeometry.Tensor.RSTensor.connTraceField (I := I) g A) x
 
 def connTraceAction
@@ -83,10 +83,10 @@ def connTraceAction
     ∑ p : CoordinateIdx (𝕜 := Real) E,
       (∑ i : CoordinateIdx (𝕜 := Real) E,
         ∑ j : CoordinateIdx (𝕜 := Real) E,
-          inverseMetricFlatModelInChart_component (I := I) g x i j
+          inverseMetricFlatModelInChartComponent (I := I) g x i j
               (extChartAt I x x) *
             componentRS (I := I)
-              (coordinateFrameAt_basis (I := I) x (coordinateFrameAt_mem (I := I) x))
+              (coordinateFrameAtBasis (I := I) x (coordinateFrameAt_mem (I := I) x))
               (A x) (fun _ : Fin 1 => p)
               (fun q : Fin 2 => if q = 0 then i else j)) *
         mvfderiv (I := I) potential x
@@ -103,7 +103,7 @@ def gammaActionTrace
     ∑ p : CoordinateIdx (𝕜 := Real) E,
       (∑ i : CoordinateIdx (𝕜 := Real) E,
         ∑ j : CoordinateIdx (𝕜 := Real) E,
-          inverseMetricFlatModelInChart_component (I := I) g x i j
+          inverseMetricFlatModelInChartComponent (I := I) g x i j
               (extChartAt I x x) *
             christoffelVariation x p i j) *
         gradPotential x p
@@ -117,7 +117,7 @@ def gammaRawDivergenceTrace
   fun x =>
     ∑ i : CoordinateIdx (𝕜 := Real) E,
       ∑ j : CoordinateIdx (𝕜 := Real) E,
-        inverseMetricFlatModelInChart_component (I := I) g x i j
+        inverseMetricFlatModelInChartComponent (I := I) g x i j
             (extChartAt I x x) *
           (∑ p : CoordinateIdx (𝕜 := Real) E,
             nablaChristoffelVariation x p p i j)
@@ -398,7 +398,7 @@ def christoffelWeightedDivergenceTrace
   fun x =>
     ∑ i : CoordinateIdx (𝕜 := Real) E,
       ∑ j : CoordinateIdx (𝕜 := Real) E,
-        inverseMetricFlatModelInChart_component (I := I) g x i j
+        inverseMetricFlatModelInChartComponent (I := I) g x i j
             (extChartAt I x x) *
           christoffelWeightedDivergenceInFrame nablaChristoffelVariation
             christoffelVariation gradPotential x i j
@@ -424,7 +424,7 @@ theorem weightedTrace_eq
   rw [show
       (∑ i : CoordinateIdx (𝕜 := Real) E,
         ∑ j : CoordinateIdx (𝕜 := Real) E,
-          inverseMetricFlatModelInChart_component (I := I) g x i j
+          inverseMetricFlatModelInChartComponent (I := I) g x i j
               (extChartAt I x x) *
             ((∑ p : CoordinateIdx (𝕜 := Real) E,
                 nablaChristoffelVariation x p p i j) -
@@ -432,13 +432,13 @@ theorem weightedTrace_eq
                 christoffelVariation x p i j * gradPotential x p)) =
         (∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
-            inverseMetricFlatModelInChart_component (I := I) g x i j
+            inverseMetricFlatModelInChartComponent (I := I) g x i j
                 (extChartAt I x x) *
               (∑ p : CoordinateIdx (𝕜 := Real) E,
                 nablaChristoffelVariation x p p i j)) -
           (∑ i : CoordinateIdx (𝕜 := Real) E,
             ∑ j : CoordinateIdx (𝕜 := Real) E,
-              inverseMetricFlatModelInChart_component (I := I) g x i j
+              inverseMetricFlatModelInChartComponent (I := I) g x i j
                   (extChartAt I x x) *
                 (∑ p : CoordinateIdx (𝕜 := Real) E,
                   christoffelVariation x p i j * gradPotential x p)) by
@@ -447,7 +447,7 @@ theorem weightedTrace_eq
   calc
     (∑ i : CoordinateIdx (𝕜 := Real) E,
       ∑ j : CoordinateIdx (𝕜 := Real) E,
-        inverseMetricFlatModelInChart_component (I := I) g x i j
+        inverseMetricFlatModelInChartComponent (I := I) g x i j
             (extChartAt I x x) *
           (∑ p : CoordinateIdx (𝕜 := Real) E,
             christoffelVariation x p i j * gradPotential x p))
@@ -455,7 +455,7 @@ theorem weightedTrace_eq
       ∑ i : CoordinateIdx (𝕜 := Real) E,
         ∑ j : CoordinateIdx (𝕜 := Real) E,
           ∑ p : CoordinateIdx (𝕜 := Real) E,
-            inverseMetricFlatModelInChart_component (I := I) g x i j
+            inverseMetricFlatModelInChartComponent (I := I) g x i j
                 (extChartAt I x x) *
               christoffelVariation x p i j * gradPotential x p := by
         refine Finset.sum_congr rfl fun i _ => ?_
@@ -467,21 +467,21 @@ theorem weightedTrace_eq
       ∑ p : CoordinateIdx (𝕜 := Real) E,
         ∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
-            inverseMetricFlatModelInChart_component (I := I) g x i j
+            inverseMetricFlatModelInChartComponent (I := I) g x i j
                 (extChartAt I x x) *
               christoffelVariation x p i j * gradPotential x p := by
         calc
           (∑ i : CoordinateIdx (𝕜 := Real) E,
             ∑ j : CoordinateIdx (𝕜 := Real) E,
               ∑ p : CoordinateIdx (𝕜 := Real) E,
-                inverseMetricFlatModelInChart_component (I := I) g x i j
+                inverseMetricFlatModelInChartComponent (I := I) g x i j
                     (extChartAt I x x) *
                   christoffelVariation x p i j * gradPotential x p)
               =
             ∑ i : CoordinateIdx (𝕜 := Real) E,
               ∑ p : CoordinateIdx (𝕜 := Real) E,
                 ∑ j : CoordinateIdx (𝕜 := Real) E,
-                  inverseMetricFlatModelInChart_component (I := I) g x i j
+                  inverseMetricFlatModelInChartComponent (I := I) g x i j
                       (extChartAt I x x) *
                     christoffelVariation x p i j * gradPotential x p := by
               refine Finset.sum_congr rfl fun i _ => ?_
@@ -490,7 +490,7 @@ theorem weightedTrace_eq
             ∑ p : CoordinateIdx (𝕜 := Real) E,
               ∑ i : CoordinateIdx (𝕜 := Real) E,
                 ∑ j : CoordinateIdx (𝕜 := Real) E,
-                  inverseMetricFlatModelInChart_component (I := I) g x i j
+                  inverseMetricFlatModelInChartComponent (I := I) g x i j
                       (extChartAt I x x) *
                     christoffelVariation x p i j * gradPotential x p := by
               rw [Finset.sum_comm]
@@ -498,7 +498,7 @@ theorem weightedTrace_eq
       ∑ p : CoordinateIdx (𝕜 := Real) E,
         (∑ i : CoordinateIdx (𝕜 := Real) E,
           ∑ j : CoordinateIdx (𝕜 := Real) E,
-            inverseMetricFlatModelInChart_component (I := I) g x i j
+            inverseMetricFlatModelInChartComponent (I := I) g x i j
                 (extChartAt I x x) *
               christoffelVariation x p i j) *
           gradPotential x p := by
@@ -532,7 +532,7 @@ theorem connTraceAction_eq_gamma
     (hA :
       ∀ x : M, ∀ p i j : CoordinateIdx (𝕜 := Real) E,
         componentRS (I := I)
-            (coordinateFrameAt_basis (I := I) x (coordinateFrameAt_mem (I := I) x))
+            (coordinateFrameAtBasis (I := I) x (coordinateFrameAt_mem (I := I) x))
             (A x) (fun _ : Fin 1 => p)
             (fun q : Fin 2 => if q = 0 then i else j) =
           christoffelVariation x p i j)
@@ -573,7 +573,7 @@ theorem weightedTrace_of_raw
     (hA :
       ∀ x : M, ∀ p i j : CoordinateIdx (𝕜 := Real) E,
         componentRS (I := I)
-            (coordinateFrameAt_basis (I := I) x (coordinateFrameAt_mem (I := I) x))
+            (coordinateFrameAtBasis (I := I) x (coordinateFrameAt_mem (I := I) x))
             (A x) (fun _ : Fin 1 => p)
             (fun q : Fin 2 => if q = 0 then i else j) =
           christoffelVariation x p i j)

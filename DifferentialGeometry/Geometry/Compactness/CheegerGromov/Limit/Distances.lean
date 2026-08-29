@@ -18,8 +18,8 @@ open scoped Manifold ContDiff ENNReal
 
 section RiemannianNorm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 theorem edist_le_of_path_comp
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]

@@ -521,19 +521,19 @@ private theorem rsperm_sub_c2
     rfl
   rw [rsDomDomCongrSection_toSection, hsub, hsub₂,
     rsDomDomCongrSection_toSection, rsDomDomCongrSection_toSection]
-  change tensorRS_domDomCongr σ (A.toSection x - B.toSection x) =
-    tensorRS_domDomCongr σ (A.toSection x) - tensorRS_domDomCongr σ (B.toSection x)
+  change tensorRSDomDomCongr σ (A.toSection x - B.toSection x) =
+    tensorRSDomDomCongr σ (A.toSection x) - tensorRSDomDomCongr σ (B.toSection x)
   apply ContinuousLinearMap.ext
   intro D
   apply tensor0SSpace_ext (𝕜 := ℝ) s x
   intro m
   change Tensor0SSpace.eval
       ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
-        tensorRS_domDomCongr σ (A.toSection x - B.toSection x)) D) m =
+        tensorRSDomDomCongr σ (A.toSection x - B.toSection x)) D) m =
     Tensor0SSpace.eval
       ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
-        tensorRS_domDomCongr σ (A.toSection x) -
-          tensorRS_domDomCongr σ (B.toSection x)) D) m
+        tensorRSDomDomCongr σ (A.toSection x) -
+          tensorRSDomDomCongr σ (B.toSection x)) D) m
   rw [rsDomDomCongr_apply_eval (I := I) (M := M) σ
     (A.toSection x - B.toSection x) D m]
   rw [show ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from

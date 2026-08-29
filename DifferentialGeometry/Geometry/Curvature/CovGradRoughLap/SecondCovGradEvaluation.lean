@@ -84,7 +84,7 @@ private lemma curried_covGrad_apply_eq_tensorCovDerivAt_apply (r t : ℕ)
       (fun y' : M =>
         (show Tensor0SSpace r I y' →L[ℝ] Tensor0SSpace (t + 1) I y' from
           (covGrad (I := I) (M := M) g r t W).toSection y') (w y')) y =
-    tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) t y
+    tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) t y
       ((show Tensor0SSpace r I y →L[ℝ] Tensor0SSpace (t + 1) I y from
         (covGrad (I := I) (M := M) g r t W).toSection y) (w y)) from rfl]
   have h := tensor0S_curry_covGrad_operatorFieldComposition_eq (I := I) (M := M)
@@ -196,7 +196,7 @@ theorem secondCovGrad_eval_eq_tensorSecondCovDeriv (r t : ℕ)
             GW.toSection y) (w y)) x (X x))
       (Fin.cons (Y x) m) =
     Tensor0SSpace.eval
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) t x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) t x
         (Tensor0SNabla.tensor0SCovariantDerivative I M (t + 1) (LeviCivita (I := I) g)
           (fun y : M =>
             (show Tensor0SSpace r I y →L[ℝ] Tensor0SSpace (t + 1) I y from

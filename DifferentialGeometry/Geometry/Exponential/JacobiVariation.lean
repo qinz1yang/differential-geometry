@@ -117,8 +117,8 @@ theorem covDerivAlong_const (g : SmoothRiemannianMetric I M) (p : M)
   exact (trivializationAt E (TangentSpace I) p).symmL_continuousLinearMapAt
     (R := ℝ) hmem (deriv (fun s => (V s : E)) t)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 theorem intrinsic_jacobi
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
@@ -220,8 +220,8 @@ theorem intrinsic_jacobi
   rw [hF0] at hjac
   exact hjac
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
 theorem intrinsic_jacobi_one
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
@@ -284,8 +284,8 @@ theorem intrinsic_jacobi_one
     exact congrArg (fun L : E →L[ℝ] E => L w) hfootCLM
   exact hstep.trans hgoal
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
 theorem intrinsic_jacobi_at
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
@@ -317,8 +317,8 @@ theorem intrinsic_jacobi_at
   rw [hfun]
   exact intrinsic_jacobi_one (I := I) g hEnorm p (t • x) (t • w)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] [CompleteSpace E] in
 theorem intrinsic_jacobi_d0
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
@@ -466,8 +466,8 @@ private lemma clamped_slice_covDeriv_velocity_zero
     HasGeodesicEquationAt.congr_of_eventuallyEq_at hEv2.eq_of_nhds hEv2 hgeo_unclamped
   exact covDerivAlong_velocity_eq_zero_of_hasGeodesicEquationAt_C2 (I := I) g _ t₀ hγC2 hgeo
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 private lemma clamped_slice_covDeriv_velocity_zero_at_zero
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
@@ -1205,8 +1205,8 @@ theorem exists_radial_jacobi_deriv_radius (g : SmoothRiemannianMetric I M) (p : 
   intro x w hx hw
   exact radial_deriv_of_lt (I := I) g p hx hw
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem jacobi_zero_of_lt
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1407,8 +1407,8 @@ theorem jacobi_zero_of_lt
     exact congrArg Neg.neg hcurv
   linear_combination (norm := module) hfinal
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_jacobi_zero
     [PseudoEMetricSpace M] [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]

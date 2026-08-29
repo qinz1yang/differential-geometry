@@ -47,7 +47,7 @@ theorem nablaRicReal_frame
     simpa [SolutionFamily.connection, metricCov] using
       metricCov_smooth (I := I) (M := M) (S.base.metric t)
   let derivs :=
-    CanonicalSpatialDerivs0S.of_smooth_connection
+    CanonicalSpatialDerivs0S.ofSmoothConnection
       (E := E) (H := H) (I := I) (M := M)
       (S.family.connection t) hcov (S.ricci t)
   let V : Fin 2 → (y : M) → TangentSpace I y :=
@@ -96,7 +96,7 @@ theorem nablaRicReal_frame
           (DifferentialGeometry.Geometry.Curvature.vec3 (I := I) (frame d x) (frame a x)
             (frame b x)) =
         nablaRicComp (I := I) S frame t x d a b := by
-    simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.of_smooth_connection]
+    simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.ofSmoothConnection]
   have hfun :
       (fun p : M => S.ricci t p (fun a : Fin 2 => V a p)) =
         fun p : M => ricciCompInFrame (I := I) S frame t p a b := by

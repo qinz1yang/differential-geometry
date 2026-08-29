@@ -48,11 +48,11 @@ private lemma trivToE_B_value_bound_on_pouTsupport
       (T% (B.toFun : Π x : M, TangentSpace I x))
       (chartLeviCivitaGoodSet (I := I) α) := hB_total.contMDiffOn
   have hu_cd : ContDiffOn ℝ ∞
-      (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     chartE_pullback_contDiffOn_goodSet (I := I) α hB_on
   have hcont_u : ContinuousOn (fun y : E =>
-      ‖(chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm) y‖)
+      ‖(chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm) y‖)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     continuous_norm.comp_continuousOn hu_cd.continuousOn
   have hφ_cm : ContMDiffOn I 𝓘(ℝ, E) ∞ (extChartAt I α) (chartAt H α).source :=
@@ -71,7 +71,7 @@ private lemma trivToE_B_value_bound_on_pouTsupport
   have hφ_cont : ContinuousOn (extChartAt I α) K_set :=
     (hφ_cm.continuousOn).mono hK_sub
   have hcont_u_M : ContinuousOn (fun b : M =>
-      ‖(chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)
+      ‖(chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)
           (extChartAt I α b)‖) K_set :=
     hcont_u.comp hφ_cont hmaps
   obtain ⟨Cu, hCu_mem⟩ := hK_compact.bddAbove_image hcont_u_M
@@ -83,10 +83,10 @@ private lemma trivToE_B_value_bound_on_pouTsupport
   have hsymm_inv : (extChartAt I α).symm (extChartAt I α b) = b :=
     (extChartAt I α).left_inv hb_extsrc
   have h_eq : ‖trivToE (I := I) α b (B.toFun b)‖ =
-      ‖(chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)
+      ‖(chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)
           (extChartAt I α b)‖ := by
     change ‖trivToE (I := I) α b (B.toFun b)‖ =
-      ‖chartE_section_repr (I := I) α B.toFun
+      ‖chartESectionRepr (I := I) α B.toFun
         ((extChartAt I α).symm (extChartAt I α b))‖
     rw [hsymm_inv]
     rfl

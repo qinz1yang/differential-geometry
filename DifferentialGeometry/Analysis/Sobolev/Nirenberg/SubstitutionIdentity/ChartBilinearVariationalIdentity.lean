@@ -107,10 +107,10 @@ private noncomputable def vTestPartialSummand
     (j : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
   fun z => (η z)^2 *
     DifferentialGeometry.Analysis.Sobolev.diffQuot
-      (d := Module.finrank ℝ E) k h (D.weak_partial j) z +
+      (d := Module.finrank ℝ E) k h (D.weakPartial j) z +
     2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart z
+        (d := Module.finrank ℝ E) k h D.uChart z
 
 private noncomputable def vTestPartialSummandIndicator
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
@@ -121,11 +121,11 @@ private noncomputable def vTestPartialSummandIndicator
   fun z => (η z)^2 *
     DifferentialGeometry.Analysis.Sobolev.diffQuot
       (d := Module.finrank ℝ E) k h
-      ((Metric.cthickening |h| K_0).indicator (D.weak_partial j)) z +
+      ((Metric.cthickening |h| K_0).indicator (D.weakPartial j)) z +
     2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        ((Metric.cthickening |h| K_0).indicator D.u_chart) z
+        ((Metric.cthickening |h| K_0).indicator D.uChart) z
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tF_eq_tFE_on_tsupport
@@ -149,10 +149,10 @@ private lemma tF_eq_tFE_on_tsupport
     rw [dist_eq_norm, add_sub_cancel_left, norm_smul]
     simp [Real.norm_eq_abs]
   have h_dq_wp : DifferentialGeometry.Analysis.Sobolev.diffQuot
-      (d := Module.finrank ℝ E) k h (D.weak_partial j) z =
+      (d := Module.finrank ℝ E) k h (D.weakPartial j) z =
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        ((Metric.cthickening |h| K_0).indicator (D.weak_partial j)) z := by
+        ((Metric.cthickening |h| K_0).indicator (D.weakPartial j)) z := by
     by_cases hh : h = 0
     · subst hh
       simp [DifferentialGeometry.Analysis.Sobolev.diffQuot]
@@ -162,10 +162,10 @@ private lemma tF_eq_tFE_on_tsupport
         (d := Module.finrank ℝ E) k hh]
       rw [Set.indicator_of_mem hz_shift, Set.indicator_of_mem hz_thick]
   have h_dq_u : DifferentialGeometry.Analysis.Sobolev.diffQuot
-      (d := Module.finrank ℝ E) k h D.u_chart z =
+      (d := Module.finrank ℝ E) k h D.uChart z =
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        ((Metric.cthickening |h| K_0).indicator D.u_chart) z := by
+        ((Metric.cthickening |h| K_0).indicator D.uChart) z := by
     by_cases hh : h = 0
     · subst hh
       simp [DifferentialGeometry.Analysis.Sobolev.diffQuot]
@@ -235,7 +235,7 @@ private lemma uChart_indicator_memLp
     {h : ℝ}
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α) :
-    MemLp ((Metric.cthickening |h| K_0).indicator D.u_chart) 2
+    MemLp ((Metric.cthickening |h| K_0).indicator D.uChart) 2
       (volume : Measure EuclN) := by
   classical
   have h_thick_compact : IsCompact (Metric.cthickening |h| K_0) :=
@@ -256,7 +256,7 @@ private lemma weakPartial_indicator_memLp
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α)
     (j : Fin (Module.finrank ℝ E)) :
-    MemLp ((Metric.cthickening |h| K_0).indicator (D.weak_partial j)) 2
+    MemLp ((Metric.cthickening |h| K_0).indicator (D.weakPartial j)) 2
       (volume : Measure EuclN) := by
   classical
   have h_thick_compact : IsCompact (Metric.cthickening |h| K_0) :=
@@ -382,24 +382,24 @@ private lemma tFE_memLp_two
   have hdq_u_ext_lp : MemLp
       (DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        ((Metric.cthickening |h| K_0).indicator D.u_chart)) 2
+        ((Metric.cthickening |h| K_0).indicator D.uChart)) 2
       (volume : Measure EuclN) :=
     memLp_diffQuot_of_memLp_local hu_ext_lp k hh
   have hdq_wp_ext_lp : MemLp
       (DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        ((Metric.cthickening |h| K_0).indicator (D.weak_partial j))) 2
+        ((Metric.cthickening |h| K_0).indicator (D.weakPartial j))) 2
       (volume : Measure EuclN) :=
     memLp_diffQuot_of_memLp_local hwp_ext_lp k hh
   unfold vTestPartialSummandIndicator
   have ht1_pt_bd : ∀ z, ‖(η z)^2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        ((Metric.cthickening |h| K_0).indicator (D.weak_partial j)) z‖ ≤
+        ((Metric.cthickening |h| K_0).indicator (D.weakPartial j)) z‖ ≤
       ‖M_η^2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        ((Metric.cthickening |h| K_0).indicator (D.weak_partial j)) z‖ := by
+        ((Metric.cthickening |h| K_0).indicator (D.weakPartial j)) z‖ := by
     intro z
     rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_mul, abs_mul,
       abs_of_nonneg (by positivity : (0:ℝ) ≤ M_η^2)]
@@ -413,44 +413,44 @@ private lemma tFE_memLp_two
   have ht1_aesm : AEStronglyMeasurable (fun z => (η z)^2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        ((Metric.cthickening |h| K_0).indicator (D.weak_partial j)) z)
+        ((Metric.cthickening |h| K_0).indicator (D.weakPartial j)) z)
       (volume : Measure EuclN) :=
     (hη_cont.pow 2).aestronglyMeasurable.mul hdq_wp_ext_lp.aestronglyMeasurable
   have ht1_lp : MemLp (fun z => (η z)^2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        ((Metric.cthickening |h| K_0).indicator (D.weak_partial j)) z) 2
+        ((Metric.cthickening |h| K_0).indicator (D.weakPartial j)) z) 2
       (volume : Measure EuclN) :=
     MemLp.mono (hdq_wp_ext_lp.const_mul (M_η^2)) ht1_aesm
       (Filter.Eventually.of_forall ht1_pt_bd)
   have ht2_pt_bd : ∀ z, ‖2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        ((Metric.cthickening |h| K_0).indicator D.u_chart) z‖ ≤
+        ((Metric.cthickening |h| K_0).indicator D.uChart) z‖ ≤
       ‖(2 * M_η * M_dη) *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          ((Metric.cthickening |h| K_0).indicator D.u_chart) z‖ := by
+          ((Metric.cthickening |h| K_0).indicator D.uChart) z‖ := by
     intro z
     rw [Real.norm_eq_abs, Real.norm_eq_abs]
     have h_lhs_abs : |(2 : ℝ) * η z *
         (fderiv ℝ η z) (EuclideanSpace.single j 1) *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          ((Metric.cthickening |h| K_0).indicator D.u_chart) z| =
+          ((Metric.cthickening |h| K_0).indicator D.uChart) z| =
         (2 * |η z| * |(fderiv ℝ η z) (EuclideanSpace.single j 1)|) *
         |DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          ((Metric.cthickening |h| K_0).indicator D.u_chart) z| := by
+          ((Metric.cthickening |h| K_0).indicator D.uChart) z| := by
       rw [abs_mul, abs_mul, abs_mul, abs_of_nonneg (by norm_num : (0 : ℝ) ≤ 2)]
     have h_rhs_abs : |(2 * M_η * M_dη) *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          ((Metric.cthickening |h| K_0).indicator D.u_chart) z| =
+          ((Metric.cthickening |h| K_0).indicator D.uChart) z| =
         (2 * M_η * M_dη) *
         |DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          ((Metric.cthickening |h| K_0).indicator D.u_chart) z| := by
+          ((Metric.cthickening |h| K_0).indicator D.uChart) z| := by
       rw [abs_mul, abs_of_nonneg (by positivity : (0 : ℝ) ≤ 2 * M_η * M_dη)]
     rw [h_lhs_abs, h_rhs_abs]
     have h_factor : 2 * |η z| * |(fderiv ℝ η z) (EuclideanSpace.single j 1)| ≤
@@ -468,7 +468,7 @@ private lemma tFE_memLp_two
       2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          ((Metric.cthickening |h| K_0).indicator D.u_chart) z)
+          ((Metric.cthickening |h| K_0).indicator D.uChart) z)
       (volume : Measure EuclN) :=
     (((continuous_const.mul hη_cont).mul h_partial_eta_cont).aestronglyMeasurable).mul
       hdq_u_ext_lp.aestronglyMeasurable
@@ -476,7 +476,7 @@ private lemma tFE_memLp_two
       2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          ((Metric.cthickening |h| K_0).indicator D.u_chart) z) 2
+          ((Metric.cthickening |h| K_0).indicator D.uChart) z) 2
       (volume : Measure EuclN) :=
     MemLp.mono (hdq_u_ext_lp.const_mul (2 * M_η * M_dη)) ht2_aesm
       (Filter.Eventually.of_forall ht2_pt_bd)
@@ -527,18 +527,18 @@ private lemma standardNirenbergTest_uChart_memLp_cthickening
     {R₀ : ℝ} {h : ℝ} (hh : h ≠ 0) (hh_le : |h| ≤ R₀)
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α) :
-    MemLp (standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart) 2
+    MemLp (standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart) 2
       ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)) := by
   classical
   set F : EuclN → ℝ := fun z =>
     (η z)^2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart z with hF_def
+        (d := Module.finrank ℝ E) k h D.uChart z with hF_def
   set F_ext : EuclN → ℝ := fun z =>
     (η z)^2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        ((Metric.cthickening |h| K_0).indicator D.u_chart) z with hF_ext_def
+        ((Metric.cthickening |h| K_0).indicator D.uChart) z with hF_ext_def
   have hF_eq : F = F_ext := by
     funext z
     by_cases hz : z ∈ tsupport η
@@ -550,10 +550,10 @@ private lemma standardNirenbergTest_uChart_memLp_cthickening
         rw [dist_eq_norm, add_sub_cancel_left, norm_smul]
         simp [Real.norm_eq_abs]
       have h_dq_u : DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h D.u_chart z =
+          (d := Module.finrank ℝ E) k h D.uChart z =
           DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k h
-            ((Metric.cthickening |h| K_0).indicator D.u_chart) z := by
+            ((Metric.cthickening |h| K_0).indicator D.uChart) z := by
         by_cases hh_eq : h = 0
         · subst hh_eq
           simp [DifferentialGeometry.Analysis.Sobolev.diffQuot]
@@ -564,20 +564,20 @@ private lemma standardNirenbergTest_uChart_memLp_cthickening
           rw [Set.indicator_of_mem hz_shift, Set.indicator_of_mem hz_thick]
       change (η z)^2 *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h D.u_chart z =
+          (d := Module.finrank ℝ E) k h D.uChart z =
         (η z)^2 *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          ((Metric.cthickening |h| K_0).indicator D.u_chart) z
+          ((Metric.cthickening |h| K_0).indicator D.uChart) z
       rw [h_dq_u]
     · have hηz : η z = 0 := image_eq_zero_of_notMem_tsupport hz
       change (η z)^2 *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h D.u_chart z =
+          (d := Module.finrank ℝ E) k h D.uChart z =
         (η z)^2 *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          ((Metric.cthickening |h| K_0).indicator D.u_chart) z
+          ((Metric.cthickening |h| K_0).indicator D.uChart) z
       rw [show (η z)^2 = 0 from by rw [hηz]; ring]
       ring
   have hη_cont : Continuous η := hη.continuous
@@ -602,14 +602,14 @@ private lemma standardNirenbergTest_uChart_memLp_cthickening
   have hdq_u_ext_lp : MemLp
       (DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        ((Metric.cthickening |h| K_0).indicator D.u_chart)) 2
+        ((Metric.cthickening |h| K_0).indicator D.uChart)) 2
       (volume : Measure EuclN) :=
     memLp_diffQuot_of_memLp_local hu_ext_lp k hh
   have hF_ext_pt_bd : ∀ z, ‖F_ext z‖ ≤
       ‖M_η^2 *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          ((Metric.cthickening |h| K_0).indicator D.u_chart) z‖ := by
+          ((Metric.cthickening |h| K_0).indicator D.uChart) z‖ := by
     intro z
     change ‖(η z)^2 * _‖ ≤ ‖M_η^2 * _‖
     rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_mul, abs_mul,
@@ -639,7 +639,7 @@ private lemma standardNirenbergTest_uChart_memLp_cthickening
         (d := Module.finrank ℝ E) k (-h) F) 2
       ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)) :=
     h_dq_F_lp.restrict _
-  have h_test_eq : standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart =
+  have h_test_eq : standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart =
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k (-h) F := rfl
   rw [h_test_eq]
@@ -662,23 +662,23 @@ theorem variational_identity_at_v_h_of_compact_support
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             weightedInvGramOnEuclid (I := I) g α i j y *
-              D.weak_partial i y *
+              D.weakPartial i y *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
                 (d := Module.finrank ℝ E) k (-h)
                 (fun z => (η z) ^ 2 *
                   DifferentialGeometry.Analysis.Sobolev.diffQuot
-                    (d := Module.finrank ℝ E) k h (D.weak_partial j) z +
+                    (d := Module.finrank ℝ E) k h (D.weakPartial j) z +
                   2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
                     DifferentialGeometry.Analysis.Sobolev.diffQuot
-                      (d := Module.finrank ℝ E) k h D.u_chart z) y)
+                      (d := Module.finrank ℝ E) k h D.uChart z) y)
         ∂(volume : Measure EuclN)) +
       (∫ y in Metric.cthickening |h| K_0,
-        densityOnEuclid (I := I) g α y * D.u_chart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart y
+        densityOnEuclid (I := I) g α y * D.uChart y *
+          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
         ∂(volume : Measure EuclN)) =
       ∫ y in Metric.cthickening |h| K_0,
-        densityOnEuclid (I := I) g α y * D.f_chart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart y
+        densityOnEuclid (I := I) g α y * D.fChart y *
+          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
         ∂(volume : Measure EuclN) := by
   classical
   let _ : NeZero (Module.finrank ℝ E) :=
@@ -692,13 +692,13 @@ theorem variational_identity_at_v_h_of_compact_support
   have hχ_dx_zero : ∀ x ∈ Metric.cthickening |h| K_0, ∀ i,
       (fderiv ℝ χ x) (EuclideanSpace.single i 1) = 0 := fun x hx i =>
     fderiv_chi_zero_on_cthickening hδ_pos hχ_one_strong hx i
-  obtain ⟨u_seq, hu_seq_smooth, hu_seq_cs, hu_seq_l2, hu_seq_grad_l2⟩ :=
+  obtain ⟨uSeq, hu_seq_smooth, hu_seq_cs, hu_seq_l2, hu_seq_grad_l2⟩ :=
     exists_smooth_uChart_approx (I := I) (M := M) D
       hχ_smooth hχ_cs hχ_supp
   have h_v_seq_l2 :
       Tendsto (fun n => eLpNorm (fun x =>
-        standardNirenbergTest (d := Module.finrank ℝ E) k h η (u_seq n) x -
-        standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart x) 2
+        standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n) x -
+        standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart x) 2
         ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)))
         atTop (𝓝 0) :=
     standardNirenbergTest_seq_tendsto_eLpNorm (I := I) (M := M) D
@@ -708,15 +708,15 @@ theorem variational_identity_at_v_h_of_compact_support
       Tendsto (fun n => eLpNorm
         (fun y => (fderiv ℝ
           (standardNirenbergTest (d := Module.finrank ℝ E) k h η
-            (u_seq n)) y) (EuclideanSpace.single j 1) -
+            (uSeq n)) y) (EuclideanSpace.single j 1) -
           DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k (-h)
             (fun z => (η z)^2 *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h (D.weak_partial j) z +
+                (d := Module.finrank ℝ E) k h (D.weakPartial j) z +
               2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
                 DifferentialGeometry.Analysis.Sobolev.diffQuot
-                  (d := Module.finrank ℝ E) k h D.u_chart z) y) 2
+                  (d := Module.finrank ℝ E) k h D.uChart z) y) 2
         ((volume : Measure EuclN).restrict
           (Metric.cthickening |h| K_0))) atTop (𝓝 0) := by
     intro j
@@ -729,12 +729,12 @@ theorem variational_identity_at_v_h_of_compact_support
       (d := Module.finrank ℝ E) k (-h)
       (fun z => (η z)^2 *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h (D.weak_partial j) z +
+          (d := Module.finrank ℝ E) k h (D.weakPartial j) z +
         2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
           DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h D.u_chart z) y with hwpv_def
+            (d := Module.finrank ℝ E) k h D.uChart z) y with hwpv_def
   have hv_h_lp : MemLp (standardNirenbergTest (d := Module.finrank ℝ E)
-      k h η D.u_chart) 2
+      k h η D.uChart) 2
       ((volume : Measure EuclN).restrict (Metric.cthickening |h| K_0)) :=
     standardNirenbergTest_uChart_memLp_cthickening (I := I) (M := M) D
       hK_0_compact hη hη_supp hη_supp_in_K_0 k hh hh_le h_thick
@@ -751,12 +751,12 @@ theorem variational_identity_at_v_h_of_compact_support
       hK_0_compact hη hη_supp hη_supp_in_K_0 k hh h_thick j).restrict _
   have h_v_seq_supp : ∀ n : ℕ,
       tsupport (standardNirenbergTest (d := Module.finrank ℝ E)
-        k h η (u_seq n)) ⊆ Metric.cthickening |h| K_0 := fun n =>
+        k h η (uSeq n)) ⊆ Metric.cthickening |h| K_0 := fun n =>
     standardNirenbergTest_tsupport_in_thickening (E := E) k h
-      hη_supp_in_K_0 (u_seq n)
+      hη_supp_in_K_0 (uSeq n)
   exact variational_identity_at_v_h (I := I) (M := M) D
     hK_0_compact hη hη_supp k hh h_thick
-    wpv hv_h_lp hv_h_grad_lp u_seq hu_seq_smooth h_v_seq_supp
+    wpv hv_h_lp hv_h_grad_lp uSeq hu_seq_smooth h_v_seq_supp
     h_v_seq_l2 h_v_seq_grad_l2
 
 
@@ -776,23 +776,23 @@ theorem variational_identity_v_h_expanded_of_compact_support
         (∑ i : Fin (Module.finrank ℝ E),
           ∑ j : Fin (Module.finrank ℝ E),
             weightedInvGramOnEuclid (I := I) g α i j y *
-              D.weak_partial i y *
+              D.weakPartial i y *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
                 (d := Module.finrank ℝ E) k (-h)
                 (fun z => (η z) ^ 2 *
                   DifferentialGeometry.Analysis.Sobolev.diffQuot
-                    (d := Module.finrank ℝ E) k h (D.weak_partial j) z +
+                    (d := Module.finrank ℝ E) k h (D.weakPartial j) z +
                   2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
                     DifferentialGeometry.Analysis.Sobolev.diffQuot
-                      (d := Module.finrank ℝ E) k h D.u_chart z) y)
+                      (d := Module.finrank ℝ E) k h D.uChart z) y)
         ∂(volume : Measure EuclN)) +
       (∫ y in Metric.cthickening |h| K_0,
-        densityOnEuclid (I := I) g α y * D.u_chart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart y
+        densityOnEuclid (I := I) g α y * D.uChart y *
+          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
         ∂(volume : Measure EuclN)) =
       ∫ y in Metric.cthickening |h| K_0,
-        densityOnEuclid (I := I) g α y * D.f_chart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart y
+        densityOnEuclid (I := I) g α y * D.fChart y *
+          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
         ∂(volume : Measure EuclN) :=
   variational_identity_at_v_h_of_compact_support (I := I) (M := M) D
     hK_0_compact hη hη_supp hη_supp_in_K_0 k hh hh_le h_thick
@@ -807,19 +807,19 @@ private lemma diffQuot_weightedInvGram_weak_partial_expand
     DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z *
-          D.weak_partial i z) y =
+          D.weakPartial i z) y =
       DifferentialGeometry.Analysis.Sobolev.translate
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h (D.weak_partial i) y +
+          (d := Module.finrank ℝ E) k h (D.weakPartial i) y +
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
-        D.weak_partial i y :=
+        D.weakPartial i y :=
   DifferentialGeometry.Analysis.Sobolev.NirenbergEuclidean.diffQuot_coeff_apply
     (d := Module.finrank ℝ E) k h
-    (fun z => weightedInvGramOnEuclid (I := I) g α i j z) (D.weak_partial i) y
+    (fun z => weightedInvGramOnEuclid (I := I) g α i j z) (D.weakPartial i) y
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma eta_sq_factor_zero_outside_tsupport
@@ -924,7 +924,7 @@ private lemma weakPartial_memLp_K_0
     (i : Fin (Module.finrank ℝ E))
     {K_0 : Set EuclN} (hK_0_compact : IsCompact K_0)
     (hK_0_in : K_0 ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    MemLp (D.weak_partial i) 2 ((volume : Measure EuclN).restrict K_0) :=
+    MemLp (D.weakPartial i) 2 ((volume : Measure EuclN).restrict K_0) :=
   D.weak_partial_locally_memLp i K_0 hK_0_compact hK_0_in
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -939,11 +939,11 @@ private lemma diffQuot_weakPartial_memLp_K_0
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α) :
     MemLp (DifferentialGeometry.Analysis.Sobolev.diffQuot
-      (d := Module.finrank ℝ E) k h (D.weak_partial i)) 2
+      (d := Module.finrank ℝ E) k h (D.weakPartial i)) 2
       ((volume : Measure EuclN).restrict K_0) := by
   classical
   set wp_i_ext : EuclN → ℝ :=
-    (Metric.cthickening |h| K_0).indicator (D.weak_partial i) with hwp_i_ext_def
+    (Metric.cthickening |h| K_0).indicator (D.weakPartial i) with hwp_i_ext_def
   have hwp_i_ext_lp : MemLp wp_i_ext 2 (volume : Measure EuclN) :=
     weakPartial_indicator_memLp (I := I) (M := M) D hK_0_compact h_thick i
   have hdq_wp_i_ext_lp : MemLp
@@ -958,7 +958,7 @@ private lemma diffQuot_weakPartial_memLp_K_0
     hdq_wp_i_ext_lp.restrict K_0
   have h_pt_eq : ∀ y ∈ K_0,
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial i) y =
+        (d := Module.finrank ℝ E) k h (D.weakPartial i) y =
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h wp_i_ext y := by
     intro y hy_K_0
@@ -972,13 +972,13 @@ private lemma diffQuot_weakPartial_memLp_K_0
       (d := Module.finrank ℝ E) k hh]
     rw [DifferentialGeometry.Analysis.Sobolev.diffQuot_apply_of_ne
       (d := Module.finrank ℝ E) k hh]
-    change (D.weak_partial i (y + h • EuclideanSpace.single k 1) -
-        D.weak_partial i y) / h =
+    change (D.weakPartial i (y + h • EuclideanSpace.single k 1) -
+        D.weakPartial i y) / h =
       (wp_i_ext (y + h • EuclideanSpace.single k 1) - wp_i_ext y) / h
     rw [show wp_i_ext (y + h • EuclideanSpace.single k 1) =
-        D.weak_partial i (y + h • EuclideanSpace.single k 1) from
+        D.weakPartial i (y + h • EuclideanSpace.single k 1) from
         Set.indicator_of_mem hy_shift _,
-      show wp_i_ext y = D.weak_partial i y from
+      show wp_i_ext y = D.weakPartial i y from
         Set.indicator_of_mem hy_thick _]
   have hK_0_meas : MeasurableSet K_0 := hK_0_compact.isClosed.measurableSet
   have h_ae_eq :
@@ -986,7 +986,7 @@ private lemma diffQuot_weakPartial_memLp_K_0
         (d := Module.finrank ℝ E) k h wp_i_ext =ᵐ[
         (volume : Measure EuclN).restrict K_0]
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial i) := by
+        (d := Module.finrank ℝ E) k h (D.weakPartial i) := by
     refine (MeasureTheory.ae_restrict_iff' hK_0_meas).mpr ?_
     refine Filter.Eventually.of_forall ?_
     intro y hy
@@ -1004,11 +1004,11 @@ private lemma diffQuot_uChart_memLp_K_0
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α) :
     MemLp (DifferentialGeometry.Analysis.Sobolev.diffQuot
-      (d := Module.finrank ℝ E) k h D.u_chart) 2
+      (d := Module.finrank ℝ E) k h D.uChart) 2
       ((volume : Measure EuclN).restrict K_0) := by
   classical
   set u_ext : EuclN → ℝ :=
-    (Metric.cthickening |h| K_0).indicator D.u_chart with hu_ext_def
+    (Metric.cthickening |h| K_0).indicator D.uChart with hu_ext_def
   have hu_ext_lp : MemLp u_ext 2 (volume : Measure EuclN) :=
     uChart_indicator_memLp (I := I) (M := M) D hK_0_compact h_thick
   have hdq_u_ext_lp : MemLp
@@ -1023,7 +1023,7 @@ private lemma diffQuot_uChart_memLp_K_0
     hdq_u_ext_lp.restrict K_0
   have h_pt_eq : ∀ y ∈ K_0,
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart y =
+        (d := Module.finrank ℝ E) k h D.uChart y =
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h u_ext y := by
     intro y hy_K_0
@@ -1037,12 +1037,12 @@ private lemma diffQuot_uChart_memLp_K_0
       (d := Module.finrank ℝ E) k hh]
     rw [DifferentialGeometry.Analysis.Sobolev.diffQuot_apply_of_ne
       (d := Module.finrank ℝ E) k hh]
-    change (D.u_chart (y + h • EuclideanSpace.single k 1) - D.u_chart y) / h =
+    change (D.uChart (y + h • EuclideanSpace.single k 1) - D.uChart y) / h =
       (u_ext (y + h • EuclideanSpace.single k 1) - u_ext y) / h
     rw [show u_ext (y + h • EuclideanSpace.single k 1) =
-        D.u_chart (y + h • EuclideanSpace.single k 1) from
+        D.uChart (y + h • EuclideanSpace.single k 1) from
         Set.indicator_of_mem hy_shift _,
-      show u_ext y = D.u_chart y from
+      show u_ext y = D.uChart y from
         Set.indicator_of_mem hy_thick _]
   have hK_0_meas : MeasurableSet K_0 := hK_0_compact.isClosed.measurableSet
   have h_ae_eq :
@@ -1050,7 +1050,7 @@ private lemma diffQuot_uChart_memLp_K_0
         (d := Module.finrank ℝ E) k h u_ext =ᵐ[
         (volume : Measure EuclN).restrict K_0]
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart := by
+        (d := Module.finrank ℝ E) k h D.uChart := by
     refine (MeasureTheory.ae_restrict_iff' hK_0_meas).mpr ?_
     refine Filter.Eventually.of_forall ?_
     intro y hy
@@ -1204,9 +1204,9 @@ private lemma translatedCoeff_cutoffSq_diffQuotPartial_diffQuotPartial_integrabl
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       (η y) ^ 2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial i) y *
+        (d := Module.finrank ℝ E) k h (D.weakPartial i) y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial j) y)
+        (d := Module.finrank ℝ E) k h (D.weakPartial j) y)
       ((volume : Measure EuclN).restrict K_0) := by
   have h_τw_cont := translate_weightedInvGramOnEuclid_continuousOn_K_0
     (I := I) (M := M) g α i j (k := k) (h := h) hh_le h_thick
@@ -1238,9 +1238,9 @@ private lemma translatedCoeff_cutoffDeriv_diffQuotPartial_diffQuotUChart_integra
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       η y * ((fderiv ℝ η y) (EuclideanSpace.single j 1)) *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial i) y *
+        (d := Module.finrank ℝ E) k h (D.weakPartial i) y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart y)
+        (d := Module.finrank ℝ E) k h D.uChart y)
       ((volume : Measure EuclN).restrict K_0) := by
   classical
   have h_τw_cont := translate_weightedInvGramOnEuclid_continuousOn_K_0
@@ -1262,9 +1262,9 @@ private lemma translatedCoeff_cutoffDeriv_diffQuotPartial_diffQuotUChart_integra
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       ((2 : ℝ) * η y * (fderiv ℝ η y) (EuclideanSpace.single j 1)) *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial i) y *
+        (d := Module.finrank ℝ E) k h (D.weakPartial i) y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart y) =
+        (d := Module.finrank ℝ E) k h D.uChart y) =
     (fun y =>
       2 *
       DifferentialGeometry.Analysis.Sobolev.translate
@@ -1272,9 +1272,9 @@ private lemma translatedCoeff_cutoffDeriv_diffQuotPartial_diffQuotUChart_integra
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       η y * ((fderiv ℝ η y) (EuclideanSpace.single j 1)) *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial i) y *
+        (d := Module.finrank ℝ E) k h (D.weakPartial i) y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart y) := by
+        (d := Module.finrank ℝ E) k h D.uChart y) := by
     funext y; ring
   rw [← h_eq]
   exact h_int
@@ -1297,9 +1297,9 @@ private lemma diffQuotCoeff_cutoffSq_partial_diffQuotPartial_integrable_K_0
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       (η y) ^ 2 *
-      D.weak_partial i y *
+      D.weakPartial i y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial j) y)
+        (d := Module.finrank ℝ E) k h (D.weakPartial j) y)
       ((volume : Measure EuclN).restrict K_0) := by
   have h_dqw_cont := diffQuot_weightedInvGramOnEuclid_continuousOn_K_0
     (I := I) (M := M) g α i j (k := k) (h := h) hh_le h_thick
@@ -1331,9 +1331,9 @@ private lemma diffQuotCoeff_cutoffDeriv_partial_diffQuotUChart_integrable_K_0
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       η y * ((fderiv ℝ η y) (EuclideanSpace.single j 1)) *
-      D.weak_partial i y *
+      D.weakPartial i y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart y)
+        (d := Module.finrank ℝ E) k h D.uChart y)
       ((volume : Measure EuclN).restrict K_0) := by
   classical
   have h_dqw_cont := diffQuot_weightedInvGramOnEuclid_continuousOn_K_0
@@ -1354,18 +1354,18 @@ private lemma diffQuotCoeff_cutoffDeriv_partial_diffQuotUChart_integrable_K_0
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       ((2 : ℝ) * η y * (fderiv ℝ η y) (EuclideanSpace.single j 1)) *
-      D.weak_partial i y *
+      D.weakPartial i y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart y) =
+        (d := Module.finrank ℝ E) k h D.uChart y) =
     (fun y =>
       2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       η y * ((fderiv ℝ η y) (EuclideanSpace.single j 1)) *
-      D.weak_partial i y *
+      D.weakPartial i y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart y) := by
+        (d := Module.finrank ℝ E) k h D.uChart y) := by
     funext y; ring
   rw [← h_eq]
   exact h_int
@@ -1390,18 +1390,18 @@ private lemma principal_post_ibp_integral_eq_symbolic
             DifferentialGeometry.Analysis.Sobolev.diffQuot
               (d := Module.finrank ℝ E) k h
               (fun z => weightedInvGramOnEuclid (I := I) g α i j z *
-                D.weak_partial i z) y *
+                D.weakPartial i z) y *
             ((η y) ^ 2 *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h (D.weak_partial j) y +
+                (d := Module.finrank ℝ E) k h (D.weakPartial j) y +
               2 * η y * (fderiv ℝ η y) (EuclideanSpace.single j 1) *
                 DifferentialGeometry.Analysis.Sobolev.diffQuot
-                  (d := Module.finrank ℝ E) k h D.u_chart y))
+                  (d := Module.finrank ℝ E) k h D.uChart y))
         ∂(volume : Measure EuclN) =
-      principalTerm_chartBilinear (I := I) (M := M) D K_0 η k h
-        + cross_1_term_chartBilinear (I := I) (M := M) D K_0 η k h
-        + cross_2_term_chartBilinear (I := I) (M := M) D K_0 η k h
-        + cross_3_term_chartBilinear (I := I) (M := M) D K_0 η k h := by
+      principalTermChartBilinear (I := I) (M := M) D K_0 η k h
+        + cross1TermChartBilinear (I := I) (M := M) D K_0 η k h
+        + cross2TermChartBilinear (I := I) (M := M) D K_0 η k h
+        + cross3TermChartBilinear (I := I) (M := M) D K_0 η k h := by
   classical
   set T1 : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → EuclN → ℝ :=
     fun i j y => DifferentialGeometry.Analysis.Sobolev.translate
@@ -1409,9 +1409,9 @@ private lemma principal_post_ibp_integral_eq_symbolic
       (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       (η y) ^ 2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial i) y *
+        (d := Module.finrank ℝ E) k h (D.weakPartial i) y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial j) y with hT1_def
+        (d := Module.finrank ℝ E) k h (D.weakPartial j) y with hT1_def
   set T2 : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → EuclN → ℝ :=
     fun i j y => 2 *
       DifferentialGeometry.Analysis.Sobolev.translate
@@ -1419,50 +1419,50 @@ private lemma principal_post_ibp_integral_eq_symbolic
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       η y * ((fderiv ℝ η y) (EuclideanSpace.single j 1)) *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial i) y *
+        (d := Module.finrank ℝ E) k h (D.weakPartial i) y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart y with hT2_def
+        (d := Module.finrank ℝ E) k h D.uChart y with hT2_def
   set T3 : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → EuclN → ℝ :=
     fun i j y => DifferentialGeometry.Analysis.Sobolev.diffQuot
       (d := Module.finrank ℝ E) k h
       (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       (η y) ^ 2 *
-      D.weak_partial i y *
+      D.weakPartial i y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial j) y with hT3_def
+        (d := Module.finrank ℝ E) k h (D.weakPartial j) y with hT3_def
   set T4 : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → EuclN → ℝ :=
     fun i j y => 2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       η y * ((fderiv ℝ η y) (EuclideanSpace.single j 1)) *
-      D.weak_partial i y *
+      D.weakPartial i y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart y with hT4_def
+        (d := Module.finrank ℝ E) k h D.uChart y with hT4_def
   set LHS_ij : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → EuclN → ℝ :=
     fun i j y => DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z *
-          D.weak_partial i z) y *
+          D.weakPartial i z) y *
       ((η y) ^ 2 *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h (D.weak_partial j) y +
+          (d := Module.finrank ℝ E) k h (D.weakPartial j) y +
         2 * η y * (fderiv ℝ η y) (EuclideanSpace.single j 1) *
           DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h D.u_chart y) with hLHS_def
+            (d := Module.finrank ℝ E) k h D.uChart y) with hLHS_def
   have h_pointwise_expand : ∀ i j y,
       LHS_ij i j y = T1 i j y + T2 i j y + T3 i j y + T4 i j y := by
     intro i j y
     change DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z *
-          D.weak_partial i z) y *
+          D.weakPartial i z) y *
       ((η y) ^ 2 *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h (D.weak_partial j) y +
+          (d := Module.finrank ℝ E) k h (D.weakPartial j) y +
         2 * η y * (fderiv ℝ η y) (EuclideanSpace.single j 1) *
           DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h D.u_chart y) =
+            (d := Module.finrank ℝ E) k h D.uChart y) =
       T1 i j y + T2 i j y + T3 i j y + T4 i j y
     rw [diffQuot_weightedInvGram_weak_partial_expand (I := I) (M := M)
       α D i k h j y]
@@ -1470,49 +1470,49 @@ private lemma principal_post_ibp_integral_eq_symbolic
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h (D.weak_partial i) y +
+          (d := Module.finrank ℝ E) k h (D.weakPartial i) y +
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
-        D.weak_partial i y) *
+        D.weakPartial i y) *
       ((η y) ^ 2 *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h (D.weak_partial j) y +
+          (d := Module.finrank ℝ E) k h (D.weakPartial j) y +
         2 * η y * (fderiv ℝ η y) (EuclideanSpace.single j 1) *
           DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h D.u_chart y) =
+            (d := Module.finrank ℝ E) k h D.uChart y) =
       (DifferentialGeometry.Analysis.Sobolev.translate
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       (η y) ^ 2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial i) y *
+        (d := Module.finrank ℝ E) k h (D.weakPartial i) y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial j) y) +
+        (d := Module.finrank ℝ E) k h (D.weakPartial j) y) +
       (2 *
       DifferentialGeometry.Analysis.Sobolev.translate
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       η y * ((fderiv ℝ η y) (EuclideanSpace.single j 1)) *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial i) y *
+        (d := Module.finrank ℝ E) k h (D.weakPartial i) y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart y) +
+        (d := Module.finrank ℝ E) k h D.uChart y) +
       (DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       (η y) ^ 2 *
-      D.weak_partial i y *
+      D.weakPartial i y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial j) y) +
+        (d := Module.finrank ℝ E) k h (D.weakPartial j) y) +
       (2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       η y * ((fderiv ℝ η y) (EuclideanSpace.single j 1)) *
-      D.weak_partial i y *
+      D.weakPartial i y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart y)
+        (d := Module.finrank ℝ E) k h D.uChart y)
     ring
   have h_sum_expand : ∀ y, (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), LHS_ij i j y) =
@@ -1557,9 +1557,9 @@ private lemma principal_post_ibp_integral_eq_symbolic
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       (η y) ^ 2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial i) y *
+        (d := Module.finrank ℝ E) k h (D.weakPartial i) y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial j) y = 0
+        (d := Module.finrank ℝ E) k h (D.weakPartial j) y = 0
       rw [show (η y) ^ 2 = 0 from by rw [hηy]; ring]
       ring
     have h2 : ∀ i j, T2 i j y = 0 := by
@@ -1570,9 +1570,9 @@ private lemma principal_post_ibp_integral_eq_symbolic
           (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
         η y * ((fderiv ℝ η y) (EuclideanSpace.single j 1)) *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h (D.weak_partial i) y *
+          (d := Module.finrank ℝ E) k h (D.weakPartial i) y *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h D.u_chart y = 0
+          (d := Module.finrank ℝ E) k h D.uChart y = 0
       rw [show η y = 0 from hηy]
       ring
     have h3 : ∀ i j, T3 i j y = 0 := by
@@ -1581,9 +1581,9 @@ private lemma principal_post_ibp_integral_eq_symbolic
         (d := Module.finrank ℝ E) k h
         (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
       (η y) ^ 2 *
-      D.weak_partial i y *
+      D.weakPartial i y *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial j) y = 0
+        (d := Module.finrank ℝ E) k h (D.weakPartial j) y = 0
       rw [show (η y) ^ 2 = 0 from by rw [hηy]; ring]
       ring
     have h4 : ∀ i j, T4 i j y = 0 := by
@@ -1593,9 +1593,9 @@ private lemma principal_post_ibp_integral_eq_symbolic
           (d := Module.finrank ℝ E) k h
           (fun z => weightedInvGramOnEuclid (I := I) g α i j z) y *
         η y * ((fderiv ℝ η y) (EuclideanSpace.single j 1)) *
-        D.weak_partial i y *
+        D.weakPartial i y *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h D.u_chart y = 0
+          (d := Module.finrank ℝ E) k h D.uChart y = 0
       rw [show η y = 0 from hηy]
       ring
     rw [show (∑ i : Fin (Module.finrank ℝ E),
@@ -1691,11 +1691,11 @@ private lemma principal_post_ibp_integral_eq_symbolic
     rw [integral_add hT1_sum_int hT2_sum_int]
   have h_principalTerm : ∫ y in K_0, (∑ i, ∑ j, T1 i j y)
       ∂(volume : Measure EuclN) =
-      principalTerm_chartBilinear (I := I) (M := M) D K_0 η k h := by
+      principalTermChartBilinear (I := I) (M := M) D K_0 η k h := by
     rfl
   have h_cross1 : ∫ y in K_0, (∑ i, ∑ j, T2 i j y)
       ∂(volume : Measure EuclN) =
-      cross_1_term_chartBilinear (I := I) (M := M) D K_0 η k h := by
+      cross1TermChartBilinear (I := I) (M := M) D K_0 η k h := by
     rw [show (fun y : EuclN => ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), T2 i j y) =
         (fun y => ∑ i : Fin (Module.finrank ℝ E),
@@ -1710,7 +1710,7 @@ private lemma principal_post_ibp_integral_eq_symbolic
     rw [integral_finsetSum _ (fun j _ => hT2_ij_int i j)]
   have h_cross2 : ∫ y in K_0, (∑ i, ∑ j, T3 i j y)
       ∂(volume : Measure EuclN) =
-      cross_2_term_chartBilinear (I := I) (M := M) D K_0 η k h := by
+      cross2TermChartBilinear (I := I) (M := M) D K_0 η k h := by
     rw [show (fun y : EuclN => ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), T3 i j y) =
         (fun y => ∑ i : Fin (Module.finrank ℝ E),
@@ -1725,7 +1725,7 @@ private lemma principal_post_ibp_integral_eq_symbolic
     rw [integral_finsetSum _ (fun j _ => hT3_ij_int i j)]
   have h_cross3 : ∫ y in K_0, (∑ i, ∑ j, T4 i j y)
       ∂(volume : Measure EuclN) =
-      cross_3_term_chartBilinear (I := I) (M := M) D K_0 η k h := by
+      cross3TermChartBilinear (I := I) (M := M) D K_0 η k h := by
     rw [show (fun y : EuclN => ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E), T4 i j y) =
         (fun y => ∑ i : Fin (Module.finrank ℝ E),
@@ -1755,12 +1755,12 @@ theorem variational_identity_after_product_rule_of_compact_support
     {R₀ : ℝ} {h : ℝ} (hh : h ≠ 0) (hh_le : |h| ≤ R₀)
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α) :
-    principalTerm_chartBilinear (I := I) (M := M) D K_0 η k h
-      + cross_1_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      + cross_2_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      + cross_3_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      + f_term_chartBilinear (I := I) (M := M) D K_0 η k h
-      = c_term_chartBilinear (I := I) (M := M) D K_0 η k h := by
+    principalTermChartBilinear (I := I) (M := M) D K_0 η k h
+      + cross1TermChartBilinear (I := I) (M := M) D K_0 η k h
+      + cross2TermChartBilinear (I := I) (M := M) D K_0 η k h
+      + cross3TermChartBilinear (I := I) (M := M) D K_0 η k h
+      + fTermChartBilinear (I := I) (M := M) D K_0 η k h
+      = cTermChartBilinear (I := I) (M := M) D K_0 η k h := by
   classical
   have h_after_ibp_eq :=
     variational_identity_after_ibp_of_compact_support (I := I) (M := M) D
@@ -1774,32 +1774,32 @@ theorem variational_identity_after_product_rule_of_compact_support
               DifferentialGeometry.Analysis.Sobolev.diffQuot
                 (d := Module.finrank ℝ E) k h
                 (fun z => weightedInvGramOnEuclid (I := I) g α i j z *
-                  D.weak_partial i z) y *
+                  D.weakPartial i z) y *
               ((η y) ^ 2 *
                 DifferentialGeometry.Analysis.Sobolev.diffQuot
-                  (d := Module.finrank ℝ E) k h (D.weak_partial j) y +
+                  (d := Module.finrank ℝ E) k h (D.weakPartial j) y +
                 2 * η y * (fderiv ℝ η y) (EuclideanSpace.single j 1) *
                   DifferentialGeometry.Analysis.Sobolev.diffQuot
-                    (d := Module.finrank ℝ E) k h D.u_chart y))
+                    (d := Module.finrank ℝ E) k h D.uChart y))
           ∂(volume : Measure EuclN) =
-      principalTerm_chartBilinear (I := I) (M := M) D K_0 η k h
-        + cross_1_term_chartBilinear (I := I) (M := M) D K_0 η k h
-        + cross_2_term_chartBilinear (I := I) (M := M) D K_0 η k h
-        + cross_3_term_chartBilinear (I := I) (M := M) D K_0 η k h :=
+      principalTermChartBilinear (I := I) (M := M) D K_0 η k h
+        + cross1TermChartBilinear (I := I) (M := M) D K_0 η k h
+        + cross2TermChartBilinear (I := I) (M := M) D K_0 η k h
+        + cross3TermChartBilinear (I := I) (M := M) D K_0 η k h :=
     principal_post_ibp_integral_eq_symbolic (I := I) (M := M) D
       hK_0_compact hK_0_in hη hη_supp hη_supp_in_K_0 k hh hh_le h_thick
   have h_c_term_eq :
       ∫ y in Metric.cthickening |h| K_0,
-        densityOnEuclid (I := I) g α y * D.u_chart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart y
+        densityOnEuclid (I := I) g α y * D.uChart y *
+          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
       ∂(volume : Measure EuclN) =
-      c_term_chartBilinear (I := I) (M := M) D K_0 η k h := rfl
+      cTermChartBilinear (I := I) (M := M) D K_0 η k h := rfl
   have h_f_term_eq :
       ∫ y in Metric.cthickening |h| K_0,
-        densityOnEuclid (I := I) g α y * D.f_chart y *
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart y
+        densityOnEuclid (I := I) g α y * D.fChart y *
+          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart y
       ∂(volume : Measure EuclN) =
-      f_term_chartBilinear (I := I) (M := M) D K_0 η k h := rfl
+      fTermChartBilinear (I := I) (M := M) D K_0 η k h := rfl
   exact variational_identity_after_product_rule (I := I) (M := M) D
     k h_after_ibp_eq h_principal_in_K_0_eq h_c_term_eq h_f_term_eq
 
@@ -1816,9 +1816,9 @@ theorem chartBilinear_substitution_identity_holds
     {R₀ : ℝ} {h : ℝ} (hh : h ≠ 0) (hh_le : |h| ≤ R₀)
     (h_thick : Metric.cthickening |h| K_0 ⊆
       chartTargetEuclid (I := I) (M := M) α) :
-    chartBilinear_LHS (I := I) (M := M) D K_0 η k h =
-    chartBilinear_RHS (I := I) (M := M) D K_0 η k h := by
-  unfold chartBilinear_LHS chartBilinear_RHS
+    chartBilinearLHS (I := I) (M := M) D K_0 η k h =
+    chartBilinearRHS (I := I) (M := M) D K_0 η k h := by
+  unfold chartBilinearLHS chartBilinearRHS
   exact variational_identity_after_product_rule_of_compact_support (I := I) (M := M) D
     hK_0_compact hK_0_in hη hη_supp hη_supp_in_K_0 k hh hh_le h_thick
 
@@ -1843,9 +1843,9 @@ theorem nirenberg_substitution_identity_chartBilinear
               (fun y => weightedInvGramOnEuclid (I := I) g α i j y) x *
             (η x) ^ 2 *
             DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (D.weak_partial i) x *
+              (d := Module.finrank ℝ E) k h (D.weakPartial i) x *
             DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (D.weak_partial j) x
+              (d := Module.finrank ℝ E) k h (D.weakPartial j) x
         ∂(volume : Measure EuclN))
     + (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -1857,9 +1857,9 @@ theorem nirenberg_substitution_identity_chartBilinear
               (η x) *
               ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h (D.weak_partial i) x *
+                (d := Module.finrank ℝ E) k h (D.weakPartial i) x *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.u_chart x
+                (d := Module.finrank ℝ E) k h D.uChart x
             ∂(volume : Measure EuclN))
     + (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -1868,9 +1868,9 @@ theorem nirenberg_substitution_identity_chartBilinear
               (d := Module.finrank ℝ E) k h
               (fun y => weightedInvGramOnEuclid (I := I) g α i j y) x *
             (η x) ^ 2 *
-            D.weak_partial i x *
+            D.weakPartial i x *
             DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (D.weak_partial j) x
+              (d := Module.finrank ℝ E) k h (D.weakPartial j) x
           ∂(volume : Measure EuclN))
     + (∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
@@ -1881,26 +1881,26 @@ theorem nirenberg_substitution_identity_chartBilinear
                 (fun y => weightedInvGramOnEuclid (I := I) g α i j y) x *
               (η x) *
               ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
-              D.weak_partial i x *
+              D.weakPartial i x *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.u_chart x
+                (d := Module.finrank ℝ E) k h D.uChart x
             ∂(volume : Measure EuclN))
     + (∫ x in Metric.cthickening |h| K_0,
-          densityOnEuclid (I := I) g α x * D.f_chart x *
+          densityOnEuclid (I := I) g α x * D.fChart x *
             standardNirenbergTest
-              (d := Module.finrank ℝ E) k h η D.u_chart x
+              (d := Module.finrank ℝ E) k h η D.uChart x
         ∂(volume : Measure EuclN))
     = ∫ x in Metric.cthickening |h| K_0,
-          densityOnEuclid (I := I) g α x * D.u_chart x *
+          densityOnEuclid (I := I) g α x * D.uChart x *
             standardNirenbergTest
-              (d := Module.finrank ℝ E) k h η D.u_chart x
+              (d := Module.finrank ℝ E) k h η D.uChart x
         ∂(volume : Measure EuclN) := by
   have h := chartBilinear_substitution_identity_holds (I := I) (M := M) D
     hK_0_compact hK_0_in hη hη_supp hη_supp_in_K_0 k hh hh_le h_thick
-  unfold chartBilinear_LHS chartBilinear_RHS at h
-  unfold principalTerm_chartBilinear cross_1_term_chartBilinear
-    cross_2_term_chartBilinear cross_3_term_chartBilinear
-    f_term_chartBilinear c_term_chartBilinear at h
+  unfold chartBilinearLHS chartBilinearRHS at h
+  unfold principalTermChartBilinear cross1TermChartBilinear
+    cross2TermChartBilinear cross3TermChartBilinear
+    fTermChartBilinear cTermChartBilinear at h
   exact h
 
 end SubstitutionDischargeAssembly

@@ -994,7 +994,7 @@ noncomputable def tensorHessPairingFunc
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (x : M) : ℝ :=
-  ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
     tensorHessPairingMChartContribution (I := I) (M := M) (u_h := u_h) g φ α x
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1003,7 +1003,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     {u_h : H1Compl (I := I) (M := M) g}
     (x : M) :
     tensorHessPairingFunc (I := I) (M := M) (u_h := u_h) g φ x =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         tensorHessPairingMChartContribution (I := I) (M := M) (u_h := u_h) g φ α x := rfl
 
 theorem tensorHessPairingFunc_memLp_two
@@ -1046,7 +1046,7 @@ def tensorPairingSmoothLeibnizDischarge
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
     Prop :=
   ∀ᵐ x ∂(riemannianVolumeMeasure (I := I) (M := M) g),
-    (∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       (chartAtlasPOU I M α : M → ℝ) x *
         chartTensorPairingLocal (I := I) (M := M)
           (u_h := smoothToH1Compl (I := I) (M := M) g v) g α φ
@@ -1059,7 +1059,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
     tensorPairingSmoothLeibnizDischarge (I := I) (M := M) g φ v ↔
       ∀ᵐ x ∂(riemannianVolumeMeasure (I := I) (M := M) g),
-        (∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        (∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           (chartAtlasPOU I M α : M → ℝ) x *
             chartTensorPairingLocal (I := I) (M := M)
               (u_h := smoothToH1Compl (I := I) (M := M) g v) g α φ
@@ -1073,7 +1073,7 @@ theorem tensorHessPairingFunc_aeEq_pou_weighted_chartLocal_smoothCase
     tensorHessPairingFunc (I := I) (M := M)
         (u_h := smoothToH1Compl (I := I) (M := M) g v) g φ
       =ᵐ[riemannianVolumeMeasure (I := I) (M := M) g]
-      (fun x : M => ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (fun x : M => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartAtlasPOU I M α : M → ℝ) x *
           chartTensorPairingLocal (I := I) (M := M)
             (u_h := smoothToH1Compl (I := I) (M := M) g v) g α φ

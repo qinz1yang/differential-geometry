@@ -75,7 +75,7 @@ private lemma chartCoeffOnE_self_eq_basis_comp_pullback_eventuallyEq
     (x : M) (i : Fin (Module.finrank ℝ E)) :
     (chartCoeffOnE (I := I) x W i) =ᶠ[nhds (extChartAt I x x)]
       ((((chartModelBasis E).coord i).toContinuousLinearMap : E →L[ℝ] ℝ) ∘
-        chartE_section_repr (I := I) x (W : ∀ x : M, TangentSpace I x) ∘
+        chartESectionRepr (I := I) x (W : ∀ x : M, TangentSpace I x) ∘
         (extChartAt I x).symm) := by
   classical
   have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) x :=
@@ -96,7 +96,7 @@ private lemma chartCoeffOnE_self_eq_basis_comp_pullback_eventuallyEq
     exact hsource
   change chartCoeffOnE (I := I) x W i y =
     ((chartModelBasis E).coord i).toContinuousLinearMap
-      (chartE_section_repr (I := I) x (W : ∀ x : M, TangentSpace I x)
+      (chartESectionRepr (I := I) x (W : ∀ x : M, TangentSpace I x)
         ((extChartAt I x).symm y))
   change (chartModelBasis E).repr
       ((trivializationAt E (TangentSpace I) x)
@@ -109,7 +109,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpac
 private lemma differentiableAt_chartE_pullback_self
     (W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     DifferentiableAt ℝ
-      (chartE_section_repr (I := I) x (W : ∀ x : M, TangentSpace I x) ∘
+      (chartESectionRepr (I := I) x (W : ∀ x : M, TangentSpace I x) ∘
         (extChartAt I x).symm) (extChartAt I x x) := by
   classical
   have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) x :=
@@ -152,7 +152,7 @@ theorem chart_christoffel_expansion_of_nabla_on_vf
   congr 1
   · rw [cartan_trivToE_self_apply (I := I) x v]
     set u : E := v with hu_def
-    set F : E → E := chartE_section_repr (I := I) x (W : ∀ x : M, TangentSpace I x) ∘
+    set F : E → E := chartESectionRepr (I := I) x (W : ∀ x : M, TangentSpace I x) ∘
         (extChartAt I x).symm with hF_def
     have hudecomp : u = ∑ j, ((chartModelBasis E).repr u) j • (chartModelBasis E) j :=
       (Module.Basis.sum_repr (chartModelBasis E) u).symm
@@ -192,7 +192,7 @@ theorem chart_christoffel_expansion_of_nabla_on_vf
     have hev := chartCoeffOnE_self_eq_basis_comp_pullback_eventuallyEq (I := I) W x i
     rw [hev.fderiv_eq]
   · rw [christoffelCorrection_apply (I := I) g x x
-          (chartE_section_repr (I := I) x (W : ∀ x : M, TangentSpace I x) x) v]
+          (chartESectionRepr (I := I) x (W : ∀ x : M, TangentSpace I x) x) v]
     rw [cartan_trivToE_self_apply (I := I) x v]
     rw [show ((chartModelBasis E).repr
           (∑ i' : Fin (Module.finrank ℝ E),
@@ -200,7 +200,7 @@ theorem chart_christoffel_expansion_of_nabla_on_vf
               ∑ k' : Fin (Module.finrank ℝ E),
                 (((chartModelBasis E).repr v) i' *
                     ((chartModelBasis E).repr
-                      (chartE_section_repr (I := I) x
+                      (chartESectionRepr (I := I) x
                         (W : ∀ x : M, TangentSpace I x) x)) j' *
                     chartChristoffel (I := I) g x i' j' k' (extChartAt I x x)) •
                   (chartModelBasis E) k')) i =
@@ -209,7 +209,7 @@ theorem chart_christoffel_expansion_of_nabla_on_vf
             ∑ k' : Fin (Module.finrank ℝ E),
               (((chartModelBasis E).repr v) i' *
                   ((chartModelBasis E).repr
-                    (chartE_section_repr (I := I) x
+                    (chartESectionRepr (I := I) x
                       (W : ∀ x : M, TangentSpace I x) x)) j' *
                   chartChristoffel (I := I) g x i' j' k' (extChartAt I x x)) *
                 ((chartModelBasis E).repr ((chartModelBasis E) k')) i from by
@@ -227,14 +227,14 @@ theorem chart_christoffel_expansion_of_nabla_on_vf
         (∑ k' : Fin (Module.finrank ℝ E),
             (((chartModelBasis E).repr v) i' *
                 ((chartModelBasis E).repr
-                  (chartE_section_repr (I := I) x
+                  (chartESectionRepr (I := I) x
                     (W : ∀ x : M, TangentSpace I x) x)) j' *
                 chartChristoffel (I := I) g x i' j' k' (extChartAt I x x)) *
               ((chartModelBasis E).repr ((chartModelBasis E) k')) i) =
         ((chartModelBasis E).repr v) i' *
           chartChristoffel (I := I) g x i' j' i (extChartAt I x x) *
           ((chartModelBasis E).repr
-            (chartE_section_repr (I := I) x
+            (chartESectionRepr (I := I) x
               (W : ∀ x : M, TangentSpace I x) x)) j' := by
       intro i' j'
       rw [Finset.sum_eq_single i
@@ -249,7 +249,7 @@ theorem chart_christoffel_expansion_of_nabla_on_vf
           ∑ k' : Fin (Module.finrank ℝ E),
             (((chartModelBasis E).repr v) i' *
                 ((chartModelBasis E).repr
-                  (chartE_section_repr (I := I) x
+                  (chartESectionRepr (I := I) x
                     (W : ∀ x : M, TangentSpace I x) x)) j' *
                 chartChristoffel (I := I) g x i' j' k' (extChartAt I x x)) *
               ((chartModelBasis E).repr ((chartModelBasis E) k')) i =
@@ -258,12 +258,12 @@ theorem chart_christoffel_expansion_of_nabla_on_vf
           ((chartModelBasis E).repr v) i' *
             chartChristoffel (I := I) g x i' j' i (extChartAt I x x) *
             ((chartModelBasis E).repr
-              (chartE_section_repr (I := I) x
+              (chartESectionRepr (I := I) x
                 (W : ∀ x : M, TangentSpace I x) x)) j'
       from Finset.sum_congr rfl (fun i' _ => Finset.sum_congr rfl (fun j' _ => hkc i' j'))]
     have hrepr_chartCoeff : ∀ (j' : Fin (Module.finrank ℝ E)),
         ((chartModelBasis E).repr
-          (chartE_section_repr (I := I) x
+          (chartESectionRepr (I := I) x
             (W : ∀ x : M, TangentSpace I x) x)) j' =
         chartCoeff (I := I) x W j' x := by
       intro j'

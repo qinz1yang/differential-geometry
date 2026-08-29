@@ -100,8 +100,8 @@ theorem exists_smoothApproximation_of_smooth_compactSupport
     intro j
     exact hu_cs.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
   refine ⟨{
-    u_seq := fun _ => u
-    f_seq := fun _ => f
+    uSeq := fun _ => u
+    fSeq := fun _ => f
     u_seq_smooth := fun _ => hu_smooth
     is_smooth_weak_sol := fun _ => ?_
     f_seq_l2_loc := fun _ {S} _hS_cc =>
@@ -111,7 +111,7 @@ theorem exists_smoothApproximation_of_smooth_compactSupport
     grad_seq_l2_loc := fun _ {S} _hS_cc j =>
       memLp_two_restrict_of_continuous_compactSupport
         (h_grad_cont j) (hu_grad_cs j) S
-    data_bound := D
+    dataBound := D
     data_bound_nn := hD_nn
     data_integrated_bound := ?_
   }⟩

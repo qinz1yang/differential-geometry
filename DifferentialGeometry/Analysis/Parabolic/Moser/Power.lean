@@ -60,9 +60,9 @@ theorem rpow_subsolution
     {t : ℝ} {x : M}
     (hpde :
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x) :
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x) :
     deriv (fun s => u s x ^ q) t ≤
-      Δ_g (I := I) g
+      ΔG (I := I) g
           (smoothScalarSlice (I := I) g (fun t x => u t x ^ q)
             (contMDiff_rpow_of_pos hu hpos q) t).toContMDiffMap x +
         rpowSource q u source t x := by
@@ -80,14 +80,14 @@ theorem rpow_subsolution
     ring
   have hgrad : MDiffAt
       (T% fun y : M => gradientFun (I := I) g ut.toFun y) x :=
-    (grad_g (I := I) g ut.toContMDiffMap).mdifferentiable x
+    (gradG (I := I) g ut.toContMDiffMap).mdifferentiable x
   have hlap_raw := laplacian_rpow (I := I)
     (LeviCivita (I := I) g) g q
     (fun y => ut.smooth.mdifferentiable (by simp) y)
     (fun y => hpos t y) hgrad
   have hlap :
-      Δ_g (I := I) g uqt.toContMDiffMap x =
-        (q * u t x ^ (q - 1)) * Δ_g (I := I) g ut.toContMDiffMap x +
+      ΔG (I := I) g uqt.toContMDiffMap x =
+        (q * u t x ^ (q - 1)) * ΔG (I := I) g ut.toContMDiffMap x +
           (q * (q - 1) * u t x ^ (q - 2)) *
             g.inner x
               (gradientFun (I := I) g ut.toFun x)
@@ -116,7 +116,7 @@ theorem rpow_subsolution
       (metric_inner_self_nonneg (I := I) (M := M) g x _)
   rw [htime_deriv, hlap]
   change q * u t x ^ (q - 1) * deriv (fun s => u s x) t ≤
-    q * u t x ^ (q - 1) * Δ_g (I := I) g ut.toContMDiffMap x +
+    q * u t x ^ (q - 1) * ΔG (I := I) g ut.toContMDiffMap x +
       (q * (q - 1) * u t x ^ (q - 2)) *
         g.inner x
           (gradientFun (I := I) g ut.toFun x)
@@ -134,10 +134,10 @@ theorem rpow_subsolution_of_supersolution
     {q : ℝ} (hq : q ≤ 0)
     {t : ℝ} {x : M}
     (hpde :
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x ≤
         deriv (fun s => u s x) t) :
     deriv (fun s => u s x ^ q) t ≤
-      Δ_g (I := I) g
+      ΔG (I := I) g
           (smoothScalarSlice (I := I) g (fun t x => u t x ^ q)
             (contMDiff_rpow_of_pos hu hpos q) t).toContMDiffMap x +
         rpowSource q u source t x := by
@@ -155,14 +155,14 @@ theorem rpow_subsolution_of_supersolution
     ring
   have hgrad : MDiffAt
       (T% fun y : M => gradientFun (I := I) g ut.toFun y) x :=
-    (grad_g (I := I) g ut.toContMDiffMap).mdifferentiable x
+    (gradG (I := I) g ut.toContMDiffMap).mdifferentiable x
   have hlap_raw := laplacian_rpow (I := I)
     (LeviCivita (I := I) g) g q
     (fun y => ut.smooth.mdifferentiable (by simp) y)
     (fun y => hpos t y) hgrad
   have hlap :
-      Δ_g (I := I) g uqt.toContMDiffMap x =
-        (q * u t x ^ (q - 1)) * Δ_g (I := I) g ut.toContMDiffMap x +
+      ΔG (I := I) g uqt.toContMDiffMap x =
+        (q * u t x ^ (q - 1)) * ΔG (I := I) g ut.toContMDiffMap x +
           (q * (q - 1) * u t x ^ (q - 2)) *
             g.inner x
               (gradientFun (I := I) g ut.toFun x)
@@ -191,7 +191,7 @@ theorem rpow_subsolution_of_supersolution
       (metric_inner_self_nonneg (I := I) (M := M) g x _)
   rw [htime_deriv, hlap]
   change q * u t x ^ (q - 1) * deriv (fun s => u s x) t ≤
-    q * u t x ^ (q - 1) * Δ_g (I := I) g ut.toContMDiffMap x +
+    q * u t x ^ (q - 1) * ΔG (I := I) g ut.toContMDiffMap x +
       (q * (q - 1) * u t x ^ (q - 2)) *
         g.inner x
           (gradientFun (I := I) g ut.toFun x)
@@ -209,9 +209,9 @@ theorem rpow_supersolution_with_gradient_term
     {q : ℝ} (hq_nonneg : 0 ≤ q)
     {t : ℝ} {x : M}
     (hpde :
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x ≤
         deriv (fun s => u s x) t) :
-    Δ_g (I := I) g
+    ΔG (I := I) g
           (smoothScalarSlice (I := I) g (fun t x => u t x ^ q)
             (contMDiff_rpow_of_pos hu hpos q) t).toContMDiffMap x +
         rpowSource q u source t x +
@@ -236,14 +236,14 @@ theorem rpow_supersolution_with_gradient_term
     ring
   have hgrad : MDiffAt
       (T% fun y : M => gradientFun (I := I) g ut.toFun y) x :=
-    (grad_g (I := I) g ut.toContMDiffMap).mdifferentiable x
+    (gradG (I := I) g ut.toContMDiffMap).mdifferentiable x
   have hlap_raw := laplacian_rpow (I := I)
     (LeviCivita (I := I) g) g q
     (fun y => ut.smooth.mdifferentiable (by simp) y)
     (fun y => hpos t y) hgrad
   have hlap :
-      Δ_g (I := I) g uqt.toContMDiffMap x =
-        (q * u t x ^ (q - 1)) * Δ_g (I := I) g ut.toContMDiffMap x +
+      ΔG (I := I) g uqt.toContMDiffMap x =
+        (q * u t x ^ (q - 1)) * ΔG (I := I) g ut.toContMDiffMap x +
           (q * (q - 1) * u t x ^ (q - 2)) *
             g.inner x
               (gradientFun (I := I) g ut.toFun x)
@@ -263,7 +263,7 @@ theorem rpow_supersolution_with_gradient_term
   have hmul := mul_le_mul_of_nonneg_left hpde hcoeff
   rw [htime_deriv, hlap]
   change
-    q * u t x ^ (q - 1) * Δ_g (I := I) g ut.toContMDiffMap x +
+    q * u t x ^ (q - 1) * ΔG (I := I) g ut.toContMDiffMap x +
           (q * (q - 1) * u t x ^ (q - 2)) *
             g.inner x
               (gradientFun (I := I) g ut.toFun x)
@@ -289,9 +289,9 @@ theorem rpow_supersolution_of_supersolution
     {q : ℝ} (hq_nonneg : 0 ≤ q) (hq_one : q ≤ 1)
     {t : ℝ} {x : M}
     (hpde :
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x ≤
         deriv (fun s => u s x) t) :
-    Δ_g (I := I) g
+    ΔG (I := I) g
           (smoothScalarSlice (I := I) g (fun t x => u t x ^ q)
             (contMDiff_rpow_of_pos hu hpos q) t).toContMDiffMap x +
         rpowSource q u source t x ≤
@@ -426,7 +426,7 @@ theorem localized_energy_positive_rpow_of_supersolution
     {q : ℝ} (hq_pos : 0 < q) (hq_one : q < 1)
     (t : ℝ)
     (hpde : ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     (1 / 2 : ℝ) *
         ∫ x, cutoff.toFun x ^ 2 *
@@ -482,7 +482,7 @@ theorem localized_energy_positive_rpow_of_supersolution
         (gradientFun (I := I) g cutoff.toFun x)
         (gradientFun (I := I) g cutoff.toFun x)) := by
     have h := contMDiff_g_inner_of_smooth_sections (I := I) (M := M) g
-      (grad_g (I := I) g cutoff.toContMDiffMap) (grad_g (I := I) g cutoff.toContMDiffMap)
+      (gradG (I := I) g cutoff.toContMDiffMap) (gradG (I := I) g cutoff.toContMDiffMap)
     change ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x : M =>
       g.inner x (gradFun (I := I) g cutoff.toFun x)
         (gradFun (I := I) g cutoff.toFun x)) at h
@@ -499,7 +499,7 @@ theorem localized_energy_positive_rpow_of_supersolution
     (I := I) (M := M) g cutoff (fun s x => u s x ^ q) dissipation error
       (contMDiff_rpow_of_pos hu hpos q) hdissipation herror t
     (fun x => by
-      change Δ_g (I := I) g
+      change ΔG (I := I) g
           (smoothScalarSlice (I := I) g (fun s x => u s x ^ q)
             (contMDiff_rpow_of_pos hu hpos q) t).toContMDiffMap x +
         q * (1 - q) * u t x ^ (q - 2) *
@@ -537,7 +537,7 @@ theorem caccioppoli_positive_rpow_of_supersolution
     {q : ℝ} (hq_pos : 0 < q) (hq_one : q < 1)
     (t : ℝ)
     (hpde : ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     (2 * (1 - q) / q) *
         localizedDirichletEnergy (I := I) (M := M) cutoff
@@ -651,7 +651,7 @@ theorem weighted_caccioppoli_positive_rpow_of_supersolution
     (hweight : ∀ t ∈ Icc a b, HasDerivAt weight (dweight t) t)
     (hweight_nonneg : ∀ t ∈ Icc a b, 0 ≤ weight t)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     weight a * localizedL2Mass (I := I) (M := M) cutoff
           (smoothScalarSlice (I := I) g (fun s x => u s x ^ (q / 2))
@@ -782,7 +782,7 @@ theorem backward_caccioppoli_inner_energy_positive_rpow_of_supersolution
     (hweight_b : weight b = 0)
     (hweight_inner : ∀ t ∈ Icc a t₁, weight t = 1)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hrhs_le : ∀ t ∈ Icc a t₁,
       (∫ s in t..b,
@@ -882,7 +882,7 @@ theorem caccioppoli_rpow_of_subsolution
     (hweight_nonneg : ∀ t ∈ Icc a b, 0 ≤ weight t)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x) :
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x) :
     weight b * localizedL2Mass (I := I) (M := M) cutoff
           (smoothScalarSlice (I := I) g (fun s x => u s x ^ q)
             (contMDiff_rpow_of_pos hu hpos q) b) -
@@ -930,7 +930,7 @@ theorem caccioppoli_rpow_of_supersolution
     (hweight : ∀ t ∈ Icc a b, HasDerivAt weight (dweight t) t)
     (hweight_nonneg : ∀ t ∈ Icc a b, 0 ≤ weight t)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x ≤
         deriv (fun s => u s x) t) :
     weight b * localizedL2Mass (I := I) (M := M) cutoff
           (smoothScalarSlice (I := I) g (fun s x => u s x ^ q)
@@ -985,7 +985,7 @@ theorem rpow_moser_step_le
     (hweight_inner : ∀ t ∈ Icc t₀ t₁, weight t = 1)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x)
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x)
     (hrhs_le : ∀ t ∈ Icc t₀ t₁,
       (∫ s in a..t,
         dweight s * localizedL2Mass (I := I) (M := M) cutoff
@@ -1028,7 +1028,7 @@ theorem rpow_moser_step_le
       (fun s x => u s x ^ q) huq).continuous.continuousOn
   have hpdeq : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x ^ q) t ≤
-        Δ_g (I := I) g
+        ΔG (I := I) g
             (smoothScalarSlice (I := I) g (fun s x => u s x ^ q) huq t).toContMDiffMap x +
           sourceq t x := by
     intro t ht x
@@ -1069,7 +1069,7 @@ theorem rpow_moser_step
     (hweight_inner : ∀ t ∈ Icc t₀ t₁, weight t = 1)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x)
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x + source t x)
     (hrhs_le : ∀ t ∈ Icc t₀ t₁,
       (∫ s in a..t,
         dweight s * localizedL2Mass (I := I) (M := M) cutoff
@@ -1119,7 +1119,7 @@ theorem rpow_moser_step_homogeneous_le
     (hD : 0 ≤ D) (hK : 0 ≤ K) (hL : 0 ≤ L)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x)
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x)
     (hcutoff : ∀ x : M, cutoff.toFun x ^ 2 ≤ outer.toFun x ^ 2)
     (hgrad : ∀ x : M,
       g.inner x
@@ -1210,7 +1210,7 @@ theorem rpow_moser_step_homogeneous
     (hD : 0 ≤ D) (hK : 0 ≤ K) (hL : 0 ≤ L)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x)
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x)
     (hcutoff : ∀ x : M, cutoff.toFun x ^ 2 ≤ outer.toFun x ^ 2)
     (hgrad : ∀ x : M,
       g.inner x

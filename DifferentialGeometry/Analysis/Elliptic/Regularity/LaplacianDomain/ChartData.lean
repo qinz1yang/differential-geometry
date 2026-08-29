@@ -1052,7 +1052,7 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_chartTarget
     (u_h : H1Compl g) :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) j
       (((chartPushedWeakPartialLp (I := I) (M := M) g α j
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
        ) : EuclN → ℝ))
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
         (chartAtlasPOU I M) α
@@ -1088,7 +1088,7 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_chartTarget
     (chartAtlasPOU I M) α
     ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ) with hf_def
   set g_chart := ((chartPushedWeakPartialLp (I := I) (M := M) g α j
-    (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α j) u_h
+    (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
    ) : EuclN → ℝ) with hg_chart_def
   have h_chartTarget_meas :
       MeasurableSet (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
@@ -1206,25 +1206,25 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_chartTarget
   rw [h_LHS_eq, h_RHS_eq]
   exact h_identity
 
-noncomputable def chartBilinearH1ComplData_of_laplacianDomain
+noncomputable def chartBilinearH1ComplDataOfLaplacianDomain
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
     ChartBilinearH1ComplData (I := I) (M := M) g α where
-  u_chart :=
+  uChart :=
     ((chartPushedLpFromLp (I := I) (M := M) g α
       (H1ComplToLp (I := I) (M := M) g u_h) :
       Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α))) : EuclN → ℝ)
-  f_chart :=
+  fChart :=
     ((chartPushedRawLpFromLp (I := I) (M := M) g α
       (leibnizCompensatedSource (I := I) (M := M) g α u_h hu_h) :
       Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α))) : EuclN → ℝ)
-  weak_partial := fun i =>
+  weakPartial := fun i =>
     ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-      (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+      (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
       Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α))) : EuclN → ℝ)
@@ -1336,7 +1336,7 @@ noncomputable def chartBilinearH1ComplData_of_laplacianDomain
       -∫ x in DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
           (I := I) (M := M) α,
         ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
           Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
             (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
               (I := I) (M := M) α))) : EuclN → ℝ) x * φ x
@@ -1386,7 +1386,7 @@ noncomputable def chartBilinearH1ComplData_of_laplacianDomain
 lemma chartBilinearH1ComplData_of_laplacianDomain_u_chart_def
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
-    (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α hu_h).u_chart =
+    (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α hu_h).uChart =
       ((chartPushedLpFromLp (I := I) (M := M) g α
         (H1ComplToLp (I := I) (M := M) g u_h) :
         Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
@@ -1397,9 +1397,9 @@ lemma chartBilinearH1ComplData_of_laplacianDomain_weak_partial_def
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g)
     (i : Fin (Module.finrank ℝ E)) :
-    (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α hu_h).weak_partial i =
+    (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α hu_h).weakPartial i =
       ((chartPushedWeakPartialLp (I := I) (M := M) g α i
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h :
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h :
         Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α))) : EuclN → ℝ) := rfl
@@ -1407,7 +1407,7 @@ lemma chartBilinearH1ComplData_of_laplacianDomain_weak_partial_def
 lemma chartBilinearH1ComplData_of_laplacianDomain_f_chart_def
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomain (I := I) (M := M) g) :
-    (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α hu_h).f_chart =
+    (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α hu_h).fChart =
       ((chartPushedRawLpFromLp (I := I) (M := M) g α
         (leibnizCompensatedSource (I := I) (M := M) g α u_h hu_h) :
         Lp ℝ 2 ((chartPulledWeightedMeasure (I := I) g α).restrict

@@ -95,7 +95,7 @@ theorem metric_difference_weak_sobolev_three_uniform_bound
     exact metricDiff_wkp_terms (I := I) (M := M) gBase gSeq B hbdd hp
   choose A hA_top hA using hper
   let R : ℝ≥0∞ :=
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∑ Idx : Fin 0 → Fin (Module.finrank ℝ E),
         ∑ _Jdx : Fin 2 → Fin (Module.finrank ℝ E), A α
   have hR_top : R < ⊤ := by
@@ -128,7 +128,7 @@ theorem metric_difference_weak_sobolev_three_uniform_bound
                 (metricDifferenceCcTensor (I := I) (M := M) gBase (gSeq k)).toSection
                 α Idx Jdx)
               (chartTargetEuclid (I := I) (M := M) α)) =
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ∑ Idx : Fin 0 → Fin (Module.finrank ℝ E),
             ∑ Jdx : Fin 2 → Fin (Module.finrank ℝ E),
               iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 3 p
@@ -136,7 +136,7 @@ theorem metric_difference_weak_sobolev_three_uniform_bound
                   (metricDifferenceCcTensor (I := I) (M := M) gBase (gSeq k)).toSection
                   α Idx Jdx)
                 (chartTargetEuclid (I := I) (M := M) α) := by
-    rw [tsum_eq_sum (s := chartAtlasPOU_finset (I := I) (M := M))]
+    rw [tsum_eq_sum (s := chartAtlasPOUFinset (I := I) (M := M))]
     intro α hα
     refine Finset.sum_eq_zero ?_
     intro Idx hIdx
@@ -149,7 +149,7 @@ theorem metric_difference_weak_sobolev_three_uniform_bound
       (chartTargetEuclid_isOpen (I := I) (M := M) α)
   rw [hcollapse]
   calc
-    (∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ∑ Idx : Fin 0 → Fin (Module.finrank ℝ E),
             ∑ Jdx : Fin 2 → Fin (Module.finrank ℝ E),
               iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 3 p

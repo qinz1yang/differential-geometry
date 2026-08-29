@@ -1209,7 +1209,7 @@ private lemma lrRiemW1_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀))).toSection x) D) =
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRS_domDomCongr lrSigmaW1
+          tensorRSDomDomCongr lrSigmaW1
             ((slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)).toSection x)) D) from by
       rw [rsDomDomCongrSection_toSection]]
@@ -1305,7 +1305,7 @@ private lemma lrRiemW2_toModel (g₀ : SmoothRiemannianMetric I M) (x : M)
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀))).toSection x) D) =
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRS_domDomCongr lrSigmaW2
+          tensorRSDomDomCongr lrSigmaW2
             ((slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)).toSection x)) D) from by
       rw [rsDomDomCongrSection_toSection]]

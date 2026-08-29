@@ -114,7 +114,7 @@ lemma HasCampanatoBound.nonneg
   exact (campanatoBallValue_nonneg b).trans (hcamp.ballValue_le b)
 
 /-- A conservative Hölder constant extracted from a Campanato bound. -/
-noncomputable def C_campanato_holder (d : ℕ) (α : ℝ) : ℝ :=
+noncomputable def CCampanatoHolder (d : ℕ) (α : ℝ) : ℝ :=
   (2 : ℝ) ^ (d + 3) / (1 - (2 : ℝ) ^ (-α))
 
 lemma closedBall_ae_eq_ball_of_pos (x : E) {r : ℝ} (hr : 0 < r) :
@@ -679,7 +679,7 @@ lemma dyadicBallAverageLimit_holder_small
     (hy : y ∈ Metric.ball x₀ (R / 2))
     (hsmall : ‖x - y‖ ≤ R / 2) :
     |dyadicBallAverageLimit u x (R / 2) - dyadicBallAverageLimit u y (R / 2)|
-      ≤ C_campanato_holder d α * C_camp * ‖x - y‖ ^ α := by
+      ≤ CCampanatoHolder d α * C_camp * ‖x - y‖ ^ α := by
   let outer : Set E := Metric.ball x₀ R
   let ρ : ℝ := R / 2
   let q : ℝ := (2 : ℝ) ^ (-α)
@@ -861,8 +861,8 @@ lemma dyadicBallAverageLimit_holder_small
             _ ≤ K1 + K1 + K1 := hsumK
       _ ≤ 4 * K1 := by
           linarith
-      _ = C_campanato_holder d α * C_camp * ‖x - y‖ ^ α := by
-          dsimp [K1, C_campanato_holder, invDen, q]
+      _ = CCampanatoHolder d α * C_camp * ‖x - y‖ ^ α := by
+          dsimp [K1, CCampanatoHolder, invDen, q]
           ring
 
 lemma dyadicBallAverageLimit_holder_large
@@ -874,7 +874,7 @@ lemma dyadicBallAverageLimit_holder_large
     (hy : y ∈ Metric.ball x₀ (R / 2))
     (hlarge : R / 2 ≤ ‖x - y‖) :
     |dyadicBallAverageLimit u x (R / 2) - dyadicBallAverageLimit u y (R / 2)|
-      ≤ C_campanato_holder d α * C_camp * ‖x - y‖ ^ α := by
+      ≤ CCampanatoHolder d α * C_camp * ‖x - y‖ ^ α := by
   let outer : Set E := Metric.ball x₀ R
   let ρ : ℝ := R / 2
   let q : ℝ := (2 : ℝ) ^ (-α)
@@ -1030,8 +1030,8 @@ lemma dyadicBallAverageLimit_holder_large
           |lx - ly| = dist lx ly := by rw [Real.dist_eq]
           _ ≤ dist lx ax0 + dist ax0 m0 + dist m0 ay0 + dist ay0 ly := htri
           _ ≤ K1 + K1 + K1 + K1 := hsumK
-    _ = C_campanato_holder d α * C_camp * ‖x - y‖ ^ α := by
-        dsimp [K1, C_campanato_holder, invDen, q]
+    _ = CCampanatoHolder d α * C_camp * ‖x - y‖ ^ α := by
+        dsimp [K1, CCampanatoHolder, invDen, q]
         ring
 
 /-- A Campanato bound determines a Hölder representative up to a.e. equality. -/
@@ -1042,7 +1042,7 @@ theorem campanato_implies_holder
     ∃ v : E → ℝ,
       (∀ᵐ x ∂volume.restrict (Metric.ball x₀ R), v x = u x) ∧
       ∀ x ∈ Metric.ball x₀ (R / 2), ∀ y ∈ Metric.ball x₀ (R / 2),
-        |v x - v y| ≤ C_campanato_holder d α * C_camp * ‖x - y‖ ^ α := by
+        |v x - v y| ≤ CCampanatoHolder d α * C_camp * ‖x - y‖ ^ α := by
   classical
   let outer : Set E := Metric.ball x₀ R
   let inner : Set E := Metric.ball x₀ (R / 2)

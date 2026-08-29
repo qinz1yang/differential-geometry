@@ -211,15 +211,15 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound
         |∫ x in (Set.univ : Set EuclN), B.c x * u_g x *
             DifferentialGeometry.Analysis.Sobolev.NirenbergTestFunction.nirenbergTestFunction
               k h η u_g x ∂(volume : Measure EuclN)|) :
-    ∃ M_bound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ,
-      (∀ i k, 0 ≤ M_bound i k) ∧
+    ∃ MBound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ,
+      (∀ i k, 0 ≤ MBound i k) ∧
       (∀ (i k : Fin (Module.finrank ℝ E)) (h : ℝ),
         0 < |h| → |h| ≤ R₀ →
           eLpNorm
             (DifferentialGeometry.Analysis.Sobolev.diffQuot
               (d := Module.finrank ℝ E) k h (g_g i)) 2
             ((volume : Measure EuclN).restrict Ω'')
-          ≤ ENNReal.ofReal (M_bound i k)) := by
+          ≤ ENNReal.ofReal (MBound i k)) := by
   classical
   have h_per_k :
       ∀ (k : Fin (Module.finrank ℝ E)),
@@ -265,9 +265,9 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound
               DifferentialGeometry.Analysis.Sobolev.diffQuot k h (g_g l) x ^ 2
           ∂(volume : Measure EuclN) ≤
           CkChoice k * G_total := fun k => Classical.choose_spec (h_per_k k)
-  set M_bound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
+  set MBound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun _ k => Real.sqrt ((2 / B.lam) * CkChoice k * G_total) with hM_bound_def
-  refine ⟨M_bound, ?_, ?_⟩
+  refine ⟨MBound, ?_, ?_⟩
   · intro i k
     rw [hM_bound_def]
     exact Real.sqrt_nonneg _
@@ -352,7 +352,7 @@ theorem chartBilinearH1Compl_uniform_diffQuot_bound
           ((volume : Measure EuclN).restrict Ω'') ≤
           ENNReal.ofReal (Real.sqrt S) :=
       eLpNorm_two_le_ofReal_sqrt hS_nn h_per_i_sq
-    have hM_eq : M_bound i k = Real.sqrt S := by rw [hM_bound_def, hS_def]
+    have hM_eq : MBound i k = Real.sqrt S := by rw [hM_bound_def, hS_def]
     rw [hM_eq]
     exact h_concl
 

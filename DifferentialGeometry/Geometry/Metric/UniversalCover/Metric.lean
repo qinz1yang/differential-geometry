@@ -40,7 +40,7 @@ noncomputable def liftedMetric (g : SmoothRiemannianMetric I M) :
   isVonNBounded x' := g.isVonNBounded (proj x')
   contMDiff := uc_liftedMetric_contMDiff (I := I) (M := M) g
 
-@[reducible] noncomputable def uc_pseudoEMetricSpace
+@[reducible] noncomputable def ucPseudoEMetricSpace
     (g : SmoothRiemannianMetric I
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M))
     [RegularSpace
@@ -71,7 +71,7 @@ theorem isRiemannianManifold
       ⟨g.toRiemannianMetric⟩
     letI : PseudoEMetricSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-      uc_pseudoEMetricSpace (I := I) (M := M) g
+      ucPseudoEMetricSpace (I := I) (M := M) g
     IsRiemannianManifold I
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) := by
   let : RiemannianBundle
@@ -80,7 +80,7 @@ theorem isRiemannianManifold
     ⟨g.toRiemannianMetric⟩
   let : PseudoEMetricSpace
       (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M) :=
-    uc_pseudoEMetricSpace (I := I) (M := M) g
+    ucPseudoEMetricSpace (I := I) (M := M) g
   exact ⟨fun _ _ => rfl⟩
 
 omit [SigmaCompactSpace M] [ConnectedSpace M] in

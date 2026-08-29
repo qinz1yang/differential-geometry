@@ -432,7 +432,7 @@ theorem exists_shi_barrier_cutoff_data_of_solution
        range := hrange
        center_exhausts := hcenter
        joint_cont := hjoint
-       lower_support := ?_ }⟩
+       lowerSupport := ?_ }⟩
   intro n t ht htpos x hxchi
   by_cases hOx : O = x
   · subst x

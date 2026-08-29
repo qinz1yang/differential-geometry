@@ -24,8 +24,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
 variable [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 theorem intrinsicGeodesic_contMDiffOn_infty
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -40,8 +40,8 @@ theorem intrinsicGeodesic_contMDiffOn_infty
       Set.univ
   · exact (intrinsicGeodesic_continuous (I := I) g hEnorm p v).continuousOn
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 theorem intrinsicGeodesic_contMDiff
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]

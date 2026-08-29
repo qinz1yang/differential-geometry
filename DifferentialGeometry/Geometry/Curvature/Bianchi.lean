@@ -998,10 +998,10 @@ theorem contracted_bianchi
 omit [FiniteDimensional ℝ E] in
 theorem dR_zero_nablaEin3
     {x : M}
-    (g : SmoothMetric_gen I M)
+    (g : SmoothMetricGen I M)
     (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (gInv : Fin 3 -> Fin 3 -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (nablaRic :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (dScalar :
@@ -1013,7 +1013,7 @@ theorem dR_zero_nablaEin3
     ∀ X : TangentSpace I x, dScalar (fun _ : Fin 1 => X) = 0 := by
   classical
   intro X
-  let α := cotangentToDual_gen (I := I) dScalar
+  let α := cotangentToDualGen (I := I) dScalar
   have hcoord :
       dScalar (fun _ : Fin 1 => X) =
         ∑ i : Fin 3, basis.repr X i *

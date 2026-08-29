@@ -1181,8 +1181,8 @@ theorem radialJacobi_fin_le_of_scaled_radius
     hderivRadius hx hscaledSmall hinit hmodel hxrad
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_fin_le_rm04_at
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
@@ -1238,8 +1238,8 @@ theorem exists_fin_le_rm04_at
     hcard F hpar hON hFdiff hJdiff hDJdiff hODE hderiv hx hsmall hinit hmodel hxrad
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_fin_le_rm04
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
@@ -1288,8 +1288,8 @@ theorem exists_fin_le_rm04
     (fun _ _ => hγ.contMDiffAt) hcard F hpar hON hFdiff hinit hmodel hxrad
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_dir_ge_rm04_at
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -1371,8 +1371,8 @@ theorem exists_dir_ge_rm04_at
       hK hVb hb1 hlaunch hKbound hRm).2.2
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_dir_ge_rm04
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]

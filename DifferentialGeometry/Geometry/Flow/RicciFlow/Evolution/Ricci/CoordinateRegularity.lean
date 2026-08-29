@@ -210,7 +210,7 @@ theorem coordNablaReg
     simpa [SolutionFamily.connection, metricCov] using
       metricCov_smooth (I := I) (M := M) (S.base.metric t)
   let derivs :=
-    CanonicalSpatialDerivs0S.of_smooth_connection
+    CanonicalSpatialDerivs0S.ofSmoothConnection
       (E := E) (H := H) (I := I) (M := M)
       (S.family.connection t) hcov (S.ricci t)
   let V : Fin 3 -> (x : M) -> TangentSpace I x :=
@@ -254,7 +254,7 @@ theorem coordNablaReg
           nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀) t y a i j := by
     funext y
     rw [hslots y]
-    simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.of_smooth_connection,
+    simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.ofSmoothConnection,
       frame]
   simpa [hfun] using hmdiff
 
@@ -278,7 +278,7 @@ theorem coordNablaRegOn
     simpa [SolutionFamily.connection, metricCov] using
       metricCov_smooth (I := I) (M := M) (S.base.metric t)
   let derivs :=
-    CanonicalSpatialDerivs0S.of_smooth_connection
+    CanonicalSpatialDerivs0S.ofSmoothConnection
       (E := E) (H := H) (I := I) (M := M)
       (S.family.connection t) hcov (S.ricci t)
   let V : Fin 3 -> (x : M) -> TangentSpace I x :=
@@ -321,7 +321,7 @@ theorem coordNablaRegOn
           nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀) t y a i j := by
     funext y
     rw [hslots y]
-    simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.of_smooth_connection,
+    simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.ofSmoothConnection,
       frame]
   simpa [hfun] using hmdiff
 
@@ -349,7 +349,7 @@ theorem coordNablaReal
     simpa [SolutionFamily.connection, metricCov] using
       metricCov_smooth (I := I) (M := M) (S.base.metric t)
   let derivs :=
-    CanonicalSpatialDerivs0S.of_smooth_connection
+    CanonicalSpatialDerivs0S.ofSmoothConnection
       (E := E) (H := H) (I := I) (M := M)
       (S.family.connection t) hcov (S.ricci t)
   let V : Fin 2 -> (x : M) -> TangentSpace I x :=
@@ -409,7 +409,7 @@ theorem coordNablaReal
           (DifferentialGeometry.Geometry.Curvature.vec3 (I := I) (frame d x₀) (frame a x₀)
             (frame b x₀)) =
         nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀) t x₀ d a b := by
-    simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.of_smooth_connection,
+    simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.ofSmoothConnection,
       frame]
   have hfun :
       (fun p : M => S.ricci t p (fun a : Fin 2 => V a p)) =
@@ -483,7 +483,7 @@ theorem coordNablaRealOn
     simpa [SolutionFamily.connection, metricCov] using
       metricCov_smooth (I := I) (M := M) (S.base.metric t)
   let derivs :=
-    CanonicalSpatialDerivs0S.of_smooth_connection
+    CanonicalSpatialDerivs0S.ofSmoothConnection
       (E := E) (H := H) (I := I) (M := M)
       (S.family.connection t) hcov (S.ricci t)
   let V : Fin 2 -> (x : M) -> TangentSpace I x :=
@@ -542,7 +542,7 @@ theorem coordNablaRealOn
           (DifferentialGeometry.Geometry.Curvature.vec3 (I := I) (frame d x) (frame a x)
             (frame b x)) =
         nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀) t x d a b := by
-    simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.of_smooth_connection,
+    simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.ofSmoothConnection,
       frame]
   have hfun :
       (fun p : M => S.ricci t p (fun a : Fin 2 => V a p)) =
@@ -1160,7 +1160,7 @@ private theorem coordDgSmAt
     ContMDiffAt (𝓘(Real, Real).prod I) 𝓘(Real, Real) ∞
       (fun p : Real × M =>
         fderivWithin Real
-          (DifferentialGeometry.Geometry.Connection.metricFlatModelInChart_component
+          (DifferentialGeometry.Geometry.Connection.metricFlatModelInChartComponent
             (I := I) (S.family.metric p.1) x₀ i j)
           (Set.range I) (extChartAt I x₀ p.2)
           ((Module.finBasis Real E) a))
@@ -1188,7 +1188,7 @@ private theorem coordDgSmAt
   have heq :
       (fun p : Real × M =>
         fderivWithin Real
-          (DifferentialGeometry.Geometry.Connection.metricFlatModelInChart_component
+          (DifferentialGeometry.Geometry.Connection.metricFlatModelInChartComponent
             (I := I) (S.family.metric p.1) x₀ i j)
           (Set.range I) (extChartAt I x₀ p.2)
           ((Module.finBasis Real E) a))

@@ -58,7 +58,7 @@ theorem scalHessFrameSymm
     (gInv :
       CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
     (hinv :
-      MetricInverseInBasis_gen (I := I) (M := M) g x (F.basisAt hx) gInv)
+      MetricInverseInBasisGen (I := I) (M := M) g x (F.basisAt hx) gInv)
     (i j : CoordinateIdx (𝕜 := Real) E) :
     scalHessFrame (I := I) (M := M) g F hx gInv i j =
       scalHessFrame (I := I) (M := M) g F hx gInv j i := by
@@ -80,9 +80,9 @@ theorem frameInvMetric_real
     (g : SmoothRiemannianMetric I M)
     {x₀ : M} {C : LocalChartAt (I := I) x₀} (F : C.Frame)
     {x : M} (hx : x ∈ F.domain) :
-    MetricInverseInBasis_gen (I := I) (M := M) g x (F.basisAt hx)
+    MetricInverseInBasisGen (I := I) (M := M) g x (F.basisAt hx)
       (frameInvMetric (I := I) (M := M) g F hx) := by
-  change MetricInverseInBasis_gen (I := I) (M := M) g x (F.basisAt hx)
+  change MetricInverseInBasisGen (I := I) (M := M) g x (F.basisAt hx)
     (basisInvMetric (I := I) (M := M) g x (F.basisAt hx))
   exact basisInvMetric_real (I := I) (M := M) (g := g) (x := x)
     (basis := F.basisAt hx)

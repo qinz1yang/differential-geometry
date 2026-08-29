@@ -109,7 +109,7 @@ lemma quadraticConnectionDifferenceCc_toModel (g₀ g₁ : SmoothRiemannianMetri
 def covectorExtensionSection (g₀ : SmoothRiemannianMetric I M) (x : M)
     (om : Tensor0SSpace 1 I x) :
     Cₛ^∞⟮I; Tensor0SModel 1 ℝ E, (fun y : M => Tensor0SSpace 1 I y)⟯ :=
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 1
+  letI := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 1
   ⟨fun b : M => g0FlatCLM (I := I) g₀ b
       (smoothExtensionTangent (I := I) x (inverseMetricSharpFib (I := I) g₀ x om) b),
    by
@@ -1304,12 +1304,12 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
 lemma interiorProduct_toModel_eval_lc (s : ℕ) (x : M) (v : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (w : Fin s → E) :
     Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) w =
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D) w =
       Tensor0SSpace.toModel D
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) w) := by
   have h1 : Tensor0SSpace.toModel
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) =
-      Tensor0SBundle.model_interior_product (𝕜 := ℝ) (E := E) s
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D) =
+      Tensor0SBundle.modelInteriorProduct (𝕜 := ℝ) (E := E) s
         (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
         (Tensor0SSpace.toModel D) := rfl
   rw [h1]
@@ -1493,7 +1493,7 @@ theorem slotInsert_ricMixedSharp_sub_ricEndoRaised_eq_raise_doubleTrace
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
             (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) W2).toSection x)
             (unitTensor (I := I) (M := M) x))) om) =
-      Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (0 + 1) x
+      Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (0 + 1) x
         (inverseMetricSharpFib (I := I) g₀ x om)
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
           (domDomCongrSection (I := I) g₀ (Equiv.swap (0 : Fin 2) 1) W2).toSection x)

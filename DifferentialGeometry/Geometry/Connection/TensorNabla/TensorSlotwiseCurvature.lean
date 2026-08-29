@@ -141,7 +141,7 @@ lemma tensor0S_curry_tensor0SCov_succ_eq_homGenS
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (S : Π b : M, Tensor0SSpace (s + 1) I b)
     {x : M} (hS : TensorSectionMDiffAt (I := I) (s + 1) S x) (v : TangentSpace I x) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) S x v) =
       homGenS (I := I) (M := M) g s (curriedSection I M S) x v := by
   classical
@@ -172,7 +172,7 @@ lemma tensor0S_curry_tensor0SCov_succ_eq_homGenS
     hVat hYat
   have hleib := tensor0SCovariantDerivative_curriedSection_hom_leibniz
     (I := I) (M := M) g s S hS Y v
-  have hgoal : tensor0S_curry (I := I) (M := M) s x
+  have hgoal : tensor0SCurry (I := I) (M := M) s x
         (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g) S x
           ((Vext : Π b : M, TangentSpace I b) x))
         ((Y : Π b : M, TangentSpace I b) x) =
@@ -195,7 +195,7 @@ lemma tensor0S_curry_riemannSec_tensor0SCov_succ_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (X W : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (A : Π b : M, Tensor0SSpace (s + 1) I b) (hA : TensorSmooth (I := I) (s + 1) A) (x : M) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         (riemannSec (tensor0SCovariantDerivative I M (s + 1) (LeviCivita (I := I) g))
           (fun b => X b) (fun b => W b) A x) =
       riemannSec (homGenS (I := I) (M := M) g s) (fun b => X b) (fun b => W b)

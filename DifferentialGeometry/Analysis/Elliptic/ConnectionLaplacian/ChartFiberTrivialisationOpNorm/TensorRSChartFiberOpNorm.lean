@@ -28,7 +28,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private lemma tensorRSSpace_norm_eq (r s : ℕ) (b : M)
     (T : TensorRSSpace r s I b) :
-    ‖T‖ = ‖tensorRSSpace_continuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s b T‖ :=
+    ‖T‖ = ‖tensorRSSpaceContinuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s b T‖ :=
   rfl
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -39,7 +39,7 @@ private lemma tensorRS_trivAt_clmAt_eq_CLE_on_locality
     ((trivializationAt (TensorRSModel r s ℝ E)
         (fun y : M => TensorRSSpace r s I y) b₀).continuousLinearMapAt ℝ b :
         TensorRSSpace r s I b →L[ℝ] TensorRSModel r s ℝ E) =
-      ((tensorRSSpace_continuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s
+      ((tensorRSSpaceContinuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s
         b).toContinuousLinearMap) := by
   apply ContinuousLinearMap.ext
   intro T
@@ -51,7 +51,7 @@ private lemma tensorRS_trivAt_clmAt_eq_CLE_on_locality
   change (((trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) b₀).continuousLinearMapAt ℝ b T)
         D_α : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) =
-      (tensorRSSpace_continuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s b T) D_α
+      (tensorRSSpaceContinuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s b T) D_α
   rw [h_subB]
   rfl
 
@@ -107,7 +107,7 @@ private lemma chartFiberFromModel_norm_le_coordChangeL_norm_on_locality
         (fun y : M => TensorRSSpace r s I y) b₀).continuousLinearMapAt ℝ b
           ((trivializationAt (TensorRSModel r s ℝ E)
             (fun y : M => TensorRSSpace r s I y) α).symmL ℝ b D) =
-        (tensorRSSpace_continuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s b)
+        (tensorRSSpaceContinuousLinearEquiv (𝕜 := ℝ) (M := M) (I := I) r s b)
           ((trivializationAt (TensorRSModel r s ℝ E)
             (fun y : M => TensorRSSpace r s I y) α).symmL ℝ b D) := by
     have := congrArg (fun (f : TensorRSSpace r s I b →L[ℝ] TensorRSModel r s ℝ E) =>

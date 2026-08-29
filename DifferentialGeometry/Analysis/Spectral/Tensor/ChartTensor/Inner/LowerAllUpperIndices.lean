@@ -331,7 +331,7 @@ private lemma chartLowerAllUpperIndices_modelML_norm_bound
     rw [← hsplit]
   linarith [h_step1, h_step2, h_step3, h_step4, h_step5]
 
-def chartLowerAllUpperIndices_model
+def chartLowerAllUpperIndicesModel
     (r s : ℕ) (g : SmoothRiemannianMetric I M) (α b : M)
     (T : TensorRSModel r s ℝ E) : Tensor0SModel (r + s) ℝ E :=
   (chartLowerAllUpperIndices_modelML (I := I) (M := M) r s g α b T).mkContinuous
@@ -343,11 +343,11 @@ def chartLowerAllUpperIndices_model
 lemma chartLowerAllUpperIndices_model_apply
     (r s : ℕ) (g : SmoothRiemannianMetric I M) (α b : M)
     (T : TensorRSModel r s ℝ E) (v : Fin (r + s) → E) :
-    chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T v =
+    chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T v =
       T (chartSeparableFormAt (I := I) (M := M) g α b r
           (fun i : Fin r => v (Fin.castAdd s i)))
         (fun j : Fin s => v (Fin.natAdd r j)) := by
-  unfold chartLowerAllUpperIndices_model
+  unfold chartLowerAllUpperIndicesModel
   change chartLowerAllUpperIndices_modelML (I := I) (M := M)
       r s g α b T v = _
   rw [chartLowerAllUpperIndices_modelML_apply]
@@ -355,7 +355,7 @@ lemma chartLowerAllUpperIndices_model_apply
 lemma chartLowerAllUpperIndices_model_zero
     (s : ℕ) (g : SmoothRiemannianMetric I M) (α b : M)
     (T : TensorRSModel 0 s ℝ E) (v : Fin (0 + s) → E) :
-    chartLowerAllUpperIndices_model (I := I) (M := M) 0 s g α b T v =
+    chartLowerAllUpperIndicesModel (I := I) (M := M) 0 s g α b T v =
       T (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ))
         (fun j : Fin s => v (Fin.natAdd 0 j)) := by
   rw [chartLowerAllUpperIndices_model_apply]
@@ -373,7 +373,7 @@ lemma chartLowerAllUpperIndices_model_zero
 lemma chartLowerAllUpperIndices_model_succ
     (r s : ℕ) (g : SmoothRiemannianMetric I M) (α b : M)
     (T : TensorRSModel (r + 1) s ℝ E) (v : Fin ((r + 1) + s) → E) :
-    chartLowerAllUpperIndices_model (I := I) (M := M) (r + 1) s g α b T v =
+    chartLowerAllUpperIndicesModel (I := I) (M := M) (r + 1) s g α b T v =
       T (chartSeparableFormAt (I := I) (M := M) g α b (r + 1)
           (fun i : Fin (r + 1) => v (Fin.castAdd s i)))
         (fun j : Fin s => v (Fin.natAdd (r + 1) j)) := by
@@ -381,7 +381,7 @@ lemma chartLowerAllUpperIndices_model_succ
 
 lemma chartLowerAllUpperIndices_model_zero_tensor
     (r s : ℕ) (g : SmoothRiemannianMetric I M) (α b : M) :
-    chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b
+    chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b
         (0 : TensorRSModel r s ℝ E) = 0 := by
   refine ContinuousMultilinearMap.ext ?_
   intro v
@@ -391,9 +391,9 @@ lemma chartLowerAllUpperIndices_model_zero_tensor
 lemma chartLowerAllUpperIndices_model_add
     (r s : ℕ) (g : SmoothRiemannianMetric I M) (α b : M)
     (T₁ T₂ : TensorRSModel r s ℝ E) :
-    chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b (T₁ + T₂) =
-      chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T₁ +
-        chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T₂ := by
+    chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b (T₁ + T₂) =
+      chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T₁ +
+        chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T₂ := by
   refine ContinuousMultilinearMap.ext ?_
   intro v
   simp [chartLowerAllUpperIndices_model_apply,
@@ -402,8 +402,8 @@ lemma chartLowerAllUpperIndices_model_add
 lemma chartLowerAllUpperIndices_model_smul
     (r s : ℕ) (g : SmoothRiemannianMetric I M) (α b : M)
     (c : ℝ) (T : TensorRSModel r s ℝ E) :
-    chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b (c • T) =
-      c • chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T := by
+    chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b (c • T) =
+      c • chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T := by
   refine ContinuousMultilinearMap.ext ?_
   intro v
   simp [chartLowerAllUpperIndices_model_apply,
@@ -624,7 +624,7 @@ theorem chartLowerAllUpperIndices_model_contMDiffOn
     (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (α : M) (T : TensorRSModel r s ℝ E) :
     ContMDiffOn I 𝓘(ℝ, Tensor0SModel (r + s) ℝ E) ∞
-      (fun b : M => chartLowerAllUpperIndices_model
+      (fun b : M => chartLowerAllUpperIndicesModel
         (I := I) (M := M) r s g α b T)
       (trivializationAt E (TangentSpace I) α).baseSet := by
   refine contMDiffOn_into_tensor0SModel_of_eval_basis_local _ ?_
@@ -635,7 +635,7 @@ theorem chartLowerAllUpperIndices_model_contMDiffOn
     fun j => (chartModelBasis E) (φ (Fin.natAdd r j)) with hv_last
   have hrewrite :
       (fun b : M =>
-          chartLowerAllUpperIndices_model
+          chartLowerAllUpperIndicesModel
               (I := I) (M := M) r s g α b T
             (fun k : Fin (r + s) => (chartModelBasis E) (φ k)))
         = fun b : M =>

@@ -37,10 +37,10 @@ theorem nabla0S_one_model_coord
             x₀ (X x₀) j k *
             coordComponent0SAt (I := I) (α x₀) (fun _ : Fin 1 => k) := by
   classical
-  simp only [nabla0SFun, TensorLieDeriv.mcovariantDeriv_tensor0SFromConnection,
-    TensorLieDeriv.mcovariantDeriv_tensor0SWithinFromConnection]
+  simp only [nabla0SFun, TensorLieDeriv.mcovariantDerivTensor0SFromConnection,
+    TensorLieDeriv.mcovariantDerivTensor0SWithinFromConnection]
   rw [← tensor0SModelAt_coordComponent0SAt (I := I) x₀
-    (TensorLieDeriv.mcovariantDeriv_tensor0SWithin
+    (TensorLieDeriv.mcovariantDerivTensor0SWithin
       (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (⊤ : WithTop ℕ∞)) 1 X
       (connectionEndomorphismInChart (𝕜 := Real) (I := I) cov (fun x => X x) x₀)
@@ -107,10 +107,10 @@ theorem tensor0S_one_eval_coordFrame_sum
     (Z : TangentSpace I x₀) :
     αx (fun _ : Fin 1 => Z) =
       ∑ j : CoordinateIdx E,
-        (coordinateFrameAt_toBasis (I := I) x₀).coord j Z *
+        (coordinateFrameAtToBasis (I := I) x₀).coord j Z *
           αx (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j x₀) := by
   classical
-  let b := coordinateFrameAt_toBasis (I := I) x₀
+  let b := coordinateFrameAtToBasis (I := I) x₀
   have hupdate (w : TangentSpace I x₀) :
       Function.update (fun _ : Fin 1 => Z) (0 : Fin 1) w =
         fun _ : Fin 1 => w := by
@@ -158,7 +158,7 @@ theorem tensor0S_one_eval_coordFrame_sum
             funext q; fin_cases q; simp
           rw [hbase, smul_eq_mul]
     _ = ∑ j : CoordinateIdx E,
-          (coordinateFrameAt_toBasis (I := I) x₀).coord j Z *
+          (coordinateFrameAtToBasis (I := I) x₀).coord j Z *
             αx (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j x₀) := by
           simp [b]
 
@@ -300,11 +300,11 @@ omit [IsManifold I 1 M] [IsManifold I 2 M] in
 private theorem coordinateFrame_coeff_at_base_eq_coord
     (x₀ : M) (Z : TangentSpace I x₀) (j : CoordinateIdx E) :
     (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff j x₀ Z =
-      (coordinateFrameAt_toBasis (I := I) x₀).coord j Z := by
+      (coordinateFrameAtToBasis (I := I) x₀).coord j Z := by
   have hbasis :
       (coordinateFrameAt_isLocalFrame_one (I := I) x₀).toBasisAt
           (coordinateFrameAt_mem (I := I) x₀) =
-        coordinateFrameAt_toBasis (I := I) x₀ := by
+        coordinateFrameAtToBasis (I := I) x₀ := by
     ext k
     rw [IsLocalFrameOn.toBasisAt_coe]
     rw [coordinateFrameAt_toBasis_apply]
@@ -415,7 +415,7 @@ theorem oneForm_pair_coordFrame_product_rule
       (n := (⊤ : WithTop ℕ∞)) 1)
     (x₀ : M) (z dz : CoordinateIdx E -> Real)
     (hz : ∀ j : CoordinateIdx E,
-      z j = (coordinateFrameAt_toBasis (I := I) x₀).coord j (Z x₀))
+      z j = (coordinateFrameAtToBasis (I := I) x₀).coord j (Z x₀))
     (hdz : ∀ j : CoordinateIdx E,
       dz j =
         mvfderiv (I := I)
@@ -488,7 +488,7 @@ theorem oneForm_covariantDerivative_coordFrame_product_rule
       (n := (⊤ : WithTop ℕ∞)) 1)
     (x₀ : M) (z dz : CoordinateIdx E -> Real)
     (hz : ∀ j : CoordinateIdx E,
-      z j = (coordinateFrameAt_toBasis (I := I) x₀).coord j (Z x₀))
+      z j = (coordinateFrameAtToBasis (I := I) x₀).coord j (Z x₀))
     (hdz : ∀ j : CoordinateIdx E,
       dz j =
         mvfderiv (I := I)
@@ -730,7 +730,7 @@ theorem nabla0SFun_one_eval_coordFrame_expanded
     (nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       1 cov X α x₀) (fun _ : Fin 1 => Z) =
       ∑ j : CoordinateIdx E,
-        (coordinateFrameAt_toBasis (I := I) x₀).coord j Z *
+        (coordinateFrameAtToBasis (I := I) x₀).coord j Z *
           (coordDeriv0SAt (I := I) (fun x => X x) x₀ (fun x => α x)
               (fun _ : Fin 1 => j) -
             ∑ k : CoordinateIdx E,
@@ -752,7 +752,7 @@ theorem nabla0SFun_one_eval_of_coordFrame_product
     (x₀ : M) (hderiv : ModelDerivEqCoordDeriv0SAt (I := I) X x₀ (fun x => α x))
     (z dz : CoordinateIdx E -> Real)
     (hz : ∀ j : CoordinateIdx E,
-      z j = (coordinateFrameAt_toBasis (I := I) x₀).coord j (Z x₀))
+      z j = (coordinateFrameAtToBasis (I := I) x₀).coord j (Z x₀))
     (hpair :
       mvfderiv (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) =
         ∑ j : CoordinateIdx E,
@@ -792,7 +792,7 @@ theorem nabla0SFun_one_eval_of_coordFrame_product_rule
     (x₀ : M) (hderiv : ModelDerivEqCoordDeriv0SAt (I := I) X x₀ (fun x => α x))
     (z dz : CoordinateIdx E -> Real)
     (hz : ∀ j : CoordinateIdx E,
-      z j = (coordinateFrameAt_toBasis (I := I) x₀).coord j (Z x₀))
+      z j = (coordinateFrameAtToBasis (I := I) x₀).coord j (Z x₀))
     (hdz : ∀ j : CoordinateIdx E,
       dz j =
         mvfderiv (I := I)
@@ -835,7 +835,7 @@ theorem nabla0SFun_one_eval_of_coordFrame_product_rules
     (x₀ : M) (hderiv : ModelDerivEqCoordDeriv0SAt (I := I) X x₀ (fun x => α x))
     (z dz : CoordinateIdx E -> Real)
     (hz : ∀ j : CoordinateIdx E,
-      z j = (coordinateFrameAt_toBasis (I := I) x₀).coord j (Z x₀))
+      z j = (coordinateFrameAtToBasis (I := I) x₀).coord j (Z x₀))
     (hdz : ∀ j : CoordinateIdx E,
       dz j =
         mvfderiv (I := I)
@@ -877,7 +877,7 @@ theorem nabla0SFun_one_eval_coordFrame_moving
       mvfderiv (I := I) (fun y : M => α y (fun _ : Fin 1 => Z y)) x₀ (X x₀) -
         α x₀ (fun _ : Fin 1 => (cov (fun y : M => Z y) x₀) (X x₀)) := by
   let z : CoordinateIdx E -> Real :=
-    fun j => (coordinateFrameAt_toBasis (I := I) x₀).coord j (Z x₀)
+    fun j => (coordinateFrameAtToBasis (I := I) x₀).coord j (Z x₀)
   let dz : CoordinateIdx E -> Real :=
     fun j =>
       mvfderiv (I := I)

@@ -201,8 +201,8 @@ private def edgeFeedCLM (s : Nat) (x : M) (G : Tensor0SSpace (s + 2) I x)
     inferInstanceAs (FiniteDimensional Real E)
   LinearMap.toContinuousLinearMap
     { toFun := fun p => (edgeEvalCLM (I := I) (M := M) s x v).comp
-        (tensor0S_curry (𝕜 := Real) (I := I) (M := M) s x
-          ((tensor0S_curry (𝕜 := Real) (I := I) (M := M) (s + 1) x G) p))
+        (tensor0SCurry (𝕜 := Real) (I := I) (M := M) s x
+          ((tensor0SCurry (𝕜 := Real) (I := I) (M := M) (s + 1) x G) p))
       map_add' := fun p p' => by
         rw [map_add, map_add, ContinuousLinearMap.comp_add]
       map_smul' := fun c p => by
@@ -222,7 +222,7 @@ private lemma edgeFeedCLM_apply (s : Nat) (x : M)
   rw [edgeFeedCLM, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk,
     AddHom.coe_mk, ContinuousLinearMap.comp_apply, edgeEvalCLM_apply,
     TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
-      (T := tensor0S_curry (𝕜 := Real) (I := I) (M := M) (s + 1) x G p)
+      (T := tensor0SCurry (𝕜 := Real) (I := I) (M := M) (s + 1) x G p)
       (v0 := q) (vs := v),
     TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
       (T := G) (v0 := p)

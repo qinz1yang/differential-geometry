@@ -34,8 +34,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_curvatureCoeff_riemannianFiberNormSq_le_of_perturbedMetric_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B)
@@ -52,7 +52,7 @@ theorem exists_curvatureCoeff_riemannianFiberNormSq_le_of_perturbedMetric_jetEnv
         (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B →
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
               ((coeff g₁).toSection x) ≤ Λ := by
@@ -75,8 +75,8 @@ theorem exists_curvatureCoeff_riemannianFiberNormSq_le_of_perturbedMetric_jetEnv
     rw [hcoeff, ricciArmOrder0CurvCoeff_toSection]
     exact h
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_curvatureCoeff_riemannianFiberNormSq_le_of_metricPerturbationPath_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B)
@@ -92,7 +92,7 @@ theorem exists_curvatureCoeff_riemannianFiberNormSq_le_of_metricPerturbationPath
         (s : ℝ) (_hs : s ∈ Set.Icc (0 : ℝ) 1) (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j
                 (convexPerturbation (I := I) g₀ T T' s)).toSection x‖)) ≤ B →
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
@@ -141,8 +141,8 @@ theorem exists_curvatureCoeff_riemannianFiberNormSq_le_of_metricPerturbationPath
     nlinarith [hle', hprod]
   exact hΛ g₁ (convexPerturbation (I := I) g₀ T T' s) (le_of_eq hδ₁_def) hδs htie x henv
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_riemannBiContrFib_riemannianFiberNormSq_le_of_metricPerturbationPath_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
@@ -155,7 +155,7 @@ theorem exists_riemannBiContrFib_riemannianFiberNormSq_le_of_metricPerturbationP
         (s : ℝ) (_hs : s ∈ Set.Icc (0 : ℝ) 1) (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j
                 (convexPerturbation (I := I) g₀ T T' s)).toSection x‖)) ≤ B →
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
@@ -172,8 +172,8 @@ theorem exists_riemannBiContrFib_riemannianFiberNormSq_le_of_metricPerturbationP
   have h := hΛ T T' hδ_le hδ hδ'_le hδ' s hs x henv
   rwa [ricciArmOrder0RiemannCoeff_toSection] at h
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_ricciArmOrder0CurvCoeffFib_riemannianFiberNormSq_le_of_metricPerturbationPath_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
@@ -186,7 +186,7 @@ theorem exists_ricciArmOrder0CurvCoeffFib_riemannianFiberNormSq_le_of_metricPert
         (s : ℝ) (_hs : s ∈ Set.Icc (0 : ℝ) 1) (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j
                 (convexPerturbation (I := I) g₀ T T' s)).toSection x‖)) ≤ B →
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x

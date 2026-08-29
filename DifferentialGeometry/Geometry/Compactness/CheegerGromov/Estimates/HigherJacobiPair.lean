@@ -159,8 +159,8 @@ private theorem jac_force_cap
     _ = (2 * C1 * U ^ 2 + 5 * C0 * U) * BA * BB := by
       ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrJacobi_pair_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
@@ -300,8 +300,8 @@ theorem intrJacobi_pair_le
     (Geometry.Riemannian.VolumeComparison.intrJacobi_pair
       (I := I) P.metric hEnorm p u w hK hb hODE)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrMix_force_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
@@ -490,8 +490,8 @@ theorem intrMix_force_le
     (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
     hLA hLT.le hLJ hLKA hLDJ hforce
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrMix_pair_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)
@@ -812,8 +812,8 @@ theorem intrMix_pair_le
           gronwallBound 0 (max K 1) eps t
   exact hbounds
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem intrJet_pair_of
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -1074,8 +1074,8 @@ theorem intrJet_pair_of
           gronwallBound delta (max K 1) eps t
   exact hbounds
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrJet_upto_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) P)

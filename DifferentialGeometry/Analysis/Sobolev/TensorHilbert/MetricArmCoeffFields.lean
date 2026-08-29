@@ -243,7 +243,7 @@ private local instance tangentBilinearEndomorphismNormedAddCommGroup (x : M) :
 private local instance tensor0STotalSpaceTopology (s : ℕ) :
     TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
       (fun x : M => Tensor0SSpace s I x)) :=
-  Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
+  Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
 
 def bilinEndoCovariantDerivative (g : SmoothRiemannianMetric I M) :
     CovariantDerivative I (E →L[ℝ] (E →L[ℝ] E))
@@ -405,13 +405,13 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 lemma curry_armSlotFib_eq_slotInsert (s : ℕ) (x : M)
     (Arm : TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x))
     (A : Tensor0SSpace (s + 1) I x) (v0 : TangentSpace I x) :
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
         (bilinearSlotInsertCLM (I := I) (M := M) s x Arm A)) v0 =
       slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Arm v0) A := by
   apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) (s + 1) x).injective
   refine ContinuousMultilinearMap.ext (fun vt => ?_)
   change Tensor0SSpace.eval
-      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
+      ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
         (bilinearSlotInsertCLM (I := I) (M := M) s x Arm A)) v0) vt =
     Tensor0SSpace.eval
       (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Arm v0) A) vt

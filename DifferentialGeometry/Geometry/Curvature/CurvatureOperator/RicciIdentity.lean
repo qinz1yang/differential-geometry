@@ -257,7 +257,7 @@ theorem ricci_identity_oneForm
   unfold iterCotangentCov
   linarith
 
-noncomputable def localConnLap_vector
+noncomputable def localConnLapVector
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (V : Π b : M, TangentSpace I b) (x : M) : TangentSpace I x :=
@@ -271,7 +271,7 @@ lemma localConnLap_vector_def
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (V : Π b : M, TangentSpace I b) (x : M) :
-    localConnLap_vector cov B V x =
+    localConnLapVector cov B V x =
       ∑ i : Fin (Module.finrank ℝ E),
         (cov.toFun (covApply cov (B i) V) x (B i x) -
           cov.toFun V x (cov.toFun (B i) x (B i x))) := rfl
@@ -539,7 +539,7 @@ lemma localConnLap_vector_grad_inner_eq_hessian_diff
     {w : Π b : M, TangentSpace I b}
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (x : M) :
-    g.inner x (localConnLap_vector (LeviCivita (I := I) g) B
+    g.inner x (localConnLapVector (LeviCivita (I := I) g) B
                   (fun b => gradFun (I := I) g f b) x) (w x) =
       ∑ i : Fin (Module.finrank ℝ E),
         (g.inner x ((LeviCivita (I := I) g).toFun
@@ -549,7 +549,7 @@ lemma localConnLap_vector_grad_inner_eq_hessian_diff
                       (fun b => gradFun (I := I) g f b) x
                       ((LeviCivita (I := I) g).toFun (B i) x (B i x))) (w x)) := by
   classical
-  unfold localConnLap_vector
+  unfold localConnLapVector
   set u : Fin (Module.finrank ℝ E) → TangentSpace I x := fun i =>
     (LeviCivita (I := I) g).toFun
         (covApply (LeviCivita (I := I) g) (B i)
@@ -581,20 +581,20 @@ theorem localConnLap_vector_eq_bochnerFormula_of_inner_form [I.Boundaryless]
     (B : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b)
     (x : M)
     (hInner : ∀ w : TangentSpace I x,
-      g.inner x (localConnLap_vector (LeviCivita (I := I) g) B
+      g.inner x (localConnLapVector (LeviCivita (I := I) g) B
                   (fun b => gradFun (I := I) g f b) x) w =
-        g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
+        g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) w +
           g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w) :
-    localConnLap_vector (LeviCivita (I := I) g) B
+    localConnLapVector (LeviCivita (I := I) g) B
         (fun b => gradFun (I := I) g f b) x =
-      gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
+      gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x +
         ricciSharp (I := I) g x (gradFun (I := I) g f x) := by
   rw [vector_eq_iff_inner_eq (I := I) g x]
   intro w
   rw [hInner w]
-  rw [show g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
+  rw [show g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x +
         ricciSharp (I := I) g x (gradFun (I := I) g f x)) w =
-      g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
+      g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) w +
         g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w from
     by rw [map_add, add_apply]]
 

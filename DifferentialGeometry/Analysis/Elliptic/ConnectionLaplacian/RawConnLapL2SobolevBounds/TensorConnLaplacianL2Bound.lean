@@ -41,7 +41,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 noncomputable def chartSobolevRawNorm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     ℝ≥0∞ :=
-  ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
     ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
       ENNReal.ofReal
         (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
@@ -56,7 +56,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma chartSobolevRawNorm_def
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     chartSobolevRawNorm (I := I) (M := M) g r s T =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
           ENNReal.ofReal
             (tensorTrivProjPushedNormSq (I := I) (M := M) r s α
@@ -116,7 +116,7 @@ theorem rawTensorConnLap_L2NormSq_le_chartSobolevRawNorm_of_section
               ∂(riemannianVolumeMeasure (I := I) (M := M) g) ≤
             ENNReal.ofReal
                 (chartTargetL2BridgeConstant (I := I) (M := M) g) *
-              ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+              ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
                 ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                   ENNReal.ofReal
                     (tensorTrivProjPushedNormSq (I := I) (M := M) r s α

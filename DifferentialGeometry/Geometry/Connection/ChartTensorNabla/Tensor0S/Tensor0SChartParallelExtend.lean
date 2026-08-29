@@ -46,14 +46,14 @@ lemma chartTensor0SE_section_repr_chartTensor0SParallelExtend
     (r : ℕ) (α b : M) (T₀ : Tensor0SSpace r I b) {b' : M}
     (hb' : b' ∈ (trivializationAt (Tensor0SModel r ℝ E)
         (fun y : M => Tensor0SSpace r I y) α).baseSet) :
-    tensor0SChartE_section_repr (I := I) r α
+    tensor0SChartESectionRepr (I := I) r α
         (chartTensor0SParallelExtend (I := I) r α b T₀) b' =
       (trivializationAt (Tensor0SModel r ℝ E)
           (fun y : M => Tensor0SSpace r I y) α).continuousLinearMapAt ℝ b T₀ := by
   classical
   set e := trivializationAt (Tensor0SModel r ℝ E)
     (fun y : M => Tensor0SSpace r I y) α with he_def
-  unfold tensor0SChartE_section_repr chartTensor0SParallelExtend
+  unfold tensor0SChartESectionRepr chartTensor0SParallelExtend
   exact (trivializationAt (Tensor0SModel r ℝ E)
       (fun y : M => Tensor0SSpace r I y) α).continuousLinearMapAt_symmL
     (R := ℝ) hb' _
@@ -72,7 +72,7 @@ omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 lemma chartTensor0SParallelExtend_repr_eventuallyEq_const
     (r : ℕ) (α : M) {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α)
     (T₀ : Tensor0SSpace r I b) :
-    (tensor0SChartE_section_repr (I := I) r α
+    (tensor0SChartESectionRepr (I := I) r α
         (chartTensor0SParallelExtend (I := I) r α b T₀)) ∘ (extChartAt I α).symm
       =ᶠ[𝓝 (extChartAt I α b)]
       (fun _ : E => (trivializationAt (Tensor0SModel r ℝ E)
@@ -102,7 +102,7 @@ lemma chartTensor0SParallelExtend_repr_eventuallyEq_const
       𝓝 (extChartAt I α b) :=
     hint_open.mem_nhds hb_int
   filter_upwards [hU_preim_nhds, hint_nhds] with y hy_U _hy_int
-  change tensor0SChartE_section_repr (I := I) r α
+  change tensor0SChartESectionRepr (I := I) r α
       (chartTensor0SParallelExtend (I := I) r α b T₀)
       ((extChartAt I α).symm y) =
     e.continuousLinearMapAt ℝ b T₀
@@ -114,7 +114,7 @@ lemma chartTensor0SParallelExtend_repr_pullback_fderiv_eq_zero
     (r : ℕ) (α : M) {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α)
     (T₀ : Tensor0SSpace r I b) :
     fderiv ℝ
-        (tensor0SChartE_section_repr (I := I) r α
+        (tensor0SChartESectionRepr (I := I) r α
           (chartTensor0SParallelExtend (I := I) r α b T₀) ∘ (extChartAt I α).symm)
       (extChartAt I α b) = 0 := by
   classical
@@ -128,7 +128,7 @@ lemma chartTensor0SParallelExtend_repr_pullback_fderiv_apply_eq_zero
     (r : ℕ) (α : M) {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α)
     (T₀ : Tensor0SSpace r I b) (w : E) :
     fderiv ℝ
-        (tensor0SChartE_section_repr (I := I) r α
+        (tensor0SChartESectionRepr (I := I) r α
           (chartTensor0SParallelExtend (I := I) r α b T₀) ∘ (extChartAt I α).symm)
       (extChartAt I α b) w = 0 := by
   rw [chartTensor0SParallelExtend_repr_pullback_fderiv_eq_zero
@@ -142,7 +142,7 @@ lemma chartTensor0SParallelExtend_mdifferentiableAt
     letI _h_top : TopologicalSpace
         (TotalSpace (Tensor0SModel r ℝ E)
           (fun x : M => Tensor0SSpace r I x)) :=
-      tensor0SBundle_topology r
+      tensor0SBundleTopology r
     MDifferentiableAt I (I.prod 𝓘(ℝ, Tensor0SModel r ℝ E))
       (fun b' : M => TotalSpace.mk'
         (Tensor0SModel r ℝ E)
@@ -152,10 +152,10 @@ lemma chartTensor0SParallelExtend_mdifferentiableAt
   let _h_top : TopologicalSpace
       (TotalSpace (Tensor0SModel r ℝ E)
         (fun x : M => Tensor0SSpace r I x)) :=
-    tensor0SBundle_topology r
+    tensor0SBundleTopology r
   let _h_fib : FiberBundle (Tensor0SModel r ℝ E)
       (fun x : M => Tensor0SSpace r I x) :=
-    tensor0SBundle_fiber r
+    tensor0SBundleFiber r
   set e := trivializationAt (Tensor0SModel r ℝ E)
     (fun y : M => Tensor0SSpace r I y) α with he_def
   have hb_base : b ∈ e.baseSet :=

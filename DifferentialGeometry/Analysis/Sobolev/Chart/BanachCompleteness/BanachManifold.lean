@@ -354,7 +354,7 @@ noncomputable def manifoldLimitFun
         (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x) ≤
         ENNReal.ofReal ε) : M → ℝ :=
   fun x =>
-    ∑ β ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
+    ∑ β ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M),
       pullbackToManifold (I := I) β
         (chartLimit (I := I) (M := M) hp_one h_cauchy β) x
 
@@ -365,7 +365,7 @@ lemma wkpChartFun_eq_finset_sum_pullback
     (u : WkpChart (I := I) (M := M) k p hp) :
     (fun x : M => wkpChartFun u x) =
       fun x =>
-        ∑ β ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+        ∑ β ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
             (I := I) (M := M),
           pullbackToManifold (I := I) β
             (chartPushed (I := I) (M := M)
@@ -373,7 +373,7 @@ lemma wkpChartFun_eq_finset_sum_pullback
               (wkpChartFun u)) x := by
   classical
   funext x
-  have h_eq : ∀ β ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+  have h_eq : ∀ β ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
         (I := I) (M := M),
       pullbackToManifold (I := I) β
           (chartPushed (I := I) (M := M)
@@ -398,11 +398,11 @@ lemma wkpChartFun_eq_finset_sum_pullback
       rw [h_rho_zero]; ring
   rw [Finset.sum_congr rfl h_eq]
   have h_factor :
-      ∑ β ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+      ∑ β ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
         (I := I) (M := M),
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M β : M → ℝ) x *
           wkpChartFun u x =
-      (∑ β ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+      (∑ β ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
         (I := I) (M := M),
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M β : M → ℝ) x) *
         wkpChartFun u x := by

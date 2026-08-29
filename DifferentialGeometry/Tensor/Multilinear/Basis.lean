@@ -53,16 +53,16 @@ theorem finrank_continuousMultilinearMap (s : ℕ) :
     rw [e2.finrank_eq, Module.finrank_linearMap 𝕜 𝕜, ih]
     ring
 
-noncomputable def continuousMultilinearMap_basisElem {d : ℕ} (b : Module.Basis (Fin d) 𝕜 F)
+noncomputable def continuousMultilinearMapBasisElem {d : ℕ} (b : Module.Basis (Fin d) 𝕜 F)
     (s : ℕ) (σ : Fin s → Fin d) : MLF s :=
   (ContinuousMultilinearMap.mkPiRing 𝕜 (Fin s) (1 : 𝕜)).compContinuousLinearMap
     (fun j => LinearMap.toContinuousLinearMap (b.coord (σ j)))
 
 theorem continuousMultilinearMap_basisElem_apply {d : ℕ} (b : Module.Basis (Fin d) 𝕜 F) (s : ℕ)
     (σ σ' : Fin s → Fin d) :
-    continuousMultilinearMap_basisElem b s σ (fun j => b (σ' j)) =
+    continuousMultilinearMapBasisElem b s σ (fun j => b (σ' j)) =
     if σ = σ' then 1 else 0 := by
-  simp_rw [continuousMultilinearMap_basisElem,
+  simp_rw [continuousMultilinearMapBasisElem,
     ContinuousMultilinearMap.compContinuousLinearMap_apply,
     ContinuousMultilinearMap.mkPiRing_apply, smul_eq_mul, mul_one,
     LinearMap.coe_toContinuousLinearMap', Module.Basis.coord_apply,
@@ -75,17 +75,17 @@ theorem continuousMultilinearMap_basisElem_apply {d : ℕ} (b : Module.Basis (Fi
 
 theorem continuousMultilinearMap_basisElem_linearIndependent {d : ℕ}
     (b : Module.Basis (Fin d) 𝕜 F) (s : ℕ) :
-    LinearIndependent 𝕜 (continuousMultilinearMap_basisElem b s) := by
+    LinearIndependent 𝕜 (continuousMultilinearMapBasisElem b s) := by
   rw [Fintype.linearIndependent_iff]
   intro c hc σ'
-  have h1 : (∑ σ : Fin s → Fin d, c σ • continuousMultilinearMap_basisElem b s σ)
+  have h1 : (∑ σ : Fin s → Fin d, c σ • continuousMultilinearMapBasisElem b s σ)
       (fun j => b (σ' j)) = 0 := by rw [hc]; rfl
   simp only [sum_apply, smul_apply,
     continuousMultilinearMap_basisElem_apply] at h1
   simp only [smul_ite, smul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] at h1
   rwa [smul_eq_mul, mul_one] at h1
 
-noncomputable def continuousMultilinearMap_basis {d : ℕ} (b : Module.Basis (Fin d) 𝕜 F)
+noncomputable def continuousMultilinearMapBasis {d : ℕ} (b : Module.Basis (Fin d) 𝕜 F)
     (s : ℕ) : Module.Basis (Fin s → Fin d) 𝕜 (MLF s) :=
   Module.Basis.mk (continuousMultilinearMap_basisElem_linearIndependent b s)
     ((continuousMultilinearMap_basisElem_linearIndependent b s).span_eq_top_of_card_eq_finrank'
@@ -97,12 +97,12 @@ noncomputable def continuousMultilinearMap_basis {d : ℕ} (b : Module.Basis (Fi
 
 theorem continuousMultilinearMap_basis_repr {d : ℕ} (b : Module.Basis (Fin d) 𝕜 F)
     (s : ℕ) (f : ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜) (σ : Fin s → Fin d) :
-    (continuousMultilinearMap_basis b s).repr f σ = f (fun j => b (σ j)) := by
-  have hbasis : ∀ ρ, (continuousMultilinearMap_basis b s) ρ =
-      continuousMultilinearMap_basisElem b s ρ :=
+    (continuousMultilinearMapBasis b s).repr f σ = f (fun j => b (σ j)) := by
+  have hbasis : ∀ ρ, (continuousMultilinearMapBasis b s) ρ =
+      continuousMultilinearMapBasisElem b s ρ :=
     fun ρ => congr_fun (Module.Basis.coe_mk
       (continuousMultilinearMap_basisElem_linearIndependent b s) _) ρ
-  conv_rhs => rw [← (continuousMultilinearMap_basis b s).sum_repr f]
+  conv_rhs => rw [← (continuousMultilinearMapBasis b s).sum_repr f]
   simp only [sum_apply, smul_apply,
     smul_eq_mul, hbasis, continuousMultilinearMap_basisElem_apply,
     mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
@@ -126,10 +126,10 @@ theorem contMDiff_multilinearSection_iff_coord {d : ℕ}
       (fun x => TotalSpace.mk' (MLF s) x (f x)) ↔
     ∀ σ : Fin s → Fin d, ∀ x₀ : B,
       ContMDiffAt IB 𝓘(𝕜, 𝕜) n
-        (fun x => (continuousMultilinearMap_basis b s).repr
+        (fun x => (continuousMultilinearMapBasis b s).repr
           (trivializationAt (MLF s)
             (_root_.Bundle.continuousMultilinearMap 𝕜 s F E) x₀ ⟨x, f x⟩).2 σ) x₀ := by
-  set Bb := continuousMultilinearMap_basis b s
+  set Bb := continuousMultilinearMapBasis b s
   constructor
   · intro hf σ x₀
     have hsec := (contMDiffAt_section x₀).mp hf.contMDiffAt

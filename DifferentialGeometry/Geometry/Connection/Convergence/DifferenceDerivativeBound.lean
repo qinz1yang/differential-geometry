@@ -98,12 +98,12 @@ private theorem covGrad_connectionDifferenceSection_flat_eval_eq_inner
   exact hbridge
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem covDerivConnectionDifference_fibreNorm_le
     (g₂ g₁ : SmoothRiemannianMetric I M) (x : M) (v w u : TangentSpace I x) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 1 3 I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₂ 1 3
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₂ 1 3
     Real.sqrt (g₂.inner x
         (covDerivConnectionDifference (I := I) g₂ g₁
           (smoothExtensionTangent (I := I) x v)
@@ -119,7 +119,7 @@ theorem covDerivConnectionDifference_fibreNorm_le
           Real.sqrt (g₂.inner x u u) := by
   classical
   let instW : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 1 3 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₂ 1 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₂ 1 3
   set W : Tensor0SBundle.TensorRSSpace 1 3 I x :=
     (covGrad (I := I) (M := M) g₂ 1 2 (connectionDifferenceSection (I := I) g₁ g₂)).toSection x with hW_def
   set A : TangentSpace I x :=

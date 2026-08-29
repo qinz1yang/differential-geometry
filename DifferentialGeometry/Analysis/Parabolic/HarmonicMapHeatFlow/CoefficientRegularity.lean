@@ -440,8 +440,8 @@ private noncomputable def hmfFiberExp
       (⟨x, (show TangentSpace I x from v)⟩ : TangentBundle I M)).2
 
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem hmfFiberExp_mfd
     (q : SmoothRiemannianMetric I M) (x : M) :
     mfderiv 𝓘(ℝ, E) I (hmfFiberExp (I := I) (M := M) q x) 0 =
@@ -542,7 +542,7 @@ private theorem hmfUnitLift
       S.toSection x := by
   apply tensorRSSpace_ext (I := I) (M := M) 0 1 x
   intro c
-  have hc : c = (tensor0SSpace_evalScalar
+  have hc : c = (tensor0SSpaceEvalScalar
       (𝕜 := ℝ) (I := I) (M := M) x) c •
       unitZeroSec (I := I) (M := M) x := by
     apply Tensor0SSpace.toModel_injective
@@ -550,7 +550,7 @@ private theorem hmfUnitLift
     intro v
     change Tensor0SSpace.toModel c v =
       Tensor0SSpace.toModel
-        ((tensor0SSpace_evalScalar
+        ((tensor0SSpaceEvalScalar
           (𝕜 := ℝ) (I := I) (M := M) x) c •
           unitZeroSec (I := I) (M := M) x) v
     rw [Tensor0SSpace.toModel_smul,
@@ -560,17 +560,17 @@ private theorem hmfUnitLift
       Tensor0SSpace.evalScalar_apply, mul_one]
     exact congrArg (Tensor0SSpace.toModel c)
       (Subsingleton.elim v Fin.elim0)
-  change (tensor0SSpace_evalScalar
+  change (tensor0SSpaceEvalScalar
       (𝕜 := ℝ) (I := I) (M := M) x) c •
       unitEvalSection (I := I) (M := M) q 1 S x =
     (S.toSection x) c
   rw [unitEvalSection_apply]
   calc
-    (tensor0SSpace_evalScalar
+    (tensor0SSpaceEvalScalar
         (𝕜 := ℝ) (I := I) (M := M) x) c •
           (S.toSection x) (unitZeroSec (I := I) (M := M) x) =
         (S.toSection x)
-          ((tensor0SSpace_evalScalar
+          ((tensor0SSpaceEvalScalar
             (𝕜 := ℝ) (I := I) (M := M) x) c •
             unitZeroSec (I := I) (M := M) x) := by
       rw [map_smul]

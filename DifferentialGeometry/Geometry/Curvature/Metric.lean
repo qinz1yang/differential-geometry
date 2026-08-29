@@ -302,14 +302,14 @@ theorem nablaRic_ein3
     metricScalar_smooth (I := I) (M := M) g
   have hf3 : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) f3 := by
     exact contMDiff_const.mul hscalar
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H)
     (I := I) (M := M) (s := 1)
   let dScalarSec : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) (n := (∞ : WithTop ℕ∞)) 1 :=
     DifferentialGeometry.Geometry.Operator.duSec (I := I) scalar hscalar
   let df3 : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) (n := (∞ : WithTop ℕ∞)) 1 :=
-    tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+    tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 1)
       (fun _ : M => (1 / 3 : Real)) contMDiff_const dScalarSec
   let metricSec : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I)
@@ -317,7 +317,7 @@ theorem nablaRic_ein3
     metricTensorField (I := I) g
   let smulSec : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) (n := (∞ : WithTop ℕ∞)) 2 :=
-    tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+    tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
       f3 hf3 metricSec
   have hdf3 : ∀ y : M, ∀ v : TangentSpace I y,
@@ -357,9 +357,9 @@ theorem nablaRic_ein3
       smul_eq_mul, metricTensorField_apply, DifferentialGeometry.Geometry.Curvature.vec2,
         div_eq_mul_inv,
       mul_assoc, mul_comm, mul_left_comm] using hEin_y
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H)
     (I := I) (M := M) (s := 2)
-  let := tensor0SBundle_fiber (𝕜 := Real) (E := E) (H := H)
+  let := tensor0SBundleFiber (𝕜 := Real) (E := E) (H := H)
     (I := I) (M := M) (s := 2)
   let := tensor0SBundle_vector (𝕜 := Real) (E := E) (H := H)
     (I := I) (M := M) (s := 2)
@@ -415,7 +415,7 @@ theorem nablaRic_ein3
         (1 / 3 : Real) *
           DifferentialGeometry.Geometry.Operator.differential1FormFun (I := I) scalar x
             (fun _ : Fin 1 => A) * g.inner x B C := by
-    change (Bundle.continuousMultilinearMap.product_fun
+    change (Bundle.continuousMultilinearMap.productFun
         (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 1 x (df3 x))
         (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x (metricSec x)))
         (Fin.cons (X x) slots) =
@@ -460,7 +460,7 @@ theorem dScalar_zero_ein3_at
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
     (gInv : Fin 3 -> Fin 3 -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
     (hEin : ∀ y : M, ∀ v w : TangentSpace I y,
       metricRicciAt (I := I) (M := M) g y
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w) =
@@ -527,7 +527,7 @@ theorem metricRicciSymm
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (i j : Idx) :
     metricRicciAt (I := I) (M := M) g x
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) (basis i) (basis j)) =
@@ -615,14 +615,14 @@ theorem metricNablaSymm
           metricRicci (I := I) (M := M) g y
             (fun q : Fin 2 => if q = 0 then V else U) := by
     intro y U V
-    let basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis
+    let basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis
       (I := I) y
     let gInv : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
         DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
       fun i j =>
-        DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+        DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
           (I := I) g y i j (extChartAt I y y)
-    have hinv : MetricInverseInBasis_gen (I := I) (M := M) g y basis gInv := by
+    have hinv : MetricInverseInBasisGen (I := I) (M := M) g y basis gInv := by
       simpa [basis, gInv] using
         (Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
           (I := I) g y)

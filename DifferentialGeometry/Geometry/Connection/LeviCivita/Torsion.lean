@@ -68,7 +68,7 @@ theorem coordinate_basis_coord_eq_sum_inv_metric_inner
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (a : Idx) (V : TangentSpace I x) :
     basis.coord a V =
       ∑ k : Idx, gInv a k * g.inner x (basis k) V := by
@@ -257,8 +257,8 @@ omit [SigmaCompactSpace M] [T2Space M] in
 theorem leviCivitaConnectionOfMetric_coordinate_christoffel_formula
     (g : SmoothRiemannianMetric I M) (x0 : M)
     (gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x0
-      (coordinateFrameAt_toBasis (I := I) x0) gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x0
+      (coordinateFrameAtToBasis (I := I) x0) gInv)
     (i j k : CoordinateIdx (𝕜 := Real) E) :
     christoffelSymbolInFrame (leviCivitaConnectionOfMetric (I := I) g)
         (coordinateFrameAt (I := I) x0)
@@ -281,7 +281,7 @@ theorem leviCivitaConnectionOfMetric_coordinate_christoffel_formula
   classical
   let frame := coordinateFrameAt (I := I) x0
   let hframe := coordinateFrameAt_isLocalFrame_one (I := I) x0
-  let basis := coordinateFrameAt_toBasis (I := I) x0
+  let basis := coordinateFrameAtToBasis (I := I) x0
   let A : TangentSpace I x0 :=
     (leviCivitaConnectionOfMetric (I := I) g (frame j) x0) (frame i x0)
   have hcoeff :
@@ -378,7 +378,7 @@ theorem leviCivitaConnectionOfMetric_isTorsionFree
   intro u
   apply ContinuousLinearMap.ext
   intro v
-  let B := coordinateFrameAt_toBasis (I := I) x
+  let B := coordinateFrameAtToBasis (I := I) x
   have hu : u = ∑ i : CoordinateIdx (𝕜 := Real) E, B.repr u i • B i :=
     (B.sum_repr u).symm
   have hv : v = ∑ j : CoordinateIdx (𝕜 := Real) E, B.repr v j • B j :=

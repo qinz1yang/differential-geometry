@@ -72,8 +72,8 @@ theorem bumpExtend_complete
   exact bumpExtendOpen_inner_of_notMem_tsupport
     (I := I) R U gU χ hχ hχ01 hχsupp x hx v w
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem flatModel_complete
     {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
     [FiniteDimensional Real E] [CompleteSpace E] :

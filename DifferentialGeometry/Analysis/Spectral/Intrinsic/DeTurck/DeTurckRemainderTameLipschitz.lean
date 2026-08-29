@@ -172,10 +172,10 @@ private lemma rsDomDomCongrSection_sub (g₀ : SmoothRiemannianMetric I M)
   rw [rsDomDomCongrSection_toSection, rsDomDomCongrSection_toSection]
   change Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (X.toSection x - Y.toSection x)) D) m =
+        tensorRSDomDomCongr σ (X.toSection x - Y.toSection x)) D) m =
     Tensor0SSpace.toModel
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (X.toSection x) - tensorRS_domDomCongr σ (Y.toSection x)) D) m
+        tensorRSDomDomCongr σ (X.toSection x) - tensorRSDomDomCongr σ (Y.toSection x)) D) m
   rw [toModel_rsDomDomCongr_apply,
     show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
       (X.toSection x - Y.toSection x : TensorRSSpace 2 2 I x)) D) =
@@ -183,11 +183,11 @@ private lemma rsDomDomCongrSection_sub (g₀ : SmoothRiemannianMetric I M)
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from Y.toSection x) D from rfl,
     Tensor0SSpace.toModel_sub,
     show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-      tensorRS_domDomCongr σ (X.toSection x) - tensorRS_domDomCongr σ (Y.toSection x)) D) =
+      tensorRSDomDomCongr σ (X.toSection x) - tensorRSDomDomCongr σ (Y.toSection x)) D) =
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (X.toSection x)) D -
+        tensorRSDomDomCongr σ (X.toSection x)) D -
       (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-        tensorRS_domDomCongr σ (Y.toSection x)) D from rfl,
+        tensorRSDomDomCongr σ (Y.toSection x)) D from rfl,
     Tensor0SSpace.toModel_sub,
     toModel_rsDomDomCongr_apply, toModel_rsDomDomCongr_apply]
   simp only [ContinuousMultilinearMap.domDomCongr_apply, sub_apply]

@@ -53,7 +53,7 @@ theorem jointTotalSpace0S_add_local {d : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) p.1 (A p + B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -88,7 +88,7 @@ theorem jointTotalSpace0S_sub_local {d : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) p.1 (A p - B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -121,7 +121,7 @@ theorem jointTotalSpace0S_smulFun_local {d : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) p.1 (f p.2 • A p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -165,9 +165,9 @@ theorem jointTensor0SProd_local {p q : ℕ} {S : Set ℝ}
             (Tensor0SBundle.Tensor0SSpace.toModel (A pp))
             (Tensor0SBundle.Tensor0SSpace.toModel (B pp)))))
       ((Set.univ : Set M) ×ˢ S) := by
-  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) p
-  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) q
-  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) p
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) q
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (p + q)
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]

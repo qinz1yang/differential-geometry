@@ -66,14 +66,14 @@ private theorem cotangentSharp_orthoBasis_expand
     (horth : ∀ i j : Fin n,
       g.inner x (basis i) (basis j) = if i = j then (1 : Real) else 0)
     (β : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
-    cotangentSharp_gen (I := I) g x β =
+    cotangentSharpGen (I := I) g x β =
       ∑ e : Fin n, (β (fun _ : Fin 1 => basis e)) • basis e := by
   classical
   set gInv : Fin n → Fin n → Real := fun i j => if i = j then 1 else 0 with hgInv
   have hdiag : ∀ i : Fin n, gInv i i = 1 := by intro i; simp [hgInv]
   have hoff : ∀ i k : Fin n, i ≠ k → gInv i k = 0 := by
     intro i k hk; simp [hgInv, hk]
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis gInv := by
+  have hinv : MetricInverseInBasisGen (I := I) g x basis gInv := by
     intro i j
     refine ⟨?_, ?_⟩
     · rw [Finset.sum_eq_single i]

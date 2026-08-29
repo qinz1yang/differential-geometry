@@ -128,7 +128,7 @@ omit [NeZero d] in
     (hΩ : IsOpen Ω)
     {u : E → ℝ} (hu : MemW1pWitness 2 u Ω)
     (c : ℝ) (x : E) :
-    (hu.sub_const hΩ c).weakGrad x = hu.weakGrad x := rfl
+    (hu.subConst hΩ c).weakGrad x = hu.weakGrad x := rfl
 
 omit [NeZero d] in
 @[simp] private lemma MemW1pWitness.sub_weakGrad
@@ -181,10 +181,10 @@ noncomputable def deGiorgiCutoffTestWitnessWeighted
     (hη_grad_bound : ∀ x, ‖fderiv ℝ η x‖ ≤ C₁) :
     MemW1pWitness 2 (deGiorgiCutoffTestGeneral η u k) Ω := by
   let hwη :=
-    hw_trunc.mul_smooth_bounded hΩ hη
+    hw_trunc.mulSmoothBounded hΩ hη
       (C₀ := C₀) (C₁ := C₁) hC₀ hC₁ hη_bound hη_grad_bound
   exact
-    hwη.mul_smooth_bounded hΩ hη
+    hwη.mulSmoothBounded hΩ hη
       (C₀ := C₀) (C₁ := C₁) hC₀ hC₁ hη_bound hη_grad_bound
 
 omit [NeZero d] in
@@ -202,7 +202,7 @@ lemma deGiorgiCutoffTestWitnessWeighted_grad
       η x ^ 2 • hw_trunc.weakGrad x +
         (2 * η x * positivePartSub u k x) • deGiorgiFderivVec η x := by
   ext i
-  simp [deGiorgiCutoffTestWitnessWeighted, MemW1pWitness.mul_smooth_bounded,
+  simp [deGiorgiCutoffTestWitnessWeighted, MemW1pWitness.mulSmoothBounded,
     deGiorgiFderivVec_apply]
   ring
 
@@ -215,7 +215,7 @@ private lemma truncGrad_eq_on_superlevel
     (hw_trunc : MemW1pWitness 2 (positivePartSub u k) Ω) :
     ∀ᵐ x ∂(volume.restrict Ω), k < u x → hu.weakGrad x = hw_trunc.weakGrad x := by
   let w : E → ℝ := positivePartSub u k
-  let hw_shift : MemW1pWitness 2 (fun x => u x - k) Ω := hu.sub_const hΩ k
+  let hw_shift : MemW1pWitness 2 (fun x => u x - k) Ω := hu.subConst hΩ k
   let hw_diff : MemW1pWitness 2 (fun x => u x - k - w x) Ω := hw_shift.sub hw_trunc
   have hcomp :
       ∀ i : Fin d, ∀ᵐ x ∂(volume.restrict Ω), k < u x → hu.weakGrad x i = hw_trunc.weakGrad x
@@ -229,7 +229,7 @@ private lemma truncGrad_eq_on_superlevel
     have hgrad0 : hw_diff.weakGrad x i = 0 := hx hfun
     have hgrad0' :
         (hu.weakGrad x).ofLp i - (hw_trunc.weakGrad x).ofLp i = 0 := by
-      simpa [hw_diff, hw_shift, w, MemW1pWitness.sub, MemW1pWitness.sub_const] using hgrad0
+      simpa [hw_diff, hw_shift, w, MemW1pWitness.sub, MemW1pWitness.subConst] using hgrad0
     exact sub_eq_zero.mp hgrad0'
   filter_upwards [ae_all_iff.2 hcomp] with x hx hku
   ext i
@@ -718,7 +718,7 @@ theorem caccioppoli_weighted_on_ball_of_posPartApprox
     (hCη : 0 ≤ Cη)
     (hη_grad_bound : ∀ x, ‖fderiv ℝ η x‖ ≤ Cη)
     (hη_sub_ball : tsupport η ⊆ Metric.ball x₀ s) :
-    ∫ x in Metric.ball x₀ s, η x ^ 2 * ‖(positivePartSub_memW1pWitness_on_ball
+    ∫ x in Metric.ball x₀ s, η x ^ 2 * ‖(positivePartSubMemW1pWitnessOnBall
         hs hu k happroxBallShift).weakGrad x‖ ^ 2 ∂volume ≤
       4 * ellipticityRatio A *
         ∫ x in Metric.ball x₀ s, ‖fderiv ℝ η x‖ ^ 2 * |positivePartSub u k x| ^ 2 ∂volume := by
@@ -726,7 +726,7 @@ theorem caccioppoli_weighted_on_ball_of_posPartApprox
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   let hw_trunc : MemW1pWitness 2 (positivePartSub u k) (Metric.ball x₀ s) :=
-    positivePartSub_memW1pWitness_on_ball hs hu k happroxBallShift
+    positivePartSubMemW1pWitnessOnBall hs hu k happroxBallShift
   have hη_admissible :
       MemW01p 2 (deGiorgiCutoffTestGeneral η u k) (Metric.ball x₀ s) :=
     deGiorgiCutoffTest_memW01p_on_ball_of_ballPosPartApprox
@@ -895,12 +895,12 @@ theorem deGiorgi_energy_estimate_on_concentricBalls_of_posPartApprox
     (hη_grad_bound : ∀ x, ‖fderiv ℝ η x‖ ≤ Cη)
     (hη_sub_ball : tsupport η ⊆ Metric.ball x₀ s) :
     ∫ x in Metric.ball x₀ r,
-        ‖(positivePartSub_memW1pWitness_on_ball hs hu k happroxBallShift).weakGrad x‖ ^ 2
+        ‖(positivePartSubMemW1pWitnessOnBall hs hu k happroxBallShift).weakGrad x‖ ^ 2
           ∂volume ≤
       4 * ellipticityRatio A * Cη ^ 2 *
         ∫ x in Metric.ball x₀ s, |positivePartSub u k x| ^ 2 ∂volume := by
   let hw_trunc : MemW1pWitness 2 (positivePartSub u k) (Metric.ball x₀ s) :=
-    positivePartSub_memW1pWitness_on_ball hs hu k happroxBallShift
+    positivePartSubMemW1pWitnessOnBall hs hu k happroxBallShift
   change
     ∫ x in Metric.ball x₀ r, ‖hw_trunc.weakGrad x‖ ^ 2 ∂volume ≤
       4 * ellipticityRatio A * Cη ^ 2 *

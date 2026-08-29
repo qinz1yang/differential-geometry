@@ -45,15 +45,15 @@ theorem barrierDerivs
     (nabla2S : TensorNabla2SecFamily (I := I) (M := M))
     (epsilon delta t0 : Real)
     (hmc : ∀ t : Real,
-      DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (cov t) (G t))
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (cov t) (G t))
     (hS : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S) :
     TensorSpatialDerivs (I := I) (M := M) cov
       (tensorBarrierSecFamily (I := I) (M := M) G S epsilon delta t0)
       nablaS nabla2S := by
   constructor
   · intro t
-    let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2
-    let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3
+    let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2
+    let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3
     have hmetric :
         TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           2 (cov t) (Tensor0SBundle.metricTensorField (I := I) (G t))

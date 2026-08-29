@@ -242,8 +242,8 @@ private theorem alignedProper
   rw [ProperMetricOn.top_eq (X.obj k) P] at hcompact
   exact hcompact
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def tailMemberMaps
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (P : ∀ k, ProperMetricOn (I := I) (X.obj k)) (σ : ℕ → ℕ) :
@@ -351,8 +351,8 @@ noncomputable def tailMemberMaps
               (Geometry.Riemannian.tensor0SBundle_enorm_eq_riemannianBundle_enorm
                 (I := I) (g j) x v)) j₀ D₀ n)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def tailMemberConv
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (P : ∀ k, ProperMetricOn (I := I) (X.obj k)) (σ : ℕ → ℕ) :
@@ -553,8 +553,8 @@ noncomputable def canonicalSourceData
 end CanonicalMetricCompactness
 
 omit [I.Boundaryless] [NeZero (Module.finrank ℝ E)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 private theorem chain_limit_metric_eq_pullback
     {M : ℕ → Type u} [∀ j, MetricSpace (M j)] [∀ j, ChartedSpace H (M j)]
@@ -669,8 +669,8 @@ private theorem chain_limit_metric_eq_pullback
   rw [hFx, hmapv, hmapw]
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem covFlat_eq
     {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
@@ -710,8 +710,8 @@ private theorem covFlat_eq
     _ = metricCovDerivNorm (I := I) a h gRef
         (TopologicalSpace.Opens.inclusion hVU x) := by rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [I.Boundaryless] in
 private theorem ConvergentMetricChain.uniform_metric_bounds
@@ -869,8 +869,8 @@ private theorem ConvergentMetricChain.uniform_metric_bounds
         dsimp only [Cq]
         linarith)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 structure CanonicalMetricCompactness
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I)) where
   compactness : MetricCompactnessConclusion (I := I) X
@@ -941,8 +941,8 @@ private structure ConnectedCanonicalMetricCompactness
       canonical.compactness.limit.topology
     ConnectedSpace canonical.compactness.limit.M
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private opaque connectedCanonicalMetricCompactness
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (P : ∀ k, ProperMetricOn (I := I) (X.obj k))
@@ -1042,7 +1042,7 @@ private opaque connectedCanonicalMetricCompactness
     simp only [hchain, tailAmbientConv, ambientCGConverges,
       PointedRiemannianCGConverges.ofRestrictPullback,
       MetricCGConvergenceData.ofRestrictPullback,
-      MetricCGConvergenceData.of_derivNormSupOn,
+      MetricCGConvergenceData.ofDerivNormSupOn,
       MetricSourceData.ofRestrictPullback, MetricSourceData.ofCanonical,
       limitPointedCoc, limitPointed]
     with_unfolding_all rfl
@@ -1055,7 +1055,7 @@ private opaque connectedCanonicalMetricCompactness
     simp only [hchain, tailAmbientConv, ambientCGConverges,
       PointedRiemannianCGConverges.ofRestrictPullback,
       MetricCGConvergenceData.ofRestrictPullback,
-      MetricCGConvergenceData.of_derivNormSupOn,
+      MetricCGConvergenceData.ofDerivNormSupOn,
       CanonicalMetricCompactness.canonicalSourceData, CanonicalMetricCompactness.canonicalReferenceMetric,
       limitPointedCoc, limitPointed]
     rfl
@@ -1068,7 +1068,7 @@ private opaque connectedCanonicalMetricCompactness
       simp only [hchain, tailAmbientConv, ambientCGConverges,
         PointedRiemannianCGConverges.ofRestrictPullback,
         MetricCGConvergenceData.ofRestrictPullback,
-        MetricCGConvergenceData.of_derivNormSupOn,
+        MetricCGConvergenceData.ofDerivNormSupOn,
         limitPointedCoc, limitPointed]
       let Φc := chainAmbientMaps (I := I) j₀ (tailBallOpen b j₀) S
         (tailCenter b j₀ 0) g gTail hgTail
@@ -1108,7 +1108,7 @@ private opaque connectedCanonicalMetricCompactness
       simp only [hchain, tailAmbientConv, ambientCGConverges,
         PointedRiemannianCGConverges.ofRestrictPullback,
         MetricCGConvergenceData.ofRestrictPullback,
-        MetricCGConvergenceData.of_derivNormSupOn,
+        MetricCGConvergenceData.ofDerivNormSupOn,
         limitPointedCoc, limitPointed]
       let Φc := chainAmbientMaps (I := I) j₀ (tailBallOpen b j₀) S
         (tailCenter b j₀ 0) g gTail hgTail

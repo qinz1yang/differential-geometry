@@ -73,7 +73,7 @@ private lemma tensorInnerPointwise_chart_eq_component_sum
   rw [tensorInnerPointwise_toModel_eq_component_sum (I := I) (M := M)
     g r s α hb_chart (Sg.toSection b) (T.toSection b)]
   refine Finset.sum_congr rfl (fun P _ => Finset.sum_congr rfl (fun Q _ => ?_))
-  rw [show chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b
+  rw [show chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b
         (tensorChartBasisElement (E := E) r s P.1 P.2)
         (tensorChartBasisElement (E := E) r s Q.1 Q.2) =
       covChartMetricGram (I := I) (M := M) g r s α P Q y from by

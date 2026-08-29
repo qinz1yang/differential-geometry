@@ -447,7 +447,7 @@ theorem localizedSpacetimeRpowMoment_gain_le_of_supersolution
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc a outerTime, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     let n := Module.finrank ℝ E
     let K := CutoffProfile.derivBound ^ 2 * B / (level₂ - level₁) ^ 2
@@ -566,7 +566,7 @@ theorem nestedForwardMoserNorm_succ_le_of_supersolution
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc a (upperTime k), ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     nestedForwardMoserNorm (I := I) (M := M) (Module.finrank ℝ E)
         rho u p₀ a level upperTime (k + 1) ≤
@@ -642,7 +642,7 @@ theorem nestedForwardMoserNorm_succ_le_exp_of_supersolution
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     nestedForwardMoserNorm (I := I) (M := M) (Module.finrank ℝ E)
         rho u p₀ a (moserCutoffLevelBetween lower upper)
@@ -747,7 +747,7 @@ theorem nestedForwardMoserNorm_le_exp_finset_of_supersolution
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hexponents : ∀ k < m,
       parabolicMoserExponent (Module.finrank ℝ E) p₀ k ≤ qbar) :
@@ -805,7 +805,7 @@ theorem nestedForwardMoserNorm_le_exp_of_supersolution
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hexponents : ∀ k < m,
       parabolicMoserExponent (Module.finrank ℝ E) p₀ k ≤ qbar) :
@@ -880,7 +880,7 @@ theorem nestedForwardMoserNorm_le_reverseCost_rpow_of_supersolution
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hexponents : ∀ k < m,
       parabolicMoserExponent (Module.finrank ℝ E) p₀ k ≤ q)
@@ -949,7 +949,7 @@ theorem localizedSpacetimeRpowNorm_le_canonicalForwardMoserReverseCost_of_supers
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hexponents : ∀ k < m,
       parabolicMoserExponent (Module.finrank ℝ E) p k ≤ q)
@@ -1156,7 +1156,7 @@ theorem nestedForwardMoserNorm_interpolation_step_of_supersolution
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc a (upperTime k), ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     localizedSpacetimeRpowNorm (I := I) (M := M)
         (spatialCutoffBetween rho (level (2 * (k + 1)))
@@ -1285,7 +1285,7 @@ theorem nestedForwardMoserNorm_interpolation_step_le_exp_of_supersolution
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     localizedSpacetimeRpowNorm (I := I) (M := M)
         (spatialCutoffBetween rho
@@ -1388,7 +1388,7 @@ theorem nestedForwardMoserNorm_interpolation_le_reverseCost_rpow_of_supersolutio
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     localizedSpacetimeRpowNorm (I := I) (M := M)
         (spatialCutoffBetween rho
@@ -1578,7 +1578,7 @@ theorem exists_nested_forward_moser_reverse_holder_of_supersolution
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     ∃ m : ℕ, 0 < m ∧
       localizedSpacetimeRpowNorm (I := I) (M := M)
@@ -1669,7 +1669,7 @@ theorem localizedSpacetimeRpowNorm_le_canonicalForwardMoserReverseCost_of_supers
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hac : a ≤ c)
     (hdm : ∀ m, 0 < m → d ≤ moserUpperTimeLevel τ b m)
@@ -1751,7 +1751,7 @@ theorem nestedForwardMoserNorm_le_of_supersolution
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc a (upperTime 0), ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hexponents : ∀ k < m,
       parabolicMoserExponent (Module.finrank ℝ E) p₀ k < 1) :
@@ -1814,7 +1814,7 @@ theorem nestedForwardMoserNorm_le_rpowNorm_of_supersolution
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc a (upperTime 0), ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hexponents : ∀ k < m,
       parabolicMoserExponent (Module.finrank ℝ E) p₀ k < 1)
@@ -1902,7 +1902,7 @@ theorem exists_nested_forward_moser_iteration_of_supersolution
           (gradFun (I := I) g rho.toFun x)
           (gradFun (I := I) g rho.toFun x) ≤ B)
     (hpde : ∀ t ∈ Icc a (upperTime 0), ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hmass :
       (localizedSpacetimeMeasure (I := I) (M := M)
@@ -2073,7 +2073,7 @@ theorem forwardMoserLocalizedMass_succ_le_of_supersolution
     (hpos : ∀ t x, 0 < u t x)
     {p₀ a τ b : ℝ} (hp₀ : 0 < p₀) (haτ : a ≤ τ) (hτb : τ < b)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (k : ℕ)
     (hexponent_one :
@@ -2165,7 +2165,7 @@ theorem forwardMoserLocalizedMass_succ_le_homogeneous_of_supersolution
     (hpos : ∀ t x, 0 < u t x)
     {p₀ a τ b : ℝ} (hp₀ : 0 < p₀) (haτ : a ≤ τ) (hτb : τ < b)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (k : ℕ)
     (hexponent_one :
@@ -2197,7 +2197,7 @@ theorem forwardMoserNormalizedMass_succ_le_of_supersolution
     (hpos : ∀ t x, 0 < u t x)
     {p₀ a τ b : ℝ} (hp₀ : 0 < p₀) (haτ : a ≤ τ) (hτb : τ < b)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (k : ℕ)
     (hexponent_one :
@@ -2271,7 +2271,7 @@ theorem forwardMoserNormalizedMass_le_of_supersolution
     (hpos : ∀ t x, 0 < u t x)
     {p₀ a τ b : ℝ} (hp₀ : 0 < p₀) (haτ : a ≤ τ) (hτb : τ < b)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (m : ℕ)
     (hexponents : ∀ k < m,
@@ -2314,7 +2314,7 @@ theorem forward_moser_iteration_of_supersolution
     {q a τ b : ℝ} (hq_pos : 0 < q) (hq_one : q < 1)
     (haτ : a ≤ τ) (hτb : τ < b)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (m : ℕ) :
     let n := Module.finrank ℝ E

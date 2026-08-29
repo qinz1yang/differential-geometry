@@ -223,9 +223,9 @@ theorem base_f_chart_memWkp_two_two
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 2 2
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
         (laplacianDomainPow_succ_subset_laplacianDomain
-          (I := I) (M := M) g 1 hu_h)).f_chart
+          (I := I) (M := M) g 1 hu_h)).fChart
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   have h_decomp := base_f_chart_ae_eq_piecePreimage_add_residual_chartPulled_on_vol

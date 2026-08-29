@@ -30,7 +30,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 private def SectionSmooth (s : ℕ) (T : Π b : M, Tensor0SSpace s I b) : Prop :=
   letI _h_top : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
       (fun x : M => Tensor0SSpace s I x)) :=
-    tensor0SBundle_topology s
+    tensor0SBundleTopology s
   ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel s ℝ E)) ∞
     (fun b : M => TotalSpace.mk' (Tensor0SModel s ℝ E)
       (E := fun x : M => Tensor0SSpace s I x) b (T b))
@@ -68,20 +68,20 @@ private lemma curry_symm_cons (s : ℕ) {b : M}
     (v : TangentSpace I b) (m : Fin s → TangentSpace I b) :
     (show ContinuousMultilinearMap ℝ
         (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from
-      (tensor0S_curry (I := I) (M := M) s b).symm Φ)
+      (tensor0SCurry (I := I) (M := M) s b).symm Φ)
         (Fin.cons v m) =
       (show ContinuousMultilinearMap ℝ
           (fun _ : Fin s => TangentSpace I b) ℝ from Φ v) m := by
   classical
   set P : Tensor0SSpace (s + 1) I b :=
-    (tensor0S_curry (I := I) (M := M) s b).symm Φ
-  have hroundtrip : tensor0S_curry (I := I) (M := M) s b P = Φ :=
-    (tensor0S_curry (I := I) (M := M) s b).apply_symm_apply Φ
+    (tensor0SCurry (I := I) (M := M) s b).symm Φ
+  have hroundtrip : tensor0SCurry (I := I) (M := M) s b P = Φ :=
+    (tensor0SCurry (I := I) (M := M) s b).apply_symm_apply Φ
   have hev := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
     (T := P) (v0 := v) (vs := m)
   have hcur : (show ContinuousMultilinearMap ℝ
         (fun _ : Fin s => TangentSpace I b) ℝ from
-      tensor0S_curry (I := I) (M := M) s b P v) m =
+      tensor0SCurry (I := I) (M := M) s b P v) m =
       (show ContinuousMultilinearMap ℝ
           (fun _ : Fin (s + 1) => TangentSpace I b) ℝ from P)
         (Fin.cons v m) := hev.symm
@@ -98,7 +98,7 @@ private lemma cmlm_cons_eq_curry (s : ℕ) {x : M}
   calc
     Tensor0SSpace.eval (T x) (Fin.cons v0 m) = (T x) (Fin.cons v0 m) :=
       Tensor0SSpace.eval_eq _ _
-    _ = (tensor0S_curry (I := I) (M := M) s x (T x) v0) m :=
+    _ = (tensor0SCurry (I := I) (M := M) s x (T x) v0) m :=
       (TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
         (T := T x) (v0 := v0) (vs := m)).symm
     _ = Tensor0SSpace.eval (curriedSection I M T x v0) m :=
@@ -180,7 +180,7 @@ theorem abstractDerivEval_aux
     rw [tensor0SCovariantDerivative_succ_apply (I := I) (M := M) (s := s)
         (cov_TM := cov) (cov_s := tensor0SCovariantDerivative I M s cov) T x (X x)]
     have hcurry : Tensor0SSpace.eval
-        ((tensor0S_curry (I := I) (M := M) s x).symm
+        ((tensor0SCurry (I := I) (M := M) s x).symm
           (HomConnection.homBundleCovariantDerivativeFun I M
           (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
           (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x)))
@@ -191,12 +191,12 @@ theorem abstractDerivEval_aux
               (V 0 x) (fun i : Fin s => V i.succ x) := by
       calc
         Tensor0SSpace.eval
-            ((tensor0S_curry (I := I) (M := M) s x).symm
+            ((tensor0SCurry (I := I) (M := M) s x).symm
               (HomConnection.homBundleCovariantDerivativeFun I M
                 (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
                 (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x)))
               (Fin.cons (V 0 x) (fun i : Fin s => V i.succ x)) =
-          ((tensor0S_curry (I := I) (M := M) s x).symm
+          ((tensor0SCurry (I := I) (M := M) s x).symm
             (HomConnection.homBundleCovariantDerivativeFun I M
               (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
               (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x)))

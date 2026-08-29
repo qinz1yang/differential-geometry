@@ -1115,13 +1115,13 @@ theorem hamilton_reference_radius_window
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q) :
-    hamiltonWindow (I := I) P Q hamilton_reference_radius := by
+    hamiltonWindow (I := I) P Q hamiltonReferenceRadius := by
   rcases hsel with ⟨_hscale, _htime, _htimeMem, hprod, _hbase, _hscalarMax⟩
-  rcases hprod (hamilton_reference_radius ^ 2) with ⟨N, hN⟩
+  rcases hprod (hamiltonReferenceRadius ^ 2) with ⟨N, hN⟩
   refine ⟨N, ?_⟩
   intro i hi s hsleft hsright
   have hprod_i :
-      hamilton_reference_radius ^ 2 <= hamiltonBlowupScale (I := I) P Q i * Q.time i := hN i hi
+      hamiltonReferenceRadius ^ 2 <= hamiltonBlowupScale (I := I) P Q i * Q.time i := hN i hi
   constructor
   · linarith
   · exact hsright

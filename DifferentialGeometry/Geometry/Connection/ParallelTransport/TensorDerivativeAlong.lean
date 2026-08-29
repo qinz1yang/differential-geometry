@@ -54,7 +54,7 @@ private lemma metric_conn_model
   rw [trivToE_trivFromE (I := I) x hbase]
   rw [trivToE_trivFromE (I := I) x hbase]
   have hrepr :
-      (chartE_section_repr (I := I) x
+      (chartESectionRepr (I := I) x
           (tangentConstInChart (I := I) x v) ∘ (extChartAt I x).symm)
         =ᶠ[𝓝 (extChartAt I x x)] fun _ : E => v := by
     filter_upwards [(isOpen_extChartAt_target (I := I) x).mem_nhds htarget] with y hy

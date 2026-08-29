@@ -73,7 +73,7 @@ theorem basis_coord_eq_sum_inv_inner
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (a : Idx) (V : TangentSpace I x) :
     basis.coord a V =
       ∑ k : Idx, gInv a k * g.inner x (basis k) V := by
@@ -108,18 +108,18 @@ theorem rm13_dualCoord_apply_eq_sum_inv_flat
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (Rm13 : Tensor13At (I := I) (M := M) x)
     (a : Idx) (X Y Z : TangentSpace I x) :
-    Rm13 (dualToCotangent_gen (I := I) (basis.coord a)) (vec3 X Y Z) =
+    Rm13 (dualToCotangentGen (I := I) (basis.coord a)) (vec3 X Y Z) =
       ∑ k : Idx,
         gInv a k *
-          Rm13 (dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) (basis k)))
+          Rm13 (dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (basis k)))
             (vec3 X Y Z) := by
   have hdual :
-      dualToCotangent_gen (I := I) (basis.coord a) =
+      dualToCotangentGen (I := I) (basis.coord a) =
         ∑ k : Idx, gInv a k •
-          dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) (basis k)) := by
+          dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (basis k)) := by
     apply cotangentToDualLinear_injective_gen (I := I) (x := x)
     ext V
     simp [tangentFlatLinear_apply_gen,
@@ -142,13 +142,13 @@ theorem curvatureTraceOneFormEqRicVectorAt_of_metric_dual
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (curvatureVector : TangentSpace I x)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (hRic : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
     (hSkew : Rm13MetricSkewAt (I := I) g x (Rm13 x))
     (hAlpha :
       alpha =
-        dualToCotangent_gen (I := I)
-          ((tangentFlatLinear_gen (I := I) g x) curvatureVector)) :
+        dualToCotangentGen (I := I)
+          ((tangentFlatLinearGen (I := I) g x) curvatureVector)) :
     CurvatureTraceOneFormEqRicVectorAt (I := I) Ric Rm13 alpha basis gInv
       curvatureVector := by
   intro Y
@@ -158,23 +158,23 @@ theorem curvatureTraceOneFormEqRicVectorAt_of_metric_dual
     -(∑ i : Idx, ∑ j : Idx,
         gInv i j *
           Rm13 x
-            (dualToCotangent_gen (I := I)
-              ((tangentFlatLinear_gen (I := I) g x) curvatureVector))
+            (dualToCotangentGen (I := I)
+              ((tangentFlatLinearGen (I := I) g x) curvatureVector))
             (vec3 (basis i) Y (basis j)))
         = ∑ i : Idx, ∑ j : Idx,
             gInv i j *
               Rm13 x
-                (dualToCotangent_gen (I := I)
-                  ((tangentFlatLinear_gen (I := I) g x) (basis j)))
+                (dualToCotangentGen (I := I)
+                  ((tangentFlatLinearGen (I := I) g x) (basis j)))
                 (vec3 (basis i) Y curvatureVector) := by
           have hrewrite : ∀ i j : Idx,
               Rm13 x
-                (dualToCotangent_gen (I := I)
-                  ((tangentFlatLinear_gen (I := I) g x) curvatureVector))
+                (dualToCotangentGen (I := I)
+                  ((tangentFlatLinearGen (I := I) g x) curvatureVector))
                 (vec3 (basis i) Y (basis j)) =
               -Rm13 x
-                (dualToCotangent_gen (I := I)
-                  ((tangentFlatLinear_gen (I := I) g x) (basis j)))
+                (dualToCotangentGen (I := I)
+                  ((tangentFlatLinearGen (I := I) g x) (basis j)))
                 (vec3 (basis i) Y curvatureVector) := by
             intro i j
             exact hSkew curvatureVector (basis i) Y (basis j)
@@ -182,7 +182,7 @@ theorem curvatureTraceOneFormEqRicVectorAt_of_metric_dual
           simp_rw [mul_neg, Finset.sum_neg_distrib]
           ring
     _ = ∑ i : Idx,
-          Rm13 x (dualToCotangent_gen (I := I) (basis.coord i))
+          Rm13 x (dualToCotangentGen (I := I) (basis.coord i))
             (vec3 (basis i) Y curvatureVector) := by
           refine Finset.sum_congr rfl fun i _ => ?_
           exact (rm13_dualCoord_apply_eq_sum_inv_flat (I := I) g basis gInv hinv

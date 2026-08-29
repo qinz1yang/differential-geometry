@@ -1307,7 +1307,7 @@ theorem exists_rawConnLapComp_iteratedFDeriv_norm_sq_le_rawConnLapRhsHsContent
     exists_rawConnLapComp_iteratedFDeriv_norm_sq_le_rawConnLapRhsHsContent_perAlpha
       (I := I) (M := M) g r s k w.1 w.2.1 w.2.2
   choose Bfun hBfun_nn hBfun using hperα
-  set actF : Finset M := chartAtlasPOU_activeFinset I M with hactF_def
+  set actF : Finset M := chartAtlasPOUActiveFinset I M with hactF_def
   refine ⟨∑ α ∈ actF, ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
       ∑ Jdx : Fin s → Fin (Module.finrank ℝ E), Bfun ⟨α, Idx, Jdx⟩,
     Finset.sum_nonneg (fun α _ => Finset.sum_nonneg (fun Idx _ =>
@@ -2120,10 +2120,10 @@ theorem rawTensorConnLapSmooth_sub (g : SmoothRiemannianMetric I M) (r s : ℕ)
       (rawConnLap_smooth_witness (I := I) g T')
       (rawConnLap_smooth_witness (I := I) g ((-1 : ℝ) • T')) x
     have hLHS : (rawTensorConnLapSmooth (I := I) g r s ((-1 : ℝ) • T')).toSection x =
-        (tensorConnLaplacian_of_contMDiff (I := I) g r s ((-1 : ℝ) • T')
+        (tensorConnLaplacianOfContMDiff (I := I) g r s ((-1 : ℝ) • T')
           (rawConnLap_smooth_witness (I := I) g ((-1 : ℝ) • T'))).toSection x := rfl
     have hRHS : (rawTensorConnLapSmooth (I := I) g r s T').toSection x =
-        (tensorConnLaplacian_of_contMDiff (I := I) g r s T'
+        (tensorConnLaplacianOfContMDiff (I := I) g r s T'
           (rawConnLap_smooth_witness (I := I) g T')).toSection x := rfl
     rw [hLHS, Integral.L2.SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul,
       Pi.smul_apply, hRHS, hsmul]
@@ -2137,13 +2137,13 @@ theorem rawTensorConnLapSmooth_sub (g : SmoothRiemannianMetric I M) (r s : ℕ)
       (rawConnLap_smooth_witness (I := I) g ((-1 : ℝ) • T'))
       (rawConnLap_smooth_witness (I := I) g (T + (-1 : ℝ) • T')) x
     have hLHS : (rawTensorConnLapSmooth (I := I) g r s (T + (-1 : ℝ) • T')).toSection x =
-        (tensorConnLaplacian_of_contMDiff (I := I) g r s (T + (-1 : ℝ) • T')
+        (tensorConnLaplacianOfContMDiff (I := I) g r s (T + (-1 : ℝ) • T')
           (rawConnLap_smooth_witness (I := I) g (T + (-1 : ℝ) • T'))).toSection x := rfl
     have hRHS₁ : (rawTensorConnLapSmooth (I := I) g r s T).toSection x =
-        (tensorConnLaplacian_of_contMDiff (I := I) g r s T
+        (tensorConnLaplacianOfContMDiff (I := I) g r s T
           (rawConnLap_smooth_witness (I := I) g T)).toSection x := rfl
     have hRHS₂ : (rawTensorConnLapSmooth (I := I) g r s ((-1 : ℝ) • T')).toSection x =
-        (tensorConnLaplacian_of_contMDiff (I := I) g r s ((-1 : ℝ) • T')
+        (tensorConnLaplacianOfContMDiff (I := I) g r s ((-1 : ℝ) • T')
           (rawConnLap_smooth_witness (I := I) g ((-1 : ℝ) • T'))).toSection x := rfl
     rw [hLHS, Integral.L2.SmoothCcTensor.toSection_add, ContMDiffSection.coe_add,
       Pi.add_apply, hRHS₁, hRHS₂, hsum]
@@ -2183,7 +2183,7 @@ theorem exists_l2Norm_le_tensorPouSobolevHsNorm_zero
   have hNormSq_toReal : (tensorPouSobolevHsNormSq (I := I) (M := M) g 0 T).toReal = N ^ 2 := by
     unfold tensorPouSobolevHsNormSq
     rw [ENNReal.toReal_pow]
-  set S : ℝ := ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
+  set S : ℝ := ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M),
       ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
         ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
           ((MeasureTheory.eLpNorm

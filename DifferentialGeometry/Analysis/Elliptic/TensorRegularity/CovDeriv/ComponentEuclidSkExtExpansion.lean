@@ -58,10 +58,10 @@ private theorem chartPushedRaw_eqOn_covDerivComponentEuclid_uniform
   let _h_top : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   let _h_fib : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   obtain ⟨S_k_ext, U, hU_open, hb₀_U, hU_sub_good, hU_eq⟩ :=
     covApply_covRS_chartBasis_globalSmoothExtension
       (I := I) (M := M) g r s α T₀ k (b₀ := b₀) hb₀

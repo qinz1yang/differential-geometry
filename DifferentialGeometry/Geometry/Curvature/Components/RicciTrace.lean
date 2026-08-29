@@ -24,7 +24,7 @@ theorem metricInverseInBasis_of_orthonormal
     (g : SmoothRiemannianMetric I M) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (hON : forall i j, g.inner x (basis i) (basis j) = if i = j then 1 else 0) :
-    MetricInverseInBasis_gen (I := I) g x basis (fun a k => if a = k then 1 else 0) := by
+    MetricInverseInBasisGen (I := I) g x basis (fun a k => if a = k then 1 else 0) := by
   classical
   intro i j
   constructor <;> simp [hON]
@@ -33,7 +33,7 @@ theorem ricciFromRm13_comp_eq_rm04_trace
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (Rm13 : Tensor13At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (hLower : Rm04LowersRm13At (I := I) g x Rm13 Rm04)
@@ -42,14 +42,14 @@ theorem ricciFromRm13_comp_eq_rm04_trace
       ∑ a : Idx, ∑ k : Idx,
         gInv a k * rm04CompAt (I := I) basis Rm04 a i j k := by
   rw [ricciCompAt_apply]
-  change ((contract_trace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2 x Rm13)
+  change ((contractTrace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2 x Rm13)
       (scalarOne0S (I := I) x)) (vec2 (basis i) (basis j)) = _
   rw [contract_trace13_component_basis (I := I) basis Rm13 i j]
   refine Finset.sum_congr rfl fun a _ => ?_
   have hdual :
-      dualToCotangent_gen (I := I) (basis.coord a) =
+      dualToCotangentGen (I := I) (basis.coord a) =
         ∑ k : Idx, gInv a k •
-          dualToCotangent_gen (I := I) ((tangentFlatLinear_gen (I := I) g x) (basis k)) := by
+          dualToCotangentGen (I := I) ((tangentFlatLinearGen (I := I) g x) (basis k)) := by
     apply cotangentToDualLinear_injective_gen (I := I) (x := x)
     ext V
     simp [tangentFlatLinear_apply_gen,
@@ -68,7 +68,7 @@ theorem ricciComp_eq_rm04_trace_of_rm13
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (Ric : Tensor02At (I := I) (M := M) x)
     (Rm13 : Tensor13At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)
@@ -85,7 +85,7 @@ theorem ricciComp_eq_rm04_trace_of_rm13_section
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))
@@ -111,7 +111,7 @@ theorem ricci_diag_eq_sum_rm04_diag_of_orthonormal
     Ric x (vec2 (basis i) (basis j)) =
       ∑ a, Rm04 x (vec4 (basis a) (basis i) (basis j) (basis a)) := by
   classical
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (fun a k => if a = k then 1 else 0) :=
     metricInverseInBasis_of_orthonormal (I := I) g basis hON
   have hcomp :=
@@ -128,8 +128,8 @@ theorem ricciCompAt_eq_contractTrace_of_realizes
     (hRic : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
     (i j : Idx) :
     ricciCompAt (I := I) basis (Ric x) i j =
-      componentRS_gen (I := I) basis
-        (contract_trace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2 x (Rm13 x))
+      componentRSGen (I := I) basis
+        (contractTrace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2 x (Rm13 x))
         Fin.elim0 (slots2 i j) := by
   rw [hRic x]
   exact ricciCompAt_eq_contractTrace (I := I) basis (Rm13 x) i j
@@ -190,7 +190,7 @@ theorem ricciFirstTraceAt_of_rm13
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (Ric : Tensor02At (I := I) (M := M) x)
     (Rm13 : Tensor13At (I := I) (M := M) x)
     (Rm04 : Tensor04At (I := I) (M := M) x)
@@ -209,7 +209,7 @@ theorem ricciFirstTraceAt_of_rm13_section
     (g : SmoothRiemannianMetric I M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (Ric : Tensor02Section (I := I) (M := M))
     (Rm13 : Tensor13Section (I := I) (M := M))
     (Rm04 : Tensor04Section (I := I) (M := M))

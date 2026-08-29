@@ -159,7 +159,7 @@ theorem wkpNormChart_eq_finset_sum
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
     (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p) (u : M → ℝ) :
     wkpNormChart (I := I) (M := M) k p u =
-      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
               (I := I) (M := M),
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) k p
@@ -175,7 +175,7 @@ theorem wkpNormChart_eq_finset_sum
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α u)
       (chartTargetEuclid (I := I) (M := M) α) with hf_def
   have hf_zero_off : ∀ α : M, α ∉
-      DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+      DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
         (I := I) (M := M) → f α = 0 := by
     intro α hα
     have hρ_zero : ∀ x : M, (DifferentialGeometry.Integral.Measure.chartAtlasPOU

@@ -375,7 +375,7 @@ theorem coordGInvMdiff
     (k l : CoordinateIdx (𝕜 := Real) E) :
     MDifferentiableAt I 𝓘(Real, Real)
       (fun y : M =>
-        inverseMetricFlatModelInChart_component (I := I) g x₀ k l
+        inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
           (extChartAt I x₀ y)) x := by
   let e := coordinateTrivializationAt (I := I) x₀
   let b := Module.finBasis Real E
@@ -388,7 +388,7 @@ theorem coordGInvMdiff
       (by simp)
   have heq :
       (fun y : M =>
-        inverseMetricFlatModelInChart_component (I := I) g x₀ k l
+        inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
           (extChartAt I x₀ y))
         =ᶠ[nhds x]
       fun y : M => localInvMetricCoeff (I := I) e b g k l y := by
@@ -401,7 +401,7 @@ theorem coordGInvMdiff
       ext v w
       rw [flatChart_apply (I := I) g x₀ hyCoord v w]
       rw [localMetricFlatBasis_eq_inner (I := I) e b g hy v w]
-    unfold inverseMetricFlatModelInChart_component localInvMetricCoeff
+    unfold inverseMetricFlatModelInChartComponent localInvMetricCoeff
     rw [hflat]
     simp [e, b, coordCLM]
   exact hlocal.congr_of_eventuallyEq heq

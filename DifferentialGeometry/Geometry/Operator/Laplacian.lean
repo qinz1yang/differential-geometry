@@ -20,19 +20,19 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 
-def Δ_g [I.Boundaryless]
+def ΔG [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯) : M → ℝ :=
-  divergence_g (I := I) g (grad_g (I := I) g f)
+  divergenceG (I := I) g (gradG (I := I) g f)
 
 @[simp] lemma Δ_g_def [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯) (x : M) :
-    Δ_g (I := I) g f x =
-      divergence_g (I := I) g (grad_g (I := I) g f) x := rfl
+    ΔG (I := I) g f x =
+      divergenceG (I := I) g (gradG (I := I) g f) x := rfl
 
 theorem Δ_g_contMDiff [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; ℝ⟯) :
-    ContMDiff I 𝓘(ℝ, ℝ) ∞ (Δ_g (I := I) g f) :=
-  divergence_g_contMDiff (I := I) g (grad_g (I := I) g f)
+    ContMDiff I 𝓘(ℝ, ℝ) ∞ (ΔG (I := I) g f) :=
+  divergence_g_contMDiff (I := I) g (gradG (I := I) g f)
 
 lemma gradFun_add
     (g : SmoothRiemannianMetric I M)
@@ -69,10 +69,10 @@ lemma grad_g_add_apply [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (f h : C^∞⟮I, M; ℝ⟯)
     (x : M) :
-    ((grad_g (I := I) g (f + h) :
+    ((gradG (I := I) g (f + h) :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
-      ((grad_g (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) +
-      ((grad_g (I := I) g h : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
+      ((gradG (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) +
+      ((gradG (I := I) g h : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
   rw [grad_g_apply, grad_g_apply, grad_g_apply]
   exact gradFun_add (I := I) g (f.contMDiff.mdifferentiable (by simp) x)
     (h.contMDiff.mdifferentiable (by simp) x)
@@ -80,18 +80,18 @@ lemma grad_g_add_apply [I.Boundaryless]
 theorem Δ_g_add [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (f h : C^∞⟮I, M; ℝ⟯)
     (x : M) :
-    Δ_g (I := I) g (f + h) x = Δ_g (I := I) g f x + Δ_g (I := I) g h x := by
+    ΔG (I := I) g (f + h) x = ΔG (I := I) g f x + ΔG (I := I) g h x := by
   classical
-  have hsection_eq : (grad_g (I := I) g (f + h) :
+  have hsection_eq : (gradG (I := I) g (f + h) :
       Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) =
-      (grad_g (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) +
-        (grad_g (I := I) g h : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) := by
+      (gradG (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) +
+        (gradG (I := I) g h : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) := by
     ext y
     rw [ContMDiffSection.coe_add]
-    change ((grad_g (I := I) g (f + h) :
+    change ((gradG (I := I) g (f + h) :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y) =
-        ((grad_g (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y) +
-          ((grad_g (I := I) g h : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y)
+        ((gradG (I := I) g f : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y) +
+          ((gradG (I := I) g h : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y)
     exact grad_g_add_apply (I := I) g f h y
   rw [Δ_g_def, Δ_g_def, Δ_g_def]
   rw [hsection_eq]
@@ -104,10 +104,10 @@ lemma gradFun_const
   exact mfderiv_const
 
 theorem Δ_g_const [I.Boundaryless] (g : SmoothRiemannianMetric I M) (c : ℝ) (x : M) :
-    Δ_g (I := I) g
+    ΔG (I := I) g
       (ContMDiffMap.const (I := I) (I' := 𝓘(ℝ, ℝ)) (M := M) c) x = 0 := by
   classical
-  have hsection_eq : (grad_g (I := I) g
+  have hsection_eq : (gradG (I := I) g
       (ContMDiffMap.const (I := I) (I' := 𝓘(ℝ, ℝ)) (M := M) c) :
       Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) =
       (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) := by

@@ -83,7 +83,7 @@ private theorem jointRS_smul {r q : ℕ} {S : Set ℝ} (c : ℝ)
       (fun p : M × ℝ => TotalSpace.mk' (TensorRSModel r q ℝ E)
         (E := fun z : M => TensorRSSpace r q I z) p.1 (c • A p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let _ := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r q
+  let _ := tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r q
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩

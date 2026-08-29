@@ -447,7 +447,7 @@ private theorem fderivWithin_tensorRS_eval_modelSlots_center_eq_mvfderiv {r s : 
           (extChartAt I x₀ x₀)) =
       mvfderiv (I := I) (fun p : M => (T p (β p)) (fun a : Fin s => V a p))
         x₀ (X x₀) := by
-  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  let := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   let : NormedSpace 𝕜 (Tensor0SModel r 𝕜 E) := inferInstance
   let φ : E -> 𝕜 :=
     fun y : E =>
@@ -497,10 +497,10 @@ noncomputable def localCovariantDerivTensor0SAt (r : ℕ)
     (β : (x : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) r x)
     (x₀ : M) : Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r x₀ := by
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  letI := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   exact (trivializationAt (Tensor0SModel r 𝕜 E)
       (fun x => Tensor0SSpace r I x) x₀).symm x₀
-    (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r
+    (covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E) r
       (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
       (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
       (tensor0SModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I)
@@ -539,7 +539,7 @@ theorem localCovariantDerivTensor0SAt_eval_moving_raw {r : ℕ}
           β x₀
             (Function.update (fun b : Fin r => V b x₀) a
               ((cov (V a) x₀) (X x₀))) := by
-  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  let := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   classical
   let y₀ : E := extChartAt I x₀ x₀
   let Xmodel : E :=
@@ -586,14 +586,14 @@ theorem localCovariantDerivTensor0SAt_eval_moving_raw {r : ℕ}
       (localCovariantDerivTensor0SAt
         (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov X β x₀)
         (fun a : Fin r => V a x₀) =
-      (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r
+      (covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E) r
         (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
         (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
         βm (Set.range I) y₀) slots := by
     let eβ := trivializationAt (Tensor0SModel r 𝕜 E)
       (fun x => Tensor0SSpace r I x) x₀
     let Mβ : Tensor0SModel r 𝕜 E :=
-      covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r
+      covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E) r
         (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
         (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
         βm (Set.range I) y₀
@@ -646,7 +646,7 @@ theorem localCovariantDerivTensor0SAt_eval_moving_raw {r : ℕ}
       (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r cov X β x₀)
       (fun a : Fin r => V a x₀)
         =
-      (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r
+      (covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E) r
         (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
         (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
         βm (Set.range I) y₀) slots := hleft_model
@@ -680,7 +680,7 @@ private theorem tensorRSModelInChart_apply_modelSlots_center {r s : ℕ}
     (A : (x : M) -> TensorRSSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) r s x)
     (βm : Tensor0SModel r 𝕜 E) (slots : Fin s -> E) (x₀ : M) :
-    letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+    letI := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
     (tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         r s x₀ A (extChartAt I x₀ x₀) βm) slots =
       (A x₀
@@ -689,7 +689,7 @@ private theorem tensorRSModelInChart_apply_modelSlots_center {r s : ℕ}
         (fun a : Fin s =>
           (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL 𝕜 x₀
             (slots a)) := by
-  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  let := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   rw [tensorRSModelInChart, extChartAt_to_inv]
   exact TensorRSSpace.trivializationAt_apply
     (𝕜 := 𝕜) (I := I) (x₀ := x₀) (x := x₀) r s
@@ -715,7 +715,7 @@ private theorem tensorRSModelInChart_apply_update_modelOutputSlot_center {r s : 
           (tangentFieldModelInChart (𝕜 := 𝕜) (I := I) x₀ W
             (extChartAt I x₀ x₀))) =
       (A x₀ (β x₀)) (Function.update (fun b : Fin s => V b x₀) a (W x₀)) := by
-  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  let := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   rw [tensorRSModelInChart_apply_modelSlots_center]
   have hβ :
       (trivializationAt (Tensor0SModel r 𝕜 E)
@@ -881,7 +881,7 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
           (T x₀ (β x₀))
             (Function.update (fun b : Fin s => V b x₀) a
               ((cov (V a) x₀) (X x₀))) := by
-  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
+  let := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r
   classical
   let y₀ : E := extChartAt I x₀ x₀
   let Xmodel : E :=
@@ -954,7 +954,7 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
   have hleft_model :
       (nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         r s cov X T x₀) (β x₀) (fun a : Fin s => V a x₀) =
-        (covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
+        (covariantDerivTensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
           (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
           (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
           Tm (Set.range I) y₀ (βm y₀)) slots := by
@@ -981,7 +981,7 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
     have hmodel :
         tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
             r s x₀ F y₀ =
-          covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
+          covariantDerivTensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
             (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
             (connectionEndomorphismInChart
               (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
@@ -990,8 +990,8 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
       dsimp only [y₀]
       rw [extChartAt_to_inv]
       dsimp only [F]
-      unfold nablaRSFun TensorLieDeriv.mcovariantDeriv_tensorRSFromConnection
-        TensorLieDeriv.mcovariantDeriv_tensorRSWithinFromConnection
+      unfold nablaRSFun TensorLieDeriv.mcovariantDerivTensorRSFromConnection
+        TensorLieDeriv.mcovariantDerivTensorRSWithinFromConnection
       rw [TensorLieDeriv.modelAt_mcovRS]
       simp only [Tm, Set.preimage_univ, Set.univ_inter]
       rfl
@@ -1002,14 +1002,14 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
             (I := I) (M := M) r s x₀ F y₀ (βm y₀)) slots := by
             rw [tensorRSModelInChart_apply_modelSlots_center,
               hβcenter, hslots_center]
-      _ = (covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
+      _ = (covariantDerivTensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
           (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
           (connectionEndomorphismInChart
             (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
           Tm (Set.range I) y₀ (βm y₀)) slots := by rw [hmodel]
   have hinput :
       (Tm y₀
-        (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r
+        (covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E) r
           (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
           (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
           βm (Set.range I) y₀)) slots =
@@ -1019,7 +1019,7 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
     have h := tensorRSModelInChart_apply_modelSlots_center
       (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (r := r) (s := s) (A := fun x => T x)
-      (βm := covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r
+      (βm := covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E) r
         (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
         (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
         βm (Set.range I) y₀)
@@ -1048,7 +1048,7 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
     (nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       r s cov X T x₀) (β x₀) (fun a : Fin s => V a x₀)
         =
-      (covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
+      (covariantDerivTensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
           (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
           (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
           Tm (Set.range I) y₀ (βm y₀)) slots := hleft_model
@@ -1056,7 +1056,7 @@ theorem nablaRSFun_eval_moving_raw {r s : ℕ}
       fderivWithin 𝕜 (fun y : E => (Tm y (βm y)) (fun a : Fin s => Vm a y))
           (Set.range I) y₀ Xmodel -
         (Tm y₀
-          (covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) r
+          (covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E) r
             (vectorFieldModelPullbackWithin (I := I) x₀ (fun x => X x))
             (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
             βm (Set.range I) y₀))

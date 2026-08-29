@@ -96,7 +96,7 @@ private lemma unitModel_operatorFieldApplication_cometricDoubleTrace_eq_dualTrac
       ∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ (p + 2) W x
           (Fin.cons (cometricLmodel (I := I) g₀ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
   rw [unitModel, operatorFieldApplication_toSection]
@@ -202,7 +202,7 @@ private lemma toModel_contract_covariant_eval (s : ℕ) (b : M) (v : TangentSpac
     (A : TensorRSSpace 0 (s + 1) I b) (D : Tensor0SSpace 0 I b) (m : Fin s → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace s I b from
-          Tensor0SBundle.contract_covariant 0 s b v A) D) m =
+          Tensor0SBundle.contractCovariant 0 s b v A) D) m =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (s + 1) I b from A) D)
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b v) m) := rfl
@@ -226,7 +226,7 @@ theorem covDivergence_eq_cometricDoubleTrace_apply_covGrad
   rw [show ∑ k : Fin (Module.finrank ℝ E),
       unitModel (I := I) (M := M) g₀ (s + 2) (covGrad (I := I) (M := M) g₀ 0 (s + 1) V) x
         (Fin.cons (cometricLmodel (I := I) g₀ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           (Fin.cons ((Module.finBasis ℝ E) k) v)) =
       ∑ i : Fin (Module.finrank ℝ E),
@@ -460,7 +460,7 @@ private lemma unitModel_operatorFieldApplication_slotExtend_slotExtend_cometric
         unitModel (I := I) (M := M) g₀ (t + 4) U x
           (Fin.cons a (Fin.cons b
             (Fin.cons (cometricLmodel (I := I) g₀ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)))
               (Fin.cons ((Module.finBasis ℝ E) k) v)))) := by
   rw [unitModel, operatorFieldApplication_toSection]
@@ -534,7 +534,7 @@ theorem rawTensorConnLapSmooth_cometricDoubleTrace_apply_comm
                 (tangentSpaceModelContinuousLinearEquiv (I := I) x
                   (smoothOrthoFrame (I := I) g₀ x i x))
                 (Fin.cons (cometricLmodel (I := I) g₀ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)))
                   (Fin.cons ((Module.finBasis ℝ E) k) v)))) := by
     intro i
@@ -549,7 +549,7 @@ theorem rawTensorConnLapSmooth_cometricDoubleTrace_apply_comm
       unitModel (I := I) (M := M) g₀ (t + 2)
           (rawTensorConnLapSmooth (I := I) g₀ 0 (t + 2) W) x
           (Fin.cons (cometricLmodel (I := I) g₀ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) =
         ∑ i : Fin (Module.finrank ℝ E),
@@ -562,13 +562,13 @@ theorem rawTensorConnLapSmooth_cometricDoubleTrace_apply_comm
                 (tangentSpaceModelContinuousLinearEquiv (I := I) x
                   (smoothOrthoFrame (I := I) g₀ x i x))
                 (Fin.cons (cometricLmodel (I := I) g₀ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)))
                   (Fin.cons ((Module.finBasis ℝ E) k) v)))) := by
     intro k
     exact unitModel_rawConnLap_eq_frame_sum_gen (I := I) g₀ (t + 2) W x
       (Fin.cons (cometricLmodel (I := I) g₀ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))
         (Fin.cons ((Module.finBasis ℝ E) k) v))
   rw [Finset.sum_congr rfl (fun i _ => hlhs i), Finset.sum_congr rfl (fun k _ => hrhs k)]

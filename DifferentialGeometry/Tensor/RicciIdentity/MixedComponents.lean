@@ -47,7 +47,7 @@ theorem contractUpper_components_eq_component_applyInput
     contractUpper
         (fun L : Fin r -> Idx => component0S (I := I) basis theta L)
         (fun L : Fin r -> Idx => fun K : Fin s -> Idx =>
-          componentRS_gen (I := I) basis T L K) K =
+          componentRSGen (I := I) basis T L K) K =
       component0S (I := I) basis (T theta) K := by
   classical
   rw [Tensor0SBundle.componentRS_apply_input_eq_sum (I := I) basis T theta K]
@@ -396,7 +396,7 @@ theorem coordDeriv_applyInput_eq_contractUpper
     (x₀ : M) (K : Fin s -> DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :
     DifferentialGeometry.Tensor.Coordinates.coordDeriv0SAt (I := I) (fun x => X x) x₀
         (fun y : M =>
-          tensorRSField_applyInput (𝕜 := Real) (E := E) (H := H) (I := I)
+          tensorRSFieldApplyInput (𝕜 := Real) (E := E) (H := H) (I := I)
             (M := M) (∞ : WithTop ℕ∞) T theta y)
         K =
       contractUpper

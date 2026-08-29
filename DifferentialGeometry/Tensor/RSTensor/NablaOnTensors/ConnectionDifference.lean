@@ -242,7 +242,7 @@ theorem componentRS_connectionDifferenceTensorAt
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (i j k : Idx) :
-    componentRS_gen (I := I) basis (connectionDifferenceTensorAt (I := I) cov cov' x)
+    componentRSGen (I := I) basis (connectionDifferenceTensorAt (I := I) cov cov' x)
         (fun _ : Fin 1 => k)
         (fun q : Fin 2 => if q = 0 then i else j) =
       basis.coord k

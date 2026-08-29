@@ -27,7 +27,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance tensor0SModelNormedSpace_local {s : ℕ} :
     NormedSpace ℝ (Tensor0SModel s ℝ E) :=
-  Tensor0SBundle.tensor0SModel_normedSpace (𝕜 := Real) (E := E) s
+  Tensor0SBundle.tensor0SModelNormedSpace (𝕜 := Real) (E := E) s
 
 private local instance tensor0SModelNormedAddCommGroup_local {s : ℕ} :
     NormedAddCommGroup (Tensor0SModel s ℝ E) := inferInstance
@@ -43,7 +43,7 @@ noncomputable def partialEval0SField {s : ℕ}
         (fun b => nablaT b) (fun b => Y b) y)
       (Tensor0SPartialEval.contMDiff_tensor0SPartialEval (I := I) (M := M) (s := s)
         (T := fun b => nablaT b) nablaT.contMDiff (Y := fun b => Y b) Y.contMDiff) :
-    letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s
+    letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s
     Cₛ^∞⟮I; Tensor0SModel s Real E, (fun x : M => Tensor0SSpace s I x)⟯)
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
@@ -53,7 +53,7 @@ omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (y : M) :
     partialEval0SField (I := I) nablaT Y y =
-      tensor0S_curry (I := I) (𝕜 := Real) (M := M) s y (nablaT y) (Y y) := rfl
+      tensor0SCurry (I := I) (𝕜 := Real) (M := M) s y (nablaT y) (Y y) := rfl
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 theorem inner0S_mdiff {s : ℕ}
@@ -70,7 +70,7 @@ theorem inner0S_mdiff {s : ℕ}
     DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x with hframe
   set U : M -> Idx -> Idx -> Real :=
     fun y i j =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
         (I := I) g x i j (extChartAt I x y) with hU
   set cA : M -> (Fin s -> Idx) -> Real :=
     fun y I0 => A y (fun a => frame (I0 a) y) with hcAdef
@@ -103,11 +103,11 @@ theorem inner0S_mdiff {s : ℕ}
       [(DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet_open (I := I) x).mem_nhds hx]
       with y hy
     rw [inner0S_eq_coord (I := I) g y s
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x hy)
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x hy)
       (U y) (DifferentialGeometry.Tensor.Coordinates.gInvBasisAt (I := I) g x hy)
       (A y) (B y)]
     rw [← coordContract_eq_coordInner0S (I := I) (U y) (A y) (B y)
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x hy)]
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x hy)]
     refine congrArg₂ (fun f h => coordContract (U y) f h) ?_ ?_
     · funext I0
       simp only [tensor0SComponent, cA, frame]
@@ -182,7 +182,7 @@ theorem nabla_partialEval0S {s : ℕ}
     nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         s cov X (partialEval0SField (I := I) nablaT Y) x =
       freezeFirstTwoArgs0S (I := I) (nabla2T x) (X x) (Y x) +
-        tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaT x)
+        tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaT x)
           ((cov (fun y : M => Y y) x) (X x)) := by
   classical
   set B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -281,7 +281,7 @@ theorem nabla_partialEval0S {s : ℕ}
     rw [freezeFirstTwoArgs0S_apply, hV3x]
     congr 1
   have hcurry :
-      tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaT x)
+      tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaT x)
           ((cov (fun y : M => Y y) x) (X x)) v =
         nablaT x (Fin.cons ((cov (fun p : M => Y p) x) (X x)) v) :=
     tensor0S_curry_apply_cons (I := I) s (nablaT x)
@@ -289,7 +289,7 @@ theorem nabla_partialEval0S {s : ℕ}
   change nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       s cov X B x v =
     (freezeFirstTwoArgs0S (I := I) (nabla2T x) (X x) (Y x) +
-        tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaT x)
+        tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaT x)
           ((cov (fun y : M => Y y) x) (X x))) v
   rw [Tensor0SSpace.add_apply (I := I) s x]
   rw [hLHS, hfreeze, hcurry, hRHStot]
@@ -299,7 +299,7 @@ omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem freeze0S_deriv {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : IsMetricCompatible_gen (I := I) cov g)
+    (hmc : IsMetricCompatibleGen (I := I) cov g)
     (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (nablaT : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -320,7 +320,7 @@ theorem freeze0S_deriv {s : ℕ}
         (inner0S (I := I) g x s
             (freezeFirstTwoArgs0S (I := I) (nabla2T x) (X x) (Y x)) (T x) +
           inner0S (I := I) g x s
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaT x)
+            (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaT x)
               ((cov (fun y : M => Y y) x) (X x))) (T x) +
           inner0S (I := I) g x s
             (partialEval0SField (I := I) nablaT Y x)
@@ -369,7 +369,7 @@ theorem freeze0S_deriv {s : ℕ}
         (inner0S (I := I) g x s
             (freezeFirstTwoArgs0S (I := I) (nabla2T x) (X x) (Y x)) (T x) +
           inner0S (I := I) g x s
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaT x)
+            (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaT x)
               ((cov (fun y : M => Y y) x) (X x))) (T x) +
           inner0S (I := I) g x s
             (partialEval0SField (I := I) nablaT Y x)
@@ -380,7 +380,7 @@ omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem du_norm0S {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : IsMetricCompatible_gen (I := I) cov g)
+    (hmc : IsMetricCompatibleGen (I := I) cov g)
     (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (nablaT : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -394,14 +394,14 @@ theorem du_norm0S {s : ℕ}
     {x : M} (W : TangentSpace I x) :
     du x (fun _ : Fin 1 => W) =
       2 * inner0S (I := I) g x s
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaT x) W) (T x) := by
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaT x) W) (T x) := by
   obtain ⟨Wsec, hWsec⟩ :=
     ContMDiffSection.exists_eq_at_gen
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x W
   have hAderiv :
       nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           s cov Wsec T x =
-        tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaT x) (Wsec x) := by
+        tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaT x) (Wsec x) := by
     ext v
     rw [tensor0S_curry_apply_cons]
     exact (TotalNabla0SRealizes.apply (I := I) hA Wsec x v).symm
@@ -422,14 +422,14 @@ theorem du_norm0S {s : ℕ}
             s cov Wsec T x) (T x) :=
           normSq0S_nabla (I := I) cov g hmc T Wsec x
     _ = 2 * inner0S (I := I) g x s
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaT x) W) (T x) := by
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaT x) W) (T x) := by
           rw [hAderiv, hWsec]
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
 theorem normSq0S_du_le {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : IsMetricCompatible_gen (I := I) cov g)
+    (hmc : IsMetricCompatibleGen (I := I) cov g)
     (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (nablaT : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -455,7 +455,7 @@ theorem normSq0S_du_le {s : ℕ}
         (component0S (I := I) basis (du x) (fun _ : Fin 1 => i)) ^ 2) =
         ∑ i,
           (2 * inner0S (I := I) g x s
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x
+            (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x
               (nablaT x) (basis i)) (T x)) ^ 2 := by
           apply Finset.sum_congr rfl
           intro i _
@@ -464,30 +464,30 @@ theorem normSq0S_du_le {s : ℕ}
     _ <= ∑ i,
           4 *
             (normSq0S (I := I) g x s
-              (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x
+              (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x
                 (nablaT x) (basis i)) *
               normSq0S (I := I) g x s (T x)) := by
           apply Finset.sum_le_sum
           intro i _
           calc
             (2 * inner0S (I := I) g x s
-                (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x
+                (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x
                   (nablaT x) (basis i)) (T x)) ^ 2 =
                 4 * (inner0S (I := I) g x s
-                  (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x
+                  (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x
                     (nablaT x) (basis i)) (T x)) ^ 2 := by ring
             _ <= 4 *
                 (normSq0S (I := I) g x s
-                    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x
+                    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x
                       (nablaT x) (basis i)) *
                   normSq0S (I := I) g x s (T x)) :=
               mul_le_mul_of_nonneg_left
                 (inner0S_sq_le_mul (I := I) g x s
-                  (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x
+                  (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x
                     (nablaT x) (basis i)) (T x)) (by norm_num)
     _ = 4 * normSq0S (I := I) g x s (T x) *
           ∑ i, normSq0S (I := I) g x s
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x
+            (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x
               (nablaT x) (basis i)) := by
           rw [Finset.mul_sum]
           apply Finset.sum_congr rfl
@@ -502,7 +502,7 @@ theorem hess_norm0S {s : ℕ}
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : IsMetricCompatible_gen (I := I) cov g)
+    (hmc : IsMetricCompatibleGen (I := I) cov g)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)
@@ -611,7 +611,7 @@ theorem tensorNormBochnerSplit_mc {s : ℕ}
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : IsMetricCompatible_gen (I := I) cov g)
+    (hmc : IsMetricCompatibleGen (I := I) cov g)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
     (hinv : MetricInverseInBasis (I := I) g x basis gInv)

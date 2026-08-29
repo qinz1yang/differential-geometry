@@ -43,8 +43,8 @@ private theorem exp_quarter_le {x : Real} (hx0 : 0 ≤ x) (hx : x ≤ 1 / 4) :
       apply (div_le_iff₀ (by linarith)).2
       nlinarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRedLen_scale
     {F : Type uE} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [FiniteDimensional Real F]
@@ -193,8 +193,8 @@ theorem lRedLen_scale
     _ = -2 * b ^ 2 * K * b := by ring
     _ ≤ lRegAction S (time : Real) alpha 0 b := haction
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRedDen_scale
     {F : Type uE} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [FiniteDimensional Real F]
@@ -248,8 +248,8 @@ private theorem src_norm_superlevel_measurable
   apply measurableSet_lt measurable_const
   fun_prop
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRedJac_ball_le
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (time : RealTimeInterval.FlowTime D) {rho : Real} (hrho : 0 < rho)
@@ -483,8 +483,8 @@ theorem ballVol_move_le
           (Real.sqrt ((4 / 3 : Real) ^ Module.finrank Real E)) * B.volume := by
       rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem redVolume_ball_eta [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (time : RealTimeInterval.FlowTime D) {rho : Real} (hrho : 0 < rho)
@@ -643,8 +643,8 @@ theorem redVolume_ball_eta [ConnectedSpace M]
             B.volume) +
         eta := add_le_add hsmall' htail'
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem redVolume_ball_le [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (time : RealTimeInterval.FlowTime D) {rho : Real} (hrho : 0 < rho)

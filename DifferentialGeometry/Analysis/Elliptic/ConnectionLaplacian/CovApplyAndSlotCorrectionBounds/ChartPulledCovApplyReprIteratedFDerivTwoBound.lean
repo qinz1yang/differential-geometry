@@ -42,7 +42,7 @@ private lemma intrinsicPiece_contDiffAt_two
     ContDiffAt ℝ 2
       (fun y : E =>
         fderiv ℝ
-          (tensorRSChartE_section_repr (I := I) r s α
+          (tensorRSChartESectionRepr (I := I) r s α
             (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm) y
           (trivToE (I := I) α ((extChartAt I α).symm y)
             (B.toFun ((extChartAt I α).symm y))))
@@ -53,12 +53,12 @@ private lemma intrinsicPiece_contDiffAt_two
   have hU_open : IsOpen U := chartLeviCivitaGoodSet_image_isOpen (I := I) α
   have hx_mem : extChartAt I α b ∈ U := ⟨b, hb_good, rfl⟩
   have hF_cd : ContDiffOn ℝ ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm) U :=
     R_contDiffOn_goodSet (I := I) (M := M) g r s α T
   have h_le : (∞ : WithTop ℕ∞) + 1 ≤ ∞ := by rw [ENat.coe_top_add_one]
   have hc_cd : ContDiffOn ℝ ∞
-      (fderiv ℝ (tensorRSChartE_section_repr (I := I) r s α
+      (fderiv ℝ (tensorRSChartESectionRepr (I := I) r s α
           (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm)) U :=
     hF_cd.fderiv_of_isOpen hU_open h_le
   have hB_total : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -68,15 +68,15 @@ private lemma intrinsicPiece_contDiffAt_two
       (T% (B.toFun : Π x : M, TangentSpace I x))
       (chartLeviCivitaGoodSet (I := I) α) := hB_total.contMDiffOn
   have hu_cd : ContDiffOn ℝ ∞
-      (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm) U :=
+      (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm) U :=
     chartE_pullback_contDiffOn_goodSet (I := I) α hB_on
   have hc_at : ContDiffAt ℝ 2
-      (fderiv ℝ (tensorRSChartE_section_repr (I := I) r s α
+      (fderiv ℝ (tensorRSChartESectionRepr (I := I) r s α
           (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm))
       (extChartAt I α b) := by
     have hne : (∞ : WithTop ℕ∞) ≠ 0 := by intro h; exact absurd h (by simp)
     have h_at_top : ContDiffAt ℝ ∞
-        (fderiv ℝ (tensorRSChartE_section_repr (I := I) r s α
+        (fderiv ℝ (tensorRSChartESectionRepr (I := I) r s α
             (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm))
         (extChartAt I α b) :=
       (hc_cd (extChartAt I α b) hx_mem).contDiffAt
@@ -87,10 +87,10 @@ private lemma intrinsicPiece_contDiffAt_two
       exact (WithTop.coe_le_coe.mpr h1 : _)
     exact h_at_top.of_le h2_le
   have hu_at : ContDiffAt ℝ 2
-      (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)
       (extChartAt I α b) := by
     have h_at_top : ContDiffAt ℝ ∞
-        (chartE_section_repr (I := I) α B.toFun ∘ (extChartAt I α).symm)
+        (chartESectionRepr (I := I) α B.toFun ∘ (extChartAt I α).symm)
         (extChartAt I α b) :=
       (hu_cd (extChartAt I α b) hx_mem).contDiffAt
         (hU_open.mem_nhds hx_mem)
@@ -128,7 +128,7 @@ private lemma inputSlotPiece_contDiffAt_two
                       ((extChartAt I α).symm y)) U :=
     inputSlotChartKernel_chart_pulled_contDiffOn (I := I) (M := M) g r s α B k
   have hF_cd : ContDiffOn ℝ ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm) U :=
     R_contDiffOn_goodSet (I := I) (M := M) g r s α T
   have hK_at : ContDiffAt ℝ 2
@@ -147,11 +147,11 @@ private lemma inputSlotPiece_contDiffAt_two
       exact (WithTop.coe_le_coe.mpr h1 : _)
     exact h_at_top.of_le h2_le
   have hF_at : ContDiffAt ℝ 2
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm)
       (extChartAt I α b) := by
     have h_at_top : ContDiffAt ℝ ∞
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
             (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm)
         (extChartAt I α b) :=
       (hF_cd (extChartAt I α b) hx_mem).contDiffAt
@@ -164,7 +164,7 @@ private lemma inputSlotPiece_contDiffAt_two
   have h_kernel_F_at : ContDiffAt ℝ 2
       (fun y : E => inputSlotChartKernel (I := I) g r s α B.toFun k
           ((extChartAt I α).symm y)
-          ((tensorRSChartE_section_repr (I := I) r s α
+          ((tensorRSChartESectionRepr (I := I) r s α
               (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm) y))
       (extChartAt I α b) := hK_at.clm_apply hF_at
   have h_evt :
@@ -177,7 +177,7 @@ private lemma inputSlotPiece_contDiffAt_two
             ((extChartAt I α).symm y) k)) =ᶠ[𝓝 (extChartAt I α b)]
       (fun y : E => inputSlotChartKernel (I := I) g r s α B.toFun k
           ((extChartAt I α).symm y)
-          ((tensorRSChartE_section_repr (I := I) r s α
+          ((tensorRSChartESectionRepr (I := I) r s α
               (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm) y)) := by
     refine Filter.eventually_of_mem (hU_open.mem_nhds hx_mem) ?_
     intro y hy
@@ -222,7 +222,7 @@ private lemma outputSlotPiece_contDiffAt_two
                       ((extChartAt I α).symm y)) U :=
     outputSlotChartKernel_chart_pulled_contDiffOn (I := I) (M := M) g r s α B l
   have hF_cd : ContDiffOn ℝ ∞
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm) U :=
     R_contDiffOn_goodSet (I := I) (M := M) g r s α T
   have hK_at : ContDiffAt ℝ 2
@@ -241,11 +241,11 @@ private lemma outputSlotPiece_contDiffAt_two
       exact (WithTop.coe_le_coe.mpr h1 : _)
     exact h_at_top.of_le h2_le
   have hF_at : ContDiffAt ℝ 2
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm)
       (extChartAt I α b) := by
     have h_at_top : ContDiffAt ℝ ∞
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
             (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm)
         (extChartAt I α b) :=
       (hF_cd (extChartAt I α b) hx_mem).contDiffAt
@@ -258,7 +258,7 @@ private lemma outputSlotPiece_contDiffAt_two
   have h_kernel_F_at : ContDiffAt ℝ 2
       (fun y : E => outputSlotChartKernel (I := I) g r s α B.toFun l
           ((extChartAt I α).symm y)
-          ((tensorRSChartE_section_repr (I := I) r s α
+          ((tensorRSChartESectionRepr (I := I) r s α
               (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm) y))
       (extChartAt I α b) := hK_at.clm_apply hF_at
   have h_evt :
@@ -271,7 +271,7 @@ private lemma outputSlotPiece_contDiffAt_two
             ((extChartAt I α).symm y) l)) =ᶠ[𝓝 (extChartAt I α b)]
       (fun y : E => outputSlotChartKernel (I := I) g r s α B.toFun l
           ((extChartAt I α).symm y)
-          ((tensorRSChartE_section_repr (I := I) r s α
+          ((tensorRSChartESectionRepr (I := I) r s α
               (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm) y)) := by
     refine Filter.eventually_of_mem (hU_open.mem_nhds hx_mem) ?_
     intro y hy
@@ -296,14 +296,14 @@ private lemma chart_pulled_covApply_repr_eventuallyEq'
     (T : SmoothCcTensor g r s)
     (B : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {b : M} (hb_good : b ∈ chartLeviCivitaGoodSet (I := I) α) :
-    (tensorRSChartE_section_repr (I := I) r s α
+    (tensorRSChartESectionRepr (I := I) r s α
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g)) B.toFun
           (fun y : M => T.toSection y)) ∘ (extChartAt I α).symm)
       =ᶠ[𝓝 (extChartAt I α b)]
       (fun y : E =>
         fderiv ℝ
-          (tensorRSChartE_section_repr (I := I) r s α
+          (tensorRSChartESectionRepr (I := I) r s α
             (fun y' : M => T.toSection y') ∘ (extChartAt I α).symm) y
           (trivToE (I := I) α ((extChartAt I α).symm y)
             (B.toFun ((extChartAt I α).symm y)))

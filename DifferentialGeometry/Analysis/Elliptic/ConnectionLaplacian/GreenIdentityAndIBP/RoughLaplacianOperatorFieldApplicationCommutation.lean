@@ -39,11 +39,11 @@ theorem cometricDoubleTraceFib_eq_sum_curry (g₀ : SmoothRiemannianMetric I M) 
     (show Tensor0SSpace (b + 2) I x →L[ℝ] Tensor0SSpace b I x from
         (cometricDoubleTraceField (I := I) g₀ b).toSection x) D =
       ∑ k : Fin (Module.finrank ℝ E),
-        tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) b x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
+        tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) b x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
               (cometricLmodel (I := I) g₀ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)))))
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
             ((Module.finBasis ℝ E) k)) := by
@@ -62,15 +62,15 @@ theorem cometricDoubleTraceFib_eq_sum_curry (g₀ : SmoothRiemannianMetric I M) 
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [Tensor0SSpace.toModelL_apply]
   rw [tensor0S_curry_toModel_apply (I := I) (M := M)
-    (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
+    (T := tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
         (cometricLmodel (I := I) g₀ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))))
     (v0 := ((Module.finBasis ℝ E) k)) (vs := m)]
   rw [tensor0S_curry_toModel_apply (I := I) (M := M) (T := D)
     (v0 := cometricLmodel (I := I) g₀ x
-      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
         ((Module.finBasis ℝ E).cDualBasis k)))
     (vs := Fin.cons ((Module.finBasis ℝ E) k) m)]
 
@@ -86,8 +86,8 @@ theorem toModel_slotExtend_two_apply (g₀ : SmoothRiemannianMetric I M) (b s : 
         (Fin.cons a (Fin.cons c m)) =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) b x
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) b x
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm a))
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm c))) m := by
   rw [show (show Tensor0SSpace (b + 2) I x →L[ℝ] Tensor0SSpace (s + 2) I x from
@@ -101,15 +101,15 @@ theorem toModel_slotExtend_two_apply (g₀ : SmoothRiemannianMetric I M) (b s : 
       (slotExtend (I := I) (M := M) g₀ b s Φ).toSection x) D a (Fin.cons c m)]
   rw [show (show Tensor0SSpace (b + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         (slotExtend (I := I) (M := M) g₀ b s Φ).toSection x)
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm a)) =
       slotExtendPointwise (I := I) (M := M) b s x
         (show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm a)) from rfl]
   rw [slotExtendFib_apply_eval (I := I) (M := M) b s x
     (show Tensor0SSpace b I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (b + 1) x D
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm a)) c m]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -151,7 +151,7 @@ theorem cometricDoubleTraceFib_comp_slotExtend_two_eq (g₀ : SmoothRiemannianMe
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [toModel_slotExtend_two_apply (I := I) (M := M) g₀ b s Φ x D
     (cometricLmodel (I := I) g₀ x
-      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
         ((Module.finBasis ℝ E).cDualBasis k)))
     ((Module.finBasis ℝ E) k) m]
 

@@ -199,16 +199,16 @@ theorem metricScalarAt_restrictOpen
         exact (SmoothRiemannianMetric.restrictOpen_inner g U x
           (basisU i) (basisU j)).symm
       _ = _ := hONU i j
-  have hinvU : MetricInverseInBasis_gen (I := I) (M := U)
+  have hinvU : MetricInverseInBasisGen (I := I) (M := U)
       (g.restrictOpen (I := I) U) x basisU
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
-    change MetricInverseInBasis_gen (I := I) (M := U)
+    change MetricInverseInBasisGen (I := I) (M := U)
       (g.restrictOpen (I := I) U) x basisU (fun a k => if a = k then 1 else 0)
     exact metricInverseInBasis_of_orthonormal (I := I) (M := U)
       (g.restrictOpen (I := I) U) basisU hONU
-  have hinvM : MetricInverseInBasis_gen (I := I) (M := M) g (x : M) basisM
+  have hinvM : MetricInverseInBasisGen (I := I) (M := M) g (x : M) basisM
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
-    change MetricInverseInBasis_gen (I := I) (M := M) g (x : M) basisM
+    change MetricInverseInBasisGen (I := I) (M := M) g (x : M) basisM
       (fun a k => if a = k then 1 else 0)
     exact metricInverseInBasis_of_orthonormal (I := I) (M := M) g basisM hONM
   rw [metricScalarAt_def, metricScalarAt_def,
@@ -283,7 +283,7 @@ theorem metricRm04_restrictOpen_eval
 
 variable {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
 
-def solutionOn_restrictOpen
+def solutionOnRestrictOpen
     (S : SolutionOn (I := I) (M := M) D) (U : TopologicalSpace.Opens M)
     [hSigma : SigmaCompactSpace U] [T2Space U] :
     SolutionOn (I := I) (M := U) D := by
@@ -416,7 +416,7 @@ theorem frameCompSmooth_restrictOpen
     (hframe : IsLocalFrameOn I E (∞ : WithTop ℕ∞) frame u) (i j : Idx) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
       (fun p : ℝ × U =>
-        ((solutionOn_restrictOpen (I := I) S U).family.metric p.1).inner p.2
+        ((solutionOnRestrictOpen (I := I) S U).family.metric p.1).inner p.2
           (frame i p.2) (frame j p.2))
       (D.regular ×ˢ u) := by
   let _ := hManifoldTop
@@ -469,7 +469,7 @@ theorem metricFamilySmoothOn_restrictOpen
     (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [hBoundaryless : BoundarylessManifold I U]
     [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
-    MetricFamilySmoothOn (I := I) D (solutionOn_restrictOpen (I := I) S U).family.metric where
+    MetricFamilySmoothOn (I := I) D (solutionOnRestrictOpen (I := I) S U).family.metric where
   coeff x X Y := hS.smoothMetric.coeff (x : M) X Y
   coeff_cont x X Y := hS.smoothMetric.coeff_cont (x : M) X Y
   metricTensor_cont := by
@@ -498,12 +498,12 @@ theorem metricVariationEquation_restrictOpen
     (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] [hManifoldTop : IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
-    MetricVariationEquationOn (I := I) (solutionOn_restrictOpen (I := I) S U) := by
+    MetricVariationEquationOn (I := I) (solutionOnRestrictOpen (I := I) S U) := by
   let _ := hManifoldTop
   intro t x X Y
   have hric :
       RicciAtFamily.toTensorField (I := I)
-          (solutionOn_restrictOpen (I := I) S U).ricciAt (t : ℝ) x X Y
+          (solutionOnRestrictOpen (I := I) S U).ricciAt (t : ℝ) x X Y
         = RicciAtFamily.toTensorField (I := I) S.ricciAt (t : ℝ) (x : M)
           (mfderiv I I (Subtype.val : U → M) x X)
           (mfderiv I I (Subtype.val : U → M) x Y) := by
@@ -532,9 +532,9 @@ theorem scalar_restrictOpen
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] [hManifoldTop : IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
     (t : ℝ) (x : U) :
-    (solutionOn_restrictOpen (I := I) S U).scalar t x = S.scalar t (x : M) := by
+    (solutionOnRestrictOpen (I := I) S U).scalar t x = S.scalar t (x : M) := by
   let _ := hManifoldTop
-  simp only [SolutionOn.scalar, SolutionFamily.scalar, solutionOn_restrictOpen]
+  simp only [SolutionOn.scalar, SolutionFamily.scalar, solutionOnRestrictOpen]
   exact metricScalarAt_restrictOpen (I := I) (S.base.metric t) U x
 
 omit [I.Boundaryless] [IsManifold I 2 M] [SigmaCompactSpace M] in
@@ -544,9 +544,9 @@ theorem scalarCont_restrictOpen
     (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] [hManifoldTop : IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
-    ContinuousOn (fun q : ℝ × U => (solutionOn_restrictOpen (I := I) S U).scalar q.1 q.2)
+    ContinuousOn (fun q : ℝ × U => (solutionOnRestrictOpen (I := I) S U).scalar q.1 q.2)
       (D.carrier ×ˢ (Set.univ : Set U)) := by
-  have heq : (fun q : ℝ × U => (solutionOn_restrictOpen (I := I) S U).scalar q.1 q.2)
+  have heq : (fun q : ℝ × U => (solutionOnRestrictOpen (I := I) S U).scalar q.1 q.2)
       = (fun p : ℝ × M => S.scalar p.1 p.2)
           ∘ (fun q : ℝ × U => ((q.1, (q.2 : M)) : ℝ × M)) := by
     funext q; exact scalar_restrictOpen (I := I) S U q.1 q.2
@@ -564,8 +564,8 @@ theorem scalarTime_restrictOpen
     [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
     {K : Set ℝ} {t : ℝ} (htK : t ∈ K) (hKsub : K ⊆ D.carrier) (x : U) :
     DifferentiableWithinAt ℝ
-      (fun s : ℝ => (solutionOn_restrictOpen (I := I) S U).scalar s x) K t := by
-  have heq : (fun s : ℝ => (solutionOn_restrictOpen (I := I) S U).scalar s x)
+      (fun s : ℝ => (solutionOnRestrictOpen (I := I) S U).scalar s x) K t := by
+  have heq : (fun s : ℝ => (solutionOnRestrictOpen (I := I) S U).scalar s x)
       = fun s : ℝ => S.scalar s (x : M) := by
     funext s; exact scalar_restrictOpen (I := I) S U s x
   rw [heq]
@@ -579,7 +579,7 @@ theorem ricciCont_restrictOpen
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] [hManifoldTop : IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
     tensor0SFamilyContinuousOnSet (I := I) (M := U) 2 D.carrier
-      (fun t x => (solutionOn_restrictOpen (I := I) S U).ricci t x) := by
+      (fun t x => (solutionOnRestrictOpen (I := I) S U).ricci t x) := by
   let _ := hManifoldTop
   apply tensor0SFamilyContinuousOnSet.congr
     (tensor0SFamilyContinuousOnSet.restrictOpen (I := I)
@@ -600,7 +600,7 @@ theorem rm04Cont_restrictOpen
     [SigmaCompactSpace U] [T2Space U] [hBoundaryless : BoundarylessManifold I U]
     [IsManifold I 1 U] [hManifoldTop : IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
     tensor0SFamilyContinuousOnSet (I := I) (M := U) 4 D.carrier
-      (fun t x => (solutionOn_restrictOpen (I := I) S U).base.rm04 t x) := by
+      (fun t x => (solutionOnRestrictOpen (I := I) S U).base.rm04 t x) := by
   let _ := hBoundaryless
   let _ := hManifoldTop
   apply tensor0SFamilyContinuousOnSet.congr
@@ -620,7 +620,7 @@ theorem ricciNorm_restrictOpen
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] [hManifoldTop : IsManifold I ((∞ : WithTop ℕ∞) + 1) U]
     (t : ℝ) (x : U) :
-    ricciNorm (I := I) (solutionOn_restrictOpen (I := I) S U) t x
+    ricciNorm (I := I) (solutionOnRestrictOpen (I := I) S U) t x
       = ricciNorm (I := I) S t (x : M) := by
   let _ := hManifoldTop
   have hsec : metricRicci (I := I) (M := U) ((S.base.metric t).restrictOpen (I := I) U) x
@@ -636,7 +636,7 @@ theorem ricciNorm_restrictOpen
   have hnorm := normSq0S_restrictOpen_apply (I := I) (S.base.metric t) U 2 x
     (metricRicci (I := I) (M := U) ((S.base.metric t).restrictOpen (I := I) U) x)
   simp only [ricciNorm, SolutionOn.ricci, SolutionOn.family, SolutionFamily.ricci_apply,
-    SolutionFamily.ricciAt, metricRicci_apply, solutionOn_restrictOpen] at *
+    SolutionFamily.ricciAt, metricRicci_apply, solutionOnRestrictOpen] at *
   rw [hnorm, hsec]
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] [I.Boundaryless]
@@ -646,13 +646,13 @@ theorem ricciNormSpace_restrictOpen
     [SigmaCompactSpace U] [T2Space U] [IsManifold I 1 U]
     (t : ℝ) (x : U) :
     MDifferentiableAt I 𝓘(ℝ, ℝ)
-      (ricciNorm (I := I) (solutionOn_restrictOpen (I := I) S U) t) x := by
+      (ricciNorm (I := I) (solutionOnRestrictOpen (I := I) S U) t) x := by
   have hsmooth : ContMDiff I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
-      (ricciNorm (I := I) (solutionOn_restrictOpen (I := I) S U) t) := by
+      (ricciNorm (I := I) (solutionOnRestrictOpen (I := I) S U) t) := by
     refine (DifferentialGeometry.Tensor.RSTensor.normSq02_smooth (I := I) (M := U)
-      ((solutionOn_restrictOpen (I := I) S U).family.metric t)
+      ((solutionOnRestrictOpen (I := I) S U).family.metric t)
       (metricRicci (I := I) (M := U)
-        ((solutionOn_restrictOpen (I := I) S U).family.metric t))).congr ?_
+        ((solutionOnRestrictOpen (I := I) S U).family.metric t))).congr ?_
     intro y
     simp only [ricciNorm, SolutionOn.ricci, SolutionOn.family,
       SolutionFamily.ricci_apply, SolutionFamily.ricciAt, metricRicci_apply]
@@ -663,10 +663,10 @@ omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] [I.Bounda
 theorem smoothConnection_restrictOpen
     (S : SolutionOn (I := I) (M := M) D) (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [IsManifold I 1 U] :
-    ConnectionFamilySmoothOn (I := I) (solutionOn_restrictOpen (I := I) S U).family := by
+    ConnectionFamilySmoothOn (I := I) (solutionOnRestrictOpen (I := I) S U).family := by
   intro t
   exact leviCivitaConnectionOfMetric_contMDiffCovariantDerivative (I := I)
-    ((solutionOn_restrictOpen (I := I) S U).base.metric (t : ℝ))
+    ((solutionOnRestrictOpen (I := I) S U).base.metric (t : ℝ))
 
 omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -676,7 +676,7 @@ theorem isSolutionOn_restrictOpen
     (U : TopologicalSpace.Opens M)
     [SigmaCompactSpace U] [T2Space U] [BoundarylessManifold I U]
     [IsManifold I 1 U] [IsManifold I ((∞ : WithTop ℕ∞) + 1) U] :
-    IsSolutionOn (I := I) (solutionOn_restrictOpen (I := I) S U) where
+    IsSolutionOn (I := I) (solutionOnRestrictOpen (I := I) S U) where
   smoothMetric := metricFamilySmoothOn_restrictOpen (I := I) S hS U
   smoothConnection := smoothConnection_restrictOpen (I := I) S U
   equation := metricVariationEquation_restrictOpen (I := I) S hS U
@@ -688,16 +688,16 @@ theorem isSolutionOn_restrictOpen
   ricciNormGrad := by
     intro t _ht x
     have hsmooth : ContMDiff I 𝓘(ℝ, ℝ) (∞ : WithTop ℕ∞)
-        (ricciNorm (I := I) (solutionOn_restrictOpen (I := I) S U) t) := by
+        (ricciNorm (I := I) (solutionOnRestrictOpen (I := I) S U) t) := by
       refine (DifferentialGeometry.Tensor.RSTensor.normSq02_smooth (I := I) (M := U)
-        ((solutionOn_restrictOpen (I := I) S U).family.metric t)
+        ((solutionOnRestrictOpen (I := I) S U).family.metric t)
         (metricRicci (I := I) (M := U)
-          ((solutionOn_restrictOpen (I := I) S U).family.metric t))).congr ?_
+          ((solutionOnRestrictOpen (I := I) S U).family.metric t))).congr ?_
       intro y
       simp only [ricciNorm, SolutionOn.ricci, SolutionOn.family,
         SolutionFamily.ricci_apply, SolutionFamily.ricciAt, metricRicci_apply]
     exact DifferentialGeometry.Geometry.Operator.gradientFun_mdiffAt (I := I)
-      ((solutionOn_restrictOpen (I := I) S U).family.metric t) hsmooth x
+      ((solutionOnRestrictOpen (I := I) S U).family.metric t) hsmooth x
 
 end HCGCompactness
 end DifferentialGeometry

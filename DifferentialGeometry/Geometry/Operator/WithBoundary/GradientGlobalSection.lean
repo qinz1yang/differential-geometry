@@ -188,7 +188,7 @@ theorem grad_g_smooth_section_full
   gradFun_contMDiff_total_full
     (I := modelWithCornersEuclideanHalfSpace n) (M := M) g hf
 
-def grad_g_full_section
+def gradGFullSection
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f : M → ℝ} (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f) :
     Cₛ^∞⟮(modelWithCornersEuclideanHalfSpace n);
@@ -201,7 +201,7 @@ def grad_g_full_section
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f : M → ℝ} (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f)
     (x : M) :
-    (grad_g_full_section (M := M) (n := n) g hf :
+    (gradGFullSection (M := M) (n := n) g hf :
       Cₛ^∞⟮(modelWithCornersEuclideanHalfSpace n);
         EuclideanSpace ℝ (Fin n),
         (TangentSpace (modelWithCornersEuclideanHalfSpace n) : M → Type _)⟯) x =
@@ -211,11 +211,11 @@ def grad_g_full_section
     (g : SmoothRiemannianMetric (modelWithCornersEuclideanHalfSpace n) M)
     {f : M → ℝ} (hf : ContMDiff (modelWithCornersEuclideanHalfSpace n) 𝓘(ℝ, ℝ) ∞ f)
     (x : M) :
-    (grad_g_full_section (M := M) (n := n) g hf :
+    (gradGFullSection (M := M) (n := n) g hf :
       Cₛ^∞⟮(modelWithCornersEuclideanHalfSpace n);
         EuclideanSpace ℝ (Fin n),
         (TangentSpace (modelWithCornersEuclideanHalfSpace n) : M → Type _)⟯) x =
-      grad_g_with_boundary (I := modelWithCornersEuclideanHalfSpace n) g f x := rfl
+      gradGWithBoundary (I := modelWithCornersEuclideanHalfSpace n) g f x := rfl
 
 end WithBoundary
 end Operator

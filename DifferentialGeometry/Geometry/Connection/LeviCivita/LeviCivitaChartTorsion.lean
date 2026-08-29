@@ -57,23 +57,23 @@ theorem chartLeviCivita_torsion_free_on (g : SmoothRiemannianMetric I M) (α : M
   rw [chartLeviCivita_apply (I := I) g α X hx (Y x)]
   rw [← map_sub]
   have hreorg :
-      (fderiv ℝ (chartE_section_repr (I := I) α Y ∘ (extChartAt I α).symm)
+      (fderiv ℝ (chartESectionRepr (I := I) α Y ∘ (extChartAt I α).symm)
             (extChartAt I α x) (trivToE (I := I) α x (X x))
         + christoffelCorrection (I := I) g α x
-            (chartE_section_repr (I := I) α Y x) (X x))
-      - (fderiv ℝ (chartE_section_repr (I := I) α X ∘ (extChartAt I α).symm)
+            (chartESectionRepr (I := I) α Y x) (X x))
+      - (fderiv ℝ (chartESectionRepr (I := I) α X ∘ (extChartAt I α).symm)
             (extChartAt I α x) (trivToE (I := I) α x (Y x))
         + christoffelCorrection (I := I) g α x
-            (chartE_section_repr (I := I) α X x) (Y x))
+            (chartESectionRepr (I := I) α X x) (Y x))
       =
-      (fderiv ℝ (chartE_section_repr (I := I) α Y ∘ (extChartAt I α).symm)
+      (fderiv ℝ (chartESectionRepr (I := I) α Y ∘ (extChartAt I α).symm)
             (extChartAt I α x) (trivToE (I := I) α x (X x))
-        - fderiv ℝ (chartE_section_repr (I := I) α X ∘ (extChartAt I α).symm)
+        - fderiv ℝ (chartESectionRepr (I := I) α X ∘ (extChartAt I α).symm)
             (extChartAt I α x) (trivToE (I := I) α x (Y x))) := by
-    have hY_repr : chartE_section_repr (I := I) α Y x =
+    have hY_repr : chartESectionRepr (I := I) α Y x =
         trivToE (I := I) α x (Y x) :=
       chartE_section_repr_eq_trivToE (I := I) α Y x
-    have hX_repr : chartE_section_repr (I := I) α X x =
+    have hX_repr : chartESectionRepr (I := I) α X x =
         trivToE (I := I) α x (X x) :=
       chartE_section_repr_eq_trivToE (I := I) α X x
     rw [hY_repr, hX_repr]

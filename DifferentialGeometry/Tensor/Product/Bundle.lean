@@ -114,7 +114,7 @@ variable [∀ x, TopologicalSpace (E₁ x)] [FiberBundle F₁ E₁] [VectorBundl
 variable [∀ x, TopologicalSpace (E₂ x)] [FiberBundle F₂ E₂]
     [VectorBundle 𝕜 F₂ E₂] [∀ (x : B), ContinuousAdd (E₂ x)] [∀ x, ContinuousSMul 𝕜 (E₂ x)]
 
-noncomputable instance instNormedAddCommGroup_tensor :
+noncomputable instance instNormedAddCommGroupTensor :
     NormedAddCommGroup (F₁ ⊗[𝕜] F₂) :=
 by
   classical
@@ -127,7 +127,7 @@ by
     ?_
   exact e.injective
 
-noncomputable instance instNormedSpace_model_tensor :
+noncomputable instance instNormedSpaceModelTensor :
     NormedSpace 𝕜 (F₁ ⊗[𝕜] F₂) :=
 by
   classical
@@ -163,8 +163,8 @@ noncomputable def vectorPrebundle :
       _
       _
       _
-      instNormedAddCommGroup_tensor
-      instNormedSpace_model_tensor
+      instNormedAddCommGroupTensor
+      instNormedSpaceModelTensor
       _
       (fun x => tensorFiberTopology (𝕜:=𝕜) (F₁:=F₁) (F₂:=F₂) (E₁:=E₁) (E₂:=E₂) x)
       :=

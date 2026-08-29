@@ -118,7 +118,7 @@ theorem jointlySmoothCcTensorFamily_parameter_smul
     {A : ℝ → SmoothCcTensor g r s}
     (hA : JointlySmoothCcTensorFamily (I := I) g r s S A) :
     JointlySmoothCcTensorFamily (I := I) g r s S (fun t => t • A t) := by
-  let _ := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let _ := tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) r s
   intro p hp
   rw [Bundle.contMDiffWithinAt_totalSpace]
@@ -397,15 +397,15 @@ theorem ricciConnectionDifferenceQuadraticDerivativeCoefficient_metricPerturbati
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t) W) := by
   let S := metricPerturbationPathDomain (δ := δ) (δ' := δ)
   have h₀ := ricciQuadraticKernelDerivativeNestedTerm_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ
-    ricciQuadraticPermutation_swapZeroOne ricciQuadraticPermutation_cycleZeroThreeOneTwo
+    ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationCycleZeroThreeOneTwo
   have h₁ := ricciQuadraticKernelDerivativeNestedTerm_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ
-    ricciQuadraticPermutation_swapZeroOne ricciQuadraticPermutation_swapBlocks
+    ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationSwapBlocks
   have h₂ := ricciQuadraticKernelDerivativeNestedTerm_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ
-    ricciQuadraticPermutation_rotateInputs ricciQuadraticPermutation_cycleZeroThreeTwo
-  have h₃ := ricciQuadraticKernelDerivativeBareTerm_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ ricciQuadraticPermutation_cycleZeroOneThreeTwo
-  have h₄ := ricciQuadraticKernelDerivativeBareTerm_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ ricciQuadraticPermutation_cycleZeroOneTwo
+    ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationCycleZeroThreeTwo
+  have h₃ := ricciQuadraticKernelDerivativeBareTerm_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ ricciQuadraticPermutationCycleZeroOneThreeTwo
+  have h₄ := ricciQuadraticKernelDerivativeBareTerm_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ ricciQuadraticPermutationCycleZeroOneTwo
   have h₅ := ricciQuadraticKernelDerivativeNestedTerm_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T W hδ hδZ
-    ricciQuadraticPermutation_rotateInputs ricciQuadraticPermutation_swapZeroTwo
+    ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationSwapZeroTwo
   have hker := jointlySmoothCcTensorFamily_add (I := I) (M := M) g
     (jointlySmoothCcTensorFamily_add (I := I) (M := M) g
       (jointlySmoothCcTensorFamily_add (I := I) (M := M) g
@@ -887,9 +887,9 @@ theorem deTurckLieCovariantDerivativeArmTwoCoefficient_eq_permuted_connectionDif
     (g gm : SmoothRiemannianMetric I M) :
     deTurckLieCovariantDerivativeArmTwoCoefficient (I := I) (M := M) g gm =
       ccOperatorFieldComp (I := I) (M := M) g 3 4 4
-        (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks)
+        (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
         (connectionDifferenceContravariantInsertionField (I := I) g gm) := by
-  rw [operatorFieldComposition_permutationCoefficient_apply_eq_rsDomDomCongrSection (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks]
+  rw [operatorFieldComposition_permutationCoefficient_apply_eq_rsDomDomCongrSection (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks]
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
   intro x
@@ -904,7 +904,7 @@ theorem deTurckLieCovariantDerivativeArmTwoCoefficient_eq_permuted_connectionDif
       (armSlotFib (I := I) (M := M) 2 x
         (connectionDifferenceEndomorphism (I := I) (M := M) g gm x) D) v =
     Tensor0SSpace.toModel
-      ((rsDomDomCongr ricciQuadraticPermutation_swapBlocks
+      ((rsDomDomCongr ricciQuadraticPermutationSwapBlocks
         ((connectionDifferenceContravariantInsertionField (I := I) g gm).toSection x)) D) v
   rw [armSlotFib_toModel_apply, slotInsertEndoFib_apply_eval]
   rw [toModel_rsDomDomCongr_apply,
@@ -913,7 +913,7 @@ theorem deTurckLieCovariantDerivativeArmTwoCoefficient_eq_permuted_connectionDif
   rw [connectionDifferenceEndomorphism_apply]
   congr 1
   funext k
-  fin_cases k <;> simp [ricciQuadraticPermutation_swapBlocks] <;> rfl
+  fin_cases k <;> simp [ricciQuadraticPermutationSwapBlocks] <;> rfl
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem deTurckLieCovariantDerivativeArmTwoCoefficient_metricPerturbationPath_jointlySmooth
@@ -930,7 +930,7 @@ theorem deTurckLieCovariantDerivativeArmTwoCoefficient_metricPerturbationPath_jo
         (metricPerturbationPath (I := I) g T 0 hδ hδZ t)) := by
   let S := metricPerturbationPathDomain (δ := δ) (δ' := δ)
   have hp := jointlySmoothCcTensorFamily_const (I := I) (M := M) g (S := S)
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
   have hi := connectionDifferenceContravariantInsertionField_metricPerturbationPath_jointlySmooth (I := I) (M := M) g T hδ hδZ
   have hout := jointlySmoothCcTensorFamily_ccOperatorFieldComp (I := I) (M := M) g hp hi
   simpa only [S, deTurckLieCovariantDerivativeArmTwoCoefficient_eq_permuted_connectionDifferenceContravariantInsertionField] using hout
@@ -1571,15 +1571,15 @@ theorem slotExtend_smul
     rfl]
   rw [smul_apply]
   rw [show ((slotExtend (I := I) (M := M) g r s (a • X)).toSection x) D =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
           (a • X).toSection x).comp
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x D)) from rfl]
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x D)) from rfl]
   rw [show ((slotExtend (I := I) (M := M) g r s X).toSection x) D =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
           X.toSection x).comp
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x D)) from rfl]
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x D)) from rfl]
   rw [show ((a • X).toSection x : TensorRSSpace r s I x) =
       a • X.toSection x from by
     rw [SmoothCcTensor.toSection_smul]
@@ -3889,21 +3889,21 @@ theorem exists_connectionDifferenceInsertionInnerActionCoefficient_covariantJetN
 noncomputable def ricciQuadraticPermutationJetCap
     (g : SmoothRiemannianMetric I M) : ℝ :=
   covariantJetNormSq (I := I) (M := M) g 2
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeOneTwo) +
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeOneTwo) +
     covariantJetNormSq (I := I) (M := M) g 2
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks) +
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks) +
     covariantJetNormSq (I := I) (M := M) g 2
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeTwo) +
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeTwo) +
     covariantJetNormSq (I := I) (M := M) g 2
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneThreeTwo) +
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneThreeTwo) +
     covariantJetNormSq (I := I) (M := M) g 2
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneTwo) +
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneTwo) +
     covariantJetNormSq (I := I) (M := M) g 2
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroTwo) +
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroTwo) +
     covariantJetNormSq (I := I) (M := M) g 2
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne) +
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne) +
     covariantJetNormSq (I := I) (M := M) g 2
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs)
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -3911,48 +3911,48 @@ theorem ricciQuadraticPermutationJetCap_nonneg (g : SmoothRiemannianMetric I M) 
     0 ≤ ricciQuadraticPermutationJetCap (I := I) (M := M) g := by
   unfold ricciQuadraticPermutationJetCap
   have h1 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeOneTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeOneTwo)
   have h2 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
   have h3 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeTwo)
   have h4 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneThreeTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneThreeTwo)
   have h5 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneTwo)
   have h6 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroTwo)
   have h7 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne)
   have h8 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
   linarith
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covariantJetNormSq_ricciQuadraticPermutation_four_le
     (g : SmoothRiemannianMetric I M) (pm : Equiv.Perm (Fin 4))
-    (hpm : pm = ricciQuadraticPermutation_cycleZeroThreeOneTwo ∨ pm = ricciQuadraticPermutation_swapBlocks ∨ pm = ricciQuadraticPermutation_cycleZeroThreeTwo ∨
-      pm = ricciQuadraticPermutation_cycleZeroOneThreeTwo ∨ pm = ricciQuadraticPermutation_cycleZeroOneTwo ∨ pm = ricciQuadraticPermutation_swapZeroTwo) :
+    (hpm : pm = ricciQuadraticPermutationCycleZeroThreeOneTwo ∨ pm = ricciQuadraticPermutationSwapBlocks ∨ pm = ricciQuadraticPermutationCycleZeroThreeTwo ∨
+      pm = ricciQuadraticPermutationCycleZeroOneThreeTwo ∨ pm = ricciQuadraticPermutationCycleZeroOneTwo ∨ pm = ricciQuadraticPermutationSwapZeroTwo) :
     covariantJetNormSq (I := I) (M := M) g 2
         (permCoeff (I := I) (M := M) g pm) ≤
       ricciQuadraticPermutationJetCap (I := I) (M := M) g := by
   have h1 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeOneTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeOneTwo)
   have h2 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
   have h3 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeTwo)
   have h4 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneThreeTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneThreeTwo)
   have h5 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneTwo)
   have h6 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroTwo)
   have h7 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne)
   have h8 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
   unfold ricciQuadraticPermutationJetCap
   rcases hpm with rfl | rfl | rfl | rfl | rfl | rfl <;> linarith
 
@@ -3960,26 +3960,26 @@ omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem covariantJetNormSq_ricciQuadraticPermutation_three_le
     (g : SmoothRiemannianMetric I M) (pm : Equiv.Perm (Fin 3))
-    (hpm : pm = ricciQuadraticPermutation_swapZeroOne ∨ pm = ricciQuadraticPermutation_rotateInputs) :
+    (hpm : pm = ricciQuadraticPermutationSwapZeroOne ∨ pm = ricciQuadraticPermutationRotateInputs) :
     covariantJetNormSq (I := I) (M := M) g 2
         (permCoeff (I := I) (M := M) g pm) ≤
       ricciQuadraticPermutationJetCap (I := I) (M := M) g := by
   have h1 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeOneTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeOneTwo)
   have h2 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
   have h3 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroThreeTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroThreeTwo)
   have h4 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneThreeTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneThreeTwo)
   have h5 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_cycleZeroOneTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationCycleZeroOneTwo)
   have h6 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroTwo)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroTwo)
   have h7 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapZeroOne)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapZeroOne)
   have h8 := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_rotateInputs)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationRotateInputs)
   unfold ricciQuadraticPermutationJetCap
   rcases hpm with rfl | rfl <;> linarith
 
@@ -4064,7 +4064,7 @@ theorem exists_ricciQuadraticKernelDerivativeCoefficient_covariantJetNormSq_two_
     have hz : 0 ≤ (Bi * R) ^ 2 := sq_nonneg _
     nlinarith [mul_nonneg hCm hJ]
   have hZmid : ∀ pm : Equiv.Perm (Fin 3),
-      (pm = ricciQuadraticPermutation_swapZeroOne ∨ pm = ricciQuadraticPermutation_rotateInputs) →
+      (pm = ricciQuadraticPermutationSwapZeroOne ∨ pm = ricciQuadraticPermutationRotateInputs) →
       covariantJetNormSq (I := I) (M := M) g 2
           (ccOperatorFieldComp (I := I) (M := M) g 3 3 3
             (permCoeff (I := I) (M := M) g pm)
@@ -4094,8 +4094,8 @@ theorem exists_ricciQuadraticKernelDerivativeCoefficient_covariantJetNormSq_two_
         (mul_nonneg hCc (mul_nonneg (sq_nonneg (Bo R)) hS))
         (hKZ R hR))
   have hblk : ∀ pm : Equiv.Perm (Fin 4),
-      (pm = ricciQuadraticPermutation_cycleZeroThreeOneTwo ∨ pm = ricciQuadraticPermutation_swapBlocks ∨ pm = ricciQuadraticPermutation_cycleZeroThreeTwo ∨
-        pm = ricciQuadraticPermutation_cycleZeroOneThreeTwo ∨ pm = ricciQuadraticPermutation_cycleZeroOneTwo ∨ pm = ricciQuadraticPermutation_swapZeroTwo) →
+      (pm = ricciQuadraticPermutationCycleZeroThreeOneTwo ∨ pm = ricciQuadraticPermutationSwapBlocks ∨ pm = ricciQuadraticPermutationCycleZeroThreeTwo ∨
+        pm = ricciQuadraticPermutationCycleZeroOneThreeTwo ∨ pm = ricciQuadraticPermutationCycleZeroOneTwo ∨ pm = ricciQuadraticPermutationSwapZeroTwo) →
       ∀ Z : SmoothCcTensor g 3 3,
       covariantJetNormSq (I := I) (M := M) g 2 Z ≤ KZ R →
       covariantJetNormSq (I := I) (M := M) g 2
@@ -4127,19 +4127,19 @@ theorem exists_ricciQuadraticKernelDerivativeCoefficient_covariantJetNormSq_two_
       (covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _)
       (mul_nonneg hCo hJ)
     simpa only [Q] using hfin
-  have hx0 := hblk ricciQuadraticPermutation_cycleZeroThreeOneTwo (Or.inl rfl) _
-    (hZmid ricciQuadraticPermutation_swapZeroOne (Or.inl rfl))
-  have hx1 := hblk ricciQuadraticPermutation_swapBlocks (Or.inr (Or.inl rfl)) _
-    (hZmid ricciQuadraticPermutation_swapZeroOne (Or.inl rfl))
-  have hx2 := hblk ricciQuadraticPermutation_cycleZeroThreeTwo (Or.inr (Or.inr (Or.inl rfl))) _
-    (hZmid ricciQuadraticPermutation_rotateInputs (Or.inr rfl))
-  have hx3 := hblk ricciQuadraticPermutation_cycleZeroOneThreeTwo
+  have hx0 := hblk ricciQuadraticPermutationCycleZeroThreeOneTwo (Or.inl rfl) _
+    (hZmid ricciQuadraticPermutationSwapZeroOne (Or.inl rfl))
+  have hx1 := hblk ricciQuadraticPermutationSwapBlocks (Or.inr (Or.inl rfl)) _
+    (hZmid ricciQuadraticPermutationSwapZeroOne (Or.inl rfl))
+  have hx2 := hblk ricciQuadraticPermutationCycleZeroThreeTwo (Or.inr (Or.inr (Or.inl rfl))) _
+    (hZmid ricciQuadraticPermutationRotateInputs (Or.inr rfl))
+  have hx3 := hblk ricciQuadraticPermutationCycleZeroOneThreeTwo
     (Or.inr (Or.inr (Or.inr (Or.inl rfl)))) _ hZdir
-  have hx4 := hblk ricciQuadraticPermutation_cycleZeroOneTwo
+  have hx4 := hblk ricciQuadraticPermutationCycleZeroOneTwo
     (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))) _ hZdir
-  have hx5 := hblk ricciQuadraticPermutation_swapZeroTwo
+  have hx5 := hblk ricciQuadraticPermutationSwapZeroTwo
     (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr rfl))))) _
-    (hZmid ricciQuadraticPermutation_rotateInputs (Or.inr rfl))
+    (hZmid ricciQuadraticPermutationRotateInputs (Or.inr rfl))
   rw [ricciQuadraticKernelDerivativeCoefficient]
   refine (covariantJetNormSq_sum_six_le (I := I) (M := M) g 2 _ _ _ _ _ _
     hx0 hx1 hx2 hx3 hx4 hx5).trans ?_
@@ -5770,7 +5770,7 @@ theorem exists_deTurckLieCovariantDerivativeArmTwoCoefficient_covariantJetNormSq
   obtain ⟨Bc, hBc, hconn⟩ := exists_connectionDifferenceContravariantInsertionField_covariantJetNormSq_two_bound (I := I) (M := M) hDim g
   obtain ⟨Ca, hCa, happ⟩ := exists_operatorFieldComposition_covariantJetNormSq_two_bound (I := I) (M := M) hDim g 3 4 4
   let J : ℝ := covariantJetNormSq (I := I) (M := M) g 2
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
   let Cp : ℝ := Real.sqrt J
   let B : ℝ → ℝ := fun R => Ca * Cp * Bc R
   have hJ : 0 ≤ J := covariantJetNormSq_nonneg (I := I) (M := M) (m := 2) g _
@@ -5778,7 +5778,7 @@ theorem exists_deTurckLieCovariantDerivativeArmTwoCoefficient_covariantJetNormSq
   have hCp2 : Cp ^ 2 = J := by
     simpa only [Cp] using Real.sq_sqrt hJ
   have hperm : covariantJetNormSq (I := I) (M := M) g 2
-      (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks) ≤ Cp ^ 2 := by
+      (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks) ≤ Cp ^ 2 := by
     change J ≤ Cp ^ 2
     exact hCp2.symm.le
   refine ⟨B, fun R hR =>
@@ -5787,7 +5787,7 @@ theorem exists_deTurckLieCovariantDerivativeArmTwoCoefficient_covariantJetNormSq
   have hc := hconn gm P hP htie hδ_le hδ0 hδP hδZ
     R A hR hA hP2 hP3
   have hraw := happ
-    (permCoeff (I := I) (M := M) g ricciQuadraticPermutation_swapBlocks)
+    (permCoeff (I := I) (M := M) g ricciQuadraticPermutationSwapBlocks)
     (connectionDifferenceContravariantInsertionField (I := I) g gm)
     Cp (Bc R * (1 + A)) hCp
     (mul_nonneg (hBc R hR) (add_nonneg (by norm_num) hA))

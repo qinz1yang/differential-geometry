@@ -27,8 +27,8 @@ variable {D : RealTimeInterval}
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem lRedPull_contOn
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) (tau : Real) (htau : 0 < tau) :
@@ -84,8 +84,8 @@ private theorem lRedPull_contOn
   exact (hden.mul hred).congr fun Z hZ ↦
     lRedJac_mul_src S hS T x htau hZ
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem redVolume_le_one
     [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -115,8 +115,8 @@ theorem redVolume_le_one
         (Set.subset_univ (lInjDomain S T x tau))
     _ = 1 := lSrcGauss_mass S T x
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem redVolume_zero_lim
     [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)

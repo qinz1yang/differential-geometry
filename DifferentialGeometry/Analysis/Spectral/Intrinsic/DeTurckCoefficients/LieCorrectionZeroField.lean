@@ -488,7 +488,7 @@ private lemma lieCorrectionZeroTraceStep_toModel (g : SmoothRiemannianMetric I M
       ∑ k : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel T
           (fun i => (Fin.cons (DeTurck.cometricLmodel (I := I) g x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
             (Fin.cons ((Module.finBasis ℝ E) k) u) : Fin (p + 2) → E) (σ i)) := by
   classical
@@ -525,7 +525,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 private lemma lieCorrectionZero_ip_toModel (x : M) (V : TangentSpace I x) (D : Tensor0SSpace 2 I x) (b : E) :
     Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 x V D) ![b] =
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x V D) ![b] =
       Tensor0SSpace.toModel D
         ![tangentSpaceModelContinuousLinearEquiv (I := I) x V, b] := by
   rfl
@@ -593,7 +593,7 @@ private lemma lieCorrectionZeroVBFib_basis_value (x : M) (D : Tensor0SSpace 2 I 
   rw [show lieCorrectionZeroVBFib (I := I) g₀ g₁ x D =
       (2 : ℝ) • lieCorrectionZeroTraceStep (I := I) g₁ 2 lieCorrectionZeroVectorBundleTracePermutation x
         (tensor0SProdKappaFib (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
-          (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 x
+          (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
             ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x) D)) from by
     rw [lieCorrectionZeroVBFib]
     rfl]
@@ -601,7 +601,7 @@ private lemma lieCorrectionZeroVBFib_basis_value (x : M) (D : Tensor0SSpace 2 I 
   refine congrArg (fun t : ℝ => 2 * t) ?_
   set P4 : Tensor0SSpace 4 I x :=
     tensor0SProdKappaFib (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 x
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
         ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x) D)
     with hP4
   rw [lieCorrectionZeroTraceStep_toModel (I := I) g₁ 2 lieCorrectionZeroVectorBundleTracePermutation x P4
@@ -609,7 +609,7 @@ private lemma lieCorrectionZeroVBFib_basis_value (x : M) (D : Tensor0SSpace 2 I 
   rw [show (∑ k : Fin (Module.finrank ℝ E),
       Tensor0SSpace.toModel P4
         (fun i' => (Fin.cons (DeTurck.cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           (Fin.cons ((Module.finBasis ℝ E) k)
             (![(chartModelBasis E) i, (chartModelBasis E) j] : Fin 2 → E)) :
@@ -619,7 +619,7 @@ private lemma lieCorrectionZeroVBFib_basis_value (x : M) (D : Tensor0SSpace 2 I 
         ![(chartModelBasis E) i, (chartModelBasis E) i, (chartModelBasis E) j,
           (chartModelBasis E) j]
         (DeTurck.cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))
         ((Module.finBasis ℝ E) k) from
     Finset.sum_congr rfl (fun k _ => by
@@ -764,14 +764,14 @@ private lemma lieCorrectionZeroQ_value (x : M) (D : Tensor0SSpace 2 I x) (u : Fi
   rw [show (∑ k : Fin (Module.finrank ℝ E),
       Tensor0SSpace.toModel P5
         (fun i' => (Fin.cons (DeTurck.cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           (Fin.cons ((Module.finBasis ℝ E) k) u) : Fin 5 → E) (lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour i'))) =
     ∑ k : Fin (Module.finrank ℝ E),
       lieCorrectionZeroSlotBilin (E := E) (Tensor0SSpace.toModel P5) 4 0 (by decide)
         ![u 0, u 2, u 0, u 1, u 1]
         (DeTurck.cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))
         ((Module.finBasis ℝ E) k) from
     Finset.sum_congr rfl (fun k _ => by
@@ -852,14 +852,14 @@ private lemma lieCorrectionZeroT4_value (x : M) (D : Tensor0SSpace 2 I x) (w : F
   rw [show (∑ j : Fin (Module.finrank ℝ E),
       Tensor0SSpace.toModel P6
         (fun i' => (Fin.cons (DeTurck.cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis j)))
           (Fin.cons ((Module.finBasis ℝ E) j) w) : Fin 6 → E) (lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne i'))) =
     ∑ j : Fin (Module.finrank ℝ E),
       lieCorrectionZeroSlotBilin (E := E) (Tensor0SSpace.toModel P6) 1 3 (by decide)
         ![w 0, w 0, w 1, w 1, w 2, w 3]
         (DeTurck.cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis j)))
         ((Module.finBasis ℝ E) j) from
     Finset.sum_congr rfl (fun j _ => by
@@ -961,7 +961,7 @@ private lemma lieCorrectionZeroMixedConnectionHalfFib_basis_value (x : M) (D : T
   rw [show (∑ m : Fin (Module.finrank ℝ E),
       Tensor0SSpace.toModel T4
         (fun i' => (Fin.cons (DeTurck.cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis m)))
           (Fin.cons ((Module.finBasis ℝ E) m)
             (![(chartModelBasis E) i, (chartModelBasis E) j] : Fin 2 → E)) :
@@ -971,7 +971,7 @@ private lemma lieCorrectionZeroMixedConnectionHalfFib_basis_value (x : M) (D : T
         ![(chartModelBasis E) i, (chartModelBasis E) i, (chartModelBasis E) j,
           (chartModelBasis E) j]
         (DeTurck.cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis m)))
         ((Module.finBasis ℝ E) m) from
     Finset.sum_congr rfl (fun m _ => by
@@ -1095,14 +1095,14 @@ private lemma lieCorrectionZeroRiemT4_value (x : M) (D : Tensor0SSpace 2 I x) (w
   rw [show (∑ k : Fin (Module.finrank ℝ E),
       Tensor0SSpace.toModel P6
         (fun i' => (Fin.cons (DeTurck.cometricLmodel (I := I) g₀ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           (Fin.cons ((Module.finBasis ℝ E) k) w) : Fin 6 → E) (lieCorrectionZeroRiemPerm1 i'))) =
     ∑ k : Fin (Module.finrank ℝ E),
       lieCorrectionZeroSlotBilin (E := E) (Tensor0SSpace.toModel P6) 5 0 (by decide)
         ![w 0, w 3, w 0, w 1, w 2, w 2]
         (DeTurck.cometricLmodel (I := I) g₀ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))
         ((Module.finBasis ℝ E) k) from
     Finset.sum_congr rfl (fun k _ => by
@@ -1206,7 +1206,7 @@ private lemma lieCorrectionZeroRiemFib_basis_value (x : M) (D : Tensor0SSpace 2 
   rw [show (∑ m : Fin (Module.finrank ℝ E),
       Tensor0SSpace.toModel T4
         (fun i' => (Fin.cons (DeTurck.cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis m)))
           (Fin.cons ((Module.finBasis ℝ E) m)
             (![(chartModelBasis E) i, (chartModelBasis E) j] : Fin 2 → E)) :
@@ -1216,7 +1216,7 @@ private lemma lieCorrectionZeroRiemFib_basis_value (x : M) (D : Tensor0SSpace 2 
         ![(chartModelBasis E) i, (chartModelBasis E) j, (chartModelBasis E) i,
           (chartModelBasis E) j]
         (DeTurck.cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis m)))
         ((Module.finBasis ℝ E) m) from
     Finset.sum_congr rfl (fun m _ => by

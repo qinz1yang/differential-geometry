@@ -473,14 +473,14 @@ open DifferentialGeometry.Tensor.Tensor0SRiemannian
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem exists_eLpNorm_sq_pou_mul_sqrt_sum_christoffel_correction_le_const_mul_h1NormSq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (j : Fin (Module.finrank ℝ E)) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensorH1 g r s),
         eLpNorm
@@ -499,7 +499,7 @@ theorem exists_eLpNorm_sq_pou_mul_sqrt_sum_christoffel_correction_le_const_mul_h
           ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   obtain ⟨M_F_in, hM_F_in_nn, hM_F_in_le⟩ :=
     chartTensorRSInputSlotCorrection_riemannian_norm_le_on_pouTsupport_local
       (I := I) (M := M) g r s α

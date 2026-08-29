@@ -30,7 +30,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem l2_bdd_of_raw {ι : Type*}
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : ι → SmoothCcTensor g r s) (B : ℝ) (hB : 0 ≤ B)
-    (hraw : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hraw : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -51,7 +51,7 @@ theorem l2_bdd_of_raw {ι : Type*}
     exact ENNReal.mul_ne_top
       (ENNReal.rpow_ne_top_of_nonneg (by positivity) (measure_ne_top μ Set.univ))
       ENNReal.ofReal_ne_top
-  have hscalar : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hscalar : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b : M,
         ∀ Idx : Fin r → Fin (Module.finrank ℝ E),
           ∀ Jdx : Fin s → Fin (Module.finrank ℝ E),
@@ -74,7 +74,7 @@ theorem l2_bdd_of_raw {ι : Type*}
     · have hρ : (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) b = 0 :=
         image_eq_zero_of_notMem_tsupport hb
       simp [tensorChartComponentScalar_def, tensorChartComponentPou, hρ, hB]
-  have hcomponent : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hcomponent : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι,
         ∀ Idx : Fin r → Fin (Module.finrank ℝ E),
           ∀ Jdx : Fin s → Fin (Module.finrank ℝ E),
@@ -100,7 +100,7 @@ theorem l2_bdd_of_raw {ι : Type*}
     tensorL2Norm_sq_le_const_mul_sum_componentL2Norm_sq
       (I := I) (M := M) g r s
   let Q : ℝ :=
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∑ _Idx : Fin r → Fin (Module.finrank ℝ E),
         ∑ _Jdx : Fin s → Fin (Module.finrank ℝ E), A ^ 2
   have hQ : 0 ≤ Q := by
@@ -125,7 +125,7 @@ theorem l2_le_of_raw_sum
     (B : ℝ) (hB : 0 ≤ B) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (T : ∀ i, SmoothCcTensor g 0 (v i)) (S : SmoothCcTensor g 0 c),
-        (∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        (∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ∀ b ∈ tsupport
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ Idx : Fin 0 → Fin (Module.finrank ℝ E),
@@ -137,7 +137,7 @@ theorem l2_le_of_raw_sum
                     g 0 (v i) b ((T i).toSection b))) →
         ‖S‖ ≤ C * ∑ i ∈ Finset.range N, ‖T i‖ := by
   classical
-  let Sf : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  let Sf : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   choose Cα hCα_nn hCα_bound using fun α (_ : α ∈ Sf) =>
     riemannianFiberNormSq_le_raw_components_on_pouTsupport
       (I := I) (M := M) g 0 c α

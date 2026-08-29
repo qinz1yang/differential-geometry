@@ -95,7 +95,7 @@ private theorem globalStrongStaticMetricFamily_parabolicOperator
     parabolicOperatorWithDrift (I := I) (globalStrongStaticMetricFamily (I := I) g)
         T X f t x =
       derivWithin (fun s => f s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨f t, hf⟩ x +
+        (ΔG (I := I) g ⟨f t, hf⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (f t) x)) := by
   have hlapAt := laplacianAt_eq_delta (I := I)
     (globalStrongStaticMetricFamily (I := I) g) t hf rfl x
@@ -446,7 +446,7 @@ private theorem fixed_metric_spatial_zero_drift
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
     {c : M} (hc : 0 < u T c) (y : M) :
     0 < u T y := by
   let P : Set M := {x | 0 < u T x}
@@ -599,7 +599,7 @@ private theorem fixed_metric_lower_bound_from_positive_time
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
     (hinit : ∀ x : M, m ≤ u a x) :
     ∀ t ∈ Set.Icc a T, ∀ x : M, m ≤ u t x := by
   let S : Real := T - a
@@ -768,7 +768,7 @@ private theorem scalar_strong_maximum_principle_fixed_metric_spatial_at
     (hu_super : ∀ (s : Real) (hs : s ∈ Set.Icc 0 T) (hspos : 0 < s)
       (x : M),
       0 ≤ derivWithin (fun q => u q x) (Set.Icc 0 T) s -
-        Δ_g (I := I) g ⟨u s, hu_space s hs hspos⟩ x)
+        ΔG (I := I) g ⟨u s, hu_space s hs hspos⟩ x)
     {c : M} (hc : 0 < u t c) (y : M) :
     0 < u t y := by
   have hsub : Set.Icc (0 : Real) t ⊆ Set.Icc 0 T := by
@@ -785,7 +785,7 @@ private theorem scalar_strong_maximum_principle_fixed_metric_spatial_at
   have hu_super' : ∀ (s : Real) (hs : s ∈ Set.Icc 0 t) (hspos : 0 < s)
       (x : M),
       0 ≤ derivWithin (fun q => u q x) (Set.Icc 0 t) s -
-        Δ_g (I := I) g ⟨u s, hu_space' s hs hspos⟩ x := by
+        ΔG (I := I) g ⟨u s, hu_space' s hs hspos⟩ x := by
     intro s hs hspos x
     have hderiv := derivWithin_subset hsub
       ((uniqueDiffOn_Icc ht).uniqueDiffWithinAt hs)
@@ -814,7 +814,7 @@ private theorem fixed_metric_zero_drift
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
     {y : M} (hy : u T y = 0) :
     ∀ t ∈ Set.Icc 0 T, ∀ x : M, u t x = 0 := by
   intro t ht x
@@ -861,7 +861,7 @@ private theorem fixed_metric_positive_zero_drift
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
     {t : Real} (ht : t ∈ Set.Icc 0 T) {x : M} (hx : 0 < u t x)
     (y : M) :
     0 < u T y := by
@@ -893,7 +893,7 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)))
     {rho : M → Real}
     (hrho : ContMDiff I 𝓘(Real, Real) ∞ rho)
@@ -910,7 +910,7 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
   let K : Set M := {x : M | r ≤ rho x ∧ rho x ≤ R}
   let q : M → Real := fun x => g.inner x
     (gradientFun (I := I) g rho x) (gradientFun (I := I) g rho x)
-  let ell : M → Real := fun x => |Δ_g (I := I) g ⟨rho, hrho⟩ x|
+  let ell : M → Real := fun x => |ΔG (I := I) g ⟨rho, hrho⟩ x|
   have hq_cont : Continuous q := by
     apply continuous_iff_continuousAt.mpr
     intro x
@@ -925,7 +925,7 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
       ∃ m B : Real, 0 < m ∧ 0 ≤ B ∧
         (∀ x ∈ K, m ≤ q x) ∧
         (∀ t ∈ Set.Icc 0 T, ∀ x ∈ K,
-          Δ_g (I := I) g ⟨rho, hrho⟩ x +
+          ΔG (I := I) g ⟨rho, hrho⟩ x +
             g.inner x (X t x) (gradientFun (I := I) g rho x) ≤ B) := by
     by_cases hKne : K.Nonempty
     · obtain ⟨xm, hxm, hxmin⟩ := hcompact.exists_isMinOn
@@ -952,8 +952,8 @@ private theorem fixed_metric_with_drift_strong_maximum_principle_of_barrier
           sq_nonneg (g.inner x (X t x) (gradientFun (I := I) g rho x) +
             C + q xq)]
       have hlap := hxBmax (by simpa [K] using hx)
-      change |Δ_g (I := I) g ⟨rho, hrho⟩ x| ≤ ell xB at hlap
-      have hself : Δ_g (I := I) g ⟨rho, hrho⟩ x ≤ ell xB :=
+      change |ΔG (I := I) g ⟨rho, hrho⟩ x| ≤ ell xB at hlap
+      have hself : ΔG (I := I) g ⟨rho, hrho⟩ x ≤ ell xB :=
         (le_abs_self _).trans hlap
       linarith
     · refine ⟨1, 0, by positivity, le_rfl, ?_, ?_⟩
@@ -1020,7 +1020,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)))
     {c : M} (hc : 0 < u T c) (y : M) :
     0 < u T y := by
@@ -1176,7 +1176,7 @@ private theorem fixed_metric_with_drift_lower_bound_from_positive_time
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)))
     (hinit : ∀ x : M, m ≤ u a x) :
     ∀ t ∈ Set.Icc a T, ∀ x : M, m ≤ u t x := by
@@ -1316,7 +1316,7 @@ private theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial_
     (hu_super : ∀ (s : Real) (hs : s ∈ Set.Icc 0 T) (hspos : 0 < s)
       (x : M),
       0 ≤ derivWithin (fun q => u q x) (Set.Icc 0 T) s -
-        (Δ_g (I := I) g ⟨u s, hu_space s hs hspos⟩ x +
+        (ΔG (I := I) g ⟨u s, hu_space s hs hspos⟩ x +
           g.inner x (X s x) (gradientFun (I := I) g (u s) x)))
     {c : M} (hc : 0 < u t c) (y : M) :
     0 < u t y := by
@@ -1334,7 +1334,7 @@ private theorem scalar_strong_maximum_principle_fixed_metric_with_drift_spatial_
   have hu_super' : ∀ (s : Real) (hs : s ∈ Set.Icc 0 t) (hspos : 0 < s)
       (x : M),
       0 ≤ derivWithin (fun q => u q x) (Set.Icc 0 t) s -
-        (Δ_g (I := I) g ⟨u s, hu_space' s hs hspos⟩ x +
+        (ΔG (I := I) g ⟨u s, hu_space' s hs hspos⟩ x +
           g.inner x (X s x) (gradientFun (I := I) g (u s) x)) := by
     intro s hs hspos x
     have hderiv := derivWithin_subset hsub
@@ -1368,7 +1368,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)))
     {y : M} (hy : u T y = 0) :
     ∀ t ∈ Set.Icc 0 T, ∀ x : M, u t x = 0 := by
@@ -1420,7 +1420,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_positive
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)))
     {t : Real} (ht : t ∈ Set.Icc 0 T) {x : M} (hx : 0 < u t x)
     (y : M) :
@@ -2763,7 +2763,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_spatial
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
     {c : M} (hc : 0 < u T c) (y : M) :
     0 < u T y := by
   apply scalar_strong_maximum_principle_fixed_metric_with_drift_spatial (I := I)
@@ -2790,7 +2790,7 @@ theorem scalar_strong_maximum_principle_fixed_metric
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
     {y : M} (hy : u T y = 0) :
     ∀ t ∈ Set.Icc 0 T, ∀ x : M, u t x = 0 := by
   apply scalar_strong_maximum_principle_fixed_metric_with_drift (I := I)
@@ -2817,7 +2817,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_positive
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
     {t : Real} (ht : t ∈ Set.Icc 0 T) {x : M} (hx : 0 < u t x)
     (y : M) :
     0 < u T y := by
@@ -2848,14 +2848,14 @@ private theorem potential_exp_rescale_super
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)) -
         V t x * u t x)
     (hV : ∀ t ∈ Set.Icc 0 T, ∀ x : M, L ≤ V t x) :
     ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t) (x : M),
       0 ≤ derivWithin
           (fun s => Real.exp (-L * s) * u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g
+        (ΔG (I := I) g
             ⟨fun y => Real.exp (-L * t) * u t y, hz_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g
             (fun y => Real.exp (-L * t) * u t y) x)) := by
@@ -2879,7 +2879,7 @@ private theorem potential_exp_rescale_super
     (hu_time t ht htpos x) hscale_time
   have hbase : 0 ≤
       derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)) -
         L * u t x := by
     have hVu : 0 ≤ (V t x - L) * u t x :=
@@ -2889,7 +2889,7 @@ private theorem potential_exp_rescale_super
     g T X u (hu_space t ht htpos) x
   have hopEqG : parabolicOperatorWithDrift (I := I) G T X u t x =
       derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)) := by
     simpa only [G] using hopEq
   have hoperator : 0 ≤
@@ -2906,7 +2906,7 @@ private theorem potential_exp_rescale_super
   have hopZG : parabolicOperatorWithDrift (I := I) G T X
       (fun s y => Real.exp (-L * s) * u s y) t x =
       derivWithin (fun s => Real.exp (-L * s) * u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g
+        (ΔG (I := I) g
             ⟨fun y => Real.exp (-L * t) * u t y, hz_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g
             (fun y => Real.exp (-L * t) * u t y) x)) := by
@@ -2936,7 +2936,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_and_potential
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)) -
         V t x * u t x)
     (hV : ∀ t ∈ Set.Icc 0 T, ∀ x : M, L ≤ V t x)
@@ -2994,7 +2994,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_and_potential_po
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)) -
         V t x * u t x)
     (hV : ∀ t ∈ Set.Icc 0 T, ∀ x : M, L ≤ V t x)

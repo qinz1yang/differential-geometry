@@ -37,7 +37,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 noncomputable def rawTensorConnLapSmooth
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
     SmoothCcTensor g r s :=
-  tensorConnLaplacian_of_contMDiff (I := I) g r s T
+  tensorConnLaplacianOfContMDiff (I := I) g r s T
     (rawTensorConnLap_contMDiff (I := I) g r s (fun z : M => T.toSection z)
       T.toSection.contMDiff_toFun)
 

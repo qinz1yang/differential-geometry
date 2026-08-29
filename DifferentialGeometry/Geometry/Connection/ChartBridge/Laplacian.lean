@@ -56,12 +56,12 @@ theorem lap_eq_hess_on [I.Boundaryless]
   classical
   let basis :
       Module.Basis (CoordinateIdx (𝕜 := ℝ) E) ℝ (TangentSpace I x) :=
-    coordinateFrameAt_toBasis (I := I) x
+    coordinateFrameAtToBasis (I := I) x
   let gInv : CoordinateIdx (𝕜 := ℝ) E → CoordinateIdx (𝕜 := ℝ) E → ℝ :=
     fun i j =>
-      inverseMetricFlatModelInChart_component (I := I) g x i j
+      inverseMetricFlatModelInChartComponent (I := I) g x i j
         (extChartAt I x x)
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis gInv :=
+  have hinv : MetricInverseInBasisGen (I := I) g x basis gInv :=
     inverseMetricFlatModelInChart_metricInverseInBasis_center (I := I) g x
   unfold laplacian divergence
   rw [linearMap_trace_eq_sum_inv_inner_apply
@@ -94,7 +94,7 @@ theorem laplacian_eq_chart_hessian_trace [I.Boundaryless]
     chartBasisFamily (I := I) α hbase
   let gInv : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
     fun i j => chartInvGramMatrix (I := I) g α x i j
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis gInv := by
+  have hinv : MetricInverseInBasisGen (I := I) g x basis gInv := by
     intro i j
     constructor
     · have hmatrix := congrArg (fun A => A i j)
@@ -124,7 +124,7 @@ omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] in
 theorem connLaplacian_function_eq_chartLaplacian [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    connLaplacian_function (I := I) g hf x = Δ_g (I := I) g ⟨_, hf⟩ x := rfl
+    connLaplacianFunction (I := I) g hf x = ΔG (I := I) g ⟨_, hf⟩ x := rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -134,7 +134,7 @@ theorem traceFun_abstractHessian_eq_laplacian [I.Boundaryless]
     (h_orth : ∀ i j : Fin (Module.finrank ℝ E),
       chartInvGramMatrix (I := I) g x x i j = if i = j then (1 : ℝ) else 0) :
     traceFun (I := I) (M := M) (abstractHessianBilin (I := I) g f) x =
-      Δ_g (I := I) g ⟨_, hf⟩ x := by
+      ΔG (I := I) g ⟨_, hf⟩ x := by
   classical
   have hM : chartHessianMatrixIdentity (I := I) g f x :=
     chartHessianMatrixIdentity_holds (I := I) g hf x
@@ -145,7 +145,7 @@ theorem traceFun_abstractHessian_eq_laplacian [I.Boundaryless]
   have h2 : traceFun (I := I) (M := M) (hessFun (I := I) g f) x =
       chartHessTrace (I := I) g f x :=
     traceFun_hessFun_eq_chartHessTrace_of_orthonormal (I := I) g f x h_orth
-  have h3 : chartHessTrace (I := I) g f x = Δ_g (I := I) g ⟨_, hf⟩ x :=
+  have h3 : chartHessTrace (I := I) g f x = ΔG (I := I) g ⟨_, hf⟩ x :=
     chartHessTrace_eq_laplacian_pointwise_of_boundaryless (I := I) g hf x
   rw [← h1, h2, h3]
 
@@ -157,7 +157,7 @@ theorem traceFun_abstractHessian_eq_connLaplacian [I.Boundaryless]
     (h_orth : ∀ i j : Fin (Module.finrank ℝ E),
       chartInvGramMatrix (I := I) g x x i j = if i = j then (1 : ℝ) else 0) :
     traceFun (I := I) (M := M) (abstractHessianBilin (I := I) g f) x =
-      connLaplacian_function (I := I) g hf x := by
+      connLaplacianFunction (I := I) g hf x := by
   rw [connLaplacian_function_eq_chartLaplacian (I := I) g hf x]
   exact traceFun_abstractHessian_eq_laplacian (I := I) g hf x h_orth
 

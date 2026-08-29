@@ -230,7 +230,7 @@ noncomputable def restrict
     exact ⟨k₀, fun k hk t ht a ha x hx =>
       hk₀ k hk t (hsub ht) a ha x hx⟩
 
-noncomputable def comp_subseq
+noncomputable def compSubseq
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth

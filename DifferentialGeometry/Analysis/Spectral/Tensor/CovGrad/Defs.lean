@@ -82,15 +82,15 @@ private noncomputable def covGradSmoothSection
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (w : SmoothCcTensor g r s) :=
   letI : NormedAddCommGroup (TensorRSModel r (s + 1) ℝ E) :=
-    tensorRSModel_normedAddCommGroup r (s + 1)
+    tensorRSModelNormedAddCommGroup r (s + 1)
   letI : NormedSpace ℝ (TensorRSModel r (s + 1) ℝ E) :=
-    tensorRSModel_normedSpace r (s + 1)
+    tensorRSModelNormedSpace r (s + 1)
   letI : TopologicalSpace (TotalSpace (TensorRSModel r (s + 1) ℝ E)
       (fun y : M => TensorRSSpace r (s + 1) I y)) :=
-    tensorRSBundle_topology r (s + 1)
+    tensorRSBundleTopology r (s + 1)
   letI : FiberBundle (TensorRSModel r (s + 1) ℝ E)
       (fun y : M => TensorRSSpace r (s + 1) I y) :=
-    tensorRSBundle_fiber r (s + 1)
+    tensorRSBundleFiber r (s + 1)
   letI : VectorBundle ℝ (TensorRSModel r (s + 1) ℝ E)
       (fun y : M => TensorRSSpace r (s + 1) I y) :=
     tensorRSBundle_vector r (s + 1)

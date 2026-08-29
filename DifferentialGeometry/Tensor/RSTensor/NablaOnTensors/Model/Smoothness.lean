@@ -32,7 +32,7 @@ theorem contDiffWithinAt_covariantDeriv_tensor0SModelWithin (s : ℕ)
     (hΓ : ContDiffWithinAt 𝕜 m ΓX u x)
     (hu : UniqueDiffOn 𝕜 u) (hmn : m + 1 ≤ n') (hx : x ∈ u) :
     ContDiffWithinAt 𝕜 m
-      (fun y => covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E)
+      (fun y => covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E)
         s X ΓX α u y) u x := by
   have hprincipal :
       ContDiffWithinAt 𝕜 m
@@ -42,18 +42,18 @@ theorem contDiffWithinAt_covariantDeriv_tensor0SModelWithin (s : ℕ)
     hα.of_le (le_trans le_self_add hmn)
   have hCorrOp :
       ContDiffWithinAt 𝕜 m
-        (fun y => lieDeriv_correctionL (𝕜 := 𝕜) (E := E) s (ΓX y)) u x := by
+        (fun y => lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s (ΓX y)) u x := by
     let h := hΓ.continuousLinearMap_comp
-      (lieDeriv_correctionOpL (𝕜 := 𝕜) (E := E) s)
+      (lieDerivCorrectionOpL (𝕜 := 𝕜) (E := E) s)
     exact h.congr_of_eventuallyEq
       (Eventually.of_forall fun y ↦
         (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := s) (ΓX y)).symm)
       (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := s) (ΓX x)).symm
   have hCorr :
       ContDiffWithinAt 𝕜 m
-        (fun y => lieDeriv_correction (𝕜 := 𝕜) (E := E) s (ΓX y) (α y)) u x := by
-    simpa [lieDeriv_correctionL] using hCorrOp.clm_apply hα_m
-  simpa [covariantDeriv_tensor0SModelWithin, covariantDeriv_tensor0SModelAt] using
+        (fun y => lieDerivCorrection (𝕜 := 𝕜) (E := E) s (ΓX y) (α y)) u x := by
+    simpa [lieDerivCorrectionL] using hCorrOp.clm_apply hα_m
+  simpa [covariantDerivTensor0SModelWithin, covariantDerivTensor0SModelAt] using
     hprincipal.sub hCorr
 
 theorem contDiffWithinAt_covariantDeriv_tensorRSModelWithin (r s : ℕ)
@@ -65,7 +65,7 @@ theorem contDiffWithinAt_covariantDeriv_tensorRSModelWithin (r s : ℕ)
     (hΓ : ContDiffWithinAt 𝕜 m ΓX u x)
     (hu : UniqueDiffOn 𝕜 u) (hmn : m + 1 ≤ n') (hx : x ∈ u) :
     ContDiffWithinAt 𝕜 m
-      (fun y => covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E)
+      (fun y => covariantDerivTensorRSModelWithin (𝕜 := 𝕜) (E := E)
         r s X ΓX T u y) u x := by
   have hprincipal :
       ContDiffWithinAt 𝕜 m
@@ -75,31 +75,31 @@ theorem contDiffWithinAt_covariantDeriv_tensorRSModelWithin (r s : ℕ)
     hT.of_le (le_trans le_self_add hmn)
   have hCorrS :
       ContDiffWithinAt 𝕜 m
-        (fun y => lieDeriv_correctionL (𝕜 := 𝕜) (E := E) s (ΓX y)) u x := by
+        (fun y => lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s (ΓX y)) u x := by
     let h := hΓ.continuousLinearMap_comp
-      (lieDeriv_correctionOpL (𝕜 := 𝕜) (E := E) s)
+      (lieDerivCorrectionOpL (𝕜 := 𝕜) (E := E) s)
     exact h.congr_of_eventuallyEq
       (Eventually.of_forall fun y ↦
         (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := s) (ΓX y)).symm)
       (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := s) (ΓX x)).symm
   have hCorrR :
       ContDiffWithinAt 𝕜 m
-        (fun y => lieDeriv_correctionL (𝕜 := 𝕜) (E := E) r (ΓX y)) u x := by
+        (fun y => lieDerivCorrectionL (𝕜 := 𝕜) (E := E) r (ΓX y)) u x := by
     let h := hΓ.continuousLinearMap_comp
-      (lieDeriv_correctionOpL (𝕜 := 𝕜) (E := E) r)
+      (lieDerivCorrectionOpL (𝕜 := 𝕜) (E := E) r)
     exact h.congr_of_eventuallyEq
       (Eventually.of_forall fun y ↦
         (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := r) (ΓX y)).symm)
       (lieDeriv_correctionOpL_apply (𝕜 := 𝕜) (E := E) (s := r) (ΓX x)).symm
   have hOut :
       ContDiffWithinAt 𝕜 m
-        (fun y => (lieDeriv_correctionL (𝕜 := 𝕜) (E := E) s (ΓX y)).comp (T y)) u x :=
+        (fun y => (lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s (ΓX y)).comp (T y)) u x :=
     hCorrS.clm_comp hT_m
   have hIn :
       ContDiffWithinAt 𝕜 m
-        (fun y => (T y).comp (lieDeriv_correctionL (𝕜 := 𝕜) (E := E) r (ΓX y))) u x :=
+        (fun y => (T y).comp (lieDerivCorrectionL (𝕜 := 𝕜) (E := E) r (ΓX y))) u x :=
     hT_m.clm_comp hCorrR
-  simpa [covariantDeriv_tensorRSModelWithin, covariantDeriv_tensorRSModelAt] using
+  simpa [covariantDerivTensorRSModelWithin, covariantDerivTensorRSModelAt] using
     (hprincipal.sub hOut).add hIn
 
 end ModelCovariantDerivative

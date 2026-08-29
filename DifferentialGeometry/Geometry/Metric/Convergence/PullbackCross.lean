@@ -480,7 +480,7 @@ theorem normSq0S_pullbackCross_eval_of_orthonormal
     rw [Diffeomorph.pullbackMetricCross_inner] at hsrc
     simpa [hbasis'_apply i, hbasis'_apply j] using hsrc
   have hinv :
-      MetricInverseInBasis_gen (I := I)
+      MetricInverseInBasisGen (I := I)
         (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi) x basis
         (identityInvMetric (Idx := Idx)) := by
     have h := metricInverseInBasis_of_orthonormal
@@ -488,7 +488,7 @@ theorem normSq0S_pullbackCross_eval_of_orthonormal
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using h i j
   have hinv' :
-      MetricInverseInBasis_gen (I := J) g (Phi x) basis'
+      MetricInverseInBasisGen (I := J) g (Phi x) basis'
         (identityInvMetric (Idx := Idx)) := by
     have h := metricInverseInBasis_of_orthonormal (I := J) g basis' hON'
     intro i j
@@ -539,7 +539,7 @@ theorem metricScalar_cross
     rw [Diffeomorph.pullbackMetricCross_inner] at hsrc
     simpa [hbasis'_apply i, hbasis'_apply j] using hsrc
   have hinv :
-      MetricInverseInBasis_gen (I := I)
+      MetricInverseInBasisGen (I := I)
         (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi)
         x basis identityInvMetric := by
     intro i j
@@ -549,7 +549,7 @@ theorem metricScalar_cross
         (Diffeomorph.pullbackMetricCross (I := I) (J := J) g Phi)
         basis hON i j
   have hinv' :
-      MetricInverseInBasis_gen (I := J) g (Phi x) basis'
+      MetricInverseInBasisGen (I := J) g (Phi x) basis'
         identityInvMetric := by
     intro i j
     simpa [identityInvMetric, diagonalInvMetric] using

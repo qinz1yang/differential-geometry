@@ -21,7 +21,7 @@ variable {d : ℕ} [NeZero d]
 
 local notation "E" => EuclideanSpace ℝ (Fin d)
 local notation "Cmo" =>
-  ((volume.real (Metric.ball (0 : E) 1)) ^ (-(1 / 2 : ℝ)) * C_poinc_val d)
+  ((volume.real (Metric.ball (0 : E) 1)) ^ (-(1 / 2 : ℝ)) * CPoincVal d)
 
 
 /-! ### Crossover Exponential Integrability
@@ -226,7 +226,7 @@ theorem weak_harnack_stage_one_forward_ball
         ∫ x in Metric.ball x₀ (R / 2 : ℝ),
           |u x| ^ (q * (d : ℝ) / ((d : ℝ) - 2)) ∂volume)) ^
           (p * (((d : ℝ) - 2) / (q * (d : ℝ)))) ≤
-      C_weakHarnack0Forward (d := d) hd *
+      CWeakHarnack0Forward (d := d) hd *
         (A.1.Λ * p ^ 2 / (1 - q) ^ 2 + 1) ^ (((d : ℝ) * moserChi d) / 2) *
         ((R ^ Module.finrank ℝ E)⁻¹ *
           ∫ x in Metric.ball x₀ R, |u x| ^ p ∂volume) := by
@@ -290,7 +290,7 @@ theorem weak_harnack_stage_one_inverse_ball
     (A.1.Λ * p ^ 2 + 1) ^ (-(d : ℝ) / 2) *
         ((R ^ Module.finrank ℝ E)⁻¹ *
           ∫ x in Metric.ball x₀ R, |(u x)⁻¹| ^ p ∂volume)⁻¹ ≤
-      C_weakHarnack0 d *
+      CWeakHarnack0 d *
         (essInf u (volume.restrict (Metric.ball x₀ (R / 2 : ℝ)))) ^ p := by
   let ALoc : NormalizedEllipticCoeff d (Metric.ball x₀ R) :=
     NormalizedEllipticCoeff.restrict A (Metric.ball_subset_closedBall.trans hsub)
@@ -345,7 +345,7 @@ theorem regularizedLog_unit_halfBall_meanOscillation
     let v := regularizedLogFun (u := u) hε
     (⨍ x in Metric.ball (0 : E) (1 / 2 : ℝ),
         |v x - ⨍ y in Metric.ball (0 : E) (1 / 2 : ℝ), v y ∂volume| ∂volume) ≤
-      c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
+      cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
   intro v
   let Ω : Set E := Metric.ball (0 : E) 1
   let Bhalf : Set E := Metric.ball (0 : E) (1 / 2 : ℝ)
@@ -570,21 +570,21 @@ theorem regularizedLog_unit_halfBall_meanOscillation
             have hfac_nonneg : 0 ≤ Cmo * (1 / 2 : ℝ) ^ (1 - (d : ℝ) / 2) := by
               have hd_pos : 0 < d := Nat.pos_of_ne_zero (NeZero.ne d)
               rw [show Cmo =
-                (volume.real (Metric.ball (0 : E) 1)) ^ (-(1 / 2 : ℝ)) * C_poinc_val d by rfl]
+                (volume.real (Metric.ball (0 : E) 1)) ^ (-(1 / 2 : ℝ)) * CPoincVal d by rfl]
               exact mul_nonneg
                 (mul_nonneg
                   (Real.rpow_nonneg MeasureTheory.measureReal_nonneg _)
                   (C_poinc_val_pos hd_pos).le)
                 (Real.rpow_nonneg (by positivity : 0 ≤ (1 / 2 : ℝ)) _)
             exact mul_le_mul_of_nonneg_left hgrad_lp_bound hfac_nonneg
-    _ = c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
+    _ = cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
           change
-            (((volume.real (Metric.ball (0 : E) 1)) ^ (-(1 / 2 : ℝ)) * C_poinc_val d) *
+            (((volume.real (Metric.ball (0 : E) 1)) ^ (-(1 / 2 : ℝ)) * CPoincVal d) *
               (1 / 2 : ℝ) ^ (1 - (d : ℝ) / 2) *
               (8 * (Mst : ℝ) * A.1.Λ ^ ((1 : ℝ) / 2) *
                 (volume.real (Metric.ball (0 : E) 1)) ^ ((1 : ℝ) / 2))) =
-              c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2)
-          simp [c_crossover_bmo_scale, mul_assoc, mul_left_comm, mul_comm]
+              cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2)
+          simp [cCrossoverBmoScale, mul_assoc, mul_left_comm, mul_comm]
 
 theorem regularizedLog_ball_meanOscillation
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
@@ -597,7 +597,7 @@ theorem regularizedLog_ball_meanOscillation
     let v := regularizedLogFun (u := u) hε
     (⨍ x in Metric.ball x₀ (R / 2 : ℝ),
         |v x - ⨍ y in Metric.ball x₀ (R / 2 : ℝ), v y ∂volume| ∂volume) ≤
-      c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
+      cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
   intro v
   let ALoc : NormalizedEllipticCoeff d (Metric.ball x₀ R) :=
     NormalizedEllipticCoeff.restrict A (Metric.ball_subset_closedBall.trans hsub)
@@ -648,7 +648,7 @@ theorem regularizedLog_ball_meanOscillation
   have hunit' :
       (⨍ z in Metric.ball (0 : E) (1 / 2 : ℝ),
         |v (x₀ + R • z) - ⨍ y in Metric.ball x₀ (R / 2 : ℝ), v y ∂volume| ∂volume) ≤
-      c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
+      cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
     have hcomp :
         (fun z => regularizedLogFun (u := uR) hε z) =
           fun z => v (x₀ + R • z) := by
@@ -665,14 +665,14 @@ theorem regularizedLog_ball_meanOscillation
           |regularizedLogFun (u := uR) hε z -
               ⨍ y in Metric.ball (0 : E) (1 / 2 : ℝ),
                 regularizedLogFun (u := uR) hε y ∂volume| ∂volume) ≤
-        c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
+        cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
       simpa [AR, ALoc, rescaleNormalizedCoeffToUnitBall, rescaleCoeffToUnitBall,
         NormalizedEllipticCoeff.restrict, EllipticCoeff.restrict] using hunit
     have hunit''' :
         (⨍ z in Metric.ball (0 : E) (1 / 2 : ℝ),
           |v (x₀ + R • z) -
               ⨍ y in Metric.ball (0 : E) (1 / 2 : ℝ), v (x₀ + R • y) ∂volume| ∂volume) ≤
-        c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
+        cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
       simpa [hcomp] using hunit''
     have hunit'''' := hunit'''
     rw [havg'] at hunit''''
@@ -680,15 +680,15 @@ theorem regularizedLog_ball_meanOscillation
   rw [hrescale]
   exact hunit'
 
-lemma crossover_bmo_scale_nonneg : 0 ≤ c_crossover_bmo_scale d := by
+lemma crossover_bmo_scale_nonneg : 0 ≤ cCrossoverBmoScale d := by
   let B1 : Set E := Metric.ball (0 : E) 1
   have hvol_pos : 0 < volume.real B1 := by
     exact ENNReal.toReal_pos
       (measure_ball_pos (μ := volume) (0 : E) (by norm_num : (0 : ℝ) < 1)).ne'
       (measure_ball_lt_top (μ := volume) (x := (0 : E)) (r := (1 : ℝ))).ne
   have hd_pos : 0 < d := Nat.pos_of_ne_zero (NeZero.ne d)
-  have hCp_nonneg : 0 ≤ C_poinc_val d := le_of_lt (C_poinc_val_pos (d := d) hd_pos)
-  unfold c_crossover_bmo_scale
+  have hCp_nonneg : 0 ≤ CPoincVal d := le_of_lt (C_poinc_val_pos (d := d) hd_pos)
+  unfold cCrossoverBmoScale
   have h1 : 0 ≤ (volume.real B1) ^ (-(1 / 2 : ℝ)) := by
     exact Real.rpow_nonneg hvol_pos.le _
   have h2 : 0 ≤ (1 / 2 : ℝ) ^ (1 - (d : ℝ) / 2) := by
@@ -699,7 +699,7 @@ lemma crossover_bmo_scale_nonneg : 0 ≤ c_crossover_bmo_scale d := by
     · exact Real.rpow_nonneg hvol_pos.le _
   have hleft_nonneg :
       0 ≤
-        ((volume.real B1) ^ (-(1 / 2 : ℝ)) * C_poinc_val d) := by
+        ((volume.real B1) ^ (-(1 / 2 : ℝ)) * CPoincVal d) := by
     exact mul_nonneg h1 hCp_nonneg
   have hright_nonneg :
       0 ≤
@@ -708,32 +708,32 @@ lemma crossover_bmo_scale_nonneg : 0 ≤ c_crossover_bmo_scale d := by
     exact mul_nonneg h2 h3
   have hfirst_nonneg :
       0 ≤
-        ((volume.real B1) ^ (-(1 / 2 : ℝ)) * C_poinc_val d) *
+        ((volume.real B1) ^ (-(1 / 2 : ℝ)) * CPoincVal d) *
           (1 / 2 : ℝ) ^ (1 - (d : ℝ) / 2) := by
     exact mul_nonneg hleft_nonneg h2
   have htotal_nonneg :
       0 ≤
-        (((volume.real B1) ^ (-(1 / 2 : ℝ)) * C_poinc_val d) *
+        (((volume.real B1) ^ (-(1 / 2 : ℝ)) * CPoincVal d) *
           (1 / 2 : ℝ) ^ (1 - (d : ℝ) / 2)) *
           (8 * (Mst : ℝ) * (volume.real B1) ^ ((1 : ℝ) / 2)) := by
     exact mul_nonneg hfirst_nonneg h3
-  simpa [c_crossover_bmo_scale, B1, mul_assoc] using htotal_nonneg
+  simpa [cCrossoverBmoScale, B1, mul_assoc] using htotal_nonneg
 
-lemma crossoverC'_pos : 0 < c_crossover' d := by
-  unfold c_crossover'
-  have hbmo_nonneg : 0 ≤ c_crossover_bmo_scale d := crossover_bmo_scale_nonneg (d := d)
-  have hCJN_nonneg : 0 ≤ C_JN d := (C_JN_pos d).le
-  have hX_nonneg : 0 ≤ C_JN d * c_crossover_bmo_scale d := by
+lemma crossoverC'_pos : 0 < cCrossover' d := by
+  unfold cCrossover'
+  have hbmo_nonneg : 0 ≤ cCrossoverBmoScale d := crossover_bmo_scale_nonneg (d := d)
+  have hCJN_nonneg : 0 ≤ CJN d := (C_JN_pos d).le
+  have hX_nonneg : 0 ≤ CJN d * cCrossoverBmoScale d := by
     exact mul_nonneg hCJN_nonneg hbmo_nonneg
-  have hden_pos : 0 < 2 * C_JN d * c_crossover_bmo_scale d + 1 := by
+  have hden_pos : 0 < 2 * CJN d * cCrossoverBmoScale d + 1 := by
     nlinarith
   simpa [one_div] using (inv_pos.mpr hden_pos)
 
-lemma c_crossover'_le_one : c_crossover' d ≤ 1 := by
-  unfold c_crossover'
-  have hbmo_nonneg : 0 ≤ c_crossover_bmo_scale d := crossover_bmo_scale_nonneg (d := d)
-  have hCJN_nonneg : 0 ≤ C_JN d := (C_JN_pos d).le
-  have hden_ge_one : 1 ≤ 2 * C_JN d * c_crossover_bmo_scale d + 1 := by
+lemma c_crossover'_le_one : cCrossover' d ≤ 1 := by
+  unfold cCrossover'
+  have hbmo_nonneg : 0 ≤ cCrossoverBmoScale d := crossover_bmo_scale_nonneg (d := d)
+  have hCJN_nonneg : 0 ≤ CJN d := (C_JN_pos d).le
+  have hden_ge_one : 1 ≤ 2 * CJN d * cCrossoverBmoScale d + 1 := by
     nlinarith
   simpa [one_div] using (inv_le_one_of_one_le₀ hden_ge_one)
 
@@ -749,8 +749,8 @@ theorem crossover_abs_rpow_neg_eq_abs_inv_rpow
 
 lemma c_crossover_mul_bmo_le_half
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1)) :
-    (c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) * C_JN d *
-        (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2)) ≤
+    (cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) * CJN d *
+        (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2)) ≤
       1 / 2 := by
   have hΛpos : 0 < A.1.Λ ^ ((1 : ℝ) / 2) := by
     have hΛge : 1 ≤ A.1.Λ := by
@@ -759,31 +759,31 @@ lemma c_crossover_mul_bmo_le_half
       simpa using this
     exact Real.rpow_pos_of_pos (lt_of_lt_of_le (by norm_num : (0 : ℝ) < 1) hΛge) _
   have hcancel :
-      (c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) *
-          (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2)) =
-        c_crossover' d * c_crossover_bmo_scale d := by
+      (cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) *
+          (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2)) =
+        cCrossover' d * cCrossoverBmoScale d := by
     field_simp [hΛpos.ne']
-  have hscale_nonneg : 0 ≤ c_crossover_bmo_scale d := crossover_bmo_scale_nonneg (d := d)
-  have hCJN_nonneg : 0 ≤ C_JN d := (C_JN_pos d).le
+  have hscale_nonneg : 0 ≤ cCrossoverBmoScale d := crossover_bmo_scale_nonneg (d := d)
+  have hCJN_nonneg : 0 ≤ CJN d := (C_JN_pos d).le
   calc
-    (c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) * C_JN d *
-        (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2))
-        = c_crossover' d * C_JN d * c_crossover_bmo_scale d := by
+    (cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) * CJN d *
+        (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2))
+        = cCrossover' d * CJN d * cCrossoverBmoScale d := by
             calc
-              (c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) * C_JN d *
-                  (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2))
-                  = C_JN d *
-                      ((c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) *
-                        (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2))) := by
+              (cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) * CJN d *
+                  (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2))
+                  = CJN d *
+                      ((cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)) *
+                        (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2))) := by
                           ring
-              _ = C_JN d * (c_crossover' d * c_crossover_bmo_scale d) := by rw [hcancel]
-              _ = c_crossover' d * C_JN d * c_crossover_bmo_scale d := by ring
-    _ = (C_JN d * c_crossover_bmo_scale d) /
-          (2 * C_JN d * c_crossover_bmo_scale d + 1) := by
-            unfold c_crossover'
+              _ = CJN d * (cCrossover' d * cCrossoverBmoScale d) := by rw [hcancel]
+              _ = cCrossover' d * CJN d * cCrossoverBmoScale d := by ring
+    _ = (CJN d * cCrossoverBmoScale d) /
+          (2 * CJN d * cCrossoverBmoScale d + 1) := by
+            unfold cCrossover'
             field_simp
     _ ≤ 1 / 2 := by
-          let X : ℝ := C_JN d * c_crossover_bmo_scale d
+          let X : ℝ := CJN d * cCrossoverBmoScale d
           have hX_nonneg : 0 ≤ X := by
             dsimp [X]
             exact mul_nonneg hCJN_nonneg hscale_nonneg
@@ -879,7 +879,7 @@ theorem regularizedLog_smallBallAverage_step_le
     |⨍ z in Metric.ball x (1 / 48 : ℝ), v z ∂volume -
         ⨍ z in Metric.ball y (1 / 48 : ℝ), v z ∂volume|
       ≤ (2 : ℝ) ^ (d + 1) *
-          (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
+          (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
   intro v
   let c : E := midpoint ℝ x y
   have hr : 0 < (1 / 48 : ℝ) := by norm_num
@@ -916,7 +916,7 @@ theorem regularizedLog_smallBallAverage_step_le
   have hoscx :
       (⨍ z in Metric.ball x (1 / 48 : ℝ),
         |v z - ⨍ w in Metric.ball x (1 / 48 : ℝ), v w ∂volume| ∂volume) ≤
-      c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
+      cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
     have hRhalf : ((1 / 24 : ℝ) / 2) = (1 / 48 : ℝ) := by ring
     have hoscx' :=
       regularizedLog_ball_meanOscillation (d := d) (A := A)
@@ -927,7 +927,7 @@ theorem regularizedLog_smallBallAverage_step_le
   have hoscy :
       (⨍ z in Metric.ball y (1 / 48 : ℝ),
         |v z - ⨍ w in Metric.ball y (1 / 48 : ℝ), v w ∂volume| ∂volume) ≤
-      c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
+      cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
     have hRhalf : ((1 / 24 : ℝ) / 2) = (1 / 48 : ℝ) := by ring
     have hoscy' :=
       regularizedLog_ball_meanOscillation (d := d) (A := A)
@@ -965,24 +965,24 @@ theorem regularizedLog_smallBallAverage_step_le
           · simpa using
               abs_halfSubballAverage_sub_ballAverage_le (u := v) hr hsuby hinty
     _ ≤ (2 : ℝ) ^ (d + 1) *
-          (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
+          (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
           have hxterm :
               (2 : ℝ) ^ d *
                   (⨍ z in Metric.ball x (1 / 48 : ℝ),
                     |v z - ⨍ w in Metric.ball x (1 / 48 : ℝ), v w ∂volume| ∂volume) ≤
-                (2 : ℝ) ^ d * (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
+                (2 : ℝ) ^ d * (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
             exact mul_le_mul_of_nonneg_left hoscx (by positivity)
           have hyterm :
               (2 : ℝ) ^ d *
                   (⨍ z in Metric.ball y (1 / 48 : ℝ),
                     |v z - ⨍ w in Metric.ball y (1 / 48 : ℝ), v w ∂volume| ∂volume) ≤
-                (2 : ℝ) ^ d * (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
+                (2 : ℝ) ^ d * (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
             exact mul_le_mul_of_nonneg_left hoscy (by positivity)
           have hsum_le := add_le_add hxterm hyterm
           have hpow :
-              (2 : ℝ) ^ (d + 1) * (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2)) =
-                (2 : ℝ) ^ d * (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2)) +
-                  (2 : ℝ) ^ d * (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
+              (2 : ℝ) ^ (d + 1) * (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2)) =
+                (2 : ℝ) ^ d * (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2)) +
+                  (2 : ℝ) ^ d * (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
             rw [pow_succ']
             ring
           rw [hpow]
@@ -1067,13 +1067,13 @@ lemma regularizedLogMeasurable_ball_meanOscillation
     let v := regularizedLogMeasurable (A := A) hu_pos hsuper hε
     (⨍ x in Metric.ball x₀ (R / 2 : ℝ),
         |v x - ⨍ y in Metric.ball x₀ (R / 2 : ℝ), v y ∂volume| ∂volume) ≤
-      c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
+      cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2) := by
   intro v
   let v0 : E → ℝ := regularizedLogFun (u := u) hε
   have hbase :
       (⨍ x in Metric.ball x₀ (R / 2 : ℝ),
         |v0 x - ⨍ y in Metric.ball x₀ (R / 2 : ℝ), v0 y ∂volume| ∂volume) ≤
-      c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2) :=
+      cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2) :=
     regularizedLog_ball_meanOscillation (d := d) (A := A)
       (x₀ := x₀) (R := R) hR hsub hu_pos hsuper hε
   have hballsub : Metric.ball x₀ (R / 2 : ℝ) ⊆ Metric.ball (0 : E) 1 := by
@@ -1116,7 +1116,7 @@ lemma regularizedLogMeasurable_ball_meanOscillation
       (⨍ x in Metric.ball x₀ (R / 2 : ℝ),
         |v0 x - ⨍ y in Metric.ball x₀ (R / 2 : ℝ), v0 y ∂volume| ∂volume) := by
           simpa [avg0, avg] using hosc_avg_eq.symm
-    _ ≤ c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2) := hbase
+    _ ≤ cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2) := hbase
 
 theorem regularizedLog_smallBallAverage_step_le_measurable
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
@@ -1132,14 +1132,14 @@ theorem regularizedLog_smallBallAverage_step_le_measurable
     |⨍ z in Metric.ball x (1 / 48 : ℝ), v z ∂volume -
         ⨍ z in Metric.ball y (1 / 48 : ℝ), v z ∂volume|
       ≤ (2 : ℝ) ^ (d + 1) *
-          (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
+          (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
   intro v
   let v0 : E → ℝ := regularizedLogFun (u := u) hε
   have hbase :
       |⨍ z in Metric.ball x (1 / 48 : ℝ), v0 z ∂volume -
           ⨍ z in Metric.ball y (1 / 48 : ℝ), v0 z ∂volume|
         ≤ (2 : ℝ) ^ (d + 1) *
-            (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2)) :=
+            (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2)) :=
     regularizedLog_smallBallAverage_step_le (d := d) (A := A)
       hu_pos hsuper hε hx hy hxy
   have hsubx : Metric.ball x (1 / 48 : ℝ) ⊆ Metric.ball (0 : E) 1 :=
@@ -1185,9 +1185,9 @@ theorem regularizedLog_smallBallAverage_to_origin_le
     |⨍ z in Metric.ball x (1 / 48 : ℝ), v z ∂volume -
         ⨍ z in Metric.ball (0 : E) (1 / 48 : ℝ), v z ∂volume|
       ≤ 24 * (2 : ℝ) ^ (d + 1) *
-          (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
+          (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
   intro v
-  let L : ℝ := (2 : ℝ) ^ (d + 1) * (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2))
+  let L : ℝ := (2 : ℝ) ^ (d + 1) * (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2))
   let xk : ℕ → E := fun k => (((k : ℝ) / 24 : ℝ)) • x
   let avgAt : E → ℝ := fun c => ⨍ z in Metric.ball c (1 / 48 : ℝ), v z ∂volume
   have hΛ_nonneg : 0 ≤ A.1.Λ := by
@@ -1360,20 +1360,20 @@ theorem regularizedLog_smallBall_exp_average_le
     {x₀ : E}
     (hx₀ : x₀ ∈ Metric.closedBall (0 : E) (1 / 2 : ℝ)) :
     let v := regularizedLogMeasurable (A := A) hu_pos hsuper hε
-    let p := c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)
+    let p := cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)
     IntegrableOn
       (fun z => Real.exp (p * |v z - ⨍ y in Metric.ball x₀ (1 / 48 : ℝ), v y ∂volume|))
       (Metric.ball x₀ (1 / 48 : ℝ)) volume ∧
     (⨍ z in Metric.ball x₀ (1 / 48 : ℝ),
       Real.exp (p * |v z - ⨍ y in Metric.ball x₀ (1 / 48 : ℝ), v y ∂volume|) ∂volume)
-      ≤ 1 + C_JN d := by
+      ≤ 1 + CJN d := by
   intro v p
   let B : Set E := Metric.ball x₀ (1 / 48 : ℝ)
   let μ : Measure E := volume.restrict B
   let avg : ℝ := ⨍ y in B, v y ∂volume
   let f : E → ℝ := fun z => ‖v z - avg‖
-  let M : ℝ := c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2)
-  let β : ℝ := 1 / (C_JN d * M)
+  let M : ℝ := cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2)
+  let β : ℝ := 1 / (CJN d * M)
   let : IsFiniteMeasure μ := by
     refine ⟨?_⟩
     simpa [μ, B] using
@@ -1384,20 +1384,20 @@ theorem regularizedLog_smallBall_exp_average_le
       rw [A.2] at this
       simpa using this
     exact Real.rpow_pos_of_pos (lt_of_lt_of_le (by norm_num : (0 : ℝ) < 1) hΛge) _
-  have hbmo_scale_pos : 0 < c_crossover_bmo_scale d := by
+  have hbmo_scale_pos : 0 < cCrossoverBmoScale d := by
     let B1 : Set E := Metric.ball (0 : E) 1
     have hvol_pos : 0 < volume.real B1 := by
       exact ENNReal.toReal_pos
         (measure_ball_pos (μ := volume) (0 : E) (by norm_num : (0 : ℝ) < 1)).ne'
         (measure_ball_lt_top (μ := volume) (x := (0 : E)) (r := (1 : ℝ))).ne
     have hd_pos : 0 < d := Nat.pos_of_ne_zero (NeZero.ne d)
-    have hCp_pos : 0 < C_poinc_val d := C_poinc_val_pos (d := d) hd_pos
+    have hCp_pos : 0 < CPoincVal d := C_poinc_val_pos (d := d) hd_pos
     have hMst_ge_one : (1 : ℝ) ≤ (Mst : ℝ) := by
       have hLip := smoothTransition_lipschitz
       simpa using hLip.dist_le_mul 1 0
     have hMst_pos : 0 < (Mst : ℝ) := by
       linarith
-    unfold c_crossover_bmo_scale
+    unfold cCrossoverBmoScale
     have h1 : 0 < (volume.real B1) ^ (-(1 / 2 : ℝ)) := by
       exact Real.rpow_pos_of_pos hvol_pos _
     have h2 : 0 < (1 / 2 : ℝ) ^ (1 - (d : ℝ) / 2) := by
@@ -1407,41 +1407,41 @@ theorem regularizedLog_smallBall_exp_average_le
       · exact mul_pos (by positivity) hMst_pos
       · exact Real.rpow_pos_of_pos hvol_pos _
     have hleft_pos :
-        0 < ((volume.real B1) ^ (-(1 / 2 : ℝ)) * C_poinc_val d) := by
+        0 < ((volume.real B1) ^ (-(1 / 2 : ℝ)) * CPoincVal d) := by
       exact mul_pos h1 hCp_pos
     have hfirst_pos :
         0 <
-          ((volume.real B1) ^ (-(1 / 2 : ℝ)) * C_poinc_val d) *
+          ((volume.real B1) ^ (-(1 / 2 : ℝ)) * CPoincVal d) *
             (1 / 2 : ℝ) ^ (1 - (d : ℝ) / 2) := by
       exact mul_pos hleft_pos h2
     have htotal_pos :
         0 <
-          (((volume.real B1) ^ (-(1 / 2 : ℝ)) * C_poinc_val d) *
+          (((volume.real B1) ^ (-(1 / 2 : ℝ)) * CPoincVal d) *
             (1 / 2 : ℝ) ^ (1 - (d : ℝ) / 2)) *
             (8 * (Mst : ℝ) * (volume.real B1) ^ ((1 : ℝ) / 2)) := by
       exact mul_pos hfirst_pos h3
-    simpa [c_crossover_bmo_scale, B1, mul_assoc] using htotal_pos
+    simpa [cCrossoverBmoScale, B1, mul_assoc] using htotal_pos
   have hM_pos : 0 < M := by
     dsimp [M]
     exact mul_pos hbmo_scale_pos hΛsqrt_pos
   have hp_pos : 0 < p := by
     dsimp [p]
     exact div_pos (crossoverC'_pos (d := d)) hΛsqrt_pos
-  have hCM_pos : 0 < C_JN d * M := by
+  have hCM_pos : 0 < CJN d * M := by
     exact mul_pos (C_JN_pos d) hM_pos
   have hβ_pos : 0 < β := by
     dsimp [β]
     positivity
   have hp_le_halfbeta : p ≤ β / 2 := by
     have hmain :
-        p * (C_JN d * M) ≤ 1 / 2 := by
+        p * (CJN d * M) ≤ 1 / 2 := by
       dsimp [p, M]
       simpa [mul_assoc, mul_left_comm, mul_comm] using
         c_crossover_mul_bmo_le_half (d := d) (A := A)
-    have htwo : p * (2 * (C_JN d * M)) ≤ 1 := by
+    have htwo : p * (2 * (CJN d * M)) ≤ 1 := by
       nlinarith
-    have hden_pos : 0 < 2 * (C_JN d * M) := by positivity
-    have hdiv : p ≤ 1 / (2 * (C_JN d * M)) := by
+    have hden_pos : 0 < 2 * (CJN d * M) := by positivity
+    have hdiv : p ≤ 1 / (2 * (CJN d * M)) := by
       exact (le_div_iff₀ hden_pos).2 htwo
     simpa [β, div_eq_mul_inv, mul_assoc, mul_left_comm, mul_comm] using hdiv
   have hBsub : Metric.ball x₀ (1 / 8 : ℝ) ⊆ Metric.ball (0 : E) 1 :=
@@ -1479,8 +1479,8 @@ theorem regularizedLog_smallBall_exp_average_le
   have hJN :
       ∀ {t : ℝ}, 0 < t →
         μ {a : E | t < f a} ≤
-          ENNReal.ofReal (C_JN d) * μ Set.univ *
-            ENNReal.ofReal (Real.exp (-t / (C_JN d * M))) := by
+          ENNReal.ofReal (CJN d) * μ Set.univ *
+            ENNReal.ofReal (Real.exp (-t / (CJN d * M))) := by
     intro t ht
     have hbase :=
       john_nirenberg_local (d := d) (u := v) (x₀ := x₀) (R := (1 / 48 : ℝ))
@@ -1549,23 +1549,23 @@ theorem regularizedLog_smallBall_exp_average_le
     linarith
   have hmajor :
       ∫⁻ t in Set.Ioi 0, μ {a : E | t < f a} * ENNReal.ofReal (p * Real.exp (p * t))
-        ≤ ENNReal.ofReal (C_JN d) * μ Set.univ *
+        ≤ ENNReal.ofReal (CJN d) * μ Set.univ *
             ∫⁻ t in Set.Ioi 0, ENNReal.ofReal (p * Real.exp (-(β / 2) * t)) := by
     calc
       ∫⁻ t in Set.Ioi 0, μ {a : E | t < f a} * ENNReal.ofReal (p * Real.exp (p * t))
           ≤
             ∫⁻ t in Set.Ioi 0,
-              ENNReal.ofReal (C_JN d) * μ Set.univ *
+              ENNReal.ofReal (CJN d) * μ Set.univ *
                 ENNReal.ofReal (p * Real.exp (-(β / 2) * t)) := by
                   refine lintegral_mono_ae ?_
                   rw [ae_restrict_iff' measurableSet_Ioi]
                   filter_upwards with t ht
                   have htail := hJN ht
                   have hexp_le :
-                      Real.exp (-t / (C_JN d * M)) * Real.exp (p * t) ≤
+                      Real.exp (-t / (CJN d * M)) * Real.exp (p * t) ≤
                         Real.exp (-(β / 2) * t) := by
                     have hexp_eq :
-                        Real.exp (-t / (C_JN d * M)) * Real.exp (p * t) =
+                        Real.exp (-t / (CJN d * M)) * Real.exp (p * t) =
                           Real.exp ((p - β) * t) := by
                       rw [← Real.exp_add]
                       congr 1
@@ -1578,36 +1578,36 @@ theorem regularizedLog_smallBall_exp_average_le
                     gcongr
                   calc
                     μ {a : E | t < f a} * ENNReal.ofReal (p * Real.exp (p * t))
-                        ≤ (ENNReal.ofReal (C_JN d) * μ Set.univ *
-                            ENNReal.ofReal (Real.exp (-t / (C_JN d * M)))) *
+                        ≤ (ENNReal.ofReal (CJN d) * μ Set.univ *
+                            ENNReal.ofReal (Real.exp (-t / (CJN d * M)))) *
                           ENNReal.ofReal (p * Real.exp (p * t)) := by
                             exact mul_le_mul_of_nonneg_right htail (by positivity)
-                    _ = ENNReal.ofReal (C_JN d) * μ Set.univ *
+                    _ = ENNReal.ofReal (CJN d) * μ Set.univ *
                           ENNReal.ofReal
-                            (Real.exp (-t / (C_JN d * M)) * (p * Real.exp (p * t))) := by
+                            (Real.exp (-t / (CJN d * M)) * (p * Real.exp (p * t))) := by
                           rw [ENNReal.ofReal_mul (Real.exp_nonneg _), mul_assoc, mul_assoc]
-                    _ ≤ ENNReal.ofReal (C_JN d) * μ Set.univ *
+                    _ ≤ ENNReal.ofReal (CJN d) * μ Set.univ *
                           ENNReal.ofReal (p * Real.exp (-(β / 2) * t)) := by
                           have hinner_le :
-                              Real.exp (-t / (C_JN d * M)) * (p * Real.exp (p * t)) ≤
+                              Real.exp (-t / (CJN d * M)) * (p * Real.exp (p * t)) ≤
                                 p * Real.exp (-(β / 2) * t) := by
                             calc
-                              Real.exp (-t / (C_JN d * M)) * (p * Real.exp (p * t))
+                              Real.exp (-t / (CJN d * M)) * (p * Real.exp (p * t))
                                   = p *
-                                      (Real.exp (-t / (C_JN d * M)) *
+                                      (Real.exp (-t / (CJN d * M)) *
                                         Real.exp (p * t)) := by ring
                               _ ≤ p * Real.exp (-(β / 2) * t) := by
                                     gcongr
                           exact mul_le_mul_of_nonneg_left (ENNReal.ofReal_le_ofReal hinner_le)
-                            (by positivity : 0 ≤ ENNReal.ofReal (C_JN d) * μ Set.univ)
-      _ = ENNReal.ofReal (C_JN d) * μ Set.univ *
+                            (by positivity : 0 ≤ ENNReal.ofReal (CJN d) * μ Set.univ)
+      _ = ENNReal.ofReal (CJN d) * μ Set.univ *
             ∫⁻ t in Set.Ioi 0, ENNReal.ofReal (p * Real.exp (-(β / 2) * t)) := by
               rw [show
                     (fun t : ℝ =>
-                      ENNReal.ofReal (C_JN d) * μ Set.univ *
+                      ENNReal.ofReal (CJN d) * μ Set.univ *
                         ENNReal.ofReal (p * Real.exp (-(β / 2) * t))) =
                       fun t : ℝ =>
-                        (ENNReal.ofReal (C_JN d) * μ Set.univ) *
+                        (ENNReal.ofReal (CJN d) * μ Set.univ) *
                           ENNReal.ofReal (p * Real.exp (-(β / 2) * t)) by
                     funext t
                     ring]
@@ -1641,7 +1641,7 @@ theorem regularizedLog_smallBall_exp_average_le
     exact (div_le_iff₀ hβ_pos).2 (by simpa using htwo)
   have hlin_bound :
       ∫⁻ z, ENNReal.ofReal (Real.exp (p * f z) - 1) ∂μ ≤
-        ENNReal.ofReal (C_JN d * μ.real Set.univ) := by
+        ENNReal.ofReal (CJN d * μ.real Set.univ) := by
     have hμ_univ_ne_top : μ Set.univ ≠ ∞ := by
       simpa [μ, B] using
         (measure_ball_lt_top (μ := volume) (x := x₀) (r := (1 / 48 : ℝ))).ne
@@ -1649,23 +1649,23 @@ theorem regularizedLog_smallBall_exp_average_le
       ∫⁻ z, ENNReal.ofReal (Real.exp (p * f z) - 1) ∂μ
           = ∫⁻ t in Set.Ioi 0, μ {a : E | t < f a} * ENNReal.ofReal (p * Real.exp (p * t)) :=
             hLayer'
-      _ ≤ ENNReal.ofReal (C_JN d) * μ Set.univ *
+      _ ≤ ENNReal.ofReal (CJN d) * μ Set.univ *
           ∫⁻ t in Set.Ioi 0, ENNReal.ofReal (p * Real.exp (-(β / 2) * t)) := hmajor
-      _ = ENNReal.ofReal (C_JN d) * μ Set.univ *
+      _ = ENNReal.ofReal (CJN d) * μ Set.univ *
           ENNReal.ofReal (∫ t in Set.Ioi 0, p * Real.exp (-(β / 2) * t)) := by
             rw [hmajor_lintegral]
-      _ ≤ ENNReal.ofReal (C_JN d) * μ Set.univ * ENNReal.ofReal 1 := by
+      _ ≤ ENNReal.ofReal (CJN d) * μ Set.univ * ENNReal.ofReal 1 := by
             gcongr
-      _ = ENNReal.ofReal (C_JN d) * μ Set.univ := by simp
-      _ = ENNReal.ofReal (C_JN d) * ENNReal.ofReal (μ.real Set.univ) := by
+      _ = ENNReal.ofReal (CJN d) * μ Set.univ := by simp
+      _ = ENNReal.ofReal (CJN d) * ENNReal.ofReal (μ.real Set.univ) := by
             congr 1
             rw [measureReal_def, ENNReal.ofReal_toReal hμ_univ_ne_top]
-      _ = ENNReal.ofReal (C_JN d * μ.real Set.univ) := by
+      _ = ENNReal.ofReal (CJN d * μ.real Set.univ) := by
             rw [ENNReal.ofReal_mul (C_JN_pos d).le]
   have hlin_finite :
       ∫⁻ z, ENNReal.ofReal (Real.exp (p * f z) - 1) ∂μ ≠ ∞ := by
     exact ne_of_lt (lt_of_le_of_lt hlin_bound
-      (by simp : ENNReal.ofReal (C_JN d * μ.real Set.univ) < ∞))
+      (by simp : ENNReal.ofReal (CJN d * μ.real Set.univ) < ∞))
   have hF_meas :
       AEMeasurable (fun z => ENNReal.ofReal (Real.exp (p * f z) - 1)) μ := by
     exact (hf_meas.const_mul p).exp.sub_const 1 |>.ennreal_ofReal
@@ -1678,16 +1678,16 @@ theorem regularizedLog_smallBall_exp_average_le
     filter_upwards [hF_nonneg] with z hz
     exact ENNReal.toReal_ofReal hz
   have hF_le :
-      ∫ z, (Real.exp (p * f z) - 1) ∂μ ≤ C_JN d * μ.real Set.univ := by
+      ∫ z, (Real.exp (p * f z) - 1) ∂μ ≤ CJN d * μ.real Set.univ := by
     have hof :
         ENNReal.ofReal (∫ z, (Real.exp (p * f z) - 1) ∂μ) ≤
-          ENNReal.ofReal (C_JN d * μ.real Set.univ) := by
+          ENNReal.ofReal (CJN d * μ.real Set.univ) := by
       rw [MeasureTheory.ofReal_integral_eq_lintegral_ofReal hF_int hF_nonneg]
       exact hlin_bound
     have hμ_nonneg : 0 ≤ μ.real Set.univ := by
       rw [measureReal_def]
       exact ENNReal.toReal_nonneg
-    have hrhs_nonneg : 0 ≤ C_JN d * μ.real Set.univ := by
+    have hrhs_nonneg : 0 ≤ CJN d * μ.real Set.univ := by
       exact mul_nonneg (C_JN_pos d).le hμ_nonneg
     exact (ENNReal.ofReal_le_ofReal_iff hrhs_nonneg).mp hof
   have hμ_pos : 0 < μ.real Set.univ := by
@@ -1697,7 +1697,7 @@ theorem regularizedLog_smallBall_exp_average_le
         1 + (μ.real Set.univ)⁻¹ * ∫ z, (Real.exp (p * f z) - 1) ∂μ := by
     exact average_eq_one_add_inverse_mul_integral_sub_one hF_int hμ_pos
   have havg_le :
-      (⨍ z, Real.exp (p * f z) ∂μ) ≤ 1 + C_JN d := by
+      (⨍ z, Real.exp (p * f z) ∂μ) ≤ 1 + CJN d := by
     rw [havg_eq]
     exact one_add_inv_mul_le_of_le_mul hμ_pos hF_le
   have hExp_int : Integrable (fun z => Real.exp (p * f z)) μ := by
@@ -1710,7 +1710,7 @@ theorem regularizedLog_smallBall_exp_average_le
   have havg_ball :
       (⨍ z in Metric.ball x₀ (1 / 48 : ℝ),
         Real.exp (p * |v z - ⨍ y in Metric.ball x₀ (1 / 48 : ℝ), v y ∂volume|) ∂volume)
-        ≤ 1 + C_JN d := by
+        ≤ 1 + CJN d := by
     simpa [μ, B, f, avg, Real.norm_eq_abs] using havg_le
   exact ⟨hExp_int_ball, havg_ball⟩
 
@@ -1721,11 +1721,11 @@ theorem regularizedLog_halfBall_exp_average_to_origin_le
     (hsuper : IsSupersolution A.1 u)
     {ε : ℝ} (hε : 0 < ε) :
     let v := regularizedLogMeasurable (A := A) hu_pos hsuper hε
-    let p := c_crossover' d / A.1.Λ ^ ((1 : ℝ) / 2)
+    let p := cCrossover' d / A.1.Λ ^ ((1 : ℝ) / 2)
     let a := ⨍ z in Metric.ball (0 : E) (1 / 48 : ℝ), v z ∂volume
     let δ := 24 * (2 : ℝ) ^ (d + 1) *
-      (c_crossover_bmo_scale d * A.1.Λ ^ ((1 : ℝ) / 2))
-    let Kloc := Real.exp (p * δ) * (1 + C_JN d)
+      (cCrossoverBmoScale d * A.1.Λ ^ ((1 : ℝ) / 2))
+    let Kloc := Real.exp (p * δ) * (1 + CJN d)
     let Khalf := (Nat.ceil ((97 : ℝ) ^ d) : ℝ) * Kloc
     IntegrableOn (fun z => Real.exp (p * |v z - a|))
       (Metric.ball (0 : E) (1 / 2 : ℝ)) volume ∧
@@ -1755,7 +1755,7 @@ theorem regularizedLog_halfBall_exp_average_to_origin_le
   have hKloc_nonneg : 0 ≤ Kloc := by
     dsimp [Kloc]
     refine mul_nonneg (le_of_lt (Real.exp_pos _)) ?_
-    linarith [show 0 < C_JN d from C_JN_pos d]
+    linarith [show 0 < CJN d from C_JN_pos d]
   have hv_meas : Measurable v :=
     regularizedLogMeasurable_measurable (d := d) (A := A) hu_pos hsuper hε
   have hF_meas : Measurable F := by
@@ -1856,11 +1856,11 @@ theorem regularizedLog_halfBall_exp_average_to_origin_le
         (measure_ball_pos (μ := volume) c hρ_pos).ne'
         (measure_ball_lt_top (μ := volume) (x := c) (r := (1 / 48 : ℝ))).ne
     have hFc_avg :
-        (⨍ z in Metric.ball c (1 / 48 : ℝ), Fc z ∂volume) ≤ 1 + C_JN d := by
+        (⨍ z in Metric.ball c (1 / 48 : ℝ), Fc z ∂volume) ≤ 1 + CJN d := by
       simpa [v, p, Fc, ac] using hbase.2
     have hFc_int_bound :
         ∫ z in Metric.ball c (1 / 48 : ℝ), Fc z ∂volume ≤
-          volume.real (Metric.ball c (1 / 48 : ℝ)) * (1 + C_JN d) := by
+          volume.real (Metric.ball c (1 / 48 : ℝ)) * (1 + CJN d) := by
       rw [MeasureTheory.setAverage_eq, smul_eq_mul] at hFc_avg
       rw [show (volume.real (Metric.ball c (1 / 48 : ℝ)))⁻¹ *
           ∫ z in Metric.ball c (1 / 48 : ℝ), Fc z ∂volume =
@@ -1874,7 +1874,7 @@ theorem regularizedLog_halfBall_exp_average_to_origin_le
       _ = Real.exp (p * δ) * ∫ z in Metric.ball c (1 / 48 : ℝ), Fc z ∂volume := by
             rw [integral_const_mul]
       _ ≤ Real.exp (p * δ) *
-            (volume.real (Metric.ball c (1 / 48 : ℝ)) * (1 + C_JN d)) := by
+            (volume.real (Metric.ball c (1 / 48 : ℝ)) * (1 + CJN d)) := by
               gcongr
       _ = volume.real (Metric.ball c (1 / 48 : ℝ)) * Kloc := by
             dsimp [Kloc]
@@ -2022,10 +2022,10 @@ lemma setAverage_mono_of_nonneg_local
   · positivity
 
 noncomputable def crossoverJNTheta (d : ℕ) [NeZero d] : ℝ :=
-  24 * (2 : ℝ) ^ (d + 1) * (c_crossover' d * c_crossover_bmo_scale d)
+  24 * (2 : ℝ) ^ (d + 1) * (cCrossover' d * cCrossoverBmoScale d)
 
 noncomputable def crossoverJNKloc (d : ℕ) [NeZero d] : ℝ :=
-  Real.exp (crossoverJNTheta d) * (1 + C_JN d)
+  Real.exp (crossoverJNTheta d) * (1 + CJN d)
 
 noncomputable def crossoverJNKhalf (d : ℕ) [NeZero d] : ℝ :=
   (Nat.ceil ((97 : ℝ) ^ d) : ℝ) * crossoverJNKloc d

@@ -31,7 +31,7 @@ local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 def metricChartIdx :
     Finset (M × (Fin 2 → Fin (Module.finrank ℝ E))) := by
   classical
-  exact (chartAtlasPOU_finset (I := I) (M := M)).product Finset.univ
+  exact (chartAtlasPOUFinset (I := I) (M := M)).product Finset.univ
 
 def metricCompPath
     (gBase : SmoothRiemannianMetric I M)

@@ -185,7 +185,7 @@ theorem metric_scalar_at_eq_chart_ricci_sum
     intro i j
     rw [chartGramMatrix_apply, chartBasisVecFiber_self, chartBasisVecFiber_self]
     simp only [centeredChartTangentBasis_apply, centeredChartTangentEquiv_symm_apply]
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) g x
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) g x
       (chartModelBasis E) (fun i j => chartInvGramMatrix (I := I) g x x i j) := by
     intro i j
     constructor

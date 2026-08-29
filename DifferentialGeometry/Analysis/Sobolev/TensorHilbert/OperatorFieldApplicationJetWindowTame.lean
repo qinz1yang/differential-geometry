@@ -141,8 +141,8 @@ theorem operatorFieldApply_l2_le_of_pointwise_fiberNormSq_bound_right
   exact operatorFieldCompose_l2_le_of_pointwise_fiberNormSq_bound_right (I := I) (M := M) g 0 r s Φ
     W B hB hW
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_iteratedCovGrad_fiberNormSq_le_smoothCcToTensorHs_sq
     (g₀ : SmoothRiemannianMetric I M) (q m : ℕ)
     (h_super : 2 * (2 * (Module.finrank ℝ E / 2 + 1) + q) ≤ m) :
@@ -165,7 +165,7 @@ theorem exists_iteratedCovGrad_fiberNormSq_le_smoothCcToTensorHs_sq
     exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ N
   refine ⟨Cemb * Cit * Crev * Cspec, by positivity, fun T₀ x => ?_⟩
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + q) I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + q)
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + q)
   set Nm : ℝ := ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ) T₀‖ with hNm_def
   have hNm_nn : 0 ≤ Nm := norm_nonneg _
   have hbridge : ∀ σ : ℝ, smoothCcToTensorHs (I := I) (M := M) g₀ σ T₀ =

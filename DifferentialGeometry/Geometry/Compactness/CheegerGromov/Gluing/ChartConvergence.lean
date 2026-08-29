@@ -21,8 +21,8 @@ open scoped Topology Manifold ContDiff ENNReal
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E]
   [NormedSpace Real E] [FiniteDimensional Real E]

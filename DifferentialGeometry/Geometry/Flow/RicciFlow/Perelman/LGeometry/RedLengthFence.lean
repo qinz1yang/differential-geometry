@@ -32,8 +32,8 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [SigmaCompactSpace M]
 variable {D : RealTimeInterval}
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem exists_redMin_seed [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (K T sigma tau : Real)
@@ -103,8 +103,8 @@ private theorem exists_redMin_seed [ConnectedSpace M]
   rw [hval]
   exact (hmin (lRegCurve S T x Z0 s)).trans (hred.trans hsact.le)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_redLen_le [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (K T sigma tau : Real)
@@ -164,7 +164,7 @@ theorem exists_redLen_le [ConnectedSpace M]
         (hUopen.mem_nhds hz)).mdifferentiableAt (by simp)
     have hgrad := gradientFun_mdiffOn (E := E) (I := I) (M := M)
       (S.base.metric (T - t)) hUopen hPhiSmooth hyU
-    have hmc : IsMetricCompatible_gen (I := I)
+    have hmc : IsMetricCompatibleGen (I := I)
         (LeviCivita (I := I) (S.base.metric (T - t)))
         (S.base.metric (T - t)) := by
       simpa only [LeviCivita] using

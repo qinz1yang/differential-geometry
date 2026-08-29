@@ -135,7 +135,7 @@ private theorem lieCorrectionZero_j0S_add_local {d : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SSpace d I z) p.1 (A p + B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -166,7 +166,7 @@ private theorem lieCorrectionZero_j0S_smulConst_local {d : ℕ} {S : Set ℝ} (c
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SSpace d I z) p.1 (c • A p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -238,7 +238,7 @@ private theorem lieCorrectionZero_connectionDifferenceVF_apply_jointContMDiffOn
   have hι2 := interiorProductField_jointContMDiffOn_vecJoint (I := I) (s := 1)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (X := fun p : M × ℝ => Z p.1) hZjoint
-    (α := fun p : M × ℝ => Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 2 p.1
+    (α := fun p : M × ℝ => Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 2 p.1
       ((PDE.DeTurck.deTurckVF (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) gP : Π b : M, TangentSpace I b) p.1)
       (metricConnectionDifferenceLoweredFib (I := I)
@@ -248,8 +248,8 @@ private theorem lieCorrectionZero_connectionDifferenceVF_apply_jointContMDiffOn
     (inverseMetricSharpField_metricPerturbationPath_jointContMDiffOn (I := I) g₀ T T' hδ hδ') hι2
   refine hsharp.congr (fun p hp => ?_)
   refine congrArg (fun t => TotalSpace.mk' E (E := fun z : M => TangentSpace I z) p.1 t) ?_
-  have hform : Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 p.1 (Z p.1)
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 2 p.1
+  have hform : Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 p.1 (Z p.1)
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 2 p.1
         ((PDE.DeTurck.deTurckVF (I := I)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) gP : Π b : M, TangentSpace I b) p.1)
         (metricConnectionDifferenceLoweredFib (I := I)
@@ -268,8 +268,8 @@ private theorem lieCorrectionZero_connectionDifferenceVF_apply_jointContMDiffOn
       funext j
       refine Fin.cases rfl (fun j => j.elim0) j
     have e1 : Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 p.1 (Z p.1)
-          (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 2 p.1
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 p.1 (Z p.1)
+          (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 2 p.1
             ((PDE.DeTurck.deTurckVF (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) gP :
                 Π b : M, TangentSpace I b) p.1)
@@ -482,7 +482,7 @@ private theorem lieCorrectionZeroVBFib_apply_jointContMDiffOn
   have hLB := metricConnectionDifferenceLowered_selfFam_jointContMDiffOn (I := I) g₀ T T' hδ hδ'
   have hprod := jointTensor0SProd_local (I := I) (p := 1) (q := 3)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
-    (fun pp : M × ℝ => Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 pp.1
+    (fun pp : M × ℝ => Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 pp.1
       ((PDE.DeTurck.deTurckVF (I := I)
         (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2) g₀ : Π b : M, TangentSpace I b) pp.1)
       (Y pp.1))
@@ -497,7 +497,7 @@ private theorem lieCorrectionZeroVBFib_apply_jointContMDiffOn
           (metricConnectionDifferenceLoweredFib (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2) g₀ pp.1)
-          (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 pp.1
+          (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 pp.1
             ((PDE.DeTurck.deTurckVF (I := I)
               (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2) g₀ :
                 Π b : M, TangentSpace I b) pp.1) (Y pp.1))))

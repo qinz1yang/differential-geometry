@@ -25,17 +25,17 @@ theorem tensorRSModelAt_coordComponentRSAt {r s : ℕ} (x₀ : M)
     (lower : Fin s -> CoordinateIdx (𝕜 := 𝕜) E) :
     (tensorRSModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       r s x₀ x₀ T
-      ((continuousMultilinearMap_basis
+      ((continuousMultilinearMapBasis
         (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper))
       (fun b : Fin s => (Module.finBasis 𝕜 E) (lower b))
     =
       coordComponentRSAt (I := I) T upper lower := by
-  let := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+  let := tensorRSBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) r s
-  let := tensorRSBundle_fiber (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+  let := tensorRSBundleFiber (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) r s
   let : NormedSpace 𝕜 (Tensor0SModel r 𝕜 E) :=
-    Tensor0SBundle.tensor0SModel_normedSpace (𝕜 := 𝕜) (E := E) r
+    Tensor0SBundle.tensor0SModelNormedSpace (𝕜 := 𝕜) (E := E) r
   unfold tensorRSModelAt
   rw [coordComponentRSAt_apply, componentRS_apply_gen]
   have hx : x₀ ∈ (trivializationAt E (TangentSpace I : M -> Type _) x₀).baseSet := by
@@ -45,12 +45,12 @@ theorem tensorRSModelAt_coordComponentRSAt {r s : ℕ} (x₀ : M)
     (bE := Module.finBasis 𝕜 E) hx T upper lower]
   congr 2
   · change Tensor0SSpace.constInChart (I := I) r x₀
-        ((continuousMultilinearMap_basis
+        ((continuousMultilinearMapBasis
           (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper) x₀ =
-      basisTensor0S (I := I) (coordinateFrameAt_toBasis (I := I) x₀) upper
+      basisTensor0S (I := I) (coordinateFrameAtToBasis (I := I) x₀) upper
     have hxE : x₀ ∈ (trivializationAt E (TangentSpace I) x₀).baseSet :=
       mem_baseSet_trivializationAt E (TangentSpace I) x₀
-    refine ext0S_basis (I := I) (coordinateFrameAt_toBasis (I := I) x₀) (fun slots => ?_)
+    refine ext0S_basis (I := I) (coordinateFrameAtToBasis (I := I) x₀) (fun slots => ?_)
     rw [basisTensor0S_component, component0S_apply,
       Tensor0SSpace.constInChart_apply (I := I) r hxE]
     rw [coordinateFrameAt_toBasis_eq_finBasis (I := I) x₀]
@@ -68,7 +68,7 @@ theorem tensorRSModelAt_coordComponentRSAt {r s : ℕ} (x₀ : M)
     rw [hclm]
     rw [hcoord]
     change
-      ((continuousMultilinearMap_basis
+      ((continuousMultilinearMapBasis
         (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper)
           (fun i => (Module.finBasis 𝕜 E) (slots i)) =
         if upper = slots then 1 else 0
@@ -88,7 +88,7 @@ private theorem model_RS_component_eq_coord_component_comp_eventually {r s : ℕ
     (upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E)
     (lower : Fin s -> CoordinateIdx (𝕜 := 𝕜) E) :
     let β₀ : Tensor0SModel r 𝕜 E :=
-      (continuousMultilinearMap_basis
+      (continuousMultilinearMapBasis
         (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper
     (fun y : E =>
         (tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
@@ -131,9 +131,9 @@ theorem modelDeriv_eq_coordDerivRSAt {r s : ℕ}
       (n := (∞ : WithTop ℕ∞)) r s) :
     ModelDerivEqCoordDerivRSAt (I := I) X x₀ (fun x => T x) := by
   classical
-  let := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H)
+  let := tensorRSBundleTopology (𝕜 := 𝕜) (E := E) (H := H)
     (I := I) (M := M) r s
-  let := tensorRSBundle_fiber (𝕜 := 𝕜) (E := E) (H := H)
+  let := tensorRSBundleFiber (𝕜 := 𝕜) (E := E) (H := H)
     (I := I) (M := M) r s
   let := tensorRSBundle_vector (𝕜 := 𝕜) (E := E) (H := H)
     (I := I) (M := M) r s
@@ -141,7 +141,7 @@ theorem modelDeriv_eq_coordDerivRSAt {r s : ℕ}
   let z₀ : E := extChartAt I x₀ x₀
   let S : Set E := ((extChartAt I x₀).symm ⁻¹' Set.univ) ∩ Set.range I
   let β₀ : Tensor0SModel r 𝕜 E :=
-    (continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper
+    (continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper
   let u : Fin s -> E := fun b => (Module.finBasis 𝕜 E) (lower b)
   let Tchart : E -> TensorRSModel r s 𝕜 E :=
     fun y => tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H)

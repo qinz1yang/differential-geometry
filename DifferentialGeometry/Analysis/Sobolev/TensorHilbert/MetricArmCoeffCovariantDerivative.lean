@@ -59,7 +59,7 @@ private local instance tangentBilinearEndomorphismNormedSpace (x : M) :
 private local instance tensor0STotalSpaceTopology (s : ℕ) :
     TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
       (fun x : M => Tensor0SSpace s I x)) :=
-  Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
+  Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [BoundarylessManifold I M] [SigmaCompactSpace M] in
 private theorem armSlotEndoCc_curry_apply (g : SmoothRiemannianMetric I M)
@@ -67,12 +67,12 @@ private theorem armSlotEndoCc_curry_apply (g : SmoothRiemannianMetric I M)
     (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)))
     (x : M) (A : Tensor0SSpace (s + 1) I x) (u : TangentSpace I x) :
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
         ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
           (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Arm).toSection x) A)) u =
       slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x ((Arm x) u) A := by
   rw [armSlotEndoCc_toSection]
-  change (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
+  change (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
     (bilinearSlotInsertCLM (I := I) (M := M) s x (Arm x) A)) u = _
   exact curry_armSlotFib_eq_slotInsert (I := I) (M := M) s x (Arm x) A u
 
@@ -111,7 +111,7 @@ private theorem tensorCovDerivAt_apply_section (g : SmoothRiemannianMetric I M)
             S.toSection x)
           (Tensor0SNabla.tensor0SCovariantDerivative I M r (LeviCivita (I := I) g)
             W x v) := by
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) r
   let w : Cₛ^∞⟮I; Tensor0SModel r ℝ E, (fun y : M => Tensor0SSpace r I y)⟯ :=
     ⟨W, hW⟩
@@ -149,7 +149,7 @@ private theorem tensorCovDerivAt_curried_apply_section
       (fun y : M => TotalSpace.mk' (Tensor0SModel r ℝ E)
         (E := fun z : M => Tensor0SSpace r I z) y (W y)))
     (Y : ContMDiffSection I E ∞ (TangentSpace I)) (x : M) (v : E) :
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) q x
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) q x
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (q + 1) I x from
           tensorCovDerivAt (I := I) (M := M) g r (q + 1) S x v) (W x))) (Y x) =
       Tensor0SNabla.tensor0SCovariantDerivative I M q (LeviCivita (I := I) g)
@@ -160,12 +160,12 @@ private theorem tensorCovDerivAt_curried_apply_section
             (fun z : M => (show Tensor0SSpace r I z →L[ℝ] Tensor0SSpace (q + 1) I z from
               S.toSection z) (W z)) x
             ((LeviCivita (I := I) g) (fun y => Y y) x v)
-        - (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) q x
+        - (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) q x
             ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (q + 1) I x from
               S.toSection x)
               (Tensor0SNabla.tensor0SCovariantDerivative I M r
                 (LeviCivita (I := I) g) W x v))) (Y x) := by
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) r
   let w : Cₛ^∞⟮I; Tensor0SModel r ℝ E, (fun y : M => Tensor0SSpace r I y)⟯ :=
     ⟨W, hW⟩
@@ -227,7 +227,7 @@ private theorem tensorCovDerivAt_armSlotEndoCc_curry_curve
       (fun y : M => TotalSpace.mk' (Tensor0SModel (s + 1) ℝ E)
         (E := fun z : M => Tensor0SSpace (s + 1) I z) y (W y)))
     (Y : ContMDiffSection I E ∞ (TangentSpace I)) (x : M) (v : E) :
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
         ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
           tensorCovDerivAt (I := I) (M := M) g (s + 1) (s + 1 + 1)
             (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Arm) x v) (W x))) (Y x) =
@@ -272,7 +272,7 @@ private theorem tensorCovDerivAt_armSlotEndoCc_curry_apply_sections
       (fun y : M => TotalSpace.mk' (Tensor0SModel (s + 1) ℝ E)
         (E := fun z : M => Tensor0SSpace (s + 1) I z) y (W y)))
     (Y : ContMDiffSection I E ∞ (TangentSpace I)) (x : M) (v : E) :
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
         ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
           tensorCovDerivAt (I := I) (M := M) g (s + 1) (s + 1 + 1)
             (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Arm) x v) (W x))) (Y x) =
@@ -300,7 +300,7 @@ private theorem tensorCovDerivAt_armSlotEndoCc_curry_eq_slotInsertEndoFib
     (Arm : ContMDiffSection I (E →L[ℝ] (E →L[ℝ] E)) ∞
       (fun x : M => TangentSpace I x →L[ℝ] (TangentSpace I x →L[ℝ] TangentSpace I x)))
     (x : M) (v : E) (D : Tensor0SSpace (s + 1) I x) (v0 : E) :
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
         ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
           tensorCovDerivAt (I := I) (M := M) g (s + 1) (s + 1 + 1)
             (bilinearSlotInsertionCoefficient (I := I) (M := M) g s Arm) x v) D)) v0 =

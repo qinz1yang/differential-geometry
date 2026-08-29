@@ -82,7 +82,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr
   obtain ⟨τ, hτ⟩ :=
     exists_iteratedCovGrad_rs_toModel_domDomCongr (I := I) (M := M) g r s σ Φ Φ' hrel i
   have hsec : (iteratedCovGrad (I := I) g r s i Φ').toSection x =
-      tensorRS_domDomCongr τ ((iteratedCovGrad (I := I) g r s i Φ).toSection x) := by
+      tensorRSDomDomCongr τ ((iteratedCovGrad (I := I) g r s i Φ).toSection x) := by
     apply ContinuousLinearMap.ext
     intro d
     apply Tensor0SSpace.toModel_injective
@@ -91,7 +91,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_rs_eq_of_section_domDomCongr
           (iteratedCovGrad (I := I) g r s i Φ').toSection x) d) =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace (s + i) I x from
-          tensorRS_domDomCongr τ ((iteratedCovGrad (I := I) g r s i Φ).toSection x)) d)
+          tensorRSDomDomCongr τ ((iteratedCovGrad (I := I) g r s i Φ).toSection x)) d)
     rw [toModel_rsDomDomCongr_apply]
     exact hτ x d
   rw [hsec]

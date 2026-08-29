@@ -66,15 +66,15 @@ theorem tensorChartComponentRaw_covGrad
             (Matrix.vecTail Jdx) y := by
   classical
   let : TopologicalSpace (TotalSpace (Tensor0SModel r ℝ E)
-      (fun z : M => Tensor0SSpace r I z)) := tensor0SBundle_topology r
+      (fun z : M => Tensor0SSpace r I z)) := tensor0SBundleTopology r
   let : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
-      (fun z : M => Tensor0SSpace (s + 1) I z)) := tensor0SBundle_topology (s + 1)
+      (fun z : M => Tensor0SSpace (s + 1) I z)) := tensor0SBundleTopology (s + 1)
   let : TopologicalSpace (TotalSpace (TensorRSModel r (s + 1) ℝ E)
       (fun z : M => TensorRSSpace r (s + 1) I z)) :=
-    tensorRSBundle_topology r (s + 1)
+    tensorRSBundleTopology r (s + 1)
   let : FiberBundle (TensorRSModel r (s + 1) ℝ E)
       (fun z : M => TensorRSSpace r (s + 1) I z) :=
-    tensorRSBundle_fiber r (s + 1)
+    tensorRSBundleFiber r (s + 1)
   let : VectorBundle ℝ (TensorRSModel r (s + 1) ℝ E)
       (fun z : M => TensorRSSpace r (s + 1) I z) :=
     tensorRSBundle_vector r (s + 1)

@@ -29,8 +29,8 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
 variable {D : RealTimeInterval}
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem metric_complete
     (g : SmoothRiemannianMetric I M) :
     RiemannianMetricComplete (I := I) g := by

@@ -340,15 +340,15 @@ private theorem ricciUpperBoundHeat_coord
     (pinchNab2Model S (1 / 2) t x) (vec2 (I := I) v v)]
   classical
   let basis :=
-    DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+    DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let gInv :
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
         DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
     fun k l =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
         (I := I) (S.base.metric t) x k l (extChartAt I x x)
   have hinv :
-      MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis gInv := by
+      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv := by
     simpa [basis, gInv] using
       Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) (S.base.metric t) x

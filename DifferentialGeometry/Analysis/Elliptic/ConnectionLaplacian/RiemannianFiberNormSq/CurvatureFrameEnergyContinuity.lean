@@ -55,7 +55,7 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Bound
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma finrank_tensorRSSpace_zero_eq (t : ℕ) (x : M) :
     Module.finrank ℝ (TensorRSSpace 0 t I x) = (Module.finrank ℝ E) ^ t := by
-  rw [(tensorRSSpace_continuousLinearEquiv (𝕜 := ℝ) (E := E) (I := I) (M := M)
+  rw [(tensorRSSpaceContinuousLinearEquiv (𝕜 := ℝ) (E := E) (I := I) (M := M)
     0 t x).toLinearEquiv.finrank_eq]
   change Module.finrank ℝ (Tensor0SModel 0 ℝ E →L[ℝ] Tensor0SModel t ℝ E) = _
   let φ : (Tensor0SModel 0 ℝ E →L[ℝ] Tensor0SModel t ℝ E) ≃ₗ[ℝ]
@@ -136,7 +136,7 @@ private lemma orthonormal_riemannianFiberNormSq_exists_basis
       TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
         (r := 0) (s := t) (x := x) (0 : TensorRSSpace 0 t I x) := by
       rw [hTm0]
-      exact (map_zero (tensorRSSpace_continuousLinearEquiv (𝕜 := ℝ) (E := E) (I := I) (M := M)
+      exact (map_zero (tensorRSSpaceContinuousLinearEquiv (𝕜 := ℝ) (E := E) (I := I) (M := M)
         0 t x)).symm
     exact TensorRSSpace.toModel_injective (𝕜 := ℝ) (E := E) (I := I) (M := M) hT0model
   have hdt_le_nt : (d : ℕ) ^ t ≤ n ^ t := by

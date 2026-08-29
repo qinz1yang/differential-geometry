@@ -34,8 +34,8 @@ private local instance tensorRSChartFiberFromModelRiemannianNormedAddCommGroup
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorRSChartFiberFromModel_local_bound
@@ -110,15 +110,15 @@ private lemma tensorRSChartFiberFromModel_local_bound
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma exists_W_and_constant_symmL
     (g : SmoothRiemannianMetric I M)
     (r s : ℕ) (α y₀ : M) (h_y₀_α : y₀ ∈ (chartAt H α).source) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ W : Set M, IsOpen W ∧ y₀ ∈ W ∧ ∃ N : ℝ, 0 < N ∧ ∀ b ∈ W,
       ∀ v : TensorRSModel r s ℝ E,
         ‖((trivializationAt (TensorRSModel r s ℝ E)
@@ -126,7 +126,7 @@ private lemma exists_W_and_constant_symmL
             TensorRSSpace r s I b)‖ ≤ N * ‖v‖ := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   have hICRB : IsContinuousRiemannianBundle (TensorRSModel r s ℝ E)
       (fun b : M => TensorRSSpace r s I b) :=
     tensorRS_isContinuousRiemannianBundle (I := I) (M := M) g r s
@@ -181,8 +181,8 @@ private lemma exists_W_and_constant_symmL
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensorRSChartFiberFromModel_opNorm_isBounded_on_compact
@@ -190,14 +190,14 @@ theorem tensorRSChartFiberFromModel_opNorm_isBounded_on_compact
     (r s : ℕ) (α : M) {K : Set M} (hK : IsCompact K)
     (hKsub : K ⊆ (chartAt H α).source) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ C : ℝ, 0 < C ∧ ∀ b ∈ K, ∀ v : TensorRSModel r s ℝ E,
       ‖((trivializationAt (TensorRSModel r s ℝ E)
           (fun y : M => TensorRSSpace r s I y) α).symmL ℝ b v :
           TensorRSSpace r s I b)‖ ≤ C * ‖v‖ := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   let W : M → Set M := fun y₀ =>
     if hy : y₀ ∈ (chartAt H α).source then
       (exists_W_and_constant_symmL (I := I) (M := M) g r s α y₀ hy).choose

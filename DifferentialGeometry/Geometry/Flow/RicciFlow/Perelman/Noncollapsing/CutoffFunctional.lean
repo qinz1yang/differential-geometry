@@ -32,8 +32,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
   [NeZero (Module.finrank ℝ E)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem normalize_cutoff
     (g : SmoothRiemannianMetric I M) {φ : M → ℝ}
@@ -163,8 +163,8 @@ theorem normalize_cutoff
         rw [div_eq_mul_inv, inv_pow]
         ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_cutoff_wdata
     [I.Boundaryless] (g : SmoothRiemannianMetric I M) (a : M)
     {r : ℝ} (hr : 0 < r) :
@@ -269,8 +269,8 @@ theorem exists_cutoff_wdata
       _ ≤ (gradScale.toReal / massScale.toReal) ^ 2 :=
         pow_le_pow_left₀ (div_nonneg ENNReal.toReal_nonneg hφnorm_pos.le) hratio 2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_cutoff_wform
     [I.Boundaryless] (g : SmoothRiemannianMetric I M) (a : M)
     {r : ℝ} (hr : 0 < r) {R : M → ℝ} (hRcont : Continuous R)

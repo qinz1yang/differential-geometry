@@ -26,18 +26,18 @@ variable {d : ℕ} [NeZero d]
 
 local notation "E" => AmbientSpace d
 
-/-- `C_weakHarnack` with a built-in decidability check so that definitions
+/-- `CWeakHarnack` with a built-in decidability check so that definitions
 and constants that mention it need not carry an explicit `hd` proof. When
-`2 < d` this equals `C_weakHarnack d hd`; otherwise it defaults to `1`. -/
-noncomputable def C_weakHarnack_of (d : ℕ) [NeZero d] : ℝ :=
-  if hd : 2 < (d : ℝ) then C_weakHarnack d hd else 1
+`2 < d` this equals `CWeakHarnack d hd`; otherwise it defaults to `1`. -/
+noncomputable def CWeakHarnackOf (d : ℕ) [NeZero d] : ℝ :=
+  if hd : 2 < (d : ℝ) then CWeakHarnack d hd else 1
 
 theorem C_weakHarnack_of_eq (hd : 2 < (d : ℝ)) :
-    C_weakHarnack_of d = C_weakHarnack d hd :=
+    CWeakHarnackOf d = CWeakHarnack d hd :=
   dif_pos hd
 
-theorem one_le_C_weakHarnack_of : 1 ≤ C_weakHarnack_of d := by
-  unfold C_weakHarnack_of
+theorem one_le_C_weakHarnack_of : 1 ≤ CWeakHarnackOf d := by
+  unfold CWeakHarnackOf
   split
   · next hd => exact one_le_C_weakHarnack hd
   · exact le_refl 1
@@ -202,7 +202,7 @@ theorem linfty_subsolution_Moser_on_ball
       IntegrableOn (fun x => |max (u x) 0| ^ p₀) (Metric.ball x₀ R) volume) :
     ∀ᵐ x ∂(volume.restrict (Metric.ball x₀ (R / 2 : ℝ))),
       |max (u x) 0| ^ p₀ ≤
-        C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+        CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
           (p₀ / (p₀ - 1)) ^ (d : ℝ) *
           ((R ^ Module.finrank ℝ E)⁻¹ *
             ∫ x in Metric.ball x₀ R, |max (u x) 0| ^ p₀ ∂volume) := by
@@ -234,7 +234,7 @@ theorem linfty_subsolution_Moser_on_ball
   have hunit :
       ∀ᵐ z ∂(volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))),
         |max (u (x₀ + R • z)) 0| ^ p₀ ≤
-          C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+          CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
             (p₀ / (p₀ - 1)) ^ (d : ℝ) *
             ((R ^ Module.finrank ℝ E)⁻¹ *
               ∫ x in Metric.ball x₀ R, |max (u x) 0| ^ p₀ ∂volume) := by
@@ -255,7 +255,7 @@ theorem linfty_subsolution_Moser_on_ball
       ∀ᵐ z ∂ ENNReal.ofReal (|R⁻¹ ^ Module.finrank ℝ E|⁻¹) •
           (volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))),
         |max (u (x₀ + R • z)) 0| ^ p₀ ≤
-          C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+          CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
             (p₀ / (p₀ - 1)) ^ (d : ℝ) *
             ((R ^ Module.finrank ℝ E)⁻¹ *
               ∫ x in Metric.ball x₀ R, |max (u x) 0| ^ p₀ ∂volume) := by
@@ -268,7 +268,7 @@ theorem linfty_subsolution_Moser_on_ball
       ∀ᵐ z ∂ Measure.map (fun x : E => R⁻¹ • (x - x₀))
           (volume.restrict (Metric.ball x₀ (R / 2 : ℝ))),
         |max (u (x₀ + R • z)) 0| ^ p₀ ≤
-          C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+          CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
             (p₀ / (p₀ - 1)) ^ (d : ℝ) *
             ((R ^ Module.finrank ℝ E)⁻¹ *
               ∫ x in Metric.ball x₀ R, |max (u x) 0| ^ p₀ ∂volume) := by
@@ -277,7 +277,7 @@ theorem linfty_subsolution_Moser_on_ball
   have htarget :
       ∀ᵐ x ∂(volume.restrict (Metric.ball x₀ (R / 2 : ℝ))),
         |max (u (x₀ + R • (R⁻¹ • (x - x₀)))) 0| ^ p₀ ≤
-          C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+          CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
             (p₀ / (p₀ - 1)) ^ (d : ℝ) *
             ((R ^ Module.finrank ℝ E)⁻¹ *
               ∫ x in Metric.ball x₀ R, |max (u x) 0| ^ p₀ ∂volume) := by
@@ -308,7 +308,7 @@ theorem weak_harnack_on_ball
         ∫ x in Metric.ball x₀ (R / 4 : ℝ),
           |u x| ^ (q * (d : ℝ) / ((d : ℝ) - 2)) ∂volume)) ^
           (((d : ℝ) - 2) / (q * (d : ℝ))) ≤
-      (C_weakHarnack d hd / (1 - q) ^ (weak_harnack_decay_exp d)) ^
+      (CWeakHarnack d hd / (1 - q) ^ (weakHarnackDecayExp d)) ^
         (A.1.Λ ^ ((1 : ℝ) / 2)) *
         essInf (fun z : E => u (x₀ + R • z))
           (volume.restrict (Metric.ball (0 : E) (1 / 4 : ℝ))) := by

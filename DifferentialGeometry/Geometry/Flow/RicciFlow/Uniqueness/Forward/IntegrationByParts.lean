@@ -236,7 +236,7 @@ theorem covDivLift_unit (g : SmoothRiemannianMetric I M)
     rw [codiffPsi_apply (I := I) (M := M) g s (ccLift0S (I := I) g V) x hsmooth hsmooth]
     have hcontract :
         (show Tensor0SSpace 0 I x →L[Real] Tensor0SSpace s I x from
-          contract_covariant 0 s x (smoothOrthoFrame (I := I) g x i x)
+          contractCovariant 0 s x (smoothOrthoFrame (I := I) g x i x)
             (TensorRSNabla.tensorRSCovariantDerivative I M 0 (s + 1) (LeviCivita (I := I) g)
               (fun z : M => (ccLift0S (I := I) g V).toSection z) x
               (smoothOrthoFrame (I := I) g x i x)))

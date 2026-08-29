@@ -249,8 +249,8 @@ theorem chartCurve_contDiffAt_one_of_isGeodesicOn
           (hW_geo s' (hW'_sub hs'))
     exact hu_ev'.self_of_nhds.hasFDerivAt
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] in
@@ -298,8 +298,8 @@ theorem isGeodesicOn_contMDiffAt_one
     exact (extChartAt I α).left_inv hs'_ext
   exact hcomp.congr_of_eventuallyEq heq.symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] in
@@ -310,8 +310,8 @@ theorem isGeodesicOn_contMDiffOn_one
     ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ s := fun _t ht =>
   (isGeodesicOn_contMDiffAt_one (I := I) g hs ht hγ hcont).contMDiffWithinAt
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem isGeodesicOn_Ici_of_complete
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {γ₀ : ℝ → M} {b₀ : ℝ} (hb₀ : 0 < b₀)
@@ -411,8 +411,8 @@ theorem isGeodesicOn_Ioo_extend
   intro t ht
   simp only [hG_def, if_pos ht]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace M] in
 theorem geo_Ioo_extend_cpt
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -575,8 +575,8 @@ theorem isGeodesicOn_Ioi_of_endpointContinuation
       obtain ⟨a, ha, hab⟩ := hbS
       exact hΓ_cont_at a ha t ht (lt_of_lt_of_eq htb hab.symm)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem isGeodesicOn_Ici_of_complete_Ioo
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {γ₀ : ℝ → M} {a₀ b₀ : ℝ}

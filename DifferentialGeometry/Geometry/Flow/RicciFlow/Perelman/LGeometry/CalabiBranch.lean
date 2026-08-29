@@ -27,8 +27,8 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M]
 variable {D : RealTimeInterval}
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_lTailFamily
@@ -266,8 +266,8 @@ private theorem tailSeed_smooth
     tailTimeVel_smooth hF
   simpa only [F] using hpos.prodMk hvel
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lTailFamily_step_of
@@ -589,8 +589,8 @@ theorem lTailFamily_step_of
       ((hcurves A (hWV hA)).2.2 r hrJ)
   · exact lRegData_congr S T r (hbetaEta r hrK) (hetaReg A hA r hrK)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lTailFamily_step
@@ -663,8 +663,8 @@ theorem lTailFamily_step
       (by simpa only [z0] using hz0U) Phi hPhi0 hPhiSmooth hPhiDeriv hPhiMap
   exact ⟨epsilon, hepsilon, W, hWopen, hA0W, hWV, beta, hbeta, hcurves'⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lTailFamily_extend
@@ -1090,8 +1090,8 @@ theorem lTailLine_dstart
       (fun r ↦ mfderiv 𝓘(Real, Real) I (fun u ↦ F u r) 0 (1 : Real)) s0 = B
   exact hright
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M] in
 theorem exists_lTail_germ

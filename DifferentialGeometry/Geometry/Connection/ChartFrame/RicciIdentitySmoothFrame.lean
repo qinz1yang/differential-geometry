@@ -753,14 +753,14 @@ theorem bochner_identity_smoothOrthoFrame_of_inner_form [I.Boundaryless]
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     (x : M)
     (hInner : ∀ w : TangentSpace I x,
-      g.inner x (localConnLap_vector (LeviCivita (I := I) g)
+      g.inner x (localConnLapVector (LeviCivita (I := I) g)
                   (smoothOrthoFrame (I := I) g x)
                   (fun b => gradFun (I := I) g f b) x) w =
-        g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
+        g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) w +
           g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w) :
-    localConnLap_vector (LeviCivita (I := I) g) (smoothOrthoFrame (I := I) g x)
+    localConnLapVector (LeviCivita (I := I) g) (smoothOrthoFrame (I := I) g x)
         (fun b => gradFun (I := I) g f b) x =
-      gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
+      gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x +
         ricciSharp (I := I) g x (gradFun (I := I) g f x) :=
   localConnLap_vector_eq_bochnerFormula_of_inner_form (I := I) g hf
     (smoothOrthoFrame (I := I) g x) x hInner
@@ -1206,14 +1206,14 @@ theorem heart_of_bochner_smoothOrthoFrame [I.Boundaryless]
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
     (x : M)
     (hInner : ∀ w : TangentSpace I x,
-      g.inner x (localConnLap_vector (LeviCivita (I := I) g)
+      g.inner x (localConnLapVector (LeviCivita (I := I) g)
                   (smoothOrthoFrame (I := I) g x)
                   (fun b => gradFun (I := I) g f b) x) w =
-        g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) w +
+        g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) w +
           g.inner x (ricciSharp (I := I) g x (gradFun (I := I) g f x)) w) :
-    localConnLap_vector (LeviCivita (I := I) g) (smoothOrthoFrame (I := I) g x)
+    localConnLapVector (LeviCivita (I := I) g) (smoothOrthoFrame (I := I) g x)
         (fun b => gradFun (I := I) g f b) x =
-      gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x +
+      gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x +
         ricciSharp (I := I) g x (gradFun (I := I) g f x) :=
   bochner_identity_smoothOrthoFrame_of_inner_form (I := I) g hf x
     hInner

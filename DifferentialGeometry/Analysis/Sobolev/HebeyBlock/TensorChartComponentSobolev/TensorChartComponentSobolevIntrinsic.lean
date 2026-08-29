@@ -81,7 +81,7 @@ private lemma perAlphaSobolevConstant_intrinsic_bound
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 private lemma wkpNormChart_tensorChartComponentScalar_eq_zero_of_inactive_intrinsic
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    {α : M} (hα : α ∉ chartAtlasPOU_activeFinset I M)
+    {α : M} (hα : α ∉ chartAtlasPOUActiveFinset I M)
     (S : SmoothCcTensor g r s)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
@@ -100,7 +100,7 @@ private lemma wkpNormChart_tensorChartComponentScalar_eq_zero_of_inactive_intrin
 
 private noncomputable def totalActiveSobolevConstant
     (g : SmoothRiemannianMetric I M) (r s : ℕ) : ℝ :=
-  ∑ α ∈ chartAtlasPOU_activeFinset I M,
+  ∑ α ∈ chartAtlasPOUActiveFinset I M,
     perAlphaSobolevConstant (I := I) (M := M) g r s α
 
 omit [CompleteSpace E] in
@@ -115,21 +115,21 @@ private lemma totalActiveSobolevConstant_intrinsic_nonneg
 omit [CompleteSpace E] in
 private lemma perAlphaSobolevConstant_le_totalActiveSobolevConstant
     (g : SmoothRiemannianMetric I M) (r s : ℕ) {α : M}
-    (hα : α ∈ chartAtlasPOU_activeFinset I M) :
+    (hα : α ∈ chartAtlasPOUActiveFinset I M) :
     perAlphaSobolevConstant (I := I) (M := M) g r s α ≤
       totalActiveSobolevConstant (I := I) (M := M) g r s := by
   classical
   unfold totalActiveSobolevConstant
   have h_split :
-      ∑ β ∈ chartAtlasPOU_activeFinset I M,
+      ∑ β ∈ chartAtlasPOUActiveFinset I M,
         perAlphaSobolevConstant (I := I) (M := M) g r s β =
         perAlphaSobolevConstant (I := I) (M := M) g r s α +
-        ∑ β ∈ (chartAtlasPOU_activeFinset I M).erase α,
+        ∑ β ∈ (chartAtlasPOUActiveFinset I M).erase α,
           perAlphaSobolevConstant (I := I) (M := M) g r s β := by
     rw [← Finset.sum_erase_add _ _ hα, add_comm]
   rw [h_split]
   have h_rest_nn :
-      0 ≤ ∑ β ∈ (chartAtlasPOU_activeFinset I M).erase α,
+      0 ≤ ∑ β ∈ (chartAtlasPOUActiveFinset I M).erase α,
             perAlphaSobolevConstant (I := I) (M := M) g r s β :=
     Finset.sum_nonneg (fun β _ =>
       perAlphaSobolevConstant_intrinsic_nonneg (I := I) (M := M) g r s β)
@@ -150,7 +150,7 @@ theorem tensorChartComponent_wkpNormChart_le
   refine ⟨totalActiveSobolevConstant (I := I) (M := M) g r s,
     totalActiveSobolevConstant_intrinsic_nonneg (I := I) (M := M) g r s, ?_⟩
   intro S α Idx Jdx
-  by_cases hα : α ∈ chartAtlasPOU_activeFinset I M
+  by_cases hα : α ∈ chartAtlasPOUActiveFinset I M
   · have h_per :
         wkpNormChart (I := I) (M := M) 1 2
             (tensorChartComponentScalar (I := I) (M := M)

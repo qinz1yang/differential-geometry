@@ -27,8 +27,8 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 variable [RiemannianBundle (fun x : M => TangentSpace I x)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def intrLaunch3
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -39,8 +39,8 @@ noncomputable def intrLaunch3
   intrinsicGeodesic (I := I) g hEnorm p
     (show TangentSpace I p from u + q.1.1 • a + q.1.2 • b) q.2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunch3_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -89,8 +89,8 @@ theorem intrLaunch3_smooth
   rw [heq] at hcomp
   exact hcomp
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def intrLaunchJ
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -105,8 +105,8 @@ noncomputable def intrLaunchJ
     I (intrLaunch3 (I := I) g hEnorm p u a b)
     ((q.1, 0), q.2) ((0, 1), 0)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchJ_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -172,8 +172,8 @@ theorem intrLaunchJ_smooth
   rw [hfun]
   exact hcomp
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def intrLaunchJet
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -189,8 +189,8 @@ noncomputable def intrLaunchJet
     intrLaunchJ (I := I) g hEnorm p u a b (r, t)
   Variation.covFstIter (I := I) g f n V q.1 q.2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 @[simp]
 theorem intrLaunchJet_zero
     [PseudoEMetricSpace M]
@@ -203,8 +203,8 @@ theorem intrLaunchJet_zero
       intrLaunchJ (I := I) g hEnorm p u a b q :=
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 @[simp]
 theorem intrLaunchJet_succ
     [PseudoEMetricSpace M]
@@ -222,8 +222,8 @@ theorem intrLaunchJet_succ
         r t :=
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchJet_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -258,8 +258,8 @@ theorem intrLaunchJet_smooth
     Variation.covFstIter_smooth (I := I) g f V hV n
   simpa only [f, V, intrLaunchJet] using hjet
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchMix_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -297,8 +297,8 @@ theorem intrLaunchMix_smooth
       intrLaunchJ_smooth (I := I) g hEnorm p u a b
   exact Variation.cov_fst_smooth (I := I) g f V hV
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrMixDeriv_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -340,8 +340,8 @@ theorem intrMixDeriv_smooth
       intrLaunchMix_smooth (I := I) g hEnorm p u a b
   exact Variation.cov_snd_smooth (I := I) g f W hW
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchDir_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -411,8 +411,8 @@ theorem intrLaunchDir_smooth
   rw [hfun]
   exact hcomp
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchA_eq
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -463,8 +463,8 @@ theorem intrLaunchA_eq
     intrLaunch3 (I := I) g hEnorm p u a b ((r, 0), q.2) by rfl] at hcomp
   simpa only [D, F, ι, Function.comp_apply, Variation.varFst] using hcomp.symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchA_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -492,8 +492,8 @@ theorem intrLaunchA_zero
   convert h using 1
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchT_eq
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -544,8 +544,8 @@ theorem intrLaunchT_eq
     intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), v) by rfl] at hcomp
   simpa only [D, F, ι, Function.comp_apply, Variation.varSnd] using hcomp.symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchJ_eq
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -592,8 +592,8 @@ theorem intrLaunchJ_eq
     intrLaunch3 (I := I) g hEnorm p u a b ((q.1, s), q.2) by rfl] at hcomp
   simpa only [D, F, ι, Function.comp_apply, intrLaunchJ] using hcomp.symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchA_self
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -648,8 +648,8 @@ theorem intrLaunchA_self
     _ = intrLaunchJ (I := I) g hEnorm p u a a (r, t) :=
       (intrLaunchJ_eq (I := I) g hEnorm p u a a (r, t)).symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrAJet_self
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -677,8 +677,8 @@ theorem intrAJet_self
     Variation.covFstIter (I := I) g f n B q.1 q.2
   rw [hAB]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchJ_time0
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -697,8 +697,8 @@ theorem intrLaunchJ_time0
   rw [hconst, mfderiv_const]
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchJet_time0
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -715,8 +715,8 @@ theorem intrLaunchJet_time0
   exact Variation.covFstIter_zero_of (I := I) g f V 0
     (fun s => intrLaunchJ_time0 (I := I) g hEnorm p u a b s) n r
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchDJ_time0
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -759,8 +759,8 @@ theorem intrLaunchDJ_time0
     intrinsic_jacobi_d0 (I := I) g hEnorm p (u + r • a) b
   simpa only [Variation.covSnd, f, V, γ, γ', J'] using hcongr.trans hd0
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchJ_at
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -774,8 +774,8 @@ theorem intrLaunchJ_at
   unfold intrinsicJacobi
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchJ_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -802,8 +802,8 @@ theorem intrLaunchJ_zero
   convert h using 1
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchDA_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -839,8 +839,8 @@ theorem intrLaunchDA_zero
   simpa only [Variation.covSnd, f, A, γ, J] using
     covDerivAlong_congr_curve (I := I) g A J hγ hA
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunchDJ_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -877,8 +877,8 @@ theorem intrLaunchDJ_zero
   simpa only [Variation.covSnd, f, V, γ, J] using
     covDerivAlong_congr_curve (I := I) g (fun s => V 0 s) J hγ hV
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunch_jacobi
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -910,8 +910,8 @@ theorem intrLaunch_jacobi
   convert intrinsic_jacobi (I := I) g hEnorm p (u + r • a) b using 1
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunch_mix_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -959,8 +959,8 @@ theorem intrLaunch_mix_zero
     DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong.covDerivAlong_zero
       (I := I) g γ 0
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunch_commute
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1004,8 +1004,8 @@ theorem intrLaunch_commute
     DifferentialGeometry.Geometry.Riemannian.Variation.commute_ds_dt_intrinsic
       (I := I) g f hf 0
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunch_dmix0
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1153,8 +1153,8 @@ theorem intrLaunch_dmix0
   rw [hleft, hcurv] at hcomm
   simpa only [zero_sub, neg_eq_zero] using hcomm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrLaunch_var_eq
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1223,8 +1223,8 @@ theorem intrLaunch_var_eq
         (show TangentSpace I p from u + r • a)
   exact Variation.jacobi_var_eq (I := I) g f hf V hV hJac hGeo t
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def intrJetResidual
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1240,8 +1240,8 @@ noncomputable def intrJetResidual
     intrLaunchJ (I := I) g hEnorm p u a b (r, t)
   Variation.jacJetResidual (I := I) g f V n q.1 q.2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def intrJetCorr
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1257,8 +1257,8 @@ noncomputable def intrJetCorr
     intrLaunchJ (I := I) g hEnorm p u a b (r, t)
   Variation.jacJetCorr (I := I) g f V n q.1 q.2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 @[simp]
 theorem intrJetResidual_zero
     [PseudoEMetricSpace M]
@@ -1285,8 +1285,8 @@ theorem intrJetResidual_zero
   rw [hfield]
   exact intrLaunch_jacobi (I := I) g hEnorm p u a b r t
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrJetCurv_smooth
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1340,8 +1340,8 @@ theorem intrJetCurv_smooth
     Variation.jacCurv_smooth (I := I) g f W hW hT
   simpa only [f, W] using hcurv
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrJetResidual_succ
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]

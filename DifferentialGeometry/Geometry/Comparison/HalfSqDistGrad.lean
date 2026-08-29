@@ -45,8 +45,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [RiemannianBundle (fun x : M => TangentSpace I x)]
 
 omit [ConnectedSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
 theorem arcLength_radial
@@ -67,8 +67,8 @@ theorem arcLength_radial
     exact intrinsicGeodesic_speedSq_eq (I := I) g hEnorm p v t
   rw [hI, intervalIntegral.integral_const, smul_eq_mul]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_dist_eq_sqrt
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] [T3Space M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -87,8 +87,8 @@ theorem exists_dist_eq_sqrt
     hradial hv]
   exact ENNReal.toReal_ofReal (Real.sqrt_nonneg _)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 theorem exists_expMapIntrinsic_normalChart
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -118,8 +118,8 @@ theorem exists_expMapIntrinsic_normalChart
   rw [hagree hsmall]
   exact hexp_eq
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_central_geodesic
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] [T3Space M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -170,8 +170,8 @@ theorem exists_central_geodesic
   · exact intrinsicGeodesic_mfderiv_zero (I := I) g hEnorm q u
   · rw [arcLength_radial (I := I) g hEnorm q u 0 L, hu_unit, Real.sqrt_one]; ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_halfSqDist_md
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] [T3Space M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -238,8 +238,8 @@ theorem exists_halfSqDist_md
       Real.sq_sqrt (gInner_self_nonneg (I := I) g pt (ψ y))]
   exact (hquad.congr_of_eventuallyEq heq).mdifferentiableAt one_ne_zero
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
 theorem exists_halfSqDist_md_of_complete_metric
     (g : SmoothRiemannianMetric I M)

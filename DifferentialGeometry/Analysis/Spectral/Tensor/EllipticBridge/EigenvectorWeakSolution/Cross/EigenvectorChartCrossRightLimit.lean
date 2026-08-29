@@ -244,15 +244,15 @@ private noncomputable def covDerivAlongSection
     (V : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     Cₛ^∞⟮I; TensorRSModel r s ℝ E, (fun x : M => TensorRSSpace r s I x)⟯ :=
   letI : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedAddCommGroup r s
+    tensorRSModelNormedAddCommGroup r s
   letI : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedSpace r s
+    tensorRSModelNormedSpace r s
   letI : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   letI : FiberBundle (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   letI : VectorBundle ℝ (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
@@ -357,7 +357,7 @@ noncomputable def covDerivAlongGrad
     (S : SmoothCcTensor g r s) (ζ : C^∞⟮I, M; ℝ⟯) :
     SmoothCcTensor g r s :=
   covDerivAlong (I := I) (M := M) g r s S
-    (grad_g (I := I) g ζ)
+    (gradG (I := I) g ζ)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [SigmaCompactSpace M] in
 lemma covDerivAlongGrad_toSection_apply
@@ -459,7 +459,7 @@ private lemma gramInv_sum_covDeriv_eq_covDerivAlongGrad
         (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm.toContinuousLinearMap
       with hD
   set toM : TensorRSSpace r s I x ≃L[ℝ] TensorRSModel r s ℝ E :=
-    tensorRSSpace_continuousLinearEquiv (I := I) r s x with htoM
+    tensorRSSpaceContinuousLinearEquiv (I := I) r s x with htoM
   have hcov : ∀ v : E,
       tensorCovDerivAt (I := I) (M := M) g r s S x v = D v := fun v => rfl
   have hgoal_rhs :

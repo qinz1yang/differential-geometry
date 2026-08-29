@@ -195,7 +195,7 @@ theorem integral_secondOrder_combined_eq_zero
               (loweredCovDerivAlongVF (I := I) (M := M) g 0 2 v B x))
           + tensorInnerScalar (I := I) (M := M) g 0 2
               (covDerivAlongVFSection (I := I) (M := M) g T B) v x
-            * divergence_g (I := I) g B x)
+            * divergenceG (I := I) g B x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 :=
   integral_tensorInner_covDeriv_combined_eq_zero (I := I) (M := M) g 0 2
     (covDerivAlongVFSection (I := I) (M := M) g T B) v B

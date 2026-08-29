@@ -33,7 +33,7 @@ theorem scalar_curvature_differential_eq_ricci_trace
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv) :
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     let hcov :=
       leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
@@ -76,7 +76,7 @@ theorem scalar_curvature_hessian_trace_symmetric
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
     (i j : Idx) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     let hcov :=
@@ -587,7 +587,7 @@ theorem levi_civita_second_bianchi
         intro p
         exact DifferentialGeometry.Geometry.Curvature.CovariantDerivative.curvField_contMDiffAt
           (I := I) cov hcov Xsec Ysec Zsec p⟩
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g :=
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g :=
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
       (I := I) g
   have term_eq
@@ -983,19 +983,19 @@ theorem levi_civita_ricci_section_eq_riemann_trace
   have hRm04 : rm04RealizesConnection (I := I) g cov Rm04 := by
     simpa [Rm04] using
       (rm04Section_realizes (I := I) (M := M) g (cov := cov) (hcov := hcov))
-  let _ := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  let _ := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) 2
   dsimp
   apply ContMDiffSection.ext
   intro y
-  let basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) y
+  let basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) y
   let gInv : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
     fun k l =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component (I := I) g y k
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent (I := I) g y k
         l (extChartAt I y y)
   have hinv :
-      MetricInverseInBasis_gen (I := I) (M := M) g y basis gInv := by
+      MetricInverseInBasisGen (I := I) (M := M) g y basis gInv := by
     simpa [basis, gInv] using
       (Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) g y)
@@ -1045,7 +1045,7 @@ theorem levi_civita_covariant_ricci_eq_riemann_trace
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv) :
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     let hcov :=
       leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
@@ -1097,7 +1097,7 @@ theorem levi_civita_second_covariant_ricci_eq_riemann_trace
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
     (A B C D : TangentSpace I x) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     let hcov :=
@@ -1388,7 +1388,7 @@ theorem levi_civita_bianchi_trace_identities
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv) :
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     let hcov :=
       leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
@@ -1440,7 +1440,7 @@ theorem levi_civita_bianchi_scalar_trace_identities
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv) :
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     let hcov :=
       leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
@@ -1500,7 +1500,7 @@ theorem exists_levi_civita_bianchi_trace_data
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv) :
+    (hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis gInv) :
     let cov := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) g
     let hcov :=
       leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally

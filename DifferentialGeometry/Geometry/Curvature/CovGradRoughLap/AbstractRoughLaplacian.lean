@@ -108,7 +108,7 @@ theorem abstract_succ_covDeriv_unfold_at
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (Vfield y)) x)
     (hYfield : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun y => TotalSpace.mk' E (E := TangentSpace I) y (Y y)) x) :
-    (tensor0S_curry (I := I) (M := M) 2 x
+    (tensor0SCurry (I := I) (M := M) 2 x
         ((Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g)).toFun
           W x (Vfield x))) (Y x) =
       (Tensor0SNabla.tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g)).toFun
@@ -123,7 +123,7 @@ theorem abstract_succ_covDeriv_unfold_at
     (cov_V := tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g))
     (τ := curriedSection I M W) (x := x) hC
     (V_field := fun y => Vfield y) (Y := fun y => Y y) hVfield hYfield
-  have hsucc : tensor0S_curry (I := I) (M := M) 2 x
+  have hsucc : tensor0SCurry (I := I) (M := M) 2 x
       ((Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g)).toFun
         W x (Vfield x)) =
       HomConnection.homBundleCovariantDerivativeFun (I := I) (M := M)
@@ -135,12 +135,12 @@ theorem abstract_succ_covDeriv_unfold_at
     rw [show
         (Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g)).toFun
           W x (Vfield x) =
-        (Tensor0SNabla.tensor0SCovariantDerivative_succ I M (LeviCivita (I := I) g)
+        (Tensor0SNabla.tensor0SCovariantDerivativeSucc I M (LeviCivita (I := I) g)
           (tensor0SCovariantDerivative I M 2 (LeviCivita (I := I) g))).toFun
           W x (Vfield x) from by
       rw [tensor0SCovariantDerivative_succ_eq]]
     rw [tensor0SCovariantDerivative_succ_apply]
-    exact (tensor0S_curry (I := I) (M := M) 2 x).apply_symm_apply _
+    exact (tensor0SCurry (I := I) (M := M) 2 x).apply_symm_apply _
   rw [hsucc]
   exact hHom
 end Curvature

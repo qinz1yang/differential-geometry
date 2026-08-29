@@ -132,7 +132,7 @@ theorem isSolution
 
 end OpenConvOut
 
-noncomputable def flowUpgrade_of_open
+noncomputable def flowUpgradeOfOpen
     (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))
     (L : PointedFlowData (I := I) X.D)
     (P : PointedRiemannianManifold (I := I))
@@ -215,7 +215,7 @@ noncomputable def flowUpgrade_of_open
       intro t ht
       simpa only [hD, RealTimeInterval.openInterval] using hcd ht
     obtain ⟨n, hn⟩ := RealTimeInterval.exists_window_superset ht₀ hcdOpen
-    let coN := OpenConvOut.at_window Φ co n
+    let coN := OpenConvOut.atWindow Φ co n
     have hLmN : ∀ t : Real,
         t ∈ Set.Icc (RealTimeInterval.openWindowLeft a t₀ n)
           (RealTimeInterval.openWindowRight b t₀ n) →
@@ -275,7 +275,7 @@ theorem flowUpgrade_open_L
     (ricciNorm : RicNormPullback (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
-    (flowUpgrade_of_open (I := I) mc L P hPlim hPL Φ R bf hsrc htgt ht₀ hD co
+    (flowUpgradeOfOpen (I := I) mc L P hPlim hPL Φ R bf hsrc htgt ht₀ hD co
       hLmetric scalar ricciNorm).data.L = L := by
   cases hPL
   rfl
@@ -315,7 +315,7 @@ theorem flowLimit_of_open
       (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
     CompactnessConclusion (I := I) X :=
-  (flowUpgrade_of_open (I := I) mc L P hPlim hPL Φ R bf hsrc htgt ht₀ hD co
+  (flowUpgradeOfOpen (I := I) mc L P hPlim hPL Φ R bf hsrc htgt ht₀ hD co
     hLmetric scalar ricciNorm).toConclusion
 
 end HCGCompactness

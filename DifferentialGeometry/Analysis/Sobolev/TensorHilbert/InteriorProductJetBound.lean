@@ -198,27 +198,27 @@ private lemma ipjb_slotExt2_toModel (g : SmoothRiemannianMetric I M)
   have h1 : Tensor0SSpace.toModel
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
         (slotExtend (I := I) (M := M) g 0 1 om).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x A
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x A
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u0))) ![u1, u2] =
       Tensor0SSpace.toModel
         (slotExtendFib (I := I) (M := M) 0 1 x
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from om.toSection x)
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x A
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x A
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u0)))
         (Fin.cons u1 ![u2]) := rfl
   rw [h1]
   rw [slotExtendFib_apply_eval (I := I) (M := M) 0 1 x
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 1 I x from om.toSection x)
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x A
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x A
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u0)) u1 ![u2]]
-  have hc : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x A
+  have hc : tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x A
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u0))
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u1) =
       Tensor0SSpace.toModel A ![u0, u1] • unitTensor (I := I) (M := M) x := by
     have h2 := ipjb_rank0_smul_unit (I := I) (M := M) x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x A
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x A
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u0))
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u1))
     rw [h2]
@@ -272,7 +272,7 @@ theorem ipLowCc_toSec_ip (g : SmoothRiemannianMetric I M) (om : SmoothCcTensor g
         g.inner x V z) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 1 I x from
         (ipLowCc (I := I) (M := M) g om).toSection x) =
-      Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 x V := by
+      Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x V := by
   classical
   apply ContinuousLinearMap.ext
   intro A
@@ -280,12 +280,12 @@ theorem ipLowCc_toSec_ip (g : SmoothRiemannianMetric I M) (om : SmoothCcTensor g
   apply ContinuousMultilinearMap.ext
   intro m
   have hRHS : Tensor0SSpace.toModel
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 x V A) m =
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x V A) m =
       Tensor0SSpace.toModel A
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x V) (fun k => m k)) := by
     have h1 : Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 x V A) =
-        Tensor0SBundle.model_interior_product (𝕜 := ℝ) (E := E) 1
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x V A) =
+        Tensor0SBundle.modelInteriorProduct (𝕜 := ℝ) (E := E) 1
           (tangentSpaceModelContinuousLinearEquiv (I := I) x V)
           (Tensor0SSpace.toModel A) := rfl
     rw [h1]

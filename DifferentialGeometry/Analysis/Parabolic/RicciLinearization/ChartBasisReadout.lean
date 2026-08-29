@@ -61,7 +61,7 @@ theorem unitModel_basisChart_eq_tensorChartComponent (g : SmoothRiemannianMetric
 omit [NeZero (Module.finrank ℝ E)] in
 theorem cometricLmodel_covectorOfCLM_cDualBasis_eq_chartBasis_sum
     (g₁ : SmoothRiemannianMetric I M) (x : M) (k : Fin (Module.finrank ℝ E)) :
-    cometricLmodel (I := I) g₁ x (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+    cometricLmodel (I := I) g₁ x (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
         ((chartModelBasis E).cDualBasis k)) =
       ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k l • centeredChartTangentBasis (I := I) x l := by
@@ -76,7 +76,7 @@ theorem cometricLmodel_covectorOfCLM_cDualBasis_eq_chartBasis_sum
   apply DifferentialGeometry.Geometry.Operator.metricFlatLinear_injective (I := I) g₁ x
   ext u
   change g₁.inner x (cometricLmodel (I := I) g₁ x
-      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) ((chartModelBasis E).cDualBasis k))) u =
+      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) ((chartModelBasis E).cDualBasis k))) u =
     g₁.inner x (∑ l : Fin (Module.finrank ℝ E),
       chartInvGramMatrix (I := I) g₁ x x k l • centeredChartTangentBasis (I := I) x l) u
   rw [cometricLmodel_covectorOfCLM_inner (I := I) g₁ x ((chartModelBasis E).cDualBasis k) u]

@@ -67,17 +67,17 @@ private theorem cotangentInner_eq_gen
     (g : SmoothRiemannianMetric I M) (x : M)
     (α β : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
     Tensor0SBundle.cotangentInner (I := I) g x α β =
-      cotangentInner_gen (I := I) g x α β := rfl
+      cotangentInnerGen (I := I) g x α β := rfl
 
 
 theorem cotangentSharp_differential1FormFun_eq_gradientFun
     (g : SmoothRiemannianMetric I M) (u : M -> Real) (x : M) :
-    cotangentSharp_gen (I := I) g x (differential1FormFun (I := I) u x) =
+    cotangentSharpGen (I := I) g x (differential1FormFun (I := I) u x) =
       gradientFun (I := I) g u x := by
   apply (metricFlatEquiv (I := I) g x).injective
   ext X
   change
-    g.inner x (cotangentSharp_gen (I := I) g x (differential1FormFun (I := I) u x)) X =
+    g.inner x (cotangentSharpGen (I := I) g x (differential1FormFun (I := I) u x)) X =
       g.inner x (gradientFun (I := I) g u x) X
   rw [cotangentSharp_inner_gen, inner_gradientFun]
   rfl
@@ -98,7 +98,7 @@ theorem inner0S_one_eq_eval_sharp_right
     (g : SmoothRiemannianMetric I M) (x : M)
     (α β : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x) :
     inner0S (I := I) g x 1 α β =
-      cotangentToDual_gen (I := I) α (cotangentSharp_gen (I := I) g x β) := by
+      cotangentToDualGen (I := I) α (cotangentSharpGen (I := I) g x β) := by
   rw [Tensor0SBundle.inner0S_one_eq_cotangent, cotangentInner_eq_gen,
     cotangentInner_eq_sharp_gen, cotangentSharp_inner_gen]
 
@@ -207,7 +207,7 @@ theorem TraceNablaHessianRealizesDLapAt.toInBasis
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (u : M -> Real)
     (nabla2Du :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
@@ -242,11 +242,11 @@ omit [FiniteDimensional ℝ E] in
 private theorem curry_three_apply_vec2 {x : M}
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (X Y Z : TangentSpace I x) :
-    tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x T X
+    tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x T X
         (vec2 (I := I) Y Z) =
       T (vec3 (I := I) X Y Z) := by
   calc
-    tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x T X
+    tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x T X
         (vec2 (I := I) Y Z) =
       T (Fin.cons X (vec2 (I := I) Y Z)) :=
         TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M)
@@ -258,7 +258,7 @@ private theorem freezeLastTwo0S3_eq_curry {x : M}
     (T : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (X : TangentSpace I x) :
     freezeLastTwo0S3 (I := I) T X =
-      tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x T X := by
+      tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x T X := by
   classical
   let basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
       (TangentSpace I x) :=
@@ -277,7 +277,7 @@ theorem extDeriv_metricTrace_eq_traceNabla
     [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (nablaA :
@@ -301,14 +301,14 @@ theorem extDeriv_metricTrace_eq_traceNabla
     rw [metricTracePair0SAt, metricTensorField_eq_metricTensor0S]
   have htrace :
       inner0S (I := I) g x 2 (metricTensorField (I := I) g x)
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x (nablaA x) (X x)) =
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x (nablaA x) (X x)) =
         metricTraceLastTwo0SAt3 (I := I) g (nablaA x) (X x) := by
     rw [metricTensorField_eq_metricTensor0S, metricTraceLastTwo0SAt3,
       metricTracePair0SAt, freezeLastTwo0S3_eq_curry]
   have hnabla :
       nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           2 cov X A x =
-        tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x (nablaA x) (X x) := by
+        tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x (nablaA x) (X x) := by
     classical
     let basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
         (TangentSpace I x) :=
@@ -357,7 +357,7 @@ theorem traceNablaHessianRealizesDLapAt_of_lapTrace
     [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (u : M -> Real)
     (nablaDuSec : TwoTensorSection (I := I) (M := M))
     (nabla2DuSec :
@@ -420,7 +420,7 @@ theorem traceNablaHessianRealizesDLapAt_of_traceAt
     [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (u : M -> Real)
     (nablaDuSec : TwoTensorSection (I := I) (M := M))
     (nabla2DuSec :
@@ -449,7 +449,7 @@ def OneFormRicciTraceCommAt
   OneFormRicciTraceCommWithVectorAt (I := I) Ric basis gInv
     (gradientFun (I := I) g u x) nabla2Du
 
-def oneFormRicciTraceComm_coordAt
+def oneFormRicciTraceCommCoordAt
     (g : SmoothRiemannianMetric I M)
     (Ric : Tensor02Section (I := I) (M := M))
     (u : M -> Real)
@@ -460,7 +460,7 @@ def oneFormRicciTraceComm_coordAt
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x₀) :
     Prop :=
   OneFormRicciTraceCommAt (I := I) g Ric u
-    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x₀) gInv nabla2Du
+    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x₀) gInv nabla2Du
 
 theorem oneFormRicciTraceComm_coordAt_iff
     (g : SmoothRiemannianMetric I M)
@@ -471,9 +471,9 @@ theorem oneFormRicciTraceComm_coordAt_iff
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real)
     (nabla2Du :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x₀) :
-    oneFormRicciTraceComm_coordAt (I := I) g Ric u x₀ gInv nabla2Du ↔
+    oneFormRicciTraceCommCoordAt (I := I) g Ric u x₀ gInv nabla2Du ↔
       OneFormRicciTraceCommAt (I := I) g Ric u
-        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x₀) gInv
+        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x₀) gInv
           nabla2Du :=
   Iff.rfl
 
@@ -503,8 +503,8 @@ def CurvatureTraceDuEqRicciGradAt
 theorem differential1FormFun_eq_metric_dual_gradientFun
     (g : SmoothRiemannianMetric I M) (u : M -> Real) (x : M) :
     differential1FormFun (I := I) u x =
-      dualToCotangent_gen (I := I)
-        ((tangentFlatLinear_gen (I := I) g x) (gradientFun (I := I) g u x)) := by
+      dualToCotangentGen (I := I)
+        ((tangentFlatLinearGen (I := I) g x) (gradientFun (I := I) g u x)) := by
   apply cotangentToDualLinear_injective_gen (I := I) (x := x)
   ext V
   simp only [cotangentToDualLinear_apply_gen, cotangentToDual_apply_gen, gradientFun_eq,
@@ -520,7 +520,7 @@ theorem curvatureTraceDuEqRicciGradAt_of_metric_dual
     (u : M -> Real)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (hRic : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
     (hSkew : Rm13MetricSkewAt (I := I) g x (Rm13 x)) :
     CurvatureTraceDuEqRicciGradAt (I := I) g Ric Rm13 u basis gInv := by
@@ -602,13 +602,13 @@ theorem oneFormRicciTraceComm_coordAt_of_third_comm
     (hcomm : OneFormThirdCovDerivCommAt (I := I) Rm13
       (differential1FormFun (I := I) u x₀) nabla2Du)
     (hcurv : CurvatureTraceDuEqRicciGradAt (I := I) g Ric Rm13 u
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x₀) gInv) :
-    oneFormRicciTraceComm_coordAt (I := I) g Ric u x₀ gInv nabla2Du := by
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x₀) gInv) :
+    oneFormRicciTraceCommCoordAt (I := I) g Ric u x₀ gInv nabla2Du := by
   rw [oneFormRicciTraceComm_coordAt_iff]
   simpa [OneFormRicciTraceCommAt, CurvatureTraceDuEqRicciGradAt, curvatureTraceDuAt] using
     oneForm_ricci_trace_comm_of_third_comm (I := I) Ric Rm13
       (differential1FormFun (I := I) u x₀)
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x₀) gInv
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x₀) gInv
       (gradientFun (I := I) g u x₀) nabla2Du hsymm hcomm
       (by
         intro Y
@@ -800,7 +800,7 @@ theorem rough_inner_eq_coord_of_trace
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (αx roughAlphaX :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (nabla2Alpha : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -817,7 +817,7 @@ theorem rough_inner_eq_coord_of_trace
   apply Finset.sum_congr rfl
   intro j _
   have hrough_i :
-      (cotangentToDual_gen (I := I) roughAlphaX) (basis i) =
+      (cotangentToDualGen (I := I) roughAlphaX) (basis i) =
         roughLap1FormAt (I := I) basis gInv nabla2Alpha (basis i) := by
     simpa [cotangentToDual_apply_gen] using
       roughLap1FormAt_eq_of_realizes (I := I) basis gInv roughAlphaX
@@ -830,7 +830,7 @@ theorem nabla_norm_eq_coord
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (nablaAlphaX :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x) :
     normSq0S (I := I) g x 2 nablaAlphaX =
@@ -914,7 +914,7 @@ theorem oneForm_norm_bochner_coord
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (α roughAlpha : (y : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 y)
     (nablaAlpha : (y : M) ->
@@ -939,7 +939,7 @@ theorem oneForm_norm_bochner_at
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (α roughAlpha : (y : M) ->
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 y)
     (nablaAlpha : (y : M) ->
@@ -1035,7 +1035,7 @@ theorem oneForm_ricci_identity_components
     (gInv : Idx -> Idx -> Real)
     (nabla2Du :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
-    (_hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (_hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (hrough : RoughLap0SRealizesMetricTrace (I := I) g (s := 1) (roughDu x) nabla2Du)
     (hdlap : TraceNablaHessianRealizesDLapAt (I := I) cov g u nabla2Du)
     (hcomm : OneFormRicciTraceCommAt (I := I) g Ric u basis gInv nabla2Du) :
@@ -1074,7 +1074,7 @@ theorem one_form_ricci_trace_comm_of_lc
     (gInv : Idx -> Idx -> Real)
     (nabla2Du :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
-    (_hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (_hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (_hRic : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
     (hsymm : OneFormLastTwoSymmAt (I := I) nabla2Du)
     (hthird : OneFormThirdCovDerivCommAt (I := I) Rm13
@@ -1104,7 +1104,7 @@ theorem oneForm_commutator_eval_of_lc
     (gInv : Idx -> Idx -> Real)
     (nabla2Du :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (hRic : ricciTensorRealizesRm13Trace (I := I) Ric Rm13)
     (hsymm : OneFormLastTwoSymmAt (I := I) nabla2Du)
     (hthird : OneFormThirdCovDerivCommAt (I := I) Rm13
@@ -1180,7 +1180,7 @@ theorem fundamental_bochner
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInvAt)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInvAt)
     (nabla2Du :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (normSecond :
@@ -1246,7 +1246,7 @@ theorem fundamental_bochner_of_terms
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInvAt)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInvAt)
     (X : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (duSec : OneFormSection (I := I) (M := M))
@@ -1291,7 +1291,7 @@ theorem fundamental_bochner_of_terms_of_normSecond_realizes
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (Ric : Tensor02Section (I := I) (M := M))
     (u : M -> Real)
     (Hess nablaDu : (x : M) ->
@@ -1300,7 +1300,7 @@ theorem fundamental_bochner_of_terms_of_normSecond_realizes
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInvAt)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInvAt)
     (X : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (duSec normDuSec : OneFormSection (I := I) (M := M))
@@ -1372,7 +1372,7 @@ theorem fundamental_bochner_of_components
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInvAt)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInvAt)
     (nabla2Du :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (normSecond :
@@ -1417,7 +1417,7 @@ theorem fundamental_bochner_of_lc
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInvAt)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInvAt)
     (nabla2Du :
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (normSecond :
@@ -1475,7 +1475,7 @@ theorem fundamental_bochner_of_lc_terms
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInvAt)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInvAt)
     (X : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (duSec : OneFormSection (I := I) (M := M))
@@ -1547,7 +1547,7 @@ theorem fundamental_bochner_of_lc_terms_of_normSecond_realizes
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInvAt)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInvAt)
     (X : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (duSec normDuSec : OneFormSection (I := I) (M := M))
@@ -1649,7 +1649,7 @@ theorem fundamental_bochner_of_lc_terms_of_rm04_skew
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInvAt : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInvAt)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInvAt)
     (X : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (duSec : OneFormSection (I := I) (M := M))

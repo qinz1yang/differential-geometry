@@ -60,7 +60,7 @@ theorem coordInvSymmOn
       coordInv (I := I) S x₀ t x j i := by
   have hframe := coordinateFrameAt_isLocalFrame_one (I := I) x₀
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasis_gen
+      Tensor0SBundle.MetricInverseInBasisGen
         (I := I) (M := M) (S.family.metric t) x
         (hframe.toBasisAt hx)
         (fun a b : CoordinateIdx (𝕜 := Real) E =>
@@ -88,7 +88,7 @@ theorem coordRicSymmOn
       ricciCompInFrame (I := I) S (coordinateFrameAt (I := I) x₀) t x j i := by
   have hframe := coordinateFrameAt_isLocalFrame_one (I := I) x₀
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasis_gen
+      Tensor0SBundle.MetricInverseInBasisGen
         (I := I) (M := M) (S.family.metric t) x
         (hframe.toBasisAt hx)
         (fun a b : CoordinateIdx (𝕜 := Real) E =>
@@ -125,7 +125,7 @@ theorem canNablaSymmAt
         S.ricci t y (fun q : Fin 2 => if q = 0 then U else V) =
           S.ricci t y (fun q : Fin 2 => if q = 0 then V else U) := by
     intro y U V
-    let basis := coordinateFrameAt_toBasis (I := I) y
+    let basis := coordinateFrameAtToBasis (I := I) y
     have hcomp :
         ∀ p q : CoordinateIdx (𝕜 := Real) E,
           S.ricci t y
@@ -230,11 +230,11 @@ theorem canBianchiAt
   let gInvAt : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun a b => coordInv (I := I) S x₀ t x a b
   have hinv :
-      Tensor0SBundle.MetricInverseInBasis_gen
+      Tensor0SBundle.MetricInverseInBasisGen
         (I := I) (M := M) (S.family.metric t) x basis gInvAt := by
     have h :=
       DifferentialGeometry.Tensor.Coordinates.gInvBasisAt (I := I) (S.family.metric t) x₀ hx
-    change Tensor0SBundle.MetricInverseInBasis_gen
+    change Tensor0SBundle.MetricInverseInBasisGen
       (I := I) (M := M) (S.family.metric t) x basis gInvAt at h
     exact h
   have hmetric :=
@@ -365,11 +365,11 @@ theorem canHessAt
         (coordInv (I := I) S x₀) (coordNab2Ric (I := I) S x₀)
         t x₀ j i := by
   classical
-  let basis := coordinateFrameAt_toBasis (I := I) x₀
+  let basis := coordinateFrameAtToBasis (I := I) x₀
   let gInvAt : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun a b => coordInv (I := I) S x₀ t x₀ a b
   have hinv :
-      Tensor0SBundle.MetricInverseInBasis_gen
+      Tensor0SBundle.MetricInverseInBasisGen
         (I := I) (M := M) (S.family.metric t) x₀ basis gInvAt := by
     simpa [basis, gInvAt] using coordInvReal (I := I) S x₀ t
   have hcov :
@@ -378,7 +378,7 @@ theorem canHessAt
     simpa [SolutionFamily.connection, metricCov] using
       metricCov_smooth (I := I) (M := M) (S.base.metric t)
   let derivs :=
-    CanonicalSpatialDerivs0S.of_smooth_connection
+    CanonicalSpatialDerivs0S.ofSmoothConnection
       (E := E) (H := H) (I := I) (M := M)
       (S.family.connection t) hcov (S.ricci t)
   have hnabla : ∀ y a i j,
@@ -390,7 +390,7 @@ theorem canHessAt
         nablaRicComp (I := I) S
           (coordinateFrameAt (I := I) x₀) t y a i j := by
     intro y a i j
-    simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.of_smooth_connection]
+    simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.ofSmoothConnection]
   have hcan := coordNab2Can (I := I) S t x₀
     derivs.nablaA derivs.nabla2A derivs.second hnabla
   have hmetric :=
@@ -419,7 +419,7 @@ theorem canHessAt
       SolutionFamily.ricci, metricCov, metricRicci,
         DifferentialGeometry.Geometry.Curvature.metricCov,
       DifferentialGeometry.Geometry.Curvature.metricRicci, basis, gInvAt, derivs,
-      CanonicalSpatialDerivs0S.of_smooth_connection,
+      CanonicalSpatialDerivs0S.ofSmoothConnection,
       coordinateFrameAt_toBasis_apply] using hmetric
   calc
     scalarHessianFromNabla2RicInFrame (M := M)
@@ -519,7 +519,7 @@ theorem coordCommAt
           simpa [SolutionFamily.connection, metricCov] using
             metricCov_smooth (I := I) (M := M) (S.base.metric s)
         exact
-          CanonicalSpatialDerivs0S.of_smooth_connection
+          CanonicalSpatialDerivs0S.ofSmoothConnection
             (E := E) (H := H) (I := I) (M := M)
             (S.family.connection s) hcov (S.ricci s)
     let nabla2Tensor : Real -> DifferentialGeometry.Geometry.Curvature.Tensor04Section (I := I)
@@ -554,7 +554,7 @@ theorem coordCommAt
             nablaRicComp (I := I) S
               (coordinateFrameAt (I := I) x₀) t y a i j := by
         intro y a i j
-        simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.of_smooth_connection]
+        simp [nablaRicComp, derivs, CanonicalSpatialDerivs0S.ofSmoothConnection]
       have hcan :=
         coordNab2Can (I := I) S t x₀ (derivs t).nablaA
           (derivs t).nabla2A (derivs t).second hnabla d a i j
@@ -643,7 +643,7 @@ theorem coordCommAt
       have hsym :=
         DifferentialGeometry.Geometry.Curvature.metricRicciSymm (I := I) (M := M)
           (S.family.metric (t : Real))
-          (coordinateFrameAt_toBasis (I := I) x₀)
+          (coordinateFrameAtToBasis (I := I) x₀)
           (fun a b => gInv (t : Real) x₀ a b)
           (by simpa [gInv] using coordInvReal (I := I) S x₀ (t : Real)) i j
       simpa [ricciCompInFrame, SolutionOn.ricciAt, SolutionFamily.ricciAt, frame]

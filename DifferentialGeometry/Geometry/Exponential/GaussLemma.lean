@@ -48,8 +48,8 @@ private lemma real_eq_zero_of_sqrt_eq_zero {y : ℝ} (hy : 0 ≤ y) (h : Real.sq
 
 section RadialMinimizerConvention
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
 

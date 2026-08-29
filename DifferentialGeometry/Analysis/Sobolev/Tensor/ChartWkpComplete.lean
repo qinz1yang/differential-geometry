@@ -246,13 +246,13 @@ theorem tensorLimit_comp
         α P.1 P.2 =ᵐ[
       (volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
-      (fun y => ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (fun y => ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ Q : TensorCompIdx (E := E) r s,
           secTransTerm (I := I) (M := M) r s β α P Q
             (secCompRep (I := I) (M := M) r s k hp u
               h_cauchy β Q.1 Q.2) y) := by
   classical
-  let Sf := chartAtlasPOU_finset (I := I) (M := M)
+  let Sf := chartAtlasPOUFinset (I := I) (M := M)
   let F : M → RSTensorSection I M r s := fun β =>
     secModelPull (I := I) (M := M) r s β
       (secModelLimit (I := I) (M := M) r s k hp u h_cauchy β)
@@ -282,7 +282,7 @@ theorem tensorLimit_mem
       (tensorLimitSec (I := I) (M := M) r s k hp u h_cauchy) := by
   classical
   intro α Idx Jdx
-  let Sf := chartAtlasPOU_finset (I := I) (M := M)
+  let Sf := chartAtlasPOUFinset (I := I) (M := M)
   let P : TensorCompIdx (E := E) r s := ⟨Idx, Jdx⟩
   let q : M → TensorCompIdx (E := E) r s → EuclN → ℝ := fun β Q =>
     secTransTerm (I := I) (M := M) r s β α P Q
@@ -331,7 +331,7 @@ theorem tensorErr_comp
         α P.1 P.2 =ᵐ[
       (volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
-      (fun y => ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (fun y => ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ Q : TensorCompIdx (E := E) r s,
           secTransTerm (I := I) (M := M) r s β α P Q
             (secCompErr (I := I) (M := M) r s k hp u
@@ -360,7 +360,7 @@ theorem tensorNorm_eq_sum
     (r s k : ℕ)
     {p : ℝ≥0∞} (hp : 1 ≤ p) (S : RSTensorSection I M r s) :
     wkpTensorNorm (I := I) (M := M) k p S =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
           ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
@@ -368,7 +368,7 @@ theorem tensorNorm_eq_sum
               (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   unfold wkpTensorNorm
-  rw [tsum_eq_sum (s := chartAtlasPOU_finset (I := I) (M := M))]
+  rw [tsum_eq_sum (s := chartAtlasPOUFinset (I := I) (M := M))]
   intro α hα
   refine Finset.sum_eq_zero ?_
   intro Idx _
@@ -396,7 +396,7 @@ theorem targetErr_tendsto
         (chartTargetEuclid (I := I) (M := M) α))
       atTop (nhds 0) := by
   classical
-  let Sf := chartAtlasPOU_finset (I := I) (M := M)
+  let Sf := chartAtlasPOUFinset (I := I) (M := M)
   let C : M → TensorCompIdx (E := E) r s → ℝ := fun β Q =>
     (secTermJointK (I := I) (M := M) r s k hp hp_top β α P Q).choose
   let q : ℕ → M → TensorCompIdx (E := E) r s → EuclN → ℝ :=
@@ -509,7 +509,7 @@ theorem tensorLimit_tendsto
           tensorLimitSec (I := I) (M := M) r s k hp u h_cauchy))
       atTop (nhds 0) := by
   classical
-  let Sf := chartAtlasPOU_finset (I := I) (M := M)
+  let Sf := chartAtlasPOUFinset (I := I) (M := M)
   have hcomp : ∀ α ∈ Sf,
       ∀ Idx : Fin r → Fin (Module.finrank ℝ E),
       ∀ Jdx : Fin s → Fin (Module.finrank ℝ E),

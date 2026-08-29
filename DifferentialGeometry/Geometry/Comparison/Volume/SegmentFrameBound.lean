@@ -24,8 +24,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
   [T2Space (TangentBundle I M)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -62,7 +62,7 @@ private theorem fullDens_eq_trans
   let a : Option (Fin d) → TangentSpace I p
     | none => ell⁻¹ • u
     | some i => v ⟨i, by simpa only [d] using i.2⟩
-  let D := (tangentMetricData_gen (I := I) g p).metric
+  let D := (tangentMetricDataGen (I := I) g p).metric
   let : InnerProductSpace.Core Real (TangentSpace I p) := D.toCore
   let : NormedAddCommGroup (TangentSpace I p) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I p) _ _ _

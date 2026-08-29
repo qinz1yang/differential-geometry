@@ -30,8 +30,8 @@ variable {Q : Type u} [TopologicalSpace Q]
   [LocallyPathConnectedSpace Q]
   [DifferentialGeometry.Geometry.Riemannian.Topology.SemilocallySimplyConnectedSpace Q]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem sphereCover_one
     (hn : 1 < n)
     (g : SmoothRiemannianMetric (𝓡 n) Q)
@@ -99,7 +99,7 @@ theorem sphereCover_one
   let :
       PseudoEMetricSpace
         (DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover Q) :=
-    DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.uc_pseudoEMetricSpace
+    DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover.ucPseudoEMetricSpace
       (I := 𝓡 n) (M := Q) gUC
   let :
       IsRiemannianManifold (𝓡 n)

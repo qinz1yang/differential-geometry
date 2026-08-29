@@ -182,18 +182,18 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] in
 lemma curry_slotInsertEndoFib_zero (s : ℕ) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (A : Tensor0SSpace (s + 1) I x) :
-    tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+    tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
         (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x Λ A) =
-      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) A).comp Λ := by
+      ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) A).comp Λ := by
   apply ContinuousLinearMap.ext
   intro v0
   apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) s x).injective
   refine ContinuousMultilinearMap.ext (fun vt => ?_)
   change Tensor0SSpace.eval
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
         (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x Λ A) v0) vt =
     Tensor0SSpace.eval
-      (((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x A).comp Λ) v0) vt
+      (((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x A).comp Λ) v0) vt
   rw [tensor0S_curry_apply_eval, slotInsertEndoFib_apply_natural,
     ContinuousLinearMap.comp_apply, tensor0S_curry_apply_eval]
   congr 1
@@ -204,11 +204,11 @@ omit [NeZero (Module.finrank ℝ E)] in
 private theorem core_slotInsert_curry_reading (g : SmoothRiemannianMetric I M) (s : ℕ)
     (Λ : ContMDiffSection I (E →L[ℝ] E) ∞ (fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x))
     (x : M) (v : E) (D : Tensor0SSpace (s + 1) I x) (v0 : TangentSpace I x) :
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
         ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           tensorCovDerivAt (I := I) (M := M) g (s + 1) (s + 1)
             (endoSlotZeroCcTensor (I := I) (M := M) g s Λ) x v) D)) v0 =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x D)
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x D)
         (((endoCovariantDerivative (I := I) (M := M) g) Λ x
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v)) v0) := by
   classical
@@ -252,10 +252,10 @@ private theorem core_slotInsert_curry_reading (g : SmoothRiemannianMetric I M) (
           SIΛ.toSection z) (w z)) y (Y y)) =
       (fun y : M => Tensor0SNabla.curriedSection I M (fun z : M => w z) y (lamY y)) := by
     funext y
-    change tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s y
+    change tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s y
         ((show Tensor0SSpace (s + 1) I y →L[ℝ] Tensor0SSpace (s + 1) I y from SIΛ.toSection y)
           (w y)) (Y y) =
-      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s y (w y) (lamY y)
+      tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s y (w y) (lamY y)
     rw [hSIΛ, slotInsertEndoCc_toSection, curry_slotInsertEndoFib_zero,
       ContinuousLinearMap.comp_apply]
     rfl
@@ -263,7 +263,7 @@ private theorem core_slotInsert_curry_reading (g : SmoothRiemannianMetric I M) (
         (fun z : M => (show Tensor0SSpace (s + 1) I z →L[ℝ] Tensor0SSpace (s + 1) I z from
           SIΛ.toSection z) (w z)) x =
       (Tensor0SNabla.curriedSection I M (fun z : M => w z) x).comp (Λ x) := by
-    change tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+    change tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
         ((show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from SIΛ.toSection x)
           (w x)) = _
     rw [hSIΛ, slotInsertEndoCc_toSection, curry_slotInsertEndoFib_zero]
@@ -287,7 +287,7 @@ private theorem core_slotInsert_curry_reading (g : SmoothRiemannianMetric I M) (
   rw [eq_add_of_sub_eq hEndo.symm]
   rw [map_add]
   rw [show Tensor0SNabla.curriedSection I M (fun y : M => w y) x =
-      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x (w x) from rfl]
+      tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x (w x) from rfl]
   abel
 
 omit [CompleteSpace E] in

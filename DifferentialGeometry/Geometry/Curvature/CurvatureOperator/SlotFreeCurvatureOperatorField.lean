@@ -167,11 +167,11 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 lemma slotInsertEndoFib_zero (s : ℕ) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (A : Tensor0SSpace (s + 1) I x) :
     slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x Λ A =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
-        (((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) A).comp Λ) := by
-  have hcurry : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
+        (((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) A).comp Λ) := by
+  have hcurry : tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
       (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x Λ A) =
-      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) A).comp Λ := by
+      ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) A).comp Λ := by
     apply ContinuousLinearMap.ext
     intro v0
     apply tensor0S_eq_of_eval_eq (I := I) (M := M)
@@ -191,10 +191,10 @@ lemma slotInsertEndoFib_succ (s : ℕ) (j : Fin s) (x : M)
         (slotInsertEndoFib (I := I) (M := M) s j x Λ) := by
   apply ContinuousLinearMap.ext
   intro A
-  have hcurry : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+  have hcurry : tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
       (slotInsertEndoFib (I := I) (M := M) (s + 1) j.succ x Λ A) =
       (slotInsertEndoFib (I := I) (M := M) s j x Λ).comp
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) A) := by
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) A) := by
     apply ContinuousLinearMap.ext
     intro v0
     apply tensor0S_eq_of_eval_eq (I := I) (M := M)
@@ -235,32 +235,32 @@ theorem slotInsertEndoFib_contMDiff (g : SmoothRiemannianMetric I M) :
               (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (φ x) (Y x))) =
               (fun x : M => TotalSpace.mk' (Tensor0SModel (s + 1) ℝ E)
               (E := fun z : M => Tensor0SSpace (s + 1) I z) x
-              ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
-                (((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp (φ x)))) := by
+              ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
+                (((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp (φ x)))) := by
             funext x
             rw [slotInsertEndoFib_zero]
           rw [heq]
           have hcurriedY : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SModel s ℝ E)) ∞
               (fun x : M => TotalSpace.mk' (E →L[ℝ] Tensor0SModel s ℝ E)
                 (E := fun z : M => TangentSpace I z →L[ℝ] Tensor0SSpace s I z) x
-                ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x))) :=
+                ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x))) :=
             fun x => contMDiffAt_curriedSection_of_contMDiffAt_section (I := I) (M := M)
               (fun y : M => Y y) x (Y.contMDiff x)
           have hG : ContMDiff I (I.prod 𝓘(ℝ, E →L[ℝ] Tensor0SModel s ℝ E)) ∞
               (fun x : M => TotalSpace.mk' (E →L[ℝ] Tensor0SModel s ℝ E)
                 (E := fun z : M => TangentSpace I z →L[ℝ] Tensor0SSpace s I z) x
-                (((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp (φ x))) := by
+                (((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp (φ x))) := by
             apply contMDiff_clm_section_of_pointwise (I := I) (M := M)
               (F₁ := E) (V₁ := fun z : M => TangentSpace I z)
               (F₂ := Tensor0SModel s ℝ E) (V₂ := fun z : M => Tensor0SSpace s I z)
-              (φ := fun x => ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp (φ x))
+              (φ := fun x => ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp (φ x))
             intro Z
             have heqZ : (fun x : M => TotalSpace.mk' (Tensor0SModel s ℝ E)
                 (E := fun z : M => Tensor0SSpace s I z) x
-                ((((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp (φ x)) (Z x))) =
+                ((((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp (φ x)) (Z x))) =
                 (fun x : M => TotalSpace.mk' (Tensor0SModel s ℝ E)
                 (E := fun z : M => Tensor0SSpace s I z) x
-                ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x) (φ x (Z x)))) := by
+                ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x) (φ x (Z x)))) := by
               funext x; rfl
             rw [heqZ]
             have hinner : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
@@ -269,7 +269,7 @@ theorem slotInsertEndoFib_contMDiff (g : SmoothRiemannianMetric I M) :
               ContMDiff.clm_bundle_apply (b := id) hφ Z.contMDiff
             exact ContMDiff.clm_bundle_apply (b := id) hcurriedY hinner
           exact contMDiff_uncurriedSection_of_contMDiff_homSection (I := I) (M := M)
-            (fun x : M => ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp (φ x)) hG
+            (fun x : M => ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x) (Y x)).comp (φ x)) hG
       | succ j =>
           have hIH := ih j φ hφ
           set Φ : SmoothCcTensor g s s :=
@@ -399,7 +399,7 @@ def slotFreeCurvUCLM (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   haveI : T2Space (TangentSpace I x) := inferInstanceAs (T2Space E)
   LinearMap.toContinuousLinearMap
-    { toFun := fun u => (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
+    { toFun := fun u => (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
         (slotFreeCurvWCLM (I := I) (M := M) g s x A u)
       map_add' := fun u u' => by
         have hW : slotFreeCurvWCLM (I := I) (M := M) g s x A (u + u') =
@@ -410,7 +410,7 @@ def slotFreeCurvUCLM (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
           rw [add_apply, slotFreeCurvWCLM_apply, slotFreeCurvWCLM_apply,
             slotFreeCurvWCLM_apply, slotCurvSumFib_add_left (I := I) (M := M) g s x u u' w,
             add_apply]
-        rw [hW, map_add ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm)]
+        rw [hW, map_add ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm)]
       map_smul' := fun c u => by
         have hW : slotFreeCurvWCLM (I := I) (M := M) g s x A (c • u) =
             c • slotFreeCurvWCLM (I := I) (M := M) g s x A u := by
@@ -419,14 +419,14 @@ def slotFreeCurvUCLM (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
           rw [smul_apply, slotFreeCurvWCLM_apply, slotFreeCurvWCLM_apply,
             slotCurvSumFib_smul_left (I := I) (M := M) g s x c u w,
             smul_apply]
-        rw [hW, map_smul ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm)]
+        rw [hW, map_smul ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm)]
         rfl }
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 @[simp] lemma slotFreeCurvUCLM_apply (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (A : Tensor0SSpace s I x) (u : TangentSpace I x) :
     slotFreeCurvUCLM (I := I) (M := M) g s x A u =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
         (slotFreeCurvWCLM (I := I) (M := M) g s x A u) := by
   rw [slotFreeCurvUCLM, LinearMap.coe_toContinuousLinearMap']
   rfl
@@ -434,11 +434,11 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 def curvatureOperatorOnTensorFib (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) :
     Tensor0SSpace s I x →L[ℝ] Tensor0SSpace (s + 2) I x :=
   haveI : FiniteDimensional ℝ (Tensor0SSpace s I x) := inferInstance
-  letI : Module ℝ (Tensor0SSpace (s + 1) I x) := tensor0SSpace_module (s + 1) x
+  letI : Module ℝ (Tensor0SSpace (s + 1) I x) := tensor0SSpaceModule (s + 1) x
   letI : Module ℝ (TangentSpace I x →L[ℝ] Tensor0SSpace (s + 1) I x) :=
     ContinuousLinearMap.module
   LinearMap.toContinuousLinearMap
-    { toFun := fun A => (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
+    { toFun := fun A => (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
         (slotFreeCurvUCLM (I := I) (M := M) g s x A)
       map_add' := fun A A' => by
         have hU : slotFreeCurvUCLM (I := I) (M := M) g s x (A + A') =
@@ -456,9 +456,9 @@ def curvatureOperatorOnTensorFib (g : SmoothRiemannianMetric I M) (s : ℕ) (x :
             exact (curvatureTensorActionFib (I := I) (M := M) g s x u w).map_add A A'
           rw [add_apply, slotFreeCurvUCLM_apply, slotFreeCurvUCLM_apply,
             slotFreeCurvUCLM_apply, hW]
-          exact ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm).map_add _ _
+          exact ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm).map_add _ _
         rw [hU]
-        exact ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm).map_add _ _
+        exact ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm).map_add _ _
       map_smul' := fun c A => by
         have hU : slotFreeCurvUCLM (I := I) (M := M) g s x (c • A) =
             c • slotFreeCurvUCLM (I := I) (M := M) g s x A := by
@@ -471,8 +471,8 @@ def curvatureOperatorOnTensorFib (g : SmoothRiemannianMetric I M) (s : ℕ) (x :
             rw [smul_apply, slotFreeCurvWCLM_apply, slotFreeCurvWCLM_apply,
               (curvatureTensorActionFib (I := I) (M := M) g s x u w).map_smul]
           rw [smul_apply, slotFreeCurvUCLM_apply, slotFreeCurvUCLM_apply,
-            hW, ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm).map_smul]
-        rw [hU, ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm).map_smul]
+            hW, ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm).map_smul]
+        rw [hU, ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm).map_smul]
         rfl }
 
 abbrev slotFreeCurvOpFib (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M) :
@@ -483,7 +483,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 @[simp] lemma slotFreeCurvOpFib_apply (g : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (A : Tensor0SSpace s I x) :
     curvatureOperatorOnTensorFib (I := I) (M := M) g s x A =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
         (slotFreeCurvUCLM (I := I) (M := M) g s x A) := by
   rw [curvatureOperatorOnTensorFib, LinearMap.coe_toContinuousLinearMap']
   rfl
@@ -498,13 +498,13 @@ lemma slotFreeCurvOpFib_apply_eval (g : SmoothRiemannianMetric I M) (s : ℕ) (x
   rw [← tensor0S_curry_apply_eval (I := I) (M := M) (n := s + 1)
     (T := curvatureOperatorOnTensorFib (I := I) (M := M) g s x A) (v0 := u)
     (vs := Fin.cons w m)]
-  have hcurry1 : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
+  have hcurry1 : tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
       (curvatureOperatorOnTensorFib (I := I) (M := M) g s x A) =
       slotFreeCurvUCLM (I := I) (M := M) g s x A := by
     rw [slotFreeCurvOpFib_apply, ContinuousLinearEquiv.apply_symm_apply]
   rw [hcurry1, slotFreeCurvUCLM_apply]
   rw [← tensor0S_curry_apply_eval (I := I) (M := M) (n := s)
-    (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
+    (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
       (slotFreeCurvWCLM (I := I) (M := M) g s x A u)) (v0 := w) (vs := m)]
   rw [ContinuousLinearEquiv.apply_symm_apply, slotFreeCurvWCLM_apply]
   exact slotCurvSumFib_apply_eval (I := I) (M := M) g s x u w A m
@@ -525,7 +525,7 @@ theorem slotFreeCurvOpFib_contMDiff (g : SmoothRiemannianMetric I M) (s : ℕ) :
       (curvatureOperatorOnTensorFib (I := I) (M := M) g s x (Y x))) =
       (fun x : M => TotalSpace.mk' (Tensor0SModel (s + 2) ℝ E)
       (E := fun z : M => Tensor0SSpace (s + 2) I z) x
-      ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
+      ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
         (slotFreeCurvUCLM (I := I) (M := M) g s x (Y x)))) := by
     funext x
     rw [slotFreeCurvOpFib_apply]
@@ -544,7 +544,7 @@ theorem slotFreeCurvOpFib_contMDiff (g : SmoothRiemannianMetric I M) (s : ℕ) :
         (slotFreeCurvUCLM (I := I) (M := M) g s x (Y x) (U x))) =
         (fun x : M => TotalSpace.mk' (Tensor0SModel (s + 1) ℝ E)
         (E := fun z : M => Tensor0SSpace (s + 1) I z) x
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
           (slotFreeCurvWCLM (I := I) (M := M) g s x (Y x) (U x)))) := by
       funext x
       rw [slotFreeCurvUCLM_apply]

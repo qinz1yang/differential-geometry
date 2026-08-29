@@ -27,8 +27,8 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [T2Space (TangentBundle I M)]
   [SigmaCompactSpace M] [ConnectedSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E] [T2Space (TangentBundle I M)] in
 theorem intrFrame_deriv
     [PseudoEMetricSpace M]
@@ -47,8 +47,8 @@ theorem intrFrame_deriv
   simpa only [intrinsicJacobi] using
     (intrFrame_mfderiv (I := I) g hEnorm p z v)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E] [T2Space (TangentBundle I M)] in
 theorem intr_metric_jacobi
     [PseudoEMetricSpace M]
@@ -69,8 +69,8 @@ theorem intr_metric_jacobi
           (normalFrame (I := I) g p w) 1) := by
   rw [intrFrameMetric_apply, intrFrame_deriv, intrFrame_deriv]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E] [T2Space (TangentBundle I M)] in
 theorem intrFrame_deriv_inj
     [PseudoEMetricSpace M]
@@ -111,8 +111,8 @@ theorem intrFrame_deriv_inj
   apply sub_eq_zero.mp
   exact hdv
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E] [T2Space (TangentBundle I M)] in
 private theorem frame_not_conj_aux
     [PseudoEMetricSpace M]
@@ -178,8 +178,8 @@ private theorem frame_not_conj_aux
   rw [hLz]
   exact hab
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E] [T2Space (TangentBundle I M)] in
 theorem intrFrame_not_conj
     [PseudoEMetricSpace M]
@@ -197,8 +197,8 @@ theorem intrFrame_not_conj
   apply frame_not_conj_aux (I := I) g hEnorm p z
   exact intrFrame_deriv_inj (I := I) g hEnorm p z hc hlower
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E] [T2Space (TangentBundle I M)] in
 theorem framedExp_not_conj
     [PseudoEMetricSpace M]

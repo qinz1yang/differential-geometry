@@ -44,7 +44,7 @@ theorem triv_eq_toModel_at_chartCenter
     tensorRS_trivAt_continuousLinearMapAt_apply_eq_self_on_locality
       (I := I) (M := M) r s b₀
       (h_chart := rfl) (h_src := mem_chart_source H b₀) T D_α
-  simp only [TensorRSSpace.toModel, tensorRSSpace_continuousLinearEquiv]
+  simp only [TensorRSSpace.toModel, tensorRSSpaceContinuousLinearEquiv]
   rw [h_loc]
   rfl
 
@@ -66,20 +66,20 @@ theorem symmL_toModel_eq_self_at_chartCenter
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompactSpace M] [I.Boundaryless] in
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem modelNorm_le_gNorm_pointwise
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x₀ : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ C : ℝ, 0 < C ∧ ∀ T : TensorRSSpace r s I x₀,
       ‖TensorRSSpace.toModel (𝕜 := ℝ) (I := I) T‖ ≤ C * ‖T‖ := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   obtain ⟨C₀, hC₀_pos, hC₀_bound⟩ :=
     tensorRSChartFiberToModel_opNorm_isBounded_on_compact
       (I := I) (M := M) g r s x₀ isCompact_singleton
@@ -91,19 +91,19 @@ theorem modelNorm_le_gNorm_pointwise
 
 attribute [-instance] Bundle.continuousMultilinearMap.instNormedAddCommGroup
   Bundle.continuousMultilinearMap.instNormedSpace
-  Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+  Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem gNorm_le_modelNorm_pointwise
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x₀ : M) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ D : ℝ, 0 < D ∧ ∀ T : TensorRSSpace r s I x₀,
       ‖T‖ ≤ D * ‖TensorRSSpace.toModel (𝕜 := ℝ) (I := I) T‖ := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   obtain ⟨D₀, hD₀_pos, hD₀_bound⟩ :=
     tensorRSChartFiberFromModel_opNorm_isBounded_on_compact
       (I := I) (M := M) g r s x₀ isCompact_singleton

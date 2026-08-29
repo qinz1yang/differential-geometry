@@ -361,7 +361,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
 private lemma armResidual_toModel_sum {s : ℕ} (b : M) {ι : Type*} (fs : Finset ι)
     (f : ι → Tensor0SSpace s I b) :
     Tensor0SSpace.toModel (∑ i ∈ fs, f i) = ∑ i ∈ fs, Tensor0SSpace.toModel (f i) :=
-  map_sum (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (𝕜 := ℝ) (I := I) s b) f fs
+  map_sum (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (𝕜 := ℝ) (I := I) s b) f fs
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma armResidual_model_slot0_linear {s : ℕ} {ι : Type*} (fs : Finset ι)
@@ -453,7 +453,7 @@ private lemma armResidual_toModel_contract_covariant (s : ℕ) (b : M) (v : Tang
     (A : TensorRSSpace 0 (s + 1) I b) (D : Tensor0SSpace 0 I b) (m : Fin s → E) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace s I b from
-          Tensor0SBundle.contract_covariant 0 s b v A) D) m =
+          Tensor0SBundle.contractCovariant 0 s b v A) D) m =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace (s + 1) I b from A) D)
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) b v) m) :=
@@ -464,7 +464,7 @@ private lemma armResidual_covDivergence_toSection (g₀ : SmoothRiemannianMetric
     (s : ℕ) (V : SmoothCcTensor g₀ 0 (s + 1)) (b : M) :
     ((covDivergence (I := I) (M := M) g₀ s V).toSection b : TensorRSSpace 0 s I b) =
       ∑ i : Fin (Module.finrank ℝ E),
-        Tensor0SBundle.contract_covariant 0 s b (smoothOrthoFrame (I := I) g₀ b i b)
+        Tensor0SBundle.contractCovariant 0 s b (smoothOrthoFrame (I := I) g₀ b i b)
           (tensorCovDerivAt (I := I) (M := M) g₀ 0 (s + 1) V b
             (tangentSpaceModelContinuousLinearEquiv (I := I) b
               (smoothOrthoFrame (I := I) g₀ b i b))) := by
@@ -497,14 +497,14 @@ private lemma armResidual_toModel_doubleTraceFib (g₀ : SmoothRiemannianMetric 
   rw [DeTurck.cometricDoubleTraceFib_eq_orthoFrame_diag (I := I) g₀ 2 b
     (mem_smoothOrthoFrameNbhd_self (I := I) (M := M) b) W]
   rw [armResidual_toModel_sum (I := I) (M := M) b Finset.univ
-    (fun i => Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 b
-      (Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (2 + 1) b W
+    (fun i => Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 b
+      (Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (2 + 1) b W
         (smoothOrthoFrame (I := I) g₀ b i b))
       (smoothOrthoFrame (I := I) g₀ b i b))]
   rw [sum_apply]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
-    (T := Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (2 + 1) b W
+    (T := Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (2 + 1) b W
       (smoothOrthoFrame (I := I) g₀ b i b))
     (v0 := smoothOrthoFrame (I := I) g₀ b i b) (vs := m)]
   rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M) (T := W)
@@ -617,7 +617,7 @@ private lemma armResidual_contract_term_eq (g₀ g₁ : SmoothRiemannianMetric I
     (i : Fin (Module.finrank ℝ E)) :
     Tensor0SSpace.toModel
         ((show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 2 I b from
-          Tensor0SBundle.contract_covariant 0 2 b (smoothOrthoFrame (I := I) g₀ b i b)
+          Tensor0SBundle.contractCovariant 0 2 b (smoothOrthoFrame (I := I) g₀ b i b)
             (tensorCovDerivAt (I := I) (M := M) g₀ 0 (2 + 1)
               (operatorFieldApply (I := I) (M := M) g₀ (2 + 1) (2 + 1)
                 (endoSlotZeroCcTensor (I := I) (M := M) g₀ 2
@@ -905,20 +905,20 @@ private theorem armResidual_covDivergence_split (g₀ g₁ : SmoothRiemannianMet
   rw [Tensor0SSpace.toModel_add, add_apply]
   rw [armResidual_covDivergence_toSection (I := I) (M := M) g₀ 2 P b]
   rw [show ((∑ i : Fin (Module.finrank ℝ E),
-      Tensor0SBundle.contract_covariant 0 2 b (smoothOrthoFrame (I := I) g₀ b i b)
+      Tensor0SBundle.contractCovariant 0 2 b (smoothOrthoFrame (I := I) g₀ b i b)
         (tensorCovDerivAt (I := I) (M := M) g₀ 0 (2 + 1) P b
           (tangentSpaceModelContinuousLinearEquiv (I := I) b
             (smoothOrthoFrame (I := I) g₀ b i b))) : TensorRSSpace 0 2 I b)) D =
     ∑ i : Fin (Module.finrank ℝ E),
       (show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 2 I b from
-        Tensor0SBundle.contract_covariant 0 2 b (smoothOrthoFrame (I := I) g₀ b i b)
+        Tensor0SBundle.contractCovariant 0 2 b (smoothOrthoFrame (I := I) g₀ b i b)
           (tensorCovDerivAt (I := I) (M := M) g₀ 0 (2 + 1) P b
             (tangentSpaceModelContinuousLinearEquiv (I := I) b
               (smoothOrthoFrame (I := I) g₀ b i b)))) D from by
     exact sum_apply _ _ _]
   rw [armResidual_toModel_sum (I := I) (M := M) b Finset.univ
     (fun i => (show Tensor0SSpace 0 I b →L[ℝ] Tensor0SSpace 2 I b from
-      Tensor0SBundle.contract_covariant 0 2 b (smoothOrthoFrame (I := I) g₀ b i b)
+      Tensor0SBundle.contractCovariant 0 2 b (smoothOrthoFrame (I := I) g₀ b i b)
         (tensorCovDerivAt (I := I) (M := M) g₀ 0 (2 + 1) P b
           (tangentSpaceModelContinuousLinearEquiv (I := I) b
             (smoothOrthoFrame (I := I) g₀ b i b)))) D)]

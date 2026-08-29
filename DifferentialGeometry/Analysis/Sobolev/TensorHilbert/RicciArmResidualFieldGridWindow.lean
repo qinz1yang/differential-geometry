@@ -287,16 +287,16 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMet
     exists_riemannianFiberNormSq_iteratedCovGrad_movingMetricPairTraceOperator_window (I := I) (M := M) g₀ hδ₀
   obtain ⟨CW1, hCW1_nn, hCW1⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceFoldWeight_gridWindow_le (I := I)
-      (M := M) g₀ sharpGradKoszulKernel_positivePermutation hδ₀
+      (M := M) g₀ sharpGradKoszulKernelPositivePermutation hδ₀
   obtain ⟨CW2, hCW2_nn, hCW2⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceFoldWeight_gridWindow_le (I := I)
-      (M := M) g₀ sharpGradKoszulKernel_positiveKoszulSwapPermutation hδ₀
+      (M := M) g₀ sharpGradKoszulKernelPositiveKoszulSwapPermutation hδ₀
   obtain ⟨CW3, hCW3_nn, hCW3⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceFoldWeight_gridWindow_le (I := I)
-      (M := M) g₀ sharpGradKoszulKernel_negativePermutation hδ₀
+      (M := M) g₀ sharpGradKoszulKernelNegativePermutation hδ₀
   obtain ⟨CW4, hCW4_nn, hCW4⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceFoldWeight_gridWindow_le (I := I)
-      (M := M) g₀ sharpGradKoszulKernel_negativeKoszulSwapPermutation hδ₀
+      (M := M) g₀ sharpGradKoszulKernelNegativeKoszulSwapPermutation hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
   set CX : ℕ → ℝ := fun w =>
@@ -332,19 +332,19 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMet
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)))))).toSection x =
+              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)))))).toSection x =
       (2 : ℝ) • ((iteratedCovGrad (I := I) g₀ 2 2 i
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)))))).toSection x) := by
+              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)))))).toSection x) := by
     rw [iteratedCovGrad_smul_real (I := I) g₀ 2 2 i (2 : ℝ) _,
       SmoothCcTensor.toSection_smul]
     rfl
@@ -361,133 +361,133 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMet
           ((iteratedCovGrad (I := I) g₀ 2 6 w
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-                    koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-                    koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P))))).toSection x) ≤
+                ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                    koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                    koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x) ≤
         CX w * Combinatorics.boundedFactorGridWindow b (i + 1) (w + 3) := by
     intro w hw
     rw [riemannianFiberNormSq_iteratedCovGrad_rsDomDomCongrSection_eq (I := I) (M := M) g₀ 2 6
       ricciFoldRemainderSlotPerm _ w x]
     rw [show slotExtendIter (I := I) (M := M) g₀ 0 4 2
-        ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)) =
+        ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)) =
         slotExtend (I := I) (M := M) g₀ 1 5 (slotExtend (I := I) (M := M) g₀ 0 4
-          ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P))) from rfl]
+          ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))) from rfl]
     refine le_trans (riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 1 5
       (slotExtend (I := I) (M := M) g₀ 0 4
-        ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P))) w x) ?_
+        ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))) w x) ?_
     refine le_trans (mul_le_mul_of_nonneg_left
       (riemannianFiberNormSq_iteratedCovGrad_slotExtend_le (I := I) (M := M) g₀ 0 4
-        ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)) w x) hfr_nn) ?_
+        ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)) w x) hfr_nn) ?_
     have hsub : (iteratedCovGrad (I := I) g₀ 0 4 w
-        ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P))).toSection x =
+        ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))).toSection x =
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P)).toSection x -
+          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x -
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)).toSection x := by
-      rw [sub_eq_add_neg (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P)
-        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)]
+          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x := by
+      rw [sub_eq_add_neg (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)
+        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)]
       rw [iteratedCovGrad_add (I := I) g₀ 0 4 w _ _,
         iteratedCovGrad_neg (I := I) g₀ 0 4 w _, SmoothCcTensor.toSection_add]
       rw [show (((iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P)).toSection +
+            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection +
           (-(iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P))).toSection) x) =
+            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))).toSection) x) =
           (iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P)).toSection x +
+            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x +
           (-(iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P))).toSection x from rfl]
+            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))).toSection x from rfl]
       rw [show ((-(iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P))).toSection x) =
+          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))).toSection x) =
           -((iteratedCovGrad (I := I) g₀ 0 4 w
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)).toSection x) from by
+            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x) from by
         rw [SmoothCcTensor.toSection_neg]; rfl]
       rw [← sub_eq_add_neg]
     have h12 : (iteratedCovGrad (I := I) g₀ 0 4 w
-        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P)).toSection x =
+        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x =
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P)).toSection x +
+          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P)).toSection x +
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P)).toSection x := by
+          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x := by
       rw [iteratedCovGrad_add (I := I) g₀ 0 4 w _ _, SmoothCcTensor.toSection_add]
       rfl
     have h34 : (iteratedCovGrad (I := I) g₀ 0 4 w
-        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)).toSection x =
+        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x =
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P)).toSection x +
+          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P)).toSection x +
         (iteratedCovGrad (I := I) g₀ 0 4 w
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)).toSection x := by
+          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x := by
       rw [iteratedCovGrad_add (I := I) g₀ 0 4 w _ _, SmoothCcTensor.toSection_add]
       rfl
     have hA1 := hCW1 g₁ P htie hδ_le hδ0 hbound w (i + 1) (by omega) x
     rw [show ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernel_positivePermutation
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernelPositivePermutation
           (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
             (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
             (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) =
-        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P from rfl] at hA1
+        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P from rfl] at hA1
     have hA2 := hCW2 g₁ P htie hδ_le hδ0 hbound w (i + 1) (by omega) x
     rw [show ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernel_positiveKoszulSwapPermutation
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernelPositiveKoszulSwapPermutation
           (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
             (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
             (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) =
-        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P from rfl] at hA2
+        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P from rfl] at hA2
     have hA3 := hCW3 g₁ P htie hδ_le hδ0 hbound w (i + 1) (by omega) x
     rw [show ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernel_negativePermutation
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernelNegativePermutation
           (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
             (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
             (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) =
-        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P from rfl] at hA3
+        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P from rfl] at hA3
     have hA4 := hCW4 g₁ P htie hδ_le hδ0 hbound w (i + 1) (by omega) x
     rw [show ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
-        (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernel_negativeKoszulSwapPermutation
+        (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernelNegativeKoszulSwapPermutation
           (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
             (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
             (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) =
-        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P from rfl] at hA4
+        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P from rfl] at hA4
     calc fr * (fr * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
           ((iteratedCovGrad (I := I) g₀ 0 4 w
-            ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-                koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-              (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-                koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P))).toSection x))
+            ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+              (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))).toSection x))
         ≤ fr * (fr * (2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
             ((iteratedCovGrad (I := I) g₀ 0 4 w
-              (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-                koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P)).toSection x)
+              (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x)
           + 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
             ((iteratedCovGrad (I := I) g₀ 0 4 w
-              (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-                koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)).toSection x))) := by
+              (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x))) := by
           refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ hfr_nn) hfr_nn
           rw [hsub]
           exact riemannianFiberNormSq_sub_le_pt (I := I) (M := M) g₀ 0 (4 + w) x _ _
@@ -499,26 +499,26 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMet
           refine mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left ?_ hfr_nn) hfr_nn
           have hx12 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
               ((iteratedCovGrad (I := I) g₀ 0 4 w
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P)).toSection x) ≤
+                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x) ≤
               2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
                 ((iteratedCovGrad (I := I) g₀ 0 4 w
-                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P)).toSection x)
+                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P)).toSection x)
               + 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
                 ((iteratedCovGrad (I := I) g₀ 0 4 w
-                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P)).toSection x) := by
+                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)).toSection x) := by
             rw [h12]
             exact riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 0 (4 + w) x _ _
           have hx34 : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
               ((iteratedCovGrad (I := I) g₀ 0 4 w
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)).toSection x) ≤
+                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x) ≤
               2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
                 ((iteratedCovGrad (I := I) g₀ 0 4 w
-                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P)).toSection x)
+                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P)).toSection x)
               + 2 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (4 + w) x
                 ((iteratedCovGrad (I := I) g₀ 0 4 w
-                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)).toSection x) := by
+                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)).toSection x) := by
             rw [h34]
             exact riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 0 (4 + w) x _ _
           linarith [hA1, hA2, hA3, hA4, hx12, hx34]
@@ -531,10 +531,10 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMet
       (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
       (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-          ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)))) x)
+          ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+            (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+              koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)))) x)
     (by norm_num : (0 : ℝ) ≤ 4)) ?_
   calc (4 : ℝ) * (diagonalGridGrowthFactor (E := E) i *
         ∑ u ∈ Finset.range (i + 1),
@@ -546,11 +546,11 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciArmSharpGradKoszulResidualMet
                 ((iteratedCovGrad (I := I) g₀ 2 6 w
                   (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
                     (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                      ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-                          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-                        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
+                      ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
                           koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁
-                            sharpGradKoszulKernel_negativeKoszulSwapPermutation P))))).toSection x))
+                            sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x))
       ≤ 4 * (diagonalGridGrowthFactor (E := E) i *
           ∑ u ∈ Finset.range (i + 1),
             (CPT u * Combinatorics.boundedFactorGridWindow b (i + 1) (u + 1)) *

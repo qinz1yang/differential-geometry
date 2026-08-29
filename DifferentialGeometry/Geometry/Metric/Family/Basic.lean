@@ -34,14 +34,14 @@ structure MetricConnectionFamily (Time : Type*) where
   metric : Time -> SmoothRiemannianMetric I M
   connection : Time -> CovariantDerivative I E (TangentSpace I : M -> Type _)
   metricCompatible : forall t : Time,
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (connection t)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (connection t)
       (metric t)
 
 structure MetricConnectionFamilyOn (D : RealTimeInterval) where
   metric : Real -> SmoothRiemannianMetric I M
   connection : Real -> CovariantDerivative I E (TangentSpace I : M -> Type _)
   metricCompatible : forall t : RealTimeInterval.FlowTime D,
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
       (connection (t : Real)) (metric (t : Real))
 
 namespace MetricConnectionFamily
@@ -123,7 +123,7 @@ theorem metricCompatibleAt
     {D : RealTimeInterval}
     (G : MetricConnectionFamilyOn (I := I) (M := M) D)
     (t : RealTimeInterval.FlowTime D) :
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (G.connectionAt t)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (G.connectionAt t)
       (G.metricAt t) := by
   exact G.metricCompatible t
 
@@ -132,7 +132,7 @@ theorem metricCompatibleAt_regular
     {D : RealTimeInterval}
     (G : MetricConnectionFamilyOn (I := I) (M := M) D)
     (t : RealTimeInterval.RegularTime D) :
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
       (G.connection (t : Real)) (G.metric (t : Real)) := by
   exact G.metricCompatible (RealTimeInterval.regularToFlow t)
 
@@ -162,14 +162,14 @@ noncomputable def metricTimeDerivative
     (td : TimeDerivativeData Real A Time)
     (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (x : M) (X Y : TangentSpace I x) : Real :=
-  td.dt_apply (fun s : Time => (G.metric s).inner x X Y) t
+  td.dtApply (fun s : Time => (G.metric s).inner x X Y) t
 
 @[simp] theorem metricTimeDerivative_eq
     (td : TimeDerivativeData Real A Time)
     (G : MetricConnectionFamily (I := I) (M := M) Time)
     (t : Time) (x : M) (X Y : TangentSpace I x) :
     metricTimeDerivative td G t x X Y =
-      td.dt_apply (fun s : Time => (G.metric s).inner x X Y) t := by
+      td.dtApply (fun s : Time => (G.metric s).inner x X Y) t := by
   rfl
 
 end TimeSmoothness
@@ -304,7 +304,7 @@ theorem const_smul
     (hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A) :
     tensor0SFamilyContinuousOnSet (I := I) (M := M) s K
       (fun t x => c • A t x) := by
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) s
   unfold tensor0SFamilyContinuousOnSet at hA ⊢
   rw [continuous_iff_continuousAt] at hA ⊢
@@ -331,7 +331,7 @@ theorem add
     (hB : tensor0SFamilyContinuousOnSet (I := I) (M := M) s K B) :
     tensor0SFamilyContinuousOnSet (I := I) (M := M) s K
       (fun t x => A t x + B t x) := by
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) s
   unfold tensor0SFamilyContinuousOnSet at hA hB ⊢
   rw [continuous_iff_continuousAt] at hA hB ⊢
@@ -359,7 +359,7 @@ theorem smul
     (hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) s K A) :
     tensor0SFamilyContinuousOnSet (I := I) (M := M) s K
       (fun t x => f t x • A t x) := by
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I)
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I)
     (M := M) s
   unfold tensor0SFamilyContinuousOnSet at hA ⊢
   rw [continuous_iff_continuousAt] at hA ⊢

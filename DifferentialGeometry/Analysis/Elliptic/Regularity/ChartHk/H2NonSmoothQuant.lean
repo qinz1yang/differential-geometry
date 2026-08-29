@@ -58,15 +58,15 @@ theorem exists_weak_second_partial_bound_by_geometric_constant
         ∃ g_ik : EuclN → ℝ,
           MemLp g_ik 2 ((volume : Measure EuclN).restrict Ω'') ∧
           DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k g_ik
-            (D.weak_partial i) Ω'' ∧
+            (D.weakPartial i) Ω'' ∧
           eLpNorm g_ik 2 ((volume : Measure EuclN).restrict Ω'') ≤
             ENNReal.ofReal (C_geom i k * Real.sqrt (
               (∑ l : Fin (Module.finrank ℝ E),
-                (eLpNorm (D.weak_partial l) 2
+                (eLpNorm (D.weakPartial l) 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)
-              + (eLpNorm D.u_chart 2
+              + (eLpNorm D.uChart 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2
-              + (eLpNorm D.f_chart 2
+              + (eLpNorm D.fChart 2
                   ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)) := by
   classical
   obtain ⟨C_geom, hC_geom_nn, hC_geom⟩ :=
@@ -78,13 +78,13 @@ theorem exists_weak_second_partial_bound_by_geometric_constant
   obtain ⟨g_ik, hg_ik_memLp, hg_ik_partial, hg_ik_norm⟩ :=
     exists_weak_second_partial_of_uniform_diffQuot_bound (I := I) (M := M) (g := g) (α := α)
       D hΩ''_open hΩ''_compact_closure hR₀_pos h_room
-      (M_bound := fun i k => C_geom i k * Real.sqrt (
+      (MBound := fun i k => C_geom i k * Real.sqrt (
         (∑ l : Fin (Module.finrank ℝ E),
-          (eLpNorm (D.weak_partial l) 2
+          (eLpNorm (D.weakPartial l) 2
             ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)
-        + (eLpNorm D.u_chart 2
+        + (eLpNorm D.uChart 2
             ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2
-        + (eLpNorm D.f_chart 2
+        + (eLpNorm D.fChart 2
             ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2))
       (hM_nn := fun i k => mul_nonneg (hC_geom_nn i k) (Real.sqrt_nonneg _))
       (h_uniform_bd := fun i k h hpos hle => hC_geom D hpos hle)

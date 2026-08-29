@@ -437,7 +437,7 @@ theorem tangentSectionAction_grad_g_eq_inner [I.Boundaryless]
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     tangentSectionAction (I := I) X f x =
       g.inner x (X x)
-        ((grad_g (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
+        ((gradG (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
   exact tangentSectionAction_eq_inner_grad_g (I := I) g
     (⟨f, hf⟩ : C^∞⟮I, M; ℝ⟯) X x
 

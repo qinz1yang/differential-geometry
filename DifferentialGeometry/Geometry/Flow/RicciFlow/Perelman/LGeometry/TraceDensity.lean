@@ -154,7 +154,7 @@ private theorem sum_hessian_diag
         (leviCivita_contMDiffCovariantDerivativeLocally (I := I) g)
         f hf x (vec2 (e i) (e i)) =
       laplacian (I := I) (LeviCivita (I := I) g) g f x := by
-  have hmc : IsMetricCompatible_gen (I := I) (LeviCivita (I := I) g) g := by
+  have hmc : IsMetricCompatibleGen (I := I) (LeviCivita (I := I) g) g := by
     simpa [LeviCivita] using
       (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)
   have hreal := scalarLap_smooth (I := I) (M := M)
@@ -213,7 +213,7 @@ private theorem sum_nablaRicci_first
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x A).choose_spec
   let dRic := totalNabla0SFun (𝕜 := Real) (I := I) 2 (LeviCivita (I := I) g)
     (metricRicci (I := I) (M := M) g) x
-  let Q : Tensor0SSpace 2 I x := tensor0S_curry (I := I) 2 x dRic A
+  let Q : Tensor0SSpace 2 I x := tensor0SCurry (I := I) 2 x dRic A
   let B : Fin (Module.finrank Real E) → TangentSpace I x :=
     fun i ↦ smoothOrthoFrame (I := I) g x i x
   have hBON : ∀ i j, g.inner x (B i) (B j) = if i = j then 1 else 0 :=
@@ -221,7 +221,7 @@ private theorem sum_nablaRicci_first
   have htrace := (sum_diag_eq_trace (I := I) g x e hON Q).trans
     (sum_diag_eq_trace (I := I) g x B hBON Q).symm
   have hQ (v : TangentSpace I x) : Q (vec2 v v) = dRic (vec3 A v v) := by
-    change (tensor0S_curry (I := I) 2 x dRic A) (vec2 v v) = _
+    change (tensor0SCurry (I := I) 2 x dRic A) (vec2 v v) = _
     rw [tensor0S_curry_apply_cons]
     congr 1
     funext q
@@ -256,7 +256,7 @@ private theorem sum_nablaRicci_div
   let dRic := totalNabla0SFun (𝕜 := Real) (I := I) 2 (LeviCivita (I := I) g)
     (metricRicci (I := I) (M := M) g) x
   let dRic' : Tensor0SSpace 3 I x := dRic.domDomCongr (Equiv.swap 0 2)
-  let Q : Tensor0SSpace 2 I x := tensor0S_curry (I := I) 2 x dRic' A
+  let Q : Tensor0SSpace 2 I x := tensor0SCurry (I := I) 2 x dRic' A
   let B : Fin (Module.finrank Real E) → TangentSpace I x :=
     fun i ↦ smoothOrthoFrame (I := I) g x i x
   have hBON : ∀ i j, g.inner x (B i) (B j) = if i = j then 1 else 0 :=
@@ -264,7 +264,7 @@ private theorem sum_nablaRicci_div
   have htrace := (sum_diag_eq_trace (I := I) g x e hON Q).trans
     (sum_diag_eq_trace (I := I) g x B hBON Q).symm
   have hQ (v : TangentSpace I x) : Q (vec2 v v) = dRic (vec3 v v A) := by
-    change (tensor0S_curry (I := I) 2 x dRic' A) (vec2 v v) = _
+    change (tensor0SCurry (I := I) 2 x dRic' A) (vec2 v v) = _
     rw [tensor0S_curry_apply_cons]
     change dRic.domDomCongr (Equiv.swap 0 2) _ = _
     rw [Tensor0SSpace.domDomCongr_apply]

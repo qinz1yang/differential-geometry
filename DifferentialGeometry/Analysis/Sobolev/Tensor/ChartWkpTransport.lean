@@ -57,15 +57,15 @@ private theorem coordChange_apply
       (rawRSTriv (E := E) (I := I) (M := M) r s α).continuousLinearMapAt ℝ x
         ((rawRSTriv (E := E) (I := I) (M := M) r s γ).symmL ℝ x w) := by
   let : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedAddCommGroup r s
+    tensorRSModelNormedAddCommGroup r s
   let : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedSpace r s
+    tensorRSModelNormedSpace r s
   let : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   let : FiberBundle (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   let : VectorBundle ℝ (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
@@ -93,15 +93,15 @@ theorem secTriv_trans
         (rawRSTriv (E := E) (I := I) (M := M) r s α) x)
         (secTriv (I := I) (M := M) r s S γ x) := by
   let : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedAddCommGroup r s
+    tensorRSModelNormedAddCommGroup r s
   let : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedSpace r s
+    tensorRSModelNormedSpace r s
   let : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   let : FiberBundle (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   let : VectorBundle ℝ (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
@@ -127,9 +127,9 @@ theorem secCompRaw_trans
           secCompRaw (I := I) (M := M) r s S γ Q.1 Q.2 x := by
   classical
   let : NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedAddCommGroup r s
+    tensorRSModelNormedAddCommGroup r s
   let : NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-    tensorRSModel_normedSpace r s
+    tensorRSModelNormedSpace r s
   obtain ⟨hxγ, hxα⟩ := hx
   unfold secCompRaw
   rw [secTriv_trans (E := E) (I := I) (M := M)

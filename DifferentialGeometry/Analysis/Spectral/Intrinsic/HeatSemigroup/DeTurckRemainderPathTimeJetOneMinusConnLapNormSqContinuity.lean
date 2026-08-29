@@ -60,7 +60,7 @@ private theorem jointTotalSpaceRS_sub {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p - B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -156,7 +156,7 @@ private theorem tensorInnerPointwise_diag_section_jointContMDiffOn
   have hbridge : ∀ p ∈ (chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T,
       DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
           ((Sfam p.2).toFun p.1) ((Sfam p.2).toFun p.1) =
-        chartTensorInnerPointwise_0s (I := I) (M := M) (0 + 2) g₀ α p.1
+        chartTensorInnerPointwise0s (I := I) (M := M) (0 + 2) g₀ α p.1
           (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 ((Sfam p.2).toFun p.1))
           (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 ((Sfam p.2).toFun p.1)) := by
     rintro ⟨y, u⟩ ⟨hy, _⟩

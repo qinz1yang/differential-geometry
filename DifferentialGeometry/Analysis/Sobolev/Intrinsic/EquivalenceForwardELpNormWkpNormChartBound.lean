@@ -55,7 +55,7 @@ theorem eLpNorm_riemannianVolumeMeasure_le_const_mul_wkpNormChart_uniform
   let : MeasurableSpace M := borel M
   have : BorelSpace M := ⟨rfl⟩
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M)
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M)
     with hS_def
   set ρ := DifferentialGeometry.Integral.Measure.chartAtlasPOU I M with hρ_def
   have h_bridge_α : ∀ α : M, ∃ C_α : ℝ, 0 < C_α ∧

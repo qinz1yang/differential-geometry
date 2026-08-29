@@ -65,10 +65,10 @@ theorem connLaplacianMixed_scalar_eq_function
       (fun x : M => TensorRSSpace 0 0 I x)⟯)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
     ∃ c : ℝ,
-      connLaplacian_function (I := I) g hf x = c ∧
+      connLaplacianFunction (I := I) g hf x = c ∧
       connLaplacianMixed (I := I) g 0 0 T x =
         rawTensorConnLap (I := I) g 0 0 (fun b : M => T b) x := by
-  refine ⟨connLaplacian_function (I := I) g hf x, rfl, ?_⟩
+  refine ⟨connLaplacianFunction (I := I) g hf x, rfl, ?_⟩
   exact connLaplacianMixed_def (I := I) g 0 0 T x
 
 end ConnectionLaplacian

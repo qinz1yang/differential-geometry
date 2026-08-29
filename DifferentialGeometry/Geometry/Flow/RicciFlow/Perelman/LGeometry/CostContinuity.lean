@@ -595,8 +595,8 @@ theorem lCost_lt_event
   change ∀ᶠ n in atTop, lCost S T x (q (n + N)) tau < A
   exact hcost'
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lCost_le_ray
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -676,8 +676,8 @@ theorem lCost_le_ray
         (by simp only [gamma, hrhob]) hreg
     _ = lRegAction S T (lRegCurve S T x Z) 0 b := hact
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lCost_ray_event
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)

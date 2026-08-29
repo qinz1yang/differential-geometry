@@ -31,8 +31,8 @@ variable [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segBall_vol_lt_eucl
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (y : M) ↦ TangentSpace I y)]
@@ -57,8 +57,8 @@ theorem segBall_vol_lt_eucl
     _ = (volume : Measure E) (Metric.ball (0 : E) R) :=
       gBall_model_eucl (I := I) g x hR
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segBall_lt_of_sec
     [ConnectedSpace M] [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (y : M) ↦ TangentSpace I y)]

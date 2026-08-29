@@ -47,7 +47,7 @@ lemma moserRegPowerCutoffWitness_norm_sq_le
   -- The gradient identity is callable now that the /-! comment is fixed.
   -- Componentwise: hwReg_i = η·α·clip_i + ∂ᵢη·β
   -- where α = deriv(moserRegPow)(clip), β = moserRegPow(clip).
-  -- Also: hwComp_i = α · clip_i (from comp_smooth_bounded).
+  -- Also: hwComp_i = α · clip_i (from compSmoothBounded).
   -- So (hwReg_i)² = (η·α·clip_i + ∂ᵢη·β)² ≤ 2(η·α·clip_i)² + 2(∂ᵢη·β)²
   -- Summing: ‖hwReg‖² ≤ 2η²α²‖clip_grad‖² + 2β²‖∇η‖²
   let hwClip := moserClippedPosPartWitness (d := d) (u := u) hs hs1 hN hu1
@@ -60,13 +60,13 @@ lemma moserRegPowerCutoffWitness_norm_sq_le
       2 * ((fderiv ℝ η x) (EuclideanSpace.single i 1) *
         moserRegPow ε N p (min (max (u x) 0) N)) ^ 2 := by
     intro i
-    -- Use gradient identity + comp_smooth_bounded unfolding
+    -- Use gradient identity + compSmoothBounded unfolding
     have hgi := moserRegPowerCutoffWitness_grad (d := d) (p := p) hs hs1 hε hN hu1
       hη hη_bound hη_grad_bound x i
     have hcomp : (moserRegClippedPosPartWitness (d := d) (u := u) (p := p)
         hs hs1 hε hN hu1).weakGrad x i =
       deriv (moserRegPow ε N p) (min (max (u x) 0) N) * hwClip.weakGrad x i := by
-      simp only [moserRegClippedPosPartWitness, MemW1pWitness.comp_smooth_bounded]
+      simp only [moserRegClippedPosPartWitness, MemW1pWitness.compSmoothBounded]
       ring
     rw [hgi, hcomp]
     nlinarith [sq_nonneg (η x * (deriv (moserRegPow ε N p) (min (max (u x) 0) N) *
@@ -1368,8 +1368,8 @@ theorem moserExactReg_energy_mainBall
             (ae_of_all _ fun x => hpw x)
       _ = Cη ^ 2 * ∫ x in Ω, (ε + |max (u x) 0|) ^ p ∂volume :=
           integral_const_mul _ _
-  -- The weak gradient of hwReg = η · (comp_smooth_bounded grad) + fderiv η · (comp value)
-  -- by mul_smooth_bounded.
+  -- The weak gradient of hwReg = η · (compSmoothBounded grad) + fderiv η · (comp value)
+  -- by mulSmoothBounded.
   have hgrad_split :
       ∫ x in Ω, ‖hwReg.weakGrad x‖ ^ 2 ∂volume ≤
         2 * ∫ x in Ω, η x ^ 2 *

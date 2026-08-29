@@ -182,7 +182,7 @@ private noncomputable def hkOneTerm
 private noncomputable def sobolevHkInner
     {g : SmoothRiemannianMetric I M} {r s k : ℕ}
     (T S : SmoothCcTensorHs g r s k) : ℝ :=
-  ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
     ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
         (Fin s → Fin (Module.finrank ℝ E)),
       ∑ j ∈ Finset.range (2 * k + 1),
@@ -358,7 +358,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma hkIntegrand_zero_of_notMem_finset
     {g : SmoothRiemannianMetric I M} {r s k : ℕ}
     (T S : SmoothCcTensorHs g r s k) {α : M}
-    (hα : α ∉ chartAtlasPOU_finset (I := I) (M := M))
+    (hα : α ∉ chartAtlasPOUFinset (I := I) (M := M))
     (IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
         (Fin s → Fin (Module.finrank ℝ E)))
     (j : ℕ) (basisIdx : Fin j → Fin (Module.finrank ℝ E))
@@ -374,7 +374,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma hkOneTerm_zero_of_notMem_finset
     {g : SmoothRiemannianMetric I M} {r s k : ℕ}
     (T S : SmoothCcTensorHs g r s k) {α : M}
-    (hα : α ∉ chartAtlasPOU_finset (I := I) (M := M))
+    (hα : α ∉ chartAtlasPOUFinset (I := I) (M := M))
     (IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
         (Fin s → Fin (Module.finrank ℝ E)))
     (j : ℕ) (basisIdx : Fin j → Fin (Module.finrank ℝ E)) :
@@ -775,7 +775,7 @@ private lemma hkInner_self_eq_normSq_toReal
                 ∂(volume :
                   Measure (EuclideanSpace ℝ
                     (Fin (Module.finrank ℝ E))))) =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
             (Fin s → Fin (Module.finrank ℝ E)),
           ∑ j ∈ Finset.range (2 * k + 1),
@@ -826,7 +826,7 @@ private lemma hkInner_self_eq_normSq_toReal
   rw [htsum_eq]
   unfold sobolevHkInner
   have h_each_lt_top :
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
           (Fin s → Fin (Module.finrank ℝ E)),
       IJ ∈ (Finset.univ :

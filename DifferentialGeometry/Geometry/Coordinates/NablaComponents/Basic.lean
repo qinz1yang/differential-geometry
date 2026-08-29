@@ -131,17 +131,17 @@ theorem modelDeriv_eq_coordDeriv0SAt {s : ℕ}
       (n := (∞ : WithTop ℕ∞)) s) :
     ModelDerivEqCoordDeriv0SAt (I := I) X x₀ (fun x => α x) := by
   classical
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H)
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H)
     (I := I) (M := M) s
-  let := Tensor0SBundle.tensor0SBundle_fiber (𝕜 := 𝕜) (E := E) (H := H)
+  let := Tensor0SBundle.tensor0SBundleFiber (𝕜 := 𝕜) (E := E) (H := H)
     (I := I) (M := M) s
   let := Tensor0SBundle.tensor0SBundle_vector (𝕜 := 𝕜) (E := E) (H := H)
     (I := I) (M := M) s
   let : NormedSpace 𝕜
       (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => E) 𝕜) :=
-    Tensor0SBundle.tensor0SModel_normedSpace (𝕜 := 𝕜) (E := E) s
+    Tensor0SBundle.tensor0SModelNormedSpace (𝕜 := 𝕜) (E := E) s
   let : NormedSpace 𝕜 (Tensor0SModel s 𝕜 E) :=
-    Tensor0SBundle.tensor0SModel_normedSpace (𝕜 := 𝕜) (E := E) s
+    Tensor0SBundle.tensor0SModelNormedSpace (𝕜 := 𝕜) (E := E) s
   intro slots
   let z₀ : E := extChartAt I x₀ x₀
   let S : Set E := ((extChartAt I x₀).symm ⁻¹' Set.univ) ∩ Set.range I
@@ -291,10 +291,10 @@ theorem nabla0S_model_coordFrame_slots {s : ℕ}
             x₀ (X x₀) (slots a) k *
             coordComponent0SAt (I := I) (α x₀) (Function.update slots a k) := by
   classical
-  simp only [nabla0SFun, TensorLieDeriv.mcovariantDeriv_tensor0SFromConnection,
-    TensorLieDeriv.mcovariantDeriv_tensor0SWithinFromConnection]
+  simp only [nabla0SFun, TensorLieDeriv.mcovariantDerivTensor0SFromConnection,
+    TensorLieDeriv.mcovariantDerivTensor0SWithinFromConnection]
   rw [← tensor0SModelAt_coordComponent0SAt (I := I) x₀
-    (TensorLieDeriv.mcovariantDeriv_tensor0SWithin
+    (TensorLieDeriv.mcovariantDerivTensor0SWithin
       (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s X
       (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)

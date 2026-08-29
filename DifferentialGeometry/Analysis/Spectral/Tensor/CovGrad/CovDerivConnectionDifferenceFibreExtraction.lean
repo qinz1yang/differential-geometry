@@ -53,8 +53,8 @@ private lemma coframe_arity_one_eq_metric_flat_apply
   rw [g0FlatCLM_apply, dualToCotangent_apply]
   rfl
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 theorem abs_tensor_one_three_flat_eval_le_fibreNorm_mul_sqrt
@@ -62,7 +62,7 @@ theorem abs_tensor_one_three_flat_eval_le_fibreNorm_mul_sqrt
     (W : TensorRSSpace 1 3 I x) (d a b c : TangentSpace I x) :
     letI : Bundle.RiemannianBundle
         (fun y : M => Tensor0SBundle.TensorRSSpace 1 3 I y) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 1 3
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 1 3
     |Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from W)
           (g0FlatCLM (I := I) g₀ x d))
@@ -74,7 +74,7 @@ theorem abs_tensor_one_three_flat_eval_le_fibreNorm_mul_sqrt
   classical
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 1 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 1 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 1 3
   obtain ⟨n, e, bse, hn, hbse, horth, hpars, hrepr, _hsum⟩ :=
     tangent_orthonormalBasis_witness (I := I) (M := M) g₀ x
   have hnE : n = Module.finrank ℝ E := by rw [hn]; rfl

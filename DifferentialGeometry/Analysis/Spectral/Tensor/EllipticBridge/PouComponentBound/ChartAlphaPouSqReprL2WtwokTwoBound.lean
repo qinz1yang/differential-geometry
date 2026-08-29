@@ -138,7 +138,7 @@ theorem chart_α_pou_sq_repr_L2_le_wtwokTwoNorm_sq
             ENNReal.ofReal
               (((chartAtlasPOU I M α : M → ℝ)
                   ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2 *
-                ‖tensorRSChartE_section_repr (I := I) r s α
+                ‖tensorRSChartESectionRepr (I := I) r s α
                     (fun z : M => T.toSection z)
                     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))‖ ^ 2)
             ∂(volume : Measure EuclN) ≤
@@ -155,7 +155,7 @@ theorem chart_α_pou_sq_repr_L2_le_wtwokTwoNorm_sq
           ENNReal.ofReal
             (((chartAtlasPOU I M α : M → ℝ)
                 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2 *
-              ‖tensorRSChartE_section_repr (I := I) r s α
+              ‖tensorRSChartESectionRepr (I := I) r s α
                   (fun z : M => T.toSection z)
                   ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))‖ ^ 2)
           ∂(volume : Measure EuclN) =
@@ -164,7 +164,7 @@ theorem chart_α_pou_sq_repr_L2_le_wtwokTwoNorm_sq
                 (((chartAtlasPOU I M α : M → ℝ)
                     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
               ENNReal.ofReal
-                (‖tensorRSChartE_section_repr (I := I) r s α
+                (‖tensorRSChartESectionRepr (I := I) r s α
                     (fun z : M => T.toSection z)
                     ((extChartAt I α).symm
                       ((toEuclidean (E := E)).symm y))‖ ^ 2)

@@ -29,20 +29,20 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance balancedTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance balancedTensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance balancedTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance balancedTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 theorem iterL_jet_le (g : SmoothRiemannianMetric I M) (s a : ℕ) :
     ∃ C : ℕ → ℝ, (∀ p, 0 ≤ C p) ∧ ∀ (p : ℕ) (v : SmoothCcTensor g 0 s),

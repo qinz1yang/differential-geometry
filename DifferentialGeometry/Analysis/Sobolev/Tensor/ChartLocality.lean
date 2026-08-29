@@ -28,7 +28,7 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem tensorChartComp_eq_zero_of_notMem_finset
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) {α : M}
-    (hα : α ∉ chartAtlasPOU_finset (I := I) (M := M))
+    (hα : α ∉ chartAtlasPOUFinset (I := I) (M := M))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     tensorChartComp (I := I) (M := M) g r s T α Idx Jdx = (fun _ => (0 : ℝ)) := by
@@ -46,7 +46,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem wtwokTwoNorm_chartTerm_eq_zero_of_notMem_finset
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (k : ℕ)
     (T : SmoothCcTensor g r s) {α : M}
-    (hα : α ∉ chartAtlasPOU_finset (I := I) (M := M)) :
+    (hα : α ∉ chartAtlasPOUFinset (I := I) (M := M)) :
     (∑ Idx : Fin r → Fin (Module.finrank ℝ E),
       ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
         iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * k) 2
@@ -64,7 +64,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem memWkp_tensorChartComp_of_notMem_finset
     (g : SmoothRiemannianMetric I M) {r s : ℕ} (k : ℕ)
     (T : SmoothCcTensor g r s) {α : M}
-    (hα : α ∉ chartAtlasPOU_finset (I := I) (M := M))
+    (hα : α ∉ chartAtlasPOUFinset (I := I) (M := M))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     MemWkp (d := Module.finrank ℝ E) (2 * k) 2
@@ -79,7 +79,7 @@ theorem MemWtwokTwo_iff_forall_finset
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) :
     MemWtwokTwo (I := I) (M := M) g k T ↔
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ (Idx : Fin r → Fin (Module.finrank ℝ E))
           (Jdx : Fin s → Fin (Module.finrank ℝ E)),
           MemWkp (d := Module.finrank ℝ E) (2 * k) 2
@@ -89,7 +89,7 @@ theorem MemWtwokTwo_iff_forall_finset
   · intro hT α _ Idx Jdx
     exact hT α Idx Jdx
   · intro hT α Idx Jdx
-    by_cases hα : α ∈ chartAtlasPOU_finset (I := I) (M := M)
+    by_cases hα : α ∈ chartAtlasPOUFinset (I := I) (M := M)
     · exact hT α hα Idx Jdx
     · exact memWkp_tensorChartComp_of_notMem_finset
         (I := I) (M := M) g k T hα Idx Jdx
@@ -98,7 +98,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem MemWtwokTwo_of_forall_finset_memWkp
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s)
-    (hT : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hT : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
         MemWkp (d := Module.finrank ℝ E) (2 * k) 2
@@ -138,7 +138,7 @@ theorem wtwokTwoNorm_eq_finset_sum
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) :
     wtwokTwoNorm (I := I) (M := M) g k T =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
           ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * k) 2
@@ -196,7 +196,7 @@ theorem wtwokTwoNorm_eq_finset_sum_chartTerm
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) :
     wtwokTwoNorm (I := I) (M := M) g k T =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         wtwokTwoChartTerm (I := I) (M := M) g k T α := by
   rw [wtwokTwoNorm_eq_finset_sum (I := I) (M := M) g k T]
   rfl
@@ -205,7 +205,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem wtwokTwoChartTerm_le_wtwokTwoNorm
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) {α : M}
-    (hα : α ∈ chartAtlasPOU_finset (I := I) (M := M)) :
+    (hα : α ∈ chartAtlasPOUFinset (I := I) (M := M)) :
     wtwokTwoChartTerm (I := I) (M := M) g k T α ≤
       wtwokTwoNorm (I := I) (M := M) g k T := by
   rw [wtwokTwoNorm_eq_finset_sum_chartTerm (I := I) (M := M) g k T]
@@ -217,7 +217,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 theorem wkpNorm_tensorChartComp_le_wtwokTwoNorm
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) {α : M}
-    (hα : α ∈ chartAtlasPOU_finset (I := I) (M := M))
+    (hα : α ∈ chartAtlasPOUFinset (I := I) (M := M))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * k) 2
@@ -274,7 +274,7 @@ theorem wtwokTwoNormReal_eq_finset_sum_toReal
     (g : SmoothRiemannianMetric I M) {r s : ℕ}
     (k : ℕ) (T : SmoothCcTensor g r s) :
     wtwokTwoNormReal (I := I) (M := M) g k T =
-      (∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         wtwokTwoChartTerm (I := I) (M := M) g k T α).toReal := by
   unfold wtwokTwoNormReal
   rw [wtwokTwoNorm_eq_finset_sum_chartTerm (I := I) (M := M) g k T]
@@ -285,7 +285,7 @@ theorem wtwokTwoNormReal_le_finset_sum
     {T : SmoothCcTensor g r s}
     (hT : MemWtwokTwo (I := I) (M := M) g k T) :
     wtwokTwoNormReal (I := I) (M := M) g k T ≤
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (wtwokTwoChartTerm (I := I) (M := M) g k T α).toReal := by
   rw [wtwokTwoNormReal_eq_finset_sum_toReal (I := I) (M := M) g k T]
   rw [ENNReal.toReal_sum]
@@ -297,7 +297,7 @@ theorem wtwokTwoNormReal_ge_finset_sum
     (g : SmoothRiemannianMetric I M) {r s : ℕ} {k : ℕ}
     {T : SmoothCcTensor g r s}
     (hT : MemWtwokTwo (I := I) (M := M) g k T) :
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (wtwokTwoChartTerm (I := I) (M := M) g k T α).toReal ≤
       wtwokTwoNormReal (I := I) (M := M) g k T := by
   rw [wtwokTwoNormReal_eq_finset_sum_toReal (I := I) (M := M) g k T]
@@ -311,7 +311,7 @@ theorem wtwokTwoNormReal_eq_finset_sum
     {T : SmoothCcTensor g r s}
     (hT : MemWtwokTwo (I := I) (M := M) g k T) :
     wtwokTwoNormReal (I := I) (M := M) g k T =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (wtwokTwoChartTerm (I := I) (M := M) g k T α).toReal :=
   le_antisymm
     (wtwokTwoNormReal_le_finset_sum (I := I) (M := M) g hT)
@@ -322,7 +322,7 @@ theorem wtwokTwoChartTerm_toReal_le_wtwokTwoNormReal
     (g : SmoothRiemannianMetric I M) {r s : ℕ} {k : ℕ}
     {T : SmoothCcTensor g r s}
     (hT : MemWtwokTwo (I := I) (M := M) g k T) {α : M}
-    (hα : α ∈ chartAtlasPOU_finset (I := I) (M := M)) :
+    (hα : α ∈ chartAtlasPOUFinset (I := I) (M := M)) :
     (wtwokTwoChartTerm (I := I) (M := M) g k T α).toReal ≤
       wtwokTwoNormReal (I := I) (M := M) g k T := by
   unfold wtwokTwoNormReal
@@ -337,10 +337,10 @@ theorem wtwokTwoNormReal_le_card_mul
     {T : SmoothCcTensor g r s}
     (hT : MemWtwokTwo (I := I) (M := M) g k T)
     {C : ℝ}
-    (hbound : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hbound : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       (wtwokTwoChartTerm (I := I) (M := M) g k T α).toReal ≤ C) :
     wtwokTwoNormReal (I := I) (M := M) g k T ≤
-      (chartAtlasPOU_finset (I := I) (M := M)).card * C := by
+      (chartAtlasPOUFinset (I := I) (M := M)).card * C := by
   rw [wtwokTwoNormReal_eq_finset_sum (I := I) (M := M) g hT]
   refine le_trans (Finset.sum_le_sum hbound) ?_
   rw [Finset.sum_const, nsmul_eq_mul]

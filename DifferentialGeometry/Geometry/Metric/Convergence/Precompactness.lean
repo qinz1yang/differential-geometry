@@ -208,7 +208,7 @@ theorem fderiv_comp_le_tower
     ⟨fun y : M =>
       ((leviCivitaConnectionOfMetric (I := I) gRef) (fun q : M => V a q) y) ((σ i) y),
       by
-        simpa [TensorLieDeriv.covariantDeriv_vectorField] using
+        simpa [TensorLieDeriv.covariantDerivVectorField] using
           TensorLieDeriv.covariantDeriv_vectorField_contMDiff (I := I)
             (leviCivitaConnectionOfMetric (I := I) gRef) hcov (σ i) (V a)⟩
   obtain ⟨Dσ, hDσ0, hDσ⟩ := exists_family_bound (I := I) gRef hKc σ
@@ -611,7 +611,7 @@ theorem iterFDeriv_tower_le
           ((leviCivitaConnectionOfMetric (I := I) gRef) (fun rr : M => V a rr) q)
             ((σ i) q),
           by
-            simpa [TensorLieDeriv.covariantDeriv_vectorField] using
+            simpa [TensorLieDeriv.covariantDerivVectorField] using
               TensorLieDeriv.covariantDeriv_vectorField_contMDiff (I := I)
                 (leviCivitaConnectionOfMetric (I := I) gRef) hcov (σ i) (V a)⟩
       let Vf : Fin m → Fin (p + 3) → ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -1264,7 +1264,7 @@ theorem chartGram_pou_le
     (hbdd : ∀ k : ι, ∀ q : ℕ, q ≤ r →
       MetricCovDerivOrderBoundOn (I := I) Set.univ q (gSeq k) gRef B) :
     ∃ C : Real, 0 ≤ C ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k : ι, ∀ y ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ i j : Fin (Module.finrank Real E),
@@ -1289,7 +1289,7 @@ theorem chartGram_pou_le
         rwa [trivializationAt_baseSet_eq_chartAt_source (I := I)] at hy_base)
       r B (fun k q hq y _hy => hbdd k q hq y (Set.mem_univ y))
   choose Cα hCα hbound using hper
-  let C : Real := ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), Cα α
+  let C : Real := ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Cα α
   have hC_nonneg : 0 ≤ C := by
     exact Finset.sum_nonneg fun α _ => hCα α
   refine ⟨C, hC_nonneg, ?_⟩
@@ -1311,7 +1311,7 @@ theorem chartGram_pou_bnd
     (hbdd : ∀ k : ι,
       MetricCovDerivOrderBoundOn (I := I) Set.univ 0 (gSeq k) gRef B) :
     ∃ C : Real, 0 ≤ C ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k : ι, ∀ y ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ i j : Fin (Module.finrank Real E),
@@ -1336,7 +1336,7 @@ theorem chartGram_pou_d1
     (hbdd : ∀ k : ι, ∀ q : ℕ, q ≤ 1 →
       MetricCovDerivOrderBoundOn (I := I) Set.univ q (gSeq k) gRef B) :
     ∃ Q : Real, 0 ≤ Q ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k : ι, ∀ y ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ m i j : Fin (Module.finrank Real E),
@@ -1375,7 +1375,7 @@ theorem chartGram_pou_d2
     (hbdd : ∀ k : ι, ∀ q : ℕ, q ≤ 2 →
       MetricCovDerivOrderBoundOn (I := I) Set.univ q (gSeq k) gRef B) :
     ∃ Q : Real, 0 ≤ Q ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k : ι, ∀ y ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ c m i j : Fin (Module.finrank Real E),
@@ -1435,7 +1435,7 @@ theorem chartGram_pou_d3
     (hbdd : ∀ k : ι, ∀ q : ℕ, q ≤ 3 →
       MetricCovDerivOrderBoundOn (I := I) Set.univ q (gSeq k) gRef B) :
     ∃ Q : Real, 0 ≤ Q ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k : ι, ∀ y ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ d c m i j : Fin (Module.finrank Real E),

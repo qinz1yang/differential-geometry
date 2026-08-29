@@ -86,11 +86,11 @@ lemma memLp_g_norm_gradFun_smooth
   have hG_cont : Continuous (fun x : M => Real.sqrt
       (g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g u x))) := by
     have hcont := TangentBundle.continuous_g_inner_of_smooth_sections
-      (I := I) (M := M) g (grad_g (I := I) g ⟨_, hu⟩) (grad_g (I := I) g ⟨_, hu⟩)
+      (I := I) (M := M) g (gradG (I := I) g ⟨_, hu⟩) (gradG (I := I) g ⟨_, hu⟩)
     have hcoe : (fun x : M =>
-        g.inner x ((grad_g (I := I) g ⟨_, hu⟩ :
+        g.inner x ((gradG (I := I) g ⟨_, hu⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, hu⟩ :
+            ((gradG (I := I) g ⟨_, hu⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) =
         (fun x : M => g.inner x (gradFun (I := I) g u x)
           (gradFun (I := I) g u x)) := by
@@ -109,12 +109,12 @@ lemma hasWeakRiemannianGradLp_gradFun
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     HasWeakRiemannianGradLp (I := I) (M := M) g u (gradFun (I := I) g u) := by
   have h_smooth_gw : Intrinsic.HasWeakRiemannianGrad (I := I) (M := M) g u
-      (grad_g (I := I) g ⟨_, hu⟩) :=
+      (gradG (I := I) g ⟨_, hu⟩) :=
     Intrinsic.hasWeakRiemannianGrad_grad_g_of_contMDiff
       (I := I) (M := M) g hu
   have h_lp := IntrinsicLp.hasWeakRiemannianGradLp_of_smooth (I := I) (M := M)
     h_smooth_gw
-  have h_eq : (fun x : M => ((grad_g (I := I) g ⟨_, hu⟩ :
+  have h_eq : (fun x : M => ((gradG (I := I) g ⟨_, hu⟩ :
       Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x : E)) =
       (fun x : M => (gradFun (I := I) g u x : E)) := by
     funext x
@@ -265,12 +265,12 @@ lemma continuous_g_norm_gradFun
   have hcont :=
     TangentBundle.continuous_g_inner_of_smooth_sections
       (I := I) (M := M) g
-      (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hu⟩)
-      (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hu⟩)
+      (DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨_, hu⟩)
+      (DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨_, hu⟩)
   have hcoe : (fun x : M => g.inner x
-        ((DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hu⟩ :
+        ((DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨_, hu⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((DifferentialGeometry.Geometry.Operator.grad_g (I := I) g ⟨_, hu⟩ :
+          ((DifferentialGeometry.Geometry.Operator.gradG (I := I) g ⟨_, hu⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) =
       (fun x : M => g.inner x
         (DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x)

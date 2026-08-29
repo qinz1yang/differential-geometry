@@ -64,7 +64,7 @@ theorem traceTimeDerivMetricAt_eq_trace_metric_derivative
     (td : TimeDerivativeData Real A Real)
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     {t : Real} {x : M}
-    (hdt : ∀ F : Real → Real, td.dt_apply F t = deriv F t) :
+    (hdt : ∀ F : Real → Real, td.dtApply F t = deriv F t) :
     traceTimeDerivMetricAt (I := I) G t x =
       Matrix.trace
         ((chartGramMatrix (I := I) (G.metric t) x x)⁻¹ *
@@ -119,7 +119,7 @@ theorem traceTimeDerivMetricAt_eq_neg_two_scalar
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (Ric : DifferentialGeometry.PDE.RicciFlow.RicciTensorField (I := I) (M := M) Real)
     (scalar : Real → M → Real)
-    (hdt : ∀ (F : Real → Real) (t : Real), td.dt_apply F t = deriv F t)
+    (hdt : ∀ (F : Real → Real) (t : Real), td.dtApply F t = deriv F t)
     (hEq : DifferentialGeometry.PDE.RicciFlow.MetricVariationEquation (I := I) td G Ric)
     {t : Real} {x : M}
     (hScalar :
@@ -210,7 +210,7 @@ theorem traceTimeDerivMetricAt_eq_neg_two_scalar_of_scalarTrace
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (Ric : DifferentialGeometry.PDE.RicciFlow.RicciTensorField (I := I) (M := M) Real)
     (scalar : Real → M → Real)
-    (hdt : ∀ (F : Real → Real) (t : Real), td.dt_apply F t = deriv F t)
+    (hdt : ∀ (F : Real → Real) (t : Real), td.dtApply F t = deriv F t)
     (hEq : DifferentialGeometry.PDE.RicciFlow.MetricVariationEquation (I := I) td G Ric)
     {t : Real}
     (hScalar : DifferentialGeometry.Geometry.Curvature.scalarRealizesRicciTraceInFrame (I := I)
@@ -352,7 +352,7 @@ theorem volume_variation_ricciFlow_at_of_metricVariationEquation
     (Ric : DifferentialGeometry.PDE.RicciFlow.RicciTensorField (I := I) (M := M) Real)
     (scalar : Real → M → Real)
     {f : Real → M → Real} {t₀ : Real}
-    (hdt : ∀ (F : Real → Real) (t : Real), td.dt_apply F t = deriv F t)
+    (hdt : ∀ (F : Real → Real) (t : Real), td.dtApply F t = deriv F t)
     (hEq : DifferentialGeometry.PDE.RicciFlow.MetricVariationEquation (I := I) td G Ric)
     (hScalar : DifferentialGeometry.Geometry.Curvature.scalarRealizesRicciTraceInFrame (I := I)
       (scalar t₀) (Ric t₀)

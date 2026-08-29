@@ -1054,7 +1054,7 @@ theorem exists_deTurckLieArmOneCoefficient_backgroundDifference_covariantJetNorm
         mul_nonneg (hQfix R hR) (hQpsi R hR)]
     _ = (B R) ^ 2 := rfl
 
-noncomputable def lowerScaleFirstOrderCoefficient_backgroundDifference
+noncomputable def lowerScaleFirstOrderCoefficientBackgroundDifference
     (g gBase : SmoothRiemannianMetric I M) (T : SmoothCcTensor g 0 2)
     {δ : ℝ} (hδ_lt : δ < 1)
     (hδT : gFibreOpBound (I := I) (M := M) g
@@ -1125,7 +1125,7 @@ private theorem lowerScaleFirstOrderCoefficient_backgroundDifference_eq_pathInte
     (hδZ : gFibreOpBound (I := I) (M := M) g
       (ccTensorBilinSymm (I := I) g
         (0 : SmoothCcTensor g 0 2)) δ) :
-    lowerScaleFirstOrderCoefficient_backgroundDifference (I := I) (M := M) g gBase T hδ_lt hδT hδZ =
+    lowerScaleFirstOrderCoefficientBackgroundDifference (I := I) (M := M) g gBase T hδ_lt hδT hδZ =
       lowerScaleFirstOrderCoefficient_backgroundDifferencePathIntegral (I := I) (M := M) g gBase T hδ_lt hδT hδZ := by
   classical
   apply SmoothCcTensor.ext
@@ -1162,7 +1162,7 @@ private theorem lowerScaleFirstOrderCoefficient_backgroundDifference_eq_pathInte
           T 0 hδT hδZ s).toSection x))
       MeasureTheory.volume 0 1 :=
     (hScont.mono hSI).intervalIntegrable
-  simp only [lowerScaleFirstOrderCoefficient_backgroundDifference, lowerScaleActionCoefficients,
+  simp only [lowerScaleFirstOrderCoefficientBackgroundDifference, lowerScaleActionCoefficients,
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply,
     TensorRSSpace.toModel_sub]
   rw [ricciDeTurckRemainderFirstOrderPathIntegral_toModel,
@@ -1212,7 +1212,7 @@ theorem exists_lowerScaleFirstOrderCoefficient_backgroundDifference_covariantJet
           ∀ R : ℝ, 0 ≤ R →
           ‖ccTensorToHs (I := I) (M := M) g 2 (2 : ℝ) T‖ ≤ R →
           covariantJetNormSq (I := I) (M := M) g 2
-            (lowerScaleFirstOrderCoefficient_backgroundDifference (I := I) (M := M) g gBase T
+            (lowerScaleFirstOrderCoefficientBackgroundDifference (I := I) (M := M) g gBase T
               (lt_of_le_of_lt hδ_le hδ₀) hδT hδZ) ≤
             (B R) ^ 2 := by
   obtain ⟨C, hC⟩ := exists_convex_jets (I := I) (M := M) gBase hΛ

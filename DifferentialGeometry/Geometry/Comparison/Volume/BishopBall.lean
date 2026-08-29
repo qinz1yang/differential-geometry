@@ -428,8 +428,8 @@ def normalBallVolume (g : SmoothRiemannianMetric I M) (p : M)
   riemannianVolumeMeasure (I := I) (M := M) g
     (framedExpDiffeo (I := I) g p '' ball (0 : E) R)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_framed_ratio
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -682,8 +682,8 @@ theorem exists_framed_ratio
   simpa only [d] using
     framedRatio_anti (I := I) g p u.1 q d hframedSrc hrawPhysical'
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem normalBall_cross
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -791,8 +791,8 @@ theorem normalBall_cross
     (fun u : sphere (0 : E) 1 => ENNReal.ofReal (A u r)) ENNReal.ofReal_ne_top]
   exact lintegral_mono hdir
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem normalBall_ratio
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -824,8 +824,8 @@ theorem normalBall_ratio
   rw [ENNReal.le_div_iff_mul_le (Or.inl hmr0) (Or.inl ENNReal.ofReal_ne_top)]
   exact hcross hr.1 hrR hR.2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem normalBall_cross_of_complete_metric
     (g : SmoothRiemannianMetric I M)
     (hcomplete : RiemannianMetricComplete (I := I) g)
@@ -857,8 +857,8 @@ theorem normalBall_cross_of_complete_metric
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
   exact normalBall_cross (I := I) (M := M) g hEnorm p q hq hd hRic
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem normalBall_ratio_of_complete_metric
     (g : SmoothRiemannianMetric I M)
     (hcomplete : RiemannianMetricComplete (I := I) g)

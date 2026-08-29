@@ -57,7 +57,7 @@ noncomputable def chartTargetL2BridgeConstant
     [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M) : ℝ :=
   (euclideanHaarFactor E : ℝ) *
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       (chartL2BridgeMα (I := I) (M := M) g α + 1)
 
 lemma chartTargetL2BridgeConstant_nonneg
@@ -108,13 +108,13 @@ theorem manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
       ∫⁻ x, (‖S x‖ₑ : ℝ≥0∞) ^ 2
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)
         ≤ ENNReal.ofReal C *
-            ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+            ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
               ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
                 ENNReal.ofReal
                   (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
                 ∂(volume : Measure EuclN) := by
   classical
-  set Sfin : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hSfin_def
+  set Sfin : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hSfin_def
   set F : M → ℝ≥0∞ := fun x => (‖S x‖ₑ : ℝ≥0∞) ^ 2 with hF_def
   have hF_meas : Measurable F := by
     have heq : F = fun x : M => ENNReal.ofReal (‖S x‖ ^ 2) := by
@@ -409,13 +409,13 @@ theorem uniform_manifold_l2_norm_sq_le_finset_sum_chart_target_l2_norm_sq
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) ≤
       ENNReal.ofReal
           (chartTargetL2BridgeConstant (I := I) (M := M) g) *
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
             ENNReal.ofReal
               (tensorTrivProjPushedNormSq (I := I) (M := M) r s α S y)
             ∂(volume : Measure EuclN) := by
   classical
-  set Sfin : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hSfin_def
+  set Sfin : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hSfin_def
   set F : M → ℝ≥0∞ := fun x => (‖S x‖ₑ : ℝ≥0∞) ^ 2 with hF_def
   have hF_meas : Measurable F := by
     have heq : F = fun x : M => ENNReal.ofReal (‖S x‖ ^ 2) := by

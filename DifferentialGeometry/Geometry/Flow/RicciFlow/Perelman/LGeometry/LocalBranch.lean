@@ -132,8 +132,8 @@ private theorem exists_open_clamp
         dsimp only [d, eps] at hhi
         linarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRayAct_contAt
@@ -595,8 +595,8 @@ private theorem lActBranch_grad_on
         (lActBranch S hS T x Z tau hdom hconj y)) hcast
     _ = _ := ContinuousLinearEquiv.apply_symm_apply _ _
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem lEndVel_cov
@@ -869,8 +869,8 @@ private theorem lEndVel_cov
     exact hcomm.trans (by simpa using hc)
   exact hchain'.symm.trans (hcovGrad.trans hcomm')
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lActBranch_hess

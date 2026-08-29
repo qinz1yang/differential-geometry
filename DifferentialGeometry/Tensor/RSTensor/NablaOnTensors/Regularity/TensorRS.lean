@@ -23,9 +23,9 @@ theorem nablaRS_reg (r s : ℕ)
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) r s) :
     NablaRSRegular (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s cov X T := by
-  let := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+  let := tensorRSBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) r s
-  let := tensorRSBundle_fiber (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+  let := tensorRSBundleFiber (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) r s
   let := tensorRSBundle_vector (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) r s
@@ -56,7 +56,7 @@ theorem nablaRS_reg (r s : ℕ)
     intro ρ σ
     let eTan := trivializationAt E (TangentSpace I : M -> Type _) x₀
     let βρ : Tensor0SModel r 𝕜 E :=
-      (continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) bE r) ρ
+      (continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) bE r) ρ
     let vσ : Fin s -> E := fun a => bE (σ a)
     have hintrinsic :
         ContMDiffAt I 𝓘(𝕜, 𝕜) (∞ : WithTop ℕ∞)

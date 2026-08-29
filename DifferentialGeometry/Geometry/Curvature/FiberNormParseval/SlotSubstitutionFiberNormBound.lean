@@ -101,7 +101,7 @@ lemma gFrame_adjoint_parseval_le
     _ ≤ Kw * ‖v‖ ^ 2 := mul_le_mul_of_nonneg_right hWsq_le (sq_nonneg _)
 
 def embedRS (x : M) (s : ℕ) (A0 : Tensor0SSpace s I x) : TensorRSSpace 0 s I x :=
-  ContinuousLinearMap.smulRight (Tensor0SBundle.tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) x) A0
+  ContinuousLinearMap.smulRight (Tensor0SBundle.tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) x) A0
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
@@ -110,7 +110,7 @@ lemma embedRS_unitZeroSec_apply (x : M) (s : ℕ) (A0 : Tensor0SSpace s I x) :
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from embedRS (I := I) (M := M) x s A0)
       (unitZeroSec (I := I) (M := M) x) = A0 := by
   rw [embedRS, ContinuousLinearMap.smulRight_apply]
-  have he : Tensor0SBundle.tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) x
+  have he : Tensor0SBundle.tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) x
       (unitZeroSec (I := I) (M := M) x) = (1 : ℝ) := by
     rw [Tensor0SSpace.evalScalar_apply, unitZeroSec_apply]
     rfl

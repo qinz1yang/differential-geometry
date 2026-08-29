@@ -58,7 +58,7 @@ theorem metric_lower
   let : SigmaCompactSpace P.M := P.sigmaCompact
   obtain ⟨n, htn⟩ := RealTimeInterval.mem_openWindow (t₀ := t₀) ht
   refine ⟨c n, hc n, ?_⟩
-  exact ConvOut.lower_of (I := I) (Φ := Φ) (OpenConvOut.at_window Φ co n)
+  exact ConvOut.lower_of (I := I) (Φ := Φ) (OpenConvOut.atWindow Φ co n)
     (hseq n) t htn
 
 end OpenConvOut

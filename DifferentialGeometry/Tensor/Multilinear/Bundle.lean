@@ -185,7 +185,7 @@ def _root_.Bundle.continuousMultilinearMap.vectorPrebundle :
       continuousMultilinearMapCoordChange_apply 𝕜 s e e'⟩
   totalSpaceMk_isInducing x := ⟨rfl⟩
 
-instance Bundle.continuousMultilinearMap.topologicalSpace_totalSpace :
+instance Bundle.continuousMultilinearMap.topologicalSpaceTotalSpace :
     TopologicalSpace (TotalSpace MLF (Bundle.continuousMultilinearMap 𝕜 s F E)) :=
   (Bundle.continuousMultilinearMap.vectorPrebundle 𝕜 s F E).totalSpaceTopology
 

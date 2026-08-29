@@ -281,7 +281,7 @@ private lemma continuous_integrable_of_compactSpace
     continuous_memLp_of_compactSpace g 1 hf
   exact memLp_one_iff_integrable.mp h_one
 
-def HasWeakRiemannianGradLp_withBoundary
+def HasWeakRiemannianGradLpWithBoundary
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (u : M → ℝ) (G : M → E) : Prop :=
   (∀ Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯,
@@ -291,51 +291,51 @@ def HasWeakRiemannianGradLp_withBoundary
     HasCompactSupport (fun x : M => (X x : E)) →
     tsupport (fun x : M => (X x : E)) ⊆ I.interior M →
       ∫ x, g.inner x (G x) (X x) ∂(riemannianVolumeMeasure I M g) =
-        -∫ x, u x * divergence_g_with_boundary (I := I) g X x
+        -∫ x, u x * divergenceGWithBoundary (I := I) g X x
           ∂(riemannianVolumeMeasure I M g)
 
-namespace HasWeakRiemannianGradLp_withBoundary
+namespace HasWeakRiemannianGradLpWithBoundary
 
 variable {g : SmoothRiemannianMetric I M} {u : M → ℝ} {G : M → E}
 
 lemma pairing_eq
     [T2Space M] [SigmaCompactSpace M]
-    (h : HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g u G)
+    (h : HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g u G)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (hX : HasCompactSupport (fun x : M => (X x : E)))
     (hX_int : tsupport (fun x : M => (X x : E)) ⊆ I.interior M) :
     ∫ x, g.inner x (G x) (X x) ∂(riemannianVolumeMeasure I M g) =
-      -∫ x, u x * divergence_g_with_boundary (I := I) g X x
+      -∫ x, u x * divergenceGWithBoundary (I := I) g X x
         ∂(riemannianVolumeMeasure I M g) := h.2 X hX hX_int
 
 lemma pairing_aestronglyMeasurable
     [T2Space M] [SigmaCompactSpace M]
-    (h : HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g u G)
+    (h : HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g u G)
     (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     AEStronglyMeasurable (fun x : M => g.inner x (G x) (Y x))
       (riemannianVolumeMeasure I M g) := h.1 Y
 
-end HasWeakRiemannianGradLp_withBoundary
+end HasWeakRiemannianGradLpWithBoundary
 
-def MemW1pIntrinsicLp_withBoundary
+def MemW1pIntrinsicLpWithBoundary
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) (u : M → ℝ) : Prop :=
   MemLp u p (riemannianVolumeMeasure I M g) ∧
   ∃ G : M → E,
-    HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g u G ∧
+    HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g u G ∧
       MemLp (fun x : M => Real.sqrt (g.inner x (G x) (G x))) p
         (riemannianVolumeMeasure I M g)
 
-lemma MemW1pIntrinsicLp_withBoundary.memLp_self
+lemma MemW1pIntrinsicLpWithBoundary.memLp_self
     [T2Space M] [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} {u : M → ℝ}
-    (h : MemW1pIntrinsicLp_withBoundary (I := I) (M := M) g p u) :
+    (h : MemW1pIntrinsicLpWithBoundary (I := I) (M := M) g p u) :
     MemLp u p (riemannianVolumeMeasure I M g) := h.1
 
-theorem HasWeakRiemannianGradLp_withBoundary.zero
+theorem HasWeakRiemannianGradLpWithBoundary.zero
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) :
-    HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g
+    HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g
       (fun _ : M => (0 : ℝ)) (fun _ : M => (0 : E)) := by
   refine ⟨?_, ?_⟩
   · intro Y
@@ -355,17 +355,17 @@ theorem HasWeakRiemannianGradLp_withBoundary.zero
       change g.inner x (0 : TangentSpace I x) (X x) = 0
       exact g_inner_zero_left g x (X x)
     rw [h_LHS]
-    rw [show (fun x : M => (0 : ℝ) * divergence_g_with_boundary (I := I) g X x) =
+    rw [show (fun x : M => (0 : ℝ) * divergenceGWithBoundary (I := I) g X x) =
         (fun _ : M => (0 : ℝ)) from by funext x; simp]
     simp [integral_zero]
 
-theorem MemW1pIntrinsicLp_withBoundary.zero
+theorem MemW1pIntrinsicLpWithBoundary.zero
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) :
-    MemW1pIntrinsicLp_withBoundary (I := I) (M := M) g p
+    MemW1pIntrinsicLpWithBoundary (I := I) (M := M) g p
       (fun _ : M => (0 : ℝ)) := by
   refine ⟨MemLp.zero, (fun _ : M => (0 : E)),
-    HasWeakRiemannianGradLp_withBoundary.zero (I := I) (M := M) g, ?_⟩
+    HasWeakRiemannianGradLpWithBoundary.zero (I := I) (M := M) g, ?_⟩
   have hcongr : (fun x : M => Real.sqrt
       (g.inner x ((fun _ : M => (0 : E)) x) ((fun _ : M => (0 : E)) x))) =
       (fun _ : M => (0 : ℝ)) := by
@@ -376,10 +376,10 @@ theorem MemW1pIntrinsicLp_withBoundary.zero
   rw [hcongr]
   exact MemLp.zero
 
-theorem HasWeakRiemannianGradLp_withBoundary.const
+theorem HasWeakRiemannianGradLpWithBoundary.const
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (c : ℝ) :
-    HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g
+    HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g
       (fun _ : M => c) (fun _ : M => (0 : E)) := by
   refine ⟨?_, ?_⟩
   · intro Y
@@ -402,14 +402,14 @@ theorem HasWeakRiemannianGradLp_withBoundary.const
     rw [integral_zero]
     have hX' : HasCompactSupport (X : ∀ x, TangentSpace I x) := hX
     have hdiv_zero :
-        ∫ x, divergence_g_with_boundary (I := I) g X x
+        ∫ x, divergenceGWithBoundary (I := I) g X x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 :=
       integral_divergence_with_boundary_eq_zero_of_hasCompactSupport_of_interior_support
         (I := I) g X hX' hX_int
-    have : (fun x : M => c * divergence_g_with_boundary (I := I) g X x) =
-        (fun x : M => c * divergence_g_with_boundary (I := I) g X x) := rfl
-    rw [show (fun x : M => c * divergence_g_with_boundary (I := I) g X x) =
-        (fun x : M => c * divergence_g_with_boundary (I := I) g X x) from rfl]
+    have : (fun x : M => c * divergenceGWithBoundary (I := I) g X x) =
+        (fun x : M => c * divergenceGWithBoundary (I := I) g X x) := rfl
+    rw [show (fun x : M => c * divergenceGWithBoundary (I := I) g X x) =
+        (fun x : M => c * divergenceGWithBoundary (I := I) g X x) from rfl]
     rw [integral_const_mul]
     rw [hdiv_zero]
     ring
@@ -417,13 +417,13 @@ theorem HasWeakRiemannianGradLp_withBoundary.const
 theorem MemW1pIntrinsicLp_withBoundary_const
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) (c : ℝ) :
-    MemW1pIntrinsicLp_withBoundary (I := I) (M := M) g p
+    MemW1pIntrinsicLpWithBoundary (I := I) (M := M) g p
       (fun _ : M => c) := by
   have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
       (I := I) (M := M) g
   refine ⟨?_, (fun _ : M => (0 : E)),
-    HasWeakRiemannianGradLp_withBoundary.const (I := I) (M := M) g c, ?_⟩
+    HasWeakRiemannianGradLpWithBoundary.const (I := I) (M := M) g c, ?_⟩
   · exact continuous_memLp_of_compactSpace g p continuous_const
   · have hcongr : (fun x : M => Real.sqrt
         (g.inner x ((fun _ : M => (0 : E)) x) ((fun _ : M => (0 : E)) x))) =
@@ -435,19 +435,19 @@ theorem MemW1pIntrinsicLp_withBoundary_const
     rw [hcongr]
     exact MemLp.zero
 
-theorem HasWeakRiemannianGradLp_withBoundary.add
+theorem HasWeakRiemannianGradLpWithBoundary.add
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u v : M → ℝ} {G G' : M → E}
-    (h₁ : HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g u G)
-    (h₂ : HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g v G')
+    (h₁ : HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g u G)
+    (h₂ : HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g v G')
     (hu : MemLp u p (riemannianVolumeMeasure I M g))
     (hv : MemLp v p (riemannianVolumeMeasure I M g))
     (hGn : MemLp (fun x : M => Real.sqrt (g.inner x (G x) (G x))) p
       (riemannianVolumeMeasure I M g))
     (hG'n : MemLp (fun x : M => Real.sqrt (g.inner x (G' x) (G' x))) p
       (riemannianVolumeMeasure I M g)) :
-    HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g
+    HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g
       (fun x => u x + v x) (fun x : M => G x + G' x) := by
   have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
@@ -522,34 +522,34 @@ theorem HasWeakRiemannianGradLp_withBoundary.add
     rw [integral_add h_int_G h_int_G']
     rw [h₁.pairing_eq X hX hX_int, h₂.pairing_eq X hX hX_int]
     have hX' : HasCompactSupport (X : ∀ x, TangentSpace I x) := hX
-    have h_div_supp : tsupport (divergence_g_with_boundary (I := I) g X) ⊆
+    have h_div_supp : tsupport (divergenceGWithBoundary (I := I) g X) ⊆
         tsupport (X : ∀ x, TangentSpace I x) :=
       tsupport_divergence_g_with_boundary_subset
         (I := I) g X
     have h_div_supp_int :
-        tsupport (divergence_g_with_boundary (I := I) g X) ⊆ I.interior M :=
+        tsupport (divergenceGWithBoundary (I := I) g X) ⊆ I.interior M :=
       h_div_supp.trans hX_int
-    have h_div_cont : Continuous (divergence_g_with_boundary (I := I) g X) := by
+    have h_div_cont : Continuous (divergenceGWithBoundary (I := I) g X) := by
       rw [continuous_iff_continuousAt]
       intro x
-      by_cases hx_supp : x ∈ tsupport (divergence_g_with_boundary (I := I) g X)
+      by_cases hx_supp : x ∈ tsupport (divergenceGWithBoundary (I := I) g X)
       · have hopen_int : IsOpen (I.interior M) :=
           I.isOpen_interior (M := M) (n := ∞)
             (by exact (by decide : (∞ : WithTop ℕ∞) ≠ 0))
         have hx_int : x ∈ I.interior M := h_div_supp_int hx_supp
         have hcont_int :
-            ContinuousOn (divergence_g_with_boundary (I := I) g X) (I.interior M) :=
+            ContinuousOn (divergenceGWithBoundary (I := I) g X) (I.interior M) :=
           divergence_g_with_boundary_continuousOn_interior (I := I) g X
         exact (hcont_int x hx_int).continuousAt (hopen_int.mem_nhds hx_int)
-      · have h_open : IsOpen (tsupport (divergence_g_with_boundary (I := I) g X))ᶜ :=
+      · have h_open : IsOpen (tsupport (divergenceGWithBoundary (I := I) g X))ᶜ :=
           (isClosed_tsupport _).isOpen_compl
-        have hev_zero : (divergence_g_with_boundary (I := I) g X) =ᶠ[𝓝 x]
+        have hev_zero : (divergenceGWithBoundary (I := I) g X) =ᶠ[𝓝 x]
             (fun _ => (0 : ℝ)) := by
           filter_upwards [h_open.mem_nhds hx_supp] with y hy
           by_contra hne
           exact hy (subset_tsupport _ hne)
         exact (continuous_const.continuousAt.congr hev_zero.symm)
-    have h_int_uX : Integrable (fun x : M => u x * divergence_g_with_boundary (I := I) g X x)
+    have h_int_uX : Integrable (fun x : M => u x * divergenceGWithBoundary (I := I) g X x)
         (riemannianVolumeMeasure I M g) := by
       have hu_one : MemLp u 1 (riemannianVolumeMeasure I M g) :=
         hu.mono_exponent hp
@@ -561,7 +561,7 @@ theorem HasWeakRiemannianGradLp_withBoundary.add
       · filter_upwards with x
         rw [Real.norm_eq_abs]
         exact hC x
-    have h_int_vX : Integrable (fun x : M => v x * divergence_g_with_boundary (I := I) g X x)
+    have h_int_vX : Integrable (fun x : M => v x * divergenceGWithBoundary (I := I) g X x)
         (riemannianVolumeMeasure I M g) := by
       have hv_one : MemLp v 1 (riemannianVolumeMeasure I M g) :=
         hv.mono_exponent hp
@@ -573,13 +573,13 @@ theorem HasWeakRiemannianGradLp_withBoundary.add
       · filter_upwards with x
         rw [Real.norm_eq_abs]
         exact hC x
-    rw [show (-∫ x, u x * divergence_g_with_boundary (I := I) g X x
+    rw [show (-∫ x, u x * divergenceGWithBoundary (I := I) g X x
               ∂(riemannianVolumeMeasure I M g)) +
-          (-∫ x, v x * divergence_g_with_boundary (I := I) g X x
+          (-∫ x, v x * divergenceGWithBoundary (I := I) g X x
               ∂(riemannianVolumeMeasure I M g)) =
-        -((∫ x, u x * divergence_g_with_boundary (I := I) g X x
+        -((∫ x, u x * divergenceGWithBoundary (I := I) g X x
               ∂(riemannianVolumeMeasure I M g)) +
-          (∫ x, v x * divergence_g_with_boundary (I := I) g X x
+          (∫ x, v x * divergenceGWithBoundary (I := I) g X x
               ∂(riemannianVolumeMeasure I M g))) from by ring]
     rw [← integral_add h_int_uX h_int_vX]
     congr 1
@@ -587,13 +587,13 @@ theorem HasWeakRiemannianGradLp_withBoundary.add
     intro x
     ring
 
-theorem HasWeakRiemannianGradLp_withBoundary.const_smul
+theorem HasWeakRiemannianGradLpWithBoundary.const_smul
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (c : ℝ) {u : M → ℝ} {G : M → E}
-    (h : HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g u G)
+    (h : HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g u G)
     (hu : MemLp u p (riemannianVolumeMeasure I M g)) :
-    HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g
+    HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g
       (fun x => c * u x) (fun x : M => c • G x) := by
   have : IsFiniteMeasure (riemannianVolumeMeasure I M g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace
@@ -616,34 +616,34 @@ theorem HasWeakRiemannianGradLp_withBoundary.const_smul
     rw [integral_congr_ae (Filter.Eventually.of_forall hpt)]
     rw [integral_const_mul c]
     rw [h.pairing_eq X hX hX_int]
-    have h_div_supp : tsupport (divergence_g_with_boundary (I := I) g X) ⊆
+    have h_div_supp : tsupport (divergenceGWithBoundary (I := I) g X) ⊆
         tsupport (X : ∀ x, TangentSpace I x) :=
       tsupport_divergence_g_with_boundary_subset
         (I := I) g X
     have h_div_supp_int :
-        tsupport (divergence_g_with_boundary (I := I) g X) ⊆ I.interior M :=
+        tsupport (divergenceGWithBoundary (I := I) g X) ⊆ I.interior M :=
       h_div_supp.trans hX_int
-    have h_div_cont : Continuous (divergence_g_with_boundary (I := I) g X) := by
+    have h_div_cont : Continuous (divergenceGWithBoundary (I := I) g X) := by
       rw [continuous_iff_continuousAt]
       intro x
-      by_cases hx_supp : x ∈ tsupport (divergence_g_with_boundary (I := I) g X)
+      by_cases hx_supp : x ∈ tsupport (divergenceGWithBoundary (I := I) g X)
       · have hopen_int : IsOpen (I.interior M) :=
           I.isOpen_interior (M := M) (n := ∞)
             (by exact (by decide : (∞ : WithTop ℕ∞) ≠ 0))
         have hx_int : x ∈ I.interior M := h_div_supp_int hx_supp
         have hcont_int :
-            ContinuousOn (divergence_g_with_boundary (I := I) g X) (I.interior M) :=
+            ContinuousOn (divergenceGWithBoundary (I := I) g X) (I.interior M) :=
           divergence_g_with_boundary_continuousOn_interior (I := I) g X
         exact (hcont_int x hx_int).continuousAt (hopen_int.mem_nhds hx_int)
-      · have h_open : IsOpen (tsupport (divergence_g_with_boundary (I := I) g X))ᶜ :=
+      · have h_open : IsOpen (tsupport (divergenceGWithBoundary (I := I) g X))ᶜ :=
           (isClosed_tsupport _).isOpen_compl
-        have hev_zero : (divergence_g_with_boundary (I := I) g X) =ᶠ[𝓝 x]
+        have hev_zero : (divergenceGWithBoundary (I := I) g X) =ᶠ[𝓝 x]
             (fun _ => (0 : ℝ)) := by
           filter_upwards [h_open.mem_nhds hx_supp] with y hy
           by_contra hne
           exact hy (subset_tsupport _ hne)
         exact (continuous_const.continuousAt.congr hev_zero.symm)
-    have h_int_uX : Integrable (fun x : M => u x * divergence_g_with_boundary (I := I) g X x)
+    have h_int_uX : Integrable (fun x : M => u x * divergenceGWithBoundary (I := I) g X x)
         (riemannianVolumeMeasure I M g) := by
       have hu_one : MemLp u 1 (riemannianVolumeMeasure I M g) :=
         hu.mono_exponent hp
@@ -655,22 +655,22 @@ theorem HasWeakRiemannianGradLp_withBoundary.const_smul
       · filter_upwards with x
         rw [Real.norm_eq_abs]
         exact hC x
-    have hcong : (fun x : M => (c * u x) * divergence_g_with_boundary (I := I) g X x) =
-        (fun x : M => c * (u x * divergence_g_with_boundary (I := I) g X x)) := by
+    have hcong : (fun x : M => (c * u x) * divergenceGWithBoundary (I := I) g X x) =
+        (fun x : M => c * (u x * divergenceGWithBoundary (I := I) g X x)) := by
       funext x; ring
     rw [hcong, integral_const_mul]
     ring
 
-theorem MemW1pIntrinsicLp_withBoundary.const_smul
+theorem MemW1pIntrinsicLpWithBoundary.const_smul
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} (hp : 1 ≤ p)
     (c : ℝ) {u : M → ℝ}
-    (hu : MemW1pIntrinsicLp_withBoundary (I := I) (M := M) g p u) :
-    MemW1pIntrinsicLp_withBoundary (I := I) (M := M) g p
+    (hu : MemW1pIntrinsicLpWithBoundary (I := I) (M := M) g p u) :
+    MemW1pIntrinsicLpWithBoundary (I := I) (M := M) g p
       (fun x => c * u x) := by
   obtain ⟨hu_p, G, hG_weak, hG_p⟩ := hu
   refine ⟨hu_p.const_mul c, (fun x : M => c • G x), ?_, ?_⟩
-  · exact HasWeakRiemannianGradLp_withBoundary.const_smul
+  · exact HasWeakRiemannianGradLpWithBoundary.const_smul
       (I := I) (M := M) hp c hG_weak hu_p
   · have hcongr : (fun x : M => Real.sqrt
         (g.inner x ((fun y : M => c • G y) x)
@@ -681,17 +681,17 @@ theorem MemW1pIntrinsicLp_withBoundary.const_smul
     rw [hcongr]
     exact hG_p.const_mul (|c|)
 
-theorem HasWeakRiemannianGradLp_withBoundary.neg
+theorem HasWeakRiemannianGradLpWithBoundary.neg
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u : M → ℝ} {G : M → E}
-    (h : HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g u G)
+    (h : HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g u G)
     (hu : MemLp u p (riemannianVolumeMeasure I M g)) :
-    HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g
+    HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g
       (fun x => -u x) (fun x : M => -G x) := by
-  have h1 : HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g
+  have h1 : HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g
       (fun x => (-1 : ℝ) * u x) (fun x : M => (-1 : ℝ) • G x) :=
-    HasWeakRiemannianGradLp_withBoundary.const_smul (I := I) (M := M) hp (-1) h hu
+    HasWeakRiemannianGradLpWithBoundary.const_smul (I := I) (M := M) hp (-1) h hu
   have h_u : (fun x : M => (-1 : ℝ) * u x) = (fun x => -u x) := by
     funext x; ring
   have h_G : (fun x : M => (-1 : ℝ) • G x) = (fun x : M => -G x) := by
@@ -700,25 +700,25 @@ theorem HasWeakRiemannianGradLp_withBoundary.neg
   rw [h_G] at h1
   exact h1
 
-theorem MemW1pIntrinsicLp_withBoundary.neg
+theorem MemW1pIntrinsicLpWithBoundary.neg
     [CompactSpace M] [T2Space M] [SigmaCompactSpace M]
     {g : SmoothRiemannianMetric I M} {p : ℝ≥0∞} (hp : 1 ≤ p)
     {u : M → ℝ}
-    (hu : MemW1pIntrinsicLp_withBoundary (I := I) (M := M) g p u) :
-    MemW1pIntrinsicLp_withBoundary (I := I) (M := M) g p
+    (hu : MemW1pIntrinsicLpWithBoundary (I := I) (M := M) g p u) :
+    MemW1pIntrinsicLpWithBoundary (I := I) (M := M) g p
       (fun x => -u x) := by
-  have h := MemW1pIntrinsicLp_withBoundary.const_smul (I := I) (M := M) hp (-1) hu
+  have h := MemW1pIntrinsicLpWithBoundary.const_smul (I := I) (M := M) hp (-1) hu
   have h_eq : (fun x : M => (-1 : ℝ) * u x) = (fun x => -u x) := by
     funext x; ring
   rw [h_eq] at h
   exact h
 
-def w1pNormIntrinsicLp_withBoundary
+def w1pNormIntrinsicLpWithBoundary
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) (u : M → ℝ) : ℝ≥0∞ :=
   eLpNorm u p (riemannianVolumeMeasure I M g) +
     ⨅ (G : M → E)
-      (_ : HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g u G),
+      (_ : HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g u G),
       eLpNorm (fun x : M => Real.sqrt (g.inner x (G x) (G x))) p
         (riemannianVolumeMeasure I M g)
 
@@ -726,21 +726,21 @@ private def gradInfimumLp_withBoundary
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) (u : M → ℝ) : ℝ≥0∞ :=
   ⨅ (G : M → E)
-    (_ : HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g u G),
+    (_ : HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g u G),
     eLpNorm (fun x : M => Real.sqrt (g.inner x (G x) (G x))) p
       (riemannianVolumeMeasure I M g)
 
 private lemma w1pNormIntrinsicLp_withBoundary_def
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) (u : M → ℝ) :
-    w1pNormIntrinsicLp_withBoundary (I := I) (M := M) g p u =
+    w1pNormIntrinsicLpWithBoundary (I := I) (M := M) g p u =
       eLpNorm u p (riemannianVolumeMeasure I M g) +
         gradInfimumLp_withBoundary (I := I) (M := M) g p u := rfl
 
 theorem w1pNormIntrinsicLp_withBoundary_zero
     [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞) :
-    w1pNormIntrinsicLp_withBoundary (I := I) (M := M) g p
+    w1pNormIntrinsicLpWithBoundary (I := I) (M := M) g p
       (fun _ : M => (0 : ℝ)) = 0 := by
   rw [w1pNormIntrinsicLp_withBoundary_def]
   rw [show eLpNorm (fun _ : M => (0 : ℝ)) p
@@ -748,9 +748,9 @@ theorem w1pNormIntrinsicLp_withBoundary_zero
       eLpNorm_zero]
   rw [zero_add]
   apply le_antisymm
-  · have hzero_grad : HasWeakRiemannianGradLp_withBoundary (I := I) (M := M) g
+  · have hzero_grad : HasWeakRiemannianGradLpWithBoundary (I := I) (M := M) g
         (fun _ : M => (0 : ℝ)) (fun _ : M => (0 : E)) :=
-      HasWeakRiemannianGradLp_withBoundary.zero (I := I) (M := M) g
+      HasWeakRiemannianGradLpWithBoundary.zero (I := I) (M := M) g
     have h_zero_norm :
         eLpNorm (fun x : M => Real.sqrt
           (g.inner x ((fun _ : M => (0 : E)) x)

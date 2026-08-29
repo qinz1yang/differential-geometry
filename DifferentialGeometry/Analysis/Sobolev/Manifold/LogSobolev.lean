@@ -85,7 +85,7 @@ theorem logSobolev_closed
   have hgrad_cont : Continuous gradNorm := by
     have hinner := TangentBundle.continuous_g_inner_of_smooth_sections
       (I := I) (M := M) g
-      (grad_g (I := I) g ⟨_, hv⟩) (grad_g (I := I) g ⟨_, hv⟩)
+      (gradG (I := I) g ⟨_, hv⟩) (gradG (I := I) g ⟨_, hv⟩)
     have hinner' : Continuous (fun x ↦
         g.inner x (gradFun (I := I) g v x) (gradFun (I := I) g v x)) :=
       hinner.congr (fun _ ↦ rfl)

@@ -1402,13 +1402,13 @@ private theorem fiberInner_compUhlenbeck_isometry_full
   have horth_moving : OrthonormalBasisAt (I := I) (S.base.metric t) x moving :=
     uhlenbeckMovingBasis_orthonormalBasisAt (I := I) (M := M) hT S basisAt iota hiota0 hgram x
       (horth0 x) ht
-  have hinv0 : MetricInverseInBasis_gen (I := I) (S.base.metric 0) x (basisAt x)
+  have hinv0 : MetricInverseInBasisGen (I := I) (S.base.metric 0) x (basisAt x)
       (identityInvMetric (Idx := Fin 3)) :=
     Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal
       (I := I) (S.base.metric 0) (basisAt x) (by
         intro i j
         exact horth0 x i j)
-  have hinvt : MetricInverseInBasis_gen (I := I) (S.base.metric t) x moving
+  have hinvt : MetricInverseInBasisGen (I := I) (S.base.metric t) x moving
       (identityInvMetric (Idx := Fin 3)) :=
     Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal
       (I := I) (S.base.metric t) moving (by
@@ -1416,7 +1416,7 @@ private theorem fiberInner_compUhlenbeck_isometry_full
         exact horth_moving i j)
   have hdiag : ∀ (g : SmoothRiemannianMetric I M)
       (basis : Module.Basis (Fin 3) Real (TangentSpace I x))
-      (hinv : MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Fin 3)))
+      (hinv : MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Fin 3)))
       (A B : Tensor04At (I := I) (M := M) x),
       inner0S (I := I) g x 4 A B =
         ∑ I0 : Fin 4 → Fin 3,
@@ -3380,7 +3380,7 @@ private theorem fiberRegion_roughLapRm04_component_eq
         (metricTrace0S2TensorInBasis (I := I) basis (identityInvMetric (Idx := Fin 3))
           (nablaKRm04Field (I := I) S t 2 x))
         (basisAt x a) (basisAt x b) (basisAt x c) (basisAt x d) := by
-  have hinv : MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis
+  have hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
       (identityInvMetric (Idx := Fin 3)) := by
     exact Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal (I := I)
       (S.base.metric t) basis (by
@@ -4383,7 +4383,7 @@ private theorem fiber_region_heat_reaction_on
         have hA2 : TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 5
             (S.base.connection t) (nablaKRm04Field (I := I) S t 1) (nablaKRm04Field (I := I) S t 2) := by
           simpa using (nablaKRm04Field_realizes (I := I) S t 1)
-        have hinv : MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis
+        have hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
             (identityInvMetric (Idx := Fin 3)) := by
           exact Tensor0SBundle.metricInverseInBasis_identity_of_orthonormal (I := I)
             (S.base.metric t) basis (by
@@ -4985,7 +4985,7 @@ private theorem fiberRegion_hasFlatSupportSectionsOn
     simpa [SolutionFamily.connection, metricCov] using
       metricCov_smooth (I := I) (M := M) (S.base.metric t)
   let d : CanonicalSpatialDerivs0S (I := I) (M := M) (S.base.connection t) η :=
-    CanonicalSpatialDerivs0S.of_smooth_connection
+    CanonicalSpatialDerivs0S.ofSmoothConnection
       (E := E) (H := H) (I := I) (M := M) (S.base.connection t) hcov η
   let ν : (x : M) → Tensor04At (I := I) (M := M) x := fun y ↦
     uhlenbeckPullbackTensorAt (I := I) basisAt iota t y (η y)

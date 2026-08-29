@@ -29,14 +29,14 @@ the bilinear form against a product test function splits into a "principal" term
 /-- Pointwise expansion of the bilinear-form integrand against a smooth-product
 witness `η · w`.
 
-The weak gradient of `η · w` is `η · ∇w + (∇η) · w` (from `mul_smooth_bounded_p`),
+The weak gradient of `η · w` is `η · ∇w + (∇η) · w` (from `mulSmoothBoundedP`),
 so the bilinear-form integrand is:
 ```
 ⟪A∇u, ∇(η·w)⟫ = η · ⟪A∇u, ∇w⟫ + w · ⟪A∇u, ∇η⟫
 ```
 where `∇η` is encoded as the vector with components `(fderiv ℝ η x)(single i 1)`.
 
-Note: this is an a.e. identity because `mul_smooth_bounded_p` produces
+Note: this is an a.e. identity because `mulSmoothBoundedP` produces
 the gradient `η · ∇w + (∇η) · w` by construction. -/
 theorem bilinFormIntegrand_mul_smooth_eq
     {Ω : Set E} (hΩ : IsOpen Ω)
@@ -50,17 +50,17 @@ theorem bilinFormIntegrand_mul_smooth_eq
     (hη_grad_bound : ∀ x, ‖fderiv ℝ η x‖ ≤ C₁)
     (hp : (1 : ENNReal) ≤ 2) :
     ∀ x, bilinFormIntegrandOfCoeff A hu
-        (hw.mul_smooth_bounded_p (d := d) hp hΩ hη hC₀ hC₁ hη_bound hη_grad_bound) x =
+        (hw.mulSmoothBoundedP (d := d) hp hΩ hη hC₀ hC₁ hη_bound hη_grad_bound) x =
       η x * bilinFormIntegrandOfCoeff A hu hw x +
       w x * ⟪matMulE (A.a x) (hu.weakGrad x),
         (WithLp.toLp 2 fun i =>
           (fderiv ℝ η x) (EuclideanSpace.single i 1) : E)⟫_ℝ := by
   intro x
-  -- The weakGrad of mul_smooth_bounded_p at x is:
+  -- The weakGrad of mulSmoothBoundedP at x is:
   --   η x • hw.weakGrad x + toLp 2 (fun i => fderiv ℝ η x (single i 1) * w x)
   -- The bilinear-form integrand ⟪A∇u, ∇(η·w)⟫ distributes over this sum
   -- by bilinearity of the inner product.
-  simp only [bilinFormIntegrandOfCoeff, MemW1pWitness.mul_smooth_bounded_p,
+  simp only [bilinFormIntegrandOfCoeff, MemW1pWitness.mulSmoothBoundedP,
     inner_add_right, inner_smul_right]
   congr 1
   -- Factor w(x) out: ⟪v, toLp(f_i * c)⟫ = c * ⟪v, toLp(f_i)⟫

@@ -191,7 +191,7 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) 2 2
             (eigenvectorTensorChartBilinearData (I := I) (M := M)
-              g r s i α P₀).u_chart
+              g r s i α P₀).uChart
             (chartTargetEuclid (I := I) (M := M) α)
           ≤ ENNReal.ofReal (C * (i.fst.val)⁻¹) *
             ENNReal.ofReal
@@ -453,13 +453,13 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
     tensorResolventEigenbasisVec (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s) i
     with hvec_def
-  have hD_f_chart : D.f_chart =
+  have hD_f_chart : D.fChart =
       eigenvectorChartRHS (I := I) (M := M) g r s i α P₀ := rfl
-  have hD_weak_partial : ∀ k, D.weak_partial k =
+  have hD_weak_partial : ∀ k, D.weakPartial k =
       eigenvectorChartWeakPartial (I := I) (M := M)
         g r s i α P₀ k :=
     fun _ => rfl
-  have hD_u_chart : D.u_chart =
+  have hD_u_chart : D.uChart =
       ((tensorL2ChartComponent (I := I) (M := M) g r s vec α P₀ :
           Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) := rfl
   set φnorm : ℝ := ‖vec‖ with hφnorm_def
@@ -504,11 +504,11 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
   set T_atom : ℝ := Cdat * (i.fst.val)⁻¹ * φnorm with hT_atom_def
   have hT_atom_nn : 0 ≤ T_atom := by rw [hT_atom_def]; positivity
   have h_wp_toReal_le : ∀ l : Fin (Module.finrank ℝ E),
-      (eLpNorm (D.weak_partial l) 2
+      (eLpNorm (D.weakPartial l) 2
           ((volume : Measure EuclN).restrict (closure Ω'))).toReal ≤ T_atom := by
     intro l
     have h_chart_bd :
-        eLpNorm (D.weak_partial l) 2
+        eLpNorm (D.weakPartial l) 2
             ((volume : Measure EuclN).restrict
               (chartTargetEuclid (I := I) (M := M) α)) ≤
           ENNReal.ofReal (Cwp l * Real.sqrt ((i.fst.val)⁻¹)) *
@@ -516,7 +516,7 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
       rw [hD_weak_partial l, hφnorm_def, hvec_def]
       exact hCwp_bd l i
     have h_mono :
-        eLpNorm (D.weak_partial l) 2
+        eLpNorm (D.weakPartial l) 2
             ((volume : Measure EuclN).restrict (closure Ω')) ≤
           ENNReal.ofReal
             ((Cwp l * Real.sqrt ((i.fst.val)⁻¹)) * φnorm) := by
@@ -541,18 +541,18 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
       at h_toReal
     exact h_toReal.trans h_real_le
   have h_uChart_toReal_le :
-      (eLpNorm D.u_chart 2
+      (eLpNorm D.uChart 2
           ((volume : Measure EuclN).restrict (closure Ω'))).toReal ≤ T_atom := by
     have h_weighted :
-        eLpNorm D.u_chart 2
+        eLpNorm D.uChart 2
             ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α)) ≤
           ENNReal.ofReal Ccomp * ENNReal.ofReal φnorm := by
       rw [hD_u_chart, hφnorm_def]
       exact hCcomp_bd vec
-    have h_density := h_fchart_density D.u_chart
+    have h_density := h_fchart_density D.uChart
     have h_vol_le :
-        eLpNorm D.u_chart 2
+        eLpNorm D.uChart 2
             ((volume : Measure EuclN).restrict (closure Ω')) ≤
           ENNReal.ofReal (c_d * Ccomp * φnorm) := by
       refine h_density.trans ?_
@@ -573,18 +573,18 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
       (mul_nonneg (mul_nonneg hc_d_nn hCcomp_nn) hφnorm_nn)] at h_toReal
     exact h_toReal.trans h_real_le
   have h_fChart_toReal_le :
-      (eLpNorm D.f_chart 2
+      (eLpNorm D.fChart 2
           ((volume : Measure EuclN).restrict (closure Ω'))).toReal ≤ T_atom := by
     have h_weighted :
-        eLpNorm D.f_chart 2
+        eLpNorm D.fChart 2
             ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α)) ≤
           ENNReal.ofReal (Cf * (i.fst.val)⁻¹) * ENNReal.ofReal φnorm := by
       rw [hD_f_chart, hφnorm_def, hvec_def]
       exact hCf_bd i
-    have h_density := h_fchart_density D.f_chart
+    have h_density := h_fchart_density D.fChart
     have h_vol_le :
-        eLpNorm D.f_chart 2
+        eLpNorm D.fChart 2
             ((volume : Measure EuclN).restrict (closure Ω')) ≤
           ENNReal.ofReal (c_d * (Cf * (i.fst.val)⁻¹) * φnorm) := by
       refine h_density.trans ?_
@@ -611,11 +611,11 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
     exact h_toReal.trans h_real_le
   set DATA : ℝ :=
     (∑ l : Fin (Module.finrank ℝ E),
-      (eLpNorm (D.weak_partial l) 2
+      (eLpNorm (D.weakPartial l) 2
         ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2)
-    + (eLpNorm D.u_chart 2
+    + (eLpNorm D.uChart 2
         ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2
-    + (eLpNorm D.f_chart 2
+    + (eLpNorm D.fChart 2
         ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2
     with hDATA_def
   have h_sqrt_DATA_le :
@@ -629,7 +629,7 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
   have hDATA_nn : 0 ≤ DATA := by
     rw [hDATA_def]
     have h1 : 0 ≤ ∑ l : Fin (Module.finrank ℝ E),
-        (eLpNorm (D.weak_partial l) 2
+        (eLpNorm (D.weakPartial l) 2
           ((volume : Measure EuclN).restrict (closure Ω'))).toReal ^ 2 :=
       Finset.sum_nonneg (fun l _ => sq_nonneg _)
     positivity
@@ -637,7 +637,7 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
       ∃ g_ik : EuclN → ℝ,
         MemLp g_ik 2 ((volume : Measure EuclN).restrict Ω'') ∧
         DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k' g_ik
-          (D.weak_partial i') Ω'' ∧
+          (D.weakPartial i') Ω'' ∧
         eLpNorm g_ik 2 ((volume : Measure EuclN).restrict Ω'') ≤
           ENNReal.ofReal
             (C_geom_max * (Real.sqrt ((n : ℝ) + 2) * T_atom)) := by
@@ -662,13 +662,13 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
       (g := g) (r := r) (s := s) (α := α) (P₀ := P₀) D
       hΩ''_open hΩ''_compact_closure hR₀_pos h_room
   have h_uChart_memWkp_two_Ω'' :
-      MemWkp (d := Module.finrank ℝ E) 2 2 D.u_chart Ω'' := by
+      MemWkp (d := Module.finrank ℝ E) 2 2 D.uChart Ω'' := by
     exact memWkp_two_two_of_weakPartials hΩ''_open h_uChart_memW1p h_wp_memW1p
       (fun j => DeGiorgi.HasWeakPartialDeriv.restrict hΩ''_open hΩ''_in_chart
         (D.weak_partial_isWeakPartial j))
   have h_chosen_ae_wp : ∀ i' : Fin (Module.finrank ℝ E),
-      chosenWeakPartial' 2 i' D.u_chart Ω''
-        =ᵐ[(volume : Measure EuclN).restrict Ω''] D.weak_partial i' := by
+      chosenWeakPartial' 2 i' D.uChart Ω''
+        =ᵐ[(volume : Measure EuclN).restrict Ω''] D.weakPartial i' := by
     intro i'
     exact chosenWeakPartial_ae_eq_of_memLp hΩ''_open h_uChart_memW1p
       (h_wp_memW1p i').1
@@ -676,22 +676,22 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
         (D.weak_partial_isWeakPartial i'))
   set Tsum : ℝ≥0∞ := ENNReal.ofReal (Cbig * T_atom) with hTsum_def
   have h_wp_eLpNorm_Ω''_le : ∀ l : Fin (Module.finrank ℝ E),
-      eLpNorm (D.weak_partial l) 2 ((volume : Measure EuclN).restrict Ω'') ≤
+      eLpNorm (D.weakPartial l) 2 ((volume : Measure EuclN).restrict Ω'') ≤
         Tsum := by
     intro l
     have h_mono :
-        eLpNorm (D.weak_partial l) 2
+        eLpNorm (D.weakPartial l) 2
             ((volume : Measure EuclN).restrict Ω'') ≤
-          eLpNorm (D.weak_partial l) 2
+          eLpNorm (D.weakPartial l) 2
             ((volume : Measure EuclN).restrict (closure Ω')) :=
       eLpNorm_mono_measure _
         (Measure.restrict_mono hΩ''_sub_closureΩ' le_rfl)
     have h_toReal := h_wp_toReal_le l
-    have h_ne : eLpNorm (D.weak_partial l) 2
+    have h_ne : eLpNorm (D.weakPartial l) 2
         ((volume : Measure EuclN).restrict (closure Ω')) ≠ ⊤ :=
       (D.weak_partial_locally_memLp l hΩ'_compact_closure
         h_closureΩ'_in_chart).eLpNorm_lt_top.ne
-    have h_clΩ'_le : eLpNorm (D.weak_partial l) 2
+    have h_clΩ'_le : eLpNorm (D.weakPartial l) 2
         ((volume : Measure EuclN).restrict (closure Ω')) ≤
           ENNReal.ofReal T_atom :=
       (ENNReal.le_ofReal_iff_toReal_le h_ne hT_atom_nn).mpr h_toReal
@@ -700,20 +700,20 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
     exact ENNReal.ofReal_le_ofReal
       (le_mul_of_one_le_left hT_atom_nn hCbig_one)
   have h_uChart_eLpNorm_Ω''_le :
-      eLpNorm D.u_chart 2 ((volume : Measure EuclN).restrict Ω'') ≤ Tsum := by
+      eLpNorm D.uChart 2 ((volume : Measure EuclN).restrict Ω'') ≤ Tsum := by
     have h_mono :
-        eLpNorm D.u_chart 2 ((volume : Measure EuclN).restrict Ω'') ≤
-          eLpNorm D.u_chart 2
+        eLpNorm D.uChart 2 ((volume : Measure EuclN).restrict Ω'') ≤
+          eLpNorm D.uChart 2
             ((volume : Measure EuclN).restrict (closure Ω')) :=
       eLpNorm_mono_measure _
         (Measure.restrict_mono hΩ''_sub_closureΩ' le_rfl)
     have h_toReal := h_uChart_toReal_le
-    have h_ne : eLpNorm D.u_chart 2
+    have h_ne : eLpNorm D.uChart 2
         ((volume : Measure EuclN).restrict (closure Ω')) ≠ ⊤ :=
       (D.memLp_volume_restrict_u_chart hΩ'_compact_closure
         hΩ'_compact_closure.isClosed.measurableSet
         h_closureΩ'_in_chart).eLpNorm_lt_top.ne
-    have h_clΩ'_le : eLpNorm D.u_chart 2
+    have h_clΩ'_le : eLpNorm D.uChart 2
         ((volume : Measure EuclN).restrict (closure Ω')) ≤
           ENNReal.ofReal T_atom :=
       (ENNReal.le_ofReal_iff_toReal_le h_ne hT_atom_nn).mpr h_toReal
@@ -723,24 +723,24 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
       (le_mul_of_one_le_left hT_atom_nn hCbig_one)
   have h_interior_bound :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-          (d := Module.finrank ℝ E) 2 2 D.u_chart Ω''
+          (d := Module.finrank ℝ E) 2 2 D.uChart Ω''
         ≤ ENNReal.ofReal (Cint * (i.fst.val)⁻¹ * φnorm) := by
-    rw [wkpNorm_succ_eq_eLpNorm_add_sum_partial 1 2 Ω'' D.u_chart]
+    rw [wkpNorm_succ_eq_eLpNorm_add_sum_partial 1 2 Ω'' D.uChart]
     have h_per_i : ∀ i' : Fin (Module.finrank ℝ E),
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
             (d := Module.finrank ℝ E) 1 2
-            (chosenWeakPartial' 2 i' D.u_chart Ω'') Ω''
+            (chosenWeakPartial' 2 i' D.uChart Ω'') Ω''
           ≤ Tsum + ∑ _k' : Fin (Module.finrank ℝ E), Tsum := by
       intro i'
       rw [wkpNorm_congr_ae (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ''_open
         (h_chosen_ae_wp i')]
-      rw [wkpNorm_succ_eq_eLpNorm_add_sum_partial 0 2 Ω'' (D.weak_partial i')]
+      rw [wkpNorm_succ_eq_eLpNorm_add_sum_partial 0 2 Ω'' (D.weakPartial i')]
       refine add_le_add (h_wp_eLpNorm_Ω''_le i') (Finset.sum_le_sum
         (fun k' _ => ?_))
       rw [wkpNorm_zero]
       obtain ⟨g_ik, hg_memLp, hg_weak, hg_norm⟩ := h_gik_bound i' k'
       have h_ae :
-          chosenWeakPartial' 2 k' (D.weak_partial i') Ω''
+          chosenWeakPartial' 2 k' (D.weakPartial i') Ω''
             =ᵐ[(volume : Measure EuclN).restrict Ω''] g_ik :=
         chosenWeakPartial_ae_eq_of_memLp hΩ''_open (h_wp_memW1p i')
           hg_memLp hg_weak
@@ -777,13 +777,13 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
           ring
     rw [h_collapse]
   have h_ae_zero :
-      D.u_chart =ᵐ[(volume : Measure EuclN).restrict
+      D.uChart =ᵐ[(volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α \ K)] 0 := by
     rw [hK_def]
     have h_ae : ∀ᵐ y ∂((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)),
         y ∉ chartPouKernel (I := I) (M := M) α →
-          D.u_chart y = 0 := by
+          D.uChart y = 0 := by
       rw [hD_u_chart]
       exact tensorL2ChartComponent_ae_zero_off_chartPouKernel
         (I := I) (M := M) g r s vec α P₀
@@ -794,7 +794,7 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
         (chartTargetEuclid (I := I) (M := M) α \
           chartPouKernel (I := I) (M := M) α)),
         y ∉ chartPouKernel (I := I) (M := M) α →
-          D.u_chart y = 0 :=
+          D.uChart y = 0 :=
       ae_mono (Measure.restrict_mono_set _ Set.sdiff_subset) h_ae
     rw [Filter.EventuallyEq, ae_restrict_iff' hV_meas]
     filter_upwards [(ae_restrict_iff' hV_meas).mp h_ae_V] with y hy
@@ -802,18 +802,18 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
     exact hy hy_V hy_V.2
   have h_global :
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-          (d := Module.finrank ℝ E) 2 2 D.u_chart
+          (d := Module.finrank ℝ E) 2 2 D.uChart
           (chartTargetEuclid (I := I) (M := M) α)
         ≤ ENNReal.ofReal K_prom *
             DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-              (d := Module.finrank ℝ E) 2 2 D.u_chart Ω'' :=
-    hK_prom_bd D.u_chart h_ae_zero h_uChart_memWkp_two_Ω''
+              (d := Module.finrank ℝ E) 2 2 D.uChart Ω'' :=
+    hK_prom_bd D.uChart h_ae_zero h_uChart_memWkp_two_Ω''
   calc DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-          (d := Module.finrank ℝ E) 2 2 D.u_chart
+          (d := Module.finrank ℝ E) 2 2 D.uChart
           (chartTargetEuclid (I := I) (M := M) α)
       ≤ ENNReal.ofReal K_prom *
           DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
-            (d := Module.finrank ℝ E) 2 2 D.u_chart Ω'' := h_global
+            (d := Module.finrank ℝ E) 2 2 D.uChart Ω'' := h_global
     _ ≤ ENNReal.ofReal K_prom *
           ENNReal.ofReal (Cint * (i.fst.val)⁻¹ * φnorm) :=
         mul_le_mul_of_nonneg_left h_interior_bound (by positivity)

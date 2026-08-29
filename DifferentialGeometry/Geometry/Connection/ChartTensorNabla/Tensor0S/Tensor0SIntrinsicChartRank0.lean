@@ -38,7 +38,7 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2
 private lemma tensor0SChartE_section_repr_zero_empty (α : M)
     (T : Π b' : M, Tensor0SSpace 0 I b') {b' : M}
     (hb' : b' ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    (tensor0SChartE_section_repr (I := I) 0 α T b')
+    (tensor0SChartESectionRepr (I := I) 0 α T b')
         (fun i : Fin 0 => Fin.elim0 i) =
       (show ContinuousMultilinearMap ℝ
           (fun _ : Fin 0 => TangentSpace I b') ℝ from T b')
@@ -74,7 +74,7 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2
 private lemma chartE_eval_eq_scalar (α : M)
     (T : Π b' : M, Tensor0SSpace 0 I b') {b' : M}
     (hb' : b' ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    evalEmptyCLM (E := E) (tensor0SChartE_section_repr (I := I) 0 α T b') =
+    evalEmptyCLM (E := E) (tensor0SChartESectionRepr (I := I) 0 α T b') =
       (show ContinuousMultilinearMap ℝ
           (fun _ : Fin 0 => TangentSpace I b') ℝ from T b')
         (fun i : Fin 0 => Fin.elim0 i) := by
@@ -88,7 +88,7 @@ private lemma evalEmpty_chartPullback_eventually_eq_scalar
     {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α) :
     (fun y : E =>
         evalEmptyCLM (E := E)
-          ((tensor0SChartE_section_repr (I := I) 0 α T ∘
+          ((tensor0SChartESectionRepr (I := I) 0 α T ∘
             (extChartAt I α).symm) y)) =ᶠ[𝓝 (extChartAt I α b)]
       (fun b' : M =>
           (show ContinuousMultilinearMap ℝ
@@ -134,7 +134,7 @@ private lemma mdifferentiableAt_scalarFn_of_tensorSectionMDiffAt
           (fun i : Fin 0 => Fin.elim0 i)) b := by
   classical
   set repr : M → Tensor0SModel 0 ℝ E :=
-    tensor0SChartE_section_repr (I := I) 0 α T
+    tensor0SChartESectionRepr (I := I) 0 α T
   set scalarFn : M → ℝ := fun b' : M =>
     (show ContinuousMultilinearMap ℝ
         (fun _ : Fin 0 => TangentSpace I b') ℝ from T b')
@@ -191,7 +191,7 @@ theorem tensor0SIntrinsicChartCLM_zero_apply_empty_eq_mfderiv
   classical
   set φ := extChartAt I α
   set repr : M → Tensor0SModel 0 ℝ E :=
-    tensor0SChartE_section_repr (I := I) 0 α T
+    tensor0SChartESectionRepr (I := I) 0 α T
   set scalarFn : M → ℝ := fun b' : M =>
     Tensor0SSpace.eval (T b') (fun i : Fin 0 => Fin.elim0 i)
   set v0 : E := trivToE (I := I) α b v
@@ -204,7 +204,7 @@ theorem tensor0SIntrinsicChartCLM_zero_apply_empty_eq_mfderiv
   rw [tensor0SIntrinsicChartCLM_apply (I := I) 0 α T b v]
   rw [tensor0SChartFiberFromModel_zero_empty (I := I) α hb_base
       (fderiv ℝ
-        (tensor0SChartE_section_repr (I := I) 0 α T ∘ (extChartAt I α).symm)
+        (tensor0SChartESectionRepr (I := I) 0 α T ∘ (extChartAt I α).symm)
         (extChartAt I α b) (trivToE (I := I) α b v))]
   change evalEmptyCLM (E := E) (fderiv ℝ (repr ∘ φ.symm) (φ b) v0) = _
   have hDiff_repr_pullback : DifferentiableAt ℝ (repr ∘ φ.symm) (φ b) :=

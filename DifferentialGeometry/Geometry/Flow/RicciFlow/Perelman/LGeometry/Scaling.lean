@@ -55,8 +55,8 @@ private lemma para_reg_time_inv
   field_simp [ne_of_gt hR, hc]
   nlinarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] [SigmaCompactSpace M]
   [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] in
@@ -116,8 +116,8 @@ private theorem lVelocity_mul
     change (0 : E) = c • (0 : E)
     simp
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 private theorem gradientFun_smul_ne
@@ -140,8 +140,8 @@ private theorem gradientFun_smul_ne
         (mfderiv_zero_of_not_mdifferentiableAt hf)
     rw [hzaf, hzf, smul_zero]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem lRegAccel_para
@@ -223,8 +223,8 @@ theorem lRegAccel_para
   rw [hsqrtSq]
   ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem isLRegCurve_para
@@ -354,8 +354,8 @@ theorem isLRegCurve_para
     lRegAccel SR TR r (alphaR r) (lVelocity (I := I) alphaR r)
   exact hcov.trans hacc.symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem isLRegCurve_unpara
@@ -485,8 +485,8 @@ theorem isLRegCurve_unpara
     lRegAccel S T s (alpha s) (lVelocity (I := I) alpha s)
   exact hcov.trans hacc.symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem lRegDomain_para
@@ -534,8 +534,8 @@ theorem lRegDomain_para
         simpa only [c, ci, smul_eq_mul] using hsJ)
     · simpa only [SR, TR, c, ci] using hcurve
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRegCurve_para
@@ -581,8 +581,8 @@ theorem lRegCurve_para
       exact hs ((Set.smul_mem_smul_set_iff₀ hc (lRegDomain S T x Z) s).1 hs')
     rw [lRegCurve_of_not_mem hsR, lRegCurve_of_not_mem hs]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem lExpDomain_para
@@ -620,8 +620,8 @@ theorem lExpDomain_para
       (Set.smul_mem_smul_set_iff₀ hc (lRegDomain S T x Z)
         (Real.sqrt tau)).2 hdom
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lExp_para

@@ -870,7 +870,7 @@ theorem tensorPouSobolevHsNorm_lt_top
                 ∂(volume :
                   Measure (EuclideanSpace ℝ
                     (Fin (Module.finrank ℝ E))))) =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
             (Fin s → Fin (Module.finrank ℝ E)),
           ∑ j ∈ Finset.range (2 * k + 1),

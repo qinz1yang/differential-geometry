@@ -41,49 +41,49 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-def cdPerm2_10 : Equiv.Perm (Fin 2) :=
+def cdPerm210 : Equiv.Perm (Fin 2) :=
   ⟨![1, 0], ![1, 0], by decide, by decide⟩
 
-def cdPerm3_102 : Equiv.Perm (Fin 3) :=
+def cdPerm3102 : Equiv.Perm (Fin 3) :=
   ⟨![1, 0, 2], ![1, 0, 2], by decide, by decide⟩
 
-def cdPerm3_120 : Equiv.Perm (Fin 3) :=
+def cdPerm3120 : Equiv.Perm (Fin 3) :=
   ⟨![1, 2, 0], ![2, 0, 1], by decide, by decide⟩
 
-def cdPerm4_0312 : Equiv.Perm (Fin 4) :=
+def cdPerm40312 : Equiv.Perm (Fin 4) :=
   ⟨![0, 3, 1, 2], ![0, 2, 3, 1], by decide, by decide⟩
 
-def cdPerm4_0213 : Equiv.Perm (Fin 4) :=
+def cdPerm40213 : Equiv.Perm (Fin 4) :=
   ⟨![0, 2, 1, 3], ![0, 2, 1, 3], by decide, by decide⟩
 
-def cdPerm4_2301 : Equiv.Perm (Fin 4) :=
+def cdPerm42301 : Equiv.Perm (Fin 4) :=
   ⟨![2, 3, 0, 1], ![2, 3, 0, 1], by decide, by decide⟩
 
-def cdPerm4_1302 : Equiv.Perm (Fin 4) :=
+def cdPerm41302 : Equiv.Perm (Fin 4) :=
   ⟨![1, 3, 0, 2], ![2, 0, 3, 1], by decide, by decide⟩
 
-def cdPerm4_1203 : Equiv.Perm (Fin 4) :=
+def cdPerm41203 : Equiv.Perm (Fin 4) :=
   ⟨![1, 2, 0, 3], ![2, 0, 1, 3], by decide, by decide⟩
 
-def cdPerm4_3012 : Equiv.Perm (Fin 4) :=
+def cdPerm43012 : Equiv.Perm (Fin 4) :=
   ⟨![3, 0, 1, 2], ![1, 2, 3, 0], by decide, by decide⟩
 
-def cdPerm4_2013 : Equiv.Perm (Fin 4) :=
+def cdPerm42013 : Equiv.Perm (Fin 4) :=
   ⟨![2, 0, 1, 3], ![1, 2, 0, 3], by decide, by decide⟩
 
-def cdPerm4_3201 : Equiv.Perm (Fin 4) :=
+def cdPerm43201 : Equiv.Perm (Fin 4) :=
   ⟨![3, 2, 0, 1], ![2, 3, 1, 0], by decide, by decide⟩
 
-def cdPerm4_3102 : Equiv.Perm (Fin 4) :=
+def cdPerm43102 : Equiv.Perm (Fin 4) :=
   ⟨![3, 1, 0, 2], ![2, 1, 3, 0], by decide, by decide⟩
 
-def cdPerm4_2103 : Equiv.Perm (Fin 4) :=
+def cdPerm42103 : Equiv.Perm (Fin 4) :=
   ⟨![2, 1, 0, 3], ![2, 1, 0, 3], by decide, by decide⟩
 
-def cdPerm4_0231 : Equiv.Perm (Fin 4) :=
+def cdPerm40231 : Equiv.Perm (Fin 4) :=
   ⟨![0, 2, 3, 1], ![0, 3, 1, 2], by decide, by decide⟩
 
-def cdPerm4_0321 : Equiv.Perm (Fin 4) :=
+def cdPerm40321 : Equiv.Perm (Fin 4) :=
   ⟨![0, 3, 2, 1], ![0, 3, 2, 1], by decide, by decide⟩
 
 end TensorSpectral

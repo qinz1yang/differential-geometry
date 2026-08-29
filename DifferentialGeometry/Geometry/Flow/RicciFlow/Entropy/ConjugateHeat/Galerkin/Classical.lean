@@ -143,7 +143,7 @@ private theorem rev_trace_eq
     have hy : y ∈ (trivializationAt E (TangentSpace I) y).baseSet := by
       exact mem_baseSet_trivializationAt E (TangentSpace I) y
     let b := chartBasisFamily (I := I) y hy
-    have hinv : MetricInverseInBasis_gen (I := I) (G.metric s) y b
+    have hinv : MetricInverseInBasisGen (I := I) (G.metric s) y b
         (fun i j => chartInvGramMatrix (I := I) (G.metric s) y y i j) := by
       simpa only [b] using
         chartInvGram_inverse (I := I) (G.metric s) y hy
@@ -234,15 +234,15 @@ theorem heatpot_mass_deriv
       (f := fun _ : M => (1 : Real)) (h := u s)
       contMDiff_const hu_smooth s
   have hlap :
-      ∫ x, Δ_g (I := I) (G.metric s) ⟨_, hu_smooth⟩ x
+      ∫ x, ΔG (I := I) (G.metric s) ⟨_, hu_smooth⟩ x
         ∂(volumeMeasureFamily (I := I) (M := M) G s) = 0 := by
     have hconst (x : M) :
-        Δ_g (I := I) (G.metric s) ⟨fun _ : M => (1 : Real), contMDiff_const⟩ x = 0 := by
+        ΔG (I := I) (G.metric s) ⟨fun _ : M => (1 : Real), contMDiff_const⟩ x = 0 := by
       convert Δ_g_const (I := I) (G.metric s) 1 x
       rfl
     simp only [one_mul, hconst, mul_zero, sub_zero] at hgreen
     change
-      (∫ (x : M), Δ_g (I := I) (G.metric s) ⟨u s, hu_smooth⟩ x
+      (∫ (x : M), ΔG (I := I) (G.metric s) ⟨u s, hu_smooth⟩ x
         ∂(riemannianMeasureFamily (I := I) (M := M) (fun r => G.metric r) s)) = 0
     exact hgreen
   have hmass :
@@ -250,7 +250,7 @@ theorem heatpot_mass_deriv
             (1 / 2 : Real) * traceTimeDerivMetricAt (I := I) G s x * u s x)
           ∂(volumeMeasureFamily (I := I) (M := M) G s) = 0 := by
     calc
-      _ = ∫ x, Δ_g (I := I) (G.metric s) ⟨_, hu_smooth⟩ x
+      _ = ∫ x, ΔG (I := I) (G.metric s) ⟨_, hu_smooth⟩ x
             ∂(volumeMeasureFamily (I := I) (M := M) G s) := by
           apply integral_congr_ae
           filter_upwards with x
@@ -479,7 +479,7 @@ private theorem covGrad0_apply
   let A : Tensor0SField ∞ 0 (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) :=
     Tensor0SField.fromScalarField ∞ f hf
   have hunit (y : M) :
-      tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) y
+      tensor0SSpaceEvalScalar (𝕜 := Real) (I := I) (M := M) y
         (unitZeroSec (I := I) (M := M) y) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply, unitZeroSec_apply]
     change ContinuousMultilinearMap.constOfIsEmpty Real (fun _ : Fin 0 => E) 1
@@ -1816,7 +1816,7 @@ theorem galLim_pde
     hderiv.congr_deriv (hderivSeries.trans hseriesW)
   have hWscalar :
       TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) W.toSection x =
-        Δ_g (I := I) h ⟨_, hf⟩ x + (zeta : M → Real) x * f x := by
+        ΔG (I := I) h ⟨_, hf⟩ x + (zeta : M → Real) x * f x := by
     simp only [W, SmoothCcTensor.toSection_add, TensorRSField.scalar0_add,
       Pi.add_apply, rawLap_cc_scalar (I := I) (M := M) q U x,
       scalarLapDiff_eq (I := I) (M := M) q h U x,
@@ -1825,7 +1825,7 @@ theorem galLim_pde
     ring
   have hlap :
       laplacianAt (I := I) (flowG (I := I) S) ((T : Real) - t) f x =
-        Δ_g (I := I) h ⟨_, hf⟩ x := by
+        ΔG (I := I) h ⟨_, hf⟩ x := by
     with_unfolding_all
       simpa only [h, flowG, SolutionOn.family] using
         (laplacianAt_eq_delta (I := I) (M := M)

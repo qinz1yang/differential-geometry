@@ -29,8 +29,8 @@ private instance sphereModel_neZero :
   rw [finrank_euclideanSpace_fin]
   infer_instance
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable
   [RiemannianBundle

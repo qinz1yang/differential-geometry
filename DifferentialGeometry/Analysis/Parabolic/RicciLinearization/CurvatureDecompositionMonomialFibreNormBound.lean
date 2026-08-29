@@ -237,8 +237,8 @@ private lemma weight_row_g0norm_le
     _ ≤ (δW / (1 - δ)) ^ 2 / (1 - δ) := by gcongr
     _ = δW ^ 2 / (1 - δ) ^ 3 := div_pow_div_arith (ne_of_gt h1mδ) δW
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_curvatureActionMonomialTrace_le
@@ -543,8 +543,8 @@ theorem riemannianFiberNormSq_curvatureActionMonomialTrace_le
         rw [mul_pow, sq_de_turck_arm_fibre_const, div_pow]
         ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
     [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_curvatureDecompositionMonomialBiContrFib_le

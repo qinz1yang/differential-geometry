@@ -36,7 +36,7 @@ def tensorLeadingSlotEvalCLM (s : ℕ) (x : M) (p : TangentSpace I x) :
     Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace s I x :=
   haveI : FiniteDimensional ℝ (Tensor0SSpace (s + 1) I x) := inferInstance
   LinearMap.toContinuousLinearMap
-    { toFun := fun G => (tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) s x) G p
+    { toFun := fun G => (tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) s x) G p
       map_add' := fun G G' => by
         rw [map_add]
         rfl
@@ -52,7 +52,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 @[simp] lemma slotFeedFib_apply (s : ℕ) (x : M) (p : TangentSpace I x)
     (G : Tensor0SSpace (s + 1) I x) :
     tensorLeadingSlotEvalCLM (I := I) (M := M) s x p G =
-      (tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) s x) G p := rfl
+      (tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) s x) G p := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
@@ -89,7 +89,7 @@ private lemma ofModel4_add {x : M}
     (f g : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ) :
     (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x) (f + g) : Tensor0SSpace 4 I x) =
       Tensor0SSpace.ofModel f + Tensor0SSpace.ofModel g :=
-  map_add (tensor0SSpace_continuousLinearEquiv 4 x).symm f g
+  map_add (tensor0SSpaceContinuousLinearEquiv 4 x).symm f g
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
@@ -97,7 +97,7 @@ private lemma ofModel4_smul {x : M} (c : ℝ)
     (f : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ) :
     (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x) (c • f) : Tensor0SSpace 4 I x) =
       c • Tensor0SSpace.ofModel f :=
-  map_smul (tensor0SSpace_continuousLinearEquiv 4 x).symm c f
+  map_smul (tensor0SSpaceContinuousLinearEquiv 4 x).symm c f
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 private lemma domDomCongr4_add (σ : Equiv.Perm (Fin 4))
@@ -154,7 +154,7 @@ theorem slotPerm4Fib_apply_section_contMDiff (σ : Equiv.Perm (Fin 4))
         (E := fun z : M => Tensor0SSpace 4 I z) x
         (tensorRank4PermuteCLM (I := I) (M := M) x σ (Y x))) := by
   classical
-  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
   have heq : (fun x : M => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
       (E := fun z : M => Tensor0SSpace 4 I z) x
       (tensorRank4PermuteCLM (I := I) (M := M) x σ (Y x))) =
@@ -388,8 +388,8 @@ private def pairFeedScalarCLM (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x)
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   LinearMap.toContinuousLinearMap
     { toFun := fun p => (toModelEvalCLM (I := I) (M := M) s x v).comp
-        (tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) s x
-          ((tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p))
+        (tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) s x
+          ((tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p))
       map_add' := fun p p' => by
         rw [map_add, map_add, ContinuousLinearMap.comp_add]
       map_smul' := fun c p => by
@@ -409,7 +409,7 @@ private lemma pairFeedScalarCLM_apply (s : ℕ) (x : M) (G : Tensor0SSpace (s + 
   rw [pairFeedScalarCLM, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
     ContinuousLinearMap.comp_apply, toModelEvalCLM_apply,
     TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
-      (T := (tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p)
+      (T := (tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p)
       (v0 := q) (vs := v),
     TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
       (T := G) (v0 := p)
@@ -485,7 +485,7 @@ theorem curvatureDecompositionMonomialFibFixedFrame_apply_section_contMDiff
         (E := fun z : M => Tensor0SSpace 2 I z) x
         (curvatureActionMonomialFrameTrace (I := I) (M := M) W σ B x (Y x))) := by
   classical
-  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
   set Yσ : Cₛ^∞⟮I; Tensor0SModel 4 ℝ E, fun z : M => Tensor0SSpace 4 I z⟯ :=
     { toFun := fun x : M => tensorRank4PermuteCLM (I := I) (M := M) x σ (Y x)
       contMDiff_toFun := slotPerm4Fib_apply_section_contMDiff (I := I) (M := M) σ Y }

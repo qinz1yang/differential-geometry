@@ -77,14 +77,14 @@ private theorem tensor0SBundle_linearMapAt_apply_of_mem {n : ℕ} (x₀ b : M)
     (f : ContinuousMultilinearMap 𝕜 (fun _ : Fin n => E) 𝕜) (v : Fin n → E) :
     (((trivializationAt (Tensor0SModel n 𝕜 E)
         (fun x : M => Tensor0SSpace n I x) x₀).linearMapAt 𝕜 b)
-      ((tensor0SSpace_continuousLinearEquiv (I := I) n b).symm f)) v =
+      ((tensor0SSpaceContinuousLinearEquiv (I := I) n b).symm f)) v =
     f (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) b
       ((trivializationAt E (TangentSpace I) x₀).symmL 𝕜 b (v j))) := by
   have h_apply := congr_fun
     (Trivialization.coe_linearMapAt_of_mem (R := 𝕜)
       (e := trivializationAt (Tensor0SModel n 𝕜 E)
         (fun x : M => Tensor0SSpace n I x) x₀) hb)
-    ((tensor0SSpace_continuousLinearEquiv (I := I) n b).symm f)
+    ((tensor0SSpaceContinuousLinearEquiv (I := I) n b).symm f)
   rw [h_apply]
   change ((f.compContinuousLinearMap (fun _ : Fin n =>
     (tangentSpaceModelContinuousLinearEquiv (I := I) b).toContinuousLinearMap.comp
@@ -106,9 +106,9 @@ private theorem tensor0SBundle_linearMapAt_apply_tensor {n : ℕ} (x₀ b : M)
     (Tensor0SSpace.toModel B) v
 
 @[reducible]
-def curriedSection_gen {n : ℕ} (T : ∀ b : M, Tensor0SSpace (n + 1) I b) :
+def curriedSectionGen {n : ℕ} (T : ∀ b : M, Tensor0SSpace (n + 1) I b) :
     ∀ b : M, TangentSpace I b →L[𝕜] Tensor0SSpace n I b :=
-  fun b => tensor0S_curry (I := I) (M := M) n b (T b)
+  fun b => tensor0SCurry (I := I) (M := M) n b (T b)
 
 omit [CompleteSpace 𝕜] in
 theorem trivializationAt_homBundle_curriedSection_eq_gen {n : ℕ}
@@ -117,17 +117,17 @@ theorem trivializationAt_homBundle_curriedSection_eq_gen {n : ℕ}
       (fun x : M => Tensor0SSpace n I x) x₀).baseSet) :
     (trivializationAt (E →L[𝕜] Tensor0SModel n 𝕜 E)
       (fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) x₀
-      ⟨b, curriedSection_gen T b⟩).2 =
+      ⟨b, curriedSectionGen T b⟩).2 =
     continuousMultilinearCurryLeftEquiv 𝕜 (fun _ : Fin (n + 1) => E) 𝕜
       ((trivializationAt (Tensor0SModel (n + 1) 𝕜 E)
         (fun x : M => Tensor0SSpace (n + 1) I x) x₀ ⟨b, T b⟩).2) := by
   rw [trivializationAt_homBundle_fibre (I := I) (M := M)
-    (curriedSection_gen (I := I) (M := M) T) x₀ b]
+    (curriedSectionGen (I := I) (M := M) T) x₀ b]
   rw [trivializationAt_tensor0SBundle_succ_fibre (I := I) (M := M) T x₀ b]
   ext w v
   change (((trivializationAt (Tensor0SModel n 𝕜 E)
       (fun x : M => Tensor0SSpace n I x) x₀).linearMapAt 𝕜 b)
-      ((tensor0SSpace_continuousLinearEquiv (I := I) n b).symm
+      ((tensor0SSpaceContinuousLinearEquiv (I := I) n b).symm
         ((continuousMultilinearCurryLeftEquiv 𝕜 (fun _ : Fin (n + 1) => E) 𝕜)
           (Tensor0SSpace.toModel (I := I) (M := M) (T b))
           (tangentSpaceModelContinuousLinearEquiv (I := I) b
@@ -156,7 +156,7 @@ private theorem continuous_curriedSection_of_continuous_section {n : ℕ}
     Continuous (fun b : M =>
       TotalSpace.mk' (E →L[𝕜] Tensor0SModel n 𝕜 E)
         (E := fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) b
-        (curriedSection_gen T b)) := by
+        (curriedSectionGen T b)) := by
   rw [continuous_iff_continuousAt]
   intro x
   rw [FiberBundle.continuousAt_totalSpace]
@@ -189,7 +189,7 @@ private theorem continuous_curriedSection_of_continuous_section {n : ℕ}
         (fun y : M => Tensor0SSpace (n + 1) I y) x ⟨b, T b⟩).2) =
     (trivializationAt (E →L[𝕜] Tensor0SModel n 𝕜 E)
       (fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) x
-      ⟨b, curriedSection_gen T b⟩).2
+      ⟨b, curriedSectionGen T b⟩).2
   exact (trivializationAt_homBundle_curriedSection_eq_gen (I := I) (M := M) T x b hb).symm
 
 omit [CompleteSpace 𝕜] in
@@ -203,8 +203,8 @@ private theorem contMDiff_curriedSection_of_contMDiff_section {n : ℕ}
       (fun b : M =>
         TotalSpace.mk' (E →L[𝕜] Tensor0SModel n 𝕜 E)
           (E := fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) b
-          (curriedSection_gen T b)) := by
-  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n + 1)
+          (curriedSectionGen T b)) := by
+  let := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n + 1)
   intro x
   rw [Bundle.contMDiffAt_section (F := E →L[𝕜] Tensor0SModel n 𝕜 E)
     (E := fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y)]
@@ -223,7 +223,7 @@ private theorem contMDiff_curriedSection_of_contMDiff_section {n : ℕ}
     (mem_baseSet_trivializationAt _ _ _)] with b hb
   change (trivializationAt (E →L[𝕜] Tensor0SModel n 𝕜 E)
       (fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) x
-      ⟨b, curriedSection_gen T b⟩).2 =
+      ⟨b, curriedSectionGen T b⟩).2 =
     (continuousMultilinearCurryLeftEquiv 𝕜 (fun _ : Fin (n + 1) => E) 𝕜)
       ((trivializationAt (Tensor0SModel (n + 1) 𝕜 E)
         (fun y : M => Tensor0SSpace (n + 1) I y) x ⟨b, T b⟩).2)
@@ -233,7 +233,7 @@ omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] in
 theorem tensor0S_curry_apply_eval_gen {n : ℕ} {b : M}
     (T : Tensor0SSpace (n + 1) I b)
     (v0 : TangentSpace I b) (vs : Fin n → TangentSpace I b) :
-    Tensor0SSpace.eval (tensor0S_curry (I := I) (M := M) n b T v0) vs =
+    Tensor0SSpace.eval (tensor0SCurry (I := I) (M := M) n b T v0) vs =
     Tensor0SSpace.eval T (Fin.cons v0 vs) := by
   rfl
 
@@ -287,15 +287,15 @@ private theorem continuous_section_apply_aux : ∀ (n : ℕ)
         (fun b : M =>
           TotalSpace.mk' (Tensor0SModel n 𝕜 E)
             (E := fun x : M => Tensor0SSpace n I x) b
-            ((curriedSection_gen T b) (v 0 b))) :=
+            ((curriedSectionGen T b) (v 0 b))) :=
       Continuous.clm_bundle_apply (𝕜 := 𝕜)
         (F₁ := E) (F₂ := Tensor0SModel n 𝕜 E)
         (E₁ := fun x : M => TangentSpace I x)
         (E₂ := fun x : M => Tensor0SSpace n I x)
-        (b := id) (ϕ := fun b : M => curriedSection_gen T b) (v := fun b : M => v 0 b)
+        (b := id) (ϕ := fun b : M => curriedSectionGen T b) (v := fun b : M => v 0 b)
         hCurry (hv 0)
     have hRec := continuous_section_apply_aux n
-      (fun b : M => (curriedSection_gen T b) (v 0 b))
+      (fun b : M => (curriedSectionGen T b) (v 0 b))
       hApplied
       (fun (i : Fin n) (b : M) => v i.succ b)
       (fun i => hv i.succ)
@@ -345,17 +345,17 @@ private theorem trivializationAt_homBundle_curry_eq_pt {n : ℕ}
       (fun x : M => Tensor0SSpace n I x) x₀).baseSet) :
     (trivializationAt (E →L[𝕜] Tensor0SModel n 𝕜 E)
       (fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) x₀
-      ⟨b, tensor0S_curry (I := I) (M := M) n b A⟩).2 =
+      ⟨b, tensor0SCurry (I := I) (M := M) n b A⟩).2 =
     continuousMultilinearCurryLeftEquiv 𝕜 (fun _ : Fin (n + 1) => E) 𝕜
       ((trivializationAt (Tensor0SModel (n + 1) 𝕜 E)
         (fun x : M => Tensor0SSpace (n + 1) I x) x₀ ⟨b, A⟩).2) := by
   rw [trivializationAt_homBundle_fibre_pt (I := I) (M := M)
-    (φ := tensor0S_curry (I := I) (M := M) n b A) x₀]
+    (φ := tensor0SCurry (I := I) (M := M) n b A) x₀]
   rw [trivializationAt_tensor0SBundle_succ_fibre_pt (I := I) (M := M) A x₀]
   ext w v
   change (((trivializationAt (Tensor0SModel n 𝕜 E)
       (fun x : M => Tensor0SSpace n I x) x₀).linearMapAt 𝕜 b)
-      ((tensor0S_curry (I := I) (M := M) n b A)
+      ((tensor0SCurry (I := I) (M := M) n b A)
         ((trivializationAt E (TangentSpace I) x₀).symmL 𝕜 b w))) v =
     ((tensor0SSpaceFiberContinuousLinearEquiv (I := I) (n + 1) b A).compContinuousLinearMap
       (fun _ : Fin (n + 1) => (trivializationAt E (TangentSpace I) x₀).symmL 𝕜 b))
@@ -381,7 +381,7 @@ private theorem continuous_curry_of_continuous_base {P : Type*} [TopologicalSpac
     Continuous (fun p : P =>
       TotalSpace.mk' (E →L[𝕜] Tensor0SModel n 𝕜 E)
         (E := fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) (b p)
-        (tensor0S_curry (I := I) (M := M) n (b p) (T p))) := by
+        (tensor0SCurry (I := I) (M := M) n (b p) (T p))) := by
   rw [continuous_iff_continuousAt]
   intro p₀
   rw [FiberBundle.continuousAt_totalSpace]
@@ -418,7 +418,7 @@ private theorem continuous_curry_of_continuous_base {P : Type*} [TopologicalSpac
         (fun y : M => Tensor0SSpace (n + 1) I y) (b p₀) ⟨b p, T p⟩).2) =
     (trivializationAt (E →L[𝕜] Tensor0SModel n 𝕜 E)
       (fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) (b p₀)
-      ⟨b p, tensor0S_curry (I := I) (M := M) n (b p) (T p)⟩).2
+      ⟨b p, tensor0SCurry (I := I) (M := M) n (b p) (T p)⟩).2
   exact (trivializationAt_homBundle_curry_eq_pt (I := I) (M := M)
     (A := T p) (x₀ := b p₀) hp).symm
 
@@ -478,16 +478,16 @@ private theorem continuous_section_apply_base_aux {P : Type*} [TopologicalSpace 
         (fun p : P =>
           TotalSpace.mk' (Tensor0SModel n 𝕜 E)
             (E := fun x : M => Tensor0SSpace n I x) (b p)
-            ((tensor0S_curry (I := I) (M := M) n (b p) (T p)) (v 0 p))) :=
+            ((tensor0SCurry (I := I) (M := M) n (b p) (T p)) (v 0 p))) :=
       Continuous.clm_bundle_apply (𝕜 := 𝕜)
         (F₁ := E) (F₂ := Tensor0SModel n 𝕜 E)
         (E₁ := fun x : M => TangentSpace I x)
         (E₂ := fun x : M => Tensor0SSpace n I x)
         (b := b)
-        (ϕ := fun p : P => tensor0S_curry (I := I) (M := M) n (b p) (T p))
+        (ϕ := fun p : P => tensor0SCurry (I := I) (M := M) n (b p) (T p))
         (v := fun p : P => v 0 p) hCurry (hv 0)
     have hRec := continuous_section_apply_base_aux n b hb
-      (fun p : P => (tensor0S_curry (I := I) (M := M) n (b p) (T p)) (v 0 p))
+      (fun p : P => (tensor0SCurry (I := I) (M := M) n (b p) (T p)) (v 0 p))
       hApplied
       (fun (i : Fin n) (p : P) => v i.succ p)
       (fun i => hv i.succ)
@@ -545,16 +545,16 @@ private theorem contMDiff_section_apply_aux : ∀ (n : ℕ)
         (fun b : M =>
           TotalSpace.mk' (Tensor0SModel n 𝕜 E)
             (E := fun x : M => Tensor0SSpace n I x) b
-            ((curriedSection_gen T b) (v 0 b))) :=
+            ((curriedSectionGen T b) (v 0 b))) :=
       ContMDiff.clm_bundle_apply (𝕜 := 𝕜) (n := (∞ : WithTop ℕ∞))
         (F₁ := E) (F₂ := Tensor0SModel n 𝕜 E)
         (E₁ := fun x : M => TangentSpace I x)
         (E₂ := fun x : M => Tensor0SSpace n I x)
         (IM := I) (IB := I)
-        (b := id) (ϕ := fun b : M => curriedSection_gen T b) (v := fun b : M => v 0 b)
+        (b := id) (ϕ := fun b : M => curriedSectionGen T b) (v := fun b : M => v 0 b)
         hCurry (hv 0)
     have hRec := contMDiff_section_apply_aux n
-      (fun b : M => (curriedSection_gen T b) (v 0 b))
+      (fun b : M => (curriedSectionGen T b) (v 0 b))
       hApplied
       (fun (i : Fin n) (b : M) => v i.succ b)
       (fun i => hv i.succ)
@@ -640,8 +640,8 @@ theorem contMDiffAt_curriedSection_of_contMDiffAt_section_gen {n : ℕ}
       (fun b : M =>
         TotalSpace.mk' (E →L[𝕜] Tensor0SModel n 𝕜 E)
           (E := fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) b
-          (curriedSection_gen T b)) x₀ := by
-  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n + 1)
+          (curriedSectionGen T b)) x₀ := by
+  let := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n + 1)
   rw [Bundle.contMDiffAt_section (F := E →L[𝕜] Tensor0SModel n 𝕜 E)
     (E := fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y)]
   have hT_at := (Bundle.contMDiffAt_section (F := Tensor0SModel (n + 1) 𝕜 E)
@@ -659,7 +659,7 @@ theorem contMDiffAt_curriedSection_of_contMDiffAt_section_gen {n : ℕ}
     (mem_baseSet_trivializationAt _ _ _)] with b hb
   change (trivializationAt (E →L[𝕜] Tensor0SModel n 𝕜 E)
       (fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) x₀
-      ⟨b, curriedSection_gen T b⟩).2 =
+      ⟨b, curriedSectionGen T b⟩).2 =
     (continuousMultilinearCurryLeftEquiv 𝕜 (fun _ : Fin (n + 1) => E) 𝕜)
       ((trivializationAt (Tensor0SModel (n + 1) 𝕜 E)
         (fun y : M => Tensor0SSpace (n + 1) I y) x₀ ⟨b, T b⟩).2)
@@ -711,23 +711,23 @@ private theorem contMDiffAt_section_apply_aux : ∀ (n : ℕ) (x₀ : M)
         (fun b : M =>
           TotalSpace.mk' (Tensor0SModel n 𝕜 E)
             (E := fun x : M => Tensor0SSpace n I x) b
-            ((curriedSection_gen T b) (v 0 b))) x₀ :=
+            ((curriedSectionGen T b) (v 0 b))) x₀ :=
       ContMDiffAt.clm_bundle_apply (𝕜 := 𝕜) (n := (∞ : WithTop ℕ∞))
         (F₁ := E) (F₂ := Tensor0SModel n 𝕜 E)
         (E₁ := fun x : M => TangentSpace I x)
         (E₂ := fun x : M => Tensor0SSpace n I x)
         (IM := I) (IB := I)
-        (b := id) (ϕ := fun b : M => curriedSection_gen T b) (v := fun b : M => v 0 b)
+        (b := id) (ϕ := fun b : M => curriedSectionGen T b) (v := fun b : M => v 0 b)
         hCurry (hv 0)
     have hRec := contMDiffAt_section_apply_aux n x₀
-      (fun b : M => (curriedSection_gen T b) (v 0 b))
+      (fun b : M => (curriedSectionGen T b) (v 0 b))
       hApplied
       (fun (i : Fin n) (b : M) => v i.succ b)
       (fun i => hv i.succ)
     refine hRec.congr_of_eventuallyEq ?_
     filter_upwards with b
     show Tensor0SSpace.eval (T b) (fun i : Fin (n + 1) => v i b) =
-      Tensor0SSpace.eval ((curriedSection_gen T b) (v 0 b))
+      Tensor0SSpace.eval ((curriedSectionGen T b) (v 0 b))
         (fun i : Fin n => v i.succ b)
     rw [tensor0S_curry_apply_eval_gen]
     refine Eq.symm ?_
@@ -765,8 +765,8 @@ theorem contMDiffAt_curriedSection_of_contMDiffAt_section_one {n : ℕ}
       (fun b : M =>
         TotalSpace.mk' (E →L[𝕜] Tensor0SModel n 𝕜 E)
           (E := fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) b
-          (curriedSection_gen T b)) x₀ := by
-  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n + 1)
+          (curriedSectionGen T b)) x₀ := by
+  let := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n + 1)
   rw [Bundle.contMDiffAt_section (F := E →L[𝕜] Tensor0SModel n 𝕜 E)
     (E := fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y)]
   have hT_at := (Bundle.contMDiffAt_section (F := Tensor0SModel (n + 1) 𝕜 E)
@@ -789,7 +789,7 @@ theorem contMDiffAt_curriedSection_of_contMDiffAt_section_one {n : ℕ}
     (mem_baseSet_trivializationAt _ _ _)] with b hb
   change (trivializationAt (E →L[𝕜] Tensor0SModel n 𝕜 E)
       (fun y : M => TangentSpace I y →L[𝕜] Tensor0SSpace n I y) x₀
-      ⟨b, curriedSection_gen T b⟩).2 =
+      ⟨b, curriedSectionGen T b⟩).2 =
     (continuousMultilinearCurryLeftEquiv 𝕜 (fun _ : Fin (n + 1) => E) 𝕜)
       ((trivializationAt (Tensor0SModel (n + 1) 𝕜 E)
         (fun y : M => Tensor0SSpace (n + 1) I y) x₀ ⟨b, T b⟩).2)
@@ -848,23 +848,23 @@ private theorem contMDiffAt_section_apply_one_aux : ∀ (n : ℕ) (x₀ : M)
         (fun b : M =>
           TotalSpace.mk' (Tensor0SModel n 𝕜 E)
             (E := fun x : M => Tensor0SSpace n I x) b
-            ((curriedSection_gen T b) (v 0 b))) x₀ :=
+            ((curriedSectionGen T b) (v 0 b))) x₀ :=
       ContMDiffAt.clm_bundle_apply (𝕜 := 𝕜) (n := (1 : WithTop ℕ∞))
         (F₁ := E) (F₂ := Tensor0SModel n 𝕜 E)
         (E₁ := fun x : M => TangentSpace I x)
         (E₂ := fun x : M => Tensor0SSpace n I x)
         (IM := I) (IB := I)
-        (b := id) (ϕ := fun b : M => curriedSection_gen T b) (v := fun b : M => v 0 b)
+        (b := id) (ϕ := fun b : M => curriedSectionGen T b) (v := fun b : M => v 0 b)
         hCurry (hv 0)
     have hRec := contMDiffAt_section_apply_one_aux n x₀
-      (fun b : M => (curriedSection_gen T b) (v 0 b))
+      (fun b : M => (curriedSectionGen T b) (v 0 b))
       hApplied
       (fun (i : Fin n) (b : M) => v i.succ b)
       (fun i => hv i.succ)
     refine hRec.congr_of_eventuallyEq ?_
     filter_upwards with b
     show Tensor0SSpace.eval (T b) (fun i : Fin (n + 1) => v i b) =
-      Tensor0SSpace.eval ((curriedSection_gen T b) (v 0 b))
+      Tensor0SSpace.eval ((curriedSectionGen T b) (v 0 b))
         (fun i : Fin n => v i.succ b)
     rw [tensor0S_curry_apply_eval_gen]
     refine Eq.symm ?_

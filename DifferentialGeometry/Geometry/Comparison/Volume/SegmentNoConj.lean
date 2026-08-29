@@ -25,8 +25,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [SigmaCompactSpace M]
 variable [RiemannianBundle (fun x : M => TangentSpace I x)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace ℝ E] in
 theorem segDom_no_conj
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]

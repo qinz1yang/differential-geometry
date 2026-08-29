@@ -550,7 +550,7 @@ theorem contMDiff_dense_in_WkpChart_k
         ENNReal.ofReal ε := by
   classical
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M)
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M)
     with hS_def
   have h_per_chart : ∀ α : S,
       ∃ K_α : Set M, IsCompact K_α ∧ K_α ⊆ (chartAt H (α : M)).source ∧
@@ -1119,7 +1119,7 @@ theorem contMDiff_dense_in_WkpChart_k
     ε_per := by
     intro γ
     dsimp [f]
-    simpa [Finset.sum_attach (s := Integral.Measure.chartAtlasPOU_finset), hS_def] using
+    simpa [Finset.sum_attach (s := Integral.Measure.chartAtlasPOUFinset), hS_def] using
       h_per_gamma γ.val γ.property
   rw [← Finset.sum_attach (s := S)]
   calc

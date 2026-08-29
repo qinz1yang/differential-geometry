@@ -896,16 +896,16 @@ private lemma twiceDerived_u_chart_memLp_weighted
     have hy_in_diff : y ∈ (chartTargetEuclid (I := I) (M := M) α) \ K :=
       ⟨hyΩ, hy_notK⟩
     exact hy hy_in_diff
-  set u_chart : EuclN → ℝ :=
+  set uChart : EuclN → ℝ :=
     chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h l₁ l₂ with hu_chart_def
   have h_u_eq_ind :
-      u_chart =ᵐ[(volume : Measure EuclN).restrict
-        (chartTargetEuclid (I := I) (M := M) α)] K.indicator u_chart := by
+      uChart =ᵐ[(volume : Measure EuclN).restrict
+        (chartTargetEuclid (I := I) (M := M) α)] K.indicator uChart := by
     filter_upwards [h_ae_zero_off_K] with y hy
     by_cases hy_K : y ∈ K
     · simp [Set.indicator_of_mem hy_K]
     · rw [Set.indicator_of_notMem hy_K, hy hy_K]
-  have h_global_K : MemLp u_chart 2
+  have h_global_K : MemLp uChart 2
       ((volume : Measure EuclN).restrict K) := by
     have h_restrict := h_global.restrict K
     have h_eq : ((volume : Measure EuclN).restrict
@@ -919,12 +919,12 @@ private lemma twiceDerived_u_chart_memLp_weighted
   obtain ⟨c, _hc_pos, h_le⟩ :=
     chartPulledWeighted_le_volume_on_compact
       (I := I) (M := M) (g := g) α hK_compact hK_meas hK_in
-  have h_u_weighted_K : MemLp u_chart 2
+  have h_u_weighted_K : MemLp uChart 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict K) :=
     h_global_K.of_measure_le_smul (c := ENNReal.ofReal c)
       ENNReal.ofReal_ne_top h_le
   have h_indicator_memLp_weighted :
-      MemLp (K.indicator u_chart) 2
+      MemLp (K.indicator uChart) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) := by
     rw [memLp_indicator_iff_restrict hK_meas]
@@ -946,8 +946,8 @@ private lemma twiceDerived_u_chart_memLp_weighted
     unfold chartPulledWeightedMeasure
     exact MeasureTheory.withDensity_absolutelyContinuous _ _
   have h_u_eq_ind_weighted :
-      u_chart =ᵐ[(chartPulledWeightedMeasure (I := I) g α).restrict
-        (chartTargetEuclid (I := I) (M := M) α)] K.indicator u_chart :=
+      uChart =ᵐ[(chartPulledWeightedMeasure (I := I) g α).restrict
+        (chartTargetEuclid (I := I) (M := M) α)] K.indicator uChart :=
     h_absCont.ae_eq h_u_eq_ind
   exact (memLp_congr_ae h_u_eq_ind_weighted).mpr h_indicator_memLp_weighted
 
@@ -1036,9 +1036,9 @@ noncomputable def twiceDerivedChartBilinearH1ComplData
             effectiveSourceChartSecondOrder (I := I) (M := M) g α l₁ l₂ hu_h y * ψ y
           ∂(volume : Measure EuclN)) :
     ChartBilinearH1ComplData (I := I) (M := M) g α where
-  u_chart := twiceDerived_u_chart (I := I) (M := M) g α l₁ l₂ u_h
-  f_chart := twiceDerived_f_chart (I := I) (M := M) g α l₁ l₂ hu_h
-  weak_partial := twiceDerived_weak_partial (I := I) (M := M) g α l₁ l₂ u_h
+  uChart := twiceDerived_u_chart (I := I) (M := M) g α l₁ l₂ u_h
+  fChart := twiceDerived_f_chart (I := I) (M := M) g α l₁ l₂ hu_h
+  weakPartial := twiceDerived_weak_partial (I := I) (M := M) g α l₁ l₂ u_h
   u_chart_memLp_weighted :=
     twiceDerived_u_chart_memLp_weighted (I := I) (M := M) g α l₁ l₂ hu_h
   f_chart_memLp_weighted :=

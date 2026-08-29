@@ -90,8 +90,8 @@ theorem ccTensorContract_l2_twoArm_mixed_orderUniform_le
       ‖iteratedCovGrad (I := I) g₀ 0 b₀ l W‖ ^ 2 := by positivity
   linarith
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem ccTensorBilinSymm_metricCauchySchwarzBound_le_sobolevHsNorm_lossy_order
     (g₀ : SmoothRiemannianMetric I M) (m : ℕ)
     (h_lossy : 2 * Module.finrank ℝ E + 4 ≤ m) :
@@ -112,7 +112,7 @@ theorem ccTensorBilinSymm_metricCauchySchwarzBound_le_sobolevHsNorm_lossy_order
   refine ⟨C₁ * (C₂ + 1), by positivity, fun T => ?_⟩
   let : Bundle.RiemannianBundle
       (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 2
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 2
   have hupper : C₁ * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
         (g := g₀) (r := 0) (s := 2) (2 * kE) T‖ ≤
       (C₁ * (C₂ + 1)) * ‖smoothCcToTensorHs (I := I) (M := M) g₀ (m : ℝ) T‖ := by

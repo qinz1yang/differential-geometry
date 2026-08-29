@@ -101,10 +101,10 @@ theorem ricciCompAt_eq_contractTrace
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (Rm13 : Tensor13At (I := I) (M := M) x) (i j : Idx) :
     ricciCompAt (I := I) basis (ricciFromRm13At (I := I) (M := M) Rm13) i j =
-      componentRS_gen (I := I) basis
-        (contract_trace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2 x Rm13)
+      componentRSGen (I := I) basis
+        (contractTrace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2 x Rm13)
         Fin.elim0 (slots2 i j) := by
-  unfold ricciCompAt componentRS_gen ricciFromRm13At
+  unfold ricciCompAt componentRSGen ricciFromRm13At
     component0S
   rw [basisTensor0S_empty_eq_scalarOne (I := I) basis Fin.elim0]
 
@@ -112,22 +112,22 @@ omit [DecidableEq Idx] in
 theorem contract_trace13_component_basis
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (Rm13 : Tensor13At (I := I) (M := M) x) (i j : Idx) :
-    ((contract_trace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2 x Rm13)
+    ((contractTrace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2 x Rm13)
         (scalarOne0S (I := I) x)) (vec2 (basis i) (basis j)) =
       ∑ a : Idx,
-        Rm13 (dualToCotangent_gen (I := I) (basis.coord a))
+        Rm13 (dualToCotangentGen (I := I) (basis.coord a))
           (vec3 (basis a) (basis i) (basis j)) := by
   have : IsManifold I 1 M := IsManifold.of_le (I := I) (M := M) (n := ∞) (by simp)
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3
-  let := tensorRSBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2
-  let := tensorRSBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 3
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3
+  let := tensorRSBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2
+  let := tensorRSBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 3
   let tangentModel := tangentSpaceModelContinuousLinearEquiv (I := I) x
   let basisModel : Module.Basis Idx Real E := basis.map tangentModel.toLinearEquiv
-  unfold contract_trace
-  change ((model_contract_trace (𝕜 := Real) (E := E) 0 2
+  unfold contractTrace
+  change ((modelContractTrace (𝕜 := Real) (E := E) 0 2
       (TensorRSSpace.toModel (I := I) Rm13))
       (Tensor0SSpace.toModel (I := I) (scalarOne0S (I := I) x)))
       (fun k => tangentModel (vec2 (basis i) (basis j) k)) = _
@@ -144,14 +144,14 @@ theorem contract_trace13_component_basis
     rw [Bundle.continuousMultilinearMap.modelProduct_apply]
     change (basisModel.coord a) (v 0) * 1 = (basisModel.coord a) (v 0)
     ring
-  simp only [model_interior_product, model_tensorWithCovector_first, model_covectorOfCLM,
+  simp only [modelInteriorProduct, modelTensorWithCovectorFirst, modelCovectorOfCLM,
     scalarOne0S, TensorRSSpace.toModel, Tensor0SSpace.toModel,
-    tensorRSSpace_continuousLinearEquiv]
+    tensorRSSpaceContinuousLinearEquiv]
   change (Rm13
       (Bundle.continuousMultilinearMap.modelProduct 1 0 covM
         (ContinuousMultilinearMap.constOfIsEmpty Real (fun _ : Fin 0 => E) 1)))
       (Fin.cons (basis a) (vec2 (basis i) (basis j))) =
-    Rm13 (dualToCotangent_gen (I := I) (basis.coord a)) (vec3 (basis a) (basis i) (basis j))
+    Rm13 (dualToCotangentGen (I := I) (basis.coord a)) (vec3 (basis a) (basis i) (basis j))
   have hleft :
       (Rm13
         (Bundle.continuousMultilinearMap.modelProduct 1 0 covM
@@ -161,9 +161,9 @@ theorem contract_trace13_component_basis
     exact congrArg
       (fun U => (Rm13 U) (Fin.cons (basis a) (vec2 (basis i) (basis j)))) hinput
   rw [hleft]
-  change (Rm13 (dualToCotangent_gen (I := I) (basis.coord a)))
+  change (Rm13 (dualToCotangentGen (I := I) (basis.coord a)))
       (Fin.cons (basis a) (vec2 (basis i) (basis j))) =
-    Rm13 (dualToCotangent_gen (I := I) (basis.coord a)) (vec3 (basis a) (basis i) (basis j))
+    Rm13 (dualToCotangentGen (I := I) (basis.coord a)) (vec3 (basis a) (basis i) (basis j))
   congr 1
   funext q
   fin_cases q
@@ -179,21 +179,21 @@ theorem ricciFromRm13At_apply_basis_trace
     (Y Z : TangentSpace I x) :
     ricciFromRm13At (I := I) (M := M) Rm13 (vec2 Y Z) =
       ∑ a : Idx,
-        Rm13 (dualToCotangent_gen (I := I) (basis.coord a))
+        Rm13 (dualToCotangentGen (I := I) (basis.coord a))
           (vec3 (basis a) Y Z) := by
   have : IsManifold I 1 M := IsManifold.of_le (I := I) (M := M) (n := ∞) (by simp)
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2
-  let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3
-  let := tensorRSBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2
-  let := tensorRSBundle_topology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 3
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2
+  let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3
+  let := tensorRSBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2
+  let := tensorRSBundleTopology (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 3
   let tangentModel := tangentSpaceModelContinuousLinearEquiv (I := I) x
   let basisModel : Module.Basis Idx Real E := basis.map tangentModel.toLinearEquiv
-  change ((contract_trace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2 x Rm13)
+  change ((contractTrace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 0 2 x Rm13)
       (scalarOne0S (I := I) x)) (vec2 Y Z) = _
-  unfold contract_trace
-  change ((model_contract_trace (𝕜 := Real) (E := E) 0 2
+  unfold contractTrace
+  change ((modelContractTrace (𝕜 := Real) (E := E) 0 2
       (TensorRSSpace.toModel (I := I) Rm13))
       (Tensor0SSpace.toModel (I := I) (scalarOne0S (I := I) x)))
       (fun k => tangentModel (vec2 Y Z k)) = _
@@ -210,14 +210,14 @@ theorem ricciFromRm13At_apply_basis_trace
     rw [Bundle.continuousMultilinearMap.modelProduct_apply]
     change (basisModel.coord a) (v 0) * 1 = (basisModel.coord a) (v 0)
     ring
-  simp only [model_interior_product, model_tensorWithCovector_first, model_covectorOfCLM,
+  simp only [modelInteriorProduct, modelTensorWithCovectorFirst, modelCovectorOfCLM,
     scalarOne0S, TensorRSSpace.toModel, Tensor0SSpace.toModel,
-    tensorRSSpace_continuousLinearEquiv]
+    tensorRSSpaceContinuousLinearEquiv]
   change (Rm13
       (Bundle.continuousMultilinearMap.modelProduct 1 0 covM
         (ContinuousMultilinearMap.constOfIsEmpty Real (fun _ : Fin 0 => E) 1)))
       (Fin.cons (basis a) (vec2 Y Z)) =
-    Rm13 (dualToCotangent_gen (I := I) (basis.coord a)) (vec3 (basis a) Y Z)
+    Rm13 (dualToCotangentGen (I := I) (basis.coord a)) (vec3 (basis a) Y Z)
   have hleft :
       (Rm13
         (Bundle.continuousMultilinearMap.modelProduct 1 0 covM
@@ -227,9 +227,9 @@ theorem ricciFromRm13At_apply_basis_trace
     exact congrArg
       (fun U => (Rm13 U) (Fin.cons (basis a) (vec2 Y Z))) hinput
   rw [hleft]
-  change (Rm13 (dualToCotangent_gen (I := I) (basis.coord a)))
+  change (Rm13 (dualToCotangentGen (I := I) (basis.coord a)))
       (Fin.cons (basis a) (vec2 Y Z)) =
-    Rm13 (dualToCotangent_gen (I := I) (basis.coord a)) (vec3 (basis a) Y Z)
+    Rm13 (dualToCotangentGen (I := I) (basis.coord a)) (vec3 (basis a) Y Z)
   congr 1
   funext q
   fin_cases q

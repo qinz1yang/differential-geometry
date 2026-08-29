@@ -87,7 +87,7 @@ lemma diffArmSection_slice_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s) (x : M)
     (a : Fin (Module.finrank ℝ E)) :
     tensor0SToTensorRS (I := I) (M := M) x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
             (curvatureCommutatorRemainderSection (I := I) (M := M) g s S).toSection x)
             (unitZeroSec (I := I) (M := M) x))
@@ -124,7 +124,7 @@ lemma diffArmSection_slice_eval_value_local
     Tensor0SSpace.eval
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
           tensor0SToTensorRS (I := I) (M := M) x
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
               ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
                 (curvatureCommutatorRemainderSection (I := I) (M := M) g s S).toSection x)
                 (unitZeroSec (I := I) (M := M) x))
@@ -148,7 +148,7 @@ lemma diffArmSection_slice_eval_value_local
   set A : Π b : M, Tensor0SSpace s I b := unitEvalSection (I := I) (M := M) g s S with hA
   rw [show (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
         tensor0SToTensorRS (I := I) (M := M) x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
               (curvatureCommutatorRemainderSection (I := I) (M := M) g s S).toSection x)
               (unitZeroSec (I := I) (M := M) x))
@@ -230,7 +230,7 @@ lemma diffArmSection_value_local
     g.inner x (smoothOrthoFrame (I := I) g x a x) w • z)
   have hbridge : ∀ S : SmoothCcTensor g 0 s,
       Tensor0SSpace.eval
-          (tensor0S_curry (I := I) (M := M) s x
+          (tensor0SCurry (I := I) (M := M) s x
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
               (curvatureCommutatorRemainderSection (I := I) (M := M) g s S).toSection x)
               (unitZeroSec (I := I) (M := M) x))
@@ -238,7 +238,7 @@ lemma diffArmSection_value_local
         Tensor0SSpace.eval
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
             tensor0SToTensorRS (I := I) (M := M) x
-              (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+              (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
                 ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
                   (curvatureCommutatorRemainderSection (I := I) (M := M) g s S).toSection x)
                   (unitZeroSec (I := I) (M := M) x))

@@ -21,7 +21,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 
-def divergence_g_with_boundary
+def divergenceGWithBoundary
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) : M → ℝ :=
   fun x => localDivergenceWithin (I := I) g x X x
@@ -29,16 +29,16 @@ def divergence_g_with_boundary
 @[simp] lemma divergence_g_with_boundary_def
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    divergence_g_with_boundary (I := I) g X x =
+    divergenceGWithBoundary (I := I) g X x =
       localDivergenceWithin (I := I) g x X x := rfl
 
 theorem voss_weyl_divergence_with_boundary_formula [T2Space M]
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {x : M} (hx_α : x ∈ (chartAt H α).source) (hx_int : x ∈ I.interior M) :
-    divergence_g_with_boundary (I := I) g X x =
+    divergenceGWithBoundary (I := I) g X x =
       localDivergenceWithin (I := I) g α X x := by
-  unfold divergence_g_with_boundary
+  unfold divergenceGWithBoundary
   exact localDivergenceWithin_chart_invariance
     (I := I) g x α X (mem_chart_source H x) hx_α hx_int
 
@@ -46,8 +46,8 @@ theorem divergence_g_with_boundary_eq_divergence_g_of_isInteriorPoint
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {x : M} (hx_int : x ∈ I.interior M) :
-    divergence_g_with_boundary (I := I) g X x = divergence_g (I := I) g X x := by
-  unfold divergence_g_with_boundary
+    divergenceGWithBoundary (I := I) g X x = divergenceG (I := I) g X x := by
+  unfold divergenceGWithBoundary
   rw [divergence_g_def]
   exact localDivergenceWithin_eq_localDivergence_of_isInteriorPoint
     (I := I) g x X (mem_chart_source H x) hx_int
@@ -70,7 +70,7 @@ private lemma divergence_g_with_boundary_eq_localDivergenceWithin_on_chart
     [T2Space M] (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     ∀ y ∈ (chartAt H x).source ∩ I.interior M,
-      divergence_g_with_boundary (I := I) g X y =
+      divergenceGWithBoundary (I := I) g X y =
         localDivergenceWithin (I := I) g x X y := by
   intro y hy
   exact voss_weyl_divergence_with_boundary_formula
@@ -86,7 +86,7 @@ private lemma localDivergenceWithin_contMDiffOn_chart_inter_interior
 private lemma divergence_g_with_boundary_contMDiffOn_chart_inter_interior
     [T2Space M] (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    ContMDiffOn I 𝓘(ℝ) ∞ (divergence_g_with_boundary (I := I) g X)
+    ContMDiffOn I 𝓘(ℝ) ∞ (divergenceGWithBoundary (I := I) g X)
       ((chartAt H x).source ∩ I.interior M) := by
   have hsmooth :=
     localDivergenceWithin_contMDiffOn_chart_inter_interior (I := I) g X x
@@ -97,7 +97,7 @@ private lemma divergence_g_with_boundary_contMDiffOn_chart_inter_interior
 theorem divergence_g_with_boundary_contMDiffOn_interior [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    ContMDiffOn I 𝓘(ℝ) ∞ (divergence_g_with_boundary (I := I) g X)
+    ContMDiffOn I 𝓘(ℝ) ∞ (divergenceGWithBoundary (I := I) g X)
       (I.interior M) := by
   refine contMDiffOn_of_locally_contMDiffOn ?_
   intro x hx_int
@@ -115,7 +115,7 @@ theorem divergence_g_with_boundary_contMDiffOn_interior [T2Space M]
 theorem divergence_g_with_boundary_continuousOn_interior [T2Space M]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    ContinuousOn (divergence_g_with_boundary (I := I) g X) (I.interior M) :=
+    ContinuousOn (divergenceGWithBoundary (I := I) g X) (I.interior M) :=
   (divergence_g_with_boundary_contMDiffOn_interior (I := I) g X).continuousOn
 
 end WithBoundary

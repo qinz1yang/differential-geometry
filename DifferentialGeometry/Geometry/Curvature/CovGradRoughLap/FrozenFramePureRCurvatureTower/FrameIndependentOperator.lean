@@ -40,7 +40,7 @@ private noncomputable def pureRSlot0BilinAt
   haveI : T2Space (TangentSpace I y) := inferInstanceAs (T2Space E)
   haveI : FiniteDimensional ℝ (TangentSpace I y) := inferInstanceAs (FiniteDimensional ℝ E)
   letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 m I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 m
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 m
   letI : NormedAddCommGroup (TensorRSSpace 0 m I y) :=
     tensorRSRiemannianNormedAddCommGroup 0 m y
   LinearMap.toContinuousLinearMap

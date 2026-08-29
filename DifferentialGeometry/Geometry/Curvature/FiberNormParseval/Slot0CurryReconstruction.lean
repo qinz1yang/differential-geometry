@@ -34,7 +34,7 @@ theorem tensor0S_uncurry_cons_eval_of_expansion
     Tensor0SSpace.toModel T
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) =
       ∑ a : Fin n, c a • Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) s x T (e a)) m := by
+        (tensor0SCurry (I := I) (M := M) s x T (e a)) m := by
   classical
   simp only [Tensor0SSpace.toModel_apply_model_vector]
   let wm : Fin (s + 1) → E :=
@@ -54,16 +54,16 @@ theorem tensor0S_uncurry_cons_eval_of_expansion
       (Fin.cons w
         (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i))) =
     ∑ a : Fin n, c a • Tensor0SSpace.eval
-      (tensor0S_curry (I := I) (M := M) s x T (e a))
+      (tensor0SCurry (I := I) (M := M) s x T (e a))
         (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i))
   rw [← TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := s) (b := x)
     T w (fun i => (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m i))]
   rw [hw]
-  rw [map_sum (tensor0S_curry (I := I) (M := M) s x T) (fun a => c a • e a) Finset.univ]
+  rw [map_sum (tensor0SCurry (I := I) (M := M) s x T) (fun a => c a • e a) Finset.univ]
   simp only [Tensor0SSpace.eval_eq]
   rw [sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [(tensor0S_curry (I := I) (M := M) s x T).map_smul (c a) (e a)]
+  rw [(tensor0SCurry (I := I) (M := M) s x T).map_smul (c a) (e a)]
   rw [smul_apply]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
@@ -76,7 +76,7 @@ theorem tensor0S_uncurry_cons_eval_orthonormal
     Tensor0SSpace.toModel T
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) =
       ∑ a : Fin n, g.inner x (e a) w • Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) s x T (e a)) m :=
+        (tensor0SCurry (I := I) (M := M) s x T (e a)) m :=
   tensor0S_uncurry_cons_eval_of_expansion (I := I) (M := M) T
     (fun a => g.inner x (e a) w) e w (hv_expand w) m
 
@@ -89,17 +89,17 @@ theorem tensor0S_uncurry_cons_eval_of_expansion_natural
     (m : Fin s → TangentSpace I x) :
     Tensor0SSpace.eval T (Fin.cons w m) =
       ∑ a : Fin n, c a • Tensor0SSpace.eval
-        (tensor0S_curry (I := I) (M := M) s x T (e a)) m := by
+        (tensor0SCurry (I := I) (M := M) s x T (e a)) m := by
   classical
   rw [← TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := s) (b := x)
     T w m]
   rw [hw]
-  rw [map_sum (tensor0S_curry (I := I) (M := M) s x T)
+  rw [map_sum (tensor0SCurry (I := I) (M := M) s x T)
     (fun a => c a • e a) Finset.univ]
   simp only [Tensor0SSpace.eval_eq]
   rw [sum_apply]
   refine Finset.sum_congr rfl (fun a _ => ?_)
-  rw [(tensor0S_curry (I := I) (M := M) s x T).map_smul (c a) (e a)]
+  rw [(tensor0SCurry (I := I) (M := M) s x T).map_smul (c a) (e a)]
   rw [smul_apply]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
@@ -111,7 +111,7 @@ theorem tensor0S_uncurry_cons_eval_orthonormal_natural
     (w : TangentSpace I x) (m : Fin s → TangentSpace I x) :
     Tensor0SSpace.eval T (Fin.cons w m) =
       ∑ a : Fin n, g.inner x (e a) w • Tensor0SSpace.eval
-        (tensor0S_curry (I := I) (M := M) s x T (e a)) m :=
+        (tensor0SCurry (I := I) (M := M) s x T (e a)) m :=
   tensor0S_uncurry_cons_eval_of_expansion_natural (I := I) (M := M) T
     (fun a => g.inner x (e a) w) e w (hv_expand w) m
 
@@ -124,7 +124,7 @@ lemma slot0Curry_coframeS_eq_tensor0S_curry
     (slot0Curry (I := I) (M := M) g x s e K₀ T a :
         Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x)
         (coframeS (I := I) (M := M) g x 0 e K₀) =
-      tensor0S_curry (I := I) (M := M) s x
+      tensor0SCurry (I := I) (M := M) s x
         ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
           (coframeS (I := I) (M := M) g x 0 e K₀)) (e a) := by
   classical
@@ -172,7 +172,7 @@ theorem tensor0S_eq_sum_slot0_uncurry
         Tensor0SSpace.toModel T
             (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x w) m) =
           ∑ a : Fin n, g.inner x (e a) w • Tensor0SSpace.toModel
-            (tensor0S_curry (I := I) (M := M) s x T (e a)) m := by
+            (tensor0SCurry (I := I) (M := M) s x T (e a)) m := by
   classical
   obtain ⟨n, e, _bse, hn, _hbse, horth, _hpars, hv_expand, _hrepr⟩ :=
     tangent_orthonormalBasisS_witness (I := I) (M := M) g s x

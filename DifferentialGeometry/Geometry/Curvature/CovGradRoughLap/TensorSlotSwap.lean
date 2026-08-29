@@ -29,8 +29,8 @@ private noncomputable def chooseCcThrough (g : SmoothRiemannianMetric I M) (r a 
     (T : TensorRSSpace r a I x) : SmoothCcTensor g r a where
   toSection :=
     letI : NormedAddCommGroup (TensorRSModel r a ℝ E) :=
-      Tensor0SBundle.tensorRSModel_normedAddCommGroup r a
-    letI : NormedSpace ℝ (TensorRSModel r a ℝ E) := Tensor0SBundle.tensorRSModel_normedSpace r a
+      Tensor0SBundle.tensorRSModelNormedAddCommGroup r a
+    letI : NormedSpace ℝ (TensorRSModel r a ℝ E) := Tensor0SBundle.tensorRSModelNormedSpace r a
     Classical.choose (ContMDiffSection.exists_eq_at (I := I) (F := TensorRSModel r a ℝ E)
       (V := fun z : M => TensorRSSpace r a I z) (n := (⊤ : ℕ∞)) x T)
   hasCompactSupport := HasCompactSupport.of_compactSpace _
@@ -41,8 +41,8 @@ private lemma chooseCcThrough_eq (g : SmoothRiemannianMetric I M) (r a : ℕ) (x
     (T : TensorRSSpace r a I x) :
     (chooseCcThrough (I := I) (M := M) g r a x T).toSection x = T :=
   letI : NormedAddCommGroup (TensorRSModel r a ℝ E) :=
-    Tensor0SBundle.tensorRSModel_normedAddCommGroup r a
-  letI : NormedSpace ℝ (TensorRSModel r a ℝ E) := Tensor0SBundle.tensorRSModel_normedSpace r a
+    Tensor0SBundle.tensorRSModelNormedAddCommGroup r a
+  letI : NormedSpace ℝ (TensorRSModel r a ℝ E) := Tensor0SBundle.tensorRSModelNormedSpace r a
   Classical.choose_spec (ContMDiffSection.exists_eq_at (I := I) (F := TensorRSModel r a ℝ E)
     (V := fun z : M => TensorRSSpace r a I z) (n := (⊤ : ℕ∞)) x T)
 

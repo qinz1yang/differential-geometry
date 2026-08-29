@@ -164,7 +164,7 @@ lemma chartTensorInnerPointwise_rs_model_pos_of_ne_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     {T : TensorRSModel r s ℝ E} (hT : T ≠ 0) :
-    0 < chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T T := by
+    0 < chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T T := by
   classical
   rw [chartTensorInnerPointwise_rs_model_eq_tensorInnerPointwise
       (I := I) (M := M) g r s α hb T T]
@@ -222,7 +222,7 @@ theorem exists_chartTensorInnerPointwise_rs_model_lower_bound_on_compact
     ∃ ε : ℝ, 0 < ε ∧
       ∀ b : M, b ∈ K_M →
         ∀ T : TensorRSModel r s ℝ E, ‖T‖ = 1 →
-          ε ≤ chartTensorInnerPointwise_rs_model (I := I) (M := M)
+          ε ≤ chartTensorInnerPointwiseRsModel (I := I) (M := M)
             g r s α b T T := by
   classical
   have : ProperSpace (TensorRSModel r s ℝ E) :=
@@ -243,7 +243,7 @@ theorem exists_chartTensorInnerPointwise_rs_model_lower_bound_on_compact
   set K : Set (M × TensorRSModel r s ℝ E) := K_M ×ˢ S_T with hK_def
   have hK_compact : IsCompact K := hK_M_compact.prod hS_T_compact
   set Q : M × TensorRSModel r s ℝ E → ℝ := fun bT =>
-    chartTensorInnerPointwise_rs_model (I := I) (M := M)
+    chartTensorInnerPointwiseRsModel (I := I) (M := M)
       g r s α bT.1 bT.2 bT.2 with hQ_def
   have hQ_contOn_full :
       ContinuousOn Q
@@ -292,7 +292,7 @@ theorem exists_chartTensorInnerPointwise_rs_model_lower_bound_on_pouTsupport
           ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
         ∀ T : TensorRSModel r s ℝ E, ‖T‖ = 1 →
-          ε ≤ chartTensorInnerPointwise_rs_model (I := I) (M := M)
+          ε ≤ chartTensorInnerPointwiseRsModel (I := I) (M := M)
             g r s α b T T :=
   exists_chartTensorInnerPointwise_rs_model_lower_bound_on_compact
     (I := I) (M := M) g r s α

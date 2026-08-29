@@ -181,7 +181,7 @@ omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpac
 private lemma chartE_section_repr_chartBasisVec_baseSet
     (x : M) (i : Fin (Module.finrank ℝ E)) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) x).baseSet) :
-    chartE_section_repr (I := I) x
+    chartESectionRepr (I := I) x
         (fun y : M => chartBasisVecFiber (I := I) x i y) b =
       (chartModelBasis E) i := by
   classical
@@ -227,9 +227,9 @@ private lemma LeviCivita_covApply_firstLayer_pointwise
   have hb_src_ext : b ∈ (extChartAt I x).source :=
     chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
   have hfd0 :
-      fderiv ℝ (chartE_section_repr (I := I) x Xi ∘ (extChartAt I x).symm)
+      fderiv ℝ (chartESectionRepr (I := I) x Xi ∘ (extChartAt I x).symm)
           (extChartAt I x b) = 0 := by
-    have hev : (chartE_section_repr (I := I) x Xi ∘ (extChartAt I x).symm)
+    have hev : (chartESectionRepr (I := I) x Xi ∘ (extChartAt I x).symm)
         =ᶠ[𝓝 (extChartAt I x b)] (fun _ : E => ((chartModelBasis E) i : E)) := by
       obtain ⟨W', hW'_eq, hW'_open, hbW'⟩ := mem_nhds_iff.mp hXi_nhds
       set V : Set E :=
@@ -260,7 +260,7 @@ private lemma LeviCivita_covApply_firstLayer_pointwise
       exact this
     rw [hev.fderiv_eq, fderiv_const_apply]
   rw [hfd0, zero_apply, zero_add]
-  rw [show chartE_section_repr (I := I) x Xi b = (chartModelBasis E) i from by
+  rw [show chartESectionRepr (I := I) x Xi b = (chartModelBasis E) i from by
     rw [chartE_section_repr_eq_trivToE,
         show Xi b = chartBasisVecFiber (I := I) x i b from hXi_nhds.self_of_nhds]
     have := chartE_section_repr_chartBasisVec_baseSet (I := I) x i hbase
@@ -297,7 +297,7 @@ private lemma chartE_section_repr_covApply_eventuallyEq
     (i k : Fin (Module.finrank ℝ E))
     {X : Fin (Module.finrank ℝ E) → Π b : M, TangentSpace I b}
     (hXnhds : ∀ᶠ b in 𝓝 x, ∀ p, X p b = chartBasisVecFiber (I := I) x p b) :
-    (chartE_section_repr (I := I) x
+    (chartESectionRepr (I := I) x
         (DifferentialGeometry.Geometry.Curvature.covApply (LeviCivita (I := I) g) (X k) (X i)) ∘
           (extChartAt I x).symm)
       =ᶠ[𝓝 (extChartAt I x x)]
@@ -456,7 +456,7 @@ private lemma LeviCivita_covApply_secondLayer
     rw [trivToE_self_apply, centeredChartTangentBasis_apply,
       ContinuousLinearEquiv.apply_symm_apply]]
   rw [hev.fderiv_eq, fderiv_christoffelSum_apply (I := I) g x i j k]
-  have hSx_repr : chartE_section_repr (I := I) x S x =
+  have hSx_repr : chartESectionRepr (I := I) x S x =
       ∑ m : Fin (Module.finrank ℝ E), c m • (chartModelBasis E) m := by
     have h0 := hev.self_of_nhds
     simp only [Function.comp_apply] at h0

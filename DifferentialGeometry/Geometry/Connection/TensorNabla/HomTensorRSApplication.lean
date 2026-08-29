@@ -218,11 +218,11 @@ private theorem slotExtendFullFib_apply_apply_contMDiff (r a c : ℕ)
       (fun x : M => TotalSpace.mk' (TensorRSModel r a ℝ E →L[ℝ] TensorRSModel r c ℝ E)
         (E := fun z : M => TensorRSSpace r a I z →L[ℝ] TensorRSSpace r c I z) x (Ψ x))) :
     letI : NormedAddCommGroup (TensorRSModel r (a + 1) ℝ E) :=
-      tensorRSModel_normedAddCommGroup r (a + 1)
+      tensorRSModelNormedAddCommGroup r (a + 1)
     letI : NormedSpace ℝ (TensorRSModel r (a + 1) ℝ E) :=
-      tensorRSModel_normedSpace r (a + 1)
-    letI := tensorRSBundle_topology (I := I) (M := M) r (a + 1)
-    letI := tensorRSBundle_fiber (I := I) (M := M) r (a + 1)
+      tensorRSModelNormedSpace r (a + 1)
+    letI := tensorRSBundleTopology (I := I) (M := M) r (a + 1)
+    letI := tensorRSBundleFiber (I := I) (M := M) r (a + 1)
     letI := tensorRSBundle_vector (I := I) (M := M) r (a + 1)
     letI := tensorRSBundle_smooth (I := I) (M := M) ∞ r (a + 1)
     ∀ (D : Cₛ^∞⟮I; TensorRSModel r (a + 1) ℝ E,
@@ -233,11 +233,11 @@ private theorem slotExtendFullFib_apply_apply_contMDiff (r a c : ℕ)
         (E := fun z : M => TensorRSSpace r c I z) x
         ((Ψ x) ((covGradBundleEquiv (I := I) (M := M) r a x).symm (D x) (Y x)))) := by
   let : NormedAddCommGroup (TensorRSModel r (a + 1) ℝ E) :=
-    tensorRSModel_normedAddCommGroup r (a + 1)
+    tensorRSModelNormedAddCommGroup r (a + 1)
   let : NormedSpace ℝ (TensorRSModel r (a + 1) ℝ E) :=
-    tensorRSModel_normedSpace r (a + 1)
-  let := tensorRSBundle_topology (I := I) (M := M) r (a + 1)
-  let := tensorRSBundle_fiber (I := I) (M := M) r (a + 1)
+    tensorRSModelNormedSpace r (a + 1)
+  let := tensorRSBundleTopology (I := I) (M := M) r (a + 1)
+  let := tensorRSBundleFiber (I := I) (M := M) r (a + 1)
   let := tensorRSBundle_vector (I := I) (M := M) r (a + 1)
   let := tensorRSBundle_smooth (I := I) (M := M) ∞ r (a + 1)
   intro D Y
@@ -257,11 +257,11 @@ private theorem slotExtendFullFib_apply_contMDiff (r a c : ℕ)
       (fun x : M => TotalSpace.mk' (TensorRSModel r a ℝ E →L[ℝ] TensorRSModel r c ℝ E)
         (E := fun z : M => TensorRSSpace r a I z →L[ℝ] TensorRSSpace r c I z) x (Ψ x))) :
     letI : NormedAddCommGroup (TensorRSModel r (a + 1) ℝ E) :=
-      tensorRSModel_normedAddCommGroup r (a + 1)
+      tensorRSModelNormedAddCommGroup r (a + 1)
     letI : NormedSpace ℝ (TensorRSModel r (a + 1) ℝ E) :=
-      tensorRSModel_normedSpace r (a + 1)
-    letI := tensorRSBundle_topology (I := I) (M := M) r (a + 1)
-    letI := tensorRSBundle_fiber (I := I) (M := M) r (a + 1)
+      tensorRSModelNormedSpace r (a + 1)
+    letI := tensorRSBundleTopology (I := I) (M := M) r (a + 1)
+    letI := tensorRSBundleFiber (I := I) (M := M) r (a + 1)
     letI := tensorRSBundle_vector (I := I) (M := M) r (a + 1)
     letI := tensorRSBundle_smooth (I := I) (M := M) ∞ r (a + 1)
     ∀ (D : Cₛ^∞⟮I; TensorRSModel r (a + 1) ℝ E,
@@ -271,11 +271,11 @@ private theorem slotExtendFullFib_apply_contMDiff (r a c : ℕ)
         (E := fun z : M => TangentSpace I z →L[ℝ] TensorRSSpace r c I z) x
         ((Ψ x).comp ((covGradBundleEquiv (I := I) (M := M) r a x).symm (D x)))) := by
   let : NormedAddCommGroup (TensorRSModel r (a + 1) ℝ E) :=
-    tensorRSModel_normedAddCommGroup r (a + 1)
+    tensorRSModelNormedAddCommGroup r (a + 1)
   let : NormedSpace ℝ (TensorRSModel r (a + 1) ℝ E) :=
-    tensorRSModel_normedSpace r (a + 1)
-  let := tensorRSBundle_topology (I := I) (M := M) r (a + 1)
-  let := tensorRSBundle_fiber (I := I) (M := M) r (a + 1)
+    tensorRSModelNormedSpace r (a + 1)
+  let := tensorRSBundleTopology (I := I) (M := M) r (a + 1)
+  let := tensorRSBundleFiber (I := I) (M := M) r (a + 1)
   let := tensorRSBundle_vector (I := I) (M := M) r (a + 1)
   let := tensorRSBundle_smooth (I := I) (M := M) ∞ r (a + 1)
   intro D
@@ -297,11 +297,11 @@ theorem covGradBundleEquiv_section_contMDiff (r c : ℕ)
         (E := fun z : M => TensorRSSpace r (c + 1) I z) x
         (covGradBundleEquiv (I := I) (M := M) r c x (G x))) := by
   let : NormedAddCommGroup (TensorRSModel r (c + 1) ℝ E) :=
-    tensorRSModel_normedAddCommGroup r (c + 1)
+    tensorRSModelNormedAddCommGroup r (c + 1)
   let : NormedSpace ℝ (TensorRSModel r (c + 1) ℝ E) :=
-    tensorRSModel_normedSpace r (c + 1)
-  let := tensorRSBundle_topology (I := I) (M := M) r (c + 1)
-  let := tensorRSBundle_fiber (I := I) (M := M) r (c + 1)
+    tensorRSModelNormedSpace r (c + 1)
+  let := tensorRSBundleTopology (I := I) (M := M) r (c + 1)
+  let := tensorRSBundleFiber (I := I) (M := M) r (c + 1)
   let := tensorRSBundle_vector (I := I) (M := M) r (c + 1)
   let := tensorRSBundle_smooth (I := I) (M := M) ∞ r (c + 1)
   have hcomp :=

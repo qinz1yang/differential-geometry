@@ -80,7 +80,7 @@ private lemma diffQuot_chi_sub_one_uChart_vanishes
       2 * η z * ((fderiv ℝ η z) (EuclideanSpace.single j 1)) *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          (fun y => (χ y - 1) * D.u_chart y) z) =
+          (fun y => (χ y - 1) * D.uChart y) z) =
     fun _ => (0 : ℝ) := by
   funext z
   by_cases hη_factor : 2 * η z * ((fderiv ℝ η z) (EuclideanSpace.single j 1)) = 0
@@ -107,14 +107,14 @@ private lemma diffQuot_chi_sub_one_uChart_vanishes
     exact mul_zero _
   · rw [DifferentialGeometry.Analysis.Sobolev.diffQuot_apply_of_ne
       (d := Module.finrank ℝ E) k hh _ z]
-    have h1 : (χ z - 1) * D.u_chart z = 0 := by rw [hχz]; ring
+    have h1 : (χ z - 1) * D.uChart z = 0 := by rw [hχz]; ring
     have h2 : (χ (z + h • EuclideanSpace.single k 1) - 1) *
-        D.u_chart (z + h • EuclideanSpace.single k 1) = 0 := by
+        D.uChart (z + h • EuclideanSpace.single k 1) = 0 := by
       rw [hχz_shift]; ring
     change 2 * η z * ((fderiv ℝ η z) (EuclideanSpace.single j 1)) *
         (((χ (z + h • EuclideanSpace.single k 1) - 1) *
-          D.u_chart (z + h • EuclideanSpace.single k 1) -
-          (χ z - 1) * D.u_chart z) / h) = 0
+          D.uChart (z + h • EuclideanSpace.single k 1) -
+          (χ z - 1) * D.uChart z) / h) = 0
     rw [h1, h2, sub_zero, zero_div, mul_zero]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -136,8 +136,8 @@ private lemma diffQuot_dx_chi_uChart_vanishes
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
           (fun y =>
-            (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-            (χ y - 1) * D.weak_partial j y) z) =
+            (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+            (χ y - 1) * D.weakPartial j y) z) =
     fun _ => (0 : ℝ) := by
   funext z
   by_cases hη_sq_zero : (η z)^2 = 0
@@ -171,24 +171,24 @@ private lemma diffQuot_dx_chi_uChart_vanishes
   · rw [DifferentialGeometry.Analysis.Sobolev.diffQuot_apply_of_ne
       (d := Module.finrank ℝ E) k hh _ z]
     have h1 :
-        (fderiv ℝ χ z) (EuclideanSpace.single j 1) * D.u_chart z +
-          (χ z - 1) * D.weak_partial j z = 0 := by
+        (fderiv ℝ χ z) (EuclideanSpace.single j 1) * D.uChart z +
+          (χ z - 1) * D.weakPartial j z = 0 := by
       rw [hdχz, hχz]; ring
     have h2 :
         (fderiv ℝ χ (z + h • EuclideanSpace.single k 1))
             (EuclideanSpace.single j 1) *
-          D.u_chart (z + h • EuclideanSpace.single k 1) +
+          D.uChart (z + h • EuclideanSpace.single k 1) +
           (χ (z + h • EuclideanSpace.single k 1) - 1) *
-            D.weak_partial j (z + h • EuclideanSpace.single k 1) = 0 := by
+            D.weakPartial j (z + h • EuclideanSpace.single k 1) = 0 := by
       rw [hdχz_shift, hχz_shift]; ring
     change (η z)^2 *
         ((((fderiv ℝ χ (z + h • EuclideanSpace.single k 1))
               (EuclideanSpace.single j 1) *
-            D.u_chart (z + h • EuclideanSpace.single k 1) +
+            D.uChart (z + h • EuclideanSpace.single k 1) +
             (χ (z + h • EuclideanSpace.single k 1) - 1) *
-              D.weak_partial j (z + h • EuclideanSpace.single k 1)) -
-          ((fderiv ℝ χ z) (EuclideanSpace.single j 1) * D.u_chart z +
-            (χ z - 1) * D.weak_partial j z)) / h) = 0
+              D.weakPartial j (z + h • EuclideanSpace.single k 1)) -
+          ((fderiv ℝ χ z) (EuclideanSpace.single j 1) * D.uChart z +
+            (χ z - 1) * D.weakPartial j z)) / h) = 0
     rw [h1, h2, sub_zero, zero_div, mul_zero]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
@@ -386,32 +386,32 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
     (hη_supp_in_K_0 : tsupport η ⊆ K_0)
     (k : Fin (Module.finrank ℝ E))
     (hh : h ≠ 0)
-    {u_seq : ℕ → EuclN → ℝ}
-    (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (u_seq n))
-    (hu_seq_cs : ∀ n, HasCompactSupport (u_seq n))
+    {uSeq : ℕ → EuclN → ℝ}
+    (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (uSeq n))
+    (hu_seq_cs : ∀ n, HasCompactSupport (uSeq n))
     (hu_seq_l2 : Tendsto (fun n =>
-      eLpNorm (fun x => u_seq n x - χ x * D.u_chart x) 2
+      eLpNorm (fun x => uSeq n x - χ x * D.uChart x) 2
         (volume : Measure EuclN)) atTop (𝓝 0))
     (hu_seq_grad_l2 : ∀ i,
       Tendsto (fun n => eLpNorm
-        (fun x => (fderiv ℝ (u_seq n) x) (EuclideanSpace.single i 1) -
-          ((fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-           χ x * D.weak_partial i x)) 2 (volume : Measure EuclN))
+        (fun x => (fderiv ℝ (uSeq n) x) (EuclideanSpace.single i 1) -
+          ((fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+           χ x * D.weakPartial i x)) 2 (volume : Measure EuclN))
         atTop (𝓝 0))
     (j : Fin (Module.finrank ℝ E)) :
     Tendsto (fun n => eLpNorm
       (fun y =>
         (fderiv ℝ (standardNirenbergTest (d := Module.finrank ℝ E)
-          k h η (u_seq n)) y) (EuclideanSpace.single j 1) -
+          k h η (uSeq n)) y) (EuclideanSpace.single j 1) -
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k (-h)
           (fun z =>
             (η z)^2 *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h (D.weak_partial j) z +
+                (d := Module.finrank ℝ E) k h (D.weakPartial j) z +
             2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.u_chart z) y) 2
+                (d := Module.finrank ℝ E) k h D.uChart z) y) 2
       ((volume : Measure EuclN).restrict
         (Metric.cthickening |h| K_0))) atTop (𝓝 0) := by
   classical
@@ -420,15 +420,15 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
   set F_n : ℕ → EuclN → ℝ := fun n z =>
     2 * η z * ((fderiv ℝ η z) (EuclideanSpace.single j 1)) *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (u_seq n) z +
+        (d := Module.finrank ℝ E) k h (uSeq n) z +
     (η z)^2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        (fun z' => (fderiv ℝ (u_seq n) z') (EuclideanSpace.single j 1)) z
+        (fun z' => (fderiv ℝ (uSeq n) z') (EuclideanSpace.single j 1)) z
     with hF_n_def
   have h_fderiv_expansion : ∀ n y,
       (fderiv ℝ (standardNirenbergTest (d := Module.finrank ℝ E)
-        k h η (u_seq n)) y) (EuclideanSpace.single j 1) =
+        k h η (uSeq n)) y) (EuclideanSpace.single j 1) =
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k (-h) (F_n n) y := by
     intro n y
@@ -437,14 +437,14 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
   set B : EuclN → ℝ := fun z =>
     (η z)^2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial j) z +
+        (d := Module.finrank ℝ E) k h (D.weakPartial j) z +
     2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart z
+        (d := Module.finrank ℝ E) k h D.uChart z
     with hB_def
   have h_diff_eq : ∀ n y,
       ((fderiv ℝ (standardNirenbergTest (d := Module.finrank ℝ E)
-        k h η (u_seq n)) y) (EuclideanSpace.single j 1) -
+        k h η (uSeq n)) y) (EuclideanSpace.single j 1) -
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k (-h) B y) =
       DifferentialGeometry.Analysis.Sobolev.diffQuot
@@ -458,16 +458,16 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
     2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        (fun y => u_seq n y - χ y * D.u_chart y) z
+        (fun y => uSeq n y - χ y * D.uChart y) z
     with hTerm_A_def
   set TERM_B_n : ℕ → EuclN → ℝ := fun n z =>
     (η z)^2 *
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
         (fun y =>
-          (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-            ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-              χ y * D.weak_partial j y)) z
+          (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+            ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+              χ y * D.weakPartial j y)) z
     with hTerm_B_def
   have h_F_minus_B_eq : ∀ n,
       F_n n - B = TERM_A_n n + TERM_B_n n := by
@@ -486,14 +486,14 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
     have hsub_uchart :
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          (fun y => u_seq n y - χ y * D.u_chart y) z =
+          (fun y => uSeq n y - χ y * D.uChart y) z =
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h (u_seq n) z -
+          (d := Module.finrank ℝ E) k h (uSeq n) z -
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          (fun y => χ y * D.u_chart y) z := by
-      have h_eq : (fun y => u_seq n y - χ y * D.u_chart y) =
-        (u_seq n) - (fun y => χ y * D.u_chart y) := by
+          (fun y => χ y * D.uChart y) z := by
+      have h_eq : (fun y => uSeq n y - χ y * D.uChart y) =
+        (uSeq n) - (fun y => χ y * D.uChart y) := by
         funext y; rfl
       rw [h_eq, DifferentialGeometry.Analysis.Sobolev.diffQuot_sub]
       rfl
@@ -501,42 +501,42 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
           (fun y =>
-            (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-              ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-                χ y * D.weak_partial j y)) z =
+            (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+              ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+                χ y * D.weakPartial j y)) z =
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          (fun z' => (fderiv ℝ (u_seq n) z') (EuclideanSpace.single j 1)) z -
+          (fun z' => (fderiv ℝ (uSeq n) z') (EuclideanSpace.single j 1)) z -
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
           (fun y =>
-            (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-              χ y * D.weak_partial j y) z := by
+            (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+              χ y * D.weakPartial j y) z := by
       have h_eq : (fun y =>
-          (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-            ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-              χ y * D.weak_partial j y)) =
-          (fun z' => (fderiv ℝ (u_seq n) z') (EuclideanSpace.single j 1)) -
+          (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+            ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+              χ y * D.weakPartial j y)) =
+          (fun z' => (fderiv ℝ (uSeq n) z') (EuclideanSpace.single j 1)) -
           (fun y =>
-            (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-              χ y * D.weak_partial j y) := by
+            (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+              χ y * D.weakPartial j y) := by
         funext y; rfl
       rw [h_eq, DifferentialGeometry.Analysis.Sobolev.diffQuot_sub]
       rfl
     have hsub_chi_uchart :
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          (fun y => (χ y - 1) * D.u_chart y) z =
+          (fun y => (χ y - 1) * D.uChart y) z =
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          (fun y => χ y * D.u_chart y) z -
+          (fun y => χ y * D.uChart y) z -
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h D.u_chart z := by
-      have h_eq : (fun y => (χ y - 1) * D.u_chart y) =
-          (fun y => χ y * D.u_chart y) - D.u_chart := by
+          (d := Module.finrank ℝ E) k h D.uChart z := by
+      have h_eq : (fun y => (χ y - 1) * D.uChart y) =
+          (fun y => χ y * D.uChart y) - D.uChart := by
         funext y
-        change (χ y - 1) * D.u_chart y =
-          (fun y => χ y * D.u_chart y) y - D.u_chart y
+        change (χ y - 1) * D.uChart y =
+          (fun y => χ y * D.uChart y) y - D.uChart y
         ring
       rw [h_eq, DifferentialGeometry.Analysis.Sobolev.diffQuot_sub]
       rfl
@@ -544,65 +544,65 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
           (fun y =>
-            (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-              (χ y - 1) * D.weak_partial j y) z =
+            (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+              (χ y - 1) * D.weakPartial j y) z =
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
           (fun y =>
-            (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-              χ y * D.weak_partial j y) z -
+            (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+              χ y * D.weakPartial j y) z -
         DifferentialGeometry.Analysis.Sobolev.diffQuot
-          (d := Module.finrank ℝ E) k h (D.weak_partial j) z := by
+          (d := Module.finrank ℝ E) k h (D.weakPartial j) z := by
       have h_eq : (fun y =>
-          (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-            (χ y - 1) * D.weak_partial j y) =
+          (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+            (χ y - 1) * D.weakPartial j y) =
           (fun y =>
-            (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-              χ y * D.weak_partial j y) - D.weak_partial j := by
+            (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+              χ y * D.weakPartial j y) - D.weakPartial j := by
         funext y
-        change (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-            (χ y - 1) * D.weak_partial j y =
-          ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-            χ y * D.weak_partial j y) - D.weak_partial j y
+        change (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+            (χ y - 1) * D.weakPartial j y =
+          ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+            χ y * D.weakPartial j y) - D.weakPartial j y
         ring
       rw [h_eq, DifferentialGeometry.Analysis.Sobolev.diffQuot_sub]
       rfl
     set α_z : ℝ := 2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1)
     set β_z : ℝ := (η z)^2
     set Du : ℝ := DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (u_seq n) z
+        (d := Module.finrank ℝ E) k h (uSeq n) z
     set Dχu : ℝ := DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        (fun y => χ y * D.u_chart y) z
+        (fun y => χ y * D.uChart y) z
     set Du0 : ℝ := DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h D.u_chart z
+        (d := Module.finrank ℝ E) k h D.uChart z
     set DDu : ℝ := DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        (fun z' => (fderiv ℝ (u_seq n) z') (EuclideanSpace.single j 1)) z
+        (fun z' => (fderiv ℝ (uSeq n) z') (EuclideanSpace.single j 1)) z
     set Dg : ℝ := DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
         (fun y =>
-          (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-            χ y * D.weak_partial j y) z
+          (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+            χ y * D.weakPartial j y) z
     set Dwp : ℝ := DifferentialGeometry.Analysis.Sobolev.diffQuot
-        (d := Module.finrank ℝ E) k h (D.weak_partial j) z
+        (d := Module.finrank ℝ E) k h (D.weakPartial j) z
     have hDsub_uchart : DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        (fun y => u_seq n y - χ y * D.u_chart y) z = Du - Dχu := hsub_uchart
+        (fun y => uSeq n y - χ y * D.uChart y) z = Du - Dχu := hsub_uchart
     have hDsub_grad : DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
         (fun y =>
-          (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-            ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-              χ y * D.weak_partial j y)) z = DDu - Dg := hsub_grad
+          (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+            ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+              χ y * D.weakPartial j y)) z = DDu - Dg := hsub_grad
     have hDsub_chi : DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
-        (fun y => (χ y - 1) * D.u_chart y) z = Dχu - Du0 := hsub_chi_uchart
+        (fun y => (χ y - 1) * D.uChart y) z = Dχu - Du0 := hsub_chi_uchart
     have hDsub_gw : DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k h
         (fun y =>
-          (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-            (χ y - 1) * D.weak_partial j y) z = Dg - Dwp := hsub_g_weak
+          (fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+            (χ y - 1) * D.weakPartial j y) z = Dg - Dwp := hsub_g_weak
     have hC_simplified : α_z * (Dχu - Du0) = 0 := by
       have := hTerm_C_z
       rw [hDsub_chi] at this
@@ -614,28 +614,28 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
     change F_n n z - B z = TERM_A_n n z + TERM_B_n n z
     change (2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
           DifferentialGeometry.Analysis.Sobolev.diffQuot
-            (d := Module.finrank ℝ E) k h (u_seq n) z +
+            (d := Module.finrank ℝ E) k h (uSeq n) z +
           (η z)^2 *
             DifferentialGeometry.Analysis.Sobolev.diffQuot
               (d := Module.finrank ℝ E) k h
-              (fun z' => (fderiv ℝ (u_seq n) z') (EuclideanSpace.single j 1)) z) -
+              (fun z' => (fderiv ℝ (uSeq n) z') (EuclideanSpace.single j 1)) z) -
         ((η z)^2 *
             DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h (D.weak_partial j) z +
+              (d := Module.finrank ℝ E) k h (D.weakPartial j) z +
           2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
             DifferentialGeometry.Analysis.Sobolev.diffQuot
-              (d := Module.finrank ℝ E) k h D.u_chart z) =
+              (d := Module.finrank ℝ E) k h D.uChart z) =
       2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          (fun y => u_seq n y - χ y * D.u_chart y) z +
+          (fun y => uSeq n y - χ y * D.uChart y) z +
       (η z)^2 *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
           (fun y =>
-            (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-              ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-                χ y * D.weak_partial j y)) z
+            (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+              ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+                χ y * D.weakPartial j y)) z
     rw [hDsub_uchart, hDsub_grad]
     linarith
   have hη_cont : Continuous η := hη.continuous
@@ -711,38 +711,38 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
     have h_abs_abs : |(|η x|)| = |η x| := abs_of_nonneg (abs_nonneg _)
     rw [h_abs_abs]
     exact pow_le_pow_left₀ (abs_nonneg _) (hM_η_bd x) 2
-  have h_χu_lp : MemLp (fun x => χ x * D.u_chart x) 2
+  have h_χu_lp : MemLp (fun x => χ x * D.uChart x) 2
       (volume : Measure EuclN) :=
     SubstitutionDischargeSmoothApprox.cutoff_uChart_memLp_two_univ
       (I := I) (M := M) D hχ hχ_cs hχ_supp_in
   have h_g_χu_lp : ∀ i,
       MemLp (fun x =>
-        (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-        χ x * D.weak_partial i x) 2 (volume : Measure EuclN) := fun i =>
+        (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+        χ x * D.weakPartial i x) 2 (volume : Measure EuclN) := fun i =>
     SubstitutionDischargeSmoothApprox.cutoff_uChart_partial_memLp_two_univ
       (I := I) (M := M) D hχ hχ_cs hχ_supp_in i
   have h_diff_uchart_aesm : ∀ n,
       AEStronglyMeasurable
-        (fun y => u_seq n y - χ y * D.u_chart y)
+        (fun y => uSeq n y - χ y * D.uChart y)
         (volume : Measure EuclN) := by
     intro n
-    have h_useq_aesm : AEStronglyMeasurable (u_seq n)
+    have h_useq_aesm : AEStronglyMeasurable (uSeq n)
         (volume : Measure EuclN) :=
       (hu_seq_smooth n).continuous.aestronglyMeasurable
     have h_χu_aesm : AEStronglyMeasurable
-        (fun x => χ x * D.u_chart x) (volume : Measure EuclN) :=
+        (fun x => χ x * D.uChart x) (volume : Measure EuclN) :=
       h_χu_lp.aestronglyMeasurable
     exact h_useq_aesm.sub h_χu_aesm
   have h_diff_grad_aesm : ∀ n,
       AEStronglyMeasurable
         (fun y =>
-          (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-            ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-              χ y * D.weak_partial j y))
+          (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+            ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+              χ y * D.weakPartial j y))
         (volume : Measure EuclN) := by
     intro n
     have h_partial_useq_cont : Continuous
-        (fun y : EuclN => (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1)) :=
+        (fun y : EuclN => (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1)) :=
       ((hu_seq_smooth n).continuous_fderiv
         (by decide : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).clm_apply continuous_const
     exact h_partial_useq_cont.aestronglyMeasurable.sub
@@ -771,7 +771,7 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
       eLpNorm (TERM_A_n n) 2 (volume : Measure EuclN) ≤
         ENNReal.ofReal (2 * M_η * M_dη) *
           ((2 / ENNReal.ofReal |h|) *
-            eLpNorm (fun y => u_seq n y - χ y * D.u_chart y) 2
+            eLpNorm (fun y => uSeq n y - χ y * D.uChart y) 2
               (volume : Measure EuclN)) := by
     intro n
     rw [hTerm_A_def]
@@ -780,46 +780,46 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
           2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
           DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k h
-            (fun y => u_seq n y - χ y * D.u_chart y) z) 2
+            (fun y => uSeq n y - χ y * D.uChart y) z) 2
             (volume : Measure EuclN) ≤
         ENNReal.ofReal (2 * M_η * M_dη) *
           eLpNorm (DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k h
-            (fun y => u_seq n y - χ y * D.u_chart y)) 2
+            (fun y => uSeq n y - χ y * D.uChart y)) 2
             (volume : Measure EuclN) :=
       eLpNorm_mul_bounded (2 * M_η * M_dη) hM_2ηdη_nn hM_2ηdη_bd
     have h_step2 :
         eLpNorm (DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          (fun y => u_seq n y - χ y * D.u_chart y)) 2
+          (fun y => uSeq n y - χ y * D.uChart y)) 2
           (volume : Measure EuclN) ≤
         (2 / ENNReal.ofReal |h|) *
-          eLpNorm (fun y => u_seq n y - χ y * D.u_chart y) 2
+          eLpNorm (fun y => uSeq n y - χ y * D.uChart y) 2
             (volume : Measure EuclN) :=
       eLpNorm_diffQuot_le_local k hh (h_diff_uchart_aesm n)
     calc eLpNorm (fun z =>
         2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
-          (fun y => u_seq n y - χ y * D.u_chart y) z) 2
+          (fun y => uSeq n y - χ y * D.uChart y) z) 2
             (volume : Measure EuclN)
         ≤ ENNReal.ofReal (2 * M_η * M_dη) *
           eLpNorm (DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k h
-            (fun y => u_seq n y - χ y * D.u_chart y)) 2
+            (fun y => uSeq n y - χ y * D.uChart y)) 2
             (volume : Measure EuclN) := h_step1
       _ ≤ ENNReal.ofReal (2 * M_η * M_dη) *
             ((2 / ENNReal.ofReal |h|) *
-              eLpNorm (fun y => u_seq n y - χ y * D.u_chart y) 2
+              eLpNorm (fun y => uSeq n y - χ y * D.uChart y) 2
                 (volume : Measure EuclN)) := by gcongr
   have h_B_bound : ∀ n,
       eLpNorm (TERM_B_n n) 2 (volume : Measure EuclN) ≤
         ENNReal.ofReal (M_η^2) *
           ((2 / ENNReal.ofReal |h|) *
             eLpNorm (fun y =>
-              (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-                ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-                  χ y * D.weak_partial j y)) 2
+              (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+                ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+                  χ y * D.weakPartial j y)) 2
               (volume : Measure EuclN)) := by
     intro n
     rw [hTerm_B_def]
@@ -829,52 +829,52 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
             DifferentialGeometry.Analysis.Sobolev.diffQuot
               (d := Module.finrank ℝ E) k h
               (fun y =>
-                (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-                  ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-                    χ y * D.weak_partial j y)) z) 2 (volume : Measure EuclN) ≤
+                (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+                  ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+                    χ y * D.weakPartial j y)) z) 2 (volume : Measure EuclN) ≤
         ENNReal.ofReal (M_η^2) *
           eLpNorm (DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k h
             (fun y =>
-              (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-                ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-                  χ y * D.weak_partial j y))) 2 (volume : Measure EuclN) :=
+              (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+                ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+                  χ y * D.weakPartial j y))) 2 (volume : Measure EuclN) :=
       eLpNorm_mul_bounded (M_η^2) hM_η_sq_nn hM_η_sq_bd
     have h_step2 :
         eLpNorm (DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h
           (fun y =>
-            (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-              ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-                χ y * D.weak_partial j y))) 2 (volume : Measure EuclN) ≤
+            (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+              ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+                χ y * D.weakPartial j y))) 2 (volume : Measure EuclN) ≤
         (2 / ENNReal.ofReal |h|) *
           eLpNorm (fun y =>
-            (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-              ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-                χ y * D.weak_partial j y)) 2 (volume : Measure EuclN) :=
+            (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+              ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+                χ y * D.weakPartial j y)) 2 (volume : Measure EuclN) :=
       eLpNorm_diffQuot_le_local k hh (h_diff_grad_aesm n)
     calc eLpNorm (fun z =>
         (η z)^2 *
           DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k h
             (fun y =>
-              (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-                ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-                  χ y * D.weak_partial j y)) z) 2 (volume : Measure EuclN)
+              (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+                ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+                  χ y * D.weakPartial j y)) z) 2 (volume : Measure EuclN)
         ≤ ENNReal.ofReal (M_η^2) *
           eLpNorm (DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k h
             (fun y =>
-              (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-                ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-                  χ y * D.weak_partial j y))) 2 (volume : Measure EuclN) :=
+              (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+                ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+                  χ y * D.weakPartial j y))) 2 (volume : Measure EuclN) :=
             h_step1
       _ ≤ ENNReal.ofReal (M_η^2) *
             ((2 / ENNReal.ofReal |h|) *
               eLpNorm (fun y =>
-                (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-                  ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-                    χ y * D.weak_partial j y)) 2
+                (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+                  ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+                    χ y * D.weakPartial j y)) 2
                 (volume : Measure EuclN)) := by gcongr
   have h_F_minus_B_aesm : ∀ n,
       AEStronglyMeasurable (F_n n - B) (volume : Measure EuclN) := by
@@ -922,15 +922,15 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
         Tendsto (fun n =>
           ENNReal.ofReal (2 * M_η * M_dη) *
             ((2 / ENNReal.ofReal |h|) *
-              eLpNorm (fun y => u_seq n y - χ y * D.u_chart y) 2
+              eLpNorm (fun y => uSeq n y - χ y * D.uChart y) 2
                 (volume : Measure EuclN))) atTop (𝓝 0) := by
       have h_eq_assoc : ∀ n,
           ENNReal.ofReal (2 * M_η * M_dη) *
             ((2 / ENNReal.ofReal |h|) *
-              eLpNorm (fun y => u_seq n y - χ y * D.u_chart y) 2
+              eLpNorm (fun y => uSeq n y - χ y * D.uChart y) 2
                 (volume : Measure EuclN)) =
           (ENNReal.ofReal (2 * M_η * M_dη) * (2 / ENNReal.ofReal |h|)) *
-            eLpNorm (fun y => u_seq n y - χ y * D.u_chart y) 2
+            eLpNorm (fun y => uSeq n y - χ y * D.uChart y) 2
               (volume : Measure EuclN) := by
         intro n; ring
       simp only [h_eq_assoc]
@@ -951,22 +951,22 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
           ENNReal.ofReal (M_η^2) *
             ((2 / ENNReal.ofReal |h|) *
               eLpNorm (fun y =>
-                (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-                  ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-                    χ y * D.weak_partial j y)) 2 (volume : Measure EuclN))) atTop
+                (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+                  ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+                    χ y * D.weakPartial j y)) 2 (volume : Measure EuclN))) atTop
           (𝓝 0) := by
       have h_eq_assoc : ∀ n,
           ENNReal.ofReal (M_η^2) *
             ((2 / ENNReal.ofReal |h|) *
               eLpNorm (fun y =>
-                (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-                  ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-                    χ y * D.weak_partial j y)) 2 (volume : Measure EuclN)) =
+                (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+                  ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+                    χ y * D.weakPartial j y)) 2 (volume : Measure EuclN)) =
           (ENNReal.ofReal (M_η^2) * (2 / ENNReal.ofReal |h|)) *
             eLpNorm (fun y =>
-              (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1) -
-                ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.u_chart y +
-                  χ y * D.weak_partial j y)) 2 (volume : Measure EuclN) := by
+              (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1) -
+                ((fderiv ℝ χ y) (EuclideanSpace.single j 1) * D.uChart y +
+                  χ y * D.weakPartial j y)) 2 (volume : Measure EuclN) := by
         intro n; ring
       simp only [h_eq_assoc]
       have h := ENNReal.Tendsto.const_mul (a :=
@@ -1030,16 +1030,16 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
   have h_goal_eq : ∀ n,
       (fun y =>
         (fderiv ℝ (standardNirenbergTest (d := Module.finrank ℝ E)
-          k h η (u_seq n)) y) (EuclideanSpace.single j 1) -
+          k h η (uSeq n)) y) (EuclideanSpace.single j 1) -
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k (-h)
           (fun z =>
             (η z)^2 *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h (D.weak_partial j) z +
+                (d := Module.finrank ℝ E) k h (D.weakPartial j) z +
             2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
               DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h D.u_chart z) y) =
+                (d := Module.finrank ℝ E) k h D.uChart z) y) =
       DifferentialGeometry.Analysis.Sobolev.diffQuot
         (d := Module.finrank ℝ E) k (-h) (F_n n - B) := by
     intro n
@@ -1048,16 +1048,16 @@ theorem standardNirenbergTest_seq_grad_tendsto_eLpNorm
   rw [show (fun n => eLpNorm
         (fun y =>
           (fderiv ℝ (standardNirenbergTest (d := Module.finrank ℝ E)
-            k h η (u_seq n)) y) (EuclideanSpace.single j 1) -
+            k h η (uSeq n)) y) (EuclideanSpace.single j 1) -
           DifferentialGeometry.Analysis.Sobolev.diffQuot
             (d := Module.finrank ℝ E) k (-h)
             (fun z =>
               (η z)^2 *
                 DifferentialGeometry.Analysis.Sobolev.diffQuot
-                  (d := Module.finrank ℝ E) k h (D.weak_partial j) z +
+                  (d := Module.finrank ℝ E) k h (D.weakPartial j) z +
               2 * η z * (fderiv ℝ η z) (EuclideanSpace.single j 1) *
                 DifferentialGeometry.Analysis.Sobolev.diffQuot
-                  (d := Module.finrank ℝ E) k h D.u_chart z) y) 2
+                  (d := Module.finrank ℝ E) k h D.uChart z) y) 2
         ((volume : Measure EuclN).restrict
           (Metric.cthickening |h| K_0))) =
       (fun n => eLpNorm

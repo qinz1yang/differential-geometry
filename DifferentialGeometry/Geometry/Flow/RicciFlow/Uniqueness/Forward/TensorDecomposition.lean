@@ -88,7 +88,7 @@ theorem inner_raiseAt (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x)) (a : Idx -> Real) (m : Idx) :
     g.inner x (raiseAt (I := I) g x basis a) (basis m) = a m := by
   classical
-  have hinv : MetricInverseInBasis_gen (I := I) (M := M) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) (M := M) g x basis
       (basisInvMetric (I := I) g x basis) := basisInvMetric_real (I := I) g x basis
   have hrepr : ∀ p : Idx,
       basis.repr (raiseAt (I := I) g x basis a) p =
@@ -123,18 +123,18 @@ omit [IsManifold I 1 M] [IsManifold I 2 M] [CompleteSpace E] [SigmaCompactSpace 
 theorem inner_sharpFlat (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
     (V W : TangentSpace I x) :
     g₁.inner x V (sharpFlat (I := I) g₂ g₁ x W) = g₂.inner x V W := by
-  have hflat : tangentFlatEquiv_gen (I := I) g₁ x (sharpFlat (I := I) g₂ g₁ x W) =
-      tangentFlatEquiv_gen (I := I) g₂ x W := by
-    change tangentFlatEquiv_gen (I := I) g₁ x
-      ((tangentFlatEquiv_gen (I := I) g₁ x).symm
-        ((tangentFlatEquiv_gen (I := I) g₂ x) W)) = _
-    exact (tangentFlatEquiv_gen (I := I) g₁ x).apply_symm_apply _
+  have hflat : tangentFlatEquivGen (I := I) g₁ x (sharpFlat (I := I) g₂ g₁ x W) =
+      tangentFlatEquivGen (I := I) g₂ x W := by
+    change tangentFlatEquivGen (I := I) g₁ x
+      ((tangentFlatEquivGen (I := I) g₁ x).symm
+        ((tangentFlatEquivGen (I := I) g₂ x) W)) = _
+    exact (tangentFlatEquivGen (I := I) g₁ x).apply_symm_apply _
   calc g₁.inner x V (sharpFlat (I := I) g₂ g₁ x W)
       = g₁.inner x (sharpFlat (I := I) g₂ g₁ x W) V :=
         g₁.symm x V (sharpFlat (I := I) g₂ g₁ x W)
-    _ = tangentFlatEquiv_gen (I := I) g₁ x (sharpFlat (I := I) g₂ g₁ x W) V :=
+    _ = tangentFlatEquivGen (I := I) g₁ x (sharpFlat (I := I) g₂ g₁ x W) V :=
         (tangentFlatEquiv_apply_gen (I := I) g₁ x _ V).symm
-    _ = tangentFlatEquiv_gen (I := I) g₂ x W V := by rw [hflat]
+    _ = tangentFlatEquivGen (I := I) g₂ x W V := by rw [hflat]
     _ = g₂.inner x W V := tangentFlatEquiv_apply_gen (I := I) g₂ x W V
     _ = g₂.inner x V W := g₂.symm x W V
 

@@ -56,8 +56,8 @@ theorem redDensity_pos
     (tau : Real) : 0 < redDensity S T x y tau :=
   Real.exp_pos _
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem exists_lExpPartial
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -117,8 +117,8 @@ theorem lExpPartial_apply
     lExpPartial S hS T x tau htau Z = lExp S T x Z tau :=
   (Classical.choose_spec (exists_lExpPartial S hS T x tau htau)).2.2 hZ
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lExpPartial_density
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -143,8 +143,8 @@ theorem lExpPartial_density
   rw [hev.eq_of_nhds,
     hev.mfderiv_eq (I := modelWithCornersSelf Real E) (I' := I)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRedJac_eq
     (S : SolutionOn (I := I) (M := M) D)
@@ -170,8 +170,8 @@ theorem lRedJac_eq
     ring
   rw [hexp, Real.exp_add, Real.exp_log hJ]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRedJac_mul_src
     (S : SolutionOn (I := I) (M := M) D)
@@ -185,8 +185,8 @@ theorem lRedJac_mul_src
   rw [lRedJac_eq S hS T x htau hZ, lExpJac]
   field_simp [ne_of_gt (lSrcDensity_pos S T x)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem exists_lMin_slab
     [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -234,8 +234,8 @@ private theorem exists_lMin_slab
     (fun r hr ↦ D.regular_subset (hslab hr))
     hback x y alpha halpha ha0 hab (fun s hs ↦ hslab (hback s hs))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lExp_inj_cover
     [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -266,8 +266,8 @@ theorem lExp_inj_ae
   exact measure_mono_null (lExp_inj_cover S hS T x tau htau hslab)
     (lCut_null S hS T x tau (S.base.metric (T - tau)))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem redVolume_lint
     [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D)
@@ -325,8 +325,8 @@ theorem redVolume_lint
         ∂modelHaar (E := E) := by
       rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem redVolume_anti
     [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D)

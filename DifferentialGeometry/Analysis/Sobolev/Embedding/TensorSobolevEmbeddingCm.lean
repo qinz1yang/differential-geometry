@@ -33,8 +33,8 @@ private noncomputable local instance tensorSobolevEmbeddingRiemannianNormedAddCo
   (h.g.toCore b).toNormedAddCommGroupOfTopology
     (h.g.continuousAt b) (h.g.isVonNBounded b)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [I.Boundaryless] in
 omit [BoundarylessManifold I M] in
 theorem tensorPouSobolevHilbert_embedding_Ck
@@ -42,7 +42,7 @@ theorem tensorPouSobolevHilbert_embedding_Ck
     {g : SmoothRiemannianMetric I M} {r s k m : ℕ}
     (h_super : 2 * k > Module.finrank ℝ E + 2 * m) :
     letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
     ∃ C : ℝ, 0 < C ∧
       ∀ (T : SmoothCcTensor g r s) (x : M),
         ‖T.toSection x‖ ≤

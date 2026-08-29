@@ -36,7 +36,7 @@ theorem covariantDeriv_vectorField_contMDiff
     (Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _)) :
     ContMDiff I (I.prod 𝓘(𝕜, E)) (∞ : WithTop ℕ∞)
       (fun p : M =>
-        (⟨p, covariantDeriv_vectorField (I := I) cov (fun q => X q) (fun q => Y q) p⟩ :
+        (⟨p, covariantDerivVectorField (I := I) cov (fun q => X q) (fun q => Y q) p⟩ :
           TotalSpace E (TangentSpace I : M → Type _))) := by
   refine (CovariantDerivative.ContMDiffCovariantDerivative.contMDiff_apply
     (𝕜 := 𝕜) (I := I) (M := M) cov hcov X Y).congr ?_
@@ -51,7 +51,7 @@ noncomputable def covSection
     ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) where
   toFun := fun p : M => (cov (fun q : M => Y q) p) (X p)
   contMDiff_toFun := by
-    simpa [covariantDeriv_vectorField] using
+    simpa [covariantDerivVectorField] using
       covariantDeriv_vectorField_contMDiff (I := I) cov hcov X Y
 
 omit [FiniteDimensional 𝕜 E] [CompleteSpace 𝕜] in

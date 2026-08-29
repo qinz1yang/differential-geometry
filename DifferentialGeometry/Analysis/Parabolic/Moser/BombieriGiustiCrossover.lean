@@ -102,7 +102,7 @@ theorem localizedSpacetimeRpowNorm_mul_inv_le_canonicalBombieriGiustiCrossover_o
         outer.toFun x ^ 2)
     (hmass : 0 < cutoffMass (I := I) (M := M) averagingCutoff)
     (hpde : ∀ t ∈ Icc A D, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     localizedSpacetimeRpowNorm (I := I) (M := M)
         (bombieriGiustiSpatialCutoff rho lower upper 0) u p₀ A b *

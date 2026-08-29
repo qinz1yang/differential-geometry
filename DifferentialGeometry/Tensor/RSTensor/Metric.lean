@@ -94,7 +94,7 @@ variable {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
 variable (n : WithTop ℕ∞)
 variable (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
 
-abbrev RiemannianMetric_gen := _root_.Bundle.ContMDiffRiemannianMetric I n E
+abbrev RiemannianMetricGen := _root_.Bundle.ContMDiffRiemannianMetric I n E
     (TangentSpace I : M → Type _)
 
 private noncomputable def to02Tensor_eCLM :
@@ -170,7 +170,7 @@ theorem joint_to02 {S : Set ℝ}
         (((continuousMultilinearCurryFin1 ℝ E ℝ).symm.toContinuousLinearMap.comp
           (A p)).uncurryLeft))
       ((Set.univ : Set M) ×ˢ S) := by
-  let := Tensor0SBundle.tensor0SBundle_topology
+  let := Tensor0SBundle.tensor0SBundleTopology
     (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   intro p₀ hp₀
   rw [_root_.Bundle.contMDiffWithinAt_totalSpace]
@@ -210,13 +210,13 @@ theorem joint_to02 {S : Set ℝ}
   · exact to02Tensor_trivialization_eq (I := I) (M := M)
       (A := A p₀) (mem_baseSet_trivializationAt E (TangentSpace I) p₀.1)
 
-def RiemannianMetric_gen.to02Tensor_gen {I : ModelWithCorners ℝ E H} {n : WithTop ℕ∞}
+def RiemannianMetricGen.to02TensorGen {I : ModelWithCorners ℝ E H} {n : WithTop ℕ∞}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I 1 M] [hM : IsManifold I (n + 1) M]
     (g : _root_.Bundle.ContMDiffRiemannianMetric I n E (TangentSpace I : M -> Type _)) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (I := I) (M := M) (n := n) 2 := by
   unfold Tensor0SBundle.Tensor0SField
-  letI := Tensor0SBundle.tensor0SBundle_topology
+  letI := Tensor0SBundle.tensor0SBundleTopology
     (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   let eCLM := to02Tensor_eCLM (E := E)
   let uCLM := to02Tensor_uCLM (E := E)
@@ -246,14 +246,14 @@ def RiemannianMetric_gen.to02Tensor_gen {I : ModelWithCorners ℝ E H} {n : With
       (A := gI x) (x := x) (x₀ := x₀) hx⟩
 
 @[simp]
-theorem RiemannianMetric_gen.to02Tensor_apply {I : ModelWithCorners ℝ E H} {n : WithTop ℕ∞}
+theorem RiemannianMetricGen.to02Tensor_apply {I : ModelWithCorners ℝ E H} {n : WithTop ℕ∞}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     [IsManifold I 1 M] [IsManifold I (n + 1) M]
     (g : _root_.Bundle.ContMDiffRiemannianMetric I n E (TangentSpace I : M -> Type _))
     (x : M) (v : Fin 2 -> TangentSpace I x) :
-    RiemannianMetric_gen.to02Tensor_gen (I := I) (n := n) g x v =
+    RiemannianMetricGen.to02TensorGen (I := I) (n := n) g x v =
       (_root_.Bundle.ContMDiffRiemannianMetric.inner g) x (v 0) (v 1) := by
-  simp only [to02Tensor_gen, tensor0SBundle_fiber.eq_1,     id_eq, Fin.isValue]
+  simp only [to02TensorGen, tensor0SBundleFiber.eq_1,     id_eq, Fin.isValue]
   change ((_root_.Bundle.ContMDiffRiemannianMetric.inner g) x (v 0)) (Fin.tail v 0) =
     ((_root_.Bundle.ContMDiffRiemannianMetric.inner g) x (v 0)) (v 1)
   simp [Fin.tail]

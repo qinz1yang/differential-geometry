@@ -18,10 +18,10 @@ namespace DeGiorgi
 variable {d : ℕ} [NeZero d]
 
 /-- The anchor constant coming from the normalized De Giorgi `L² → L∞` bound. -/
-noncomputable def C_MoserAnchor (d : ℕ) [NeZero d] : ℝ :=
+noncomputable def CMoserAnchor (d : ℕ) [NeZero d] : ℝ :=
   max 1
-    (max ((C_DeGiorgi_subsolution_normalized d) ^ 2)
-      (8 * (Mst : ℝ) ^ 2 * (C_gns d 2) ^ 2))
+    (max ((CDeGiorgiSubsolutionNormalized d) ^ 2)
+      (8 * (Mst : ℝ) ^ 2 * (CGns d 2) ^ 2))
 
 /-- The geometric decay ratio `q = (d-2)/d` used in the Moser iteration. -/
 noncomputable def moserDecayRatio (d : ℕ) [hNeZero : NeZero d] : ℝ := by
@@ -32,8 +32,8 @@ noncomputable def moserDecayRatio (d : ℕ) [hNeZero : NeZero d] : ℝ := by
 
 It is chosen large enough to absorb both the existing `p = 2` De Giorgi anchor
 and the purely geometric product appearing in the exact Moser iteration. -/
-noncomputable def C_Moser (d : ℕ) [NeZero d] : ℝ :=
-  let base := C_MoserAnchor d
+noncomputable def CMoser (d : ℕ) [NeZero d] : ℝ :=
+  let base := CMoserAnchor d
   if _hd : 2 < (d : ℝ) then
     max base
       (((32 : ℝ) * base) ^ ((d : ℝ) / 2) *
@@ -41,28 +41,28 @@ noncomputable def C_Moser (d : ℕ) [NeZero d] : ℝ :=
   else
     base
 
-theorem one_le_C_MoserAnchor : 1 ≤ C_MoserAnchor d := by
-  simp [C_MoserAnchor]
+theorem one_le_C_MoserAnchor : 1 ≤ CMoserAnchor d := by
+  simp [CMoserAnchor]
 
 theorem C_DeGiorgi_subsolution_normalized_sq_le_C_MoserAnchor :
-    (C_DeGiorgi_subsolution_normalized d) ^ 2 ≤ C_MoserAnchor d := by
-  simp [C_MoserAnchor]
+    (CDeGiorgiSubsolutionNormalized d) ^ 2 ≤ CMoserAnchor d := by
+  simp [CMoserAnchor]
 
 theorem cutoff_sobolev_anchor_le_C_MoserAnchor :
-    8 * (Mst : ℝ) ^ 2 * (C_gns d 2) ^ 2 ≤ C_MoserAnchor d := by
-  simp [C_MoserAnchor]
+    8 * (Mst : ℝ) ^ 2 * (CGns d 2) ^ 2 ≤ CMoserAnchor d := by
+  simp [CMoserAnchor]
 
 theorem C_MoserAnchor_le_C_Moser :
-    C_MoserAnchor d ≤ C_Moser d := by
+    CMoserAnchor d ≤ CMoser d := by
   by_cases hd : 2 < (d : ℝ)
-  · simp [C_Moser, hd]
-  · simp [C_Moser, hd]
+  · simp [CMoser, hd]
+  · simp [CMoser, hd]
 
-theorem one_le_C_Moser : 1 ≤ C_Moser d := by
+theorem one_le_C_Moser : 1 ≤ CMoser d := by
   exact (one_le_C_MoserAnchor (d := d)).trans (C_MoserAnchor_le_C_Moser (d := d))
 
 theorem C_DeGiorgi_subsolution_normalized_sq_le_C_Moser :
-    (C_DeGiorgi_subsolution_normalized d) ^ 2 ≤ C_Moser d := by
+    (CDeGiorgiSubsolutionNormalized d) ^ 2 ≤ CMoser d := by
   exact
     (C_DeGiorgi_subsolution_normalized_sq_le_C_MoserAnchor (d := d)).trans
       (C_MoserAnchor_le_C_Moser (d := d))

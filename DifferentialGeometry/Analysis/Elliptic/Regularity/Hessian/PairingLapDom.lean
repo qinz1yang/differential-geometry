@@ -593,7 +593,7 @@ noncomputable def hessPairingMOnLapDom
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     {u_h : H1Compl (I := I) (M := M) g}
     (x : M) : ℝ :=
-  ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
     hessPairingMChartContribution (I := I) (M := M) g φ α (u_h := u_h) x
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -602,7 +602,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     {u_h : H1Compl (I := I) (M := M) g}
     (x : M) :
     hessPairingMOnLapDom (I := I) (M := M) g φ (u_h := u_h) x =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         hessPairingMChartContribution (I := I) (M := M) g φ α (u_h := u_h) x := rfl
 
 private noncomputable def hessPairingChartLocalRep

@@ -178,7 +178,7 @@ private lemma tensorL2_diff_sq_le_const_mul_sum_componentDiff_sq
       ∀ (S₁ S₂ : SmoothCcTensor g r s),
         ‖(S₁ - S₂ : SmoothCcTensor g r s)‖ ^ 2 ≤
           C *
-            ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+            ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
               ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
                 ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
                   ((eLpNorm
@@ -231,7 +231,7 @@ private lemma cauchySeq_tensorL2_of_componentBounded
       (I := I) (M := M) g r s
   rw [Metric.cauchySeq_iff]
   intro ε hε
-  set Sf : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  set Sf : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   set K : ℕ := Sf.card *
       ((Finset.univ : Finset (Fin r → Fin (Module.finrank ℝ E))).card) *
       ((Finset.univ : Finset (Fin s → Fin (Module.finrank ℝ E))).card)

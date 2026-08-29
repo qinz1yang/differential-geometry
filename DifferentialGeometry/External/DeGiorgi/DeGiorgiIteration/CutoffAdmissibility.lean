@@ -100,7 +100,7 @@ private noncomputable def positivePartSub_memW1pWitness
             2 (volume.restrict Ω))
           atTop (nhds 0))) :
     MemW1pWitness 2 (positivePartSub u k) Ω := by
-  let hwShift : MemW1pWitness 2 (fun x => u x - k) Ω := hw.sub_const hΩ k
+  let hwShift : MemW1pWitness 2 (fun x => u x - k) Ω := hw.subConst hΩ k
   let h : MemW1pWitness 2 (positivePartSub u k) Ω :=
     hwShift.posPart hΩ happroxShift
   exact h
@@ -120,10 +120,10 @@ theorem deGiorgiCutoffTest_memW01p_of_truncWitness
     MemW01p 2 (deGiorgiCutoffTestGeneral η u k) Ω := by
   let _ := (inferInstance : (MeasureTheory.IsFiniteMeasure (MeasureTheory.volume.restrict Ω)))
   let hwη :=
-    hw_trunc.mul_smooth_bounded hΩ hη
+    hw_trunc.mulSmoothBounded hΩ hη
       (C₀ := C₀) (C₁ := C₁) hC₀ hC₁ hη_bound hη_grad_bound
   let hwηθ : MemW1pWitness 2 (deGiorgiCutoffTestGeneral η u k) Ω :=
-    hwη.mul_smooth_bounded hΩ hη
+    hwη.mulSmoothBounded hΩ hη
       (C₀ := C₀) (C₁ := C₁) hC₀ hC₁ hη_bound hη_grad_bound
   have hv_comp : HasCompactSupport (deGiorgiCutoffTestGeneral η u k) :=
     deGiorgiCutoffTestGeneral_hasCompactSupport hη_comp
@@ -158,7 +158,7 @@ theorem deGiorgiCutoffTest_memW01p_of_posPart
         MemW1pWitness 2 v Ω →
           MemW1pWitness 2 (fun x => max (v x) 0) Ω) :
     MemW01p 2 (deGiorgiCutoffTestGeneral η u k) Ω := by
-  let hwShift : MemW1pWitness 2 (fun x => u x - k) Ω := hw.sub_const hΩ k
+  let hwShift : MemW1pWitness 2 (fun x => u x - k) Ω := hw.subConst hΩ k
   have hw_trunc : MemW1pWitness 2 (positivePartSub u k) Ω := by
     let h : MemW1pWitness 2 (positivePartSub u k) Ω := hpos hwShift
     exact h
@@ -270,7 +270,7 @@ theorem deGiorgiCutoffTest_memW01p_on_ball_of_ballPosPartApprox
 
 /-- Concrete truncation witness on a ball, obtained from the Chapter 02
 positive-part constructor applied to `u - k`. -/
-noncomputable def positivePartSub_memW1pWitness_on_ball
+noncomputable def positivePartSubMemW1pWitnessOnBall
     {u : E → ℝ} {x₀ : E} {s : ℝ}
     (_hs : 0 < s)
     (hw : MemW1pWitness 2 u (Metric.ball x₀ s))

@@ -476,7 +476,7 @@ theorem trace_eq_ortho_sum
     rw [Subsingleton.elim T 0]
     simp
   · let : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
-    let D := (Tensor0SBundle.tangentMetricData_gen (I := I) g x).metric
+    let D := (Tensor0SBundle.tangentMetricDataGen (I := I) g x).metric
     let : InnerProductSpace.Core ℝ (TangentSpace I x) := D.toCore
     let : NormedAddCommGroup (TangentSpace I x) :=
       @InnerProductSpace.Core.toNormedAddCommGroup ℝ (TangentSpace I x) _ _ _ D.toCore
@@ -485,8 +485,8 @@ theorem trace_eq_ortho_sum
     have hg : ∀ v w : TangentSpace I x,
         g.inner x v w = Inner.inner ℝ v w := by
       intro v w
-      rw [← Tensor0SBundle.TangentMetricData_gen.inner_eq_gen
-        (Tensor0SBundle.tangentMetricData_gen (I := I) g x) v w]
+      rw [← Tensor0SBundle.TangentMetricDataGen.inner_eq_gen
+        (Tensor0SBundle.tangentMetricDataGen (I := I) g x) v w]
       change D.inner v w = Inner.inner ℝ v w
       exact (Tensor0SBundle.MetricFiberData.toCore_inner D v w).symm
     have hON : Orthonormal ℝ B := by

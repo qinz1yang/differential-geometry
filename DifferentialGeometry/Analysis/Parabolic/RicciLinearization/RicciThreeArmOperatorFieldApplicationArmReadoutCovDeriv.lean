@@ -90,7 +90,7 @@ omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
 omit [NeZero (Module.finrank ℝ E)] in
 theorem cometricLmodel_covectorOfCLM_cDualBasis_eq_chartBasis_sum
     (g₁ : SmoothRiemannianMetric I M) (x : M) (k : Fin (Module.finrank ℝ E)) :
-    cometricLmodel (I := I) g₁ x (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+    cometricLmodel (I := I) g₁ x (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
         ((chartModelBasis E).cDualBasis k)) =
       ∑ l : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k l • (chartModelBasis E l : TangentSpace I x) := by
@@ -105,7 +105,7 @@ theorem cometricLmodel_covectorOfCLM_cDualBasis_eq_chartBasis_sum
   apply DifferentialGeometry.Geometry.Operator.metricFlatLinear_injective (I := I) g₁ x
   ext u
   change g₁.inner x (cometricLmodel (I := I) g₁ x
-      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) ((chartModelBasis E).cDualBasis k))) u =
+      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) ((chartModelBasis E).cDualBasis k))) u =
     g₁.inner x (∑ l : Fin (Module.finrank ℝ E),
       chartInvGramMatrix (I := I) g₁ x x k l • (chartModelBasis E l : TangentSpace I x)) u
   rw [cometricLmodel_covectorOfCLM_inner (I := I) g₁ x ((chartModelBasis E).cDualBasis k) u]
@@ -707,7 +707,7 @@ private lemma gradCoeff02_center_eq
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     (m : Fin (Module.finrank ℝ E))
     (Jdx Jdx' : Fin 2 → Fin (Module.finrank ℝ E)) :
-    secondCovDerivLO_gradCoeff (I := I) (M := M) g₀ 0 2 x m ![] ![] Jdx Jdx'
+    secondCovDerivLOGradCoeff (I := I) (M := M) g₀ 0 2 x m ![] ![] Jdx Jdx'
         (toEuclidean (E := E) (extChartAt I x x)) =
       - (chartChristoffel (I := I) g₀ x (Jdx 0) m (Jdx' 0) (extChartAt I x x) *
             (if Jdx 1 = Jdx' 1 then (1 : ℝ) else 0)
@@ -722,7 +722,7 @@ private lemma gradCoeff02_center_eq
     symm_toEuclidean_symm_toEuclidean_extChartAt (I := I) (M := M) x (mem_chart_source H x)
   have hsymm : ((toEuclidean (E := E)).symm ((toEuclidean (E := E)) (extChartAt I x x))) =
       extChartAt I x x := (toEuclidean (E := E)).symm_apply_apply _
-  unfold secondCovDerivLO_gradCoeff
+  unfold secondCovDerivLOGradCoeff
   rw [lowerOrderCoeff02_eqOn_chartChristoffelEuclid (I := I) (M := M) g₀ x m Jdx Jdx' hcenter]
   simp only [chartChristoffelEuclid_def, hsymm]
 
@@ -732,7 +732,7 @@ private lemma valueCoeff02_center_eq
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     (m a : Fin (Module.finrank ℝ E))
     (Jdx Jdx' : Fin 2 → Fin (Module.finrank ℝ E)) :
-    secondCovDerivLO_valueCoeff (I := I) (M := M) g₀ 0 2 x m a ![] ![] Jdx Jdx'
+    secondCovDerivLOValueCoeff (I := I) (M := M) g₀ 0 2 x m a ![] ![] Jdx Jdx'
         (toEuclidean (E := E) (extChartAt I x x)) =
       - (euclidPartial (E := E) a
               (chartChristoffelEuclid (I := I) g₀ x (Jdx 0) m (Jdx' 0))
@@ -748,7 +748,7 @@ private lemma valueCoeff02_center_eq
   have hcenter : (toEuclidean (E := E)) (extChartAt I x x) ∈
       chartTargetEuclid (I := I) (M := M) x :=
     toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) x (mem_chart_source H x)
-  unfold secondCovDerivLO_valueCoeff
+  unfold secondCovDerivLOValueCoeff
   have heq : Set.EqOn
       (covDerivLowerOrderCoeff (I := I) (M := M) g₀ 0 2 x m ![] ![] Jdx Jdx')
       (fun y =>
@@ -817,11 +817,11 @@ private lemma euclidPartial_covDerivLowerOrderTerm02_center_eq_sum
         (fun y' => covDerivLowerOrderTerm (I := I) (M := M) g₀ 0 2 h x b ![] ![c, d] y')
         (toEuclidean (E := E) (extChartAt I x x)) =
       ∑ p : (Fin 0 → Fin (Module.finrank ℝ E)) × (Fin 2 → Fin (Module.finrank ℝ E)),
-        (secondCovDerivLO_valueCoeff (I := I) (M := M) g₀ 0 2 x b a ![] p.1 ![c, d] p.2
+        (secondCovDerivLOValueCoeff (I := I) (M := M) g₀ 0 2 x b a ![] p.1 ![c, d] p.2
               (toEuclidean (E := E) (extChartAt I x x)) *
             rawComponentEuclid (I := I) (M := M) g₀ 0 2 x h p.1 p.2
               (toEuclidean (E := E) (extChartAt I x x)) +
-          secondCovDerivLO_gradCoeff (I := I) (M := M) g₀ 0 2 x b ![] p.1 ![c, d] p.2
+          secondCovDerivLOGradCoeff (I := I) (M := M) g₀ 0 2 x b ![] p.1 ![c, d] p.2
               (toEuclidean (E := E) (extChartAt I x x)) *
             euclidPartial (E := E) a
               (rawComponentEuclid (I := I) (M := M) g₀ 0 2 x h p.1 p.2)
@@ -967,9 +967,9 @@ private lemma arm2ReadoutPairTerm1_center_eq
       rw [euclidPartial_def, euclidPartial_def,
         Filter.EventuallyEq.fderiv_eq (heqraw.eventuallyEq_of_mem (hopen.mem_nhds hcenter))]
     have hsummand : ∀ J' : Fin 2 → Fin (Module.finrank ℝ E),
-        secondCovDerivLO_valueCoeff (I := I) (M := M) g₀ 0 2 x b a ![] ![] ![c, d] J' Y *
+        secondCovDerivLOValueCoeff (I := I) (M := M) g₀ 0 2 x b a ![] ![] ![c, d] J' Y *
             rawComponentEuclid (I := I) (M := M) g₀ 0 2 x h ![] J' Y +
-          secondCovDerivLO_gradCoeff (I := I) (M := M) g₀ 0 2 x b ![] ![] ![c, d] J' Y *
+          secondCovDerivLOGradCoeff (I := I) (M := M) g₀ 0 2 x b ![] ![] ![c, d] J' Y *
             euclidPartial (E := E) a (rawComponentEuclid (I := I) (M := M) g₀ 0 2 x h ![] J') Y =
           (((fun r => - euclidPartial (E := E) a (chartChristoffelEuclid (I := I) g₀ x c b r) Y)
             (J' 0) *

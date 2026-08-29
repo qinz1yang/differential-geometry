@@ -181,9 +181,9 @@ noncomputable def endgamePhi
     (L : PointedFlowData (I := I) X.D)
     (hL0 : L.atTime (I := I) 0 = mc.limit) :
     PointedCGHMaps (I := I) X (L.atTime 0) mc.subseq :=
-  pointedCGHMaps_of_atZero (I := I) X L mc.subseq (hL0.symm ▸ mc.maps)
+  pointedCGHMapsOfAtZero (I := I) X L mc.subseq (hL0.symm ▸ mc.maps)
 
-noncomputable def flowUpgrade_of_maps
+noncomputable def flowUpgradeOfMaps
     (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))
     (L : PointedFlowData (I := I) X.D)
     (P : PointedRiemannianManifold (I := I))
@@ -298,7 +298,7 @@ theorem flowUpgrade_maps_L
     (ricciNorm : RicNormPullback (I := I)
       (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
-    (flowUpgrade_of_maps (I := I) mc L P hPlim hPL Φ R bf hsrc htgt
+    (flowUpgradeOfMaps (I := I) mc L P hPlim hPL Φ R bf hsrc htgt
       β ψ hcarrier co hLmetric scalar ricciNorm).data.L = L := by
   cases hPL
   rfl
@@ -337,7 +337,7 @@ theorem flowLimit_of_maps
       (hPL.symm ▸ (Φ.compSubseq co.φ co.hφ) :
         PointedCGHMaps (I := I) X (L.atTime 0) (mc.subseq ∘ co.φ))) :
     CompactnessConclusion (I := I) X :=
-  (flowUpgrade_of_maps (I := I) (X := X) mc L P hPlim hPL Φ R bf hsrc htgt
+  (flowUpgradeOfMaps (I := I) (X := X) mc L P hPlim hPL Φ R bf hsrc htgt
     β ψ hcarrier co hLmetric scalar ricciNorm).toConclusion
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -372,7 +372,7 @@ theorem flowLimit_of_co
     (I := I) mc L hL0) R bf hsrc htgt β ψ
     hcarrier co (fun t ht => heq_of_eq (hLmetric t ht)) scalar ricciNorm
 
-noncomputable def flowUpgrade_of_mc
+noncomputable def flowUpgradeOfMc
     (mc : MetricCompactnessConclusion (I := I) (X.atZero (I := I)))
     (Φ₀ : PointedCGHMaps (I := I) X mc.limit mc.subseq)
     (R :
@@ -422,7 +422,7 @@ noncomputable def flowUpgrade_of_mc
   have hL0 :
       (flowOfMetric (I := I) X.D mc.limit co.gInf hsol).atTime (I := I) 0 = mc.limit :=
     flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero
-  exact flowUpgrade_of_maps (I := I) mc
+  exact flowUpgradeOfMaps (I := I) mc
     (flowOfMetric (I := I) X.D mc.limit co.gInf hsol) mc.limit rfl hL0 Φ₀
     R bf hsrc htgt β ψ hcarrier co (fun t _ => HEq.rfl) scalar ricciNorm
 
@@ -474,7 +474,7 @@ theorem flowLimit_of_mc
           ((flowOfMetric (I := I) X.D mc.limit co.gInf hsol).atTime 0)
           (mc.subseq ∘ co.φ))) :
     CompactnessConclusion (I := I) X :=
-  (flowUpgrade_of_mc (I := I) (X := X) mc Φ₀ R bf hsrc htgt β ψ
+  (flowUpgradeOfMc (I := I) (X := X) mc Φ₀ R bf hsrc htgt β ψ
     hcarrier co hzero hsol scalar ricciNorm).toConclusion
 
 noncomputable def endgameCo

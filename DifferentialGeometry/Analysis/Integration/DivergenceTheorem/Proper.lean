@@ -114,13 +114,13 @@ lemma divergence_g_zero_of_eventuallyEq_zero [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) {x : M}
     (hev : (X : ∀ x, TangentSpace I x) =ᶠ[𝓝 x] (0 : ∀ x, TangentSpace I x)) :
-    divergence_g (I := I) g X x = 0 := by
+    divergenceG (I := I) g X x = 0 := by
   rw [divergence_g_def]
   exact localDivergence_zero_of_eventuallyEq_zero (I := I) g x X (mem_chart_source H x) hev
 
 lemma support_divergence_g_subset [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    Function.support (divergence_g (I := I) g X) ⊆ tsupport X := by
+    Function.support (divergenceG (I := I) g X) ⊆ tsupport X := by
   intro x hx
   by_contra hxnotin
   have h_open : IsOpen (tsupport X)ᶜ := (isClosed_tsupport _).isOpen_compl
@@ -134,12 +134,12 @@ lemma support_divergence_g_subset [I.Boundaryless] (g : SmoothRiemannianMetric I
 
 lemma tsupport_divergence_g_subset [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    tsupport (divergence_g (I := I) g X) ⊆ tsupport X :=
+    tsupport (divergenceG (I := I) g X) ⊆ tsupport X :=
   closure_minimal (support_divergence_g_subset (I := I) g X) (isClosed_tsupport _)
 
 lemma hasCompactSupport_divergence_g [I.Boundaryless] (g : SmoothRiemannianMetric I M)
     {X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯} (hX : HasCompactSupport X) :
-    HasCompactSupport (divergence_g (I := I) g X) :=
+    HasCompactSupport (divergenceG (I := I) g X) :=
   hX.mono' (support_divergence_g_subset (I := I) g X)
 
 omit [Module.Finite ℝ E] in
@@ -472,7 +472,7 @@ theorem integral_divergence_eq_zero_of_hasCompactSupport
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (hX : HasCompactSupport X) :
-    ∫ x, divergence_g (I := I) g X x ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
+    ∫ x, divergenceG (I := I) g X x ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
   classical
   set ρ : SmoothPartitionOfUnity M I M (univ : Set M) := chartAtlasPOU I M
   set K : Set M := tsupport X
@@ -482,18 +482,18 @@ theorem integral_divergence_eq_zero_of_hasCompactSupport
     fun {α} => Set.Finite.mem_toFinset _
   have hρsub : ρ.IsSubordinate (fun α : M => (chartAt H α).source) :=
     chartAtlasPOU_isSubordinate I M
-  have hdiv_smooth : ContMDiff I 𝓘(ℝ) ∞ (divergence_g (I := I) g X) :=
+  have hdiv_smooth : ContMDiff I 𝓘(ℝ) ∞ (divergenceG (I := I) g X) :=
     divergence_g_contMDiff (I := I) g X
-  have hdiv_cont : Continuous (divergence_g (I := I) g X) := hdiv_smooth.continuous
-  have hdiv_cs : HasCompactSupport (divergence_g (I := I) g X) :=
+  have hdiv_cont : Continuous (divergenceG (I := I) g X) := hdiv_smooth.continuous
+  have hdiv_cs : HasCompactSupport (divergenceG (I := I) g X) :=
     hasCompactSupport_divergence_g (I := I) g hX
-  have hdiv_supp : tsupport (divergence_g (I := I) g X) ⊆ K :=
+  have hdiv_supp : tsupport (divergenceG (I := I) g X) ⊆ K :=
     tsupport_divergence_g_subset (I := I) g X
   obtain ⟨χ, hχ_smooth, hχ_cs, hχ_one_nhds, hχ_range⟩ :=
     exists_smooth_cutoff_compactSupport_one_nhds (I := I) (M := M) hK_compact
-  have h_step_a : ∫ x, divergence_g (I := I) g X x
+  have h_step_a : ∫ x, divergenceG (I := I) g X x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)
-      = ∑ α ∈ S, ∫ x, divergence_g (I := I) g X x * (ρ α : M → ℝ) x
+      = ∑ α ∈ S, ∫ x, divergenceG (I := I) g X x * (ρ α : M → ℝ) x
           ∂(chartLocalMeasure (I := I) g α) := by
     have hSdiv : (pouFinset_for_compactSet (I := I) (M := M) hdiv_cs).toFinset ⊆ S := by
       intro α hα
@@ -508,16 +508,16 @@ theorem integral_divergence_eq_zero_of_hasCompactSupport
     rw [Set.Finite.mem_toFinset _] at hα_notin
     simp only [Set.mem_ofPred_eq] at hα_notin
     rw [Set.not_nonempty_iff_eq_empty] at hα_notin
-    have h_zero : ∀ x : M, divergence_g (I := I) g X x * (ρ α : M → ℝ) x = 0 := by
+    have h_zero : ∀ x : M, divergenceG (I := I) g X x * (ρ α : M → ℝ) x = 0 := by
       intro x
       by_cases hxρ : x ∈ tsupport ((chartAtlasPOU I M) α : M → ℝ)
-      · have hxnotin : x ∉ tsupport (divergence_g (I := I) g X) := by
+      · have hxnotin : x ∉ tsupport (divergenceG (I := I) g X) := by
           intro h
           have : x ∈ tsupport ((chartAtlasPOU I M) α : M → ℝ) ∩
-              tsupport (divergence_g (I := I) g X) := ⟨hxρ, h⟩
+              tsupport (divergenceG (I := I) g X) := ⟨hxρ, h⟩
           rw [hα_notin] at this
           exact (Set.notMem_empty _) this
-        have hdiv_zero : divergence_g (I := I) g X x = 0 := by
+        have hdiv_zero : divergenceG (I := I) g X x = 0 := by
           by_contra hne
           exact hxnotin (subset_tsupport _ hne)
         rw [hdiv_zero, zero_mul]
@@ -525,7 +525,7 @@ theorem integral_divergence_eq_zero_of_hasCompactSupport
           by_contra hne
           exact hxρ (subset_tsupport _ hne)
         rw [hρα_zero, mul_zero]
-    rw [show (fun x : M => divergence_g (I := I) g X x * (ρ α : M → ℝ) x) =
+    rw [show (fun x : M => divergenceG (I := I) g X x * (ρ α : M → ℝ) x) =
         (fun _ : M => (0 : ℝ)) from funext h_zero]
     exact integral_zero ..
   rw [h_step_a]
@@ -535,31 +535,31 @@ theorem integral_divergence_eq_zero_of_hasCompactSupport
     have hU_open : K ⊆ interior U := by
       rwa [← subset_interior_iff_mem_nhdsSet] at hU_nhds
     exact hU_eq x (interior_subset (hU_open hxK))
-  have hχ_one_supp : ∀ x ∈ tsupport (divergence_g (I := I) g X), χ x = 1 :=
+  have hχ_one_supp : ∀ x ∈ tsupport (divergenceG (I := I) g X), χ x = 1 :=
     fun x hx => hχ_one_K x (hdiv_supp hx)
   have hdiv_mul_chi_eq : ∀ x : M,
-      divergence_g (I := I) g X x * χ x = divergence_g (I := I) g X x := by
+      divergenceG (I := I) g X x * χ x = divergenceG (I := I) g X x := by
     intro x
-    by_cases hxsupp : x ∈ tsupport (divergence_g (I := I) g X)
+    by_cases hxsupp : x ∈ tsupport (divergenceG (I := I) g X)
     · rw [hχ_one_supp x hxsupp, mul_one]
-    · have hdiv_zero : divergence_g (I := I) g X x = 0 := by
+    · have hdiv_zero : divergenceG (I := I) g X x = 0 := by
         by_contra hne
         exact hxsupp (subset_tsupport _ hne)
       rw [hdiv_zero, zero_mul]
   have h_step_b : ∀ α ∈ S,
-      ∫ x, divergence_g (I := I) g X x * (ρ α : M → ℝ) x ∂(chartLocalMeasure (I := I) g α) =
-        ∫ x, divergence_g (I := I) g X x *
+      ∫ x, divergenceG (I := I) g X x * (ρ α : M → ℝ) x ∂(chartLocalMeasure (I := I) g α) =
+        ∫ x, divergenceG (I := I) g X x *
             (χ x * (ρ α : M → ℝ) x) ∂(chartLocalMeasure (I := I) g α) := by
     intro α _
     refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
-    have hχx : divergence_g (I := I) g X x * χ x = divergence_g (I := I) g X x :=
+    have hχx : divergenceG (I := I) g X x * χ x = divergenceG (I := I) g X x :=
       hdiv_mul_chi_eq x
-    calc divergence_g (I := I) g X x * (ρ α : M → ℝ) x
-        = (divergence_g (I := I) g X x * χ x) * (ρ α : M → ℝ) x := by rw [hχx]
-      _ = divergence_g (I := I) g X x * (χ x * (ρ α : M → ℝ) x) := by ring
+    calc divergenceG (I := I) g X x * (ρ α : M → ℝ) x
+        = (divergenceG (I := I) g X x * χ x) * (ρ α : M → ℝ) x := by rw [hχx]
+      _ = divergenceG (I := I) g X x * (χ x * (ρ α : M → ℝ) x) := by ring
   rw [Finset.sum_congr rfl h_step_b]
   have h_step_c : ∀ α ∈ S,
-      ∫ x, divergence_g (I := I) g X x * (χ x * (ρ α : M → ℝ) x)
+      ∫ x, divergenceG (I := I) g X x * (χ x * (ρ α : M → ℝ) x)
         ∂(chartLocalMeasure (I := I) g α) =
         ∫ x, localDivergence (I := I) g α X x *
             (χ x * (ρ α : M → ℝ) x) ∂(chartLocalMeasure (I := I) g α) := by
@@ -571,7 +571,7 @@ theorem integral_divergence_eq_zero_of_hasCompactSupport
       have hρα_zero : (ρ α : M → ℝ) x = 0 := by
         by_contra hne
         exact hxnotin (subset_tsupport _ hne)
-      change divergence_g (I := I) g X x * (χ x * (ρ α : M → ℝ) x) =
+      change divergenceG (I := I) g X x * (χ x * (ρ α : M → ℝ) x) =
         localDivergence (I := I) g α X x * (χ x * (ρ α : M → ℝ) x)
       rw [hρα_zero, mul_zero, mul_zero, mul_zero]
   rw [Finset.sum_congr rfl h_step_c]

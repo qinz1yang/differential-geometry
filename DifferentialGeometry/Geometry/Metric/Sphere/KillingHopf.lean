@@ -26,8 +26,8 @@ private instance sphereModel_neZero :
   rw [finrank_euclideanSpace_fin]
   infer_instance
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable
   [RiemannianBundle
@@ -410,7 +410,7 @@ theorem sphere_diffeo_one
   have hcov : IsCoveringMap F :=
     hFlocal.isLocalHomeomorph.covering_compact
   let d : Diffeomorph (𝓡 n) J (sphere (0 : A) 1) N ∞ :=
-    hcov.diffeomorph_sc hFlocal
+    hcov.diffeomorphSc hFlocal
   refine ⟨d, ?_⟩
   intro x Y Z
   have hd : (d : sphere (0 : A) 1 → N) = F :=

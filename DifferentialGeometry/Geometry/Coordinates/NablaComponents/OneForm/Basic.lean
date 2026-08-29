@@ -99,10 +99,10 @@ theorem tensor0S_one_eval_coordFrame_sum
     (Z : TangentSpace I x₀) :
     αx (fun _ : Fin 1 => Z) =
       ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
-        (coordinateFrameAt_toBasis (I := I) x₀).coord j Z *
+        (coordinateFrameAtToBasis (I := I) x₀).coord j Z *
           αx (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j x₀) := by
   classical
-  let b := coordinateFrameAt_toBasis (I := I) x₀
+  let b := coordinateFrameAtToBasis (I := I) x₀
   have hupdate (w : TangentSpace I x₀) :
       Function.update (fun _ : Fin 1 => Z) (0 : Fin 1) w =
         fun _ : Fin 1 => w := by
@@ -137,7 +137,7 @@ theorem tensor0S_one_eval_coordFrame_sum
           refine Finset.sum_congr rfl fun j _ => ?_
           rw [hupdate]
     _ = ∑ j : CoordinateIdx (𝕜 := 𝕜) E,
-          (coordinateFrameAt_toBasis (I := I) x₀).coord j Z *
+          (coordinateFrameAtToBasis (I := I) x₀).coord j Z *
             αx (fun _ : Fin 1 => coordinateFrameAt (I := I) x₀ j x₀) := by
           simp [b]
 
@@ -284,11 +284,11 @@ omit [CompleteSpace 𝕜] in
 theorem oneForm_coordinateFrame_coeff_at_base_eq_coord
     (x₀ : M) (Z : TangentSpace I x₀) (j : CoordinateIdx (𝕜 := 𝕜) E) :
     (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff j x₀ Z =
-      (coordinateFrameAt_toBasis (I := I) x₀).coord j Z := by
+      (coordinateFrameAtToBasis (I := I) x₀).coord j Z := by
   have hbasis :
       (coordinateFrameAt_isLocalFrame_one (I := I) x₀).toBasisAt
           (coordinateFrameAt_mem (I := I) x₀) =
-        coordinateFrameAt_toBasis (I := I) x₀ := by
+        coordinateFrameAtToBasis (I := I) x₀ := by
     ext k
     rw [IsLocalFrameOn.toBasisAt_coe]
     rw [coordinateFrameAt_toBasis_apply]

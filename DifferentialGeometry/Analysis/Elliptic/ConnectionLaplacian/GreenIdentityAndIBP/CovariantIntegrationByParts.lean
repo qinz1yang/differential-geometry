@@ -90,7 +90,7 @@ theorem integral_tensorInner_tangentAction_add_smul_divergence_eq_zero
             (Tensor0SSpace.toModel
               (loweredCovDerivAt (I := I) (M := M) g r s S x (V x)))
           + tensorInnerScalar (I := I) (M := M) g r s W S x
-            * divergence_g (I := I) g V x)
+            * divergenceG (I := I) g V x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
   classical
   have hV_cs : HasCompactSupport (V : ∀ x, TangentSpace I x) :=
@@ -142,7 +142,7 @@ theorem integral_tensorInner_tangentAction_add_smul_divergence_eq_zero
                 (loweredCovDerivAt (I := I) (M := M) g r s S x (V x))))
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
         -∫ x, tensorInnerScalar (I := I) (M := M) g r s W S x
-              * divergence_g (I := I) g V x
+              * divergenceG (I := I) g V x
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     rw [← hLHS]; exact hIBP
   have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
@@ -182,11 +182,11 @@ theorem integral_tensorInner_tangentAction_add_smul_divergence_eq_zero
       (HasCompactSupport.of_compactSpace _)
   have hC_int : Integrable
       (fun x : M => tensorInnerScalar (I := I) (M := M) g r s W S x
-        * divergence_g (I := I) g V x)
+        * divergenceG (I := I) g V x)
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
     have hf_cont : Continuous (tensorInnerScalar (I := I) (M := M) g r s W S) :=
       hWS.continuous
-    have hdiv_cont : Continuous (divergence_g (I := I) g V) :=
+    have hdiv_cont : Continuous (divergenceG (I := I) g V) :=
       (divergence_g_contMDiff (I := I) g V).continuous
     exact (hf_cont.mul hdiv_cont).integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)
@@ -227,18 +227,18 @@ theorem integral_tensorInner_covDeriv_integrationByParts
               (liftedTensorSection (I := I) (M := M) g r s S x))
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)
         - ∫ x, tensorInnerScalar (I := I) (M := M) g r s W S x
-              * divergence_g (I := I) g V x
+              * divergenceG (I := I) g V x
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   have : IsFiniteMeasureOnCompacts (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasureOnCompacts (I := I) (M := M) g
   have hC_int : Integrable
       (fun x : M => tensorInnerScalar (I := I) (M := M) g r s W S x
-        * divergence_g (I := I) g V x)
+        * divergenceG (I := I) g V x)
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
     have hf_cont : Continuous (tensorInnerScalar (I := I) (M := M) g r s W S) :=
       hWS.continuous
-    have hdiv_cont : Continuous (divergence_g (I := I) g V) :=
+    have hdiv_cont : Continuous (divergenceG (I := I) g V) :=
       (divergence_g_contMDiff (I := I) g V).continuous
     exact (hf_cont.mul hdiv_cont).integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)
@@ -255,7 +255,7 @@ theorem integral_tensorInner_covDeriv_integrationByParts
     (Tensor0SSpace.toModel
       (loweredCovDerivAt (I := I) (M := M) g r s S x (V x))) with hB_def
   set C : M → ℝ := fun x => tensorInnerScalar (I := I) (M := M) g r s W S x
-    * divergence_g (I := I) g V x with hC_def
+    * divergenceG (I := I) g V x with hC_def
   have hcombined' :
       ∫ x, (A x + B x + C x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := hcombined

@@ -229,8 +229,8 @@ variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
   [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
   [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem exists_trunc_tower
     {D : RealTimeInterval}
     (G : MetricConnectionFamily (I := I) (M := M) Real)
@@ -456,8 +456,8 @@ private theorem exists_trunc_tower
 omit [NeZero (Module.finrank ℝ E)]
   [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
   [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem complete_of_cutoff
     {D : RealTimeInterval}
@@ -526,8 +526,8 @@ private theorem complete_of_cutoff
 omit [NeZero (Module.finrank ℝ E)]
   [RiemannianBundle (fun x : M ↦ TangentSpace I x)]
   [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem complete_of_barrier
     {D : RealTimeInterval}
@@ -622,8 +622,8 @@ noncomputable def rmOpenBound
   (towerConst c (K * (psi - alpha)) k) ^ 2 * K ^ 2 /
     ((beta - alpha) / 2) ^ k
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem movingRm_of_bound
     {D : RealTimeInterval}
     (F : PointedFlowData.{u, uE, uH} (I := I) D)
@@ -989,8 +989,8 @@ theorem movingRm_of_bound
       SolutionFamily.timeShift] using hUniform
   simpa [rmOpenBound, delta, aScale, c, levelC, K, d] using hUniformS
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem movingShi_of_bound
     {D : RealTimeInterval}
     (F : PointedFlowData.{u, uE, uH} (I := I) D)

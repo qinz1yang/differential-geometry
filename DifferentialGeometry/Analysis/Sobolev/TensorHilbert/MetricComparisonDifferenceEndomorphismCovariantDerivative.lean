@@ -259,8 +259,8 @@ private local instance tensorRSRiemannianNormedAddCommGroup_local2
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem sqrt_inner_endoCov_gInvDiffRaisedField_le
@@ -274,7 +274,7 @@ theorem sqrt_inner_endoCov_gInvDiffRaisedField_le
       (Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) (v : TangentSpace I x),
       letI : Bundle.RiemannianBundle
           (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       Real.sqrt (g₀.inner x
           (((endoCovariantDerivative (I := I) (M := M) g₀)
             (metricComparisonDifferenceEndomorphismField (I := I) g₀ g₁) x v) (Y x))
@@ -286,7 +286,7 @@ theorem sqrt_inner_endoCov_gInvDiffRaisedField_le
   classical
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   obtain ⟨C₀, hC₀0, hpw⟩ := connectionDifference_gFibreNorm_le_iteratedCovGrad (I := I) (M := M) g₀
   refine ⟨4 * C₀, by positivity, ?_⟩
   intro g₁ T h δ hδ hδ0 hbound Y x v

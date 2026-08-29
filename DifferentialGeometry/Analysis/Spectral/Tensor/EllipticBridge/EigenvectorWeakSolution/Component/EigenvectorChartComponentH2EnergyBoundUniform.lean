@@ -65,7 +65,7 @@ private lemma chartPouKernel_eq_empty_of_pou_zero {α : M}
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartPouKernel_eq_empty_of_notMem_activeFinset
-    {α : M} (hα : α ∉ chartAtlasPOU_activeFinset I M) :
+    {α : M} (hα : α ∉ chartAtlasPOUActiveFinset I M) :
     chartPouKernel (I := I) (M := M) α = (∅ : Set EuclN) :=
   chartPouKernel_eq_empty_of_pou_zero
     (chartAtlasPOU_eq_zero_of_notMem_activeFinset (I := I) (M := M) hα)
@@ -74,7 +74,7 @@ omit [CompleteSpace E] in
 private lemma eigenvectorChartComponentFun_ae_zero_of_notMem_activeFinset
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
-    {α : M} (hα : α ∉ chartAtlasPOU_activeFinset I M)
+    {α : M} (hα : α ∉ chartAtlasPOUActiveFinset I M)
     (P₀ : TensorCompIdx (E := E) r s) :
     eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀
       =ᵐ[(volume : Measure EuclN).restrict
@@ -99,7 +99,7 @@ omit [CompleteSpace E] in
 private lemma wkpNorm_two_eigenvectorChartComponentFun_eq_zero_of_notMem_activeFinset
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (i : TensorEigenIdx (I := I) (M := M) g r s)
-    {α : M} (hα : α ∉ chartAtlasPOU_activeFinset I M)
+    {α : M} (hα : α ∉ chartAtlasPOUActiveFinset I M)
     (P₀ : TensorCompIdx (E := E) r s) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) 2 2
@@ -170,7 +170,7 @@ private lemma perAlphaPCConstant_bound
 private noncomputable def totalActivePCConstant
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     ℝ :=
-  ∑ α ∈ chartAtlasPOU_activeFinset I M,
+  ∑ α ∈ chartAtlasPOUActiveFinset I M,
     ∑ P₀ : TensorCompIdx (E := E) r s,
       perAlphaPCConstant (I := I) (M := M) g r s α P₀
 
@@ -187,7 +187,7 @@ private lemma totalActivePCConstant_nonneg
 omit [CompleteSpace E] in
 private lemma perAlphaPCConstant_le_totalActivePCConstant
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    {α : M} (hα : α ∈ chartAtlasPOU_activeFinset I M)
+    {α : M} (hα : α ∈ chartAtlasPOUActiveFinset I M)
     (P₀ : TensorCompIdx (E := E) r s) :
     perAlphaPCConstant (I := I) (M := M) g r s α P₀ ≤
       totalActivePCConstant (I := I) (M := M) g r s := by
@@ -206,7 +206,7 @@ private lemma perAlphaPCConstant_le_totalActivePCConstant
   have h_outer_le :
       (∑ Q : TensorCompIdx (E := E) r s,
           perAlphaPCConstant (I := I) (M := M) g r s α Q) ≤
-        ∑ β ∈ chartAtlasPOU_activeFinset I M,
+        ∑ β ∈ chartAtlasPOUActiveFinset I M,
           ∑ Q : TensorCompIdx (E := E) r s,
             perAlphaPCConstant (I := I) (M := M) g r s β Q :=
     Finset.single_le_sum
@@ -239,7 +239,7 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le_uniform_β
   refine ⟨totalActivePCConstant (I := I) (M := M) g r s,
     totalActivePCConstant_nonneg (I := I) (M := M) g r s, ?_⟩
   intro α P₀ i
-  by_cases hα : α ∈ chartAtlasPOU_activeFinset I M
+  by_cases hα : α ∈ chartAtlasPOUActiveFinset I M
   · have h_per :=
       perAlphaPCConstant_bound (I := I) (M := M) g r s α P₀ i
     have h_C_le :

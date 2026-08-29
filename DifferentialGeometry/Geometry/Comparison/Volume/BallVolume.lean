@@ -367,8 +367,8 @@ theorem coordBall_vol_ge_sc_c2
   coordBall_vol_ge_sc (I := I) g p hRpos
     (ball_tgt_of_radius (I := I) g p hR) hdens
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem coordBall_subset_smallNormalBall_of_agree
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -402,8 +402,8 @@ theorem coordBall_subset_smallNormalBall_of_agree
   rw [hagree w hw, ← hsymm] at hconf'
   exact hconf'
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_coordBall_subset_smallNormalBall
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -462,8 +462,8 @@ theorem smallNormalBall_vol_ge_sc_c2
   smallNormalBall_vol_ge_sc (I := I) g p hRpos
     (ball_tgt_of_radius (I := I) g p hR) hcoord_subset hdens
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_smallNormalBall_vol_ge_sc
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -490,8 +490,8 @@ theorem exists_smallNormalBall_vol_ge_sc
   exact smallNormalBall_vol_ge_sc_c2 (I := I) g p hRpos hR
     (hsubset (ball_tgt_of_radius (I := I) g p hR) hρball hgs) hdens
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -509,8 +509,8 @@ theorem smallNormalBall_subset_metricBall
   rw [HopfRinow.riemMetric_dist_eq (I := I) (M := M) p y]
   exact ENNReal.toReal_lt_of_lt_ofReal hy
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -529,8 +529,8 @@ theorem metricBall_subset_smallNormalBall
   rw [mem_smallNormalBall]
   exact (ENNReal.lt_ofReal_iff_toReal_lt (riemannianEDist_ne_top (I := I) p y)).mpr hy
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E]
     [T2Space M] [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
 theorem metricBall_meas
@@ -543,8 +543,8 @@ theorem metricBall_meas
   let : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   exact Metric.isOpen_ball.measurableSet
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_metricBall_vol_ge_sc_local
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -748,8 +748,8 @@ private lemma exists_pos_le_mul_lt {C s R : ℝ}
   rw [lt_div_iff₀ hC] at hr_sC
   simpa [mul_comm] using hr_sC
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem metricBall_chartCtrl
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -896,8 +896,8 @@ theorem metricBall_vol_scale_density [PseudoMetricSpace M]
       (A := Metric.ball p s) hball_meas hball_source hball_coord
       (fun w hw => hdens w (hball_coord hw))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_metricBall_vol_scale_local
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -934,8 +934,8 @@ theorem exists_metricBall_vol_scale_local
   obtain ⟨hsource, hcoord⟩ := hctrl hsR hsρ hs_div_R
   exact metricBall_vol_scale (I := I) g p hB hRpos hRC2 hmeas hsource hcoord hJ
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_metricBall_vol_le_dens_local
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -964,8 +964,8 @@ theorem exists_metricBall_vol_le_dens_local
   exact metricBall_vol_scale_density (I := I) g p hRpos
     (metricBall_meas (I := I) (M := M) p s) hsource hcoord hdens
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_vol_two_dens
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1010,8 +1010,8 @@ theorem exists_vol_two_dens
     hlower hRpos hR hρlo_ball hgs hdensLower,
     hupper hRpos hsR hsρup hsdiv hdensUpper⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_vol_two_dens_pairR
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1936,8 +1936,8 @@ lemma exists_rm04_pair_scale
   obtain ⟨a, ha, hsmallBasis, hsmallDir⟩ := basisUnitScaleSmall (E := E) hρ
   exact ⟨a, H a ha hsmallBasis hsmallDir⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_vol_two_rm04_at
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -2051,8 +2051,8 @@ theorem exists_vol_two_rm04_at
     hsR hsρvol hsdiv
     (fun w hw => (hdensPair w hw).2)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_vol_pair_rm04_at
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -2166,8 +2166,8 @@ theorem exists_vol_pair_rm04_at
     hsR hsρvol hsdiv
     (fun w hw => (hdensPair w hw).2)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_pairR_rm04_at
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -2301,8 +2301,8 @@ theorem exists_pairR_rm04_at
   exact hvol hRlo_pos hRloC2 hρvol_ball hgs hdensLower hRup_pos hsRup hsρvol hsdiv
     hdensUpper
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_pairR_rglobal
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -2431,8 +2431,8 @@ theorem exists_pairR_rglobal
     (fun w hw i t ht => hFdiff w (hmemRup w hw) i t ht)
     hinit hmodelLe' hmodelGe'
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_pairR_rm1
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -2513,8 +2513,8 @@ theorem exists_pairR_rm1
       intro v hv
       simpa [K] using hmodelGe hK_nonneg hKcap v hv)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_pairR_small
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -2595,8 +2595,8 @@ theorem exists_pairR_small
     hRm_nonneg hRlo_pos hRup_pos hRlo_le_Rup hRupρ hRupC2 hCRloρ
     hCRlo_s hs_Rup hsρ hsdiv (by simpa [S, mul_assoc] using hKcap) hRmGlobal hbasis
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_pairR_scaled
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -2739,8 +2739,8 @@ theorem exists_pairR_scaled
     hRm_nonneg hRlo_pos hRup_pos hRlo_le_Rup hRupρ hRupC2 hCRloρ hCRlo_s
     hsRup hsρ hsdiv hcoef_cap hRmGlobal hbasis
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_pairR_autoA
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -2785,8 +2785,8 @@ theorem exists_pairR_autoA
   intro Rm hRm_nonneg hRmGlobal
   exact hscaled (Rm := Rm) (A := A) hRm_nonneg hRmGlobal hA
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_pairR_bound
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -2827,8 +2827,8 @@ theorem exists_pairR_bound
   intro Rm hRm_nonneg hRm
   exact hvol (Rm := Rm) hRm_nonneg (by simpa [Rm04GlobalBound] using hRm)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_pairR_bound_of_complete_metric
     [ConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -2891,8 +2891,8 @@ theorem exists_pairR_bound_of_complete_metric
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
   exact exists_pairR_bound (I := I) (M := M) g hEnorm p
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_vol_rm04_pair_pkg
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -2927,8 +2927,8 @@ theorem exists_vol_rm04_pair_pkg
     H.hsmallBasis H.hsmallDir H.hlaunch H.hKbound H.hRm H.hγ
     H.hcard D.F H.hpar H.hON H.hFdiff H.hinit H.hmodelLe H.hmodelGe
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_vol_pair_scale
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -2961,8 +2961,8 @@ theorem exists_vol_pair_scale
   obtain ⟨a, Ha⟩ := exists_rm04_pair_scale (I := I) g p D hρ H
   exact hvol D Ha
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_vol_pair_scalar
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -3024,8 +3024,8 @@ theorem exists_vol_pair_scalar
       hlaunch hKbound hRm hbasis hmodelLe hmodelGe
   exact hvol D H
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_vol_pair_launch
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -3089,8 +3089,8 @@ theorem exists_vol_pair_launch
     hRpos hRρ hRC2 hρball hgs hsR hsρ hsdiv hlaunch
     (by simpa [Vb] using hKbound) hRm hbasis hmodelLe hmodelGe
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_pair_rlaunch
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -3158,8 +3158,8 @@ theorem exists_pair_rlaunch
     hRpos hRρ hRC2 hρball hgs hsR hsρ hsdiv hlaunch
     (by simpa [Vb] using hKbound) hRm hbasis hmodelLe hmodelGe
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_pair_rcoeff
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -3231,8 +3231,8 @@ theorem exists_pair_rcoeff
     hCRρ hgs hsR hsρ hsdiv hKbound hRm hbasis (by simpa [K] using hmodelLe)
     (by simpa [K] using hmodelGe)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_pair_rglobal
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -3294,8 +3294,8 @@ theorem exists_pair_rglobal
     hsρ hsdiv (fun w _ t _ => hRmGlobal (radialCurve (I := I) g p w t))
     hbasis hmodelLe hmodelGe
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_pair_rglobal1
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]

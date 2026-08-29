@@ -51,7 +51,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space 
     [SigmaCompactSpace M] in
 private lemma chartInvGram_metricInverse (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    MetricInverseInBasis_gen (I := I) g b (chartBasisFamily (I := I) α hb)
+    MetricInverseInBasisGen (I := I) g b (chartBasisFamily (I := I) α hb)
       (fun m n => chartInvGramMatrix (I := I) g α b m n) := by
   intro i j
   refine ⟨?_, ?_⟩
@@ -108,7 +108,7 @@ theorem metricTracePair0SAt_nablaCov_eq_divergence
     (g : SmoothRiemannianMetric I M)
     (Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
     metricTracePair0SAt (I := I) g (nablaCovTensor (I := I) g Z x) =
-      divergence_g (I := I) g Z x := by
+      divergenceG (I := I) g Z x := by
   classical
   have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) x := self_mem_goodSet (I := I) x
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) x).baseSet :=
@@ -142,10 +142,10 @@ omit [SigmaCompactSpace M] in
 theorem divergence_g_eq_finBasis_metricTrace
     (g : SmoothRiemannianMetric I M)
     (Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    divergence_g (I := I) g Z x =
+    divergenceG (I := I) g Z x =
       ∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
         ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
-          DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+          DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
               (I := I) g x i j (extChartAt I x x) *
             g.inner x
               ((LeviCivita (I := I) g).toFun Z.toFun x
@@ -154,8 +154,8 @@ theorem divergence_g_eq_finBasis_metricTrace
   classical
   rw [← metricTracePair0SAt_nablaCov_eq_divergence (I := I) g Z x]
   rw [metricTracePair0SAt_eq_sum_basis (I := I) g
-    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x)
-    (fun i j => DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x)
+    (fun i j => DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
       (I := I) g x i j (extChartAt I x x))
     (Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
       (I := I) g x)]
@@ -382,7 +382,7 @@ omit [SigmaCompactSpace M] in
 theorem divergence_g_eq_coordinateFrame_covariant_divergence
     (g : SmoothRiemannianMetric I M)
     (Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    divergence_g (I := I) g Z x =
+    divergenceG (I := I) g Z x =
       ∑ p : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
         (mvfderiv (I := I)
             (fun y : M =>
@@ -402,12 +402,12 @@ theorem divergence_g_eq_coordinateFrame_covariant_divergence
     with hfo_def
   set gInv : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
-    fun i j => DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+    fun i j => DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
       (I := I) g x i j (extChartAt I x x) with hgInv_def
   have hinv :=
     Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
     (I := I) g x
-  set hfb := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x with
+  set hfb := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x with
     hfb_def
   have hbasis_app : ∀ q, hfb q = frame q x := fun q =>
     DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis_apply (I := I) x q

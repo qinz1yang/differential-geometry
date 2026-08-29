@@ -47,8 +47,8 @@ private local instance : MeasurableSpace M := borel M
 private local instance : BorelSpace M := ⟨rfl⟩
 
 omit [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem expJac_normal_int
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -138,8 +138,8 @@ theorem expJac_normal_int
     (fun v => ENNReal.ofReal (Dn v)) K).symm
 
 omit [T2Space (TangentBundle I M)] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem framed_mul_le_area
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]

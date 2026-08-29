@@ -21,8 +21,8 @@ variable {I : ModelWithCorners Real E H}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 structure RiemannianMetricComplete
     (g : SmoothRiemannianMetric I M) : Prop where
   complete :
@@ -43,8 +43,8 @@ structure RiemannianMetricComplete
 namespace RiemannianMetricComplete
 
 omit [CompleteSpace E] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem of_lower
     {g h : SmoothRiemannianMetric I M}
     (hg : RiemannianMetricComplete (I := I) g)
@@ -106,8 +106,8 @@ theorem of_lower
   exact ⟨x, hx⟩
 
 omit [CompleteSpace E] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem of_uniformEquiv
     {g h : SmoothRiemannianMetric I M}
     (hg : RiemannianMetricComplete (I := I) g)

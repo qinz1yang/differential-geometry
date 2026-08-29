@@ -125,7 +125,7 @@ theorem tensorChartComponentScalar_wkpNormChart_le_h1Norm_of_grad_l2
       tensorChartComponentScalar_wkpNormChart_le_const_mul_h1Norm
         (I := I) (M := M) g r s α hC_grad_nn
         (fun T Idx Jdx => hGrad_le' T α Idx Jdx)
-  set S : Finset M := chartAtlasPOU_activeFinset (I := I) (M := M)
+  set S : Finset M := chartAtlasPOUActiveFinset (I := I) (M := M)
     with hS_def
   set Cα : M → ℝ := fun α => Classical.choose (hper_α α) with hCα_def
   have hCα_nn : ∀ α : M, 0 ≤ Cα α :=

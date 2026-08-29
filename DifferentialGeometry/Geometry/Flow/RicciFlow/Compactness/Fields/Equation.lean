@@ -403,12 +403,12 @@ theorem gSeqExt_scalar
         metricScalarAt (I := I) (srcMetric (I := I) Φ hsrc htgt k t) xsrc :=
       hscalarAmbient.symm.trans hscalarSource.symm
     _ = (sourceFlow (I := I) Φ k (hsrc k) (htgt k)).scalar t xsrc := rfl
-    _ = (solutionOn_restrictOpen (I := I) (X.term (subseq k)).S
+    _ = (solutionOnRestrictOpen (I := I) (X.term (subseq k)).S
           (targetOpen (I := I) Φ k)).scalar t
           (sourceTargetDiff (I := I) Φ k xsrc) := by
       simpa only [sourceFlow] using
         DifferentialGeometry.PDE.RicciFlow.scalar_pullback (I := I)
-          (solutionOn_restrictOpen (I := I) (X.term (subseq k)).S
+          (solutionOnRestrictOpen (I := I) (X.term (subseq k)).S
             (targetOpen (I := I) Φ k))
           (sourceTargetDiff (I := I) Φ k) t xsrc
     _ = (X.term (subseq k)).S.scalar t
@@ -606,12 +606,12 @@ theorem gSeqExt_ricNorm
           (sourceFlow (I := I) Φ k (hsrc k) (htgt k)) t xsrc := by
       rfl
     _ = DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
-          (solutionOn_restrictOpen (I := I) (X.term (subseq k)).S
+          (solutionOnRestrictOpen (I := I) (X.term (subseq k)).S
             (targetOpen (I := I) Φ k)) t
           (sourceTargetDiff (I := I) Φ k xsrc) := by
       simpa only [sourceFlow] using
         DifferentialGeometry.PDE.RicciFlow.ricciNorm_pullback (I := I)
-          (solutionOn_restrictOpen (I := I) (X.term (subseq k)).S
+          (solutionOnRestrictOpen (I := I) (X.term (subseq k)).S
             (targetOpen (I := I) Φ k))
           (sourceTargetDiff (I := I) Φ k) t xsrc
     _ = DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)

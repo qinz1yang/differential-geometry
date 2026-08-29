@@ -343,8 +343,8 @@ private theorem lRmFree_lsc
   exact ⟨m, t, p, chi, gamma, uLim, hchi, hgamma, hga', hconv,
     htmono, ht0, htlast, hgammaSrc, hlimRep, hlsc⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_redMin_rm [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (K T : Real)

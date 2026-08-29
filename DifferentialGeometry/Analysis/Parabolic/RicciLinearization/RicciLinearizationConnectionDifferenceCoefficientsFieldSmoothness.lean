@@ -212,28 +212,28 @@ theorem linearizedRicciConnectionDifferenceOrder1CLM_field_contMDiff
         (linearizedRicciConnectionDifferenceOrder1CLM (I := I) x
           ((connectionDifferenceSection (I := I) g₁ g₀).toSection x) (Z x))) := by
   have hAsm := (connectionDifferenceSection (I := I) g₁ g₀).toSection.contMDiff
-  have hpre102 := slotPermCLM_field_contMDiff (I := I) perm3_102 Z hZ
-  have hpre120 := slotPermCLM_field_contMDiff (I := I) perm3_120 Z hZ
-  have h₁ := slotPermCLM_field_contMDiff (I := I) perm4_0312 _
+  have hpre102 := slotPermCLM_field_contMDiff (I := I) perm3102 Z hZ
+  have hpre120 := slotPermCLM_field_contMDiff (I := I) perm3120 Z hZ
+  have h₁ := slotPermCLM_field_contMDiff (I := I) perm40312 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_102 x (Z x)) hpre102)
-  have h₂ := slotPermCLM_field_contMDiff (I := I) perm4_0213 _
+      (fun x => slotPermCLM (I := I) perm3102 x (Z x)) hpre102)
+  have h₂ := slotPermCLM_field_contMDiff (I := I) perm40213 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_120 x (Z x)) hpre120)
-  have h₃ := slotPermCLM_field_contMDiff (I := I) perm4_2301 _
+      (fun x => slotPermCLM (I := I) perm3120 x (Z x)) hpre120)
+  have h₃ := slotPermCLM_field_contMDiff (I := I) perm42301 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
       (fun x => Z x) hZ)
-  have h₄ := slotPermCLM_field_contMDiff (I := I) perm4_1302 _
+  have h₄ := slotPermCLM_field_contMDiff (I := I) perm41302 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_102 x (Z x)) hpre102)
-  have h₅ := slotPermCLM_field_contMDiff (I := I) perm4_1203 _
+      (fun x => slotPermCLM (I := I) perm3102 x (Z x)) hpre102)
+  have h₅ := slotPermCLM_field_contMDiff (I := I) perm41203 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_120 x (Z x)) hpre120)
+      (fun x => slotPermCLM (I := I) perm3120 x (Z x)) hpre120)
   have hsum := ((((h₁.add_section h₂).add_section h₃).add_section h₄).add_section h₅).neg_section
   refine hsum.congr (fun x => ?_)
   exact congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 4 ℝ E)
@@ -256,61 +256,61 @@ theorem linearizedRicciConnectionDifferenceOrder0CLM_field_contMDiff
   have hAsm := (connectionDifferenceSection (I := I) g₁ g₀).toSection.contMDiff
   have hDAsm := (covGrad (I := I) (M := M) g₀ 1 2
     (connectionDifferenceSection (I := I) g₁ g₀)).toSection.contMDiff
-  have hZswap := slotPermCLM_field_contMDiff (I := I) perm2_10 Z hZ
+  have hZswap := slotPermCLM_field_contMDiff (I := I) perm210 Z hZ
   have hinnJ := connContrCLM_field_contMDiff (I := I) 1 1
     (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
     (fun x => Z x) hZ
   have hinnJ' := connContrCLM_field_contMDiff (I := I) 1 1
     (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-    (fun x => slotPermCLM (I := I) perm2_10 x (Z x)) hZswap
-  have hu₃ := slotPermCLM_field_contMDiff (I := I) perm4_3201 _
+    (fun x => slotPermCLM (I := I) perm210 x (Z x)) hZswap
+  have hu₃ := slotPermCLM_field_contMDiff (I := I) perm43201 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_102 x
+      (fun x => slotPermCLM (I := I) perm3102 x
         (connContrCLM (I := I) 1 1 x ((connectionDifferenceSection (I := I) g₁ g₀).toSection x) (Z x)))
-      (slotPermCLM_field_contMDiff (I := I) perm3_102 _ hinnJ))
-  have hu₄ := slotPermCLM_field_contMDiff (I := I) perm4_2301 _
+      (slotPermCLM_field_contMDiff (I := I) perm3102 _ hinnJ))
+  have hu₄ := slotPermCLM_field_contMDiff (I := I) perm42301 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_102 x
+      (fun x => slotPermCLM (I := I) perm3102 x
         (connContrCLM (I := I) 1 1 x ((connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-          (slotPermCLM (I := I) perm2_10 x (Z x))))
-      (slotPermCLM_field_contMDiff (I := I) perm3_102 _ hinnJ'))
-  have hu₅ := slotPermCLM_field_contMDiff (I := I) perm4_3102 _
+          (slotPermCLM (I := I) perm210 x (Z x))))
+      (slotPermCLM_field_contMDiff (I := I) perm3102 _ hinnJ'))
+  have hu₅ := slotPermCLM_field_contMDiff (I := I) perm43102 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_120 x
+      (fun x => slotPermCLM (I := I) perm3120 x
         (connContrCLM (I := I) 1 1 x ((connectionDifferenceSection (I := I) g₁ g₀).toSection x) (Z x)))
-      (slotPermCLM_field_contMDiff (I := I) perm3_120 _ hinnJ))
-  have hu₆ := slotPermCLM_field_contMDiff (I := I) perm4_1302 _
+      (slotPermCLM_field_contMDiff (I := I) perm3120 _ hinnJ))
+  have hu₆ := slotPermCLM_field_contMDiff (I := I) perm41302 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
       (fun x => connContrCLM (I := I) 1 1 x ((connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-        (slotPermCLM (I := I) perm2_10 x (Z x)))
+        (slotPermCLM (I := I) perm210 x (Z x)))
       hinnJ')
-  have hu₇ := slotPermCLM_field_contMDiff (I := I) perm4_1203 _
+  have hu₇ := slotPermCLM_field_contMDiff (I := I) perm41203 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
       (fun x => connContrCLM (I := I) 1 1 x
         ((connectionDifferenceSection (I := I) g₁ g₀).toSection x) (Z x))
       hinnJ)
-  have hu₈ := slotPermCLM_field_contMDiff (I := I) perm4_2103 _
+  have hu₈ := slotPermCLM_field_contMDiff (I := I) perm42103 _
     (connContrCLM_field_contMDiff (I := I) 2 1
       (fun x => (connectionDifferenceSection (I := I) g₁ g₀).toSection x) hAsm
-      (fun x => slotPermCLM (I := I) perm3_120 x
+      (fun x => slotPermCLM (I := I) perm3120 x
         (connContrCLM (I := I) 1 1 x ((connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-          (slotPermCLM (I := I) perm2_10 x (Z x))))
-      (slotPermCLM_field_contMDiff (I := I) perm3_120 _ hinnJ'))
-  have hu₁ := slotPermCLM_field_contMDiff (I := I) perm4_3012 _
+          (slotPermCLM (I := I) perm210 x (Z x))))
+      (slotPermCLM_field_contMDiff (I := I) perm3120 _ hinnJ'))
+  have hu₁ := slotPermCLM_field_contMDiff (I := I) perm43012 _
     (connContrCLM_field_contMDiff (I := I) 1 2
       (fun x => (covGrad (I := I) (M := M) g₀ 1 2
         (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) hDAsm
       (fun x => Z x) hZ)
-  have hu₂ := slotPermCLM_field_contMDiff (I := I) perm4_2013 _
+  have hu₂ := slotPermCLM_field_contMDiff (I := I) perm42013 _
     (connContrCLM_field_contMDiff (I := I) 1 2
       (fun x => (covGrad (I := I) (M := M) g₀ 1 2
         (connectionDifferenceSection (I := I) g₁ g₀)).toSection x) hDAsm
-      (fun x => slotPermCLM (I := I) perm2_10 x (Z x)) hZswap)
+      (fun x => slotPermCLM (I := I) perm210 x (Z x)) hZswap)
   have hsum := (((((((hu₃.add_section hu₄).add_section hu₅).add_section
     hu₆).add_section hu₇).add_section hu₈).sub_section hu₁).sub_section hu₂)
   refine hsum.congr (fun x => ?_)
@@ -333,15 +333,15 @@ theorem ricciCometricFourTraceCLM_field_contMDiff (g₁ : SmoothRiemannianMetric
         (ricciCometricFourTraceCLM (I := I) g₁ x (Z x))) := by
   have ha := ContMDiff.clm_bundle_apply (b := id)
     (cometricDoubleTraceFib_contMDiff (I := I) g₁ 2)
-    (slotPermCLM_field_contMDiff (I := I) perm4_0231 Z hZ)
+    (slotPermCLM_field_contMDiff (I := I) perm40231 Z hZ)
   have hb := ContMDiff.clm_bundle_apply (b := id)
     (cometricDoubleTraceFib_contMDiff (I := I) g₁ 2)
-    (slotPermCLM_field_contMDiff (I := I) perm4_0321 Z hZ)
+    (slotPermCLM_field_contMDiff (I := I) perm40321 Z hZ)
   have hc := ContMDiff.clm_bundle_apply (b := id)
     (cometricDoubleTraceFib_contMDiff (I := I) g₁ 2) hZ
   have hd := ContMDiff.clm_bundle_apply (b := id)
     (cometricDoubleTraceFib_contMDiff (I := I) g₁ 2)
-    (slotPermCLM_field_contMDiff (I := I) perm4_2301 Z hZ)
+    (slotPermCLM_field_contMDiff (I := I) perm42301 Z hZ)
   have hcomb := (((ha.add_section hb).sub_section hc).sub_section hd).const_smul_section
     (a := ((1 : ℝ) / 2))
   refine hcomb.congr (fun x => ?_)

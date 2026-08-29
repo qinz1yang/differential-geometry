@@ -107,21 +107,21 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
     (hu_compactSupport : HasCompactSupport u)
     (hu_supp : tsupport u ⊆ Ω') :
     iteratedWeakSobolevNorm (d := d) k p (fun x => u (Φ.toFun x)) Ω ≤
-      ENNReal.ofReal (Φ.wkpComp_const' k p) *
+      ENNReal.ofReal (Φ.wkpCompConst' k p) *
         iteratedWeakSobolevNorm (d := d) k p u Ω' := by
   classical
-  set K_const : ℝ := Φ.wkpComp_const' k p with hK_def
+  set K_const : ℝ := Φ.wkpCompConst' k p with hK_def
   have hK_pos : 0 < K_const := by
     have hp_zero : p ≠ 0 := by
       intro hpz; rw [hpz] at hp_one
       exact absurd hp_one (by norm_num)
     have hq_pos : 0 < p.toReal := ENNReal.toReal_pos hp_zero hp_top
-    have hjLB_pos : 0 < Φ.jacobian_lower_bound := Φ.jacobian_lower_bound_pos
-    have hjLB_inv_pos : 0 < 1 / Φ.jacobian_lower_bound := by positivity
-    have hKchg_pos : 0 < (1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal) :=
+    have hjLB_pos : 0 < Φ.jacobianLowerBound := Φ.jacobian_lower_bound_pos
+    have hjLB_inv_pos : 0 < 1 / Φ.jacobianLowerBound := by positivity
+    have hKchg_pos : 0 < (1 / Φ.jacobianLowerBound) ^ (1 / p.toReal) :=
       Real.rpow_pos_of_pos hjLB_inv_pos _
     rw [hK_def]
-    unfold DifferentialGeometry.Analysis.Sobolev.Euclidean.SmoothDiffeoBoundedAtOrder.wkpComp_const'
+    unfold DifferentialGeometry.Analysis.Sobolev.Euclidean.SmoothDiffeoBoundedAtOrder.wkpCompConst'
     have h_zero_in : (0 : ℕ) ∈ Finset.range (k + 1) :=
       Finset.mem_range.mpr (Nat.zero_lt_succ _)
     have h_at_zero : (Fintype.card (Fin 0 → Fin d) : ℝ) = 1 := by
@@ -286,7 +286,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
       eLpNorm (fun x => u (Φ.toFun x) - ψ n (Φ.toFun x)) p
         (volume.restrict Ω) ≤
         ENNReal.ofReal
-            ((1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal)) *
+            ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
           ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)) := by
     intro n
     have h_chg := Φ.eLpNorm_comp_toFun_le_const hp_one hp_top hΩ
@@ -329,7 +329,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
           eLpNorm (fun x => vΦ x - u (Φ.toFun x)) p (volume.restrict Ω) ≤
             iteratedWeakSobolevNorm (d := d) k p (fun x => vΦ x - ψ n (Φ.toFun x)) Ω +
             ENNReal.ofReal
-                ((1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal)) *
+                ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
               ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)) := by
         intro n
         have h_ψn_comp_aestrong : AEStronglyMeasurable
@@ -359,7 +359,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
             eLpNorm (fun x => ψ n (Φ.toFun x) - u (Φ.toFun x)) p
                 (volume.restrict Ω) ≤
               ENNReal.ofReal
-                  ((1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal)) *
+                  ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
                 ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)) := by
           have h_eq :
               (fun x => ψ n (Φ.toFun x) - u (Φ.toFun x)) =
@@ -411,7 +411,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
       have h_tendsto_second :
           Filter.Tendsto
             (fun n : ℕ => ENNReal.ofReal
-                ((1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal)) *
+                ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
               ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)))
             atTop (𝓝 0) := by
         have h_inner_tendsto :
@@ -425,7 +425,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
           rw [ENNReal.ofReal_zero] at h_ofReal
           exact h_ofReal
         set C : ℝ≥0∞ := ENNReal.ofReal
-            ((1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal)) with hC_def
+            ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) with hC_def
         have hC_ne_top : C ≠ ⊤ := by rw [hC_def]; exact ENNReal.ofReal_ne_top
         have h_const_mul := ENNReal.Tendsto.const_mul (a := C) (b := 0)
           h_inner_tendsto (Or.inr hC_ne_top)
@@ -434,7 +434,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
           Filter.Tendsto
             (fun n => iteratedWeakSobolevNorm (d := d) k p (fun x => vΦ x - ψ n (Φ.toFun x)) Ω +
               ENNReal.ofReal
-                  ((1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal)) *
+                  ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
                 ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)))
             atTop (𝓝 0) := by
         have := h_tendsto_first.add h_tendsto_second

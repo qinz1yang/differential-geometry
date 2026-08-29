@@ -147,9 +147,9 @@ lemma gNorm_add_le
 noncomputable def metricInnerOpNorm
     (g : SmoothRiemannianMetric I M) (x : M) : ℝ :=
   letI : NormedAddCommGroup (TangentSpace I x) :=
-    DifferentialGeometry.Tensor0SBundle.tangentSpace_normedAddCommGroup x
+    DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddCommGroup x
   letI : NormedSpace ℝ (TangentSpace I x) :=
-    DifferentialGeometry.Tensor0SBundle.tangentSpace_normedSpace x
+    DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedSpace x
   ContinuousLinearMap.opNorm (g.inner x)
 
 lemma metricInnerOpNorm_nonneg
@@ -162,9 +162,9 @@ lemma abs_metric_inner_le_metricInnerOpNorm
     (g : SmoothRiemannianMetric I M) (x : M) (v w : TangentSpace I x) :
     |g.inner x v w| ≤ metricInnerOpNorm (I := I) (M := M) g x * ‖v‖ * ‖w‖ := by
   let : NormedAddCommGroup (TangentSpace I x) :=
-    DifferentialGeometry.Tensor0SBundle.tangentSpace_normedAddCommGroup x
+    DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddCommGroup x
   let : NormedSpace ℝ (TangentSpace I x) :=
-    DifferentialGeometry.Tensor0SBundle.tangentSpace_normedSpace x
+    DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedSpace x
   have h := ContinuousLinearMap.le_opNorm₂ (g.inner x) v w
   change |g.inner x v w| ≤ ContinuousLinearMap.opNorm (g.inner x) * ‖v‖ * ‖w‖
   rwa [Real.norm_eq_abs] at h

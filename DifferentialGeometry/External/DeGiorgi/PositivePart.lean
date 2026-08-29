@@ -87,7 +87,7 @@ theorem MemW1pWitness.weakGrad_ae_eq_zero_on_zeroSet
 
 /-- Subtracting a constant preserves a `W^{1,2}` witness on finite-measure
 domains. -/
-noncomputable def MemW1pWitness.sub_const
+noncomputable def MemW1pWitness.subConst
     {Ω : Set E} [IsFiniteMeasure (volume.restrict Ω)]
     (hΩ : IsOpen Ω)
     {u : E → ℝ} (hw : MemW1pWitness 2 u Ω) (c : ℝ) :
@@ -127,7 +127,7 @@ noncomputable def MemW1pWitness.sub_const
     simp
 
 /-- Multiply a `W^{1,2}` witness by a bounded smooth scalar factor. -/
-noncomputable def MemW1pWitness.mul_smooth_bounded
+noncomputable def MemW1pWitness.mulSmoothBounded
     {Ω : Set E} (hΩ : IsOpen Ω)
     {u η : E → ℝ} (hw : MemW1pWitness 2 u Ω)
     (hη : ContDiff ℝ (⊤ : ℕ∞) η)
@@ -676,7 +676,7 @@ private theorem tendsto_eLpNorm_positivePart_sub
 /-- Auxiliary positive-part witness constructor: this is the transportable core
 assuming the zero-set vanishing input and the smooth approximation data are
 already available. -/
-noncomputable def MemW1pWitness.posPart_of_aux
+noncomputable def MemW1pWitness.posPartOfAux
     {Ω : Set E} [IsFiniteMeasure (volume.restrict Ω)]
     (hΩ : IsOpen Ω) {u : E → ℝ}
     (hw : MemW1pWitness 2 u Ω)
@@ -925,7 +925,7 @@ noncomputable def MemW1pWitness.posPart
             2 (volume.restrict Ω))
           atTop (nhds 0))) :
     MemW1pWitness 2 (fun x => max (u x) 0) Ω :=
-  MemW1pWitness.posPart_of_aux hΩ hw
+  MemW1pWitness.posPartOfAux hΩ hw
     (hw.weakGrad_ae_eq_zero_on_zeroSet hΩ) happrox
 
 end DeGiorgi

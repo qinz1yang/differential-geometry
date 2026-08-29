@@ -141,8 +141,8 @@ theorem isom_jet_one
 
 section LoweredJet
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 theorem lowered_jet_next
     (C : F -> F →L[Real] F →L[Real] Real)
@@ -256,8 +256,8 @@ variable {E0 F0 : Type*}
 
 section Gram
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable [ContinuousDualEquiv E0] [CoerciveBilinInverse E0]
 
@@ -1803,8 +1803,8 @@ private theorem isom_second_on
 
 section IsomBounds
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 theorem isom_deriv_on
     [FiniteDimensional Real E0] [CompleteSpace E0]
@@ -2027,8 +2027,8 @@ variable {E' : Type uE} [NormedAddCommGroup E']
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E' H} [I.Boundaryless]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E')] in
 theorem normal_transition_isometry
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x y : Y.M) :
@@ -2201,8 +2201,8 @@ theorem normal_fderiv_le_two
 
 section NormalBounds
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 omit [NeZero (Module.finrank Real E')] in
 theorem normal_bounds_on

@@ -344,14 +344,14 @@ theorem nabla0SFun_one_contMDiff
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 1) :
-    letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+    letI := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) 1
     ContMDiff I (I.prod 𝓘(𝕜, Tensor0SModel 1 𝕜 E)) (∞ : WithTop ℕ∞)
       (fun p : M =>
         (⟨p, nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
           1 cov X α p⟩ :
           TotalSpace (Tensor0SModel 1 𝕜 E) (fun p : M => Tensor0SSpace 1 I p))) := by
-  let := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
+  let := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I)
     (M := M) 1
   let F : (p : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I)
       (M := M) 1 p :=

@@ -98,12 +98,12 @@ theorem le_essInf_halfBall_of_ae_bound
     simpa [not_le] using hlow'
 
 /-- The low-power exponent used in the Chapter 07 Harnack proof. -/
-noncomputable def harnack_q (d : ℕ) [hNeZero : NeZero d] : ℝ := by
+noncomputable def harnackQ (d : ℕ) [hNeZero : NeZero d] : ℝ := by
   let _ := hNeZero
   exact ((d : ℝ) - 1) / (d : ℝ)
 
 /-- The corresponding `L^p` exponent in the Chapter 07 Harnack proof. -/
-noncomputable def harnack_p (d : ℕ) [hNeZero : NeZero d] : ℝ := by
+noncomputable def harnackP (d : ℕ) [hNeZero : NeZero d] : ℝ := by
   let _ := hNeZero
   exact ((d : ℝ) - 1) / ((d : ℝ) - 2)
 
@@ -114,29 +114,29 @@ private theorem harnack_dim_ge_three (hd : 2 < (d : ℝ)) : 3 ≤ d := by
   exact Nat.succ_le_of_lt hd_nat
 
 private theorem harnack_q_pos (hd : 2 < (d : ℝ)) :
-    0 < harnack_q d := by
-  unfold harnack_q
+    0 < harnackQ d := by
+  unfold harnackQ
   have hd_pos : 0 < (d : ℝ) := by positivity
   have hnum_pos : 0 < (d : ℝ) - 1 := by linarith
   exact div_pos hnum_pos hd_pos
 
 private theorem harnack_q_lt_one (hd : 2 < (d : ℝ)) :
-    harnack_q d < 1 := by
-  unfold harnack_q
+    harnackQ d < 1 := by
+  unfold harnackQ
   have hd_pos : 0 < (d : ℝ) := by positivity
   rw [div_lt_one hd_pos]
   linarith
 
 private theorem one_sub_harnack_q (hd : 2 < (d : ℝ)) :
-    1 - harnack_q d = ((d : ℝ))⁻¹ := by
-  unfold harnack_q
+    1 - harnackQ d = ((d : ℝ))⁻¹ := by
+  unfold harnackQ
   have hd_ne : (d : ℝ) ≠ 0 := by positivity
   field_simp [hd_ne]
   ring
 
 private theorem harnack_p_eq_from_q :
-    harnack_p d = harnack_q d * (d : ℝ) / ((d : ℝ) - 2) := by
-  unfold harnack_p harnack_q
+    harnackP d = harnackQ d * (d : ℝ) / ((d : ℝ) - 2) := by
+  unfold harnackP harnackQ
   have hd_pos : 0 < (d : ℝ) := by
     exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne d)
   have hd_ne : (d : ℝ) ≠ 0 := ne_of_gt hd_pos
@@ -146,45 +146,45 @@ private theorem harnack_p_eq_from_q :
   · field_simp [hd_ne, hdm2]
 
 private theorem harnack_p_gt_one (hd : 2 < (d : ℝ)) :
-    1 < harnack_p d := by
-  unfold harnack_p
+    1 < harnackP d := by
+  unfold harnackP
   have hden_pos : 0 < (d : ℝ) - 2 := by linarith
   exact (one_lt_div hden_pos).2 (by linarith)
 
 private theorem harnack_p_le_two (hd : 2 < (d : ℝ)) :
-    harnack_p d ≤ 2 := by
+    harnackP d ≤ 2 := by
   have hd_three : 3 ≤ d := harnack_dim_ge_three hd
   have hd_three' : (3 : ℝ) ≤ d := by exact_mod_cast hd_three
-  unfold harnack_p
+  unfold harnackP
   have hden_pos : 0 < (d : ℝ) - 2 := by linarith
   rw [div_le_iff₀ hden_pos]
   linarith
 
 private theorem harnack_p_div_sub_eq (hd : 2 < (d : ℝ)) :
-    harnack_p d / (harnack_p d - 1) = (d : ℝ) - 1 := by
-  unfold harnack_p
+    harnackP d / (harnackP d - 1) = (d : ℝ) - 1 := by
+  unfold harnackP
   have hden_pos : 0 < (d : ℝ) - 2 := by linarith
   have hden_ne : (d : ℝ) - 2 ≠ 0 := ne_of_gt hden_pos
   field_simp [hden_ne]
   ring
 
 private theorem harnack_p_inv_eq (hd : 2 < (d : ℝ)) :
-    (harnack_p d)⁻¹ = ((d : ℝ) - 2) / ((d : ℝ) - 1) := by
-  unfold harnack_p
+    (harnackP d)⁻¹ = ((d : ℝ) - 2) / ((d : ℝ) - 1) := by
+  unfold harnackP
   have hnum_pos : 0 < (d : ℝ) - 1 := by linarith
   have hnum_ne : (d : ℝ) - 1 ≠ 0 := ne_of_gt hnum_pos
   field_simp [hnum_ne]
 
 private theorem harnack_outerExponent_eq (hd : 2 < (d : ℝ)) :
-    ((d : ℝ) - 2) / (harnack_q d * (d : ℝ)) = (harnack_p d)⁻¹ := by
+    ((d : ℝ) - 2) / (harnackQ d * (d : ℝ)) = (harnackP d)⁻¹ := by
   rw [harnack_p_inv_eq (d := d) hd]
-  unfold harnack_q
+  unfold harnackQ
   have hd_ne : (d : ℝ) ≠ 0 := by positivity
   field_simp [hd_ne]
 
 private theorem halfBall_power_factor_eq (hd : 2 < (d : ℝ)) :
-    (1 / (1 - harnack_q d)) ^ (d : ℝ) = (d : ℝ) ^ (d : ℝ) := by
-  have hone_sub : 1 - harnack_q d = ((d : ℝ))⁻¹ := one_sub_harnack_q (d := d) hd
+    (1 / (1 - harnackQ d)) ^ (d : ℝ) = (d : ℝ) ^ (d : ℝ) := by
+  have hone_sub : 1 - harnackQ d = ((d : ℝ))⁻¹ := one_sub_harnack_q (d := d) hd
   rw [hone_sub]
   simp
 
@@ -245,21 +245,21 @@ private lemma affine_map_restrict_ball_mul
 
 /-- Quantitative constant used to absorb the local-ball Harnack chain into the
 final exponential form. -/
-noncomputable def C_harnack (d : ℕ) [NeZero d] : ℝ :=
+noncomputable def CHarnack (d : ℕ) [NeZero d] : ℝ :=
   17 *
     (((d : ℝ) - 2) / ((d : ℝ) - 1) *
         Real.log
-          (C_Moser d * (((d : ℝ) - 1) ^ (d : ℝ)) * ((4 : ℝ) ^ (d : ℝ))) +
+          (CMoser d * (((d : ℝ) - 1) ^ (d : ℝ)) * ((4 : ℝ) ^ (d : ℝ))) +
       (d : ℝ) +
-      Real.log (C_weakHarnack_of d * ((d : ℝ) ^ (weak_harnack_decay_exp d))))
+      Real.log (CWeakHarnackOf d * ((d : ℝ) ^ (weakHarnackDecayExp d))))
 
 /-- Quantitative constant for the Moser Hölder theorem. -/
-noncomputable def C_holder_Moser (d : ℕ) [NeZero d] : ℝ :=
+noncomputable def CHolderMoser (d : ℕ) [NeZero d] : ℝ :=
   (256 : ℝ) *
-    (|C_harnack d| +
-      C_Moser d * (((d : ℝ) - 1) ^ (d : ℝ)) * ((4 : ℝ) ^ (d : ℝ)) +
-      C_Moser d * ((2 : ℝ) ^ (d : ℝ)) +
-      C_weakHarnack_of d * ((d : ℝ) ^ (d : ℝ)) + 8)
+    (|CHarnack d| +
+      CMoser d * (((d : ℝ) - 1) ^ (d : ℝ)) * ((4 : ℝ) ^ (d : ℝ)) +
+      CMoser d * ((2 : ℝ) ^ (d : ℝ)) +
+      CWeakHarnackOf d * ((d : ℝ) ^ (d : ℝ)) + 8)
 
 private noncomputable def quarterBallInf
     (u : E → ℝ) (c : E) : ℝ :=
@@ -268,7 +268,7 @@ private noncomputable def quarterBallInf
 
 private noncomputable def localHarnackConstant
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1)) : ℝ :=
-  (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2)) ^ ((harnack_p d)⁻¹) *
+  (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2)) ^ ((harnackP d)⁻¹) *
     localWeakHarnackBase d ^ (A.1.Λ ^ ((1 : ℝ) / 2))
 
 private theorem localHarnackConstant_pos
@@ -282,19 +282,19 @@ private theorem localHarnackConstant_pos
   · exact Real.rpow_pos_of_pos (localWeakHarnackBase_pos (d := d)) _
 
 private theorem localMoserBase_eq (hd : 2 < (d : ℝ)) :
-    C_Moser d * (harnack_p d / (harnack_p d - 1)) ^ (d : ℝ) * (4 : ℝ) ^ (d : ℝ) =
+    CMoser d * (harnackP d / (harnackP d - 1)) ^ (d : ℝ) * (4 : ℝ) ^ (d : ℝ) =
       localMoserBase d := by
   rw [harnack_p_div_sub_eq (d := d) hd, localMoserBase]
 
 private theorem localWeakHarnackBase_eq (hd : 2 < (d : ℝ)) :
-    C_weakHarnack d hd / (1 - harnack_q d) ^ (weak_harnack_decay_exp d) =
+    CWeakHarnack d hd / (1 - harnackQ d) ^ (weakHarnackDecayExp d) =
       localWeakHarnackBase d := by
-  have hone_sub : 1 - harnack_q d = ((d : ℝ))⁻¹ := one_sub_harnack_q (d := d) hd
+  have hone_sub : 1 - harnackQ d = ((d : ℝ))⁻¹ := one_sub_harnack_q (d := d) hd
   have hd_pos : 0 < (d : ℝ) := by
     exact_mod_cast Nat.pos_of_ne_zero (NeZero.ne d)
   rw [hone_sub, div_eq_mul_inv, Real.inv_rpow hd_pos.le, inv_inv]
   unfold localWeakHarnackBase
-  rw [show C_weakHarnack_of d = C_weakHarnack d hd from C_weakHarnack_of_eq hd]
+  rw [show CWeakHarnackOf d = CWeakHarnack d hd from C_weakHarnack_of_eq hd]
 
 omit [NeZero d] in
 private theorem quarterBallInf_eq_essInf_eighthBall
@@ -405,22 +405,22 @@ private theorem ae_le_localHarnack_on_eighthBall
     rw [MeasureTheory.isFiniteMeasure_iff]
     simpa using (measure_ball_lt_top (μ := volume) (x := c) (r := (1 / 8 : ℝ)))
   have hu_memLp_p :
-      MemLp u (ENNReal.ofReal (harnack_p d))
+      MemLp u (ENNReal.ofReal (harnackP d))
         (volume.restrict (Metric.ball c (1 / 8 : ℝ))) := by
     exact huEighth.memLp.mono_exponent <| by
       exact_mod_cast harnack_p_le_two (d := d) hd
-  have hp_pos : 0 < harnack_p d := lt_trans zero_lt_one (harnack_p_gt_one (d := d) hd)
+  have hp_pos : 0 < harnackP d := lt_trans zero_lt_one (harnack_p_gt_one (d := d) hd)
   have hu_abs_int :
-      IntegrableOn (fun x => |u x| ^ harnack_p d) (Metric.ball c (1 / 8 : ℝ)) volume := by
+      IntegrableOn (fun x => |u x| ^ harnackP d) (Metric.ball c (1 / 8 : ℝ)) volume := by
     have hint :
-        Integrable (fun x => ‖u x‖ ^ harnack_p d)
+        Integrable (fun x => ‖u x‖ ^ harnackP d)
           (volume.restrict (Metric.ball c (1 / 8 : ℝ))) := by
       have hint' :=
         hu_memLp_p.integrable_norm_rpow (ENNReal.ofReal_pos.mpr hp_pos).ne' ENNReal.ofReal_ne_top
       simpa [ENNReal.toReal_ofReal hp_pos.le] using hint'
     simpa [IntegrableOn] using hint
   have hu_posInt :
-      IntegrableOn (fun x => |max (u x) 0| ^ harnack_p d)
+      IntegrableOn (fun x => |max (u x) 0| ^ harnackP d)
         (Metric.ball c (1 / 8 : ℝ)) volume := by
     refine hu_abs_int.congr_fun ?_ measurableSet_ball
     intro x hx
@@ -430,27 +430,27 @@ private theorem ae_le_localHarnack_on_eighthBall
   have hlinfty_raw :=
     linfty_subsolution_Moser_on_ball (d := d) hd
       (x₀ := c) (R := (1 / 8 : ℝ)) (by norm_num)
-      Aeighth (p₀ := harnack_p d) (harnack_p_gt_one (d := d) hd)
+      Aeighth (p₀ := harnackP d) (harnack_p_gt_one (d := d) hd)
       hsolEighth.1 hu_posInt
   have hlinfty :
       ∀ᵐ x ∂(volume.restrict (Metric.ball c (1 / 16 : ℝ))),
-        |max (u x) 0| ^ harnack_p d ≤
-          C_Moser d * Aeighth.1.Λ ^ ((d : ℝ) / 2) *
-            (harnack_p d / (harnack_p d - 1)) ^ (d : ℝ) *
+        |max (u x) 0| ^ harnackP d ≤
+          CMoser d * Aeighth.1.Λ ^ ((d : ℝ) / 2) *
+            (harnackP d / (harnackP d - 1)) ^ (d : ℝ) *
             (((1 / 8 : ℝ) ^ Module.finrank ℝ E)⁻¹ *
-              ∫ x in Metric.ball c (1 / 8 : ℝ), |max (u x) 0| ^ harnack_p d ∂volume) := by
+              ∫ x in Metric.ball c (1 / 8 : ℝ), |max (u x) 0| ^ harnackP d ∂volume) := by
     convert hlinfty_raw using 1
     · simp
       norm_num
   have hweak :
       ((((1 / 2 : ℝ) ^ Module.finrank ℝ E)⁻¹ *
-          ∫ x in Metric.ball c (1 / 8 : ℝ), |u x| ^ harnack_p d ∂volume) ^
-          ((harnack_p d)⁻¹)) ≤
+          ∫ x in Metric.ball c (1 / 8 : ℝ), |u x| ^ harnackP d ∂volume) ^
+          ((harnackP d)⁻¹)) ≤
         localWeakHarnackBase d ^ (A.1.Λ ^ ((1 : ℝ) / 2)) * quarterBallInf u c := by
     have hweak_raw :=
       weak_harnack_on_ball (d := d) hd
         (x₀ := c) (R := (1 / 2 : ℝ)) (by norm_num)
-        Ahalf (q := harnack_q d)
+        Ahalf (q := harnackQ d)
         (harnack_q_pos (d := d) hd) (harnack_q_lt_one (d := d) hd)
         hu_posHalf hsolHalf.2
     have hweak_raw' := hweak_raw
@@ -510,23 +510,23 @@ private theorem ae_le_localHarnack_on_eighthBall
       hquarterBallInf_nonneg
   have hweak_pow :
       (((1 / 2 : ℝ) ^ Module.finrank ℝ E)⁻¹ *
-          ∫ x in Metric.ball c (1 / 8 : ℝ), |u x| ^ harnack_p d ∂volume) ≤
-        T ^ harnack_p d := by
+          ∫ x in Metric.ball c (1 / 8 : ℝ), |u x| ^ harnackP d ∂volume) ≤
+        T ^ harnackP d := by
     let L : ℝ :=
       ((1 / 2 : ℝ) ^ Module.finrank ℝ E)⁻¹ *
-        ∫ x in Metric.ball c (1 / 8 : ℝ), |u x| ^ harnack_p d ∂volume
+        ∫ x in Metric.ball c (1 / 8 : ℝ), |u x| ^ harnackP d ∂volume
     have hL_nonneg : 0 ≤ L := by
       dsimp [L]
       positivity
-    have hweak' : L ^ ((harnack_p d)⁻¹) ≤ T := by
+    have hweak' : L ^ ((harnackP d)⁻¹) ≤ T := by
       simpa [L, T] using hweak
     have hpow :=
       Real.rpow_le_rpow (Real.rpow_nonneg hL_nonneg _) hweak' hp_pos.le
-    have hp_ne : harnack_p d ≠ 0 := ne_of_gt hp_pos
-    have hmul : (harnack_p d)⁻¹ * harnack_p d = 1 := by
+    have hp_ne : harnackP d ≠ 0 := ne_of_gt hp_pos
+    have hmul : (harnackP d)⁻¹ * harnackP d = 1 := by
       field_simp [hp_ne]
     have hL :
-        (L ^ ((harnack_p d)⁻¹)) ^ harnack_p d = L := by
+        (L ^ ((harnackP d)⁻¹)) ^ harnackP d = L := by
       rw [← Real.rpow_mul hL_nonneg, hmul, Real.rpow_one]
     rw [hL] at hpow
     simpa [L, T] using hpow
@@ -538,58 +538,58 @@ private theorem ae_le_localHarnack_on_eighthBall
   have hux_pos : 0 < u x := hu_pos _ (hsubEighthBall hx_eighth)
   have hux_nonneg : 0 ≤ u x := hux_pos.le
   have hx_to_u :
-      |max (u x) 0| ^ harnack_p d = u x ^ harnack_p d := by
+      |max (u x) 0| ^ harnackP d = u x ^ harnackP d := by
     simp [max_eq_left hux_nonneg, abs_of_nonneg hux_nonneg]
   have hint_eq :
-      ∫ x in Metric.ball c (1 / 8 : ℝ), |max (u x) 0| ^ harnack_p d ∂volume =
-        ∫ x in Metric.ball c (1 / 8 : ℝ), |u x| ^ harnack_p d ∂volume := by
+      ∫ x in Metric.ball c (1 / 8 : ℝ), |max (u x) 0| ^ harnackP d ∂volume =
+        ∫ x in Metric.ball c (1 / 8 : ℝ), |u x| ^ harnackP d ∂volume := by
     apply setIntegral_congr_fun measurableSet_ball
     intro y hy
     have huy_pos : 0 < u y := hu_pos _ (hsubEighthBall hy)
     have huy_nonneg : 0 ≤ u y := huy_pos.le
     simp [max_eq_left huy_nonneg, abs_of_nonneg huy_nonneg]
   have hx_bound :
-      u x ^ harnack_p d ≤
-        localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2) * T ^ harnack_p d := by
+      u x ^ harnackP d ≤
+        localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2) * T ^ harnackP d := by
     have hx0 :
-        u x ^ harnack_p d ≤
-          C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
-            (harnack_p d / (harnack_p d - 1)) ^ (d : ℝ) *
+        u x ^ harnackP d ≤
+          CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
+            (harnackP d / (harnackP d - 1)) ^ (d : ℝ) *
             (((1 / 8 : ℝ) ^ Module.finrank ℝ E)⁻¹ *
-              ∫ x in Metric.ball c (1 / 8 : ℝ), |max (u x) 0| ^ harnack_p d ∂volume) := by
+              ∫ x in Metric.ball c (1 / 8 : ℝ), |max (u x) 0| ^ harnackP d ∂volume) := by
       calc
-        u x ^ harnack_p d ≤
-            C_Moser d * Aeighth.1.Λ ^ ((d : ℝ) / 2) *
-              (harnack_p d / (harnack_p d - 1)) ^ (d : ℝ) *
+        u x ^ harnackP d ≤
+            CMoser d * Aeighth.1.Λ ^ ((d : ℝ) / 2) *
+              (harnackP d / (harnackP d - 1)) ^ (d : ℝ) *
               (((1 / 8 : ℝ) ^ Module.finrank ℝ E)⁻¹ *
-                ∫ x in Metric.ball c (1 / 8 : ℝ), |max (u x) 0| ^ harnack_p d ∂volume) := by
+                ∫ x in Metric.ball c (1 / 8 : ℝ), |max (u x) 0| ^ harnackP d ∂volume) := by
               simpa [hfin, Real.rpow_natCast,
                 show (1 / 8 : ℝ) / 2 = (1 / 16 : ℝ) by norm_num,
                 hx_to_u, mul_assoc, mul_left_comm, mul_comm] using hx_raw
-        _ = C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
-              (harnack_p d / (harnack_p d - 1)) ^ (d : ℝ) *
+        _ = CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
+              (harnackP d / (harnackP d - 1)) ^ (d : ℝ) *
               (((1 / 8 : ℝ) ^ Module.finrank ℝ E)⁻¹ *
-                ∫ x in Metric.ball c (1 / 8 : ℝ), |max (u x) 0| ^ harnack_p d ∂volume) := by
+                ∫ x in Metric.ball c (1 / 8 : ℝ), |max (u x) 0| ^ harnackP d ∂volume) := by
               rw [show Aeighth.1.Λ = A.1.Λ by
                     simp [Aeighth, NormalizedEllipticCoeff.restrict, EllipticCoeff.restrict_Λ]]
     have hx :
-        u x ^ harnack_p d ≤
-          C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) * (((d : ℝ) - 1) ^ (d : ℝ)) *
+        u x ^ harnackP d ≤
+          CMoser d * A.1.Λ ^ ((d : ℝ) / 2) * (((d : ℝ) - 1) ^ (d : ℝ)) *
             (((1 / 8 : ℝ) ^ Module.finrank ℝ E)⁻¹ *
-              ∫ x in Metric.ball c (1 / 8 : ℝ), |max (u x) 0| ^ harnack_p d ∂volume) := by
+              ∫ x in Metric.ball c (1 / 8 : ℝ), |max (u x) 0| ^ harnackP d ∂volume) := by
       have hratio :
-          (harnack_p d / (harnack_p d - 1)) ^ (d : ℝ) = ((d : ℝ) - 1) ^ (d : ℝ) := by
+          (harnackP d / (harnackP d - 1)) ^ (d : ℝ) = ((d : ℝ) - 1) ^ (d : ℝ) := by
         rw [harnack_p_div_sub_eq (d := d) hd]
       simpa [hratio, mul_assoc, mul_left_comm, mul_comm] using hx0
     have hconst :
-        C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) * (((d : ℝ) - 1) ^ (d : ℝ)) *
+        CMoser d * A.1.Λ ^ ((d : ℝ) / 2) * (((d : ℝ) - 1) ^ (d : ℝ)) *
             (((1 / 8 : ℝ) ^ Module.finrank ℝ E)⁻¹ *
-          ∫ x in Metric.ball c (1 / 8 : ℝ), |max (u x) 0| ^ harnack_p d ∂volume) ≤
-          C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) * (((d : ℝ) - 1) ^ (d : ℝ)) *
-            (((4 : ℝ) ^ (d : ℝ)) * T ^ harnack_p d) := by
+          ∫ x in Metric.ball c (1 / 8 : ℝ), |max (u x) 0| ^ harnackP d ∂volume) ≤
+          CMoser d * A.1.Λ ^ ((d : ℝ) / 2) * (((d : ℝ) - 1) ^ (d : ℝ)) *
+            (((4 : ℝ) ^ (d : ℝ)) * T ^ harnackP d) := by
       rw [hint_eq, hscale]
       have hpref_nonneg :
-          0 ≤ C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) * (((d : ℝ) - 1) ^ (d : ℝ)) := by
+          0 ≤ CMoser d * A.1.Λ ^ ((d : ℝ) / 2) * (((d : ℝ) - 1) ^ (d : ℝ)) := by
         refine mul_nonneg (mul_nonneg ?_ ?_) ?_
         · exact le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_Moser (d := d))
         · exact Real.rpow_nonneg A.1.Λ_nonneg _
@@ -601,14 +601,14 @@ private theorem ae_le_localHarnack_on_eighthBall
       have hweak_pow' :
           ((4 : ℝ) ^ (d : ℝ)) *
               (((1 / 2 : ℝ) ^ Module.finrank ℝ E)⁻¹ *
-                ∫ x in Metric.ball c (1 / 8 : ℝ), |u x| ^ harnack_p d ∂volume) ≤
-            ((4 : ℝ) ^ (d : ℝ)) * T ^ harnack_p d := by
+                ∫ x in Metric.ball c (1 / 8 : ℝ), |u x| ^ harnackP d ∂volume) ≤
+            ((4 : ℝ) ^ (d : ℝ)) * T ^ harnackP d := by
         exact mul_le_mul_of_nonneg_left hweak_pow (by positivity)
       have hweak_pow'' :
           ((4 : ℝ) ^ (d : ℝ) *
               (((1 / 2 : ℝ) ^ Module.finrank ℝ E)⁻¹ *
-                ∫ x in Metric.ball c (1 / 8 : ℝ), |u x| ^ harnack_p d ∂volume)) ≤
-            ((4 : ℝ) ^ (d : ℝ) * T ^ harnack_p d) := by
+                ∫ x in Metric.ball c (1 / 8 : ℝ), |u x| ^ harnackP d ∂volume)) ≤
+            ((4 : ℝ) ^ (d : ℝ) * T ^ harnackP d) := by
         simpa [mul_assoc] using hweak_pow'
       exact mul_le_mul_of_nonneg_left (by simpa [mul_assoc] using hweak_pow'') hpref_nonneg
     have hx' := le_trans hx hconst
@@ -619,37 +619,37 @@ private theorem ae_le_localHarnack_on_eighthBall
       u x ≤ localHarnackConstant (d := d) A * quarterBallInf u c := by
     have hroot0 :
         u x ≤
-          (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2) * T ^ harnack_p d) ^
-            ((harnack_p d)⁻¹) := by
+          (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2) * T ^ harnackP d) ^
+            ((harnackP d)⁻¹) := by
       have hright_nonneg :
           0 ≤
-            (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2) * T ^ harnack_p d) ^
-              ((harnack_p d)⁻¹) := by
+            (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2) * T ^ harnackP d) ^
+              ((harnackP d)⁻¹) := by
         positivity
       rw [← Real.rpow_le_rpow_iff hux_nonneg hright_nonneg hp_pos]
-      have hp_ne : harnack_p d ≠ 0 := ne_of_gt hp_pos
+      have hp_ne : harnackP d ≠ 0 := ne_of_gt hp_pos
       have hmul :
-          (harnack_p d)⁻¹ * harnack_p d = 1 := by
+          (harnackP d)⁻¹ * harnackP d = 1 := by
         field_simp [hp_ne]
       rw [← Real.rpow_mul (mul_nonneg hbase_nonneg (Real.rpow_nonneg hT_nonneg _)), hmul,
         Real.rpow_one]
       exact hx_bound
-    have hp_ne : harnack_p d ≠ 0 := ne_of_gt hp_pos
+    have hp_ne : harnackP d ≠ 0 := ne_of_gt hp_pos
     have hmul :
-        harnack_p d * (harnack_p d)⁻¹ = 1 := by
+        harnackP d * (harnackP d)⁻¹ = 1 := by
       field_simp [hp_ne]
     have hT :
-        (T ^ harnack_p d) ^ (harnack_p d)⁻¹ = T := by
+        (T ^ harnackP d) ^ (harnackP d)⁻¹ = T := by
       rw [← Real.rpow_mul hT_nonneg, hmul, Real.rpow_one]
     have hright :
-        (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2) * T ^ harnack_p d) ^ (harnack_p d)⁻¹ =
-          (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2)) ^ (harnack_p d)⁻¹ * T := by
-      rw [show localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2) * T ^ harnack_p d =
-          (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2)) * T ^ harnack_p d by ring]
+        (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2) * T ^ harnackP d) ^ (harnackP d)⁻¹ =
+          (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2)) ^ (harnackP d)⁻¹ * T := by
+      rw [show localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2) * T ^ harnackP d =
+          (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2)) * T ^ harnackP d by ring]
       rw [Real.mul_rpow hbase_nonneg (Real.rpow_nonneg hT_nonneg _), hT]
     calc
-      u x ≤ (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2) * T ^ harnack_p d) ^ (harnack_p d)⁻¹ := hroot0
-      _ = (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2)) ^ (harnack_p d)⁻¹ * T := hright
+      u x ≤ (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2) * T ^ harnackP d) ^ (harnackP d)⁻¹ := hroot0
+      _ = (localMoserBase d * A.1.Λ ^ ((d : ℝ) / 2)) ^ (harnackP d)⁻¹ * T := hright
       _ = localHarnackConstant (d := d) A * quarterBallInf u c := by
             simp [T, localHarnackConstant, mul_assoc]
   exact hroot
@@ -850,7 +850,7 @@ private theorem localHarnackConstant_pow_seventeen_le_exp
     (hd : 2 < (d : ℝ))
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1)) :
     localHarnackConstant (d := d) A ^ 17 ≤
-      Real.exp (C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
+      Real.exp (CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
   let K : ℝ := localHarnackConstant (d := d) A
   let s : ℝ := A.1.Λ ^ ((1 : ℝ) / 2)
   let M : ℝ := localMoserBase d
@@ -888,7 +888,7 @@ private theorem localHarnackConstant_pow_seventeen_le_exp
         exact Real.log_le_self hs_pos.le
   have hlogK :
       Real.log K =
-        (harnack_p d)⁻¹ *
+        (harnackP d)⁻¹ *
           (Real.log M + ((d : ℝ) / 2) * Real.log A.1.Λ) +
         s * Real.log W := by
     unfold K localHarnackConstant s M W
@@ -902,26 +902,26 @@ private theorem localHarnackConstant_pow_seventeen_le_exp
       rw [Real.log_rpow A.1.Λ_pos, Real.log_rpow hW_pos]
     · exact (Real.rpow_pos_of_pos hMΛ_pos _).ne'
     · exact (Real.rpow_pos_of_pos hW_pos _).ne'
-  have hp_pos : 0 < harnack_p d := lt_trans zero_lt_one (harnack_p_gt_one (d := d) hd)
-  have hinvp_nonneg : 0 ≤ (harnack_p d)⁻¹ := by
+  have hp_pos : 0 < harnackP d := lt_trans zero_lt_one (harnack_p_gt_one (d := d) hd)
+  have hinvp_nonneg : 0 ≤ (harnackP d)⁻¹ := by
     exact inv_nonneg.mpr hp_pos.le
-  have hinvp_le_one : (harnack_p d)⁻¹ ≤ 1 := by
+  have hinvp_le_one : (harnackP d)⁻¹ ≤ 1 := by
     rw [harnack_p_inv_eq (d := d) hd]
     have hden_pos : 0 < (d : ℝ) - 1 := by
       linarith
     exact (div_le_one hden_pos).2 (by linarith)
   have htermM :
-      (harnack_p d)⁻¹ * Real.log M ≤
-        ((harnack_p d)⁻¹ * Real.log M) * s := by
-    have hcoeff_nonneg : 0 ≤ (harnack_p d)⁻¹ * Real.log M :=
+      (harnackP d)⁻¹ * Real.log M ≤
+        ((harnackP d)⁻¹ * Real.log M) * s := by
+    have hcoeff_nonneg : 0 ≤ (harnackP d)⁻¹ * Real.log M :=
       mul_nonneg hinvp_nonneg hlogM_nonneg
     have hmult :
-        ((harnack_p d)⁻¹ * Real.log M) * 1 ≤
-          ((harnack_p d)⁻¹ * Real.log M) * s := by
+        ((harnackP d)⁻¹ * Real.log M) * 1 ≤
+          ((harnackP d)⁻¹ * Real.log M) * s := by
       exact mul_le_mul_of_nonneg_left hs_ge_one hcoeff_nonneg
     simpa using hmult
   have htermA :
-      (harnack_p d)⁻¹ * (((d : ℝ) / 2) * Real.log A.1.Λ) ≤ (d : ℝ) * s := by
+      (harnackP d)⁻¹ * (((d : ℝ) / 2) * Real.log A.1.Λ) ≤ (d : ℝ) * s := by
     have hmid_nonneg : 0 ≤ ((d : ℝ) / 2) * Real.log A.1.Λ := by
       positivity
     have hmid_le : ((d : ℝ) / 2) * Real.log A.1.Λ ≤ (d : ℝ) * s := by
@@ -930,10 +930,10 @@ private theorem localHarnackConstant_pow_seventeen_le_exp
           gcongr
         _ = (d : ℝ) * s := by
           ring
-    have hle_mid : (harnack_p d)⁻¹ * (((d : ℝ) / 2) * Real.log A.1.Λ) ≤
+    have hle_mid : (harnackP d)⁻¹ * (((d : ℝ) / 2) * Real.log A.1.Λ) ≤
         ((d : ℝ) / 2) * Real.log A.1.Λ := by
       have htmp :
-          (harnack_p d)⁻¹ * (((d : ℝ) / 2) * Real.log A.1.Λ) ≤
+          (harnackP d)⁻¹ * (((d : ℝ) / 2) * Real.log A.1.Λ) ≤
             1 * (((d : ℝ) / 2) * Real.log A.1.Λ) := by
         exact mul_le_mul_of_nonneg_right hinvp_le_one hmid_nonneg
       simpa using htmp
@@ -952,30 +952,30 @@ private theorem localHarnackConstant_pow_seventeen_le_exp
           s * Real.log W := by
       ring
     have hleft_split :
-        (harnack_p d)⁻¹ * (Real.log M + ((d : ℝ) / 2) * Real.log A.1.Λ) +
+        (harnackP d)⁻¹ * (Real.log M + ((d : ℝ) / 2) * Real.log A.1.Λ) +
             s * Real.log W
           =
-        (harnack_p d)⁻¹ * Real.log M +
-          (harnack_p d)⁻¹ * (((d : ℝ) / 2) * Real.log A.1.Λ) +
+        (harnackP d)⁻¹ * Real.log M +
+          (harnackP d)⁻¹ * (((d : ℝ) / 2) * Real.log A.1.Λ) +
           s * Real.log W := by
       ring
     rw [hsplit]
     rw [hleft_split]
     have hmain :
-        (harnack_p d)⁻¹ * Real.log M +
-            (harnack_p d)⁻¹ * (((d : ℝ) / 2) * Real.log A.1.Λ) ≤
+        (harnackP d)⁻¹ * Real.log M +
+            (harnackP d)⁻¹ * (((d : ℝ) / 2) * Real.log A.1.Λ) ≤
           (((d : ℝ) - 2) / ((d : ℝ) - 1) * Real.log M) * s +
             (d : ℝ) * s := by
       have htermM' :
-          (harnack_p d)⁻¹ * Real.log M ≤
+          (harnackP d)⁻¹ * Real.log M ≤
             (((d : ℝ) - 2) / ((d : ℝ) - 1) * Real.log M) * s := by
         simpa [harnack_p_inv_eq (d := d) hd] using htermM
       exact add_le_add htermM' htermA
     simpa [add_assoc, add_left_comm, add_comm] using
       add_le_add_right hmain (s * Real.log W)
   have hlogKpow :
-      Real.log (K ^ 17) ≤ C_harnack d * s := by
-    rw [Real.log_pow, C_harnack]
+      Real.log (K ^ 17) ≤ CHarnack d * s := by
+    rw [Real.log_pow, CHarnack]
     have hscaled : 17 * Real.log K ≤
         17 *
           ((((d : ℝ) - 2) / ((d : ℝ) - 1) * Real.log M +
@@ -994,7 +994,7 @@ theorem harnack
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
     (hsol : IsSolution A.1 u) :
     essSup u μhalf ≤
-      Real.exp (C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2)) *
+      Real.exp (CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2)) *
         essInf u μhalf := by
   let K : ℝ := localHarnackConstant (d := d) A
   have hK_pos : 0 < K := localHarnackConstant_pos (d := d) hd A
@@ -1145,11 +1145,11 @@ theorem harnack
         (restrict_ball_ne_zero (c := (0 : E)) (r := (1 / 2 : ℝ)) (by norm_num))
         (by simpa using hnonneg_half_ae)
   have hKexp :
-      K ^ 17 ≤ Real.exp (C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
+      K ^ 17 ≤ Real.exp (CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2)) := by
     simpa [K] using localHarnackConstant_pow_seventeen_le_exp (d := d) hd A
   calc
     essSup u μhalf ≤ K ^ 17 * essInf u μhalf := hcore
-    _ ≤ Real.exp (C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2)) * essInf u μhalf := by
+    _ ≤ Real.exp (CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2)) * essInf u μhalf := by
           exact mul_le_mul_of_nonneg_right hKexp hessInf_nonneg
 
 /-- Harnack, packaged directly for the equality-form local weak-solution
@@ -1161,7 +1161,7 @@ theorem harnack_of_homogeneousWeakSolution
     (hu_pos : ∀ x ∈ Metric.ball (0 : E) 1, 0 < u x)
     (hweak : IsHomogeneousWeakSolution A.1 u) :
     essSup u μhalf ≤
-      Real.exp (C_harnack d * A.1.Λ ^ ((1 : ℝ) / 2)) *
+      Real.exp (CHarnack d * A.1.Λ ^ ((1 : ℝ) / 2)) *
         essInf u μhalf := by
   exact harnack hd A hu_pos (isHomogeneousWeakSolution_isSolution hweak)
 

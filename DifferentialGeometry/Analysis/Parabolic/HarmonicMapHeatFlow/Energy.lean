@@ -37,8 +37,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     RiemannianBundle (fun x : M => TangentSpace I x) :=
   ⟨q.toRiemannianMetric⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [CompactSpace M] [T2Space M]
   [BoundarylessManifold I M] [ConnectedSpace M] [SigmaCompactSpace M] in
@@ -51,8 +51,8 @@ private theorem hmfContBundle
     hmfRiemBundle (I := I) q
   exact ⟨q.inner, q.contMDiff.continuous, fun _ _ _ => rfl⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 @[reducible] private noncomputable def hmfEMetric
     (q : SmoothRiemannianMetric I M) :
     letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
@@ -68,8 +68,8 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [CompactSpace M]
   [T2Space M] [BoundarylessManifold I M] [SigmaCompactSpace M]
   [ConnectedSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem hmfEnorm
     (q : SmoothRiemannianMetric I M) :
     letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
@@ -82,8 +82,8 @@ private theorem hmfEnorm
   rw [← ofReal_norm, norm_eq_sqrt_real_inner]
   rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def hmfDiagExp
     (q : SmoothRiemannianMetric I M) : TangentBundle I M → M × M := by
   letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
@@ -93,8 +93,8 @@ noncomputable def hmfDiagExp
   letI : PseudoEMetricSpace M := hmfEMetric (I := I) q
   exact diagExp (I := I) q (hmfEnorm (I := I) q)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
 theorem hmfDiagExp_cd_zero
     (q : SmoothRiemannianMetric I M) (x : M) (n : ℕ) :
@@ -127,8 +127,8 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   change hmfUnknownLM (I := I) q x 0 = 0
   exact map_zero _
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [BoundarylessManifold I M] [ConnectedSpace M] in
 @[simp] theorem hmfAdd_zero
     (q : SmoothRiemannianMetric I M) :

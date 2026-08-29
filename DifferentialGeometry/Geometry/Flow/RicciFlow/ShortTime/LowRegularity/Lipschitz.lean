@@ -5268,12 +5268,12 @@ private lemma vbPK_slotExt_lip (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀).toSection x)
     B (u 0) (Fin.tail u)]
-  have hc : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x B
+  have hc : tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x B
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)) =
       Tensor0SSpace.toModel B (fun _ : Fin 1 => u 0) •
         unitTensor (I := I) (M := M) x := by
     have h2 := vb_rank0_smul_lip (I := I) (M := M) x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x B
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x B
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))
     rw [h2]
     congr 1

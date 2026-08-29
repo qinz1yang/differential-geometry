@@ -33,7 +33,7 @@ omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem stMetricCompat
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
       (S.family.connection t) (S.family.metric t) := by
   simpa [SolutionFamily.connection, SolutionOn.family_metric] using
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -43,9 +43,9 @@ private theorem stMetricCompat
 def starProd (S : SolutionOn (I := I) (M := M) D) (t : Real) (a b : ℕ) :
     (r : ℕ) → Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) (((4 + a) + (4 + b)) + 2 * r)
-  | 0 => tensor0SField_product (𝕜 := Real) (E := E) (I := I) (n := (∞ : WithTop ℕ∞)) (s := 4 + a) (q := 4 + b)
+  | 0 => tensor0SFieldProduct (𝕜 := Real) (E := E) (I := I) (n := (∞ : WithTop ℕ∞)) (s := 4 + a) (q := 4 + b)
       (nablaKRm04Field (I := I) S t a) (nablaKRm04Field (I := I) S t b)
-  | (r + 1) => tensor0SField_product (𝕜 := Real) (E := E) (I := I) (n := (∞ : WithTop ℕ∞))
+  | (r + 1) => tensor0SFieldProduct (𝕜 := Real) (E := E) (I := I) (n := (∞ : WithTop ℕ∞))
       (s := ((4 + a) + (4 + b)) + 2 * r) (q := 2)
       (starProd S t a b r) (metricTensorField (I := I) (S.family.metric t))
 
@@ -321,7 +321,7 @@ omit [SigmaCompactSpace M] in
 theorem stNablaMtIter
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     {s : ℕ} (τ : ℕ) :
     ∀ (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (n := (∞ : WithTop ℕ∞)) (s + 2 * τ))
@@ -852,7 +852,7 @@ theorem starBaseProd_eq
           (σ (Fin.natAdd (4 + a) p)))
   rw [Tensor0SField.domDomCongr_apply, Tensor0SSpace.eval_domDomCongr,
     show starProd (I := I) S t a b 0 =
-        tensor0SField_product (𝕜 := Real) (E := E) (I := I) (∞ : WithTop ℕ∞)
+        tensor0SFieldProduct (𝕜 := Real) (E := E) (I := I) (∞ : WithTop ℕ∞)
           (nablaKRm04Field (I := I) S t a) (nablaKRm04Field (I := I) S t b) from rfl,
     tensor0SField_product_eval]
   rfl

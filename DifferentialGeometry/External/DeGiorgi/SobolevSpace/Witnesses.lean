@@ -218,7 +218,7 @@ noncomputable def MemW1pWitness.smul
             simp [smul_eq_mul]
 
 /-- Multiply a `W^{1,p}` witness by a bounded smooth scalar factor. -/
-noncomputable def MemW1pWitness.mul_smooth_bounded_p
+noncomputable def MemW1pWitness.mulSmoothBoundedP
     {p : ℝ≥0∞} (hp : 1 ≤ p)
     {Ω : Set E} (hΩ : IsOpen Ω)
     {u η : E → ℝ} (hw : MemW1pWitness p u Ω)
@@ -286,7 +286,7 @@ noncomputable def MemW1pWitness.mul_smooth_bounded_p
 
 /-- A smooth compactly supported function on `ℝ^d` carries a canonical
 `W^{1,p}` witness on the whole space. -/
-noncomputable def MemW1pWitness.of_contDiff_hasCompactSupport
+noncomputable def MemW1pWitness.ofContDiffHasCompactSupport
     {p : ℝ≥0∞} {f : E → ℝ}
     (hf : ContDiff ℝ (⊤ : ℕ∞) f) (hf_supp : HasCompactSupport f) :
     MemW1pWitness p f Set.univ where
@@ -539,7 +539,7 @@ theorem memW01p_of_contDiff_hasCompactSupport
     MemW01p p f Set.univ := by
   let _ := (inferInstance : NeZero d)
   let hw : MemW1pWitness p f Set.univ :=
-    MemW1pWitness.of_contDiff_hasCompactSupport (p := p) hf hf_supp
+    MemW1pWitness.ofContDiffHasCompactSupport (p := p) hf hf_supp
   refine ⟨hw.memW1p, hw, fun _ => f, ?_, ?_, ?_, ?_, ?_⟩
   · intro n
     exact hf
@@ -549,7 +549,7 @@ theorem memW01p_of_contDiff_hasCompactSupport
     simp
   · simp
   · intro i
-    simp [hw, MemW1pWitness.of_contDiff_hasCompactSupport]
+    simp [hw, MemW1pWitness.ofContDiffHasCompactSupport]
 
 /-- A smooth compactly supported function whose support is contained in an open
 set belongs to `W₀^{1,p}` on that set. -/

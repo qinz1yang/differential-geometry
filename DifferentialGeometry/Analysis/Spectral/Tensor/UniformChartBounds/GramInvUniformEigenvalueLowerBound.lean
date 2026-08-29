@@ -371,9 +371,9 @@ theorem chartInvGram_quad_le
   let basis := chartBasisFamily (I := I) α hb
   let ξDual : Module.Dual ℝ (TangentSpace I b) :=
     ∑ i : Fin (Module.finrank ℝ E), ξ i • basis.coord i
-  let A : Tensor0SSpace 1 I b := dualToCotangent_gen (I := I) ξDual
+  let A : Tensor0SSpace 1 I b := dualToCotangentGen (I := I) ξDual
   have hA (i : Fin (Module.finrank ℝ E)) :
-      cotangentToDual_gen (I := I) A (basis i) = ξ i := by
+      cotangentToDualGen (I := I) A (basis i) = ξ i := by
     simp only [A, cotangentToDual_dualToCotangent_gen, ξDual,
       LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul]
     rw [Finset.sum_eq_single i]
@@ -579,9 +579,9 @@ theorem chartInvGram_unif_lb
   let basis := chartBasisFamily (I := I) α hb_base
   let ξDual : Module.Dual ℝ (TangentSpace I b) :=
     ∑ i : Fin (Module.finrank ℝ E), ξ i • basis.coord i
-  let A : Tensor0SSpace 1 I b := dualToCotangent_gen (I := I) ξDual
+  let A : Tensor0SSpace 1 I b := dualToCotangentGen (I := I) ξDual
   have hA (i : Fin (Module.finrank ℝ E)) :
-      cotangentToDual_gen (I := I) A (basis i) = ξ i := by
+      cotangentToDualGen (I := I) A (basis i) = ξ i := by
     simp only [A, cotangentToDual_dualToCotangent_gen, ξDual,
       LinearMap.sum_apply, LinearMap.smul_apply, smul_eq_mul]
     rw [Finset.sum_eq_single i]
@@ -651,7 +651,7 @@ theorem chartInvGram_pou_lb
       Λ⁻¹ * gBase.inner b v v ≤ (gSeq k).inner b v v ∧
         (gSeq k).inner b v v ≤ Λ * gBase.inner b v v) :
     ∃ c : ℝ, 0 < c ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k : ι, ∀ b ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ ξ : Fin (Module.finrank ℝ E) → ℝ,
@@ -680,22 +680,22 @@ theorem chartInvGram_pou_lb
     obtain ⟨α₀, hα₀_pos⟩ :
         ∃ α : M, 0 < (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) b₀ :=
       (chartAtlasPOU I M).exists_pos_of_mem (Set.mem_univ b₀)
-    have hα₀_mem : α₀ ∈ chartAtlasPOU_finset (I := I) (M := M) := by
+    have hα₀_mem : α₀ ∈ chartAtlasPOUFinset (I := I) (M := M) := by
       rw [chartAtlasPOU_finset_mem]
       exact ⟨b₀, ne_of_gt hα₀_pos⟩
-    have hS_ne : (chartAtlasPOU_finset (I := I) (M := M)).Nonempty :=
+    have hS_ne : (chartAtlasPOUFinset (I := I) (M := M)).Nonempty :=
       ⟨α₀, hα₀_mem⟩
     let c : ℝ :=
-      (chartAtlasPOU_finset (I := I) (M := M)).image cα |>.min' (by
+      (chartAtlasPOUFinset (I := I) (M := M)).image cα |>.min' (by
         rw [Finset.image_nonempty]
         exact hS_ne)
     have hc_pos : 0 < c := by
-      have hc_mem : c ∈ (chartAtlasPOU_finset (I := I) (M := M)).image cα :=
+      have hc_mem : c ∈ (chartAtlasPOUFinset (I := I) (M := M)).image cα :=
         Finset.min'_mem _ _
       obtain ⟨α, _hα, hαc⟩ := Finset.mem_image.mp hc_mem
       rw [← hαc]
       exact hcα α
-    have hc_le : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M), c ≤ cα α := by
+    have hc_le : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M), c ≤ cα α := by
       intro α hα
       apply Finset.min'_le
       exact Finset.mem_image.mpr ⟨α, hα, rfl⟩
@@ -719,7 +719,7 @@ theorem chartInvGram_pou_ub
       Λ⁻¹ * gBase.inner b v v ≤ (gSeq k).inner b v v ∧
         (gSeq k).inner b v v ≤ Λ * gBase.inner b v v) :
     ∃ C : ℝ, 0 < C ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k : ι, ∀ b ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ ξ : Fin (Module.finrank ℝ E) → ℝ,
@@ -742,8 +742,8 @@ theorem chartInvGram_pou_ub
       (pouTsupport_subset_baseSet (I := I) (M := M) α) Λ hΛ
       (fun k b _hb v => hequiv k b v)
   choose Cα hCα hbound using hper
-  let C : ℝ := 1 + ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), Cα α
-  have hsum_nonneg : 0 ≤ ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), Cα α :=
+  let C : ℝ := 1 + ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Cα α
+  have hsum_nonneg : 0 ≤ ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Cα α :=
     Finset.sum_nonneg fun α _ => (hCα α).le
   have hC_pos : 0 < C := by
     dsimp [C]
@@ -752,7 +752,7 @@ theorem chartInvGram_pou_ub
   intro α hα k b hb ξ
   have hCα_le : Cα α ≤ C := by
     have hsingle : Cα α ≤
-        ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M), Cα β :=
+        ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M), Cα β :=
       Finset.single_le_sum (fun β _ => (hCα β).le) hα
     dsimp [C]
     linarith
@@ -768,7 +768,7 @@ theorem chartInvGram_pou_bnd
       Λ⁻¹ * gBase.inner b v v ≤ (gSeq k).inner b v v ∧
         (gSeq k).inner b v v ≤ Λ * gBase.inner b v v) :
     ∃ C : ℝ, 0 < C ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k : ι, ∀ b ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ i j : Fin (Module.finrank ℝ E),
@@ -789,7 +789,7 @@ theorem chartInvGram_pou_eqv
       Λ⁻¹ * gBase.inner b v v ≤ (gSeq k).inner b v v ∧
         (gSeq k).inner b v v ≤ Λ * gBase.inner b v v) :
     ∃ c C : ℝ, 0 < c ∧ 0 < C ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k : ι, ∀ b ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ ξ : Fin (Module.finrank ℝ E) → ℝ,

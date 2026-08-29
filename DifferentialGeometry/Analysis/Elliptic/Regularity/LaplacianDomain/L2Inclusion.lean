@@ -94,9 +94,9 @@ lemma SmoothScalar.norm_smoothToLp_sq_le {g : SmoothRiemannianMetric I M}
   rw [f.norm_smoothToLp_sq, f.norm_sq_eq_inner_self]
   unfold smoothScalarH1Inner
   have h_grad_nonneg :
-      0 ≤ ∫ x, g.inner x ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+      0 ≤ ∫ x, g.inner x ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+            ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
     f.integral_inner_grad_self_nonneg

@@ -141,13 +141,13 @@ private lemma gradFun_eq_sum_gradFun_pou_mul
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) (x : M) :
     DifferentialGeometry.Geometry.Operator.gradFun (I := I) g u x =
-      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M),
         DifferentialGeometry.Geometry.Operator.gradFun (I := I) g
           (fun y : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) y * u y) x := by
   classical
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M) with hS_def
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M) with hS_def
   set h : M → M → ℝ := fun α y =>
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
       : C^∞⟮I, M; ℝ⟯) : M → ℝ) y * u y with hh_def
@@ -184,7 +184,7 @@ lemma gNormGrad_le_finset_sum_pou_mul
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) (x : M) :
     gNormGrad (I := I) (M := M) g u x ≤
-      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M),
         gNormGrad (I := I) (M := M) g
           (fun y : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
             : C^∞⟮I, M; ℝ⟯) y * u y) x := by
@@ -196,7 +196,7 @@ lemma gNormGrad_le_finset_sum_pou_mul
       (fun y : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
         : C^∞⟮I, M; ℝ⟯) y * u y) x with hv_def
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M) with hS_def
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M) with hS_def
   have hg_ip : ∀ v : TangentSpace I x, 0 ≤ g.inner x v v := by
     intro v
     by_cases hv : v = 0

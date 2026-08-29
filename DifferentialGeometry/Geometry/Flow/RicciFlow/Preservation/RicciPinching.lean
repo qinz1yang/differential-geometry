@@ -109,16 +109,16 @@ theorem pinchSpatialModel
       (pinchNab2ModelSec (I := I) S delta) := by
   constructor
   · intro t
-    let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+    let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2
-    let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+    let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3
     have hRic := (ricciSpatialWMP (I := I) S).first t
     have hRg := scalarMetric1Sec_realizes (I := I) S t
     have hscaled :
         TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
           (I := I) (M := M) 2 (S.base.connection t)
-          (delta • tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+          (delta • tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
             (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
             (fun x : M => S.scalar t x)
             (by
@@ -130,7 +130,7 @@ theorem pinchSpatialModel
     have hscaled' :
         TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H)
           (I := I) (M := M) 2 (S.base.connection t)
-          (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+          (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
             (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
             (fun x : M => delta * S.scalar t x)
             (by
@@ -157,9 +157,9 @@ theorem pinchSpatialModel
       tensor0SField_smulByFun_apply, mul_assoc, mul_left_comm, mul_comm]
       using hadd
   · intro t
-    let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+    let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 3
-    let := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+    let := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 4
     have hRic := (ricciSpatialWMP (I := I) S).second t
     have hRg := scalarMetric2Sec_realizes (I := I) S t
@@ -790,7 +790,7 @@ structure PinchWMPData
         (cov t) (∞ : WithTop ℕ∞)
   hmc :
     forall t : Real,
-      DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (cov t) (G t)
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (cov t) (G t)
   spatial : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S
 
 namespace PinchWMPData

@@ -475,7 +475,7 @@ theorem wkpTensorNorm_smul
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem secComp_zero_off
     (r s : ℕ) (S : RSTensorSection I M r s) {α : M}
-    (hα : α ∉ chartAtlasPOU_finset (I := I) (M := M))
+    (hα : α ∉ chartAtlasPOUFinset (I := I) (M := M))
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     secChartComp (I := I) (M := M) r s S α Idx Jdx = 0 := by
@@ -507,13 +507,13 @@ theorem wkpTensorNorm_lt_top
             iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
               (secChartComp (I := I) (M := M) r s S α Idx Jdx)
               (chartTargetEuclid (I := I) (M := M) α)) =
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
             ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
               iteratedWeakSobolevNorm (d := Module.finrank ℝ E) k p
                 (secChartComp (I := I) (M := M) r s S α Idx Jdx)
                 (chartTargetEuclid (I := I) (M := M) α) := by
-    rw [tsum_eq_sum (s := chartAtlasPOU_finset (I := I) (M := M))]
+    rw [tsum_eq_sum (s := chartAtlasPOUFinset (I := I) (M := M))]
     intro α hα
     refine Finset.sum_eq_zero ?_
     intro Idx _

@@ -73,7 +73,7 @@ theorem hcov_of_flatTrivPart_and_movingTrivResidual
               (mfderiv I I (Φ_fam t : M → M) x v))
         + (-trivFromE (I := I) (Φ_fam t x) (Φ_fam t x)
             (christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x v)))) :
     Q (Dchart' d)
@@ -88,7 +88,7 @@ theorem hcov_of_flatTrivPart_and_movingTrivResidual
               (mfderiv I I (Φ_fam t : M → M) x v))
         - trivFromE (I := I) (Φ_fam t x) (Φ_fam t x)
             (christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x v)) := by
   classical
@@ -148,7 +148,7 @@ theorem rawVariationalIdentity_of_isLocalFlow
               (mfderiv I I (Φ_fam t : M → M) x v))
         + (-trivFromE (I := I) (Φ_fam t x) (Φ_fam t x)
             (christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x v)))) :
     RawVariationalIdentity (I := I) g X Φ_fam t x v := by

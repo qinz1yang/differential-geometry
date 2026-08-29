@@ -96,8 +96,8 @@ theorem towerNorm_joint
     exact (hprod.mul (hcomp I0)).mul (hcomp J0)
   refine (hcontract.congr_of_eventuallyEq ?_).contMDiffWithinAt
   filter_upwards [hdomain] with q hq
-  let basis := coordinateFrameAt_basis (I := I) x0 hq.2
-  have hinvBasis : MetricInverseInBasis_gen
+  let basis := coordinateFrameAtBasis (I := I) x0 hq.2
+  have hinvBasis : MetricInverseInBasisGen
       (I := I) (S.base.metric q.1) q.2 basis
       (fun i j => coordInv (I := I) S x0 q.1 q.2 i j) := by
     simpa only [basis, coordInv, SolutionOn.family] using

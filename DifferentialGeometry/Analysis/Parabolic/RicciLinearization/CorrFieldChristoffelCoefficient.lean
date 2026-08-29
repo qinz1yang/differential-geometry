@@ -590,7 +590,7 @@ private lemma corrField_riemannBiContrFibAppY_metricPerturbationPath_jointContMD
   set α := p₀.1 with hα
   set e := trivializationAt (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) α with he
-  set Bcmm := continuousMultilinearMap_basis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
+  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
@@ -626,7 +626,7 @@ private lemma corrField_riemannBiContrFibAppY_metricPerturbationPath_jointContMD
         (Tensor0SSpace.toModel (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1)))
         (fun j => (chartModelBasis E) (σ j))
       rw [Tensor0SSpace.toModel,
-        (tensor0SSpace_continuousLinearEquiv (I := I) 2 q.1).symm_apply_apply] at happly
+        (tensor0SSpaceContinuousLinearEquiv (I := I) 2 q.1).symm_apply_apply] at happly
       rw [happly]
       change Tensor0SSpace.eval (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1))
           (fun j => (trivializationAt E (TangentSpace I) α).symmL ℝ q.1
@@ -794,7 +794,7 @@ private lemma corrField_raisedKoszulFibAppOm_metricPerturbationPath_jointContMDi
   set α := p₀.1 with hα
   set e := trivializationAt (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) α with he
-  set Bcmm := continuousMultilinearMap_basis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
+  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
@@ -841,7 +841,7 @@ private lemma corrField_raisedKoszulFibAppOm_metricPerturbationPath_jointContMDi
             raisedKoszulFib (I := I) g₀ (gfam q.2) q.1) (om q.1)))
         (fun j => (chartModelBasis E) (σ j))
       rw [Tensor0SSpace.toModel,
-        (tensor0SSpace_continuousLinearEquiv (I := I) 2 q.1).symm_apply_apply] at happly
+        (tensor0SSpaceContinuousLinearEquiv (I := I) 2 q.1).symm_apply_apply] at happly
       rw [happly]
       rw [raisedKoszulFib_apply]
       change Tensor0SSpace.eval (raisedKoszulPairing (I := I) g₀ (gfam q.2) q.1 (om q.1))

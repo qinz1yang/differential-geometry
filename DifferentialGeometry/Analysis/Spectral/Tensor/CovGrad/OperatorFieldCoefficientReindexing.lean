@@ -26,11 +26,11 @@ noncomputable def reindexCoeffFibGen (r s : ℕ) (σ' : Equiv.Perm (Fin r)) (x :
     (A : Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x) :
     Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x :=
   A.comp
-    ((tensor0SSpace_continuousLinearEquiv (I := I) r
+    ((tensor0SSpaceContinuousLinearEquiv (I := I) r
       x).symm.toContinuousLinearMap.comp
       (((ContinuousMultilinearMap.domDomCongrₗᵢ ℝ E ℝ
             σ').toContinuousLinearEquiv.toContinuousLinearMap).comp
-        (tensor0SSpace_continuousLinearEquiv (I := I) r x).toContinuousLinearMap))
+        (tensor0SSpaceContinuousLinearEquiv (I := I) r x).toContinuousLinearMap))
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in

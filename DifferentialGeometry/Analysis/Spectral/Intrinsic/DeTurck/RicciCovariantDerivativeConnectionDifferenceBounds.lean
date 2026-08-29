@@ -432,8 +432,8 @@ theorem ricciPart_bds (g : SmoothRiemannianMetric I M) :
       _ = _ := by rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem ricciBase_l2 (g : SmoothRiemannianMetric I M) :
     ∃ C : Real, 0 ≤ C ∧
       ∀ (gm : SmoothRiemannianMetric I M) (P : SmoothCcTensor g 0 2)
@@ -457,7 +457,7 @@ theorem ricciBase_l2 (g : SmoothRiemannianMetric I M) :
   intro x
   let instTens : Bundle.RiemannianBundle
       (fun y : M => TensorRSSpace 0 3 I y) :=
-    tensorRS_riemannianBundle (I := I) (M := M) g 0 3
+    tensorRSRiemannianBundle (I := I) (M := M) g 0 3
   have hraw := hconn gm P hdelta hdelta0 htie hPbound x
   have hbase :
       riemannianFiberNormSq (I := I) (M := M) g 0 3 x

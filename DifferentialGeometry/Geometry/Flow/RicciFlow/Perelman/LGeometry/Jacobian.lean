@@ -173,8 +173,8 @@ noncomputable def lExpSqVel
     (fun r => lExpField S T x Z V (r ^ 2)) (Real.sqrt tau)
 
 omit [NeZero (Module.finrank Real E)] [CompactSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRegSq_pair
     (S : SolutionOn (I := I) (M := M) D)
     (T : Real) (x : M)
@@ -213,8 +213,8 @@ theorem lRegSq_pair
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [T2Space M] [CompactSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem sqVel_pair
     (g : SmoothRiemannianMetric I M)
     (gamma : Real → M) (Y : ∀ q, TangentSpace I (gamma q))
@@ -256,8 +256,8 @@ private theorem sqVel_pair
       rw [map_smul (g.inner (gamma tau)),
         _root_.smul_apply, smul_eq_mul]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem lExpSq_pair
     (S : SolutionOn (I := I) (M := M) D)
@@ -280,8 +280,8 @@ theorem lExpSq_pair
     exact sqVel_pair (I := I) (S.base.metric (T - tau)) gamma Y tau
       ((mem_lExpPosDom S T x Z tau).1 hpos).1 hJac.1 hJac.2.1 Q
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem lRegJacobi_pair
     (S : SolutionOn (I := I) (M := M) D)
@@ -298,8 +298,8 @@ theorem lRegJacobi_pair
     ((mem_lExpPosDom S T x Z tau).1 hpos).1 Q).trans
       (lExpSq_pair S hS T x Z V tau hpos Q)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem redHess_lJac
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -316,10 +316,10 @@ theorem redHess_lJac
           (lExpField S T x Z W tau) := by
   let zE : E := show E from Z
   let : NormedAddCommGroup (TangentSpace 𝓘(Real, E) zE) :=
-    Tensor0SBundle.tangentSpace_normedAddCommGroup
+    Tensor0SBundle.tangentSpaceNormedAddCommGroup
       (I := 𝓘(Real, E)) (M := E) zE
   let : NormedSpace Real (TangentSpace 𝓘(Real, E) zE) :=
-    Tensor0SBundle.tangentSpace_normedSpace
+    Tensor0SBundle.tangentSpaceNormedSpace
       (I := 𝓘(Real, E)) (M := E) zE
   have hZinj := hZ
   obtain ⟨sigma, hsigma, hmin⟩ := hZ
@@ -379,8 +379,8 @@ theorem redHess_lJac
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless]
   [T2Space M] [CompactSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem trace_invGram
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M) {y : M}
@@ -403,7 +403,7 @@ private theorem trace_invGram
   have hGinv : ∀ i j, G⁻¹ i j = G⁻¹ j i := by
     intro i j
     simpa only [star_trivial] using hGherm.inv.apply j i
-  have hinv : MetricInverseInBasis_gen (I := I) g y basis
+  have hinv : MetricInverseInBasisGen (I := I) g y basis
       (fun i j => G⁻¹ i j) := by
     intro i j
     constructor
@@ -473,8 +473,8 @@ noncomputable def lExpVelGram
       (lExpFieldVel S T x Z ((chartModelBasis E) i) tau)
       (lExpField S T x Z ((chartModelBasis E) j) tau)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lExpVel_eq_hess
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -524,8 +524,8 @@ noncomputable def lExpJac
     (Z : TangentSpace I x) (tau : Real) : Real :=
   lExpDensity S T x Z tau / lSrcDensity S T x
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lExpGram_pos
     (S : SolutionOn (I := I) (M := M) D)
@@ -536,10 +536,10 @@ theorem lExpGram_pos
     0 < (lExpGram S T x Z tau).det := by
   let zE : E := show E from Z
   let : NormedAddCommGroup (TangentSpace 𝓘(Real, E) zE) :=
-    Tensor0SBundle.tangentSpace_normedAddCommGroup
+    Tensor0SBundle.tangentSpaceNormedAddCommGroup
       (I := 𝓘(Real, E)) (M := E) zE
   let : NormedSpace Real (TangentSpace 𝓘(Real, E) zE) :=
-    Tensor0SBundle.tangentSpace_normedSpace
+    Tensor0SBundle.tangentSpaceNormedSpace
       (I := 𝓘(Real, E)) (M := E) zE
   have hZE : zE ∈ lInjDomain S T x tau := by
     exact hZ
@@ -559,8 +559,8 @@ theorem lExpGram_pos
     lGram_det_pos S T (fun q => lExp S T x Z q)
       (fun i q => lExpField S T x Z ((chartModelBasis E) i) q) tau hLI
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lExpTrace_hess
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -574,10 +574,10 @@ theorem lExpTrace_hess
   classical
   let zE : E := show E from Z
   let : NormedAddCommGroup (TangentSpace 𝓘(Real, E) zE) :=
-    Tensor0SBundle.tangentSpace_normedAddCommGroup
+    Tensor0SBundle.tangentSpaceNormedAddCommGroup
       (I := 𝓘(Real, E)) (M := E) zE
   let : NormedSpace Real (TangentSpace 𝓘(Real, E) zE) :=
-    Tensor0SBundle.tangentSpace_normedSpace
+    Tensor0SBundle.tangentSpaceNormedSpace
       (I := 𝓘(Real, E)) (M := E) zE
   have hZE : zE ∈ lInjDomain S T x tau := by
     exact hZ
@@ -617,8 +617,8 @@ theorem lExpTrace_hess
   have hlap := lap_eq_hess_on (I := I) g hUopen hsmooth hyU
   exact htrace'.trans (by simpa only [g, y] using hlap.symm)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lExpTrace_ricci
     (S : SolutionOn (I := I) (M := M) D)
@@ -631,10 +631,10 @@ theorem lExpTrace_ricci
   classical
   let zE : E := show E from Z
   let : NormedAddCommGroup (TangentSpace 𝓘(Real, E) zE) :=
-    Tensor0SBundle.tangentSpace_normedAddCommGroup
+    Tensor0SBundle.tangentSpaceNormedAddCommGroup
       (I := 𝓘(Real, E)) (M := E) zE
   let : NormedSpace Real (TangentSpace 𝓘(Real, E) zE) :=
-    Tensor0SBundle.tangentSpace_normedSpace
+    Tensor0SBundle.tangentSpaceNormedSpace
       (I := 𝓘(Real, E)) (M := E) zE
   have hZE : zE ∈ lInjDomain S T x tau := by
     exact hZ
@@ -668,8 +668,8 @@ theorem lExpTrace_ricci
   exact htrace'.trans (by
     simpa only [g, y, SolutionOn.family_metric] using hscalar.symm)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lExpTrace_eq
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -706,8 +706,8 @@ theorem lExpTrace_eq
     lExpTrace_ricci S hS T x htau hZ]
   ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lExpDensity_pos
     (S : SolutionOn (I := I) (M := M) D)
@@ -740,8 +740,8 @@ theorem lSrcDensity_pos
       DifferentialGeometry.Geometry.Riemannian.Variation.curveGram,
       Matrix.of_apply, gamma, V] using hdet)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lExpJac_pos
     (S : SolutionOn (I := I) (M := M) D)
@@ -753,8 +753,8 @@ theorem lExpJac_pos
   exact div_pos (lExpDensity_pos S hS T x htau hZ)
     (lSrcDensity_pos S T x)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lExpDen_hasDeriv
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -794,8 +794,8 @@ theorem lExpDen_hasDeriv
   with_unfolding_all
     exact hout
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lExpJac_hasDeriv
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -831,8 +831,8 @@ theorem lExpJac_hasDeriv
   rw [hcoef] at hout
   with_unfolding_all exact hout
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lExpLog_hasDeriv
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
@@ -849,8 +849,8 @@ theorem lExpLog_hasDeriv
   convert hout using 1
   field_simp
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lExpLog_deriv_le
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)

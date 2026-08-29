@@ -29,7 +29,7 @@ noncomputable def slot0Curry
     (T : TensorRSSpace 0 (s + 1) I x) (a : Fin n) :
     TensorRSSpace 0 s I x :=
   (tensor00Scalar (I := I) (M := M) x).smulRight
-    (tensor0S_curry (I := I) (M := M) s x
+    (tensor0SCurry (I := I) (M := M) s x
       ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
         (coframeS (I := I) (M := M) g x 0 e K₀))
       (e a))
@@ -44,12 +44,12 @@ lemma slot0Curry_apply
     (slot0Curry (I := I) (M := M) g x s e K₀ T a :
         Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x) τ =
       tensor00Scalar (I := I) (M := M) x τ •
-        (tensor0S_curry (I := I) (M := M) s x
+        (tensor0SCurry (I := I) (M := M) s x
           ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
             (coframeS (I := I) (M := M) g x 0 e K₀))
           (e a)) := by
   change ((tensor00Scalar (I := I) (M := M) x).smulRight
-    (tensor0S_curry (I := I) (M := M) s x
+    (tensor0SCurry (I := I) (M := M) s x
       ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
         (coframeS (I := I) (M := M) g x 0 e K₀))
       (e a))) τ = _
@@ -93,7 +93,7 @@ lemma fiberNormSqComponent_slot0Curry
     · simp
     · intro j; simp
   change (B (fun k : Fin (s + 1) => e ((Fin.cons a J' : Fin (s + 1) → Fin n) k)) : ℝ) =
-    (tensor0S_curry (I := I) (M := M) s x B (e a)) (fun k : Fin s => e (J' k))
+    (tensor0SCurry (I := I) (M := M) s x B (e a)) (fun k : Fin s => e (J' k))
   rw [htuple]
   exact hcurry.symm
 

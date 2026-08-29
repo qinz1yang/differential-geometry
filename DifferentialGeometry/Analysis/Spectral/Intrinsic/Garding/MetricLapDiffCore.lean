@@ -50,9 +50,9 @@ private theorem toRS0_sub {x : M} (A B : Tensor0SSpace 0 I x) :
       Tensor0SSpace.toRS0 A - Tensor0SSpace.toRS0 B := by
   apply ContinuousLinearMap.ext
   intro c
-  change (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x) c • (A - B) =
-    (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x) c • A -
-      (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x) c • B
+  change (tensor0SSpaceEvalScalar (𝕜 := Real) (I := I) (M := M) x) c • (A - B) =
+    (tensor0SSpaceEvalScalar (𝕜 := Real) (I := I) (M := M) x) c • A -
+      (tensor0SSpaceEvalScalar (𝕜 := Real) (I := I) (M := M) x) c • B
   exact smul_sub _ _ _
 
 
@@ -72,8 +72,8 @@ theorem lapDiffSec_apply
     (lapDiffSec (I := I) (M := M) g h v).toSection x =
       Tensor0SSpace.toRS0
         ((Tensor0SNabla.tensor0Iso I M x).symm
-          (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
-            Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x)) := by
+          (ΔG (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
+            ΔG (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x)) := by
   simp only [lapDiffSec, LinearMap.sub_apply, LinearMap.comp_apply,
     finiteReprLin_apply, rawConnLapLin_apply,
     SmoothCcTensor.toSection_sub, ContMDiffSection.coe_sub, Pi.sub_apply]
@@ -105,8 +105,8 @@ theorem lapDiffCore_pair
     inner Real (lapDiffCore (I := I) (M := M) q h v)
         (SmoothCcTensor.toL2
           (tensorHsSmoothRepr (I := I) (M := M) w.1 w.2)) =
-      ∫ x, (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
-            Δ_g (I := I) q ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x) *
+      ∫ x, (ΔG (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
+            ΔG (I := I) q ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x) *
           reprScalar0 (I := I) (M := M) w.1 w.2 x
         ∂(riemannianVolumeMeasure (I := I) (M := M) q) := by
   change inner Real
@@ -128,18 +128,18 @@ theorem lapDiffCore_pair
   rw [hrepr_x, Tensor0SField.toRS0_eq,
     inner_toRS0_zero (I := I) (M := M) q x]
   have hlap :
-      (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x)
+      (tensor0SSpaceEvalScalar (𝕜 := Real) (I := I) (M := M) x)
         ((Tensor0SNabla.tensor0Iso I M x).symm
-          (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
-            Δ_g (I := I) q ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x)) =
-        Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
-          Δ_g (I := I) q ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x := by
+          (ΔG (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
+            ΔG (I := I) q ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x)) =
+        ΔG (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
+          ΔG (I := I) q ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x := by
     change Tensor0SNabla.tensor0Iso I M x
       ((Tensor0SNabla.tensor0Iso I M x).symm _) = _
     rw [ContinuousLinearEquiv.apply_symm_apply]
     rfl
   have hrepr :
-      (tensor0SSpace_evalScalar (𝕜 := Real) (I := I) (M := M) x)
+      (tensor0SSpaceEvalScalar (𝕜 := Real) (I := I) (M := M) x)
         (Tensor0SField.fromScalarField ∞
           (reprScalar0 (I := I) (M := M) w.1 w.2)
           (reprScalar0_smooth (I := I) (M := M) w.1 w.2) x) =
@@ -158,8 +158,8 @@ theorem lapDiffCore_sq
     (g h : SmoothRiemannianMetric I M)
     (v : ScalarH2Core (I := I) (M := M) g) :
     ‖lapDiffCore (I := I) (M := M) g h v‖ ^ 2 =
-      ∫ x, (Δ_g (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
-            Δ_g (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x) ^ 2
+      ∫ x, (ΔG (I := I) h ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x -
+            ΔG (I := I) g ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x) ^ 2
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   change ‖SmoothCcTensor.toL2
       (lapDiffSec (I := I) (M := M) g h v)‖ ^ 2 = _

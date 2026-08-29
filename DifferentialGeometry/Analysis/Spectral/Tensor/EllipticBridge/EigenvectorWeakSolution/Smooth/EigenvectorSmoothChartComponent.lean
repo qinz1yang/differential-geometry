@@ -60,7 +60,7 @@ private lemma ae_eq_of_ae_eq_restrict_of_eqOn_compl
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma transportChartCenters_subset_chartAtlasPOU_finset (β : M) :
     transportChartCenters (I := I) (M := M) β ⊆
-      chartAtlasPOU_finset (I := I) (M := M) := by
+      chartAtlasPOUFinset (I := I) (M := M) := by
   intro γ hγ
   rw [mem_transportChartCenters] at hγ
   rw [chartAtlasPOU_finset_mem]
@@ -425,7 +425,7 @@ theorem eigenvectorSmooth_tensorL2ChartComponent_eq
   apply Lp.ext
   have h_coe_sum :
       (eigenvectorSmooth (I := I) (M := M) g r s i : TensorL2 r s g) =
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           (eigenvectorSmoothChart (I := I) (M := M) g r s i α :
             TensorL2 r s g) := by
     rw [← smoothToTensorL2_apply (I := I) (M := M) g r s,
@@ -437,7 +437,7 @@ theorem eigenvectorSmooth_tensorL2ChartComponent_eq
       tensorL2ChartComponent (I := I) (M := M) g r s
           (eigenvectorSmooth (I := I) (M := M) g r s i :
             TensorL2 r s g) β P₀ =
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           tensorL2ChartComponent (I := I) (M := M) g r s
             (eigenvectorSmoothChart (I := I) (M := M) g r s i α :
               TensorL2 r s g) β P₀ := by
@@ -447,18 +447,18 @@ theorem eigenvectorSmooth_tensorL2ChartComponent_eq
     rw [tensorL2ChartComponentCLM_apply]
   rw [h_lhs_sum]
   refine (coeFn_finsetSum_chartL2 (I := I) (M := M) β
-    (chartAtlasPOU_finset (I := I) (M := M))
+    (chartAtlasPOUFinset (I := I) (M := M))
     (fun α => tensorL2ChartComponent (I := I) (M := M) g r s
       (eigenvectorSmoothChart (I := I) (M := M) g r s i α :
         TensorL2 r s g) β P₀)).trans ?_
   have h_lhs_terms :
-      (fun y => ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (fun y => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ((tensorL2ChartComponent (I := I) (M := M) g r s
             (eigenvectorSmoothChart (I := I) (M := M) g r s i α :
               TensorL2 r s g) β P₀ :
             Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) : EuclN → ℝ) y)
         =ᵐ[chartL2Measure (I := I) (M := M) β]
-      (fun y => ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (fun y => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartPushedRaw I β
             (fun x => ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) y *
           ∑ Q : TensorCompIdx (E := E) r s,
@@ -471,7 +471,7 @@ theorem eigenvectorSmooth_tensorL2ChartComponent_eq
                 Lp ℝ 2 (chartL2Measure (I := I) (M := M) β)) :
               EuclN → ℝ) y)) :=
     finsetSum_ae_eq (I := I) (M := M) β
-      (chartAtlasPOU_finset (I := I) (M := M))
+      (chartAtlasPOUFinset (I := I) (M := M))
       (fun α _ => eigenvectorSmoothChart_tensorL2ChartComponent_eq_transport_sum
         (I := I) (M := M) g r s i α β P₀)
   refine h_lhs_terms.trans ?_
@@ -481,7 +481,7 @@ theorem eigenvectorSmooth_tensorL2ChartComponent_eq
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g r s) i)
       β P₀).trans ?_)
   have h_subset : transportChartCenters (I := I) (M := M) β ⊆
-      chartAtlasPOU_finset (I := I) (M := M) :=
+      chartAtlasPOUFinset (I := I) (M := M) :=
     transportChartCenters_subset_chartAtlasPOU_finset (I := I) (M := M) β
   set F : M → EuclN → ℝ := fun α y =>
     chartPushedRaw I β
@@ -512,28 +512,28 @@ theorem eigenvectorSmooth_tensorL2ChartComponent_eq
     funext y
     rw [Finset.mul_sum]
   rw [h_rhs_eq]
-  have h_union : chartAtlasPOU_finset (I := I) (M := M) =
+  have h_union : chartAtlasPOUFinset (I := I) (M := M) =
       transportChartCenters (I := I) (M := M) β ∪
-        (chartAtlasPOU_finset (I := I) (M := M) \
+        (chartAtlasPOUFinset (I := I) (M := M) \
           transportChartCenters (I := I) (M := M) β) :=
     (Finset.union_sdiff_of_subset h_subset).symm
   have h_disjoint : Disjoint (transportChartCenters (I := I) (M := M) β)
-      (chartAtlasPOU_finset (I := I) (M := M) \
+      (chartAtlasPOUFinset (I := I) (M := M) \
         transportChartCenters (I := I) (M := M) β) :=
     Finset.disjoint_sdiff
-  have h_split : (fun y => ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have h_split : (fun y => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         F α y) =
       fun y => (∑ γ ∈ transportChartCenters (I := I) (M := M) β, F γ y) +
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M) \
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M) \
             transportChartCenters (I := I) (M := M) β, F α y := by
     funext y
     conv_lhs => rw [h_union]
     rw [Finset.sum_union h_disjoint]
   rw [h_split]
-  have h_extra : (fun y => ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M) \
+  have h_extra : (fun y => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M) \
           transportChartCenters (I := I) (M := M) β, F α y)
         =ᵐ[chartL2Measure (I := I) (M := M) β] (fun _ : EuclN => (0 : ℝ)) := by
-    have h_each : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M) \
+    have h_each : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M) \
         transportChartCenters (I := I) (M := M) β,
         F α =ᵐ[chartL2Measure (I := I) (M := M) β] (fun _ : EuclN => (0 : ℝ)) := by
       intro α hα
@@ -556,14 +556,14 @@ theorem eigenvectorSmooth_tensorL2ChartComponent_eq
         (0 : ℝ)
       rw [hy, mul_zero]
     have h_sum := finsetSum_ae_eq (I := I) (M := M) β
-      (chartAtlasPOU_finset (I := I) (M := M) \
+      (chartAtlasPOUFinset (I := I) (M := M) \
         transportChartCenters (I := I) (M := M) β)
       (fun α hα => h_each α hα)
     refine h_sum.trans (Filter.EventuallyEq.of_eq ?_)
     funext y
     rw [Finset.sum_const_zero]
   filter_upwards [h_extra] with y hy
-  rw [show (∑ α ∈ chartAtlasPOU_finset (I := I) (M := M) \
+  rw [show (∑ α ∈ chartAtlasPOUFinset (I := I) (M := M) \
         transportChartCenters (I := I) (M := M) β, F α y) = 0 from hy,
     add_zero]
 

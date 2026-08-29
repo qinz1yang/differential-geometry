@@ -102,7 +102,7 @@ lemma curry_abstract_covDeriv_covApply_unitGrad_unfold
     (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))
     (hVfield : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Vfield))
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y)) :
-    (tensor0S_curry (I := I) (M := M) 2 x
+    (tensor0SCurry (I := I) (M := M) 2 x
         ((Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g)).toFun
           (covApply (Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g)) X
             (unitGradField (I := I) (M := M) g T₀)) x (Vfield x))) (Y x) =
@@ -132,7 +132,7 @@ lemma curry_abstract_covDeriv_covApply_unitGrad_unfold_inner
     (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X))
     (hVfield : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Vfield))
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y)) :
-    (tensor0S_curry (I := I) (M := M) 2 x
+    (tensor0SCurry (I := I) (M := M) 2 x
         ((Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g)).toFun
           (covApply (Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g)) X
             (unitGradField (I := I) (M := M) g T₀)) x (Vfield x))) (Y x) =

@@ -54,12 +54,12 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-abbrev SmoothMetric_gen
+abbrev SmoothMetricGen
     (I : ModelWithCorners Real E H) (M : Type*)
     [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] : Type _ :=
   Bundle.ContMDiffRiemannianMetric I ∞ E (TangentSpace I : M -> Type _)
 
-def tangentFlatLinear_gen (g : SmoothMetric_gen I M) (x : M) :
+def tangentFlatLinearGen (g : SmoothMetricGen I M) (x : M) :
     TangentSpace I x →ₗ[Real] Module.Dual Real (TangentSpace I x) where
   toFun v := (g.inner x v).toLinearMap
   map_add' v w := by
@@ -73,15 +73,15 @@ def tangentFlatLinear_gen (g : SmoothMetric_gen I M) (x : M) :
 
 omit [FiniteDimensional ℝ E] in
 @[simp] theorem tangentFlatLinear_apply_gen
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (v w : TangentSpace I x) :
-    tangentFlatLinear_gen (I := I) g x v w = g.inner x v w := by
+    tangentFlatLinearGen (I := I) g x v w = g.inner x v w := by
   rfl
 
 omit [FiniteDimensional ℝ E] in
 theorem tangentFlatLinear_injective_gen
-    (g : SmoothMetric_gen I M) (x : M) :
-    Function.Injective (tangentFlatLinear_gen (I := I) g x) := by
+    (g : SmoothMetricGen I M) (x : M) :
+    Function.Injective (tangentFlatLinearGen (I := I) g x) := by
   intro v w hvw
   have hzero : forall z : TangentSpace I x, g.inner x (v - w) z = 0 := by
     intro z
@@ -97,29 +97,29 @@ theorem tangentFlatLinear_injective_gen
   have hpos : 0 < g.inner x (v - w) (v - w) := g.pos x (v - w) hvw_ne
   exact (lt_irrefl (0 : Real)) ((hzero (v - w)) ▸ hpos)
 
-def tangentFlatEquiv_gen (g : SmoothMetric_gen I M) (x : M) :
+def tangentFlatEquivGen (g : SmoothMetricGen I M) (x : M) :
     TangentSpace I x ≃ₗ[Real] Module.Dual Real (TangentSpace I x) :=
   LinearMap.linearEquivOfInjective
-    (tangentFlatLinear_gen (I := I) g x)
+    (tangentFlatLinearGen (I := I) g x)
     (tangentFlatLinear_injective_gen (I := I) g x)
     MetricFiberData.dual_finrank_eq
 
 @[simp] theorem tangentFlatEquiv_apply_gen
-    (g : SmoothMetric_gen I M) (x : M)
+    (g : SmoothMetricGen I M) (x : M)
     (v w : TangentSpace I x) :
-    tangentFlatEquiv_gen (I := I) g x v w = g.inner x v w := by
+    tangentFlatEquivGen (I := I) g x v w = g.inner x v w := by
   rfl
 
-structure TangentMetricData_gen
-    (g : SmoothMetric_gen I M) (x : M) where
+structure TangentMetricDataGen
+    (g : SmoothMetricGen I M) (x : M) where
   metric : MetricFiberData (TangentSpace I x)
   realizes_inner : forall X Y : TangentSpace I x,
     metric.inner X Y = g.inner x X Y
 
-def tangentMetricData_gen (g : SmoothMetric_gen I M) (x : M) :
-    TangentMetricData_gen (I := I) g x where
+def tangentMetricDataGen (g : SmoothMetricGen I M) (x : M) :
+    TangentMetricDataGen (I := I) g x where
   metric :=
-    { flat := tangentFlatEquiv_gen (I := I) g x
+    { flat := tangentFlatEquivGen (I := I) g x
       symm := by
         intro X Y
         exact g.symm x X Y
@@ -132,15 +132,15 @@ def tangentMetricData_gen (g : SmoothMetric_gen I M) (x : M) :
     intro X Y
     rfl
 
-namespace TangentMetricData_gen
+namespace TangentMetricDataGen
 
 theorem inner_eq_gen
-    {g : SmoothMetric_gen I M} {x : M} (D : TangentMetricData_gen (I := I) g x)
+    {g : SmoothMetricGen I M} {x : M} (D : TangentMetricDataGen (I := I) g x)
     (X Y : TangentSpace I x) :
     D.metric.inner X Y = g.inner x X Y :=
   D.realizes_inner X Y
 
-end TangentMetricData_gen
+end TangentMetricDataGen
 
 end
 

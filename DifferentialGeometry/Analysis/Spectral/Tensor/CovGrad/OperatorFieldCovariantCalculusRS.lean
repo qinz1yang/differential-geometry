@@ -316,7 +316,7 @@ omit [CompactSpace M] [BoundarylessManifold I M] [SigmaCompactSpace M] [Complete
 omit [NeZero (Module.finrank ℝ E)] in
 theorem tensor0S_curry_covGrad_operatorFieldComposition_eq (g : SmoothRiemannianMetric I M) (a b : ℕ)
     (W : SmoothCcTensor g a b) (x : M) (d : Tensor0SSpace a I x) (v0 : E) :
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) b x)
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) b x)
         ((show Tensor0SSpace a I x →L[ℝ] Tensor0SSpace (b + 1) I x from
           (covGrad (I := I) (M := M) g a b W).toSection x) d)
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v0) =

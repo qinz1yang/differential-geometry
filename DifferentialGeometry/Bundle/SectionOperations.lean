@@ -288,7 +288,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [FiniteDimensional ℝ F₁] [FiniteDimensional ℝ F₂]
   [ContMDiffVectorBundle n F₁ E₁ I] [ContMDiffVectorBundle n F₂ E₂ I]
 
-noncomputable def ContMDiffVectorBundleHom.ofLinearMapSection_gen
+noncomputable def ContMDiffVectorBundleHom.ofLinearMapSectionGen
     (F : Cₛ^n⟮I; F₁, E₁⟯ →ₗ[C^n⟮I, M; ℝ⟯] Cₛ^n⟮I; F₂, E₂⟯) :
     ContMDiffVectorBundleHom ℝ I n F₁ E₁ F₂ E₂ := by
   haveI : ContMDiffVectorBundle 1 F₁ E₁ I :=
@@ -397,12 +397,12 @@ noncomputable def ContMDiffVectorBundleHom.ofLinearMapSection_gen
 omit [SigmaCompactSpace M] [FiniteDimensional ℝ F₂] [ContMDiffVectorBundle (↑n) F₂ E₂ I] in
 theorem ContMDiffVectorBundleHom.ofLinearMapSection_baseMap_gen
     (F : Cₛ^n⟮I; F₁, E₁⟯ →ₗ[C^n⟮I, M; ℝ⟯] Cₛ^n⟮I; F₂, E₂⟯) :
-    (ofLinearMapSection_gen F).baseMap = _root_.id := rfl
+    (ofLinearMapSectionGen F).baseMap = _root_.id := rfl
 
 omit [SigmaCompactSpace M] [FiniteDimensional ℝ F₂] [ContMDiffVectorBundle (↑n) F₂ E₂ I] in
 theorem ContMDiffVectorBundleHom.ofLinearMapSection_spec_gen
     (F : Cₛ^n⟮I; F₁, E₁⟯ →ₗ[C^n⟮I, M; ℝ⟯] Cₛ^n⟮I; F₂, E₂⟯) (σ) :
-    F σ = (ofLinearMapSection_gen F).mapSection (ofLinearMapSection_baseMap_gen F) σ := by
+    F σ = (ofLinearMapSectionGen F).mapSection (ofLinearMapSection_baseMap_gen F) σ := by
   ext x
   exact (linearMap_acts_pointwise_gen F σ _ x
     (ContMDiffSection.exists_eq_at_gen x (σ x)).choose_spec.symm)
@@ -418,15 +418,15 @@ theorem ContMDiffVectorBundleHom.ofLinearMapSection_mapSection_gen
   obtain ⟨σ, rfl⟩ := ContMDiffSection.exists_eq_at_gen (I := I) (F := F₁) (n := n) x v
   rw [Φ.mapSection_apply hΦ, Ψ.mapSection_apply hΨ, h_eq]
 
-noncomputable def ContMDiffVectorBundleEquiv.ofLinearEquivSection_gen
+noncomputable def ContMDiffVectorBundleEquiv.ofLinearEquivSectionGen
     (F : Cₛ^n⟮I; F₁, E₁⟯ ≃ₗ[C^n⟮I, M; ℝ⟯] Cₛ^n⟮I; F₂, E₂⟯) :
     ContMDiffVectorBundleEquiv ℝ I n F₁ E₁ F₂ E₂ := by
-  let Φ := ContMDiffVectorBundleHom.ofLinearMapSection_gen F.toLinearMap
+  let Φ := ContMDiffVectorBundleHom.ofLinearMapSectionGen F.toLinearMap
   let hΦ : Φ.baseMap = _root_.id :=
     ContMDiffVectorBundleHom.ofLinearMapSection_baseMap_gen F.toLinearMap
   have hΦ_spec : ∀ σ, F σ = Φ.mapSection hΦ σ :=
     ContMDiffVectorBundleHom.ofLinearMapSection_spec_gen F.toLinearMap
-  let Ψ := ContMDiffVectorBundleHom.ofLinearMapSection_gen F.symm.toLinearMap
+  let Ψ := ContMDiffVectorBundleHom.ofLinearMapSectionGen F.symm.toLinearMap
   let hΨ : Ψ.baseMap = _root_.id :=
     ContMDiffVectorBundleHom.ofLinearMapSection_baseMap_gen F.symm.toLinearMap
   have hΨ_spec : ∀ σ, F.symm σ = Ψ.mapSection hΨ σ :=
@@ -450,7 +450,7 @@ noncomputable def ContMDiffVectorBundleEquiv.ofLinearEquivSection_gen
   exact ContMDiffVectorBundleEquiv.ofMutualInverseHoms Φ Ψ hΦ hΨΦ hΦΨ
 
 open FiberBundle in
-noncomputable def ContMDiffVectorBundleHom.ofTensorialAt_gen
+noncomputable def ContMDiffVectorBundleHom.ofTensorialAtGen
     (Ψ : (Π x : M, E₁ x) → (Π x : M, E₂ x))
     (hΨ : ∀ x, TensorialAt I F₁ (fun σ => Ψ σ x) x)
     (hΨ_smooth : ∀ σ : Cₛ^n⟮I; F₁, E₁⟯,

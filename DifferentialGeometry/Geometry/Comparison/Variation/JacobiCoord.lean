@@ -69,8 +69,8 @@ theorem parInner_d2
   rw [jacobi_d2_eq (I := I) g γ Y hY] at h
   simpa using h
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
 theorem parInner_curv_expand
@@ -98,8 +98,8 @@ theorem parInner_curv_expand
   simp only [map_sum, map_smul, FunLike.coe_sum, Finset.sum_apply,
     FunLike.coe_smul, Pi.smul_apply, smul_eq_mul]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)]
   [SigmaCompactSpace M] in
 theorem jacobi_unique

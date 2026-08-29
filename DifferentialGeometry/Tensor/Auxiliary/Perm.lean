@@ -68,7 +68,7 @@ lemma sign_sumCongrPerm (σ₁ : Equiv.Perm (Fin m ⊕ Fin n)) :
 
 open Equiv.Perm in
 @[simps!]
-def finAddCongr_equiv : ModSumCongr (Fin m) (Fin n) ≃ ModSumCongr (Fin n) (Fin m) where
+def finAddCongrEquiv : ModSumCongr (Fin m) (Fin n) ≃ ModSumCongr (Fin n) (Fin m) where
   toFun := Quot.lift (Quot.mk _ ∘ Perm.sumCongrPerm) Perm.sumCongrPerm_spec
   invFun := Quot.lift (Quot.mk _ ∘ Perm.sumCongrPerm) Perm.sumCongrPerm_spec
   left_inv := by
@@ -125,7 +125,7 @@ lemma sign_sumCommPerm (σ₁ : Equiv.Perm (Fin m ⊕ Fin n)) :
   simp only [sumCommPerm, Equiv.Perm.sign_permCongr]
 
 @[simps!]
-def finAddFlip_equiv : ModSumCongr (Fin m) (Fin n) ≃ ModSumCongr (Fin n) (Fin m) where
+def finAddFlipEquiv : ModSumCongr (Fin m) (Fin n) ≃ ModSumCongr (Fin n) (Fin m) where
   toFun := Quot.lift (Quot.mk _ ∘ sumCommPerm) sumCommPerm_spec
   invFun := Quot.lift (Quot.mk _ ∘ sumCommPerm) sumCommPerm_spec
   left_inv := by
@@ -140,7 +140,7 @@ def finAddFlip_equiv : ModSumCongr (Fin m) (Fin n) ≃ ModSumCongr (Fin n) (Fin 
     rw [sumCommPerm_sumCommPerm]
 
 @[simps!]
-def sumCommPerm_eqFin : Equiv.Perm (Fin m ⊕ Fin m) ≃ Equiv.Perm (Fin m ⊕ Fin m) :=
+def sumCommPermEqFin : Equiv.Perm (Fin m ⊕ Fin m) ≃ Equiv.Perm (Fin m ⊕ Fin m) :=
   MulAut.conj (Equiv.sumComm (Fin m) (Fin m))
 
 @[simp]
@@ -150,18 +150,18 @@ lemma sumComm_inv : (Equiv.sumComm (Fin m) (Fin m))⁻¹ = (Equiv.sumComm (Fin m
 
 @[simp]
 lemma sumCommPerm_eqFin_sumCommPerm_eqFin (σ₁ : Equiv.Perm (Fin m ⊕ Fin m)) :
-    sumCommPerm_eqFin (sumCommPerm_eqFin σ₁) = σ₁ := by
+    sumCommPermEqFin (sumCommPermEqFin σ₁) = σ₁ := by
   ext i
   simp
 
 lemma sumCommPerm_eqFin_spec (a b : Equiv.Perm (Fin m ⊕ Fin m))
     (h : (QuotientGroup.leftRel (Equiv.Perm.sumCongrHom (Fin m) (Fin m)).range) a b) :
-      (Quot.mk (QuotientGroup.leftRel (sumCongrHom (Fin m) (Fin m)).range) ∘ sumCommPerm_eqFin) a =
-      (Quot.mk (QuotientGroup.leftRel (sumCongrHom (Fin m) (Fin m)).range) ∘ sumCommPerm_eqFin) b
+      (Quot.mk (QuotientGroup.leftRel (sumCongrHom (Fin m) (Fin m)).range) ∘ sumCommPermEqFin) a =
+      (Quot.mk (QuotientGroup.leftRel (sumCongrHom (Fin m) (Fin m)).range) ∘ sumCommPermEqFin) b
     := by
   apply Quot.sound
   rw [@QuotientGroup.leftRel_apply] at h ⊢
-  simp only [sumCommPerm_eqFin, EquivLike.coe_coe, MulAut.conj_apply, sumComm_inv,
+  simp only [sumCommPermEqFin, EquivLike.coe_coe, MulAut.conj_apply, sumComm_inv,
     mul_assoc, mul_inv_rev]
   have this (c) : Equiv.sumComm (Fin m) (Fin m) * (Equiv.sumComm (Fin m) (Fin m) * c) = c := by
     ext
@@ -176,29 +176,30 @@ lemma sumCommPerm_eqFin_spec (a b : Equiv.Perm (Fin m ⊕ Fin m))
 
 @[simp]
 lemma sign_sumCommPerm_eqFin (σ₁ : Equiv.Perm (Fin m ⊕ Fin m)) :
-    Equiv.Perm.sign (sumCommPerm_eqFin σ₁) = Equiv.Perm.sign σ₁ := by
-  simp only [sumCommPerm_eqFin, EquivLike.coe_coe, MulAut.conj_apply, sumComm_inv,
+    Equiv.Perm.sign (sumCommPermEqFin σ₁) = Equiv.Perm.sign σ₁ := by
+  simp only [sumCommPermEqFin, EquivLike.coe_coe, MulAut.conj_apply, sumComm_inv,
     Equiv.Perm.sign_mul]
   rw[mul_comm, ← mul_assoc]
   simp
 
 open Equiv.Perm in
 @[simps]
-def finAddFlip_equiv_eqFin : ModSumCongr (Fin m) (Fin m) ≃ ModSumCongr (Fin m) (Fin m) where
-  toFun := Quot.lift (Quot.mk _ ∘ sumCommPerm_eqFin) sumCommPerm_eqFin_spec
-  invFun := Quot.lift (Quot.mk _ ∘ sumCommPerm_eqFin) sumCommPerm_eqFin_spec
+def finAddFlipEquivEqFin : ModSumCongr (Fin m) (Fin m) ≃ ModSumCongr (Fin m) (Fin m) where
+  toFun := Quot.lift (Quot.mk _ ∘ sumCommPermEqFin) sumCommPerm_eqFin_spec
+  invFun := Quot.lift (Quot.mk _ ∘ sumCommPermEqFin) sumCommPerm_eqFin_spec
   left_inv := by
     intro x
     rcases x with ⟨σ₁⟩
-    change Quot.mk _ (sumCommPerm_eqFin (sumCommPerm_eqFin σ₁)) = Quot.mk _ σ₁
+    change Quot.mk _ (sumCommPermEqFin (sumCommPermEqFin σ₁)) = Quot.mk _ σ₁
     rw [sumCommPerm_eqFin_sumCommPerm_eqFin]
   right_inv := by
     intro x
     rcases x with ⟨σ₁⟩
-    change Quot.mk _ (sumCommPerm_eqFin (sumCommPerm_eqFin σ₁)) = Quot.mk _ σ₁
+    change Quot.mk _ (sumCommPermEqFin (sumCommPermEqFin σ₁)) = Quot.mk _ σ₁
     rw [sumCommPerm_eqFin_sumCommPerm_eqFin]
 
-noncomputable instance : Fintype (Fin k ↪o Fin n) :=
+noncomputable instance instFintypeOrderEmbeddingFinDifferentialGeometry :
+    Fintype (Fin k ↪o Fin n) :=
   Fintype.ofEquiv _
     (Set.powersetCard.ofFinEmbEquiv
       (I := Fin n) (n := k)).symm

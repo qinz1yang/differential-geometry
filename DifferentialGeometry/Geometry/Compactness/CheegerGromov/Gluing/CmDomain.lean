@@ -235,8 +235,8 @@ section SmoothDomain
 variable [hRiemannianBundle : RiemannianBundle (fun x : M => TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem centerReadoutB_zero
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -355,8 +355,8 @@ theorem centerReadoutB_zero
   rw [hdecode]
   exact hreadout
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem centerReadout_zero
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -486,8 +486,8 @@ theorem centerReadout_zero
   exact hreadout
 
 omit [T3Space M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 theorem existsCmExtensionB
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -526,8 +526,8 @@ theorem existsCmExtensionB
     (c params) params one_ne_zero (hjoint params hparams) (hinv params hparams)
 
 omit [T3Space M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 theorem existsCmExtension
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -565,8 +565,8 @@ theorem existsCmExtension
     (c params) params one_ne_zero (hjoint params hparams) (hinv params hparams)
 
 omit [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem chartCenterOn_cont
     (g : SmoothRiemannianMetric I M) (p : M) {ι : Type} [Fintype ι]
     (join : M -> M -> Real -> M) (r : Real)
@@ -621,8 +621,8 @@ theorem chartCenterOn_cont
   rw [heq]
   exact hf
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem cmExtB_contDiffOn
@@ -674,8 +674,8 @@ theorem cmExtB_contDiffOn
   exact ((hfcd.congr_of_eventuallyEq hid).of_le
     (by exact_mod_cast le_max_right 1 n)).contDiffWithinAt
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem cmExt_contDiffOn
@@ -740,8 +740,8 @@ open scoped Topology Manifold ContDiff
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]

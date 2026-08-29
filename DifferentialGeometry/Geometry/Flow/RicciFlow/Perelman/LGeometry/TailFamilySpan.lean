@@ -26,8 +26,8 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M]
 variable {D : RealTimeInterval}
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lTailFamily_ext_of
@@ -259,8 +259,8 @@ theorem lTailFamily_ext_of
       ⟨s0, Set.left_mem_uIcc, hGood0⟩ hclosed
   exact hall Set.right_mem_uIcc
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lTailFamily_span

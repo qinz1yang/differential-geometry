@@ -114,7 +114,7 @@ theorem evolving_harnack_on_separated_cylinders
           (gradFun (I := I) (g t) rho.toFun x) ≤ G)
     (hpde : ∀ t ∈ Icc A D, ∀ x : M,
       deriv (fun s => u s x) t =
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (hVzero : V ≠ 0) (hVtop : V ≠ ⊤)
     (hvolume : ∀ t ∈ Icc A D,
@@ -180,7 +180,7 @@ theorem evolving_harnack_on_separated_cylinders
     simpa only [v, U, Function.comp_apply] using heq
   have hpde_v : ∀ t ∈ Icc A D, ∀ x : M,
       deriv (fun s => v s x) t =
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) v hv t).toContMDiffMap x := by
     intro t ht x
     have hjoint := hclamp_eq (t, x) ⟨ht, Set.mem_univ x⟩
@@ -196,9 +196,9 @@ theorem evolving_harnack_on_separated_cylinders
       exact h
     calc
       deriv (fun s => v s x) t = deriv (fun s => u s x) t := htime.deriv_eq
-      _ = Δ_g (I := I) (g t)
+      _ = ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x := hpde t ht x
-      _ = Δ_g (I := I) (g t)
+      _ = ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) v hv t).toContMDiffMap x := by
         exact (Δ_g_congr_of_eventuallyEq (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) v hv t).smooth

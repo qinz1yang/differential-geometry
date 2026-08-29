@@ -18,8 +18,8 @@ variable {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [RegularSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def riemDistTent
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) (x : M) : ℝ :=
   letI : RiemannianBundle (TangentSpace I : M → Type _) :=
@@ -30,8 +30,8 @@ noncomputable def riemDistTent
   ((thickenedIndicator (show 0 < r / 4 by positivity)
     (Metric.closedEBall a (ENNReal.ofReal (r / 2))) x : ℝ≥0) : ℝ)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem riemTent_mem_Icc
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) (x : M) :
     riemDistTent g a hr x ∈ Set.Icc (0 : ℝ) 1 := by
@@ -47,8 +47,8 @@ theorem riemTent_mem_Icc
   · exact_mod_cast thickenedIndicator_le_one (show 0 < r / 4 by positivity)
       (Metric.closedEBall a (ENNReal.ofReal (r / 2))) x
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem riemTent_eq_one
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) {x : M}
     (hx : riemannianEDistOf (I := I) g a x ≤ ENNReal.ofReal (r / 2)) :
@@ -67,8 +67,8 @@ theorem riemTent_eq_one
     (Metric.closedEBall a (ENNReal.ofReal (r / 2))) hx']
   norm_num
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem riemTent_eq_zero
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) {x : M}
     (hx : ENNReal.ofReal (3 * r / 4) ≤ riemannianEDistOf (I := I) g a x) :
@@ -105,8 +105,8 @@ theorem riemTent_eq_zero
   rw [thickenedIndicator_zero (show 0 < r / 4 by positivity) S hout]
   norm_num
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem riemTent_support
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) :
     Function.support (riemDistTent g a hr) ⊆
@@ -116,8 +116,8 @@ theorem riemTent_support
   by_contra hdist
   exact hx (riemTent_eq_zero g a hr (not_lt.1 hdist))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem riemTent_tsupport
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) :
     tsupport (riemDistTent g a hr) ⊆
@@ -143,8 +143,8 @@ theorem riemTent_tsupport
   rw [IsRiemannianManifold.out (I := I) a x] at hxle
   exact hxle.trans_lt hrad
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem riemTent_lip
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) (x y : M) :
     edist (riemDistTent g a hr x) (riemDistTent g a hr y) ≤

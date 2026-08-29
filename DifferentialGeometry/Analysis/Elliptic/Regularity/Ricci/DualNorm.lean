@@ -648,12 +648,12 @@ theorem exists_global_ricci_dual_normSq_bound
       (chartAtlasPOU I M).exists_pos_of_mem (Set.mem_univ b₀)
     have hα_seed_supp : (Function.support ((chartAtlasPOU I M) α_seed)).Nonempty :=
       ⟨b₀, ne_of_gt _hα_seed_pos⟩
-    have hα_seed_mem : α_seed ∈ chartAtlasPOU_finset (I := I) (M := M) := by
+    have hα_seed_mem : α_seed ∈ chartAtlasPOUFinset (I := I) (M := M) := by
       rw [chartAtlasPOU_finset_mem]
       exact hα_seed_supp
-    have hS_ne : (chartAtlasPOU_finset (I := I) (M := M)).Nonempty :=
+    have hS_ne : (chartAtlasPOUFinset (I := I) (M := M)).Nonempty :=
       ⟨α_seed, hα_seed_mem⟩
-    refine ⟨(chartAtlasPOU_finset (I := I) (M := M)).sup' hS_ne Cfn, ?_, ?_⟩
+    refine ⟨(chartAtlasPOUFinset (I := I) (M := M)).sup' hS_ne Cfn, ?_, ?_⟩
     · exact le_trans (hCfn_nn α_seed)
         (Finset.le_sup' (f := Cfn) hα_seed_mem)
     · intro b
@@ -661,7 +661,7 @@ theorem exists_global_ricci_dual_normSq_bound
         (chartAtlasPOU I M).exists_pos_of_mem (Set.mem_univ b)
       have hα₀_supp : (Function.support ((chartAtlasPOU I M) α₀)).Nonempty :=
         ⟨b, ne_of_gt hα₀_pos⟩
-      have hα₀_mem : α₀ ∈ chartAtlasPOU_finset (I := I) (M := M) := by
+      have hα₀_mem : α₀ ∈ chartAtlasPOUFinset (I := I) (M := M) := by
         rw [chartAtlasPOU_finset_mem]
         exact hα₀_supp
       have hb_tsupp : b ∈ tsupport (fun x : M =>

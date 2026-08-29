@@ -176,10 +176,10 @@ private lemma tensorInner_le_const_mul_sum_scalar_sq
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g r s) (b : M),
         tensorInnerPointwise g r s b (S.toFun b) (S.toFun b) ≤
-          C * ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+          C * ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
             sumScalarSq g r s S α b := by
   classical
-  set Sf : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  set Sf : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   set N : ℝ := (Sf.card : ℝ)
   have hN_nn : 0 ≤ N := Nat.cast_nonneg _
   choose Cα hCα_nn hCα_bound using fun α (_ : α ∈ Sf) =>
@@ -237,7 +237,7 @@ theorem fiber_sq_le_comps
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (S : SmoothCcTensor g r s) (b : M),
       tensorInnerPointwise g r s b (S.toFun b) (S.toFun b) ≤
-        C * ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        C * ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ∑ Idx : MIdxC E r, ∑ Jdx : MIdxC E s,
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S α Idx Jdx b) ^ 2 := by
@@ -305,7 +305,7 @@ theorem tensorL2Norm_sq_le_const_mul_sum_componentL2Norm_sq
       ∀ (S : SmoothCcTensor g r s),
         (tensorL2Norm g r s S.toFun) ^ 2 ≤
           C *
-            ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+            ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
               ∑ Idx : MIdxC E r, ∑ Jdx : MIdxC E s,
                 ((eLpNorm
                     (tensorChartComponentScalar (I := I) (M := M)
@@ -330,7 +330,7 @@ theorem tensorL2Norm_sq_le_const_mul_sum_componentL2Norm_sq
   have h_int_mono :
       ∫ b, tensorInnerPointwise g r s b (S.toFun b) (S.toFun b) ∂μ ≤
       ∫ b, C *
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           sumScalarSq g r s S α b ∂μ :=
     integral_mono_of_nonneg
       (Filter.Eventually.of_forall (fun b => tensorInnerPointwise_nonneg g r s b _))

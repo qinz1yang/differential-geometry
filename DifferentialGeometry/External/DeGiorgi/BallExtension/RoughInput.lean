@@ -403,7 +403,7 @@ theorem zeroExtend_memW01p_p
               (fun x => (fderiv ℝ (φ n) x) (EuclideanSpace.single i 1) - hw.weakGrad x i)
               (ENNReal.ofReal p) (volume.restrict Ω))
           atTop (nhds 0) := hφspec.2.2.2.2
-  let hwExt := zeroExtend_memW1pWitness_p (d := d) hΩ hp hv hw
+  let hwExt := zeroExtendMemW1pWitnessP (d := d) hΩ hp hv hw
   refine ⟨hwExt.memW1p, hwExt, φ, hφ_smooth, hφ_compact, ?_, ?_, ?_⟩
   · intro n
     simp
@@ -440,12 +440,12 @@ theorem zeroExtend_memW01p_p
               (fun x => (fderiv ℝ (φ n) x) (EuclideanSpace.single i 1) - hw.weakGrad x i) := by
         ext x
         by_cases hx : x ∈ Ω
-        · simp [hwExt, zeroExtend_memW1pWitness_p, hx]
+        · simp [hwExt, zeroExtendMemW1pWitnessP, hx]
         · have hdx :
               (fderiv ℝ (φ n) x) (EuclideanSpace.single i 1) = 0 := by
             exact fderiv_apply_zero_outside_of_tsupport_subset (Ω := Ω) (hf := hφ_smooth n)
               (hsub := hφ_sub n) hx i
-          simp [hwExt, zeroExtend_memW1pWitness_p, hx, hdx]
+          simp [hwExt, zeroExtendMemW1pWitnessP, hx, hdx]
       rw [hFn, MeasureTheory.eLpNorm_indicator_eq_eLpNorm_restrict
         (μ := volume) (s := Ω) (p := ENNReal.ofReal p) hΩ_meas]
     rw [Measure.restrict_univ, hEq]
@@ -476,7 +476,7 @@ theorem exists_global_smooth_W1p_approx_of_localizedWitness
           atTop (nhds 0)) := by
   have hu0 : MemW01p (ENNReal.ofReal p) u Ω :=
     memW01p_of_memW1p_of_tsupport_subset hΩ hp hw.memW1p hu_compact hu_sub
-  let hwExt := zeroExtend_memW1pWitness_p (d := d) hΩ hp hu0 hw
+  let hwExt := zeroExtendMemW1pWitnessP (d := d) hΩ hp hu0 hw
   have hu_eq_ind : Ω.indicator u = u := by
     ext x
     by_cases hx : x ∈ Ω
@@ -493,7 +493,7 @@ theorem exists_global_smooth_W1p_approx_of_localizedWitness
         (fun x => hw0.weakGrad x i) =ᵐ[volume.restrict Set.univ]
           (fun x => (Ω.indicator (fun y => hw.weakGrad y i)) x) := by
       filter_upwards [MemW1pWitness.ae_eq_p (d := d) isOpen_univ hp_le hw0 hwExt] with x hx
-      simpa [zeroExtend_memW1pWitness_p, hwExt] using congrArg (fun z : E => z i) hx
+      simpa [zeroExtendMemW1pWitnessP, hwExt] using congrArg (fun z : E => z i) hx
     have hEqSeq :
         (fun n =>
           eLpNorm
@@ -516,11 +516,11 @@ theorem exists_global_smooth_W1p_approx_of_localizedWitness
     simpa [Measure.restrict_univ] using hφ_grad i
 
 /-- Explicit `L^p` constant from the unit-ball extension estimate. -/
-abbrev C_unitBallExtensionFun (d : ℕ) : ℝ≥0∞ :=
+abbrev CUnitBallExtensionFun (d : ℕ) : ℝ≥0∞ :=
   1 + ENNReal.ofReal ((2 : ℝ) ^ (2 * d))
 
 /-- Explicit gradient-side constant from the smooth unit-ball extension estimate. -/
-abbrev C_unitBallExtensionGrad (d : ℕ) (p : ℝ) : ℝ≥0∞ :=
+abbrev CUnitBallExtensionGrad (d : ℕ) (p : ℝ) : ℝ≥0∞ :=
   ENNReal.ofReal ((2 : ℝ) ^ (2 * d)) * (2 : ℝ≥0∞) ^ (p - 1)
 
 omit [NeZero d] in

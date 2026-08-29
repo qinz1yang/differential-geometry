@@ -199,7 +199,7 @@ private theorem rem_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
         (TangentSpace I x),
       ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
   classical
-  let D := (tangentMetricData_gen (I := I) g x).metric
+  let D := (tangentMetricDataGen (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -211,8 +211,8 @@ private theorem rem_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
   have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
     MetricFiberData.toCore_inner D (ob i) (ob j)
   change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricData_gen.inner_eq_gen
-    (tangentMetricData_gen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
+  rw [← TangentMetricDataGen.inner_eq_gen
+    (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
   change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
   rw [← hinner]
   exact ob.inner_eq_ite i j
@@ -254,7 +254,7 @@ theorem reLowerDefSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
           metricDiffSq (I := I) g₁ g₂ x) := by
   classical
   obtain ⟨basis, hON⟩ := rem_onFrame (I := I) g₁ x
-  have hinv : MetricInverseInBasis_gen (I := I) g₁ x basis
+  have hinv : MetricInverseInBasisGen (I := I) g₁ x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) g₁ basis hON
   let Hdiff : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -426,7 +426,7 @@ theorem lowerTriSq_le (g : SmoothRiemannianMetric I M)
             (lowerTri (I := I) (metricTensorField (I := I) g x) A)) := by
   classical
   obtain ⟨basis, hON⟩ := rem_onFrame (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) g basis hON
   let P : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
@@ -739,7 +739,7 @@ theorem traceProdSq_le (g : SmoothRiemannianMetric I M) {a b r : ℕ}
         (normSq0S (I := I) g x a (A x) * normSq0S (I := I) g x b (B x)) := by
   classical
   obtain ⟨basis, hON⟩ := rem_onFrame (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) g basis hON
   let W : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)

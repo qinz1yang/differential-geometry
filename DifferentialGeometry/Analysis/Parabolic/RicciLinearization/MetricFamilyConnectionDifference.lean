@@ -34,20 +34,20 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 private local instance connectionDifferenceJointTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance connectionDifferenceJointTensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance connectionDifferenceJointTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance connectionDifferenceJointTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
@@ -188,12 +188,12 @@ private theorem connectionDifference_app_joint
           (connectionDifferenceSection (I := I) (g_fam p.2) q).toSection p.1) (om p.1)))
       ((Set.univ : Set M) ×ˢ D.regular) := by
   classical
-  let := tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  let := tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   intro p₀ hp₀
   set α := p₀.1
   set e := trivializationAt (Tensor0SModel 2 ℝ E)
     (fun x : M => Tensor0SSpace 2 I x) α with he
-  set Bcmm := continuousMultilinearMap_basis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2
+  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
@@ -240,7 +240,7 @@ private theorem connectionDifference_app_joint
             (connectionDifferenceSection (I := I) (g_fam z.2) q).toSection z.1) (om z.1)))
         (fun a => (chartModelBasis E) (σ a))
       rw [Tensor0SSpace.toModel,
-        (tensor0SSpace_continuousLinearEquiv (I := I) 2 z.1).symm_apply_apply] at happly
+        (tensor0SSpaceContinuousLinearEquiv (I := I) 2 z.1).symm_apply_apply] at happly
       rw [happly]
       rw [connectionDifferenceSection_toSection]
       change Tensor0SSpace.eval

@@ -48,7 +48,7 @@ theorem chartLeviCivitaInnerCLM_basepoint_eq_rawFderiv_add_corrections
           (trivToE (I := I) α α w)
         + movingTrivCorrection (I := I) α X (trivToE (I := I) α α w)
         + christoffelCorrection (I := I) g α α
-            (chartE_section_repr (I := I) α X α) w := by
+            (chartESectionRepr (I := I) α X α) w := by
   classical
   rw [chartLeviCivitaInnerCLM_apply]
   rw [chartLeviCivita_flat_summand_eq_rawRepr (I := I) α X
@@ -90,7 +90,7 @@ theorem hQinner_of_flat_value_and_corrections
               (mfderiv I I (Φ_fam t : M → M) x v))
         - trivFromE (I := I) (Φ_fam t x) (Φ_fam t x)
             (christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x v))) :
     Q (Dchart' d)
@@ -108,7 +108,7 @@ theorem hQinner_of_flat_value_and_corrections
           + movingTrivCorrection (I := I) α (X : ∀ y : M, TangentSpace I y)
               (trivToE (I := I) α α w)
           + christoffelCorrection (I := I) g α α
-              (chartE_section_repr (I := I) α (X : ∀ y : M, TangentSpace I y) α) w :=
+              (chartESectionRepr (I := I) α (X : ∀ y : M, TangentSpace I y) α) w :=
     chartLeviCivitaInnerCLM_basepoint_eq_rawFderiv_add_corrections (I := I) g α
       (X : ∀ y : M, TangentSpace I y) w hRdiff hCdiff
   rw [trivToE_basepoint_apply (I := I) α w] at hdecomp
@@ -159,7 +159,7 @@ theorem rawVariationalIdentity_of_flatChartFderiv_witness
               (mfderiv I I (Φ_fam t : M → M) x v))
         - trivFromE (I := I) (Φ_fam t x) (Φ_fam t x)
             (christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x v))) :
     RawVariationalIdentity (I := I) g X Φ_fam t x v := by

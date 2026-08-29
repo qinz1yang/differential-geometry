@@ -116,7 +116,7 @@ private theorem oneForm_eval_const_add {x : M}
   rw [← cotangentToDual_apply_gen (I := I) alpha (A + B)]
   rw [← cotangentToDual_apply_gen (I := I) alpha A]
   rw [← cotangentToDual_apply_gen (I := I) alpha B]
-  exact map_add (cotangentToDual_gen (I := I) alpha) A B
+  exact map_add (cotangentToDualGen (I := I) alpha) A B
 
 omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 omit [FiniteDimensional ℝ E] in
@@ -129,7 +129,7 @@ private theorem oneForm_eval_const_sub {x : M}
   rw [← cotangentToDual_apply_gen (I := I) alpha (A - B)]
   rw [← cotangentToDual_apply_gen (I := I) alpha A]
   rw [← cotangentToDual_apply_gen (I := I) alpha B]
-  exact map_sub (cotangentToDual_gen (I := I) alpha) A B
+  exact map_sub (cotangentToDualGen (I := I) alpha) A B
 
 omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 omit [FiniteDimensional ℝ E] in
@@ -140,7 +140,7 @@ private theorem oneForm_eval_const_neg {x : M}
     alpha (fun _ : Fin 1 => -A) = -alpha (fun _ : Fin 1 => A) := by
   rw [← cotangentToDual_apply_gen (I := I) alpha (-A)]
   rw [← cotangentToDual_apply_gen (I := I) alpha A]
-  exact map_neg (cotangentToDual_gen (I := I) alpha) A
+  exact map_neg (cotangentToDualGen (I := I) alpha) A
 
 omit [CompleteSpace E] [IsManifold I 2 M] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
 omit [FiniteDimensional ℝ E] in
@@ -806,7 +806,7 @@ private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatib
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (1 : WithTop ℕ∞))
-    (hmc : IsMetricCompatible_gen (I := I) cov g)
+    (hmc : IsMetricCompatibleGen (I := I) cov g)
     {x : M} (W X Y Z : TangentSpace I x) :
     g.inner x W
         ((connectionRiemannCurvatureField (I := I) cov
@@ -1261,7 +1261,7 @@ theorem rm04OutputSkew_ofMC
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (1 : WithTop ℕ∞))
-    (hmc : IsMetricCompatible_gen (I := I) cov g)
+    (hmc : IsMetricCompatibleGen (I := I) cov g)
     (Rm04 : Tensor04Section (I := I) (M := M))
     (hRm04 : rm04RealizesConnection (I := I) g cov Rm04)
     {x : M} :
@@ -1601,7 +1601,7 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
       _ = alpha (fun _ : Fin 1 => -R) := by
             rw [hnegR]
             rw [halpha]
-      _ = -cotangentToDual_gen (I := I) alpha R := by
+      _ = -cotangentToDualGen (I := I) alpha R := by
             rw [oneForm_eval_const_neg (I := I) alpha R]
             rw [← cotangentToDual_apply_gen (I := I) alpha R]
       _ = -Rm13 x alpha (vec3 (I := I) X Y Z) := by

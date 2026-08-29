@@ -862,54 +862,54 @@ private lemma b4_pk3_toModel (g₀ : SmoothRiemannianMetric I M)
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
         (slotExtend (I := I) (M := M) g₀ 1 3
           (slotExtend (I := I) (M := M) g₀ 0 2 P)).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u0))) ![u1, u2, u3, u4] =
       Tensor0SSpace.toModel
         (slotExtendFib (I := I) (M := M) 1 3 x
           (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
             (slotExtend (I := I) (M := M) g₀ 0 2 P).toSection x)
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u0)))
         (Fin.cons u1 ![u2, u3, u4]) := rfl
   rw [h1]
   rw [slotExtendFib_apply_eval (I := I) (M := M) 1 3 x
     (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
       (slotExtend (I := I) (M := M) g₀ 0 2 P).toSection x)
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u0)) u1 ![u2, u3, u4]]
   have h2 : Tensor0SSpace.toModel
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
         (slotExtend (I := I) (M := M) g₀ 0 2 P).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u0))
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u1))) ![u2, u3, u4] =
       Tensor0SSpace.toModel
         (slotExtendFib (I := I) (M := M) 0 2 x
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from P.toSection x)
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u0))
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u1)))
         (Fin.cons u2 ![u3, u4]) := rfl
   rw [h2]
   rw [slotExtendFib_apply_eval (I := I) (M := M) 0 2 x
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from P.toSection x)
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u0))
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u1)) u2 ![u3, u4]]
-  have hc : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+  have hc : tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u0))
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u1))
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u2) =
       Tensor0SSpace.toModel D ![u0, u1, u2] • unitTensor (I := I) (M := M) x := by
     have h3 := b4_rank0_unit (I := I) (M := M) x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u0))
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u1))
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm u2))

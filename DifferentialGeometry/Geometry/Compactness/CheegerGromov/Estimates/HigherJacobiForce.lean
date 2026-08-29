@@ -327,8 +327,8 @@ theorem jacVarForce_le
     hneg]
   linarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem intrJacForce_le
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))

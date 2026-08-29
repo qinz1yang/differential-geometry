@@ -158,7 +158,7 @@ private theorem decompositionKernelContractionMonomialFibFixedFrame_apply_sectio
         (E := fun z : M => Tensor0SSpace 2 I z) x
         (curvatureDecompositionMonomialFrameContraction (I := I) (M := M) Gs σ B x (Y x))) := by
   classical
-  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
   set Gσ : Cₛ^∞⟮I; Tensor0SModel 4 ℝ E, fun z : M => Tensor0SSpace 4 I z⟯ :=
     { toFun := fun x : M => tensorRank4PermuteCLM (I := I) (M := M) x σ (Gs x)
       contMDiff_toFun := by
@@ -410,8 +410,8 @@ private def kcPairFeedScalarCLM (s : ℕ) (x : M) (G : Tensor0SSpace (s + 2) I x
   haveI : FiniteDimensional ℝ (TangentSpace I x) := inferInstanceAs (FiniteDimensional ℝ E)
   LinearMap.toContinuousLinearMap
     { toFun := fun p => (kcToModelEvalCLM (I := I) (M := M) s x v).comp
-        (tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) s x
-          ((tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p))
+        (tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) s x
+          ((tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p))
       map_add' := fun p p' => by
         rw [map_add, map_add, ContinuousLinearMap.comp_add]
       map_smul' := fun c p => by
@@ -429,7 +429,7 @@ private lemma kcPairFeedScalarCLM_apply (s : ℕ) (x : M) (G : Tensor0SSpace (s 
   rw [kcPairFeedScalarCLM, LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
     ContinuousLinearMap.comp_apply, kcToModelEvalCLM_apply,
     TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
-      (T := (tensor0S_curry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p) (v0 := q) (vs := v),
+      (T := (tensor0SCurry (𝕜 := ℝ) (I := I) (M := M) (s + 1) x G) p) (v0 := q) (vs := v),
     TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
       (T := G) (v0 := p)
       (vs := Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x q) v)]

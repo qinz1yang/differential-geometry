@@ -69,7 +69,7 @@ theorem metricDiff_c2half
     (hbdd : ∀ k : ι, ∀ q : ℕ, q ≤ 3 →
       MetricCovDerivOrderBoundOn (I := I) Set.univ q (gSeq k) gBase B) :
     ∃ C₀ : ℝ, 0 ≤ C₀ ∧ ∃ Cα : ℝ≥0,
-      ∀ (α : M), α ∈ chartAtlasPOU_finset (I := I) (M := M) →
+      ∀ (α : M), α ∈ chartAtlasPOUFinset (I := I) (M := M) →
         ∀ (k : ι) (Jdx : Fin 2 → Fin (Module.finrank ℝ E)),
           (∀ j : ℕ, j ≤ 2 → ∀ y : EuclN,
             ‖iteratedFDeriv ℝ j

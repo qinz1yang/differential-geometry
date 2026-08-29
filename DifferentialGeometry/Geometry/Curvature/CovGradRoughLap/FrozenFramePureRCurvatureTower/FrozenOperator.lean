@@ -425,7 +425,7 @@ private lemma pureRFrozenEndoFib_slot0Curry_riemannianFiberNormSq_eq
   have hslot : (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace m I x from
           slot0Curry (I := I) (M := M) g x m e K₀
             (pureRFrozenEndoFib (I := I) (M := M) g m B W x) a) ωK =
-        tensor0S_curry (I := I) (M := M) m x
+        tensor0SCurry (I := I) (M := M) m x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from
             pureRFrozenEndoFib (I := I) (M := M) g m B W x) ωK) (e a) := by
     rw [slot0Curry_apply (I := I) (M := M) g x m e K₀
@@ -482,7 +482,7 @@ private lemma covGradBundleEquiv_symm_reading_riemannianFiberNormSq_le
           (fun k => g.inner x (e (K₀ k)))) with hωK
     have hslot : (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace m I x from
             slot0Curry (I := I) (M := M) g x m e K₀ T a) ωK =
-          tensor0S_curry (I := I) (M := M) m x
+          tensor0SCurry (I := I) (M := M) m x
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (m + 1) I x from T) ωK) (e a) := by
       rw [slot0Curry_apply (I := I) (M := M) g x m e K₀ T a ωK]
       have hcoframe : coframeS (I := I) (M := M) g x 0 e K₀ = ωK := by

@@ -39,23 +39,27 @@ local instance (r : ℕ) : FiniteDimensional 𝕜
     (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜) :=
   continuousMultilinearMap_finiteDimensional r
 
-local instance (r : ℕ) : NormedAddCommGroup
+local instance instNormedAddCommGroupContinuousMultilinearMapFinContinuousLinearMapIdDifferentialGeometry
+    (r : ℕ) : NormedAddCommGroup
     (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜) :=
   inferInstance
-local instance (r : ℕ) : NormedSpace 𝕜
+local instance instNormedSpaceContinuousMultilinearMapFinContinuousLinearMapIdDifferentialGeometry
+    (r : ℕ) : NormedSpace 𝕜
     (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜) :=
   inferInstance
 
-local instance (r s : ℕ) : NormedAddCommGroup
+local instance instNormedAddCommGroupTensorProductContinuousMultilinearMapFinContinuousLinearMapIdDifferentialGeometry
+    (r s : ℕ) : NormedAddCommGroup
     (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜 ⊗[𝕜]
      ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜) :=
-  instNormedAddCommGroup_tensor 𝕜
+  instNormedAddCommGroupTensor 𝕜
     (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜)
     (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
-local instance (r s : ℕ) : NormedSpace 𝕜
+local instance instNormedSpaceTensorProductContinuousMultilinearMapFinContinuousLinearMapIdDifferentialGeometry
+    (r s : ℕ) : NormedSpace 𝕜
     (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜 ⊗[𝕜]
      ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜) :=
-  instNormedSpace_tensor 𝕜
+  instNormedSpaceTensor 𝕜
     (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜)
     (ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
 
@@ -344,7 +348,7 @@ private theorem mixedToTensorTrivTransition {r s : ℕ} (x₀ x : B)
         (fun x => Bundle.continuousMultilinearMap 𝕜 r (F →L[𝕜] 𝕜)
           (Bundle.dual 𝕜 E) x ⊗[𝕜]
           Bundle.continuousMultilinearMap 𝕜 s F E x) x₀
-        ⟨x, (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
+        ⟨x, (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAtBundle
           (𝕜 := 𝕜) (F := F) (E := E) r s x) T⟩).2 =
       TensorProduct.map
         (ContinuousMultilinearMap.compContinuousLinearMapL
@@ -364,11 +368,11 @@ private theorem mixedToTensorTrivTransition {r s : ℕ} (x₀ x : B)
     ((Bundle.continuousMultilinearMap.mixedContinuousLinearEquivAt
       (𝕜 := 𝕜) (F := F) (E := E) r s x) T) with hu_def
   have hf_eq :
-      (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
+      (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAtBundle
         (𝕜 := 𝕜) (F := F) (E := E) r s x) T =
         (Bundle.continuousMultilinearMap.dualTensorMultilinearUntrivializeAt
           (𝕜 := 𝕜) (F := F) (E := E) r s x) u := by
-    unfold Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
+    unfold Bundle.continuousMultilinearMap.multilinearHomTensorEquivAtBundle
     simp only [LinearEquiv.trans_apply, hu_def,
       ContinuousLinearEquiv.coe_toLinearEquiv]
   rw [hf_eq]
@@ -383,7 +387,7 @@ theorem mixedToTensor_triv_eq_bundle {r s : ℕ} (x₀ x : B)
          ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
         (fun x => Bundle.continuousMultilinearMap 𝕜 r (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x ⊗[𝕜]
                   Bundle.continuousMultilinearMap 𝕜 s F E x) x₀
-        ⟨x, (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
+        ⟨x, (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAtBundle
               (𝕜 := 𝕜) (F := F) (E := E) r s x) T⟩).2 =
     modelMixedToTensorCLM 𝕜 F r s
       ((trivializationAt
@@ -502,7 +506,7 @@ theorem tensorToMixed_triv_eq_bundle {r s : ℕ} (x₀ x : B)
          ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
         (fun x => Bundle.continuousMultilinearMap 𝕜 r F E x →L[𝕜]
                   Bundle.continuousMultilinearMap 𝕜 s F E x) x₀
-        ⟨x, (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
+        ⟨x, (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAtBundle
               (𝕜 := 𝕜) (F := F) (E := E) r s x).symm T⟩).2 =
     modelTensorToMixedCLM 𝕜 F r s
       ((trivializationAt
@@ -512,7 +516,7 @@ theorem tensorToMixed_triv_eq_bundle {r s : ℕ} (x₀ x : B)
                   Bundle.continuousMultilinearMap 𝕜 s F E x) x₀
         ⟨x, T⟩).2) := by
   have hfwd := mixedToTensor_triv_eq_bundle x₀ x hx
-    ((Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
+    ((Bundle.continuousMultilinearMap.multilinearHomTensorEquivAtBundle
       (𝕜 := 𝕜) (F := F) (E := E) r s x).symm T)
   rw [LinearEquiv.apply_symm_apply] at hfwd
   rw [hfwd]
@@ -533,7 +537,7 @@ theorem multilinearHomTensorEquivAt_bundle_smooth {r s : ℕ} :
            ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
           (fun x => Bundle.continuousMultilinearMap 𝕜 r F E x →L[𝕜]
                     Bundle.continuousMultilinearMap 𝕜 s F E x) =>
-        (⟨p.1, (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
+        (⟨p.1, (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAtBundle
                   (𝕜 := 𝕜) (F := F) (E := E) r s p.1) p.2⟩ :
           TotalSpace
             (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜 ⊗[𝕜]
@@ -585,7 +589,7 @@ theorem multilinearHomTensorEquivAt_bundle_symm_smooth {r s : ℕ} :
            ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
           (fun x => Bundle.continuousMultilinearMap 𝕜 r (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x ⊗[𝕜]
                     Bundle.continuousMultilinearMap 𝕜 s F E x) =>
-        (⟨p.1, (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
+        (⟨p.1, (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAtBundle
                   (𝕜 := 𝕜) (F := F) (E := E) r s p.1).symm p.2⟩ :
           TotalSpace
             (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜 →L[𝕜]
@@ -622,7 +626,7 @@ theorem multilinearHomTensorEquivAt_bundle_symm_smooth {r s : ℕ} :
     ] with p hp
     exact tensorToMixed_triv_eq_bundle p₀.proj p.proj hp p.snd
 
-noncomputable def mixedBundle_tensorBundle_equiv {r s : ℕ} :
+noncomputable def mixedBundleTensorBundleEquiv {r s : ℕ} :
     ContMDiffVectorBundleEquiv 𝕜 IB n
       (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F) 𝕜 →L[𝕜]
        ContinuousMultilinearMap 𝕜 (fun _ : Fin s => F) 𝕜)
@@ -633,7 +637,7 @@ noncomputable def mixedBundle_tensorBundle_equiv {r s : ℕ} :
       (fun x => Bundle.continuousMultilinearMap 𝕜 r (F →L[𝕜] 𝕜) (Bundle.dual 𝕜 E) x ⊗[𝕜]
                 Bundle.continuousMultilinearMap 𝕜 s F E x) :=
   ContMDiffVectorBundleEquiv.ofFiberwiseLinearEquiv
-    (fun x => Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
+    (fun x => Bundle.continuousMultilinearMap.multilinearHomTensorEquivAtBundle
                 (𝕜 := 𝕜) (F := F) (E := E) r s x)
     (multilinearHomTensorEquivAt_bundle_smooth n)
     (multilinearHomTensorEquivAt_bundle_symm_smooth n)
@@ -641,14 +645,14 @@ noncomputable def mixedBundle_tensorBundle_equiv {r s : ℕ} :
 noncomputable def mixedSectionToTensorBundleSection {r s : ℕ}
     (T : MixedSection 𝕜 F IB E n r s) :
     DualTensorMultilinearSection (𝕜 := 𝕜) (F := F) (IB := IB) (E := E) (n := n) r s :=
-  ⟨fun x => (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
+  ⟨fun x => (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAtBundle
               (𝕜 := 𝕜) (F := F) (E := E) r s x) (T x),
    ((multilinearHomTensorEquivAt_bundle_smooth n).comp T.contMDiff).congr fun _ => rfl⟩
 
 noncomputable def tensorBundleSectionToMixedSection {r s : ℕ}
     (W : DualTensorMultilinearSection (𝕜 := 𝕜) (F := F) (IB := IB) (E := E) (n := n) r s) :
     MixedSection 𝕜 F IB E n r s :=
-  ⟨fun x => (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
+  ⟨fun x => (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAtBundle
               (𝕜 := 𝕜) (F := F) (E := E) r s x).symm (W x),
    ((multilinearHomTensorEquivAt_bundle_symm_smooth n).comp W.contMDiff).congr fun _ => rfl⟩
 
@@ -674,7 +678,7 @@ theorem mixedSectionToTensorBundleSection_add {r s : ℕ}
     mixedSectionToTensorBundleSection n (T₁ + T₂) =
     mixedSectionToTensorBundleSection n T₁ + mixedSectionToTensorBundleSection n T₂ := by
   apply ContMDiffSection.ext; intro x
-  exact (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
+  exact (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAtBundle
     (𝕜 := 𝕜) (F := F) (E := E) r s x).map_add (T₁ x) (T₂ x)
 
 omit [ContMDiffVectorBundle n F E IB] in
@@ -683,10 +687,10 @@ theorem mixedSectionToTensorBundleSection_smul {r s : ℕ}
     mixedSectionToTensorBundleSection n (φ • T) =
     φ • mixedSectionToTensorBundleSection n T := by
   apply ContMDiffSection.ext; intro x
-  exact (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAt_bundle
+  exact (Bundle.continuousMultilinearMap.multilinearHomTensorEquivAtBundle
     (𝕜 := 𝕜) (F := F) (E := E) r s x).map_smul (φ x) (T x)
 
-noncomputable def mixedBundle_tensorBundle_sectionEquiv {r s : ℕ} :
+noncomputable def mixedBundleTensorBundleSectionEquiv {r s : ℕ} :
     MixedSection 𝕜 F IB E n r s ≃ₗ[C^n⟮IB, B; 𝕜⟯]
     DualTensorMultilinearSection (𝕜 := 𝕜) (F := F) (IB := IB) (E := E) (n := n) r s where
   toFun := mixedSectionToTensorBundleSection n

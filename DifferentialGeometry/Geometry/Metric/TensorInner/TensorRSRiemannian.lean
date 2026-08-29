@@ -78,7 +78,7 @@ lemma loweredCompose_zero
 noncomputable def chartTensorInnerPointwise
     (g : SmoothRiemannianMetric I M) (α : M) (r s : ℕ) (b : M)
     (T S : TensorRSModel r s ℝ E) : ℝ :=
-  chartTensorInnerPointwise_0s (I := I) (M := M) (r + s) g α b
+  chartTensorInnerPointwise0s (I := I) (M := M) (r + s) g α b
     (loweredCompose (I := I) (M := M) g r s α b T)
     (loweredCompose (I := I) (M := M) g r s α b S)
 
@@ -86,7 +86,7 @@ noncomputable def chartTensorInnerPointwise
     (g : SmoothRiemannianMetric I M) (α : M) (r s : ℕ) (b : M)
     (T S : TensorRSModel r s ℝ E) :
     chartTensorInnerPointwise (I := I) (M := M) g α r s b T S =
-      chartTensorInnerPointwise_0s (I := I) (M := M) (r + s) g α b
+      chartTensorInnerPointwise0s (I := I) (M := M) (r + s) g α b
         (loweredCompose (I := I) (M := M) g r s α b T)
         (loweredCompose (I := I) (M := M) g r s α b S) := rfl
 
@@ -191,7 +191,7 @@ theorem chartTensorInnerPointwise_continuousOn
         (I := I) (M := M) g α r s b (T b) (S b))
       (trivializationAt E (TangentSpace I) α).baseSet := by
   have hcont :
-      ContinuousOn (fun b : M => chartTensorInnerPointwise_0s
+      ContinuousOn (fun b : M => chartTensorInnerPointwise0s
         (I := I) (M := M) (r + s) g α b
           (loweredCompose (I := I) (M := M) g r s α b (T b))
           (loweredCompose (I := I) (M := M) g r s α b (S b)))

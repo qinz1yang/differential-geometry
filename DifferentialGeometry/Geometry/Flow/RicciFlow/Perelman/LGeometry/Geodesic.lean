@@ -415,8 +415,8 @@ theorem IsLCritical.isLGeo
         (Real.sqrt_ne_zero'.2 (ha.trans htau0.1))
     exact (mul_eq_zero.mp hpairzero).resolve_left hfactor
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def lRegAccel
     (S : SolutionOn (I := I) (M := M) D) (T s : Real) (x : M)
     (A : TangentSpace I x) : TangentSpace I x :=
@@ -433,8 +433,8 @@ omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
     lRegAccel S T 0 x A = 0 := by
   simp [lRegAccel]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def lPhaseField
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x0 : M)
     (s : Real) (z : E × E) : E × E :=
@@ -445,23 +445,23 @@ noncomputable def lPhaseField
         (I := I) (S.base.metric (T - s ^ 2)) x0 z.2 z.2 z.1 +
       trivToE (I := I) x0 x (lRegAccel S T s x A))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 noncomputable def lPhaseCurve (x0 : M) (z : Real → E × E) : Real → M :=
   fun s => (extChartAt I x0).symm (z s).1
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E]
   [SigmaCompactSpace M] in
 noncomputable def lPhaseVel (x0 : M) (z : Real → E × E) :
     ∀ s, TangentSpace I (lPhaseCurve (I := I) x0 z s) :=
   fun s => trivFromE (I := I) x0 (lPhaseCurve (I := I) x0 z s) (z s).2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 @[simp] theorem lPhaseField_zero
@@ -919,8 +919,8 @@ theorem lPhaseCurve_mdiff
   exact (hsymm.mdifferentiableAt (by norm_num)).comp s
     (mdifferentiableAt_iff_differentiableAt.mpr hz)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [FiniteDimensional Real E] [T2Space M] [SigmaCompactSpace M] in
 theorem lPhase_velocity
@@ -958,8 +958,8 @@ theorem lPhase_velocity
     exact (extChartAt I x0).right_inv hr
   rw [fderiv_apply_one_eq_deriv, heq.deriv_eq, hq.deriv]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [FiniteDimensional Real E] [T2Space M] [SigmaCompactSpace M] in
 theorem lPhaseVel_diff
@@ -1002,8 +1002,8 @@ theorem lPhaseVel_diff
   simpa only [alpha, A] using
     chartRep_diff_base (I := I) alpha A s x0 halpha hsource hrep_diff
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lPhase_accel
@@ -1100,8 +1100,8 @@ theorem lPhase_accel
     _ = lRegAccel S T s (alpha s) (A s) :=
       trivFromE_trivToE (I := I) x0 hbase _
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRegCurve_phase
@@ -1198,8 +1198,8 @@ theorem lRegCurve_phase
     rw [hleft, hround]
   simpa only [q, v, X] using hpair.congr_deriv hphase
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_lRegCurve
@@ -1321,8 +1321,8 @@ theorem exists_lRegCurve
           (lVelocity (I := I) alpha s) := by
         rw [hfield.eq_of_nhds]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRegCurve_unique_at
@@ -1406,8 +1406,8 @@ theorem lRegCurve_unique_at
   · have hfst := congrArg Prod.fst hs
     simpa only [zgamma, zeta, chartCurve] using hfst
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRegCurve_unique
@@ -1437,8 +1437,8 @@ theorem lRegCurve_unique
   exact lRegCurve_unique_at S hS T 0 (by simpa using hT)
     hpos0 hvel0 hgamma heta
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem lRegAccel_inner
@@ -1479,8 +1479,8 @@ theorem lRegAccel_inner
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lEuler_sq
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (gamma : Real → M)
     (s : Real) (Y : TangentSpace I (gamma (s ^ 2)))
@@ -1614,8 +1614,8 @@ theorem lEuler_sq
   field_simp [ne_of_gt hs]
   ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem HasLEquationAt.accel_sq

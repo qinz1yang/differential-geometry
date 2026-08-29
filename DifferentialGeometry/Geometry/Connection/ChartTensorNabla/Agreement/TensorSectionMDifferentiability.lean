@@ -34,7 +34,7 @@ def TensorSectionMDiffAt (n : ℕ)
     (T : Π b : M, Tensor0SSpace n I b) (b : M) : Prop :=
   letI _h_top : TopologicalSpace (TotalSpace (Tensor0SModel n ℝ E)
       (fun x : M => Tensor0SSpace n I x)) :=
-    tensor0SBundle_topology n
+    tensor0SBundleTopology n
   MDifferentiableAt I (I.prod 𝓘(ℝ, Tensor0SModel n ℝ E))
     (fun b' : M => TotalSpace.mk' (Tensor0SModel n ℝ E)
       (E := fun x : M => Tensor0SSpace n I x) b' (T b')) b
@@ -46,15 +46,15 @@ theorem differentiableAt_tensor0SChartE_pullback_of_mdifferentiableAt
     {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α)
     (hT_at : TensorSectionMDiffAt (I := I) n T b) :
     DifferentiableAt ℝ
-      (tensor0SChartE_section_repr (I := I) n α T ∘ (extChartAt I α).symm)
+      (tensor0SChartESectionRepr (I := I) n α T ∘ (extChartAt I α).symm)
       (extChartAt I α b) := by
   classical
   let _h_top : TopologicalSpace (TotalSpace (Tensor0SModel n ℝ E)
       (fun x : M => Tensor0SSpace n I x)) :=
-    tensor0SBundle_topology n
+    tensor0SBundleTopology n
   let _h_fib : FiberBundle (Tensor0SModel n ℝ E)
       (fun x : M => Tensor0SSpace n I x) :=
-    tensor0SBundle_fiber n
+    tensor0SBundleFiber n
   have hb_base_α : b ∈ (trivializationAt (Tensor0SModel n ℝ E)
       (fun y : M => Tensor0SSpace n I y) α).baseSet := by
     change b ∈ (trivializationAt E (TangentSpace I) α).baseSet
@@ -70,9 +70,9 @@ theorem differentiableAt_tensor0SChartE_pullback_of_mdifferentiableAt
       (fun y : M => Tensor0SSpace n I y) α).baseSet →
       ((trivializationAt (Tensor0SModel n ℝ E)
           (fun y : M => Tensor0SSpace n I y) α) ⟨b', T b'⟩).2 =
-        tensor0SChartE_section_repr (I := I) n α T b' := by
+        tensor0SChartESectionRepr (I := I) n α T b' := by
     intro b' hb'
-    unfold tensor0SChartE_section_repr
+    unfold tensor0SChartESectionRepr
     have hcoe := (trivializationAt (Tensor0SModel n ℝ E)
       (fun y : M => Tensor0SSpace n I y) α).coe_linearMapAt_of_mem (R := ℝ) hb'
     have happ := congrFun hcoe (T b')
@@ -85,13 +85,13 @@ theorem differentiableAt_tensor0SChartE_pullback_of_mdifferentiableAt
       (fun y : M => Tensor0SSpace n I y) α).baseSet ∈ 𝓝 b :=
     hbase_α_open.mem_nhds hb_base_α
   have h_funeq :
-      tensor0SChartE_section_repr (I := I) n α T =ᶠ[𝓝 b]
+      tensor0SChartESectionRepr (I := I) n α T =ᶠ[𝓝 b]
       (fun b' : M =>
         ((trivializationAt (Tensor0SModel n ℝ E)
             (fun y : M => Tensor0SSpace n I y) α) ⟨b', T b'⟩).2) := by
     filter_upwards [hbase_α_nhds] with b' hb' using (hα_repr_eq hb').symm
   have hrepr_α_diff : MDifferentiableAt I 𝓘(ℝ, Tensor0SModel n ℝ E)
-      (tensor0SChartE_section_repr (I := I) n α T) b :=
+      (tensor0SChartESectionRepr (I := I) n α T) b :=
     hα_repr_diff.congr_of_eventuallyEq h_funeq
   have hb_src : b ∈ (chartAt H α).source :=
     chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb
@@ -99,9 +99,9 @@ theorem differentiableAt_tensor0SChartE_pullback_of_mdifferentiableAt
     chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hb
   have hpb := mdifferentiableAt_iff_source_of_mem_source (I := I)
     (E' := Tensor0SModel n ℝ E) (I' := 𝓘(ℝ, Tensor0SModel n ℝ E)) (x := α)
-    (f := tensor0SChartE_section_repr (I := I) n α T) hb_src
+    (f := tensor0SChartESectionRepr (I := I) n α T) hb_src
   have hwithin : MDifferentiableWithinAt 𝓘(ℝ, E) 𝓘(ℝ, Tensor0SModel n ℝ E)
-      (tensor0SChartE_section_repr (I := I) n α T ∘ (extChartAt I α).symm)
+      (tensor0SChartESectionRepr (I := I) n α T ∘ (extChartAt I α).symm)
       (range I) (extChartAt I α b) := hpb.mp hrepr_α_diff
   have htgt_subset : (extChartAt I α).target ⊆ range I :=
     extChartAt_target_subset_range α
@@ -138,7 +138,7 @@ theorem TensorSectionMDiffAt_partialEval
   unfold TensorSectionMDiffAt
   let _h_top : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
       (fun x : M => Tensor0SSpace s I x)) :=
-    tensor0SBundle_topology s
+    tensor0SBundleTopology s
   have hY_at : MDifferentiableAt I (I.prod 𝓘(ℝ, E))
       (fun b' : M => TotalSpace.mk' E
         (E := fun x : M => TangentSpace I x) b'

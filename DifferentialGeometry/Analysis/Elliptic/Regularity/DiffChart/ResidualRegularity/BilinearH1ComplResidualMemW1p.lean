@@ -308,7 +308,7 @@ theorem memW1p_chartPushedRaw_of_contMDiff_tsupport
     have hΛ_smooth_top : ContDiff ℝ (⊤ : ℕ∞) Λ := hΛ_smooth
     have hΛ_smooth_C1 : ContDiff ℝ 1 Λ := hΛ_smooth.of_le (by norm_cast)
     have hw_univ : DeGiorgi.MemW1pWitness (d := Module.finrank ℝ E) p Λ Set.univ :=
-      DeGiorgi.MemW1pWitness.of_contDiff_hasCompactSupport (p := p) hΛ_smooth_top hΛ_compact
+      DeGiorgi.MemW1pWitness.ofContDiffHasCompactSupport (p := p) hΛ_smooth_top hΛ_compact
     have hw_chart : DeGiorgi.MemW1pWitness (d := Module.finrank ℝ E) p Λ
         (chartTargetEuclid (I := I) (M := M) α) :=
       hw_univ.restrict (chartTargetEuclid_isOpen (I := I) (M := M) α)
@@ -342,8 +342,8 @@ lemma fHLeibnizResidualSmoothRep_contMDiff
     let vMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨v.toFun, v.smooth⟩
     have h := DifferentialGeometry.Geometry.Operator.contMDiff_g_inner_of_smooth_sections
       (I := I) (M := M) g
-      (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g rhoMap)
-      (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g vMap)
+      (DifferentialGeometry.Geometry.Operator.gradG (I := I) g rhoMap)
+      (DifferentialGeometry.Geometry.Operator.gradG (I := I) g vMap)
     refine h.congr (fun x => ?_)
     rw [DifferentialGeometry.Geometry.Operator.grad_g_apply,
       DifferentialGeometry.Geometry.Operator.grad_g_apply]
@@ -390,7 +390,7 @@ lemma fHLeibnizResidualSmoothRep_tsupport_subset
       rw [laplacianOfChartPOU_apply]
       rw [Δ_g_def]
       have h_grad_ev : ∀ᶠ y in 𝓝 x,
-          (DifferentialGeometry.Geometry.Operator.grad_g (I := I) g
+          (DifferentialGeometry.Geometry.Operator.gradG (I := I) g
             (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) y =
           (0 : TangentSpace I y) := by

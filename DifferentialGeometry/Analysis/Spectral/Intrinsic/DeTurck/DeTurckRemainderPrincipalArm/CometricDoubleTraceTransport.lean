@@ -125,7 +125,7 @@ private lemma operatorFieldComposition_cometricDoubleTrace_apply (g : SmoothRiem
             K.toSection x) D)
           (Fin.cons ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
               (DeTurck.cometricLmodel (I := I) g x
-                (model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k))))
             (Fin.cons ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
               ((Module.finBasis ℝ E) k)) m)) := by

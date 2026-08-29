@@ -58,7 +58,7 @@ theorem normSqRS_eq_normSq0S_lowerAllSpace
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) (x : M) (r s : ℕ)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Idx)))
+    (hinv : MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Idx)))
     (A : TensorRSSpace r s I x) :
     normSqRS (I := I) (g := g) (x := x) r s A =
       normSq0S (I := I) g x (r + s) (lowerAllSpace g r s x A) := by

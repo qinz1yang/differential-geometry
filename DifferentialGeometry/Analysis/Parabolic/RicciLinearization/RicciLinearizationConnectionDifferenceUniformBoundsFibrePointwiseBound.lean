@@ -86,7 +86,7 @@ private lemma dualPair_sum_swap (g₀ : SmoothRiemannianMetric I M) (x : M)
     (_horth : ∀ a b : Fin n, g₀.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0)
     (hrepr : ∀ v : TangentSpace I x, v = ∑ a : Fin n, g₀.inner x (e a) v • e a) :
     (∑ i : Fin (Module.finrank ℝ E),
-        F (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        F (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis i)) ((Module.finBasis ℝ E) i)) =
       ∑ a : Fin n,
         F (Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)))
@@ -101,7 +101,7 @@ private lemma dualPair_sum_swap (g₀ : SmoothRiemannianMetric I M) (x : M)
     congr 1
     exact congrFun (Module.Basis.coe_dualBasis (Module.finBasis ℝ E)) i
   have hexp : ∀ i : Fin (Module.finrank ℝ E),
-      Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+      Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis i) =
         ∑ a : Fin n, ((Module.finBasis ℝ E).coord i (ι (e a))) •
           Tensor0SBundle.Tensor0SSpace.toModel (g0FlatCLM (I := I) g₀ x (e a)) := by
@@ -136,7 +136,7 @@ private lemma dualPair_sum_swap (g₀ : SmoothRiemannianMetric I M) (x : M)
           refine Finset.sum_congr rfl (fun a _ => ?_)
           ring
   calc (∑ i : Fin (Module.finrank ℝ E),
-        F (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        F (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis i)) ((Module.finBasis ℝ E) i))
       = ∑ i : Fin (Module.finrank ℝ E), ∑ a : Fin n,
           ((Module.finBasis ℝ E).coord i (ι (e a))) *
@@ -385,7 +385,7 @@ private lemma fibPointwiseBound_connContr21 (g₀ : SmoothRiemannianMetric I M) 
       Tensor0SBundle.Tensor0SSpace.toModel D ![((Module.finBasis ℝ E) i),
           tangentModel (I := I) x (w 0), tangentModel (I := I) x (w 1)] *
         (Tensor0SBundle.TensorRSSpace.toModel B
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis i)))
           ![tangentModel (I := I) x (w 2), tangentModel (I := I) x (w 3)]) =
       ∑ a : Fin n,
@@ -544,7 +544,7 @@ private lemma fibPointwiseBound_connContr11 (g₀ : SmoothRiemannianMetric I M) 
       Tensor0SBundle.Tensor0SSpace.toModel D
           ![((Module.finBasis ℝ E) i), tangentModel (I := I) x (w 0)] *
         (Tensor0SBundle.TensorRSSpace.toModel B
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis i)))
           ![tangentModel (I := I) x (w 1), tangentModel (I := I) x (w 2)]) =
       ∑ a : Fin n,
@@ -705,7 +705,7 @@ private lemma fibPointwiseBound_connContr12 (g₀ : SmoothRiemannianMetric I M) 
       Tensor0SBundle.Tensor0SSpace.toModel D
           ![((Module.finBasis ℝ E) i), tangentModel (I := I) x (w 0)] *
         (Tensor0SBundle.TensorRSSpace.toModel B
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis i)))
           ![tangentModel (I := I) x (w 1), tangentModel (I := I) x (w 2),
             tangentModel (I := I) x (w 3)]) =
@@ -848,7 +848,7 @@ private lemma cometricDoubleTrace_toModel_bound (g₀ g₁ : SmoothRiemannianMet
   have hswap : (∑ k : Fin (Module.finrank ℝ E),
       Tensor0SBundle.Tensor0SSpace.toModel Z
         (Fin.cons (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           (Fin.cons ((Module.finBasis ℝ E) k)
             (fun j => tangentModel (I := I) x (w j))))) =
@@ -868,12 +868,12 @@ private lemma cometricDoubleTrace_toModel_bound (g₀ g₁ : SmoothRiemannianMet
     have hpre : (∑ k : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.toModel Z
           (Fin.cons (cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
             (Fin.cons ((Module.finBasis ℝ E) k)
               (fun j => tangentModel (I := I) x (w j))))) =
         ∑ k : Fin (Module.finrank ℝ E),
-          F (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          F (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)) ((Module.finBasis ℝ E) k) := by
       refine Finset.sum_congr rfl (fun k _ => ?_)
       rw [hF]
@@ -974,38 +974,38 @@ lemma fourTrace_toModel_bound (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
         (Real.sqrt (g₀.inner x (w 0) (w 0)) * Real.sqrt (g₀.inner x (w 1) (w 1))) := by
   have hexpand : ricciCometricFourTraceCLM (I := I) g₁ x Z =
       ((1 : ℝ) / 2) •
-        (cometricDoubleTraceFib (I := I) g₁ 2 x (slotPermCLM (I := I) cdPerm4_0231 x Z)
-          + cometricDoubleTraceFib (I := I) g₁ 2 x (slotPermCLM (I := I) cdPerm4_0321 x Z)
+        (cometricDoubleTraceFib (I := I) g₁ 2 x (slotPermCLM (I := I) cdPerm40231 x Z)
+          + cometricDoubleTraceFib (I := I) g₁ 2 x (slotPermCLM (I := I) cdPerm40321 x Z)
           - cometricDoubleTraceFib (I := I) g₁ 2 x Z
-          - cometricDoubleTraceFib (I := I) g₁ 2 x (slotPermCLM (I := I) cdPerm4_2301 x Z)) := rfl
+          - cometricDoubleTraceFib (I := I) g₁ 2 x (slotPermCLM (I := I) cdPerm42301 x Z)) := rfl
   rw [hexpand, Tensor0SBundle.Tensor0SSpace.toModel_smul,
     Tensor0SBundle.Tensor0SSpace.toModel_sub, Tensor0SBundle.Tensor0SSpace.toModel_sub,
     Tensor0SBundle.Tensor0SSpace.toModel_add]
   rw [smul_apply, sub_apply, sub_apply, add_apply]
   set t₁ := Tensor0SBundle.Tensor0SSpace.toModel
-    (cometricDoubleTraceFib (I := I) g₁ 2 x (slotPermCLM (I := I) cdPerm4_0231 x Z))
+    (cometricDoubleTraceFib (I := I) g₁ 2 x (slotPermCLM (I := I) cdPerm40231 x Z))
     (fun j => (w j : E)) with ht₁
   set t₂ := Tensor0SBundle.Tensor0SSpace.toModel
-    (cometricDoubleTraceFib (I := I) g₁ 2 x (slotPermCLM (I := I) cdPerm4_0321 x Z))
+    (cometricDoubleTraceFib (I := I) g₁ 2 x (slotPermCLM (I := I) cdPerm40321 x Z))
     (fun j => (w j : E)) with ht₂
   set t₃ := Tensor0SBundle.Tensor0SSpace.toModel
     (cometricDoubleTraceFib (I := I) g₁ 2 x Z) (fun j => (w j : E)) with ht₃
   set t₄ := Tensor0SBundle.Tensor0SSpace.toModel
-    (cometricDoubleTraceFib (I := I) g₁ 2 x (slotPermCLM (I := I) cdPerm4_2301 x Z))
+    (cometricDoubleTraceFib (I := I) g₁ 2 x (slotPermCLM (I := I) cdPerm42301 x Z))
     (fun j => (w j : E)) with ht₄
   set W : ℝ := Real.sqrt (g₀.inner x (w 0) (w 0)) * Real.sqrt (g₀.inner x (w 1) (w 1)) with hW
   have hW_nn : 0 ≤ W := mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
   have hb₁ : |t₁| ≤ (n : ℝ) * q * c * W :=
     cometricDoubleTrace_toModel_bound (I := I) g₀ g₁ x e horth hrepr hq hqb
-      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_0231 hZ) w
+      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm40231 hZ) w
   have hb₂ : |t₂| ≤ (n : ℝ) * q * c * W :=
     cometricDoubleTrace_toModel_bound (I := I) g₀ g₁ x e horth hrepr hq hqb
-      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_0321 hZ) w
+      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm40321 hZ) w
   have hb₃ : |t₃| ≤ (n : ℝ) * q * c * W :=
     cometricDoubleTrace_toModel_bound (I := I) g₀ g₁ x e horth hrepr hq hqb hZ w
   have hb₄ : |t₄| ≤ (n : ℝ) * q * c * W :=
     cometricDoubleTrace_toModel_bound (I := I) g₀ g₁ x e horth hrepr hq hqb
-      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_2301 hZ) w
+      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm42301 hZ) w
   have htotal : |t₁ + t₂ - t₃ - t₄| ≤ 4 * ((n : ℝ) * q * c * W) := by
     have h12 : |t₁ + t₂| ≤ |t₁| + |t₂| := abs_add_le t₁ t₂
     have h123 : |t₁ + t₂ - t₃| ≤ |t₁ + t₂| + |t₃| := by
@@ -1039,30 +1039,30 @@ lemma fibPointwiseBound_order1CLM (g₀ : SmoothRiemannianMetric I M) (x : M)
     (hD : fibPointwiseBound (I := I) g₀ x 3 c D) :
     fibPointwiseBound (I := I) g₀ x 4 (5 * ((n : ℝ) * CA * c))
       (linearizedRicciConnectionDifferenceOrder1CLM (I := I) x A D) := by
-  have h₁ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_0312
+  have h₁ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm40312
     (fibPointwiseBound_connContr21 (I := I) g₀ x e horth hrepr A hCA hAf
-      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3_102 hD))
-  have h₂ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_0213
+      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3102 hD))
+  have h₂ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm40213
     (fibPointwiseBound_connContr21 (I := I) g₀ x e horth hrepr A hCA hAf
-      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3_120 hD))
-  have h₃ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_2301
+      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3120 hD))
+  have h₃ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm42301
     (fibPointwiseBound_connContr21 (I := I) g₀ x e horth hrepr A hCA hAf hD)
-  have h₄ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_1302
+  have h₄ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm41302
     (fibPointwiseBound_connContr21 (I := I) g₀ x e horth hrepr A hCA hAf
-      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3_102 hD))
-  have h₅ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_1203
+      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3102 hD))
+  have h₅ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm41203
     (fibPointwiseBound_connContr21 (I := I) g₀ x e horth hrepr A hCA hAf
-      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3_120 hD))
+      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3120 hD))
   have hval : linearizedRicciConnectionDifferenceOrder1CLM (I := I) x A D =
-      -(slotPermCLM (I := I) cdPerm4_0312 x
-          (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3_102 x D))
-        + slotPermCLM (I := I) cdPerm4_0213 x
-          (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3_120 x D))
-        + slotPermCLM (I := I) cdPerm4_2301 x (connContrCLM (I := I) 2 1 x A D)
-        + slotPermCLM (I := I) cdPerm4_1302 x
-          (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3_102 x D))
-        + slotPermCLM (I := I) cdPerm4_1203 x
-          (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3_120 x D))) := rfl
+      -(slotPermCLM (I := I) cdPerm40312 x
+          (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3102 x D))
+        + slotPermCLM (I := I) cdPerm40213 x
+          (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3120 x D))
+        + slotPermCLM (I := I) cdPerm42301 x (connContrCLM (I := I) 2 1 x A D)
+        + slotPermCLM (I := I) cdPerm41302 x
+          (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3102 x D))
+        + slotPermCLM (I := I) cdPerm41203 x
+          (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3120 x D))) := rfl
   refine ⟨mul_nonneg (by norm_num)
     (mul_nonneg (mul_nonneg (Nat.cast_nonneg n) hCA) hD.1), ?_⟩
   intro w
@@ -1079,23 +1079,23 @@ lemma fibPointwiseBound_order1CLM (g₀ : SmoothRiemannianMetric I M) (x : M)
   have b₅ := h₅.2 w
   rw [← hP4] at b₁ b₂ b₃ b₄ b₅
   set v₁ := Tensor0SBundle.Tensor0SSpace.toModel
-    (slotPermCLM (I := I) cdPerm4_0312 x
-      (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3_102 x D)))
+    (slotPermCLM (I := I) cdPerm40312 x
+      (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3102 x D)))
     (fun j => tangentModel (I := I) x (w j)) with hv₁
   set v₂ := Tensor0SBundle.Tensor0SSpace.toModel
-    (slotPermCLM (I := I) cdPerm4_0213 x
-      (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3_120 x D)))
+    (slotPermCLM (I := I) cdPerm40213 x
+      (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3120 x D)))
     (fun j => tangentModel (I := I) x (w j)) with hv₂
   set v₃ := Tensor0SBundle.Tensor0SSpace.toModel
-    (slotPermCLM (I := I) cdPerm4_2301 x (connContrCLM (I := I) 2 1 x A D))
+    (slotPermCLM (I := I) cdPerm42301 x (connContrCLM (I := I) 2 1 x A D))
     (fun j => tangentModel (I := I) x (w j)) with hv₃
   set v₄ := Tensor0SBundle.Tensor0SSpace.toModel
-    (slotPermCLM (I := I) cdPerm4_1302 x
-      (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3_102 x D)))
+    (slotPermCLM (I := I) cdPerm41302 x
+      (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3102 x D)))
     (fun j => tangentModel (I := I) x (w j)) with hv₄
   set v₅ := Tensor0SBundle.Tensor0SSpace.toModel
-    (slotPermCLM (I := I) cdPerm4_1203 x
-      (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3_120 x D)))
+    (slotPermCLM (I := I) cdPerm41203 x
+      (connContrCLM (I := I) 2 1 x A (slotPermCLM (I := I) cdPerm3120 x D)))
     (fun j => tangentModel (I := I) x (w j)) with hv₅
   have habs : |v₁ + v₂ + v₃ + v₄ + v₅| ≤ |v₁| + |v₂| + |v₃| + |v₄| + |v₅| := by
     have i1 : |v₁ + v₂| ≤ |v₁| + |v₂| := abs_add_le _ _
@@ -1131,52 +1131,52 @@ lemma fibPointwiseBound_order0CLM (g₀ : SmoothRiemannianMetric I M) (x : M)
     fibPointwiseBound (I := I) g₀ x 4
       (6 * ((n : ℝ) * CA * ((n : ℝ) * CA * c)) + 2 * ((n : ℝ) * CDA * c))
       (linearizedRicciConnectionDifferenceOrder0CLM (I := I) x A DA D) := by
-  have hDswap := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm2_10 hD
+  have hDswap := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm210 hD
   have hinn := fibPointwiseBound_connContr11 (I := I) g₀ x e horth hrepr A hCA hAf hD
   have hinn' := fibPointwiseBound_connContr11 (I := I) g₀ x e horth hrepr A hCA hAf hDswap
-  have hu₃ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_3201
+  have hu₃ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm43201
     (fibPointwiseBound_connContr21 (I := I) g₀ x e horth hrepr A hCA hAf
-      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3_102 hinn))
-  have hu₄ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_2301
+      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3102 hinn))
+  have hu₄ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm42301
     (fibPointwiseBound_connContr21 (I := I) g₀ x e horth hrepr A hCA hAf
-      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3_102 hinn'))
-  have hu₅ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_3102
+      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3102 hinn'))
+  have hu₅ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm43102
     (fibPointwiseBound_connContr21 (I := I) g₀ x e horth hrepr A hCA hAf
-      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3_120 hinn))
-  have hu₆ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_1302
+      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3120 hinn))
+  have hu₆ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm41302
     (fibPointwiseBound_connContr21 (I := I) g₀ x e horth hrepr A hCA hAf hinn')
-  have hu₇ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_1203
+  have hu₇ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm41203
     (fibPointwiseBound_connContr21 (I := I) g₀ x e horth hrepr A hCA hAf hinn)
-  have hu₈ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_2103
+  have hu₈ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm42103
     (fibPointwiseBound_connContr21 (I := I) g₀ x e horth hrepr A hCA hAf
-      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3_120 hinn'))
-  have hu₁ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_3012
+      (fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm3120 hinn'))
+  have hu₁ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm43012
     (fibPointwiseBound_connContr12 (I := I) g₀ x e horth hrepr DA hCDA hDAf hD)
-  have hu₂ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm4_2013
+  have hu₂ := fibPointwiseBound_slotPerm (I := I) g₀ x cdPerm42013
     (fibPointwiseBound_connContr12 (I := I) g₀ x e horth hrepr DA hCDA hDAf hDswap)
   have hval : linearizedRicciConnectionDifferenceOrder0CLM (I := I) x A DA D =
-      (slotPermCLM (I := I) cdPerm4_3201 x
+      (slotPermCLM (I := I) cdPerm43201 x
           (connContrCLM (I := I) 2 1 x A
-            (slotPermCLM (I := I) cdPerm3_102 x (connContrCLM (I := I) 1 1 x A D)))
-        + slotPermCLM (I := I) cdPerm4_2301 x
+            (slotPermCLM (I := I) cdPerm3102 x (connContrCLM (I := I) 1 1 x A D)))
+        + slotPermCLM (I := I) cdPerm42301 x
           (connContrCLM (I := I) 2 1 x A
-            (slotPermCLM (I := I) cdPerm3_102 x
-              (connContrCLM (I := I) 1 1 x A (slotPermCLM (I := I) cdPerm2_10 x D))))
-        + slotPermCLM (I := I) cdPerm4_3102 x
+            (slotPermCLM (I := I) cdPerm3102 x
+              (connContrCLM (I := I) 1 1 x A (slotPermCLM (I := I) cdPerm210 x D))))
+        + slotPermCLM (I := I) cdPerm43102 x
           (connContrCLM (I := I) 2 1 x A
-            (slotPermCLM (I := I) cdPerm3_120 x (connContrCLM (I := I) 1 1 x A D)))
-        + slotPermCLM (I := I) cdPerm4_1302 x
+            (slotPermCLM (I := I) cdPerm3120 x (connContrCLM (I := I) 1 1 x A D)))
+        + slotPermCLM (I := I) cdPerm41302 x
           (connContrCLM (I := I) 2 1 x A
-            (connContrCLM (I := I) 1 1 x A (slotPermCLM (I := I) cdPerm2_10 x D)))
-        + slotPermCLM (I := I) cdPerm4_1203 x
+            (connContrCLM (I := I) 1 1 x A (slotPermCLM (I := I) cdPerm210 x D)))
+        + slotPermCLM (I := I) cdPerm41203 x
           (connContrCLM (I := I) 2 1 x A (connContrCLM (I := I) 1 1 x A D))
-        + slotPermCLM (I := I) cdPerm4_2103 x
+        + slotPermCLM (I := I) cdPerm42103 x
           (connContrCLM (I := I) 2 1 x A
-            (slotPermCLM (I := I) cdPerm3_120 x
-              (connContrCLM (I := I) 1 1 x A (slotPermCLM (I := I) cdPerm2_10 x D)))))
-      - slotPermCLM (I := I) cdPerm4_3012 x (connContrCLM (I := I) 1 2 x DA D)
-      - slotPermCLM (I := I) cdPerm4_2013 x
-          (connContrCLM (I := I) 1 2 x DA (slotPermCLM (I := I) cdPerm2_10 x D)) := rfl
+            (slotPermCLM (I := I) cdPerm3120 x
+              (connContrCLM (I := I) 1 1 x A (slotPermCLM (I := I) cdPerm210 x D)))))
+      - slotPermCLM (I := I) cdPerm43012 x (connContrCLM (I := I) 1 2 x DA D)
+      - slotPermCLM (I := I) cdPerm42013 x
+          (connContrCLM (I := I) 1 2 x DA (slotPermCLM (I := I) cdPerm210 x D)) := rfl
   refine ⟨add_nonneg
     (mul_nonneg (by norm_num)
       (mul_nonneg (mul_nonneg (Nat.cast_nonneg n) hCA)
@@ -1201,42 +1201,42 @@ lemma fibPointwiseBound_order0CLM (g₀ : SmoothRiemannianMetric I M) (x : M)
   have b₂ := hu₂.2 w
   rw [← hP4] at b₁ b₂ b₃ b₄ b₅ b₆ b₇ b₈
   set y₃ := Tensor0SBundle.Tensor0SSpace.toModel
-    (slotPermCLM (I := I) cdPerm4_3201 x
+    (slotPermCLM (I := I) cdPerm43201 x
       (connContrCLM (I := I) 2 1 x A
-        (slotPermCLM (I := I) cdPerm3_102 x (connContrCLM (I := I) 1 1 x A D))))
+        (slotPermCLM (I := I) cdPerm3102 x (connContrCLM (I := I) 1 1 x A D))))
     (fun j => tangentModel (I := I) x (w j)) with hy₃
   set y₄ := Tensor0SBundle.Tensor0SSpace.toModel
-    (slotPermCLM (I := I) cdPerm4_2301 x
+    (slotPermCLM (I := I) cdPerm42301 x
       (connContrCLM (I := I) 2 1 x A
-        (slotPermCLM (I := I) cdPerm3_102 x
-          (connContrCLM (I := I) 1 1 x A (slotPermCLM (I := I) cdPerm2_10 x D)))))
+        (slotPermCLM (I := I) cdPerm3102 x
+          (connContrCLM (I := I) 1 1 x A (slotPermCLM (I := I) cdPerm210 x D)))))
     (fun j => tangentModel (I := I) x (w j)) with hy₄
   set y₅ := Tensor0SBundle.Tensor0SSpace.toModel
-    (slotPermCLM (I := I) cdPerm4_3102 x
+    (slotPermCLM (I := I) cdPerm43102 x
       (connContrCLM (I := I) 2 1 x A
-        (slotPermCLM (I := I) cdPerm3_120 x (connContrCLM (I := I) 1 1 x A D))))
+        (slotPermCLM (I := I) cdPerm3120 x (connContrCLM (I := I) 1 1 x A D))))
     (fun j => tangentModel (I := I) x (w j)) with hy₅
   set y₆ := Tensor0SBundle.Tensor0SSpace.toModel
-    (slotPermCLM (I := I) cdPerm4_1302 x
+    (slotPermCLM (I := I) cdPerm41302 x
       (connContrCLM (I := I) 2 1 x A
-        (connContrCLM (I := I) 1 1 x A (slotPermCLM (I := I) cdPerm2_10 x D))))
+        (connContrCLM (I := I) 1 1 x A (slotPermCLM (I := I) cdPerm210 x D))))
     (fun j => tangentModel (I := I) x (w j)) with hy₆
   set y₇ := Tensor0SBundle.Tensor0SSpace.toModel
-    (slotPermCLM (I := I) cdPerm4_1203 x
+    (slotPermCLM (I := I) cdPerm41203 x
       (connContrCLM (I := I) 2 1 x A (connContrCLM (I := I) 1 1 x A D)))
     (fun j => tangentModel (I := I) x (w j)) with hy₇
   set y₈ := Tensor0SBundle.Tensor0SSpace.toModel
-    (slotPermCLM (I := I) cdPerm4_2103 x
+    (slotPermCLM (I := I) cdPerm42103 x
       (connContrCLM (I := I) 2 1 x A
-        (slotPermCLM (I := I) cdPerm3_120 x
-          (connContrCLM (I := I) 1 1 x A (slotPermCLM (I := I) cdPerm2_10 x D)))))
+        (slotPermCLM (I := I) cdPerm3120 x
+          (connContrCLM (I := I) 1 1 x A (slotPermCLM (I := I) cdPerm210 x D)))))
     (fun j => tangentModel (I := I) x (w j)) with hy₈
   set y₁ := Tensor0SBundle.Tensor0SSpace.toModel
-    (slotPermCLM (I := I) cdPerm4_3012 x (connContrCLM (I := I) 1 2 x DA D))
+    (slotPermCLM (I := I) cdPerm43012 x (connContrCLM (I := I) 1 2 x DA D))
     (fun j => tangentModel (I := I) x (w j)) with hy₁
   set y₂ := Tensor0SBundle.Tensor0SSpace.toModel
-    (slotPermCLM (I := I) cdPerm4_2013 x
-      (connContrCLM (I := I) 1 2 x DA (slotPermCLM (I := I) cdPerm2_10 x D)))
+    (slotPermCLM (I := I) cdPerm42013 x
+      (connContrCLM (I := I) 1 2 x DA (slotPermCLM (I := I) cdPerm210 x D)))
     (fun j => tangentModel (I := I) x (w j)) with hy₂
   have habs : |y₃ + y₄ + y₅ + y₆ + y₇ + y₈ - y₁ - y₂| ≤
       |y₃| + |y₄| + |y₅| + |y₆| + |y₇| + |y₈| + |y₁| + |y₂| := by

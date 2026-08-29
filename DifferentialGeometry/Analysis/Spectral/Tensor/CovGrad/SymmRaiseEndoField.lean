@@ -264,7 +264,7 @@ private lemma interior_product_toModel_eval (s : ℕ) (x : M)
     (v : TangentSpace I x) (D : Tensor0SSpace (s + 1) I x)
     (w : Fin s → E) :
     Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) w =
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D) w =
       Tensor0SSpace.toModel D
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v) w) := by
   rfl

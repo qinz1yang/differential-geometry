@@ -92,8 +92,8 @@ theorem exists_lSplit_neg
   rw [← hjoin] at hk
   nlinarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in
 theorem exists_lTest
@@ -155,8 +155,8 @@ theorem exists_lTest
   · simp only [W, chi, hXc]
     rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem lRegJacobi_d_ne

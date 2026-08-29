@@ -203,22 +203,22 @@ def ricciFoldWeightBPerm : Equiv.Perm (Fin 6) :=
    fun i => (![1, 3, 2, 5, 4, 0] : Fin 6 → Fin 6) i,
    by decide, by decide⟩
 
-def sharpGradKoszulKernel_positivePermutation : Equiv.Perm (Fin 6) :=
+def sharpGradKoszulKernelPositivePermutation : Equiv.Perm (Fin 6) :=
   ⟨fun i => (![5, 2, 0, 3, 4, 1] : Fin 6 → Fin 6) i,
    fun i => (![2, 5, 1, 3, 4, 0] : Fin 6 → Fin 6) i,
    by decide, by decide⟩
 
-def sharpGradKoszulKernel_positiveKoszulSwapPermutation : Equiv.Perm (Fin 6) :=
+def sharpGradKoszulKernelPositiveKoszulSwapPermutation : Equiv.Perm (Fin 6) :=
   ⟨fun i => (![5, 2, 0, 1, 4, 3] : Fin 6 → Fin 6) i,
    fun i => (![2, 3, 1, 5, 4, 0] : Fin 6 → Fin 6) i,
    by decide, by decide⟩
 
-def sharpGradKoszulKernel_negativePermutation : Equiv.Perm (Fin 6) :=
+def sharpGradKoszulKernelNegativePermutation : Equiv.Perm (Fin 6) :=
   ⟨fun i => (![5, 4, 0, 3, 2, 1] : Fin 6 → Fin 6) i,
    fun i => (![2, 5, 4, 3, 1, 0] : Fin 6 → Fin 6) i,
    by decide, by decide⟩
 
-def sharpGradKoszulKernel_negativeKoszulSwapPermutation : Equiv.Perm (Fin 6) :=
+def sharpGradKoszulKernelNegativeKoszulSwapPermutation : Equiv.Perm (Fin 6) :=
   ⟨fun i => (![5, 4, 0, 1, 2, 3] : Fin 6 → Fin 6) i,
    fun i => (![2, 3, 4, 5, 1, 0] : Fin 6 → Fin 6) i,
    by decide, by decide⟩
@@ -288,7 +288,7 @@ lemma slotExtend_toModel_cons (r s : ℕ) (Φ : SmoothCcTensor g₀ r s) (x : M)
         (Fin.cons (show E from v0) vs) =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x D v0)) vs := by
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x D v0)) vs := by
   rw [show ((show Tensor0SSpace (r + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from
       (slotExtend (I := I) (M := M) g₀ r s Φ).toSection x) D) =
       slotExtendPointwise (I := I) (M := M) r s x
@@ -341,7 +341,7 @@ lemma slotExtendIter_two_toModel (X : SmoothCcTensor g₀ 0 4) (x : M)
       Tensor0SSpace.toModel
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 5 I x from
           (slotExtendIter (I := I) (M := M) g₀ 0 4 1 X).toSection x)
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)))
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)))
         (Fin.cons (show E from u 1)
           (fun k : Fin 4 => (u (Fin.natAdd 2 k) : E))) from by
       convert! slotExtend_toModel_cons (I := I) (M := M) g₀ 1 5
@@ -350,22 +350,22 @@ lemma slotExtendIter_two_toModel (X : SmoothCcTensor g₀ 0 4) (x : M)
           (fun k : Fin 4 => (u (Fin.natAdd 2 k) : E))) using 1]
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 5 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 4 1 X).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0))) =
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0))) =
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 5 I x from
         (slotExtend (I := I) (M := M) g₀ 0 4 X).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0))) from rfl]
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0))) from rfl]
   rw [slotExtend_toModel_cons (I := I) (M := M) g₀ 0 4 X x
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)) (u 1)
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)) (u 1)
     (vs := fun k : Fin 4 => (u (Fin.natAdd 2 k) : E))]
   set t : Tensor0SSpace 0 I x :=
-    tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)) (u 1) with ht_def
+    tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0)) (u 1) with ht_def
   have htval : Tensor0SSpace.toModel t (fun i : Fin 0 => i.elim0) =
       Tensor0SSpace.toModel D ![u 0, u 1] := by
     rw [ht_def]
     rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
       (I := I) (M := M) (n := 0)
-      (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0))
+      (T := tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D (u 0))
       (v0 := u 1) (vs := fun i : Fin 0 => i.elim0)]
     rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
       (I := I) (M := M) (n := 1) (T := D) (v0 := u 0)
@@ -426,41 +426,41 @@ lemma slotExtendIter_three_toModel (X : SmoothCcTensor g₀ 0 3) (x : M)
           (fun k : Fin 3 => (u (Fin.natAdd 3 k) : E))))]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 5 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 3 2 X).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0))) =
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0))) =
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 5 I x from
         (slotExtend (I := I) (M := M) g₀ 1 4
           (slotExtendIter (I := I) (M := M) g₀ 0 3 1 X)).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0))) from rfl]
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0))) from rfl]
   rw [slotExtend_toModel_cons (I := I) (M := M) g₀ 1 4
     (slotExtendIter (I := I) (M := M) g₀ 0 3 1 X) x
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1)]
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1)]
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 4 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 3 1 X).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1))) =
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1))) =
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 4 I x from
         (slotExtend (I := I) (M := M) g₀ 0 3 X).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1))) from rfl]
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1))) from rfl]
   rw [slotExtend_toModel_cons (I := I) (M := M) g₀ 0 3 X x
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1)) (u 2)
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1)) (u 2)
     (vs := fun k : Fin 3 => (u (Fin.natAdd 3 k) : E))]
   set t : Tensor0SSpace 0 I x :=
-    tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1)) (u 2) with ht_def
+    tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1)) (u 2) with ht_def
   have htval : Tensor0SSpace.toModel t (fun i : Fin 0 => i.elim0) =
       Tensor0SSpace.toModel D ![u 0, u 1, u 2] := by
     rw [ht_def]
     rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
       (I := I) (M := M) (n := 0)
-      (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1))
+      (T := tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0)) (u 1))
       (v0 := u 2) (vs := fun i : Fin 0 => i.elim0)]
     rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
       (I := I) (M := M) (n := 1)
-      (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0))
+      (T := tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D (u 0))
       (v0 := u 1)
       (vs := Fin.cons
         (tangentSpaceModelContinuousLinearEquiv (I := I) x (u 2))
@@ -523,66 +523,66 @@ lemma slotExtendIter_four_toModel (S : SmoothCcTensor g₀ 0 2) (x : M)
             (fun k : Fin 2 => (u (Fin.natAdd 4 k) : E)))))]
   rw [show ((show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 5 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 2 3 S).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0))) =
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0))) =
       ((show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 5 I x from
         (slotExtend (I := I) (M := M) g₀ 2 4
           (slotExtendIter (I := I) (M := M) g₀ 0 2 2 S)).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0))) from rfl]
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0))) from rfl]
   rw [slotExtend_toModel_cons (I := I) (M := M) g₀ 2 4
     (slotExtendIter (I := I) (M := M) g₀ 0 2 2 S) x
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)]
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 2 2 S).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1))) =
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1))) =
       ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
         (slotExtend (I := I) (M := M) g₀ 1 3
           (slotExtendIter (I := I) (M := M) g₀ 0 2 1 S)).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1))) from rfl]
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1))) from rfl]
   rw [slotExtend_toModel_cons (I := I) (M := M) g₀ 1 3
     (slotExtendIter (I := I) (M := M) g₀ 0 2 1 S) x
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)) (u 2)]
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)) (u 2)]
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
       (slotExtendIter (I := I) (M := M) g₀ 0 2 1 S).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)) (u 2))) =
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)) (u 2))) =
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
         (slotExtend (I := I) (M := M) g₀ 0 2 S).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)) (u 2))) from rfl]
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)) (u 2))) from rfl]
   rw [slotExtend_toModel_cons (I := I) (M := M) g₀ 0 2 S x
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)) (u 2)) (u 3)
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)) (u 2)) (u 3)
     (vs := fun k : Fin 2 => (u (Fin.natAdd 4 k) : E))]
   set t : Tensor0SSpace 0 I x :=
-    tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)) (u 2)) (u 3) with ht_def
+    tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)) (u 2)) (u 3) with ht_def
   have htval : Tensor0SSpace.toModel t (fun i : Fin 0 => i.elim0) =
       Tensor0SSpace.toModel G ![u 0, u 1, u 2, u 3] := by
     rw [ht_def]
     rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
       (I := I) (M := M) (n := 0)
-      (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)) (u 2))
+      (T := tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1)) (u 2))
       (v0 := u 3) (vs := fun i : Fin 0 => i.elim0)]
     rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
       (I := I) (M := M) (n := 1)
-      (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1))
+      (T := tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0)) (u 1))
       (v0 := u 2)
       (vs := Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (u 3))
         (fun i : Fin 0 => i.elim0))]
     rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent
       (I := I) (M := M) (n := 2)
-      (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0))
+      (T := tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 3 x G (u 0))
       (v0 := u 1)
       (vs := Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (u 2))
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x (u 3))

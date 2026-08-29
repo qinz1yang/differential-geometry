@@ -141,7 +141,7 @@ theorem domDomCongrField_contMDiff (g : SmoothRiemannianMetric I M) {s : ℕ}
             (ContinuousMultilinearMap.domDomCongr σ
               (unitModel (I := I) (M := M) g s S x)) :
             Tensor0SSpace s I x))) := by
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
   classical
   have hSfield : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel s ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel s ℝ E)
@@ -185,7 +185,7 @@ theorem domDomCongrField_contMDiff (g : SmoothRiemannianMetric I M) {s : ℕ}
 noncomputable def domDomCongrField (g : SmoothRiemannianMetric I M) {s : ℕ}
     (σ : Equiv.Perm (Fin s)) (S : SmoothCcTensor g 0 s) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ s :=
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
+  letI := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) s
   letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := ∞)
   ⟨fun x => Tensor0SSpace.ofModel
       (ContinuousMultilinearMap.domDomCongr σ (unitModel (I := I) (M := M) g s S x)),

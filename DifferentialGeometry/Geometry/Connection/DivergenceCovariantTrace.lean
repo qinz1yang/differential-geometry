@@ -219,7 +219,7 @@ lemma chartCoord_leviCivita_chartBasis
   rw [Finsupp.add_apply]
   congr 1
   · set F : E → E :=
-      chartE_section_repr (I := I) α Z.toFun ∘ (extChartAt I α).symm with hF_def
+      chartESectionRepr (I := I) α Z.toFun ∘ (extChartAt I α).symm with hF_def
     have hb_src : b ∈ (chartAt H α).source :=
       chartLeviCivitaGoodSet_mem_chartAt_source (I := I) hb
     have hb_int : extChartAt I α b ∈ interior ((extChartAt I α).target : Set E) :=
@@ -258,7 +258,7 @@ lemma chartCoord_leviCivita_chartBasis
     rw [hev.fderiv_eq]
     rfl
   · rw [christoffelCorrection_apply (I := I) g α b
-      (chartE_section_repr (I := I) α Z.toFun b)
+      (chartESectionRepr (I := I) α Z.toFun b)
       (chartBasisVecFiber (I := I) α m b)]
     rw [show ((chartModelBasis E).repr
             (∑ a : Fin (Module.finrank ℝ E), ∑ c : Fin (Module.finrank ℝ E),
@@ -266,7 +266,7 @@ lemma chartCoord_leviCivita_chartBasis
                 (((chartModelBasis E).repr
                     (trivToE (I := I) α b (chartBasisVecFiber (I := I) α m b))) a *
                   ((chartModelBasis E).repr
-                    (chartE_section_repr (I := I) α Z.toFun b)) c *
+                    (chartESectionRepr (I := I) α Z.toFun b)) c *
                   chartChristoffel (I := I) g α a c d (extChartAt I α b)) •
                   (chartModelBasis E) d)) k =
           coordProjE (E := E) k
@@ -275,7 +275,7 @@ lemma chartCoord_leviCivita_chartBasis
                 (((chartModelBasis E).repr
                     (trivToE (I := I) α b (chartBasisVecFiber (I := I) α m b))) a *
                   ((chartModelBasis E).repr
-                    (chartE_section_repr (I := I) α Z.toFun b)) c *
+                    (chartESectionRepr (I := I) α Z.toFun b)) c *
                   chartChristoffel (I := I) g α a c d (extChartAt I α b)) •
                   (chartModelBasis E) d) from by rw [coordProjE_apply]]
     rw [map_sum]
@@ -285,7 +285,7 @@ lemma chartCoord_leviCivita_chartBasis
     have hZcoeff : ∀ c : Fin (Module.finrank ℝ E),
         chartCoeffOnE (I := I) α Z c y₀ =
           ((chartModelBasis E).repr
-            (chartE_section_repr (I := I) α Z.toFun b)) c := by
+            (chartESectionRepr (I := I) α Z.toFun b)) c := by
       intro c
       rw [chartE_section_repr_eq_trivialization_snd (I := I) α Z.toFun hb_base]
       rw [chartCoeffOnE, chartCoeff_def, hy₀_def]
@@ -613,7 +613,7 @@ theorem voss_weyl_divergence_eq_leviCivita_frameTrace
     (hb_pou : b ∈ tsupport (fun x : M =>
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x))
     (hb : b ∈ chartLeviCivitaGoodSet (I := I) α) :
-    divergence_g (I := I) g Z b =
+    divergenceG (I := I) g Z b =
       ∑ i : Fin (Module.finrank ℝ E),
         g.inner b
           ((LeviCivita (I := I) g).toFun Z.toFun b

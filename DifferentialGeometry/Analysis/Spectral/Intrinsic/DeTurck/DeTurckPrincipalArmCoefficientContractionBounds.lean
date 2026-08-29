@@ -49,8 +49,8 @@ private local instance tensorRSNormedAddCommGroupOfRiemannianBundle
   Bundle.instNormedAddCommGroupOfRiemannianBundleOfIsTopologicalAddGroupOfContinuousConstSMulReal
     (E := fun y : M => Tensor0SBundle.TensorRSSpace r s I y) x
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 private lemma jet_fibreNormSq_sup_le (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) :
     ∃ Cemb : ℕ → ℝ, (∀ l, 0 ≤ Cemb l) ∧ ∀ (Ψ : SmoothCcTensor g₀ r s) (l : ℕ) (x : M),
@@ -73,7 +73,7 @@ private lemma jet_fibreNormSq_sup_le (g₀ : SmoothRiemannianMetric I M) (r s : 
       exists_toHs_norm_le_iteratedCovGrad_tensorL2Norm_sum (I := I) (M := M) g₀ r (s + l) (2 * K)
     refine ⟨(Ce * Cr) ^ 2, by positivity, fun Ψ x => ?_⟩
     let : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace r (s + l) I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ r (s + l)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ r (s + l)
     set Sum4K : ℝ := ∑ m ∈ Finset.range (4 * K + 1),
       ‖iteratedCovGrad (I := I) g₀ r s (l + m) Ψ‖ with hSum4K
     have hSum4K_nn : 0 ≤ Sum4K := Finset.sum_nonneg (fun m _ => norm_nonneg _)

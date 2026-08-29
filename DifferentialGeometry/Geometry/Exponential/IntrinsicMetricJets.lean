@@ -31,8 +31,8 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [T2Space (TangentBundle I M)]
   [SigmaCompactSpace M] [ConnectedSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E]
   [T2Space (TangentBundle I M)] in
 noncomputable def intrMetricJet
@@ -51,8 +51,8 @@ noncomputable def intrMetricJet
         (intrLaunchJet (I := I) g hEnorm p u a b i (r, 1))
         (intrLaunchJet (I := I) g hEnorm p u a b (n - i) (r, 1))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E]
   [T2Space (TangentBundle I M)] in
 @[simp]
@@ -80,8 +80,8 @@ theorem intrMetricJet_zero
     exact intrLaunchJet_zero (I := I) g hMetric p u a b (r, 1)
   rw [hzero]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E]
   [T2Space (TangentBundle I M)] in
 theorem intrMetric_line
@@ -195,8 +195,8 @@ private theorem metricJet_pascal (n : Nat) (q : Nat → Real) :
   simp only [Nat.cast_zero, zero_mul, add_zero]
   ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E]
   [T2Space (TangentBundle I M)] in
 theorem intrMetricJet_deriv
@@ -272,8 +272,8 @@ theorem intrMetricJet_deriv
   rw [metricJet_pascal n q] at hsum
   simpa only [intrMetricJet, intrLaunchJet, q, f, V, Nat.add_assoc] using hsum
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E]
   [T2Space (TangentBundle I M)] in
 theorem intrMetricJet_iter
@@ -295,8 +295,8 @@ theorem intrMetricJet_iter
       exact deriv_eq fun r =>
         intrMetricJet_deriv (I := I) g hEnorm p u a b n r
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] [CompleteSpace E]
   [T2Space (TangentBundle I M)] in
 theorem intrMetric_diag_jet

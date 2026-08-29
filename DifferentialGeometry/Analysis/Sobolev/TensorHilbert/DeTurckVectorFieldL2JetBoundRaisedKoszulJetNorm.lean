@@ -158,8 +158,8 @@ private lemma raisedKoszul_norm_iteratedCovGrad_koszul_le
     show |(1 / 2 : ℝ)| = 1 / 2 from by norm_num]
   linarith [htri, hWbound]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral in
 theorem raisedKoszul_order0sup_jetL2_succ_generic
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -210,7 +210,7 @@ theorem raisedKoszul_order0sup_jetL2_succ_generic
     simp only [DifferentialGeometry.PDE.DeTurck.RicciLinearization.convexPerturbation_zero] at henv
     let instTens12 : Bundle.RiemannianBundle
         (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + 1) I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
     set N : ℝ := ‖(iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x‖ with hN_def
     have hN_nn : 0 ≤ N := norm_nonneg _
     have hnorm_le : N ≤ Csob * R := by
@@ -218,12 +218,12 @@ theorem raisedKoszul_order0sup_jetL2_succ_generic
       exact Finset.single_le_sum (f := fun j =>
           letI : Bundle.RiemannianBundle
               (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + j) I b) :=
-            Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+            Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
           ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)
           (fun j _ =>
             letI : Bundle.RiemannianBundle
                 (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             norm_nonneg ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x))
           (by simp : (1 : ℕ) ∈ Finset.range 3)
     have hsq : N ^ 2 ≤ (Csob * R) ^ 2 := by nlinarith [hnorm_le, hN_nn]

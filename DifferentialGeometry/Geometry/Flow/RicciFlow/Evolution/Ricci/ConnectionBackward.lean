@@ -104,10 +104,10 @@ theorem connBack_pair
   let N : Tensor0SSpace 3 I x :=
     totalNabla0SFun (𝕜 := Real) (I := I)
       2 (S.base.connection (T - tau)) (S.ricci (T - tau)) x
-  have hinv : MetricInverseInBasis_gen (I := I)
+  have hinv : MetricInverseInBasisGen (I := I)
       (S.base.metric (T - tau)) x b
       (fun i j ↦ gInv (T - tau) x i j) := by
-    have hb : b = coordinateFrameAt_basis (I := I) x hx := by
+    have hb : b = coordinateFrameAtBasis (I := I) x hx := by
       ext i
       simp [b]
     rw [hb]
@@ -365,7 +365,7 @@ private theorem connBack_low_sq_diff
   let q := S.base.metric (T - s ^ 2)
   let e := trivializationAt E (TangentSpace I : M → Type _) x₀
   let b := Module.finBasis Real E
-  let b₃ := continuousMultilinearMap_basis (𝕜 := Real) (F := E) b 3
+  let b₃ := continuousMultilinearMapBasis (𝕜 := Real) (F := E) b 3
   let frame := coordinateFrameAt (I := I) x₀
   let C : (r : Real) → Tensor0SSpace 3 I (alpha r) := fun r ↦
     lowerBilin (I := I) (metricTensorField (I := I) q (alpha r))
@@ -456,7 +456,7 @@ theorem connBack_along_sq
   let q := S.base.metric (T - s ^ 2)
   let e := trivializationAt E (TangentSpace I : M → Type _) x₀
   let b := Module.finBasis Real E
-  let b₃ := continuousMultilinearMap_basis (𝕜 := Real) (F := E) b 3
+  let b₃ := continuousMultilinearMapBasis (𝕜 := Real) (F := E) b 3
   let frame := coordinateFrameAt (I := I) x₀
   let C : (r : Real) → Tensor0SSpace 3 I (alpha r) := fun r ↦
     lowerBilin (I := I) (metricTensorField (I := I) q (alpha r))

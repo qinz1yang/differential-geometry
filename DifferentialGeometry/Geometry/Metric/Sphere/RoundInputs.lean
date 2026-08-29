@@ -25,8 +25,8 @@ private instance sphereModel_neZero [NeZero n] :
   rw [finrank_euclideanSpace_fin]
   infer_instance
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem round_enorm :
     letI : RiemannianBundle
         (fun x : sphere (0 : A) 1 => TangentSpace (𝓡 n) x) :=

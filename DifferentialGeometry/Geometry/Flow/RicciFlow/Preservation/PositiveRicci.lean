@@ -786,7 +786,7 @@ theorem ricciMetricComp
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
       (I := I) (S.base.connection t) (S.base.metric t) := by
   simpa [SolutionFamily.connection] using
     (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -798,7 +798,7 @@ noncomputable def ricciDerivsWMP
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     CanonicalSpatialDerivs0S (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) (S.base.connection t) (S.ricci t) :=
-  CanonicalSpatialDerivs0S.of_smooth_connection
+  CanonicalSpatialDerivs0S.ofSmoothConnection
     (E := E) (H := H) (I := I) (M := M)
     (S.base.connection t) (ricciCovInf (I := I) S t) (S.ricci t)
 
@@ -837,7 +837,7 @@ noncomputable def pinchSec
     (S : SolutionOn (I := I) (M := M) D) (delta : Real) :
     TwoTensorSecFamily (I := I) (M := M) :=
   fun t =>
-    letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+    letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2
     let hscalar :
         ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
@@ -855,7 +855,7 @@ noncomputable def pinchSec
     let Ric : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (n := (∞ : WithTop ℕ∞)) 2 := S.ricci t
     Ric + (-1 : Real) •
-      tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+      tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
         (fun x : M => delta * S.scalar t x) hscalar
         (metricTensorField (I := I) (S.base.metric t))
@@ -866,7 +866,7 @@ noncomputable def pinchLipSec
     (S : SolutionOn (I := I) (M := M) D) :
     TwoTensorSecFamily (I := I) (M := M) :=
   fun t =>
-    letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+    letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2
     let hscalar :
         ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞)
@@ -874,7 +874,7 @@ noncomputable def pinchLipSec
       simpa [SolutionOn.scalar, SolutionFamily.scalar] using
         metricScalar_smooth (I := I) (M := M) (S.base.metric t)
     (3 : Real) • S.ricci t + (-1 : Real) •
-      tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+      tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
         (fun x : M => S.scalar t x) hscalar
         (metricTensorField (I := I) (S.base.metric t))
@@ -966,14 +966,14 @@ theorem ricciAt_symm
   classical
   let basis : Module.Basis (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
       Real (TangentSpace I x) :=
-    DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+    DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let gInv :
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
         DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real := fun k l =>
-    DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+    DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
       (I := I) (S.base.metric t) x k l (extChartAt I x x)
   have hinv :
-      MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis gInv := by
+      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv := by
     simpa [basis, gInv] using
       Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) (S.base.metric t) x
@@ -1245,7 +1245,7 @@ private theorem ricciEnd_repr_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (Ric : Tensor02At (I := I) (M := M) x)
     (i k : Idx) :
     basis.repr (DifferentialGeometry.Geometry.Curvature.ricciEndAt (I := I) g Ric (basis i)) k =
@@ -1258,7 +1258,7 @@ private theorem ricciQuadAt_comp_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (Ric : Tensor02At (I := I) (M := M) x)
     (i j : Idx) :
     ricciQuadAt (I := I) (M := M) g Ric
@@ -1297,7 +1297,7 @@ private theorem ricciQuadAt_comp_basis
           basis k)
       (fun _ : Fin 1 => basis j)]
   change
-    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x Ric)
+    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x Ric)
         (∑ k : Idx,
           basis.repr (DifferentialGeometry.Geometry.Curvature.ricciEndAt (I := I) g Ric (basis i))
             k •
@@ -1316,7 +1316,7 @@ private theorem rm04ContrAt_comp_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (Ric : Tensor02At (I := I) (M := M) x)
     (i j : Idx) :
@@ -1592,7 +1592,7 @@ theorem traceData_metricTrace
       DifferentialGeometry.Geometry.Curvature.RicciRealizesRm04FirstTraceAt (I := I) (S.ricci t x)
         (S.base.rm04 t x) DifferentialGeometry.Geometry.Curvature.delta3 basis := by
     have hinv :
-        MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis
+        MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
           DifferentialGeometry.Geometry.Curvature.delta3 :=
       DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) (S.base.metric t)
         basis horth
@@ -1605,7 +1605,7 @@ theorem traceData_metricTrace
         (metricTracePair0SAt (I := I) (S.base.metric t) (S.ricci t x))
         (S.ricci t x) DifferentialGeometry.Geometry.Curvature.delta3 basis := by
     have hinv :
-        MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis
+        MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
           DifferentialGeometry.Geometry.Curvature.delta3 :=
       DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) (S.base.metric t)
         basis horth
@@ -1693,8 +1693,8 @@ theorem ricciQuadDeriv_coord
       (fun s : Real => S.ricci s x (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v))
       (∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
         ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
-          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord i v *
-            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord j v
+          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord i v *
+            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord j v
               *
               ricciEvolutionRHSInFrame
                 (I := I) S S.base.rm04 (coordInv (I := I) S x)
@@ -1703,7 +1703,7 @@ theorem ricciQuadDeriv_coord
                 (t : Real) x i j)
       D.carrier (t : Real) := by
   classical
-  let b := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+  let b := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let frame := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x
   let rhs : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
@@ -1797,9 +1797,9 @@ theorem pinchQuadDeriv_coord
           (pinchSec (I := I) S delta) s x v v)
       ((∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
           ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
-            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord i v
+            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord i v
               *
-              (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord j
+              (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord j
                 v *
                 ricciEvolutionRHSInFrame
                   (I := I) S S.base.rm04 (coordInv (I := I) S x)
@@ -1877,7 +1877,7 @@ theorem pinchRough_smulMetric
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv)
     (f : Real)
     (df : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (hessF : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
@@ -1914,7 +1914,7 @@ theorem pinchRough_hessMetric
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv)
     (hessF : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     (tail : Fin 2 -> TangentSpace I x) :
     roughLap0STensor (I := I) (S.base.metric t)
@@ -2002,7 +2002,7 @@ theorem scalarMetric1Sec_apply
         (metricTensorField (I := I) (S.base.metric t) x) := by
   apply tensor0SSpace_ext (I := I) 3 x
   intro v
-  change Bundle.continuousMultilinearMap.product_fun
+  change Bundle.continuousMultilinearMap.productFun
       (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 1 x (scalarDuSec (I := I) S t x))
       (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x
         (metricTensorField (I := I) (S.base.metric t) x)) v = _
@@ -2019,7 +2019,7 @@ theorem scalarMetric2Sec_apply
         (metricTensorField (I := I) (S.base.metric t) x) := by
   apply tensor0SSpace_ext (I := I) 4 x
   intro v
-  change Bundle.continuousMultilinearMap.product_fun
+  change Bundle.continuousMultilinearMap.productFun
       (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x (scalarHessSec (I := I) S t x))
       (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x
         (metricTensorField (I := I) (S.base.metric t) x)) v = _
@@ -2065,13 +2065,13 @@ theorem ricciRoughTrace_coord
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v) =
       ∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
         ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
-          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord i v *
-            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord j v
+          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord i v *
+            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord j v
               *
               coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x)
                 t x i j := by
   classical
-  let b := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+  let b := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let frame := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x
   let roughA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 x :=
@@ -2087,7 +2087,7 @@ theorem ricciRoughTrace_coord
           (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x) t y a i j := by
     intro y a i j
     simp [ricciNablaWMP, ricciDerivsWMP, nablaRicComp,
-      CanonicalSpatialDerivs0S.of_smooth_connection]
+      CanonicalSpatialDerivs0S.ofSmoothConnection]
   have hnab2 :=
     coordinate_second_ricci_covariant_derivative_of_realization (I := I) S t x
       (ricciNablaWMP (I := I) S t)
@@ -2139,13 +2139,13 @@ theorem ricciRoughPair
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w) =
       ∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
         ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
-          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord i v *
-            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord j w
+          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord i v *
+            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord j w
               *
               coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x)
                 t x i j := by
   classical
-  let b := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+  let b := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let frame := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x
   let roughA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 x :=
@@ -2161,7 +2161,7 @@ theorem ricciRoughPair
           (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x) t y a i j := by
     intro y a i j
     simp [ricciNablaWMP, ricciDerivsWMP, nablaRicComp,
-      CanonicalSpatialDerivs0S.of_smooth_connection]
+      CanonicalSpatialDerivs0S.ofSmoothConnection]
   have hnab2 :=
     coordinate_second_ricci_covariant_derivative_of_realization (I := I) S t x
       (ricciNablaWMP (I := I) S t)
@@ -2206,7 +2206,7 @@ theorem scalarMetric_trace
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv)
     (v : TangentSpace I x) :
     metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
         (scalarMetric2Sec (I := I) S t x)
@@ -2227,7 +2227,7 @@ private theorem trace_sub_smul
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
     {s : ℕ}
     (A B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 2) x)
@@ -2266,7 +2266,7 @@ theorem pinchNab2Model_trace
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv)
     (v : TangentSpace I x) :
     metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
         (pinchNab2Model (I := I) S delta t x)
@@ -2305,7 +2305,7 @@ theorem scalarMetric1Sec_realizes
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       2 (S.base.connection t)
-      (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+      (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
         (fun x : M => S.scalar t x) (scalarSmoothSec (I := I) S t)
         (metricTensorField (I := I) (S.base.metric t)))
@@ -2353,7 +2353,7 @@ theorem scalarMetric1Sec_realizes
   have hnabla :=
     nabla0SFun_eval_smooth_slots (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (S.base.connection t) X V
-      (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+      (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
         f (scalarSmoothSec (I := I) S t) metricSec) x
   have hdu :
@@ -2391,7 +2391,7 @@ theorem scalarMetric1Sec_realizes
       _ =
           nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             2 (S.base.connection t) X
-            (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+            (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
               (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
               f (scalarSmoothSec (I := I) S t) metricSec) x slots := by
           rw [← hslots]
@@ -2679,8 +2679,8 @@ theorem pinchHeat_coord
         (pinchNablaModel (I := I) S delta t x) v =
       (∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
         ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
-          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord i v *
-            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord j v
+          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord i v *
+            (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord j v
               *
               coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x)
                 t x i j) -
@@ -2691,7 +2691,7 @@ theorem pinchHeat_coord
   rw [tensorHeatWithDrift2QuadMetricAt_zero_drift]
   rw [pinchNab2ModelSec_apply (I := I) S delta t x]
   rw [pinchNab2Model_trace (I := I) S delta t
-    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x)
+    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x)
     (fun a b : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E =>
       coordInv (I := I) S x t x a b)
     (coordInvReal (I := I) S x t) v]
@@ -2705,8 +2705,8 @@ def ricciCoordQuadRHS
     (t : Real) (x : M) (v : TangentSpace I x) : Real :=
   ∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
     ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord i v *
-        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord j v *
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord i v *
+        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord j v *
           ricciEvolutionRHSInFrame
             (I := I) S S.base.rm04 (coordInv (I := I) S x)
             (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x)
@@ -2720,8 +2720,8 @@ def ricciCoordRough
     (t : Real) (x : M) (v : TangentSpace I x) : Real :=
   ∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
     ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord i v *
-        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord j v *
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord i v *
+        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord j v *
           coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x) t x i j
 
 def ricciCoordReact
@@ -2740,8 +2740,8 @@ noncomputable def ricciPairReact
   ricciPairRHS (I := I) S t x v w -
     ∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
       ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
-        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord i v *
-          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord j w *
+        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord i v *
+          (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord j w *
             coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x) t x i j
 
 def pinchCoordTime
@@ -2805,7 +2805,7 @@ theorem actualReact_comp
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv)
     (i j : Idx) :
     ricciActualReactAt (I := I) S t x
         (vec2 (I := I) (basis i) (basis j)) =
@@ -2904,13 +2904,13 @@ theorem ricciCoordReact_eq_actual
       ricciActualReactAt (I := I) S t x
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v) := by
   classical
-  let b := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+  let b := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let frame := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x
   let gInvAt : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
     fun i j => coordInv (I := I) S x t x i j
   have hinv :
-      MetricInverseInBasis_gen (I := I) (S.base.metric t) x b gInvAt := by
+      MetricInverseInBasisGen (I := I) (S.base.metric t) x b gInvAt := by
     simpa [b, gInvAt] using coordInvReal (I := I) S x t
   have hbasis :
       ∀ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
@@ -3000,8 +3000,8 @@ theorem ricciCoordReact_eq_actual
   let c : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
     fun i j =>
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord i v *
-        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord j v
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord i v *
+        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord j v
   let L : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
     fun i j => coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x) t x i j
@@ -3066,13 +3066,13 @@ theorem pairReact_eq_actual
       ricciActualReactAt (I := I) S t x
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w) := by
   classical
-  let b := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+  let b := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let frame := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x
   let gInvAt : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
     fun i j => coordInv (I := I) S x t x i j
   have hinv :
-      MetricInverseInBasis_gen (I := I) (S.base.metric t) x b gInvAt := by
+      MetricInverseInBasisGen (I := I) (S.base.metric t) x b gInvAt := by
     simpa [b, gInvAt] using coordInvReal (I := I) S x t
   have hbasis :
       ∀ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
@@ -3146,8 +3146,8 @@ theorem pairReact_eq_actual
   let c : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
     fun i j =>
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord i v *
-        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x).coord j w
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord i v *
+        (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x).coord j w
   let L : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
     fun i j => coordRoughRic (I := I) S x (coordNab2Ric (I := I) S x) t x i j

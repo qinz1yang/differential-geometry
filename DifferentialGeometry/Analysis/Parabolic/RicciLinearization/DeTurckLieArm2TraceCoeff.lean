@@ -56,10 +56,10 @@ theorem deTurckLieArm2DivSlotPermAT_apply :
 
 noncomputable def domDomCongrFibPerm (σ : Equiv.Perm (Fin 4)) (x : M) :
     Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 4 I x :=
-  (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) 4 x).symm.toContinuousLinearMap.comp
+  (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) 4 x).symm.toContinuousLinearMap.comp
     (((ContinuousMultilinearMap.domDomCongrₗᵢ ℝ E ℝ
           σ).toContinuousLinearEquiv.toContinuousLinearMap).comp
-      (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) 4 x).toContinuousLinearMap)
+      (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) 4 x).toContinuousLinearMap)
 
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
@@ -211,7 +211,7 @@ private theorem jointTotalSpaceRS_sub_local {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p - B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -247,7 +247,7 @@ private theorem jointTotalSpaceRS_add_local {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p + B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -393,7 +393,7 @@ theorem deTurckLieTraceCoeff_operatorFieldApplication_eq (g₀ g₁ : SmoothRiem
       ∑ k : Fin (Module.finrank ℝ E),
         ContinuousMultilinearMap.domDomCongr σ (unitModel (I := I) (M := M) g₀ 4 D x)
           (Fin.cons (cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
   rw [unitModel, operatorFieldApplication_toSection]
@@ -433,7 +433,7 @@ private theorem traceHessianCoeff_operatorFieldApplication_eq_local
                   Tensor0SBundle.Tensor0SSpace 4 I x from W.toSection x)
                 (unitTensor (I := I) (M := M) x)))
             (Fin.cons (cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)))
               (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
   exact traceHessianCoeff_apply_eq (I := I) (M := M) g₀ g₁ W x v
@@ -450,21 +450,21 @@ theorem deTurckLieArm2PrincipalCoeff_operatorFieldApplication_eq (g₀ g₁ : Sm
           unitModel (I := I) (M := M) g₀ 4 D x
             ![v 0,
               cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)),
               v 1, (Module.finBasis ℝ E) k])
         + ∑ k : Fin (Module.finrank ℝ E),
             unitModel (I := I) (M := M) g₀ 4 D x
               ![v 1,
                 cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)),
                 v 0, (Module.finBasis ℝ E) k])
       - ∑ k : Fin (Module.finrank ℝ E),
           unitModel (I := I) (M := M) g₀ 4 D x
             ![v 0, v 1,
               cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)),
               (Module.finBasis ℝ E) k] := by
   rw [deTurckLieArm2PrincipalCoeff, operatorFieldApplication_sub_left_local, operatorFieldApplication_add_left_local,

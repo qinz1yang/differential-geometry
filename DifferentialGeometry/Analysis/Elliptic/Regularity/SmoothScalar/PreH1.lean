@@ -172,12 +172,12 @@ omit [T2Space M] [CompactSpace M] in
 lemma SmoothScalar.continuous_inner_grad
     {g : SmoothRiemannianMetric I M} (f h : SmoothScalar g) :
     Continuous (fun x : M =>
-      g.inner x ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+      g.inner x ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+        ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) :=
   TangentBundle.continuous_g_inner_of_smooth_sections (I := I) g
-    (grad_g (I := I) g ⟨f.toFun, f.smooth⟩) (grad_g (I := I) g ⟨h.toFun, h.smooth⟩)
+    (gradG (I := I) g ⟨f.toFun, f.smooth⟩) (gradG (I := I) g ⟨h.toFun, h.smooth⟩)
 
 omit [I.Boundaryless] [T2Space M] [CompactSpace M] in
 def SmoothScalar.gradientSqSup
@@ -254,9 +254,9 @@ lemma SmoothScalar.integrable_mul {g : SmoothRiemannianMetric I M}
 lemma SmoothScalar.integrable_inner_grad {g : SmoothRiemannianMetric I M}
     (f h : SmoothScalar g) :
     Integrable (fun x : M =>
-        g.inner x ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+        g.inner x ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+          ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
       (riemannianVolumeMeasure (I := I) (M := M) g) := by
   have _ : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
@@ -268,9 +268,9 @@ def smoothScalarH1Inner {g : SmoothRiemannianMetric I M}
     (f h : SmoothScalar g) : ℝ :=
   (∫ x, f.toFun x * h.toFun x
       ∂(riemannianVolumeMeasure (I := I) (M := M) g)) +
-  (∫ x, g.inner x ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+  (∫ x, g.inner x ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+        ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
       ∂(riemannianVolumeMeasure (I := I) (M := M) g))
 
@@ -279,9 +279,9 @@ lemma smoothScalarH1Inner_def {g : SmoothRiemannianMetric I M}
     smoothScalarH1Inner (I := I) (M := M) f h =
       (∫ x, f.toFun x * h.toFun x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) +
-      (∫ x, g.inner x ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+      (∫ x, g.inner x ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+            ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) := rfl
 
@@ -317,9 +317,9 @@ lemma SmoothRiemannianMetric_inner_self_nonneg
 
 lemma SmoothScalar.integral_inner_grad_self_nonneg
     {g : SmoothRiemannianMetric I M} (f : SmoothScalar g) :
-    0 ≤ ∫ x, g.inner x ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+    0 ≤ ∫ x, g.inner x ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+          ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   refine integral_nonneg ?_
@@ -354,11 +354,11 @@ lemma smoothScalar_integral_mul_add_left {g : SmoothRiemannianMetric I M}
 omit [T2Space M] [CompactSpace M] in
 lemma SmoothScalar.grad_g_add_apply {g : SmoothRiemannianMetric I M}
     (f₁ f₂ : SmoothScalar g) (x : M) :
-    ((grad_g (I := I) g ⟨(f₁ + f₂).toFun, (f₁ + f₂).smooth⟩ :
+    ((gradG (I := I) g ⟨(f₁ + f₂).toFun, (f₁ + f₂).smooth⟩ :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
-      ((grad_g (I := I) g ⟨f₁.toFun, f₁.smooth⟩ :
+      ((gradG (I := I) g ⟨f₁.toFun, f₁.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) +
-      ((grad_g (I := I) g ⟨f₂.toFun, f₂.smooth⟩ :
+      ((gradG (I := I) g ⟨f₂.toFun, f₂.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
   have hfun : (f₁ + f₂).toFun = f₁.toFun + f₂.toFun := rfl
   change gradFun (I := I) g (f₁ + f₂).toFun x =
@@ -370,53 +370,53 @@ lemma SmoothScalar.grad_g_add_apply {g : SmoothRiemannianMetric I M}
 lemma smoothScalar_integral_inner_grad_add_left
     {g : SmoothRiemannianMetric I M}
     (f₁ f₂ h : SmoothScalar g) :
-    (∫ x, g.inner x ((grad_g (I := I) g ⟨(f₁ + f₂).toFun, (f₁ + f₂).smooth⟩ :
+    (∫ x, g.inner x ((gradG (I := I) g ⟨(f₁ + f₂).toFun, (f₁ + f₂).smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+          ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
-      (∫ x, g.inner x ((grad_g (I := I) g ⟨f₁.toFun, f₁.smooth⟩ :
+      (∫ x, g.inner x ((gradG (I := I) g ⟨f₁.toFun, f₁.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+            ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) +
-      (∫ x, g.inner x ((grad_g (I := I) g ⟨f₂.toFun, f₂.smooth⟩ :
+      (∫ x, g.inner x ((gradG (I := I) g ⟨f₂.toFun, f₂.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+            ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) := by
   have hpt : ∀ x : M, g.inner x
-      ((grad_g (I := I) g ⟨(f₁ + f₂).toFun, (f₁ + f₂).smooth⟩ :
+      ((gradG (I := I) g ⟨(f₁ + f₂).toFun, (f₁ + f₂).smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-      ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+      ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
       g.inner x
-        ((grad_g (I := I) g ⟨f₁.toFun, f₁.smooth⟩ :
+        ((gradG (I := I) g ⟨f₁.toFun, f₁.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+        ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) +
       g.inner x
-        ((grad_g (I := I) g ⟨f₂.toFun, f₂.smooth⟩ :
+        ((gradG (I := I) g ⟨f₂.toFun, f₂.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+        ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
     intro x
     rw [SmoothScalar.grad_g_add_apply f₁ ⟨f₂.toFun, f₂.smooth⟩ x]
     rw [map_add, add_apply]
   rw [show (fun x : M => g.inner x
-      ((grad_g (I := I) g ⟨(f₁ + f₂).toFun, (f₁ + f₂).smooth⟩ :
+      ((gradG (I := I) g ⟨(f₁ + f₂).toFun, (f₁ + f₂).smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-      ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+      ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) =
       (fun x : M => g.inner x
-        ((grad_g (I := I) g ⟨f₁.toFun, f₁.smooth⟩ :
+        ((gradG (I := I) g ⟨f₁.toFun, f₁.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+        ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) +
       g.inner x
-        ((grad_g (I := I) g ⟨f₂.toFun, f₂.smooth⟩ :
+        ((gradG (I := I) g ⟨f₂.toFun, f₂.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+        ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) from funext hpt]
   exact integral_add (f₁.integrable_inner_grad h) (f₂.integrable_inner_grad h)
 
@@ -432,9 +432,9 @@ lemma smoothScalarH1Inner_add_left {g : SmoothRiemannianMetric I M}
 omit [T2Space M] [CompactSpace M] in
 lemma SmoothScalar.grad_g_smul_apply {g : SmoothRiemannianMetric I M}
     (c : ℝ) (f : SmoothScalar g) (x : M) :
-    ((grad_g (I := I) g ⟨(c • f).toFun, (c • f).smooth⟩ :
+    ((gradG (I := I) g ⟨(c • f).toFun, (c • f).smooth⟩ :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
-      c • ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+      c • ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
   change gradFun (I := I) g (c • f).toFun x =
     c • gradFun (I := I) g f.toFun x
@@ -475,25 +475,25 @@ lemma smoothScalar_integral_mul_smul_left {g : SmoothRiemannianMetric I M}
 
 lemma smoothScalar_integral_inner_grad_smul_left
     {g : SmoothRiemannianMetric I M} (c : ℝ) (f h : SmoothScalar g) :
-    (∫ x, g.inner x ((grad_g (I := I) g ⟨(c • f).toFun, (c • f).smooth⟩ :
+    (∫ x, g.inner x ((gradG (I := I) g ⟨(c • f).toFun, (c • f).smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+          ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
-      c * (∫ x, g.inner x ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+      c * (∫ x, g.inner x ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+            ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) := by
   have hpt : (fun x : M => g.inner x
-      ((grad_g (I := I) g ⟨(c • f).toFun, (c • f).smooth⟩ :
+      ((gradG (I := I) g ⟨(c • f).toFun, (c • f).smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-      ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+      ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) =
       (fun x : M => c * g.inner x
-        ((grad_g (I := I) g ⟨f.toFun, f.smooth⟩ :
+        ((gradG (I := I) g ⟨f.toFun, f.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨h.toFun, h.smooth⟩ :
+        ((gradG (I := I) g ⟨h.toFun, h.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) := by
     funext x
     rw [SmoothScalar.grad_g_smul_apply c f x]

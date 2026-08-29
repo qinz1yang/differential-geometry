@@ -699,21 +699,21 @@ theorem normSq0S_pullback_eval_of_orthonormal
     rw [Diffeomorph.pullbackMetric_inner] at hsrc
     simpa [hbasis'_apply i, hbasis'_apply j] using hsrc
   have hinv :
-      MetricInverseInBasis_gen (I := I)
+      MetricInverseInBasisGen (I := I)
         (Diffeomorph.pullbackMetric (I := I) g Phi) x basis
         (identityInvMetric (Idx := Idx)) := by
     have h :=
       metricInverseInBasis_of_orthonormal
         (I := I) (Diffeomorph.pullbackMetric (I := I) g Phi) basis hON
-    change MetricInverseInBasis_gen (I := I)
+    change MetricInverseInBasisGen (I := I)
       (Diffeomorph.pullbackMetric (I := I) g Phi) x basis
         (fun a k => if a = k then (1 : Real) else 0)
     exact h
   have hinv' :
-      MetricInverseInBasis_gen (I := I) g (Phi x) basis'
+      MetricInverseInBasisGen (I := I) g (Phi x) basis'
         (identityInvMetric (Idx := Idx)) := by
     have h := metricInverseInBasis_of_orthonormal (I := I) g basis' hON'
-    change MetricInverseInBasis_gen (I := I) g (Phi x) basis'
+    change MetricInverseInBasisGen (I := I) g (Phi x) basis'
       (fun a k => if a = k then (1 : Real) else 0)
     exact h
   rw [normSq0S_identity_eq_sum_sq (I := I)
@@ -863,16 +863,16 @@ theorem metricScalarAt_pullback
     rw [Diffeomorph.pullbackMetric_inner] at hsrc
     simpa [hbasis'_apply i, hbasis'_apply j] using hsrc
   have hinv :
-      MetricInverseInBasis_gen (I := I) (Diffeomorph.pullbackMetric (I := I) g Phi) x basis
+      MetricInverseInBasisGen (I := I) (Diffeomorph.pullbackMetric (I := I) g Phi) x basis
         identityInvMetric := by
-    change MetricInverseInBasis_gen (I := I)
+    change MetricInverseInBasisGen (I := I)
       (Diffeomorph.pullbackMetric (I := I) g Phi) x basis
         (fun a k => if a = k then (1 : Real) else 0)
     exact metricInverseInBasis_of_orthonormal
       (I := I) (Diffeomorph.pullbackMetric (I := I) g Phi) basis hON
   have hinv' :
-      MetricInverseInBasis_gen (I := I) g (Phi x) basis' identityInvMetric := by
-    change MetricInverseInBasis_gen (I := I) g (Phi x) basis'
+      MetricInverseInBasisGen (I := I) g (Phi x) basis' identityInvMetric := by
+    change MetricInverseInBasisGen (I := I) g (Phi x) basis'
       (fun a k => if a = k then (1 : Real) else 0)
     exact metricInverseInBasis_of_orthonormal (I := I) g basis' hON'
   rw [metricScalarAt_def, metricScalarAt_def,

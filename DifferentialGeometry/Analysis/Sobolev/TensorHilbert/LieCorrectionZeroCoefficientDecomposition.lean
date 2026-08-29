@@ -428,7 +428,7 @@ private lemma lieCorrectionZeroRiemannDecomposition_toModel
       (slotFreeOpCc (I := I) (M := M) g 1).toSection x)
     D' (v 1) (![v 2, v 3, v 0] : Fin 3 → E)]
   let A : Tensor0SSpace 1 I x :=
-    tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D'
+    tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D'
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1))
   let m : Fin 1 → TangentSpace I x := fun _ ↦
     (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0)
@@ -499,7 +499,7 @@ private lemma lieCorrectionZeroRiemannDecomposition_toModel
   rw [hupd]
   change
     -Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
           D' ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 1)))
         (fun _ : Fin 1 ↦
           tangentSpaceModelContinuousLinearEquiv (I := I) x Rv) =
@@ -1116,7 +1116,7 @@ private noncomputable def lieCorrectionZeroVectorBundleLiftFib (g₀ g₁ : Smoo
   (domDomCongrFibRank (I := I) 4 lieCorrectionZeroVectorBundleTracePermutation x).comp
     ((tensor0SProdKappaFib (I := I) (p := 1) (q := 3) x
         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)).comp
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 x
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
         ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x)))
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [SigmaCompactSpace M] in
@@ -1134,18 +1134,18 @@ private theorem lieCorrectionZeroVectorBundleLiftFib_contMDiff (g₀ g₁ : Smoo
   have hip : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 1 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 1 ℝ E)
         (E := fun z : M => Tensor0SSpace 1 I z) x
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 x
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
           ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x) (Y x))) :=
-    (Tensor0SBundle.contract_Tensor0SField (𝕜 := ℝ) (I := I) (n := (∞ : WithTop ℕ∞)) 1 Y
+    (Tensor0SBundle.contractTensor0SField (𝕜 := ℝ) (I := I) (n := (∞ : WithTop ℕ∞)) 1 Y
       (PDE.DeTurck.deTurckVF (I := I) g₁ g₀)).contMDiff
   have hprod := lieCorrectionZero_prod_section_contMDiff (I := I) (p := 1) (q := 3)
-    (fun x => Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 x
+    (fun x => Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
       ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x) (Y x))
     (fun x => metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
     hip (metricConnectionDifferenceLoweredFib_contMDiff (I := I) g₁ g₁ g₀)
   have hddc := lieCorrectionZero_ddc_section_contMDiff (I := I) (d := 4) lieCorrectionZeroVectorBundleTracePermutation
     (fun x => tensor0SProdKappaFib (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 x
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
         ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x) (Y x)))
     hprod
   refine hddc.congr (fun x => ?_)
@@ -1279,11 +1279,11 @@ private lemma vbPK_eq_slotExt (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
   rw [slotExtendFib_apply_eval (I := I) (M := M) 0 3 x
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (metricConnectionDifferenceLoweredCoefficient (I := I) (M := M) g₀ g₁ g₀).toSection x) B (u 0) (Fin.tail u)]
-  have hc : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x B
+  have hc : tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x B
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)) =
       Tensor0SSpace.toModel B (fun _ : Fin 1 => u 0) • unitTensor (I := I) (M := M) x := by
     have h2 := vb_rank0_smul_unit (I := I) (M := M) x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x B
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x B
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))
     rw [h2]
     congr 1

@@ -55,7 +55,7 @@ def galerkinFirstOrderActionFixedVectorBackground
   let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
   smoothCcToTensorHs (I := I) (M := M) g ((1 : ℕ) : ℝ)
     (operatorFieldApply (I := I) (M := M) g 3 2
-      (lowerScaleFirstOrderCoefficient_backgroundDifference (I := I) (M := M) g gBase T hδ hT hZ)
+      (lowerScaleFirstOrderCoefficientBackgroundDifference (I := I) (M := M) g gBase T hδ hT hZ)
       (iteratedCovGrad (I := I) g 0 2 1 T))
 
 def galerkinFirstOrderActionFixedPairingBackground
@@ -110,7 +110,7 @@ theorem galArmVecBackground_split
     galerkinActionVectorBackground (I := I) (M := M) g gBase hR hδ hreal F c =
       galerkinFirstOrderActionRemainderVectorBackground (I := I) (M := M) g gBase hR hδ hreal F c +
         galerkinFirstOrderActionFixedVectorBackground (I := I) (M := M) g gBase hR hδ hreal F c := by
-  simp only [galerkinActionVectorBackground, galerkinFirstOrderActionRemainderVectorBackground, galerkinFirstOrderActionFixedVectorBackground, lowerScaleFirstOrderCoefficient_backgroundDifference]
+  simp only [galerkinActionVectorBackground, galerkinFirstOrderActionRemainderVectorBackground, galerkinFirstOrderActionFixedVectorBackground, lowerScaleFirstOrderCoefficientBackgroundDifference]
   rw [← smoothCcToTensorHs_add]
   apply congrArg
   simp only [LowerScaleActionCoefficients.firstOrderAction, operatorFieldApplication_sub_left]
@@ -399,7 +399,7 @@ theorem galerkinFirstOrderActionFixedPairing_h3_bound
   let hT := galRepFib (I := I) (M := M) g hR hreal F c
   let hZ := zeroMetricPerturbation_fibre_bound (I := I) (M := M) g hR hreal
   let Corr : SmoothCcTensor g 3 2 :=
-    lowerScaleFirstOrderCoefficient_backgroundDifference (I := I) (M := M) g gBase T hδ_lt hT hZ
+    lowerScaleFirstOrderCoefficientBackgroundDifference (I := I) (M := M) g gBase T hδ_lt hT hZ
   let Y : SmoothCcTensor g 0 2 :=
     operatorFieldApply (I := I) (M := M) g 3 2 Corr
       (iteratedCovGrad (I := I) g 0 2 1 T)

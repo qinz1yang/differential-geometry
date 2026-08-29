@@ -85,8 +85,8 @@ theorem coordinateFrame_christoffel_formula_point_of_isLeviCivita
     (hLC : IsLeviCivita (I := I) cov g)
     (x0 : M) {x : M} (hx : x ∈ coordinateFrameSet (I := I) x0)
     (gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) g x
-      (coordinateFrameAt_basis (I := I) x0 hx) gInv)
+    (hinv : MetricInverseInBasisGen (I := I) g x
+      (coordinateFrameAtBasis (I := I) x0 hx) gInv)
     (i j k : CoordinateIdx (𝕜 := Real) E) :
     christoffelSymbolInFrame cov
         (coordinateFrameAt (I := I) x0)
@@ -109,7 +109,7 @@ theorem coordinateFrame_christoffel_formula_point_of_isLeviCivita
   classical
   let frame := coordinateFrameAt (I := I) x0
   let hframe := coordinateFrameAt_isLocalFrame_one (I := I) x0
-  let basis := coordinateFrameAt_basis (I := I) x0 hx
+  let basis := coordinateFrameAtBasis (I := I) x0 hx
   let A : TangentSpace I x := (cov (frame j) x) (frame i x)
   have hdiff :
       ∀ a : CoordinateIdx (𝕜 := Real) E, MDiffAt (T% (frame a)) x := by

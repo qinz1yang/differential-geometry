@@ -29,7 +29,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 private theorem core_curry_reading (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     (Φ : Integral.L2.SmoothCcTensor g₀ r s) (x : M) (v : E)
     (D : Tensor0SBundle.Tensor0SSpace (r + 1) I x) (v0 : E) :
-    (Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+    (Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
         ((show Tensor0SBundle.Tensor0SSpace (r + 1) I x →L[ℝ] Tensor0SBundle.Tensor0SSpace (s + 1) I
           x from
           Analysis.Parabolic.TensorSpectral.tensorCovDerivAt (I := I) (M := M) g₀ (r + 1) (s + 1)
@@ -38,7 +38,7 @@ private theorem core_curry_reading (g₀ : SmoothRiemannianMetric I M) (r s : �
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v0) =
       (show Tensor0SBundle.Tensor0SSpace r I x →L[ℝ] Tensor0SBundle.Tensor0SSpace s I x from
         Analysis.Parabolic.TensorSpectral.tensorCovDerivAt (I := I) (M := M) g₀ r s Φ x v)
-        ((Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x) D
+        ((Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x) D
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v0)) := by
   classical
   obtain ⟨w, hw⟩ := ContMDiffSection.exists_eq_at (I := I)
@@ -98,11 +98,11 @@ private theorem core_curry_reading (g₀ : SmoothRiemannianMetric I M) (r s : �
       (fun y : M => (show Tensor0SSpace r I y →L[ℝ] Tensor0SSpace s I y from Φ.toSection y)
         (wcurry y)) := by
     funext y
-    change (Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s y
+    change (Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s y
         ((show Tensor0SSpace (r + 1) I y →L[ℝ] Tensor0SSpace (s + 1) I y from SEΦ.toSection y)
           (w y))) (Y y) =
       (show Tensor0SSpace r I y →L[ℝ] Tensor0SSpace s I y from Φ.toSection y)
-        ((Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r y (w y)) (Y y))
+        ((Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r y (w y)) (Y y))
     rw [hSEΦ, DifferentialGeometry.Analysis.Spectral.slotExtend_toSection,
       DifferentialGeometry.Analysis.Spectral.slotExtendFib_apply,
       ContinuousLinearEquiv.apply_symm_apply, ContinuousLinearMap.comp_apply]
@@ -110,7 +110,7 @@ private theorem core_curry_reading (g₀ : SmoothRiemannianMetric I M) (r s : �
     Analysis.Parabolic.TensorSpectral.tensorCovDerivAt_def (I := I) (M := M) g₀ (r + 1) (s + 1) SEΦ
       x v,
     Analysis.Parabolic.TensorSpectral.tensorCovDerivAt_def (I := I) (M := M) g₀ r s Φ x v]
-  rw [show ((Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x) (w x)) (Y x) = wcurry x
+  rw [show ((Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x) (w x)) (Y x) = wcurry x
     from rfl]
   rw [hHL_Φ]
   rw [hHL_SE, map_sub, sub_apply]
@@ -126,11 +126,11 @@ private theorem core_curry_reading (g₀ : SmoothRiemannianMetric I M) (r s : �
         (Tensor0SNabla.curriedSection I M (fun y : M => w y) x) := by
     apply ContinuousLinearMap.ext
     intro t
-    change (Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+    change (Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
         ((show Tensor0SSpace (r + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from SEΦ.toSection x)
           (w x))) t =
       (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)
-        ((Tensor0SBundle.tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x (w x)) t)
+        ((Tensor0SBundle.tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x (w x)) t)
     rw [hSEΦ, DifferentialGeometry.Analysis.Spectral.slotExtend_toSection,
       DifferentialGeometry.Analysis.Spectral.slotExtendFib_apply,
       ContinuousLinearEquiv.apply_symm_apply, ContinuousLinearMap.comp_apply]

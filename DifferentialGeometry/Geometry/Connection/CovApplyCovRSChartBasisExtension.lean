@@ -90,10 +90,10 @@ theorem covApply_covRS_chartBasis_globalSmoothExtension
   let _h_top : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   let _h_fib : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   obtain ⟨χ, hχ_tsupp⟩ :=
     exists_bump_tsupport_in_goodSet (I := I) α (b₀ := b₀) hb₀
   have hX_ext_smooth : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞

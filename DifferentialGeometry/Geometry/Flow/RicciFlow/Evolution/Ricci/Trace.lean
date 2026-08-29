@@ -99,7 +99,7 @@ private theorem metricInverseInBasis_of_solution_frame
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
     (t : Real) {x : M} (hx : x ∈ u) :
-    Tensor0SBundle.MetricInverseInBasis_gen
+    Tensor0SBundle.MetricInverseInBasisGen
       (I := I) (M := M) (S.family.metric t) x
       (hframe.toBasisAt hx) (fun i j : Idx => gInv t x i j) := by
   intro i j
@@ -118,7 +118,7 @@ theorem metricInverseInBasis_of_local
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InvMetricLocal (I := I) S gInv frame u)
     (t : Real) {x : M} (hx : x ∈ u) :
-    Tensor0SBundle.MetricInverseInBasis_gen
+    Tensor0SBundle.MetricInverseInBasisGen
       (I := I) (M := M) (S.family.metric t) x
       (hframe.toBasisAt hx) (fun i j : Idx => gInv t x i j) := by
   intro i j
@@ -155,7 +155,7 @@ theorem ricciTensorRealizesRm04FirstTraceInFrameOnRegular_of_rm13Trace
   intro t x i j
   have hx : x ∈ u := hcover x
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasis_gen
+      Tensor0SBundle.MetricInverseInBasisGen
         (I := I) (M := M) (S.family.metric (t : Real)) x
         (hframe.toBasisAt hx)
         (fun a b : Idx => gInv (t : Real) x a b) :=
@@ -426,7 +426,7 @@ theorem ricciSymm_regular
   intro t x i j
   let basis := hframe.toBasisAt (hcover x)
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasis_gen
+      Tensor0SBundle.MetricInverseInBasisGen
         (I := I) (M := M) (S.family.metric (t : Real)) x
         basis (fun a b : Idx => gInv (t : Real) x a b) :=
     metricInverseInBasis_of_local

@@ -46,20 +46,20 @@ private theorem integral_Δ_g_eq_zero
     [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {φ : M → ℝ} (hφ : ContMDiff I 𝓘(ℝ, ℝ) ∞ φ) :
-    ∫ x, Δ_g (I := I) g ⟨_, hφ⟩ x ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
-  exact integral_divergence_eq_zero_of_compact (I := I) g (grad_g (I := I) g ⟨_, hφ⟩)
+    ∫ x, ΔG (I := I) g ⟨_, hφ⟩ x ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
+  exact integral_divergence_eq_zero_of_compact (I := I) g (gradG (I := I) g ⟨_, hφ⟩)
 
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem integral_inner_grad_self_eq_neg_integral_f_Δf
     [I.Boundaryless] [T2Space M] [CompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :
-    ∫ x, g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+    ∫ x, g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨_, hf⟩ :
+          ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      -∫ x, f x * Δ_g (I := I) g ⟨_, hf⟩ x
+      -∫ x, f x * ΔG (I := I) g ⟨_, hf⟩ x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   have hf_cs : HasCompactSupport f := HasCompactSupport.of_compactSpace _
   exact green_first_integral_inner_grad_eq_neg_integral_smul_laplacian (I := I) g hf hf hf_cs
@@ -72,28 +72,28 @@ private theorem lichnerowicz_inequality
     {K : ℝ} (hK : 0 < K)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {lam : ℝ} (hlam_pos : 0 < lam)
-    (hf_eigen : ∀ x : M, Δ_g (I := I) g ⟨_, hf⟩ x = -lam * f x)
+    (hf_eigen : ∀ x : M, ΔG (I := I) g ⟨_, hf⟩ x = -lam * f x)
     (gradNormSqSmooth :
       ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x : M => g.inner x
-        ((grad_g (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)))
+        ((gradG (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
+        ((gradG (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)))
     (hessSqNorm : M → ℝ) (h_hessSqNorm_cont : Continuous hessSqNorm)
     (RicAtGrad : M → ℝ) (h_RicAtGrad_cont : Continuous RicAtGrad)
     (h_bochner : ∀ x : M,
-      Δ_g (I := I) g ⟨_, gradNormSqSmooth⟩ x =
+      ΔG (I := I) g ⟨_, gradNormSqSmooth⟩ x =
         2 * hessSqNorm x + 2 * RicAtGrad x +
           2 * g.inner x
-            ((grad_g (I := I) g ⟨_, hf⟩ :
+            ((gradG (I := I) g ⟨_, hf⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, (Δ_g_contMDiff (I := I) g ⟨_, hf⟩)⟩ :
+            ((gradG (I := I) g ⟨_, (Δ_g_contMDiff (I := I) g ⟨_, hf⟩)⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
     (h_hess_lower_bound : ∀ x : M,
-      (Δ_g (I := I) g ⟨_, hf⟩ x)^2 / (Module.finrank ℝ E : ℝ) ≤ hessSqNorm x)
+      (ΔG (I := I) g ⟨_, hf⟩ x)^2 / (Module.finrank ℝ E : ℝ) ≤ hessSqNorm x)
     (h_ricci_lower_bound : ∀ x : M,
       ((Module.finrank ℝ E : ℝ) - 1) * K *
-        g.inner x ((grad_g (I := I) g ⟨_, hf⟩ :
+        g.inner x ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨_, hf⟩ :
+          ((gradG (I := I) g ⟨_, hf⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) ≤ RicAtGrad x)
     (h_f_sq_pos : 0 < ∫ x, f x * f x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) :
@@ -107,12 +107,12 @@ private theorem lichnerowicz_inequality
     rw [hn_def]; exact_mod_cast hn_ge_two
   have hn_pos : 0 < n := by linarith
   have hn_minus_one_pos : 0 < n - 1 := by linarith
-  set Gf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := grad_g (I := I) g ⟨_, hf⟩ with hGf_def
-  have hΔf : ContMDiff I 𝓘(ℝ, ℝ) ∞ (Δ_g (I := I) g ⟨_, hf⟩) :=
+  set Gf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := gradG (I := I) g ⟨_, hf⟩ with hGf_def
+  have hΔf : ContMDiff I 𝓘(ℝ, ℝ) ∞ (ΔG (I := I) g ⟨_, hf⟩) :=
     Δ_g_contMDiff (I := I) g ⟨_, hf⟩
-  set GΔf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := grad_g (I := I) g ⟨_, hΔf⟩ with hGΔf_def
+  set GΔf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := gradG (I := I) g ⟨_, hΔf⟩ with hGΔf_def
   have hf_cont : Continuous f := hf.continuous
-  have hΔf_cont : Continuous (Δ_g (I := I) g ⟨_, hf⟩) := hΔf.continuous
+  have hΔf_cont : Continuous (ΔG (I := I) g ⟨_, hf⟩) := hΔf.continuous
   have hgrad_inner_cont :
       Continuous (fun x : M => g.inner x (Gf x) (Gf x)) :=
     TangentBundle.continuous_g_inner_of_smooth_sections (I := I) g Gf Gf
@@ -124,10 +124,10 @@ private theorem lichnerowicz_inequality
     intro φ hφ
     exact hφ.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   have h_LHS_zero :
-      ∫ x, Δ_g (I := I) g ⟨_, gradNormSqSmooth⟩ x ∂μ = 0 :=
+      ∫ x, ΔG (I := I) g ⟨_, gradNormSqSmooth⟩ x ∂μ = 0 :=
     integral_Δ_g_eq_zero (I := I) g gradNormSqSmooth
   have h_bochner_int :
-      ∫ x, Δ_g (I := I) g ⟨_, gradNormSqSmooth⟩ x ∂μ =
+      ∫ x, ΔG (I := I) g ⟨_, gradNormSqSmooth⟩ x ∂μ =
         ∫ x, (2 * hessSqNorm x + 2 * RicAtGrad x +
             2 * g.inner x (Gf x) (GΔf x)) ∂μ := by
     refine integral_congr_ae (Filter.Eventually.of_forall ?_)
@@ -171,20 +171,20 @@ private theorem lichnerowicz_inequality
         -lam * g.inner x (Gf x) (Gf x) := by
     intro x
     have h_GΔf_apply : (GΔf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
-        gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x := by
+        gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x := by
       rw [hGΔf_def]; rfl
     have h_Gf_apply : (Gf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
         gradFun (I := I) g f x := by
       rw [hGf_def]; rfl
     rw [h_GΔf_apply, h_Gf_apply]
     set d_f : TangentSpace I x →L[ℝ] ℝ := mfderiv I 𝓘(ℝ, ℝ) f x with hd_f_def
-    set d_Δf : TangentSpace I x →L[ℝ] ℝ := mfderiv I 𝓘(ℝ, ℝ) (Δ_g (I := I) g ⟨_, hf⟩) x
+    set d_Δf : TangentSpace I x →L[ℝ] ℝ := mfderiv I 𝓘(ℝ, ℝ) (ΔG (I := I) g ⟨_, hf⟩) x
         with hd_Δf_def
     have h_lhs_eq :
-        g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
+        g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x)
           = d_Δf (gradFun (I := I) g f x) := by
       rw [hd_Δf_def]
-      exact inner_gradFun_right (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x
+      exact inner_gradFun_right (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x
         (gradFun (I := I) g f x)
     have h_rhs_eq :
         g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g f x)
@@ -192,9 +192,9 @@ private theorem lichnerowicz_inequality
       rw [hd_f_def]
       exact inner_gradFun (I := I) g f x (gradFun (I := I) g f x)
     rw [h_lhs_eq, h_rhs_eq]
-    have h_eq_fun : ∀ y : M, Δ_g (I := I) g ⟨_, hf⟩ y = ((-lam) • f) y := by
+    have h_eq_fun : ∀ y : M, ΔG (I := I) g ⟨_, hf⟩ y = ((-lam) • f) y := by
       intro y; exact hf_eigen y
-    have h_eqOn_nhd : Δ_g (I := I) g ⟨_, hf⟩ =ᶠ[𝓝 x] ((-lam) • f) :=
+    have h_eqOn_nhd : ΔG (I := I) g ⟨_, hf⟩ =ᶠ[𝓝 x] ((-lam) • f) :=
       Filter.Eventually.of_forall h_eq_fun
     have h_d_Δf_eq : d_Δf = (-lam) • d_f := by
       rw [hd_Δf_def, hd_f_def]
@@ -212,17 +212,17 @@ private theorem lichnerowicz_inequality
     rw [h_pt, integral_const_mul]
   have h_green :
       ∫ x, g.inner x (Gf x) (Gf x) ∂μ =
-        -∫ x, f x * Δ_g (I := I) g ⟨_, hf⟩ x ∂μ :=
+        -∫ x, f x * ΔG (I := I) g ⟨_, hf⟩ x ∂μ :=
     integral_inner_grad_self_eq_neg_integral_f_Δf (I := I) g hf
-  have h_f_Δf_pt : ∀ x : M, f x * Δ_g (I := I) g ⟨_, hf⟩ x = -lam * (f x * f x) := by
+  have h_f_Δf_pt : ∀ x : M, f x * ΔG (I := I) g ⟨_, hf⟩ x = -lam * (f x * f x) := by
     intro x
     rw [hf_eigen x]
     ring
   have h_int_f_Δf :
-      ∫ x, f x * Δ_g (I := I) g ⟨_, hf⟩ x ∂μ =
+      ∫ x, f x * ΔG (I := I) g ⟨_, hf⟩ x ∂μ =
         -lam * ∫ x, f x * f x ∂μ := by
     have h_pt :
-        (fun x : M => f x * Δ_g (I := I) g ⟨_, hf⟩ x) =
+        (fun x : M => f x * ΔG (I := I) g ⟨_, hf⟩ x) =
           (fun x : M => -lam * (f x * f x)) := by
       funext x; exact h_f_Δf_pt x
     rw [h_pt, integral_const_mul]
@@ -232,11 +232,11 @@ private theorem lichnerowicz_inequality
     rw [h_green, h_int_f_Δf]
     ring
   have h_int_hess_bound :
-      ∫ x, (Δ_g (I := I) g ⟨_, hf⟩ x)^2 / n ∂μ ≤
+      ∫ x, (ΔG (I := I) g ⟨_, hf⟩ x)^2 / n ∂μ ≤
         ∫ x, hessSqNorm x ∂μ := by
     apply integral_mono_of_nonneg
     · refine Filter.Eventually.of_forall (fun x => ?_)
-      have h1 : 0 ≤ (Δ_g (I := I) g ⟨_, hf⟩ x)^2 := sq_nonneg _
+      have h1 : 0 ≤ (ΔG (I := I) g ⟨_, hf⟩ x)^2 := sq_nonneg _
       exact div_nonneg h1 hn_pos.le
     · exact integrable_of_cont h_hessSqNorm_cont
     · refine Filter.Eventually.of_forall (fun x => ?_)
@@ -257,15 +257,15 @@ private theorem lichnerowicz_inequality
     · exact integrable_of_cont h_RicAtGrad_cont
     · refine Filter.Eventually.of_forall (fun x => ?_)
       exact h_ricci_lower_bound x
-  have h_Δf_sq_eq : ∀ x : M, (Δ_g (I := I) g ⟨_, hf⟩ x)^2 = lam^2 * (f x * f x) := by
+  have h_Δf_sq_eq : ∀ x : M, (ΔG (I := I) g ⟨_, hf⟩ x)^2 = lam^2 * (f x * f x) := by
     intro x
     rw [hf_eigen x]
     ring
   have h_int_Δf_sq :
-      ∫ x, (Δ_g (I := I) g ⟨_, hf⟩ x)^2 / n ∂μ =
+      ∫ x, (ΔG (I := I) g ⟨_, hf⟩ x)^2 / n ∂μ =
         (lam^2 / n) * ∫ x, f x * f x ∂μ := by
     have h_pt :
-        (fun x : M => (Δ_g (I := I) g ⟨_, hf⟩ x)^2 / n) =
+        (fun x : M => (ΔG (I := I) g ⟨_, hf⟩ x)^2 / n) =
           (fun x : M => (lam^2 / n) * (f x * f x)) := by
       funext x
       rw [h_Δf_sq_eq x]
@@ -407,7 +407,7 @@ private theorem laplacian_sq_le_dim_mul_chartHessFrobeniusSq_pointwise
     [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    (Δ_g (I := I) g ⟨_, hf⟩ x)^2 ≤
+    (ΔG (I := I) g ⟨_, hf⟩ x)^2 ≤
       (Module.finrank ℝ E : ℝ) * chartHessFrobeniusSq (I := I) g f x := by
   classical
   set B : Fin (Module.finrank ℝ E) → TangentSpace I x :=
@@ -428,7 +428,7 @@ private theorem laplacian_sq_le_dim_mul_chartHessFrobeniusSq_pointwise
   rw [Fintype.card_fin] at hCS
   have hLHS_eq : ∑ i : Fin (Module.finrank ℝ E),
       abstractHessianLin (I := I) g f x (B i) (B i) =
-      Δ_g (I := I) g ⟨_, hf⟩ x := by
+      ΔG (I := I) g ⟨_, hf⟩ x := by
     have h := sum_abstractHessian_orthonormal_eq_laplacian (I := I) g hf x B hB_orth
     refine h ▸ ?_
     refine Finset.sum_congr rfl ?_
@@ -500,7 +500,7 @@ private theorem laplacian_sq_le_dim_mul_chartHessFrobeniusSq_pointwise
       ∑ i : Fin (Module.finrank ℝ E),
         ∑ j : Fin (Module.finrank ℝ E),
           (abstractHessianLin (I := I) g f x (B i) (B j))^2 =
-        frobeniusSq_grad_vector (I := I) g
+        frobeniusSqGradVector (I := I) g
           (fun b : M => gradFun (I := I) g f b) x := by
     rw [frobeniusSq_grad_vector_def]
     refine Finset.sum_congr rfl ?_
@@ -550,12 +550,12 @@ theorem chartHessFrobeniusSq_continuous
     Continuous (fun b : M => chartHessFrobeniusSq (I := I) g f b) := by
   classical
   set Gf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    grad_g (I := I) g ⟨_, hf⟩ with hGf_def
-  have hΔf : ContMDiff I 𝓘(ℝ, ℝ) ∞ (Δ_g (I := I) g ⟨_, hf⟩) :=
+    gradG (I := I) g ⟨_, hf⟩ with hGf_def
+  have hΔf : ContMDiff I 𝓘(ℝ, ℝ) ∞ (ΔG (I := I) g ⟨_, hf⟩) :=
     Δ_g_contMDiff (I := I) g ⟨_, hf⟩
   set GΔf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
-    grad_g (I := I) g ⟨_, hΔf⟩ with hGΔf_def
-  have h1 : Continuous (Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩) :=
+    gradG (I := I) g ⟨_, hΔf⟩ with hGΔf_def
+  have h1 : Continuous (ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩) :=
     (Δ_g_contMDiff (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩).continuous
   have h2 : Continuous (fun b : M => ricciTensor (I := I) g b
       (gradFun (I := I) g f b) (gradFun (I := I) g f b)) :=
@@ -566,7 +566,7 @@ theorem chartHessFrobeniusSq_continuous
     TangentBundle.continuous_g_inner_of_smooth_sections (I := I) g Gf GΔf
   have h_bochner_isolate : ∀ x : M,
       chartHessFrobeniusSq (I := I) g f x =
-        ((Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x) -
+        ((ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x) -
           2 * ricciTensor (I := I) g x
             (gradFun (I := I) g f x) (gradFun (I := I) g f x) -
           2 * g.inner x
@@ -578,12 +578,12 @@ theorem chartHessFrobeniusSq_continuous
         gradFun (I := I) g f x := by
       rw [hGf_def]; rfl
     have hGΔf_x : (GΔf : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
-        gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x := by
+        gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x := by
       rw [hGΔf_def]; rfl
     rw [hGf_x, hGΔf_x]
     linarith [hB]
   have hRHS_cont : Continuous (fun x : M =>
-      ((Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x) -
+      ((ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x) -
         2 * ricciTensor (I := I) g x
           (gradFun (I := I) g f x) (gradFun (I := I) g f x) -
         2 * g.inner x
@@ -602,7 +602,7 @@ theorem lichnerowicz_eigenvalue_ge_dim_mul_curvature_of_closed
     {K : ℝ} (hK : 0 < K)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
     {lam : ℝ} (hlam_pos : 0 < lam)
-    (hf_eigen : ∀ x : M, Δ_g (I := I) g ⟨_, hf⟩ x = -lam * f x)
+    (hf_eigen : ∀ x : M, ΔG (I := I) g ⟨_, hf⟩ x = -lam * f x)
     (h_ricci : ∀ x : M, ∀ X : TangentSpace I x,
       ((Module.finrank ℝ E : ℝ) - 1) * K * g.inner x X X ≤
         ricciTensor (I := I) g x X X)
@@ -612,10 +612,10 @@ theorem lichnerowicz_eigenvalue_ge_dim_mul_curvature_of_closed
   classical
   have hgrad_norm_sq_smooth :
       ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun x : M => g.inner x
-        ((grad_g (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-        ((grad_g (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) :=
+        ((gradG (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
+        ((gradG (I := I) g ⟨_, hf⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)) :=
     contMDiff_g_inner_of_smooth_sections (I := I) (M := M) g
-      (grad_g (I := I) g ⟨_, hf⟩) (grad_g (I := I) g ⟨_, hf⟩)
+      (gradG (I := I) g ⟨_, hf⟩) (gradG (I := I) g ⟨_, hf⟩)
   have h_frob_cont :
       Continuous (fun x : M => chartHessFrobeniusSq (I := I) g f x) :=
     chartHessFrobeniusSq_continuous (I := I) g hf
@@ -624,34 +624,34 @@ theorem lichnerowicz_eigenvalue_ge_dim_mul_curvature_of_closed
         (gradFun (I := I) g f x) (gradFun (I := I) g f x)) :=
     ricciTensor_grad_grad_continuous (I := I) g hf
   have h_bochner_section : ∀ x : M,
-      Δ_g (I := I) g ⟨_, hgrad_norm_sq_smooth⟩ x =
+      ΔG (I := I) g ⟨_, hgrad_norm_sq_smooth⟩ x =
         2 * chartHessFrobeniusSq (I := I) g f x +
           2 * ricciTensor (I := I) g x
-            ((grad_g (I := I) g ⟨_, hf⟩ :
+            ((gradG (I := I) g ⟨_, hf⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, hf⟩ :
+            ((gradG (I := I) g ⟨_, hf⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) +
           2 * g.inner x
-            ((grad_g (I := I) g ⟨_, hf⟩ :
+            ((gradG (I := I) g ⟨_, hf⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨_, (Δ_g_contMDiff (I := I) g ⟨_, hf⟩)⟩ :
+            ((gradG (I := I) g ⟨_, (Δ_g_contMDiff (I := I) g ⟨_, hf⟩)⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) := by
     intro x
     have hB := bochner_pointwise_concrete_metric (I := I) g hf x
-    have hGf_x : (grad_g (I := I) g ⟨_, hf⟩ :
+    have hGf_x : (gradG (I := I) g ⟨_, hf⟩ :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
         gradFun (I := I) g f x := grad_g_apply (I := I) g ⟨_, hf⟩ x
-    have hGΔf_x : (grad_g (I := I) g ⟨_, (Δ_g_contMDiff (I := I) g ⟨_, hf⟩)⟩ :
+    have hGΔf_x : (gradG (I := I) g ⟨_, (Δ_g_contMDiff (I := I) g ⟨_, hf⟩)⟩ :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x =
-        gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x :=
+        gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x :=
       grad_g_apply (I := I) g ⟨_, (Δ_g_contMDiff (I := I) g ⟨_, hf⟩)⟩ x
     rw [hGf_x, hGΔf_x]
-    have hLHS_eq : Δ_g (I := I) g ⟨_, hgrad_norm_sq_smooth⟩ x =
-        Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x := rfl
+    have hLHS_eq : ΔG (I := I) g ⟨_, hgrad_norm_sq_smooth⟩ x =
+        ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x := rfl
     rw [hLHS_eq]
     exact hB
   have h_hess_lower_bound : ∀ x : M,
-      (Δ_g (I := I) g ⟨_, hf⟩ x)^2 / (Module.finrank ℝ E : ℝ) ≤
+      (ΔG (I := I) g ⟨_, hf⟩ x)^2 / (Module.finrank ℝ E : ℝ) ≤
         chartHessFrobeniusSq (I := I) g f x := by
     intro x
     have hne : (Module.finrank ℝ E : ℕ) ≠ 0 := NeZero.ne _
@@ -665,9 +665,9 @@ theorem lichnerowicz_eigenvalue_ge_dim_mul_curvature_of_closed
     hf_eigen hgrad_norm_sq_smooth
     (fun x => chartHessFrobeniusSq (I := I) g f x) h_frob_cont
     (fun x => ricciTensor (I := I) g x
-      ((grad_g (I := I) g ⟨_, hf⟩ :
+      ((gradG (I := I) g ⟨_, hf⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-      ((grad_g (I := I) g ⟨_, hf⟩ :
+      ((gradG (I := I) g ⟨_, hf⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
     (by
       refine h_ricci_cont.congr ?_
@@ -679,7 +679,7 @@ theorem lichnerowicz_eigenvalue_ge_dim_mul_curvature_of_closed
     h_hess_lower_bound
     (by
       intro x
-      exact h_ricci x ((grad_g (I := I) g ⟨_, hf⟩ :
+      exact h_ricci x ((gradG (I := I) g ⟨_, hf⟩ :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x))
     h_f_sq_pos
 

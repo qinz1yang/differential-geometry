@@ -50,7 +50,7 @@ theorem chosenSecondPartialChartPushedU_isWeakPartial_of_chartPushedWeakPartialL
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) l
       (chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i l)
       (((chartPushedWeakPartialLp (I := I) (M := M) g α i
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h
        ) : EuclN → ℝ))
       (chartTargetEuclid (I := I) (M := M) α) :=
   hasWeakPartialDeriv_chosenSecond_of_chartPushedWeakPartialLp
@@ -122,7 +122,7 @@ private lemma cross_derivative_term_ibp_single
     (∫ y in chartTargetEuclid (I := I) (M := M) α,
       weightedInvGramDerivOnEuclid (I := I) g α i j direction y *
         (((chartPushedWeakPartialLp (I := I) (M := M) g α i
-          (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h
+          (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h
          ) : EuclN → ℝ)) y *
         (fderiv ℝ ψ y) (EuclideanSpace.single j 1)
       ∂(volume : Measure EuclN))
@@ -130,7 +130,7 @@ private lemma cross_derivative_term_ibp_single
           (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j direction) y)
             (EuclideanSpace.single j 1) *
           (((chartPushedWeakPartialLp (I := I) (M := M) g α i
-            (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h
+            (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h
            ) : EuclN → ℝ)) y * ψ y
           ∂(volume : Measure EuclN))
       + (∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -147,7 +147,7 @@ private lemma cross_derivative_term_ibp_single
     weightedInvGramDerivOnEuclid_contDiffOn (I := I) g α i j direction
   set v : EuclN → ℝ :=
     (((chartPushedWeakPartialLp (I := I) (M := M) g α i
-        (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h
+        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h
        ) : EuclN → ℝ)) with hv_def
   set w : Fin (Module.finrank ℝ E) → EuclN → ℝ :=
     fun j' => chosenSecondPartialChartPushedU
@@ -261,7 +261,7 @@ theorem cross_derivative_term_ibp
         ∑ j : Fin (Module.finrank ℝ E),
           weightedInvGramDerivOnEuclid (I := I) g α i j l y *
             (((chartPushedWeakPartialLp (I := I) (M := M) g α i
-              (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h
+              (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h
              ) : EuclN → ℝ)) y *
             (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
       ∂(volume : Measure EuclN))
@@ -271,7 +271,7 @@ theorem cross_derivative_term_ibp
               (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l) y)
                 (EuclideanSpace.single j 1) *
               (((chartPushedWeakPartialLp (I := I) (M := M) g α i
-                (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h
+                (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h
                ) : EuclN → ℝ)) y * ψ y)
           ∂(volume : Measure EuclN))
       + (∫ y in chartTargetEuclid (I := I) (M := M) α,
@@ -287,7 +287,7 @@ theorem cross_derivative_term_ibp
   have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
   set v : Fin (Module.finrank ℝ E) → EuclN → ℝ := fun i =>
     (((chartPushedWeakPartialLp (I := I) (M := M) g α i
-      (chartPushedPartialLipschitz_canonical (I := I) (M := M) g α i) u_h
+      (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α i) u_h
      ) : EuclN → ℝ)) with hv_def
   set A : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → EuclN → ℝ :=
     fun i j => weightedInvGramDerivOnEuclid (I := I) g α i j l with hA_def

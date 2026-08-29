@@ -384,10 +384,10 @@ theorem divergence_g_with_boundary_smoothSmul
     (φ : M → ℝ) (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∀ x : M,
-      divergence_g_with_boundary (I := I) g
+      divergenceGWithBoundary (I := I) g
         (smoothSmul
           (I := I) φ hφ X) x =
-        φ x * divergence_g_with_boundary (I := I) g X x +
+        φ x * divergenceGWithBoundary (I := I) g X x +
           tangentSectionAction (I := I) X φ x := by
   intro x
   rw [divergence_g_with_boundary_def, divergence_g_with_boundary_def]
@@ -397,9 +397,9 @@ theorem divergence_g_with_boundary_add
     (g : SmoothRiemannianMetric I M)
     (X Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ∀ x : M,
-      divergence_g_with_boundary (I := I) g (X + Y) x =
-        divergence_g_with_boundary (I := I) g X x +
-          divergence_g_with_boundary (I := I) g Y x := by
+      divergenceGWithBoundary (I := I) g (X + Y) x =
+        divergenceGWithBoundary (I := I) g X x +
+          divergenceGWithBoundary (I := I) g Y x := by
   intro x
   classical
   rw [divergence_g_with_boundary_def, divergence_g_with_boundary_def,
@@ -495,7 +495,7 @@ theorem divergence_g_with_boundary_add
 
 theorem divergence_g_with_boundary_zero
     (g : SmoothRiemannianMetric I M) :
-    ∀ x : M, divergence_g_with_boundary (I := I) g
+    ∀ x : M, divergenceGWithBoundary (I := I) g
       (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x = 0 := by
   intro x
   classical
@@ -571,18 +571,18 @@ theorem divergence_g_with_boundary_zero
 theorem divergence_g_with_boundary_pou_tsum (g : SmoothRiemannianMetric I M)
     (ρ : SmoothPartitionOfUnity M I M univ)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
-    ∀ x : M, divergence_g_with_boundary (I := I) g X x =
-      ∑' α : M, divergence_g_with_boundary (I := I) g
+    ∀ x : M, divergenceGWithBoundary (I := I) g X x =
+      ∑' α : M, divergenceGWithBoundary (I := I) g
         (smoothSmul
           (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x := by
   intro x
   classical
   set S : Finset M := ρ.fintsupport x with hS_def
   have h_tsum_eq_sum :
-      (∑' α : M, divergence_g_with_boundary (I := I) g
+      (∑' α : M, divergenceGWithBoundary (I := I) g
           (smoothSmul
             (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x) =
-        ∑ α ∈ S, divergence_g_with_boundary (I := I) g
+        ∑ α ∈ S, divergenceGWithBoundary (I := I) g
           (smoothSmul
             (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x := by
     refine tsum_eq_sum ?_
@@ -610,10 +610,10 @@ theorem divergence_g_with_boundary_pou_tsum (g : SmoothRiemannianMetric I M)
     rw [hραx, htsa_zero, zero_mul, add_zero]
   rw [h_tsum_eq_sum]
   have h_each : ∀ α ∈ S,
-      divergence_g_with_boundary (I := I) g
+      divergenceGWithBoundary (I := I) g
         (smoothSmul
           (I := I) (ρ α : M → ℝ) (ρ α).contMDiff X) x =
-        (ρ α : M → ℝ) x * divergence_g_with_boundary (I := I) g X x +
+        (ρ α : M → ℝ) x * divergenceGWithBoundary (I := I) g X x +
           tangentSectionAction (I := I) X (ρ α : M → ℝ) x := by
     intro α _
     exact divergence_g_with_boundary_smoothSmul (I := I) g
@@ -621,9 +621,9 @@ theorem divergence_g_with_boundary_pou_tsum (g : SmoothRiemannianMetric I M)
   rw [Finset.sum_congr rfl h_each]
   rw [Finset.sum_add_distrib]
   rw [show (∑ α ∈ S, (ρ α : M → ℝ) x *
-              divergence_g_with_boundary (I := I) g X x) =
+              divergenceGWithBoundary (I := I) g X x) =
         (∑ α ∈ S, (ρ α : M → ℝ) x) *
-          divergence_g_with_boundary (I := I) g X x from
+          divergenceGWithBoundary (I := I) g X x from
       (Finset.sum_mul _ _ _).symm]
   rw [ρ.sum_finsupport' x (mem_univ x)
         (ρ.finsupport_subset_fintsupport x)]

@@ -33,25 +33,25 @@ variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 noncomputable def SmoothScalar.oneSubLapClassical {g : SmoothRiemannianMetric I M}
     (u : SmoothScalar g) : SmoothScalar g where
-  toFun := u.toFun - Δ_g (I := I) g ⟨u.toFun, u.smooth⟩
+  toFun := u.toFun - ΔG (I := I) g ⟨u.toFun, u.smooth⟩
   smooth := u.smooth.sub (Δ_g_contMDiff (I := I) g ⟨u.toFun, u.smooth⟩)
 
 omit [CompactSpace M] in
 noncomputable def SmoothScalar.laplacian {g : SmoothRiemannianMetric I M}
     (u : SmoothScalar g) : SmoothScalar g where
-  toFun := Δ_g (I := I) g ⟨u.toFun, u.smooth⟩
+  toFun := ΔG (I := I) g ⟨u.toFun, u.smooth⟩
   smooth := Δ_g_contMDiff (I := I) g ⟨u.toFun, u.smooth⟩
 
 omit [CompactSpace M] in
 @[simp] lemma SmoothScalar.oneSubLapClassical_toFun
     {g : SmoothRiemannianMetric I M} (u : SmoothScalar g) :
     (u.oneSubLapClassical).toFun =
-      u.toFun - Δ_g (I := I) g ⟨u.toFun, u.smooth⟩ := rfl
+      u.toFun - ΔG (I := I) g ⟨u.toFun, u.smooth⟩ := rfl
 
 omit [CompactSpace M] in
 @[simp] lemma SmoothScalar.laplacian_toFun
     {g : SmoothRiemannianMetric I M} (u : SmoothScalar g) :
-    u.laplacian.toFun = Δ_g (I := I) g ⟨u.toFun, u.smooth⟩ := rfl
+    u.laplacian.toFun = ΔG (I := I) g ⟨u.toFun, u.smooth⟩ := rfl
 
 omit [CompactSpace M] in
 @[simp] lemma SmoothScalar.sub_oneSubLapClassical
@@ -65,7 +65,7 @@ theorem smoothScalarH1Inner_eq_integral_oneSubLap_mul
     {g : SmoothRiemannianMetric I M}
     (u v : SmoothScalar g) :
     smoothScalarH1Inner (I := I) (M := M) u v =
-      ∫ x, (u.toFun x - Δ_g (I := I) g ⟨u.toFun, u.smooth⟩ x) * v.toFun x
+      ∫ x, (u.toFun x - ΔG (I := I) g ⟨u.toFun, u.smooth⟩ x) * v.toFun x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   unfold smoothScalarH1Inner
   have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
@@ -73,31 +73,31 @@ theorem smoothScalarH1Inner_eq_integral_oneSubLap_mul
   have hv_cs : HasCompactSupport v.toFun := HasCompactSupport.of_compactSpace _
   have hu_cs : HasCompactSupport u.toFun := HasCompactSupport.of_compactSpace _
   have hgreen :
-      ∫ x, g.inner x ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
+      ∫ x, g.inner x ((gradG (I := I) g ⟨v.toFun, v.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨u.toFun, u.smooth⟩ :
+            ((gradG (I := I) g ⟨u.toFun, u.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-        -∫ x, v.toFun x * Δ_g (I := I) g ⟨u.toFun, u.smooth⟩ x
+        -∫ x, v.toFun x * ΔG (I := I) g ⟨u.toFun, u.smooth⟩ x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
     green_first_integral_inner_grad_eq_neg_integral_smul_laplacian (I := I) g v.smooth u.smooth
       hu_cs
   have hsymm :
-      (∫ x, g.inner x ((grad_g (I := I) g ⟨u.toFun, u.smooth⟩ :
+      (∫ x, g.inner x ((gradG (I := I) g ⟨u.toFun, u.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
+            ((gradG (I := I) g ⟨v.toFun, v.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
-      ∫ x, g.inner x ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
+      ∫ x, g.inner x ((gradG (I := I) g ⟨v.toFun, v.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) g ⟨u.toFun, u.smooth⟩ :
+            ((gradG (I := I) g ⟨u.toFun, u.smooth⟩ :
               Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     refine integral_congr_ae (Filter.Eventually.of_forall ?_)
     intro x
     exact g.symm x _ _
   rw [hsymm, hgreen]
-  have hΔu_cont : Continuous (Δ_g (I := I) g ⟨u.toFun, u.smooth⟩) :=
+  have hΔu_cont : Continuous (ΔG (I := I) g ⟨u.toFun, u.smooth⟩) :=
     (Δ_g_contMDiff (I := I) g ⟨u.toFun, u.smooth⟩).continuous
   have hu_cont : Continuous u.toFun := u.smooth.continuous
   have hv_cont : Continuous v.toFun := v.smooth.continuous
@@ -105,18 +105,18 @@ theorem smoothScalarH1Inner_eq_integral_oneSubLap_mul
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     (hu_cont.mul hv_cont).integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)
-  have h_vΔu : Integrable (fun x : M => v.toFun x * Δ_g (I := I) g ⟨u.toFun, u.smooth⟩ x)
+  have h_vΔu : Integrable (fun x : M => v.toFun x * ΔG (I := I) g ⟨u.toFun, u.smooth⟩ x)
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     (hv_cont.mul hΔu_cont).integrable_of_hasCompactSupport
       (HasCompactSupport.of_compactSpace _)
   have hpt : ∀ x : M,
-      (u.toFun x - Δ_g (I := I) g ⟨u.toFun, u.smooth⟩ x) * v.toFun x =
-        u.toFun x * v.toFun x - v.toFun x * Δ_g (I := I) g ⟨u.toFun, u.smooth⟩ x := by
+      (u.toFun x - ΔG (I := I) g ⟨u.toFun, u.smooth⟩ x) * v.toFun x =
+        u.toFun x * v.toFun x - v.toFun x * ΔG (I := I) g ⟨u.toFun, u.smooth⟩ x := by
     intro x; ring
   rw [show (fun x : M =>
-      (u.toFun x - Δ_g (I := I) g ⟨u.toFun, u.smooth⟩ x) * v.toFun x) =
+      (u.toFun x - ΔG (I := I) g ⟨u.toFun, u.smooth⟩ x) * v.toFun x) =
       (fun x : M =>
-        u.toFun x * v.toFun x - v.toFun x * Δ_g (I := I) g ⟨u.toFun, u.smooth⟩ x) from
+        u.toFun x * v.toFun x - v.toFun x * ΔG (I := I) g ⟨u.toFun, u.smooth⟩ x) from
       funext hpt]
   rw [integral_sub h_uv h_vΔu]
   ring
@@ -144,11 +144,11 @@ theorem smoothScalarH1Inner_eq_lpInner_oneSubLap
   filter_upwards [hae_lhs, hae_rhs] with x hl hr
   rw [hl, hr]
   rw [SmoothScalar.oneSubLapClassical_toFun]
-  change (u.toFun x - Δ_g (I := I) g ⟨u.toFun, u.smooth⟩ x) * v.toFun x =
-    @inner ℝ _ _ ((u.toFun - Δ_g (I := I) g ⟨u.toFun, u.smooth⟩) x) (v.toFun x)
+  change (u.toFun x - ΔG (I := I) g ⟨u.toFun, u.smooth⟩ x) * v.toFun x =
+    @inner ℝ _ _ ((u.toFun - ΔG (I := I) g ⟨u.toFun, u.smooth⟩) x) (v.toFun x)
   rw [Pi.sub_apply]
-  rw [show @inner ℝ _ _ (u.toFun x - Δ_g (I := I) g ⟨u.toFun, u.smooth⟩ x) (v.toFun x) =
-      v.toFun x * (u.toFun x - Δ_g (I := I) g ⟨u.toFun, u.smooth⟩ x) from
+  rw [show @inner ℝ _ _ (u.toFun x - ΔG (I := I) g ⟨u.toFun, u.smooth⟩ x) (v.toFun x) =
+      v.toFun x * (u.toFun x - ΔG (I := I) g ⟨u.toFun, u.smooth⟩ x) from
       RCLike.inner_apply _ _]
   ring
 

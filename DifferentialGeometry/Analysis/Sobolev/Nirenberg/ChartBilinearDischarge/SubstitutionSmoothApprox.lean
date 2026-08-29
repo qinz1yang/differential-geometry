@@ -85,7 +85,7 @@ lemma cutoff_uChart_memLp_two_univ
     {χ : EuclN → ℝ} (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)
     (hχ_cs : HasCompactSupport χ)
     (hχ_supp_in : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    MemLp (fun x => χ x * D.u_chart x) 2 (volume : Measure EuclN) := by
+    MemLp (fun x => χ x * D.uChart x) 2 (volume : Measure EuclN) := by
   classical
   have hχ_cont : Continuous χ := hχ_smooth.continuous
   have hχ_abs_cont : Continuous (fun x => |χ x|) := hχ_cont.abs
@@ -108,28 +108,28 @@ lemma cutoff_uChart_memLp_two_univ
         rw [hχx, abs_zero]
   have h_supp_compact : IsCompact (tsupport χ) := hχ_cs
   have h_supp_meas : MeasurableSet (tsupport χ) := (isClosed_tsupport χ).measurableSet
-  have hu_l2_supp : MemLp D.u_chart 2
+  have hu_l2_supp : MemLp D.uChart 2
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     memLp_volume_restrict_of_memLp_chartPulledWeightedMeasure (I := I) (M := M)
       D.u_chart_memLp_weighted h_supp_compact h_supp_meas hχ_supp_in
-  have h_u_aesm_restrict : AEStronglyMeasurable D.u_chart
+  have h_u_aesm_restrict : AEStronglyMeasurable D.uChart
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     hu_l2_supp.aestronglyMeasurable
   have h_pt_le : ∀ᵐ x ∂((volume : Measure EuclN).restrict (tsupport χ)),
-      ‖χ x * D.u_chart x‖ ≤ ‖M_χ * D.u_chart x‖ := by
+      ‖χ x * D.uChart x‖ ≤ ‖M_χ * D.uChart x‖ := by
     refine Filter.Eventually.of_forall ?_
     intro x
     rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_mul, abs_mul,
       abs_of_nonneg hM_χ_nn]
     exact mul_le_mul_of_nonneg_right (hM_χ_bd x) (abs_nonneg _)
-  have h_prod_aesm_restrict : AEStronglyMeasurable (fun x => χ x * D.u_chart x)
+  have h_prod_aesm_restrict : AEStronglyMeasurable (fun x => χ x * D.uChart x)
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     hχ_cont.aestronglyMeasurable.restrict.mul h_u_aesm_restrict
-  have h_restrict_lp : MemLp (fun x => χ x * D.u_chart x) 2
+  have h_restrict_lp : MemLp (fun x => χ x * D.uChart x) 2
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     MemLp.mono (hu_l2_supp.const_mul M_χ) h_prod_aesm_restrict h_pt_le
-  have h_indicator_eq : (tsupport χ).indicator (fun x => χ x * D.u_chart x) =
-      (fun x => χ x * D.u_chart x) := by
+  have h_indicator_eq : (tsupport χ).indicator (fun x => χ x * D.uChart x) =
+      (fun x => χ x * D.uChart x) := by
     funext x
     by_cases hx : x ∈ tsupport χ
     · rw [Set.indicator_of_mem hx]
@@ -137,7 +137,7 @@ lemma cutoff_uChart_memLp_two_univ
       have hχx : χ x = 0 := image_eq_zero_of_notMem_tsupport hx
       rw [hχx, zero_mul]
   have h_indicator_lp :
-      MemLp ((tsupport χ).indicator (fun x => χ x * D.u_chart x)) 2
+      MemLp ((tsupport χ).indicator (fun x => χ x * D.uChart x)) 2
         (volume : Measure EuclN) :=
     (MeasureTheory.memLp_indicator_iff_restrict h_supp_meas).mpr h_restrict_lp
   rw [h_indicator_eq] at h_indicator_lp
@@ -153,8 +153,8 @@ lemma cutoff_uChart_partial_memLp_two_univ
     (hχ_supp_in : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α)
     (i : Fin (Module.finrank ℝ E)) :
     MemLp (fun x =>
-        (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-        χ x * D.weak_partial i x) 2 (volume : Measure EuclN) := by
+        (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+        χ x * D.weakPartial i x) 2 (volume : Measure EuclN) := by
   classical
   have h_top_ne_zero : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0 := by decide
   have hχ_partial_cont : Continuous
@@ -220,11 +220,11 @@ lemma cutoff_uChart_partial_memLp_two_univ
             hx
         rw [show (fderiv ℝ χ x) (EuclideanSpace.single i 1) = 0 from hdχx,
           abs_zero]
-  have hu_l2_supp : MemLp D.u_chart 2
+  have hu_l2_supp : MemLp D.uChart 2
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     memLp_volume_restrict_of_memLp_chartPulledWeightedMeasure (I := I) (M := M)
       D.u_chart_memLp_weighted h_supp_compact h_supp_meas hχ_supp_in
-  have hwp_l2_supp : MemLp (D.weak_partial i) 2
+  have hwp_l2_supp : MemLp (D.weakPartial i) 2
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     D.weak_partial_locally_memLp i (tsupport χ) h_supp_compact hχ_supp_in
   have h_dχ_aesm_restrict : AEStronglyMeasurable
@@ -235,46 +235,46 @@ lemma cutoff_uChart_partial_memLp_two_univ
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     hχ_cont.aestronglyMeasurable.restrict
   have h_term1_aesm_restrict : AEStronglyMeasurable
-      (fun x => (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x)
+      (fun x => (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x)
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     h_dχ_aesm_restrict.mul hu_l2_supp.aestronglyMeasurable
   have h_term2_aesm_restrict : AEStronglyMeasurable
-      (fun x => χ x * D.weak_partial i x)
+      (fun x => χ x * D.weakPartial i x)
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     h_χ_aesm_restrict.mul hwp_l2_supp.aestronglyMeasurable
   have h_pt_le_1 : ∀ᵐ x ∂((volume : Measure EuclN).restrict (tsupport χ)),
-      ‖(fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x‖ ≤
-        ‖M_dχ * D.u_chart x‖ := by
+      ‖(fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x‖ ≤
+        ‖M_dχ * D.uChart x‖ := by
     refine Filter.Eventually.of_forall ?_
     intro x
     rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_mul, abs_mul,
       abs_of_nonneg hM_dχ_nn]
     exact mul_le_mul_of_nonneg_right (hM_dχ_bd x) (abs_nonneg _)
   have h_term1_lp : MemLp
-      (fun x => (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x) 2
+      (fun x => (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x) 2
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     MemLp.mono (hu_l2_supp.const_mul M_dχ) h_term1_aesm_restrict h_pt_le_1
   have h_pt_le_2 : ∀ᵐ x ∂((volume : Measure EuclN).restrict (tsupport χ)),
-      ‖χ x * D.weak_partial i x‖ ≤ ‖M_χ * D.weak_partial i x‖ := by
+      ‖χ x * D.weakPartial i x‖ ≤ ‖M_χ * D.weakPartial i x‖ := by
     refine Filter.Eventually.of_forall ?_
     intro x
     rw [Real.norm_eq_abs, Real.norm_eq_abs, abs_mul, abs_mul,
       abs_of_nonneg hM_χ_nn]
     exact mul_le_mul_of_nonneg_right (hM_χ_bd x) (abs_nonneg _)
   have h_term2_lp : MemLp
-      (fun x => χ x * D.weak_partial i x) 2
+      (fun x => χ x * D.weakPartial i x) 2
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     MemLp.mono (hwp_l2_supp.const_mul M_χ) h_term2_aesm_restrict h_pt_le_2
   have h_sum_lp : MemLp (fun x =>
-      (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-      χ x * D.weak_partial i x) 2
+      (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+      χ x * D.weakPartial i x) 2
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     h_term1_lp.add h_term2_lp
   have h_indicator_eq : (tsupport χ).indicator
-      (fun x => (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-        χ x * D.weak_partial i x) =
-      (fun x => (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-        χ x * D.weak_partial i x) := by
+      (fun x => (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+        χ x * D.weakPartial i x) =
+      (fun x => (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+        χ x * D.weakPartial i x) := by
     funext x
     by_cases hx : x ∈ tsupport χ
     · rw [Set.indicator_of_mem hx]
@@ -294,8 +294,8 @@ lemma cutoff_uChart_partial_memLp_two_univ
         zero_mul, zero_mul, add_zero]
   have h_indicator_lp :
       MemLp ((tsupport χ).indicator (fun x =>
-          (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-          χ x * D.weak_partial i x)) 2 (volume : Measure EuclN) :=
+          (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+          χ x * D.weakPartial i x)) 2 (volume : Measure EuclN) :=
     (MeasureTheory.memLp_indicator_iff_restrict h_supp_meas).mpr h_sum_lp
   rw [h_indicator_eq] at h_indicator_lp
   exact h_indicator_lp
@@ -310,9 +310,9 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
     (hχ_supp_in : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α)
     (i : Fin (Module.finrank ℝ E)) :
     DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i
-      (fun x => (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-        χ x * D.weak_partial i x)
-      (fun x => χ x * D.u_chart x) Set.univ := by
+      (fun x => (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+        χ x * D.weakPartial i x)
+      (fun x => χ x * D.uChart x) Set.univ := by
   classical
   intro ψ hψ_smooth hψ_supp _hψ_sub
   set ei : EuclN := EuclideanSpace.single i (1 : ℝ) with hei_def
@@ -349,19 +349,19 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
   have h_dψ_cont : Continuous (fun y : EuclN => (fderiv ℝ ψ y) ei) :=
     (hψ_smooth.continuous_fderiv h_top_ne_zero).clm_apply continuous_const
   set G : EuclN → ℝ := fun x =>
-    (fderiv ℝ χ x) ei * D.u_chart x + χ x * D.weak_partial i x with hG_def
+    (fderiv ℝ χ x) ei * D.uChart x + χ x * D.weakPartial i x with hG_def
   have h_LHS_eq :
-      ∫ x in (Set.univ : Set EuclN), χ x * D.u_chart x * (fderiv ℝ ψ x) ei =
+      ∫ x in (Set.univ : Set EuclN), χ x * D.uChart x * (fderiv ℝ ψ x) ei =
       ∫ x in chartTargetEuclid (I := I) (M := M) α,
-        χ x * D.u_chart x * (fderiv ℝ ψ x) ei := by
+        χ x * D.uChart x * (fderiv ℝ ψ x) ei := by
     rw [setIntegral_univ]
     refine (setIntegral_eq_integral_of_forall_compl_eq_zero
       (s := chartTargetEuclid (I := I) (M := M) α)
-      (f := fun x => χ x * D.u_chart x * (fderiv ℝ ψ x) ei)
+      (f := fun x => χ x * D.uChart x * (fderiv ℝ ψ x) ei)
       (fun x hx => ?_)).symm
     have hx_notin_χ : x ∉ tsupport χ := fun h => hx (hχ_supp_in h)
     have hχx : χ x = 0 := image_eq_zero_of_notMem_tsupport hx_notin_χ
-    change χ x * D.u_chart x * (fderiv ℝ ψ x) ei = 0
+    change χ x * D.uChart x * (fderiv ℝ ψ x) ei = 0
     simp [hχx]
   have h_RHS_eq :
       ∫ x in (Set.univ : Set EuclN), G x * ψ x =
@@ -384,17 +384,17 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
         (f := fun y : EuclN => (fderiv ℝ χ y) ei) hx_notin_dχ
     have hdχx' : (fderiv ℝ χ x) ei = 0 := hdχx
     simp [hG_def, hχx, hdχx']
-  change ∫ x in (Set.univ : Set EuclN), χ x * D.u_chart x * (fderiv ℝ ψ x) ei =
+  change ∫ x in (Set.univ : Set EuclN), χ x * D.uChart x * (fderiv ℝ ψ x) ei =
       -∫ x in (Set.univ : Set EuclN), G x * ψ x
   rw [h_LHS_eq, h_RHS_eq]
   have h_supp_compact : IsCompact (tsupport χ) := hχ_cs
   have h_supp_meas : MeasurableSet (tsupport χ) :=
     (isClosed_tsupport χ).measurableSet
-  have hu_l2_supp : MemLp D.u_chart 2
+  have hu_l2_supp : MemLp D.uChart 2
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     memLp_volume_restrict_of_memLp_chartPulledWeightedMeasure (I := I) (M := M)
       D.u_chart_memLp_weighted h_supp_compact h_supp_meas hχ_supp_in
-  have hwp_l2_supp : MemLp (D.weak_partial i) 2
+  have hwp_l2_supp : MemLp (D.weakPartial i) 2
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     D.weak_partial_locally_memLp i (tsupport χ) h_supp_compact hχ_supp_in
   have h_finite_meas_fact :
@@ -403,10 +403,10 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
   have h_restrict_finite : IsFiniteMeasure
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     Restrict.isFiniteMeasure (volume : Measure EuclN)
-  have hu_l1_supp : Integrable D.u_chart
+  have hu_l1_supp : Integrable D.uChart
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     hu_l2_supp.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
-  have hwp_l1_supp : Integrable (D.weak_partial i)
+  have hwp_l1_supp : Integrable (D.weakPartial i)
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     hwp_l2_supp.integrable (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   have h_χ_aesm_supp : AEStronglyMeasurable χ
@@ -496,7 +496,7 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     h_χ_aesm_supp.mul h_dψ_aesm_supp
   have h_term1_int : Integrable
-      (fun x => D.u_chart x * (χ x * (fderiv ℝ ψ x) ei))
+      (fun x => D.uChart x * (χ x * (fderiv ℝ ψ x) ei))
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     hu_l1_supp.mul_bdd h_χ_dψ_aesm h_χ_dψ_bdd
   have h_χ_ψ_aesm : AEStronglyMeasurable
@@ -504,7 +504,7 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     h_χ_aesm_supp.mul hψ_aesm_supp
   have h_term2_int : Integrable
-      (fun x => D.weak_partial i x * (χ x * ψ x))
+      (fun x => D.weakPartial i x * (χ x * ψ x))
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     hwp_l1_supp.mul_bdd h_χ_ψ_aesm h_χ_ψ_bdd
   have h_ψ_dχ_aesm : AEStronglyMeasurable
@@ -512,21 +512,21 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     hψ_aesm_supp.mul h_dχ_aesm_supp
   have h_term3_int : Integrable
-      (fun x => D.u_chart x * (ψ x * (fderiv ℝ χ x) ei))
+      (fun x => D.uChart x * (ψ x * (fderiv ℝ χ x) ei))
       ((volume : Measure EuclN).restrict (tsupport χ)) :=
     hu_l1_supp.mul_bdd h_ψ_dχ_aesm h_ψ_dχ_bdd
   have h_integrand_LHS_zero_outside :
-      ∀ x, x ∉ tsupport χ → χ x * D.u_chart x * (fderiv ℝ ψ x) ei = 0 := by
+      ∀ x, x ∉ tsupport χ → χ x * D.uChart x * (fderiv ℝ ψ x) ei = 0 := by
     intro x hx
     have hχx : χ x = 0 := image_eq_zero_of_notMem_tsupport hx
     rw [hχx, zero_mul, zero_mul]
   have h_integrand_term1_zero_outside :
-      ∀ x, x ∉ tsupport χ → D.u_chart x * (χ x * (fderiv ℝ ψ x) ei) = 0 := by
+      ∀ x, x ∉ tsupport χ → D.uChart x * (χ x * (fderiv ℝ ψ x) ei) = 0 := by
     intro x hx
     have hχx : χ x = 0 := image_eq_zero_of_notMem_tsupport hx
     rw [hχx, zero_mul, mul_zero]
   have h_integrand_term3_zero_outside :
-      ∀ x, x ∉ tsupport χ → D.u_chart x * (ψ x * (fderiv ℝ χ x) ei) = 0 := by
+      ∀ x, x ∉ tsupport χ → D.uChart x * (ψ x * (fderiv ℝ χ x) ei) = 0 := by
     intro x hx
     have h_partial_χ_supp_subset :
         tsupport (fun y : EuclN => (fderiv ℝ χ y) ei) ⊆ tsupport χ := by
@@ -541,7 +541,7 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
     have hdχx' : (fderiv ℝ χ x) ei = 0 := hdχx
     rw [hdχx', mul_zero, mul_zero]
   have h_integrand_term2_zero_outside :
-      ∀ x, x ∉ tsupport χ → D.weak_partial i x * (χ x * ψ x) = 0 := by
+      ∀ x, x ∉ tsupport χ → D.weakPartial i x * (χ x * ψ x) = 0 := by
     intro x hx
     have hχx : χ x = 0 := image_eq_zero_of_notMem_tsupport hx
     rw [hχx, zero_mul, mul_zero]
@@ -564,8 +564,8 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
     simp [hχx, hdχx']
   have h_LHS_chart_to_supp :
       ∫ x in chartTargetEuclid (I := I) (M := M) α,
-        χ x * D.u_chart x * (fderiv ℝ ψ x) ei =
-      ∫ x in tsupport χ, χ x * D.u_chart x * (fderiv ℝ ψ x) ei :=
+        χ x * D.uChart x * (fderiv ℝ ψ x) ei =
+      ∫ x in tsupport χ, χ x * D.uChart x * (fderiv ℝ ψ x) ei :=
     setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
       h_chart_open.measurableSet hχ_supp_in
       (fun x hx => h_integrand_LHS_zero_outside x hx.2)
@@ -577,45 +577,45 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
       (fun x hx => h_integrand_RHS_zero_outside x hx.2)
   have h_term1_chart_to_supp :
       ∫ x in chartTargetEuclid (I := I) (M := M) α,
-        D.u_chart x * (χ x * (fderiv ℝ ψ x) ei) =
-      ∫ x in tsupport χ, D.u_chart x * (χ x * (fderiv ℝ ψ x) ei) :=
+        D.uChart x * (χ x * (fderiv ℝ ψ x) ei) =
+      ∫ x in tsupport χ, D.uChart x * (χ x * (fderiv ℝ ψ x) ei) :=
     setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
       h_chart_open.measurableSet hχ_supp_in
       (fun x hx => h_integrand_term1_zero_outside x hx.2)
   have h_term3_chart_to_supp :
       ∫ x in chartTargetEuclid (I := I) (M := M) α,
-        D.u_chart x * (ψ x * (fderiv ℝ χ x) ei) =
-      ∫ x in tsupport χ, D.u_chart x * (ψ x * (fderiv ℝ χ x) ei) :=
+        D.uChart x * (ψ x * (fderiv ℝ χ x) ei) =
+      ∫ x in tsupport χ, D.uChart x * (ψ x * (fderiv ℝ χ x) ei) :=
     setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
       h_chart_open.measurableSet hχ_supp_in
       (fun x hx => h_integrand_term3_zero_outside x hx.2)
   have h_term2_chart_to_supp :
       ∫ x in chartTargetEuclid (I := I) (M := M) α,
-        D.weak_partial i x * (χ x * ψ x) =
-      ∫ x in tsupport χ, D.weak_partial i x * (χ x * ψ x) :=
+        D.weakPartial i x * (χ x * ψ x) =
+      ∫ x in tsupport χ, D.weakPartial i x * (χ x * ψ x) :=
     setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
       h_chart_open.measurableSet hχ_supp_in
       (fun x hx => h_integrand_term2_zero_outside x hx.2)
   have h_ibp_chart_LHS_split :
       ∫ x in tsupport χ,
-        D.u_chart x * (fderiv ℝ (fun y => χ y * ψ y) x) ei =
-      (∫ x in tsupport χ, D.u_chart x * (χ x * (fderiv ℝ ψ x) ei)) +
-      ∫ x in tsupport χ, D.u_chart x * (ψ x * (fderiv ℝ χ x) ei) := by
+        D.uChart x * (fderiv ℝ (fun y => χ y * ψ y) x) ei =
+      (∫ x in tsupport χ, D.uChart x * (χ x * (fderiv ℝ ψ x) ei)) +
+      ∫ x in tsupport χ, D.uChart x * (ψ x * (fderiv ℝ χ x) ei) := by
     rw [← MeasureTheory.integral_add h_term1_int h_term3_int]
     refine MeasureTheory.integral_congr_ae ?_
     refine Filter.Eventually.of_forall ?_
     intro x
     have h_pt := h_fderiv_prod x
-    calc D.u_chart x * (fderiv ℝ (fun y => χ y * ψ y) x) ei
-        = D.u_chart x * (χ x * (fderiv ℝ ψ x) ei + ψ x * (fderiv ℝ χ x) ei) := by
+    calc D.uChart x * (fderiv ℝ (fun y => χ y * ψ y) x) ei
+        = D.uChart x * (χ x * (fderiv ℝ ψ x) ei + ψ x * (fderiv ℝ χ x) ei) := by
           rw [h_pt]
-      _ = D.u_chart x * (χ x * (fderiv ℝ ψ x) ei) +
-          D.u_chart x * (ψ x * (fderiv ℝ χ x) ei) := by ring
+      _ = D.uChart x * (χ x * (fderiv ℝ ψ x) ei) +
+          D.uChart x * (ψ x * (fderiv ℝ χ x) ei) := by ring
   have h_ibp_chart_LHS_chart_to_supp :
       ∫ x in chartTargetEuclid (I := I) (M := M) α,
-        D.u_chart x * (fderiv ℝ (fun y => χ y * ψ y) x) ei =
+        D.uChart x * (fderiv ℝ (fun y => χ y * ψ y) x) ei =
       ∫ x in tsupport χ,
-        D.u_chart x * (fderiv ℝ (fun y => χ y * ψ y) x) ei := by
+        D.uChart x * (fderiv ℝ (fun y => χ y * ψ y) x) ei := by
     refine setIntegral_eq_of_subset_of_forall_sdiff_eq_zero
       h_chart_open.measurableSet hχ_supp_in (fun x hx => ?_)
     have hx_notin_χψ : x ∉ tsupport (fun y => χ y * ψ y) :=
@@ -637,15 +637,15 @@ lemma cutoff_uChart_hasWeakPartialDeriv_univ
   rw [h_ibp_chart_LHS_split] at h_ibp_chart
   rw [h_LHS_chart_to_supp, h_RHS_chart_to_supp]
   have h_LHS_pt :
-      ∫ x in tsupport χ, χ x * D.u_chart x * (fderiv ℝ ψ x) ei =
-      ∫ x in tsupport χ, D.u_chart x * (χ x * (fderiv ℝ ψ x) ei) := by
+      ∫ x in tsupport χ, χ x * D.uChart x * (fderiv ℝ ψ x) ei =
+      ∫ x in tsupport χ, D.uChart x * (χ x * (fderiv ℝ ψ x) ei) := by
     refine MeasureTheory.integral_congr_ae ?_
     refine Filter.Eventually.of_forall ?_
     intro x; ring
   have h_RHS_split :
       ∫ x in tsupport χ, G x * ψ x =
-      (∫ x in tsupport χ, D.u_chart x * (ψ x * (fderiv ℝ χ x) ei)) +
-      ∫ x in tsupport χ, D.weak_partial i x * (χ x * ψ x) := by
+      (∫ x in tsupport χ, D.uChart x * (ψ x * (fderiv ℝ χ x) ei)) +
+      ∫ x in tsupport χ, D.weakPartial i x * (χ x * ψ x) := by
     rw [← MeasureTheory.integral_add h_term3_int h_term2_int]
     refine MeasureTheory.integral_congr_ae ?_
     refine Filter.Eventually.of_forall ?_
@@ -665,12 +665,12 @@ theorem cutoff_uChart_w1p_witness
     ∃ G : Fin (Module.finrank ℝ E) → EuclN → ℝ,
       (∀ i, MemLp (G i) 2 (volume : Measure EuclN)) ∧
       (∀ i, DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) i (G i)
-        (fun x => χ x * D.u_chart x) Set.univ) ∧
-      MemLp (fun x => χ x * D.u_chart x) 2 (volume : Measure EuclN) := by
+        (fun x => χ x * D.uChart x) Set.univ) ∧
+      MemLp (fun x => χ x * D.uChart x) 2 (volume : Measure EuclN) := by
   classical
   refine ⟨fun i x =>
-    (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-    χ x * D.weak_partial i x, ?_, ?_, ?_⟩
+    (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+    χ x * D.weakPartial i x, ?_, ?_, ?_⟩
   · intro i
     exact cutoff_uChart_partial_memLp_two_univ (I := I) (M := M) D
       hχ_smooth hχ_cs hχ_supp_in i
@@ -688,7 +688,7 @@ private noncomputable def cutoff_uChart_witness
     (hχ_cs : HasCompactSupport χ)
     (hχ_supp_in : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α) :
     DeGiorgi.MemW1pWitness (d := Module.finrank ℝ E) (ENNReal.ofReal 2)
-      (fun x => χ x * D.u_chart x) Set.univ where
+      (fun x => χ x * D.uChart x) Set.univ where
   memLp := by
     have h_lp := cutoff_uChart_memLp_two_univ (I := I) (M := M) D
       hχ_smooth hχ_cs hχ_supp_in
@@ -698,8 +698,8 @@ private noncomputable def cutoff_uChart_witness
     exact h_lp
   weakGrad := fun x =>
     WithLp.toLp 2 fun i =>
-      (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-      χ x * D.weak_partial i x
+      (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+      χ x * D.weakPartial i x
   weakGrad_component_memLp := by
     intro i
     have h_lp := cutoff_uChart_partial_memLp_two_univ (I := I) (M := M) D
@@ -708,11 +708,11 @@ private noncomputable def cutoff_uChart_witness
     have h_eq :
         (fun x =>
           (WithLp.toLp 2 fun j =>
-            (fderiv ℝ χ x) (EuclideanSpace.single j 1) * D.u_chart x +
-            χ x * D.weak_partial j x) i) =
+            (fderiv ℝ χ x) (EuclideanSpace.single j 1) * D.uChart x +
+            χ x * D.weakPartial j x) i) =
         (fun x =>
-          (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-          χ x * D.weak_partial i x) := by
+          (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+          χ x * D.weakPartial i x) := by
       funext x
       simp
     rw [h_eq]
@@ -724,11 +724,11 @@ private noncomputable def cutoff_uChart_witness
     have h_eq :
         (fun x =>
           (WithLp.toLp 2 fun j =>
-            (fderiv ℝ χ x) (EuclideanSpace.single j 1) * D.u_chart x +
-            χ x * D.weak_partial j x) i) =
+            (fderiv ℝ χ x) (EuclideanSpace.single j 1) * D.uChart x +
+            χ x * D.weakPartial j x) i) =
         (fun x =>
-          (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-          χ x * D.weak_partial i x) := by
+          (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+          χ x * D.weakPartial i x) := by
       funext x
       simp
     rw [h_eq]
@@ -742,37 +742,37 @@ theorem exists_smooth_uChart_approx
     {χ : EuclN → ℝ} (hχ_smooth : ContDiff ℝ (⊤ : ℕ∞) χ)
     (hχ_cs : HasCompactSupport χ)
     (hχ_supp_in : tsupport χ ⊆ chartTargetEuclid (I := I) (M := M) α) :
-    ∃ u_seq : ℕ → EuclN → ℝ,
-      (∀ n, ContDiff ℝ (⊤ : ℕ∞) (u_seq n)) ∧
-      (∀ n, HasCompactSupport (u_seq n)) ∧
+    ∃ uSeq : ℕ → EuclN → ℝ,
+      (∀ n, ContDiff ℝ (⊤ : ℕ∞) (uSeq n)) ∧
+      (∀ n, HasCompactSupport (uSeq n)) ∧
       Tendsto (fun n => eLpNorm
-        (fun x => u_seq n x - χ x * D.u_chart x) 2 (volume : Measure EuclN))
+        (fun x => uSeq n x - χ x * D.uChart x) 2 (volume : Measure EuclN))
         atTop (𝓝 0) ∧
       ∀ i : Fin (Module.finrank ℝ E),
         Tendsto (fun n => eLpNorm
-          (fun x => (fderiv ℝ (u_seq n) x) (EuclideanSpace.single i 1) -
-            ((fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-             χ x * D.weak_partial i x)) 2 (volume : Measure EuclN))
+          (fun x => (fderiv ℝ (uSeq n) x) (EuclideanSpace.single i 1) -
+            ((fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+             χ x * D.weakPartial i x)) 2 (volume : Measure EuclN))
           atTop (𝓝 0) := by
   classical
   let hw :=
     cutoff_uChart_witness (I := I) (M := M) D hχ_smooth hχ_cs hχ_supp_in
-  have h_χu_cs : HasCompactSupport (fun x => χ x * D.u_chart x) := by
+  have h_χu_cs : HasCompactSupport (fun x => χ x * D.uChart x) := by
     refine HasCompactSupport.intro' (K := tsupport χ)
       hχ_cs (isClosed_tsupport χ) ?_
     intro x hx
     have hχx : χ x = 0 := image_eq_zero_of_notMem_tsupport hx
     rw [hχx, zero_mul]
   have hp : (1 : ℝ) < 2 := by norm_num
-  obtain ⟨u_seq, hu_smooth, hu_cs, _hu_supp_thicken, hu_tendsto, hu_grad_tendsto⟩ :=
+  obtain ⟨uSeq, hu_smooth, hu_cs, _hu_supp_thicken, hu_tendsto, hu_grad_tendsto⟩ :=
     DeGiorgi.exists_smooth_compactSupport_W1p_approx_univ
       (d := Module.finrank ℝ E) hp hw h_χu_cs
-  refine ⟨u_seq, hu_smooth, hu_cs, ?_, ?_⟩
+  refine ⟨uSeq, hu_smooth, hu_cs, ?_, ?_⟩
   · have h_two_eq : ENNReal.ofReal 2 = (2 : ℝ≥0∞) := by norm_num
     have h_eq_tendsto :
-        (fun n => eLpNorm (fun x => u_seq n x - χ x * D.u_chart x) 2
+        (fun n => eLpNorm (fun x => uSeq n x - χ x * D.uChart x) 2
           (volume : Measure EuclN)) =
-        (fun n => eLpNorm (fun x => u_seq n x - χ x * D.u_chart x)
+        (fun n => eLpNorm (fun x => uSeq n x - χ x * D.uChart x)
           (ENNReal.ofReal 2) (volume : Measure EuclN)) := by
       funext n
       rw [h_two_eq]
@@ -782,26 +782,26 @@ theorem exists_smooth_uChart_approx
     have h_two_eq : ENNReal.ofReal 2 = (2 : ℝ≥0∞) := by norm_num
     have h_eq_tendsto :
         (fun n => eLpNorm
-          (fun x => (fderiv ℝ (u_seq n) x) (EuclideanSpace.single i 1) -
-            ((fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-             χ x * D.weak_partial i x)) 2 (volume : Measure EuclN)) =
+          (fun x => (fderiv ℝ (uSeq n) x) (EuclideanSpace.single i 1) -
+            ((fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+             χ x * D.weakPartial i x)) 2 (volume : Measure EuclN)) =
         (fun n => eLpNorm
-          (fun x => (fderiv ℝ (u_seq n) x) (EuclideanSpace.single i 1) -
+          (fun x => (fderiv ℝ (uSeq n) x) (EuclideanSpace.single i 1) -
             hw.weakGrad x i) (ENNReal.ofReal 2) (volume : Measure EuclN)) := by
       funext n
       have h_grad_pt : ∀ x : EuclN, hw.weakGrad x i =
-          (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-          χ x * D.weak_partial i x := by
+          (fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+          χ x * D.weakPartial i x := by
         intro x
         change (WithLp.toLp 2 fun j =>
-            (fderiv ℝ χ x) (EuclideanSpace.single j 1) * D.u_chart x +
-            χ x * D.weak_partial j x) i = _
+            (fderiv ℝ χ x) (EuclideanSpace.single j 1) * D.uChart x +
+            χ x * D.weakPartial j x) i = _
         simp
       have h_lhs_eq :
-          (fun x => (fderiv ℝ (u_seq n) x) (EuclideanSpace.single i 1) -
-            ((fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.u_chart x +
-             χ x * D.weak_partial i x)) =
-          (fun x => (fderiv ℝ (u_seq n) x) (EuclideanSpace.single i 1) -
+          (fun x => (fderiv ℝ (uSeq n) x) (EuclideanSpace.single i 1) -
+            ((fderiv ℝ χ x) (EuclideanSpace.single i 1) * D.uChart x +
+             χ x * D.weakPartial i x)) =
+          (fun x => (fderiv ℝ (uSeq n) x) (EuclideanSpace.single i 1) -
             hw.weakGrad x i) := by
         funext x
         rw [h_grad_pt x]
@@ -816,21 +816,21 @@ theorem standardNirenbergTest_smooth_seq
     {η : EuclN → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
     (k : Fin (Module.finrank ℝ E))
     {h : ℝ} (hh : h ≠ 0)
-    {u_seq : ℕ → EuclN → ℝ}
-    (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (u_seq n))
+    {uSeq : ℕ → EuclN → ℝ}
+    (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (uSeq n))
     :
     ∀ n, ContDiff ℝ (⊤ : ℕ∞)
-      (standardNirenbergTest (d := Module.finrank ℝ E) k h η (u_seq n)) ∧
+      (standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n)) ∧
         HasCompactSupport
           (standardNirenbergTest (d := Module.finrank ℝ E) k h η
-            (u_seq n)) := by
+            (uSeq n)) := by
   classical
   intro n
   refine ⟨?_, ?_⟩
   · exact contDiff_nirenbergTestFunction_aux (d := Module.finrank ℝ E)
       hη (hu_seq_smooth n) k hh
   · exact standardNirenbergTest_hasCompactSupport
-      (d := Module.finrank ℝ E) k h hη_supp (u_seq n)
+      (d := Module.finrank ℝ E) k h hη_supp (uSeq n)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private lemma eLpNorm_translate_eq_local (k : Fin (Module.finrank ℝ E)) (h : ℝ)
@@ -958,21 +958,21 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
     {K_0 : Set EuclN}
     (hχ_one : ∀ x ∈ Metric.cthickening |h| K_0, χ x = 1)
     (hη_supp_in_K_0 : tsupport η ⊆ K_0)
-    {u_seq : ℕ → EuclN → ℝ}
-    (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (u_seq n))
-    (hu_seq_cs : ∀ n, HasCompactSupport (u_seq n))
+    {uSeq : ℕ → EuclN → ℝ}
+    (hu_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (uSeq n))
+    (hu_seq_cs : ∀ n, HasCompactSupport (uSeq n))
     (hu_seq_l2_tendsto : Tendsto (fun n => eLpNorm
-      (fun x => u_seq n x - χ x * D.u_chart x) 2
+      (fun x => uSeq n x - χ x * D.uChart x) 2
       (volume : Measure EuclN)) atTop (𝓝 0)) :
     Tendsto (fun n => eLpNorm
-      (fun x => standardNirenbergTest (d := Module.finrank ℝ E) k h η (u_seq n) x -
-        standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart x) 2
+      (fun x => standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n) x -
+        standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart x) 2
       ((volume : Measure EuclN).restrict
         (Metric.cthickening |h| K_0))) atTop (𝓝 0) := by
   classical
   have h_test_eq : standardNirenbergTest (d := Module.finrank ℝ E) k h η
-      (fun x => χ x * D.u_chart x) =
-      standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart := by
+      (fun x => χ x * D.uChart x) =
+      standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart := by
     funext x
     by_cases hh0 : h = 0
     · subst hh0
@@ -987,8 +987,8 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
             (d := Module.finrank ℝ E) k h v x) / (-h) := by
       intro v
       exact standardNirenbergTest_apply (d := Module.finrank ℝ E) k h η v x hh0
-    rw [h_test_eq_pointwise (fun x => χ x * D.u_chart x),
-      h_test_eq_pointwise D.u_chart]
+    rw [h_test_eq_pointwise (fun x => χ x * D.uChart x),
+      h_test_eq_pointwise D.uChart]
     have h_diff_apply : ∀ v y,
         DifferentialGeometry.Analysis.Sobolev.diffQuot
           (d := Module.finrank ℝ E) k h v y =
@@ -998,9 +998,9 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
     rw [h_diff_apply, h_diff_apply, h_diff_apply, h_diff_apply]
     by_cases hxK0 : x ∈ Metric.cthickening |h| K_0
     · have h_prod_eq : ∀ z, (η z)^2 * (((χ (z + h • EuclideanSpace.single k 1)) *
-            D.u_chart (z + h • EuclideanSpace.single k 1) - χ z * D.u_chart z) / h) =
-          (η z)^2 * (((D.u_chart (z + h • EuclideanSpace.single k 1)) -
-            D.u_chart z) / h) := by
+            D.uChart (z + h • EuclideanSpace.single k 1) - χ z * D.uChart z) / h) =
+          (η z)^2 * (((D.uChart (z + h • EuclideanSpace.single k 1)) -
+            D.uChart z) / h) := by
         intro z
         by_cases hηz : η z = 0
         · rw [show (η z)^2 = 0 from by rw [hηz]; ring, zero_mul, zero_mul]
@@ -1044,14 +1044,14 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
           rw [hηx_shift_zero]; ring]
       simp
   have h_diff_eq : ∀ n,
-      (fun x => standardNirenbergTest (d := Module.finrank ℝ E) k h η (u_seq n) x -
-        standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart x) =
+      (fun x => standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n) x -
+        standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart x) =
       standardNirenbergTest (d := Module.finrank ℝ E) k h η
-        (u_seq n - fun x => χ x * D.u_chart x) := by
+        (uSeq n - fun x => χ x * D.uChart x) := by
     intro n
     rw [← h_test_eq]
-    exact standardNirenbergTest_sub k h η (u_seq n)
-      (fun x => χ x * D.u_chart x)
+    exact standardNirenbergTest_sub k h η (uSeq n)
+      (fun x => χ x * D.uChart x)
   have hη_cont : Continuous η := hη_smooth.continuous
   have hη_abs_cont : Continuous (fun x => |η x|) := hη_cont.abs
   obtain ⟨M_η, hM_η_nn, hM_η_bd⟩ : ∃ M_η : ℝ, 0 ≤ M_η ∧ ∀ x, |η x| ≤ M_η := by
@@ -1072,45 +1072,45 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
         rw [hηx, abs_zero]
   have h_univ_tendsto :
       Tendsto (fun n => eLpNorm
-        (fun x => standardNirenbergTest (d := Module.finrank ℝ E) k h η (u_seq n) x -
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart x) 2
+        (fun x => standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n) x -
+          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart x) 2
         (volume : Measure EuclN)) atTop (𝓝 0) := by
     have h_eLp_eq : ∀ n,
         eLpNorm (fun x =>
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η (u_seq n) x -
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart x) 2
+          standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n) x -
+          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart x) 2
         (volume : Measure EuclN) =
         eLpNorm (standardNirenbergTest (d := Module.finrank ℝ E) k h η
-          (u_seq n - fun x => χ x * D.u_chart x)) 2
+          (uSeq n - fun x => χ x * D.uChart x)) 2
         (volume : Measure EuclN) := by
       intro n
       rw [h_diff_eq n]
-    have h_χu_lp : MemLp (fun x => χ x * D.u_chart x) 2
+    have h_χu_lp : MemLp (fun x => χ x * D.uChart x) 2
         (volume : Measure EuclN) :=
       cutoff_uChart_memLp_two_univ (I := I) (M := M) D
         hχ_smooth hχ_cs hχ_supp_in
     have h_aesm_diff : ∀ n,
-        AEStronglyMeasurable (u_seq n - fun x => χ x * D.u_chart x)
+        AEStronglyMeasurable (uSeq n - fun x => χ x * D.uChart x)
           (volume : Measure EuclN) := by
       intro n
-      have h_uSeq_aesm : AEStronglyMeasurable (u_seq n)
+      have h_uSeq_aesm : AEStronglyMeasurable (uSeq n)
           (volume : Measure EuclN) :=
         (hu_seq_smooth n).continuous.aestronglyMeasurable
       exact h_uSeq_aesm.sub h_χu_lp.aestronglyMeasurable
     have h_diff_lp : ∀ n,
-        MemLp (u_seq n - fun x => χ x * D.u_chart x) 2
+        MemLp (uSeq n - fun x => χ x * D.uChart x) 2
           (volume : Measure EuclN) := by
       intro n
-      have h_uSeq_lp : MemLp (u_seq n) 2 (volume : Measure EuclN) :=
+      have h_uSeq_lp : MemLp (uSeq n) 2 (volume : Measure EuclN) :=
         (hu_seq_smooth n).continuous.memLp_of_hasCompactSupport (hu_seq_cs n)
       exact h_uSeq_lp.sub h_χu_lp
     have h_bound : ∀ n,
         eLpNorm (standardNirenbergTest (d := Module.finrank ℝ E) k h η
-          (u_seq n - fun x => χ x * D.u_chart x)) 2
+          (uSeq n - fun x => χ x * D.uChart x)) 2
         (volume : Measure EuclN) ≤
         (2 / ENNReal.ofReal |h|) * ENNReal.ofReal (M_η^2) *
           ((2 / ENNReal.ofReal |h|) *
-            eLpNorm (u_seq n - fun x => χ x * D.u_chart x) 2
+            eLpNorm (uSeq n - fun x => χ x * D.uChart x) 2
               (volume : Measure EuclN)) := by
       intro n
       have h_test_bound :=
@@ -1120,36 +1120,36 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
         eLpNorm_diffQuot_le_local k hh (h_aesm_diff n)
       have h_step1 :
           eLpNorm (standardNirenbergTest (d := Module.finrank ℝ E) k h η
-            (u_seq n - fun x => χ x * D.u_chart x)) 2
+            (uSeq n - fun x => χ x * D.uChart x)) 2
             (volume : Measure EuclN) ≤
           (2 / ENNReal.ofReal |h|) * ENNReal.ofReal (M_η^2) *
             eLpNorm (DifferentialGeometry.Analysis.Sobolev.diffQuot
               (d := Module.finrank ℝ E) k h
-              (u_seq n - fun x => χ x * D.u_chart x)) 2
+              (uSeq n - fun x => χ x * D.uChart x)) 2
             (volume : Measure EuclN) := h_test_bound
       have h_step2 :
           (2 / ENNReal.ofReal |h|) * ENNReal.ofReal (M_η^2) *
             eLpNorm (DifferentialGeometry.Analysis.Sobolev.diffQuot
               (d := Module.finrank ℝ E) k h
-              (u_seq n - fun x => χ x * D.u_chart x)) 2
+              (uSeq n - fun x => χ x * D.uChart x)) 2
             (volume : Measure EuclN) ≤
           (2 / ENNReal.ofReal |h|) * ENNReal.ofReal (M_η^2) *
             ((2 / ENNReal.ofReal |h|) *
-              eLpNorm (u_seq n - fun x => χ x * D.u_chart x) 2
+              eLpNorm (uSeq n - fun x => χ x * D.uChart x) 2
                 (volume : Measure EuclN)) := by gcongr
       exact h_step1.trans h_step2
     have h_diff_eLp_eq : ∀ n,
-        eLpNorm (fun x => u_seq n x - χ x * D.u_chart x) 2
+        eLpNorm (fun x => uSeq n x - χ x * D.uChart x) 2
           (volume : Measure EuclN) =
-        eLpNorm (u_seq n - fun x => χ x * D.u_chart x) 2
+        eLpNorm (uSeq n - fun x => χ x * D.uChart x) 2
           (volume : Measure EuclN) := by
       intro n; rfl
     have hu_seq_l2_tendsto' :
-        Tendsto (fun n => eLpNorm (u_seq n - fun x => χ x * D.u_chart x) 2
+        Tendsto (fun n => eLpNorm (uSeq n - fun x => χ x * D.uChart x) 2
           (volume : Measure EuclN)) atTop (𝓝 0) := by
-      have h_eq : (fun n => eLpNorm (u_seq n - fun x => χ x * D.u_chart x) 2
+      have h_eq : (fun n => eLpNorm (uSeq n - fun x => χ x * D.uChart x) 2
             (volume : Measure EuclN)) =
-          (fun n => eLpNorm (fun x => u_seq n x - χ x * D.u_chart x) 2
+          (fun n => eLpNorm (fun x => uSeq n x - χ x * D.uChart x) 2
             (volume : Measure EuclN)) := by
         funext n; rfl
       rw [h_eq]
@@ -1158,7 +1158,7 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
         Tendsto (fun n =>
           (2 / ENNReal.ofReal |h|) * ENNReal.ofReal (M_η^2) *
             ((2 / ENNReal.ofReal |h|) *
-              eLpNorm (u_seq n - fun x => χ x * D.u_chart x) 2
+              eLpNorm (uSeq n - fun x => χ x * D.uChart x) 2
                 (volume : Measure EuclN))) atTop (𝓝 0) := by
       have hh_abs_pos : 0 < |h| := abs_pos.mpr hh
       have h_const_ne_top : (2 / ENNReal.ofReal |h|) * ENNReal.ofReal (M_η^2) *
@@ -1172,11 +1172,11 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
       have h_eq_assoc : ∀ n,
           (2 / ENNReal.ofReal |h|) * ENNReal.ofReal (M_η^2) *
             ((2 / ENNReal.ofReal |h|) *
-              eLpNorm (u_seq n - fun x => χ x * D.u_chart x) 2
+              eLpNorm (uSeq n - fun x => χ x * D.uChart x) 2
                 (volume : Measure EuclN)) =
           ((2 / ENNReal.ofReal |h|) * ENNReal.ofReal (M_η^2) *
             (2 / ENNReal.ofReal |h|)) *
-            eLpNorm (u_seq n - fun x => χ x * D.u_chart x) 2
+            eLpNorm (uSeq n - fun x => χ x * D.uChart x) 2
               (volume : Measure EuclN) := by
         intro n; ring
       simp only [h_eq_assoc]
@@ -1185,8 +1185,8 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
             (2 / ENNReal.ofReal |h|)) hu_seq_l2_tendsto' (Or.inr h_const_ne_top)
       simpa using h
     rw [show (fun n => eLpNorm (fun x =>
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η (u_seq n) x -
-          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart x) 2
+          standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n) x -
+          standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart x) 2
         (volume : Measure EuclN)) = _ from funext h_eLp_eq]
     refine tendsto_of_tendsto_of_tendsto_of_le_of_le' tendsto_const_nhds h_const_tendsto
       ?_ ?_
@@ -1200,8 +1200,8 @@ theorem standardNirenbergTest_seq_tendsto_eLpNorm
   · refine Filter.Eventually.of_forall (fun n => ?_)
     exact MeasureTheory.eLpNorm_mono_measure
       (fun x =>
-        standardNirenbergTest (d := Module.finrank ℝ E) k h η (u_seq n) x -
-        standardNirenbergTest (d := Module.finrank ℝ E) k h η D.u_chart x)
+        standardNirenbergTest (d := Module.finrank ℝ E) k h η (uSeq n) x -
+        standardNirenbergTest (d := Module.finrank ℝ E) k h η D.uChart x)
       Measure.restrict_le_self
 
 end SubstitutionDischargeSmoothApprox

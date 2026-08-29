@@ -45,7 +45,7 @@ private lemma chartE_section_repr_linExt_eventuallyEq_const_at
     (x₀ : M) (w : TangentSpace I x₀) {b : M}
     (hb1 : (linExtBump (I := I) x₀ : M → ℝ) =ᶠ[𝓝 b] (fun _ => (1 : ℝ)))
     (hbbase : (trivializationAt E (TangentSpace I) x₀).baseSet ∈ 𝓝 b) :
-    chartE_section_repr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w)
+    chartESectionRepr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w)
       =ᶠ[𝓝 b] (fun _ : M => tangentCoord (I := I) x₀ w) := by
   classical
   filter_upwards [hb1, hbbase] with c hc1 hcbase
@@ -79,12 +79,12 @@ private lemma LeviCivita_covApply_linExt_firstLayer_pointwise
   rw [chartLeviCivita_apply (I := I) g x₀ (linearExtensionTangent (I := I) x₀ w) hb
     (linearExtensionTangent (I := I) x₀ v b)]
   have hfd0 :
-      fderiv ℝ (chartE_section_repr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w)
+      fderiv ℝ (chartESectionRepr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w)
           ∘ (extChartAt I x₀).symm) (extChartAt I x₀ b) = 0 := by
     have hb_src : b ∈ (extChartAt I x₀).source :=
       chartLeviCivitaGoodSet_mem_extChartAt_source (I := I) hb
     have hev :
-        (chartE_section_repr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w)
+        (chartESectionRepr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w)
             ∘ (extChartAt I x₀).symm)
           =ᶠ[𝓝 (extChartAt I x₀ b)] (fun _ : E => tangentCoord (I := I) x₀ w) := by
       have hsymm_cont : ContinuousAt (extChartAt I x₀).symm (extChartAt I x₀ b) := by
@@ -95,13 +95,13 @@ private lemma LeviCivita_covApply_linExt_firstLayer_pointwise
       have hsymm_pt : (extChartAt I x₀).symm (extChartAt I x₀ b) = b :=
         (extChartAt I x₀).left_inv hb_src
       have hmem :
-          {c : M | chartE_section_repr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w) c
+          {c : M | chartESectionRepr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w) c
             = tangentCoord (I := I) x₀ w} ∈ 𝓝 ((extChartAt I x₀).symm (extChartAt I x₀ b)) := by
         rw [hsymm_pt]; exact hconst
       filter_upwards [hsymm_cont.preimage_mem_nhds hmem] with y hy using hy
     rw [hev.fderiv_eq, fderiv_const_apply]
   rw [hfd0, zero_apply, zero_add]
-  have hreprb : chartE_section_repr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w) b =
+  have hreprb : chartESectionRepr (I := I) x₀ (linearExtensionTangent (I := I) x₀ w) b =
       tangentCoord (I := I) x₀ w := hconst.self_of_nhds
   rw [hreprb]
 
@@ -110,7 +110,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private lemma chartE_section_repr_covApply_linExt_eventuallyEq
     (g : SmoothRiemannianMetric I M) (x₀ : M) (v w : TangentSpace I x₀) :
-    (chartE_section_repr (I := I) x₀
+    (chartESectionRepr (I := I) x₀
         (DifferentialGeometry.Geometry.Curvature.covApply (LeviCivita (I := I) g)
           (linearExtensionTangent (I := I) x₀ v) (linearExtensionTangent (I := I) x₀ w))
         ∘ (extChartAt I x₀).symm)
@@ -170,7 +170,7 @@ private lemma chartE_section_repr_covApply_linExt_eventuallyEq
       (chartModelBasis E).repr
           (trivToE (I := I) x₀ b (linearExtensionTangent (I := I) x₀ v b)) =
         (chartModelBasis E).repr (tangentCoord (I := I) x₀ v) := by
-    have hVb : chartE_section_repr (I := I) x₀ (linearExtensionTangent (I := I) x₀ v) b =
+    have hVb : chartESectionRepr (I := I) x₀ (linearExtensionTangent (I := I) x₀ v) b =
         tangentCoord (I := I) x₀ v :=
       (chartE_section_repr_linExt_eventuallyEq_const_at (I := I) x₀ v hb1
         ((trivializationAt E (TangentSpace I) x₀).open_baseSet.mem_nhds hbbase)).self_of_nhds
@@ -399,7 +399,7 @@ theorem covApply_covApply_linearExtensionTangent_basepoint_eq
   rw [hev.fderiv_eq,
     fderiv_christoffelVWSum_apply (I := I) g x₀ V W (tangentCoord (I := I) x₀ v)]
   have hSx₀_repr :
-      chartE_section_repr (I := I) x₀ S x₀ =
+      chartESectionRepr (I := I) x₀ S x₀ =
         ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
           ∑ m : Fin (Module.finrank ℝ E),
             (((chartModelBasis E).repr V) i * ((chartModelBasis E).repr W) j *
@@ -540,7 +540,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma chartE_section_repr_polyCoordExtensionTangent_eventuallyEq
     (x₀ : M) (P : E → E) :
-    (chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P))
+    (chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P))
         ∘ (extChartAt I x₀).symm
       =ᶠ[𝓝 (extChartAt I x₀ x₀)]
         (fun y : E => P (y - extChartAt I x₀ x₀)) := by
@@ -551,19 +551,19 @@ lemma chartE_section_repr_polyCoordExtensionTangent_eventuallyEq
   have hbase : (trivializationAt E (TangentSpace I) x₀).baseSet ∈ 𝓝 x₀ := by
     rw [show (trivializationAt E (TangentSpace I) x₀).baseSet = (chartAt H x₀).source from rfl]
     exact (chartAt H x₀).open_source.mem_nhds (mem_chart_source H x₀)
-  have hmem : {b : M | chartE_section_repr (I := I) x₀
+  have hmem : {b : M | chartESectionRepr (I := I) x₀
         (polyCoordExtensionTangent (I := I) x₀ P) b = P (φ b - φ x₀)} ∈ 𝓝 x₀ := by
     filter_upwards [hbump1, hbase] with b hb1 hbbase
     have hWb : polyCoordExtensionTangent (I := I) x₀ P b =
         trivFromE (I := I) x₀ b (P (φ b - φ x₀)) := by
       rw [polyCoordExtensionTangent_apply, hb1, one_smul]
-    change chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) b = P
+    change chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) b = P
       (φ b - φ x₀)
     rw [chartE_section_repr_eq_trivToE, hWb]
     exact trivToE_trivFromE (I := I) x₀ hbbase _
   have hsymm_cont : ContinuousAt φ.symm (φ x₀) := continuousAt_extChartAt_symm x₀
   have hsymm_pt : φ.symm (φ x₀) = x₀ := extChartAt_to_inv x₀
-  have hpre : φ.symm ⁻¹' {b : M | chartE_section_repr (I := I) x₀
+  have hpre : φ.symm ⁻¹' {b : M | chartESectionRepr (I := I) x₀
         (polyCoordExtensionTangent (I := I) x₀ P) b = P (φ b - φ x₀)} ∈ 𝓝 (φ x₀) := by
     apply hsymm_cont.preimage_mem_nhds
     rw [hsymm_pt]; exact hmem
@@ -574,9 +574,9 @@ lemma chartE_section_repr_polyCoordExtensionTangent_eventuallyEq
       extChartAt_target_subset_interior_of_boundaryless (I := I) x₀ (φ.map_source hx₀src)
     exact Filter.mem_of_superset (isOpen_interior.mem_nhds hx₀int) interior_subset
   filter_upwards [hpre, htgt] with y hy hy_tgt
-  have hy' : chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) (φ.symm y)
+  have hy' : chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) (φ.symm y)
       = P (φ (φ.symm y) - φ x₀) := hy
-  change chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) (φ.symm y)
+  change chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) (φ.symm y)
       = P (y - φ x₀)
   rw [hy', φ.right_inv hy_tgt]
 
@@ -585,7 +585,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
 lemma chartE_section_repr_polyCoordExtensionTangent_eq
     (x₀ : M) (P : E → E) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) x₀).baseSet) :
-    chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) b =
+    chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) b =
       (linExtBump (I := I) x₀ : M → ℝ) b •
         P (extChartAt I x₀ b - extChartAt I x₀ x₀) := by
   classical
@@ -672,14 +672,14 @@ theorem covApply_polyCoordExtensionTangent_basepoint_eq
   rw [LeviCivita_chart_apply (I := I) g x₀ hself hMDiff u]
   rw [chartLeviCivita_apply (I := I) g x₀ (polyCoordExtensionTangent (I := I) x₀ P) hself u]
   have hfd :
-      fderiv ℝ (chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P)
+      fderiv ℝ (chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P)
           ∘ (extChartAt I x₀).symm) (extChartAt I x₀ x₀) =
         fderiv ℝ (fun y : E => P (y - extChartAt I x₀ x₀)) (extChartAt I x₀ x₀) :=
     (chartE_section_repr_polyCoordExtensionTangent_eventuallyEq (I := I) x₀ P).fderiv_eq
   rw [hfd, trivToE_self_apply (I := I) x₀ u]
   rw [← tangentCoord_eq_centeredChartTangentEquiv (I := I) x₀ u]
   have hrepr0 :
-      chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) x₀ = P 0 := by
+      chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) x₀ = P 0 := by
     rw [chartE_section_repr_eq_trivToE, polyCoordExtensionTangent_basepoint]
     rw [trivToE_self_apply, ContinuousLinearEquiv.apply_symm_apply]
   rw [hrepr0]
@@ -715,17 +715,17 @@ private lemma LeviCivita_covApply_polyCoordExt_firstLayer_pointwise
   rw [chartLeviCivita_apply (I := I) g x₀ (polyCoordExtensionTangent (I := I) x₀ P) hb
     (linearExtensionTangent (I := I) x₀ u b)]
   have hev :
-      (chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) ∘ φ.symm)
+      (chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) ∘ φ.symm)
         =ᶠ[𝓝 (φ b)] (fun y : E => P (y - c)) := by
     have hsymm_cont : ContinuousAt φ.symm (φ b) := continuousAt_extChartAt_symm' hb_src
     have hsymm_pt : φ.symm (φ b) = b := φ.left_inv hb_src
-    have hmem : {c' : M | chartE_section_repr (I := I) x₀
+    have hmem : {c' : M | chartESectionRepr (I := I) x₀
           (polyCoordExtensionTangent (I := I) x₀ P) c' = P (φ c' - c)} ∈ 𝓝 b := by
       filter_upwards [hb1, hbbase] with d hd1 hdbase
       have hWd : polyCoordExtensionTangent (I := I) x₀ P d =
           trivFromE (I := I) x₀ d (P (φ d - c)) := by
         rw [polyCoordExtensionTangent_apply, hd1, one_smul]
-      change chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) d = P
+      change chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) d = P
         (φ d - c)
       rw [chartE_section_repr_eq_trivToE, hWd]
       exact trivToE_trivFromE (I := I) x₀ hdbase _
@@ -734,14 +734,14 @@ private lemma LeviCivita_covApply_polyCoordExt_firstLayer_pointwise
         (chartLeviCivitaGoodSet_extChartAt_mem_interior (I := I) hb)) interior_subset
     filter_upwards [hsymm_cont.preimage_mem_nhds (by rw [hsymm_pt]; exact hmem), htgt]
       with y hy hy_tgt
-    have hy' : chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) (φ.symm y)
+    have hy' : chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) (φ.symm y)
         = P (φ (φ.symm y) - c) := hy
-    change (chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) ∘ φ.symm) y
+    change (chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) ∘ φ.symm) y
         = P (y - c)
     simp only [Function.comp_apply]
     rw [hy', φ.right_inv hy_tgt]
   have hfd :
-      fderiv ℝ (chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) ∘ φ.symm)
+      fderiv ℝ (chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) ∘ φ.symm)
         (φ b) = fderiv ℝ P (φ b - c) := by
     rw [hev.fderiv_eq]
     have hshift : HasFDerivAt (fun y : E => y - c) (ContinuousLinearMap.id ℝ E) (φ b) :=
@@ -761,7 +761,7 @@ private lemma LeviCivita_covApply_polyCoordExt_firstLayer_pointwise
     have := chartE_section_repr_coordExtensionTangent_eq (I := I) x₀ u hb_base
     rwa [chartE_section_repr_eq_trivToE] at this
   rw [hread]
-  have hreprb : chartE_section_repr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) b =
+  have hreprb : chartESectionRepr (I := I) x₀ (polyCoordExtensionTangent (I := I) x₀ P) b =
       P (φ b - c) := by
     have hWb : polyCoordExtensionTangent (I := I) x₀ P b =
         trivFromE (I := I) x₀ b (P (φ b - c)) := by
@@ -776,7 +776,7 @@ omit [SigmaCompactSpace M] in
 private lemma chartE_section_repr_covApply_polyCoordExt_eventuallyEq
     (g : SmoothRiemannianMetric I M) (x₀ : M) {P : E → E} (hP : ContDiff ℝ ∞ P)
     (u : TangentSpace I x₀) :
-    (chartE_section_repr (I := I) x₀
+    (chartESectionRepr (I := I) x₀
         (DifferentialGeometry.Geometry.Curvature.covApply (LeviCivita (I := I) g)
           (linearExtensionTangent (I := I) x₀ u)
           (polyCoordExtensionTangent (I := I) x₀ P)) ∘ (extChartAt I x₀).symm)
@@ -893,12 +893,12 @@ private lemma covApply_covApply_polyCoordExt_basepoint_reduce
   rw [chartLeviCivita_apply (I := I) g x₀ S hx₀_good u]
   rw [trivToE_self_apply (I := I) x₀ u]
   rw [← tangentCoord_eq_centeredChartTangentEquiv (I := I) x₀ u]
-  have hev' : (chartE_section_repr (I := I) x₀ S ∘ φ.symm)
+  have hev' : (chartESectionRepr (I := I) x₀ S ∘ φ.symm)
       =ᶠ[𝓝 c] innerReprPoly (I := I) g x₀ P u := hev
-  have hfd_eq : fderiv ℝ (chartE_section_repr (I := I) x₀ S ∘ φ.symm) c =
+  have hfd_eq : fderiv ℝ (chartESectionRepr (I := I) x₀ S ∘ φ.symm) c =
       fderiv ℝ (innerReprPoly (I := I) g x₀ P u) c := hev'.fderiv_eq
   rw [hfd_eq]
-  have hSx₀_repr : chartE_section_repr (I := I) x₀ S x₀ = innerReprPoly (I := I) g x₀ P u c := by
+  have hSx₀_repr : chartESectionRepr (I := I) x₀ S x₀ = innerReprPoly (I := I) g x₀ P u c := by
     have h0 := hev'.self_of_nhds
     simp only [Function.comp_apply] at h0
     rw [φ.left_inv hx₀src_ext] at h0

@@ -99,7 +99,7 @@ private lemma metricCovDerivNorm_eq_sum_sq_on_nbhd
     rw [orthoFrameBasis_apply, orthoFrameBasis_apply]
     exact smoothOrthoFrame_orthonormal (I := I) (M := M) gRef z₀ hz i j
   have hinv :
-      Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) gRef z
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) gRef z
         (orthoFrameBasis (I := I) gRef z₀ hz)
         (Tensor0SBundle.identityInvMetric
           (Idx := Fin (Module.finrank Real E))) := by

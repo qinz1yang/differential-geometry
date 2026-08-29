@@ -112,7 +112,7 @@ noncomputable def eval0SCLE (n : ℕ) :
     eval0SCLE (E := E) n Φ φ =
       Φ (fun k : Fin n => (chartModelBasis E) (φ k)) := rfl
 
-noncomputable def evalAtBasisLinear_TensorRSModel (r s : ℕ) :
+noncomputable def evalAtBasisLinearTensorRSModel (r s : ℕ) :
     TensorRSModel r s ℝ E →ₗ[ℝ]
       ((Fin r → Fin (Module.finrank ℝ E)) ×
         (Fin s → Fin (Module.finrank ℝ E)) → ℝ) where
@@ -130,12 +130,12 @@ noncomputable def evalAtBasisLinear_TensorRSModel (r s : ℕ) :
     (T : TensorRSModel r s ℝ E)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
-    evalAtBasisLinear_TensorRSModel (E := E) r s T (Idx, Jdx) =
+    evalAtBasisLinearTensorRSModel (E := E) r s T (Idx, Jdx) =
       (T ((eval0SCLE (E := E) r).symm (Pi.single Idx (1 : ℝ))))
         (fun k : Fin s => (chartModelBasis E) (Jdx k)) := rfl
 
 private lemma evalAtBasisLinear_TensorRSModel_injective (r s : ℕ) :
-    Function.Injective (evalAtBasisLinear_TensorRSModel (E := E) r s) := by
+    Function.Injective (evalAtBasisLinearTensorRSModel (E := E) r s) := by
   intro T₁ T₂ h
   have h_pt :
       ∀ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -145,7 +145,7 @@ private lemma evalAtBasisLinear_TensorRSModel_injective (r s : ℕ) :
     apply eval0SLinear_injective (E := E) s
     funext Jdx
     have h_pair := congr_fun h (Idx, Jdx)
-    simpa [evalAtBasisLinear_TensorRSModel, eval0SLinear_apply] using h_pair
+    simpa [evalAtBasisLinearTensorRSModel, eval0SLinear_apply] using h_pair
   let bPi : Module.Basis (Fin r → Fin (Module.finrank ℝ E)) ℝ
       ((Fin r → Fin (Module.finrank ℝ E)) → ℝ) :=
     Pi.basisFun ℝ (Fin r → Fin (Module.finrank ℝ E))
@@ -196,7 +196,7 @@ private lemma finrank_basis_pair_pi_loc (r s : ℕ) :
   simp [Fintype.card_fin, pow_add]
 
 private lemma evalAtBasisLinear_TensorRSModel_bijective (r s : ℕ) :
-    Function.Bijective (evalAtBasisLinear_TensorRSModel (E := E) r s) := by
+    Function.Bijective (evalAtBasisLinearTensorRSModel (E := E) r s) := by
   have : FiniteDimensional ℝ (TensorRSModel r s ℝ E) :=
     tensorRSModel_finiteDimensional r s
   have h_inj := evalAtBasisLinear_TensorRSModel_injective (E := E) r s
@@ -208,20 +208,20 @@ private lemma evalAtBasisLinear_TensorRSModel_bijective (r s : ℕ) :
     rw [finrank_tensorRSModel_loc, finrank_basis_pair_pi_loc]
   exact (LinearMap.injective_iff_surjective_of_finrank_eq_finrank h_eq).mp h_inj
 
-noncomputable def evalAtBasisCLE_TensorRSModel (r s : ℕ) :
+noncomputable def evalAtBasisCLETensorRSModel (r s : ℕ) :
     TensorRSModel r s ℝ E ≃L[ℝ]
       ((Fin r → Fin (Module.finrank ℝ E)) ×
         (Fin s → Fin (Module.finrank ℝ E)) → ℝ) :=
   haveI : FiniteDimensional ℝ (TensorRSModel r s ℝ E) :=
     tensorRSModel_finiteDimensional r s
-  (LinearEquiv.ofBijective (evalAtBasisLinear_TensorRSModel (E := E) r s)
+  (LinearEquiv.ofBijective (evalAtBasisLinearTensorRSModel (E := E) r s)
     (evalAtBasisLinear_TensorRSModel_bijective (E := E) r s)).toContinuousLinearEquiv
 
 @[simp] lemma evalAtBasisCLE_TensorRSModel_apply (r s : ℕ)
     (T : TensorRSModel r s ℝ E)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
-    evalAtBasisCLE_TensorRSModel (E := E) r s T (Idx, Jdx) =
+    evalAtBasisCLETensorRSModel (E := E) r s T (Idx, Jdx) =
       (T ((eval0SCLE (E := E) r).symm (Pi.single Idx (1 : ℝ))))
         (fun k : Fin s => (chartModelBasis E) (Jdx k)) := rfl
 
@@ -242,7 +242,7 @@ theorem contMDiffOn_into_tensorRSModel_of_eval_basis
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
         ContMDiffOn I 𝓘(ℝ, ℝ) ∞
           (fun b : M =>
-            evalAtBasisCLE_TensorRSModel (E := E) r s (f b) (Idx, Jdx)) U := by
+            evalAtBasisCLETensorRSModel (E := E) r s (f b) (Idx, Jdx)) U := by
   constructor
   · intro hf Idx Jdx
     have hCLE :
@@ -253,12 +253,12 @@ theorem contMDiffOn_into_tensorRSModel_of_eval_basis
             (Fin s → Fin (Module.finrank ℝ E)) → ℝ) ∞
           (fun T : ContinuousMultilinearMap ℝ (fun _ : Fin r => E) ℝ →L[ℝ]
                     ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ =>
-            evalAtBasisCLE_TensorRSModel (E := E) r s T) :=
-      (evalAtBasisCLE_TensorRSModel (E := E) r s).toContinuousLinearMap.contMDiff
+            evalAtBasisCLETensorRSModel (E := E) r s T) :=
+      (evalAtBasisCLETensorRSModel (E := E) r s).toContinuousLinearMap.contMDiff
     have hcomp :
         ContMDiffOn I 𝓘(ℝ, (Fin r → Fin (Module.finrank ℝ E)) ×
           (Fin s → Fin (Module.finrank ℝ E)) → ℝ) ∞
-          (fun b : M => evalAtBasisCLE_TensorRSModel (E := E) r s (f b)) U :=
+          (fun b : M => evalAtBasisCLETensorRSModel (E := E) r s (f b)) U :=
       hCLE.comp_contMDiffOn hf
     have hpi := (contMDiffOn_pi_space).1 hcomp
     exact hpi (Idx, Jdx)
@@ -266,7 +266,7 @@ theorem contMDiffOn_into_tensorRSModel_of_eval_basis
     have hpi : ContMDiffOn I
         𝓘(ℝ, (Fin r → Fin (Module.finrank ℝ E)) ×
           (Fin s → Fin (Module.finrank ℝ E)) → ℝ) ∞
-        (fun b : M => evalAtBasisCLE_TensorRSModel (E := E) r s (f b)) U := by
+        (fun b : M => evalAtBasisCLETensorRSModel (E := E) r s (f b)) U := by
       rw [contMDiffOn_pi_space]
       intro p
       exact h p.1 p.2
@@ -277,12 +277,12 @@ theorem contMDiffOn_into_tensorRSModel_of_eval_basis
                 ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) ∞
           (fun g : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)) → ℝ =>
-            (evalAtBasisCLE_TensorRSModel (E := E) r s).symm g) :=
-      ((evalAtBasisCLE_TensorRSModel (E := E) r s).symm.toContinuousLinearMap).contMDiff
+            (evalAtBasisCLETensorRSModel (E := E) r s).symm g) :=
+      ((evalAtBasisCLETensorRSModel (E := E) r s).symm.toContinuousLinearMap).contMDiff
     have hcomp := hsymm_smooth.comp_contMDiffOn hpi
     refine hcomp.congr ?_
     intro b _
-    exact ((evalAtBasisCLE_TensorRSModel (E := E) r s).symm_apply_apply (f b)).symm
+    exact ((evalAtBasisCLETensorRSModel (E := E) r s).symm_apply_apply (f b)).symm
 
 end TensorSpectral
 end Parabolic

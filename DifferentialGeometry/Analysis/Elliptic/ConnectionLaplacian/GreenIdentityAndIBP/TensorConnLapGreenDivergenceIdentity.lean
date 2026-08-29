@@ -188,7 +188,7 @@ omit [SigmaCompactSpace M] in
 lemma divergence_g_chartBasis_metricTrace_self
     (g : SmoothRiemannianMetric I M)
     (Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (b : M) :
-    divergence_g (I := I) g Z b =
+    divergenceG (I := I) g Z b =
       ∑ m : Fin (Module.finrank ℝ E), ∑ n : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g b b m n *
           g.inner b
@@ -227,7 +227,7 @@ omit [SigmaCompactSpace M] in
 lemma divergence_g_eq_smoothOrthoFrame_trace
     (g : SmoothRiemannianMetric I M)
     (Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (b : M) :
-    divergence_g (I := I) g Z b =
+    divergenceG (I := I) g Z b =
       ∑ i : Fin (Module.finrank ℝ E),
         g.inner b
           ((LeviCivita (I := I) g).toFun Z.toFun b
@@ -485,7 +485,7 @@ private lemma tensorCovDerivPointwiseInner_eq_smoothOrthoFrame_diag
 omit [CompactSpace M] [SigmaCompactSpace M] in
 lemma divergence_dirichletVF_eq
     (g : SmoothRiemannianMetric I M) (T v : SmoothCcTensor g 0 2) (b : M) :
-    divergence_g (I := I) g (dirichletVFSection (I := I) (M := M) g T v) b =
+    divergenceG (I := I) g (dirichletVFSection (I := I) (M := M) g T v) b =
       tensorCovDerivPointwiseInner (I := I) (M := M) g 0 2 T v b
         + tensorInnerPointwise (I := I) (M := M) g 0 2 b
             (TensorRSSpace.toModel
@@ -526,7 +526,7 @@ lemma divergence_dirichletVF_eq
     rw [tensorInnerPointwise_sum_left (I := I) (M := M) g 0 2 b Finset.univ _ _ _]
     refine Finset.sum_congr rfl (fun i _ => ?_)
     rw [one_mul]
-  · exact map_sum (tensorRSSpace_continuousLinearEquiv (I := I) 0 2 b)
+  · exact map_sum (tensorRSSpaceContinuousLinearEquiv (I := I) 0 2 b)
       (fun i => tensorSecondCovDeriv (I := I) g 0 2
         (smoothOrthoFrame (I := I) g b i) (smoothOrthoFrame (I := I) g b i)
         (fun y : M => T.toSection y) b) Finset.univ
@@ -544,9 +544,9 @@ theorem green_first_covGrad_l2Inner_eq_neg_rawTensorConnLap_of_closed
     dirichletVFSection (I := I) (M := M) g T v with hZ_def
   have hZ_cs : HasCompactSupport (Z : ∀ x, TangentSpace I x) :=
     HasCompactSupport.of_compactSpace _
-  have hdiv_zero : ∫ b, divergence_g (I := I) g Z b ∂μ = 0 :=
+  have hdiv_zero : ∫ b, divergenceG (I := I) g Z b ∂μ = 0 :=
     integral_divergence_eq_zero_of_hasCompactSupport (I := I) g Z hZ_cs
-  have hpt : ∀ b : M, divergence_g (I := I) g Z b =
+  have hpt : ∀ b : M, divergenceG (I := I) g Z b =
       tensorCovDerivPointwiseInner (I := I) (M := M) g 0 2 T v b
         + tensorInnerPointwise (I := I) (M := M) g 0 2 b
             (TensorRSSpace.toModel

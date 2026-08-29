@@ -53,7 +53,7 @@ theorem coordinateFrameAt_isLocalFrame (x₀ : M) :
   (coordinateTrivializationAt (I := I) x₀).isLocalFrameOn_localFrame_baseSet
     I (∞ : WithTop ℕ∞) (Module.finBasis Real E)
 
-def coordinateFrameAt_basis (x₀ : M) {x : M}
+def coordinateFrameAtBasis (x₀ : M) {x : M}
     (hx : x ∈ coordinateFrameSet (I := I) x₀) :
     Module.Basis (CoordinateIdx E) Real (TangentSpace I x) :=
   (coordinateFrameAt_isLocalFrame (I := I) x₀).toBasisAt hx
@@ -61,19 +61,19 @@ def coordinateFrameAt_basis (x₀ : M) {x : M}
 @[simp]
 theorem coordinateFrameAt_basis_apply (x₀ : M) {x : M}
     (hx : x ∈ coordinateFrameSet (I := I) x₀) (i : CoordinateIdx E) :
-    coordinateFrameAt_basis (I := I) x₀ hx i =
+    coordinateFrameAtBasis (I := I) x₀ hx i =
       coordinateFrameAt (I := I) x₀ i x := by
-  simp [coordinateFrameAt_basis]
+  simp [coordinateFrameAtBasis]
 
-def coordinateFrameAt_toBasis (x₀ : M) :
+def coordinateFrameAtToBasis (x₀ : M) :
     Module.Basis (CoordinateIdx E) Real (TangentSpace I x₀) :=
-  coordinateFrameAt_basis (I := I) x₀ (coordinateFrameAt_mem (I := I) x₀)
+  coordinateFrameAtBasis (I := I) x₀ (coordinateFrameAt_mem (I := I) x₀)
 
 @[simp]
 theorem coordinateFrameAt_toBasis_apply (x₀ : M) (i : CoordinateIdx E) :
-    coordinateFrameAt_toBasis (I := I) x₀ i =
+    coordinateFrameAtToBasis (I := I) x₀ i =
       coordinateFrameAt (I := I) x₀ i x₀ := by
-  simp [coordinateFrameAt_toBasis]
+  simp [coordinateFrameAtToBasis]
 
 theorem coordinateFrameAt_apply_of_mem {x₀ x : M}
     (hx : x ∈ coordinateFrameSet (I := I) x₀) (i : CoordinateIdx E) :
@@ -167,27 +167,27 @@ def coordinateFramePackageAt (x₀ : M) : CoordinateFrameAt (I := I) x₀ where
 def coordComponent0SAt {s : ℕ} {x₀ : M}
     (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x₀)
     (slots : Fin s -> CoordinateIdx E) : Real :=
-  component0S (I := I) (coordinateFrameAt_toBasis (I := I) x₀) A slots
+  component0S (I := I) (coordinateFrameAtToBasis (I := I) x₀) A slots
 
 @[simp]
 theorem coordComponent0SAt_apply {s : ℕ} {x₀ : M}
     (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x₀)
     (slots : Fin s -> CoordinateIdx E) :
     coordComponent0SAt (I := I) A slots =
-      A (fun a => coordinateFrameAt_toBasis (I := I) x₀ (slots a)) :=
+      A (fun a => coordinateFrameAtToBasis (I := I) x₀ (slots a)) :=
   rfl
 
 def coordComponentRSAt {r s : ℕ} {x₀ : M}
     (T : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) r s x₀)
     (upper : Fin r -> CoordinateIdx E) (lower : Fin s -> CoordinateIdx E) : Real :=
-  componentRS (I := I) (coordinateFrameAt_toBasis (I := I) x₀) T upper lower
+  componentRS (I := I) (coordinateFrameAtToBasis (I := I) x₀) T upper lower
 
 @[simp]
 theorem coordComponentRSAt_apply {r s : ℕ} {x₀ : M}
     (T : TensorRSSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) r s x₀)
     (upper : Fin r -> CoordinateIdx E) (lower : Fin s -> CoordinateIdx E) :
     coordComponentRSAt (I := I) T upper lower =
-      componentRS (I := I) (coordinateFrameAt_toBasis (I := I) x₀) T upper lower :=
+      componentRS (I := I) (coordinateFrameAtToBasis (I := I) x₀) T upper lower :=
   rfl
 
 end Coordinates

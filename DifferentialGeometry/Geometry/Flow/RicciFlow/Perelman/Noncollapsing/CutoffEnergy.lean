@@ -30,8 +30,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
   [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_cutoff_energy
     (g : SmoothRiemannianMetric I M) (a : M) {r : ℝ} (hr : 0 < r) :
     ∃ φ : M → ℝ, ContMDiff I 𝓘(ℝ, ℝ) ∞ φ ∧

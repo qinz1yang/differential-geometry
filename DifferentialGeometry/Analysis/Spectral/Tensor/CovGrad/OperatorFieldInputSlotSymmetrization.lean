@@ -33,7 +33,7 @@ private lemma ofModel_add {s : ℕ} {x : M}
     (f g : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) :
     (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x) (f + g) : Tensor0SSpace s I x) =
       Tensor0SSpace.ofModel f + Tensor0SSpace.ofModel g :=
-  map_add (tensor0SSpace_continuousLinearEquiv s x).symm f g
+  map_add (tensor0SSpaceContinuousLinearEquiv s x).symm f g
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] [CompleteSpace E] in
@@ -41,7 +41,7 @@ private lemma ofModel_smul {s : ℕ} {x : M} (c : ℝ)
     (f : ContinuousMultilinearMap ℝ (fun _ : Fin s => E) ℝ) :
     (Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x) (c • f) : Tensor0SSpace s I x) =
       c • Tensor0SSpace.ofModel f :=
-  map_smul (tensor0SSpace_continuousLinearEquiv s x).symm c f
+  map_smul (tensor0SSpaceContinuousLinearEquiv s x).symm c f
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 private lemma domDomCongr_swap_add
@@ -98,7 +98,7 @@ theorem ccSlotSwapFib_contMDiff :
     (F₂ := Tensor0SModel 2 ℝ E) (V₂ := fun x : M => Tensor0SSpace 2 I x)
     (φ := fun x => inputSlotSwapFib (I := I) (M := M) x)
   intro Y
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   classical
   have heq : (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
       (E := fun z : M => Tensor0SSpace 2 I z) x

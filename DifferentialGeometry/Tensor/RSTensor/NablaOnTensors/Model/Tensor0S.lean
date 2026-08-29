@@ -58,11 +58,11 @@ theorem covariantDeriv_tensor0SModelAt_apply_slots {s : ℕ}
     (ΓX : E →L[𝕜] E)
     (α : Tensor0SModel (𝕜 := 𝕜) (E := E) s)
     (slots : Fin s → E) :
-    covariantDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) s dα_X ΓX α slots =
+    covariantDerivTensor0SModelAt (𝕜 := 𝕜) (E := E) s dα_X ΓX α slots =
       dα_X slots -
         ∑ a : Fin s, α (Function.update slots a (ΓX (slots a))) := by
   classical
-  unfold covariantDeriv_tensor0SModelAt lieDeriv_correction substituteArg
+  unfold covariantDerivTensor0SModelAt lieDerivCorrection substituteArg
   simp only [sub_apply, sum_apply,
     ContinuousMultilinearMap.compContinuousLinearMap_apply]
   congr 1
@@ -79,10 +79,10 @@ theorem covariantDeriv_tensor0SModelWithin_apply_slots {s : ℕ}
     (X : E → E) (ΓX : E → E →L[𝕜] E)
     (α : E → Tensor0SModel (𝕜 := 𝕜) (E := E) s) (u : Set E) (x : E)
     (slots : Fin s → E) :
-    covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) s X ΓX α u x slots =
+    covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E) s X ΓX α u x slots =
       fderivWithin 𝕜 α u x (X x) slots -
         ∑ a : Fin s, α x (Function.update slots a (ΓX x (slots a))) := by
-  unfold covariantDeriv_tensor0SModelWithin
+  unfold covariantDerivTensor0SModelWithin
   exact covariantDeriv_tensor0SModelAt_apply_slots (𝕜 := 𝕜) (E := E)
     (fderivWithin 𝕜 α u x (X x)) (ΓX x) (α x) slots
 
@@ -90,11 +90,11 @@ theorem lieDeriv_correctionL_apply_slots {s : ℕ}
     (ΓX : E →L[𝕜] E)
     (α : Tensor0SModel (𝕜 := 𝕜) (E := E) s)
     (slots : Fin s → E) :
-    (lieDeriv_correctionL (𝕜 := 𝕜) (E := E) s ΓX α) slots =
+    (lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s ΓX α) slots =
       ∑ a : Fin s, α (Function.update slots a (ΓX (slots a))) := by
   classical
   rw [lieDeriv_correctionL_apply]
-  unfold lieDeriv_correction substituteArg
+  unfold lieDerivCorrection substituteArg
   simp only [sum_apply,
     ContinuousMultilinearMap.compContinuousLinearMap_apply]
   refine Finset.sum_congr rfl fun a _ => ?_

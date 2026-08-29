@@ -47,7 +47,7 @@ private lemma differentiableAt_chartTrivRepr_of_contMDiff_section
     DifferentiableAt ℝ (fun y : E => chartTrivRepr (I := I) α (X t) y) z := by
   have hz : z ∈ (extChartAt I α).target := interior_subset hz_int
   have hpull : ContDiffOn ℝ ∞
-      (chartE_section_repr (I := I) α (X t) ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α (X t) ∘ (extChartAt I α).symm)
       ((extChartAt I α) ''
         ((chartAt H α).source ∩ (trivializationAt E (TangentSpace I) α).baseSet) ∩
         (extChartAt I α).target) :=
@@ -64,7 +64,7 @@ private lemma differentiableAt_chartTrivRepr_of_contMDiff_section
   have hSnhds : S ∈ 𝓝 z :=
     Filter.mem_of_superset (isOpen_interior.mem_nhds hz_int) hsubset
   have hdw : DifferentiableWithinAt ℝ
-      (chartE_section_repr (I := I) α (X t) ∘ (extChartAt I α).symm) S z :=
+      (chartESectionRepr (I := I) α (X t) ∘ (extChartAt I α).symm) S z :=
     (hpull z (hsubset hz_int)).differentiableWithinAt (by simp)
   exact hdw.differentiableAt hSnhds
 

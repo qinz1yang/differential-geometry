@@ -28,11 +28,11 @@ theorem holder_Moser
     ∃ v : E → ℝ,
       (∀ᵐ x ∂μ1, v x = u x) ∧
       ∃ α > 0,
-        Real.exp (-(C_holder_Moser d * A.1.Λ ^ ((1 : ℝ) / 2))) ≤ α ∧
+        Real.exp (-(CHolderMoser d * A.1.Λ ^ ((1 : ℝ) / 2))) ≤ α ∧
         ∀ x ∈ Metric.ball (0 : E) (1 / 2 : ℝ),
         ∀ y ∈ Metric.ball (0 : E) (1 / 2 : ℝ),
           |v x - v y| ≤
-            C_holder_Moser d * A.1.Λ ^ ((d : ℝ) / (2 * p₀)) *
+            CHolderMoser d * A.1.Λ ^ ((d : ℝ) / (2 * p₀)) *
               (p₀ / (p₀ - 1)) ^ ((d : ℝ) / p₀) *
               (∫ z in Metric.ball (0 : E) 1, |u z| ^ p₀ ∂volume) ^ ((1 : ℝ) / p₀) *
               ‖x - y‖ ^ α := by
@@ -67,11 +67,11 @@ theorem holder_Moser_of_homogeneousWeakSolution
     ∃ v : E → ℝ,
       (∀ᵐ x ∂μ1, v x = u x) ∧
       ∃ α > 0,
-        Real.exp (-(C_holder_Moser d * A.1.Λ ^ ((1 : ℝ) / 2))) ≤ α ∧
+        Real.exp (-(CHolderMoser d * A.1.Λ ^ ((1 : ℝ) / 2))) ≤ α ∧
         ∀ x ∈ Metric.ball (0 : E) (1 / 2 : ℝ),
         ∀ y ∈ Metric.ball (0 : E) (1 / 2 : ℝ),
           |v x - v y| ≤
-            C_holder_Moser d * A.1.Λ ^ ((d : ℝ) / (2 * p₀)) *
+            CHolderMoser d * A.1.Λ ^ ((d : ℝ) / (2 * p₀)) *
               (p₀ / (p₀ - 1)) ^ ((d : ℝ) / p₀) *
               (∫ z in Metric.ball (0 : E) 1, |u z| ^ p₀ ∂volume) ^ ((1 : ℝ) / p₀) *
               ‖x - y‖ ^ α := by

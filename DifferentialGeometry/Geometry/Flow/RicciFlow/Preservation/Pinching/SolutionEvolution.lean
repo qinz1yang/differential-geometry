@@ -46,7 +46,7 @@ noncomputable def ricciCovariantDerivativeSection
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 3 :=
-  (CanonicalSpatialDerivs0S.of_smooth_connection
+  (CanonicalSpatialDerivs0S.ofSmoothConnection
     (E := E) (H := H) (I := I) (M := M)
     (S.base.connection t)
     (by
@@ -122,7 +122,7 @@ theorem pinch_quotient_evolution_of_solution_sections
   let basis :
       forall (_t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D) (x : M),
         Module.Basis Idx Real (TangentSpace I x) :=
-    fun _t x => DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+    fun _t x => DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let gInv :
       forall (_t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
         (_x : M),
@@ -142,14 +142,14 @@ theorem pinch_quotient_evolution_of_solution_sections
     simpa [basis, gInv, flowG] using coordInvReal (I := I) S x (t : Real)
   · intro t x
     simp [ricciGradSq, ricciCovariantDerivativeSection, flowG,
-      CanonicalSpatialDerivs0S.of_smooth_connection]
+      CanonicalSpatialDerivs0S.ofSmoothConnection]
   · intro t x
     simp [ricciNorm, flowG]
   · intro t
     exact (flowG (I := I) S).metricCompatible (t : Real)
   · intro t
     simpa [ricciCovariantDerivativeSection, flowG] using
-      (CanonicalSpatialDerivs0S.of_smooth_connection
+      (CanonicalSpatialDerivs0S.ofSmoothConnection
         (E := E) (H := H) (I := I) (M := M)
         (S.base.connection (t : Real))
         (by
@@ -194,14 +194,14 @@ theorem ricci_is_symmetric
   classical
   let basis : Module.Basis (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
       Real (TangentSpace I x) :=
-    DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x
+    DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x
   let gInv :
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
         DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real := fun k l =>
-    DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+    DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
       (I := I) (S.base.metric t) x k l (extChartAt I x x)
   have hinv :
-      MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis gInv := by
+      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv := by
     simpa [basis, gInv] using
       Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) (S.base.metric t) x
@@ -395,7 +395,7 @@ theorem trace_free_ricci_reaction_relation_of_smooth_solution
     (Ric := S.ricciAt t x) (Rm04 := S.base.rm04 t x)
     (basis := basis) (riemann_from_ricci_trace_data (I := I) S horth) hdiag hcube hR
   have hinv :
-      MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis
+      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
         DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) (S.base.metric t) basis
       horth
@@ -637,7 +637,7 @@ theorem trace_free_ricci_norm_sq_nonneg
       _ = DifferentialGeometry.Geometry.Curvature.ricciEigenScalar3 l1 l2 l3 := by
             exact scalar_eq_diag (I := I) hscalarTrace hdiag
   have hinv :
-      MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis
+      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
         DifferentialGeometry.Geometry.Curvature.delta3 :=
     DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) (S.base.metric t)
       basis horth

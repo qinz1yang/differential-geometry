@@ -396,7 +396,7 @@ lemma tensor0S_curry_nablaTensor0SCurv_succ_eq
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (X Y Z : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (A : Π b : M, Tensor0SSpace (s + 1) I b) (hA : TensorSmooth (I := I) (s + 1) A) (x : M) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         (nablaTensor0SCurv (I := I) g (s + 1) X Y Z A x) =
       nablaRiemannSec (LeviCivita (I := I) g) (homGenS (I := I) (M := M) g s)
         (fun b => X b) (fun b => Y b) (fun b => Z b) (curriedSection I M A) x := by

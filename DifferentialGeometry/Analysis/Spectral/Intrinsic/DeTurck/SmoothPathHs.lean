@@ -27,14 +27,14 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M] in
 private theorem rankZero_one (x : M) (A : Tensor0SSpace 0 I x) :
-    tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x A •
+    tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x A •
         Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
           (I := I) (M := M) ∞ x = A := by
-  apply (tensor0SSpace_continuousLinearEquiv 0 x).injective
+  apply (tensor0SSpaceContinuousLinearEquiv 0 x).injective
   apply ContinuousMultilinearMap.ext
   intro v
   change Tensor0SSpace.toModel
-      (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x A •
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x A •
         Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
           (I := I) (M := M) ∞ x) v = Tensor0SSpace.toModel A v
   rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul,

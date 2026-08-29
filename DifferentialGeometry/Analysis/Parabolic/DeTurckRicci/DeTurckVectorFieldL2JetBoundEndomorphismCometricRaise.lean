@@ -177,22 +177,22 @@ private lemma deTurckVectorFieldCovector_unitModel_apply (g₀ g₁ g_bg : Smoot
   rw [hdiag]
   rw [show Tensor0SSpace.toModel
         (∑ i : Fin (Module.finrank ℝ E),
-          tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+          tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
               (smoothOrthoFrame (I := I) g₁ x i x))
             (smoothOrthoFrame (I := I) g₁ x i x)) =
       ∑ i : Fin (Module.finrank ℝ E),
         Tensor0SSpace.toModel
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
               (smoothOrthoFrame (I := I) g₁ x i x))
             (smoothOrthoFrame (I := I) g₁ x i x)) from
-    map_sum (tensor0SSpace_continuousLinearEquiv (𝕜 := ℝ) (I := I) 1 x) _ _]
+    map_sum (tensor0SSpaceContinuousLinearEquiv (𝕜 := ℝ) (I := I) 1 x) _ _]
   rw [sum_apply]
   have hterm : ∀ i : Fin (Module.finrank ℝ E),
       Tensor0SSpace.toModel
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
               (smoothOrthoFrame (I := I) g₁ x i x))
             (smoothOrthoFrame (I := I) g₁ x i x))
           (tangentModel x (fun _ : Fin 1 => z)) =
@@ -201,7 +201,7 @@ private lemma deTurckVectorFieldCovector_unitModel_apply (g₀ g₁ g_bg : Smoot
           (smoothOrthoFrame (I := I) g₁ x i x)) z := by
     intro i
     rw [TensorMultilinear.tensor0S_curry_toModel_apply_tangent (I := I) (M := M)
-      (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+      (T := tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
         (smoothOrthoFrame (I := I) g₁ x i x))
       (v0 := smoothOrthoFrame (I := I) g₁ x i x)
       (vs := tangentModel x (fun _ : Fin 1 => z))]
@@ -472,14 +472,14 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 lemma interior_product_toModel_eval' (s : ℕ) (x : M) (v : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (w : Fin s → TangentSpace I x) :
     Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D)
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D)
         (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (w i)) =
       Tensor0SSpace.toModel D
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
           (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (w i))) := by
   have h1 : Tensor0SSpace.toModel
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) =
-      Tensor0SBundle.model_interior_product (𝕜 := ℝ) (E := E) s
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D) =
+      Tensor0SBundle.modelInteriorProduct (𝕜 := ℝ) (E := E) s
         (tangentSpaceModelContinuousLinearEquiv (I := I) x v)
         (Tensor0SSpace.toModel D) := rfl
   rw [h1]
@@ -601,14 +601,14 @@ private lemma cotangentToDual_cometricRaise_wAlpha
   rw [cotangentToDual_apply]
   rw [cometricRaiseSlot0Field_toSection]
   rw [cometricRaiseSlot0Fib_clm_apply (I := I) g₀ 0 x _ om]
-  rw [show (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (0 + 1) x
+  rw [show (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (0 + 1) x
           (inverseMetricSharpFib (I := I) g₀ x om)
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (0 + 2) I x from
             (deTurckVectorFieldCovariantDerivativeEndomorphismBilin (I := I) (M := M) g₀ g₁ g_bg).toSection x)
             (unitTensor (I := I) (M := M) x))
           (fun _ : Fin 1 => w) : ℝ) =
       Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (0 + 1) x
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (0 + 1) x
           (inverseMetricSharpFib (I := I) g₀ x om)
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (0 + 2) I x from
               (deTurckVectorFieldCovariantDerivativeEndomorphismBilin (I := I) (M := M) g₀ g₁ g_bg).toSection x)

@@ -115,20 +115,20 @@ lemma finrank_continuousLinearMap :
   rw [e.finrank_eq]
   rw [Module.finrank_linearMap 𝕜 𝕜]
 
-def cDual_eqiv_dual : cDual 𝕜 F₁ ≃ₗ[𝕜] Module.Dual 𝕜 F₁ := by
+def cDualEqivDual : cDual 𝕜 F₁ ≃ₗ[𝕜] Module.Dual 𝕜 F₁ := by
   unfold cDual Module.Dual
   exact (@LinearMap.toContinuousLinearMap 𝕜 _ F₁ _ _ _ _ _ 𝕜 _ _ _ _ _ _ _ _).symm
 
-def cDual_clm_equiv_dual_lm : (cDual 𝕜 F₁ →L[𝕜] F₂) ≃ₗ[𝕜] (Module.Dual 𝕜 F₁ →ₗ[𝕜] F₂) := by
+def cDualClmEquivDualLm : (cDual 𝕜 F₁ →L[𝕜] F₂) ≃ₗ[𝕜] (Module.Dual 𝕜 F₁ →ₗ[𝕜] F₂) := by
   have e : (cDual 𝕜 F₁ →L[𝕜] F₂) ≃ₗ[𝕜] (cDual 𝕜 F₁ →ₗ[𝕜] F₂) := LinearMap.toContinuousLinearMap.symm
   have e' : (cDual 𝕜 F₁ →ₗ[𝕜] F₂) ≃ₗ[𝕜] (Module.Dual 𝕜 F₁ →ₗ[𝕜] F₂) :=
-    LinearEquiv.congrLeft F₂ 𝕜 (cDual_eqiv_dual 𝕜 F₁)
+    LinearEquiv.congrLeft F₂ 𝕜 (cDualEqivDual 𝕜 F₁)
   exact LinearEquiv.trans e e'
 
 noncomputable def clmEquiv : (F₁ ⊗[𝕜] F₂) ≃ₗ[𝕜] (cDual 𝕜 F₁ →L[𝕜] F₂) :=
-  LinearEquiv.trans (tensorHomEquiv 𝕜 F₁ F₂) (cDual_clm_equiv_dual_lm 𝕜 F₁ F₂).symm
+  LinearEquiv.trans (tensorHomEquiv 𝕜 F₁ F₂) (cDualClmEquivDualLm 𝕜 F₁ F₂).symm
 
-noncomputable instance instNormedAddCommGroup_tensor :
+noncomputable instance instNormedAddCommGroupTensor :
     NormedAddCommGroup (F₁ ⊗[𝕜] F₂) :=
 by
   classical
@@ -141,7 +141,7 @@ by
     ?_
   exact e.injective
 
-noncomputable instance instNormedSpace_tensor :
+noncomputable instance instNormedSpaceTensor :
     NormedSpace 𝕜 (F₁ ⊗[𝕜] F₂) :=
 by
   classical

@@ -56,7 +56,7 @@ omit [BoundarylessManifold I M] [T2Space M] in
 lemma tensor0S_curry_covGradBundleEquiv_unit_genVal
     (s : ℕ) (x : M) (Φ : TangentSpace I x →L[ℝ] TensorRSSpace 0 s I x)
     (v : TangentSpace I x) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
           (unitZeroSec (I := I) (M := M) x)) v =
@@ -66,7 +66,7 @@ lemma tensor0S_curry_covGradBundleEquiv_unit_genVal
   apply Tensor0SSpace.toModel_injective
   refine ContinuousMultilinearMap.ext (fun m => ?_)
   rw [show Tensor0SSpace.toModel
-      (tensor0S_curry (I := I) (M := M) s x
+      (tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           covGradBundleEquiv (I := I) (M := M) 0 s x Φ)
           (unitZeroSec (I := I) (M := M) x)) v) m =
@@ -177,7 +177,7 @@ lemma covGrad_covDeriv_leadingSlot_eq_abstractHess
     {Y Z : Π b : M, TangentSpace I b}
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y))
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Z)) (x : M) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (tensorCov (I := I) g 0 (s + 1)).toFun
             (fun z : M => (covGrad (I := I) (M := M) g 0 s S).toSection z) x (Y x))
@@ -212,7 +212,7 @@ lemma covGrad_covDeriv_inner_leadingSlot_eq_abstractIter
     (g : SmoothRiemannianMetric I M) (s : ℕ) (S : SmoothCcTensor g 0 s)
     {Y : Π b : M, TangentSpace I b}
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y)) (x : M) (w : TangentSpace I x) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           covGradBundleEquiv (I := I) (M := M) 0 s x
             ((tensorCov (I := I) g 0 s).toFun
@@ -263,12 +263,12 @@ theorem covGrad_covDeriv_leadingSlot_commutation
     {Y Z : Π b : M, TangentSpace I b}
     (hY : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Y))
     (hZ : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% Z)) (x : M) :
-    tensor0S_curry (I := I) (M := M) s x
+    tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           (tensorCov (I := I) g 0 (s + 1)).toFun
             (fun z : M => (covGrad (I := I) (M := M) g 0 s S).toSection z) x (Y x))
           (unitZeroSec (I := I) (M := M) x)) (Z x) -
-      tensor0S_curry (I := I) (M := M) s x
+      tensor0SCurry (I := I) (M := M) s x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
           covGradBundleEquiv (I := I) (M := M) 0 s x
             ((tensorCov (I := I) g 0 s).toFun

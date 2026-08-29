@@ -117,7 +117,7 @@ def HasWeakRiemannianGrad
   ∀ X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯,
     HasCompactSupport (fun x : M => (X x : E)) →
       ∫ x, g.inner x (G x) (X x) ∂(riemannianVolumeMeasure I M g) =
-        -∫ x, u x * divergence_g (I := I) g X x
+        -∫ x, u x * divergenceG (I := I) g X x
           ∂(riemannianVolumeMeasure I M g)
 
 lemma HasWeakRiemannianGrad.pairing_eq
@@ -127,7 +127,7 @@ lemma HasWeakRiemannianGrad.pairing_eq
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (hX : HasCompactSupport (fun x : M => (X x : E))) :
     ∫ x, g.inner x (G x) (X x) ∂(riemannianVolumeMeasure I M g) =
-      -∫ x, u x * divergence_g (I := I) g X x
+      -∫ x, u x * divergenceG (I := I) g X x
         ∂(riemannianVolumeMeasure I M g) := h X hX
 
 def MemW1pIntrinsic
@@ -151,7 +151,7 @@ theorem integral_inner_gradFun_eq_neg_integral_mul_divergence
     (hX : HasCompactSupport (fun x : M => (X x : E))) :
     ∫ x, g.inner x (gradFun (I := I) g u x) (X x)
         ∂(riemannianVolumeMeasure I M g) =
-      -∫ x, u x * divergence_g (I := I) g X x
+      -∫ x, u x * divergenceG (I := I) g X x
         ∂(riemannianVolumeMeasure I M g) := by
   have hpointwise : ∀ x : M,
       g.inner x (gradFun (I := I) g u x) (X x) =
@@ -168,13 +168,13 @@ theorem hasWeakRiemannianGrad_grad_g_of_contMDiff
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
     (g : SmoothRiemannianMetric I M)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
-    HasWeakRiemannianGrad (I := I) (M := M) g u (grad_g (I := I) g ⟨_, hu⟩) := by
+    HasWeakRiemannianGrad (I := I) (M := M) g u (gradG (I := I) g ⟨_, hu⟩) := by
   intro X hX
   have hcoe : ∀ x : M,
-      ((grad_g (I := I) g ⟨_, hu⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
+      ((gradG (I := I) g ⟨_, hu⟩ : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
         gradFun (I := I) g u x := fun x => grad_g_apply (I := I) g ⟨_, hu⟩ x
   rw [show (fun x : M =>
-        g.inner x ((grad_g (I := I) g ⟨_, hu⟩ :
+        g.inner x ((gradG (I := I) g ⟨_, hu⟩ :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) (X x)) =
         (fun x : M => g.inner x (gradFun (I := I) g u x) (X x)) from by
       funext x; rw [hcoe x]]
@@ -186,10 +186,10 @@ theorem MemW1pIntrinsic_of_contMDiff
     (g : SmoothRiemannianMetric I M) (p : ℝ≥0∞)
     {u : M → ℝ} (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u) :
     MemW1pIntrinsic (I := I) (M := M) g p u := by
-  refine ⟨?_, grad_g (I := I) g ⟨_, hu⟩, ?_, ?_⟩
+  refine ⟨?_, gradG (I := I) g ⟨_, hu⟩, ?_, ?_⟩
   · exact continuous_memLp_of_compactSpace g p hu.continuous
   · exact hasWeakRiemannianGrad_grad_g_of_contMDiff (I := I) (M := M) g hu
-  · have hcont := continuous_g_norm_smooth_section g (grad_g (I := I) g ⟨_, hu⟩)
+  · have hcont := continuous_g_norm_smooth_section g (gradG (I := I) g ⟨_, hu⟩)
     exact continuous_memLp_of_compactSpace g p hcont
 
 theorem HasWeakRiemannianGrad.add
@@ -224,9 +224,9 @@ theorem HasWeakRiemannianGrad.add
       (continuous_g_inner_smooth_sections g G' X)
   rw [integral_add h_int_G h_int_G']
   rw [h₁.pairing_eq X hX, h₂.pairing_eq X hX]
-  have h_div_cont : Continuous (divergence_g (I := I) g X) :=
+  have h_div_cont : Continuous (divergenceG (I := I) g X) :=
     (divergence_g_contMDiff (I := I) g X).continuous
-  have h_int_uX : Integrable (fun x : M => u x * divergence_g (I := I) g X x)
+  have h_int_uX : Integrable (fun x : M => u x * divergenceG (I := I) g X x)
       (riemannianVolumeMeasure I M g) := by
     have hu_one : MemLp u 1 (riemannianVolumeMeasure I M g) :=
       hu.mono_exponent hp
@@ -238,7 +238,7 @@ theorem HasWeakRiemannianGrad.add
     · filter_upwards with x
       rw [Real.norm_eq_abs]
       exact hC x
-  have h_int_vX : Integrable (fun x : M => v x * divergence_g (I := I) g X x)
+  have h_int_vX : Integrable (fun x : M => v x * divergenceG (I := I) g X x)
       (riemannianVolumeMeasure I M g) := by
     have hv_one : MemLp v 1 (riemannianVolumeMeasure I M g) :=
       hv.mono_exponent hp
@@ -250,13 +250,13 @@ theorem HasWeakRiemannianGrad.add
     · filter_upwards with x
       rw [Real.norm_eq_abs]
       exact hC x
-  rw [show (-∫ x, u x * divergence_g (I := I) g X x
+  rw [show (-∫ x, u x * divergenceG (I := I) g X x
             ∂(riemannianVolumeMeasure I M g)) +
-        (-∫ x, v x * divergence_g (I := I) g X x
+        (-∫ x, v x * divergenceG (I := I) g X x
             ∂(riemannianVolumeMeasure I M g)) =
-      -((∫ x, u x * divergence_g (I := I) g X x
+      -((∫ x, u x * divergenceG (I := I) g X x
             ∂(riemannianVolumeMeasure I M g)) +
-        (∫ x, v x * divergence_g (I := I) g X x
+        (∫ x, v x * divergenceG (I := I) g X x
             ∂(riemannianVolumeMeasure I M g))) from by ring]
   rw [← integral_add h_int_uX h_int_vX]
   congr 1
@@ -292,7 +292,7 @@ theorem HasWeakRiemannianGrad.zero
   rw [show (fun x : M =>
       g.inner x ((0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) (X x)) =
       (fun _ : M => (0 : ℝ)) from by funext x; exact h_LHS x]
-  rw [show (fun x : M => (0 : ℝ) * divergence_g (I := I) g X x) =
+  rw [show (fun x : M => (0 : ℝ) * divergenceG (I := I) g X x) =
       (fun _ : M => (0 : ℝ)) from by funext x; simp]
   simp [integral_zero]
 
@@ -335,9 +335,9 @@ theorem HasWeakRiemannianGrad.const_smul
   rw [integral_congr_ae (Filter.Eventually.of_forall hpt)]
   rw [integral_const_mul c]
   rw [h.pairing_eq X hX]
-  have h_div_cont : Continuous (divergence_g (I := I) g X) :=
+  have h_div_cont : Continuous (divergenceG (I := I) g X) :=
     (divergence_g_contMDiff (I := I) g X).continuous
-  have h_int_uX : Integrable (fun x : M => u x * divergence_g (I := I) g X x)
+  have h_int_uX : Integrable (fun x : M => u x * divergenceG (I := I) g X x)
       (riemannianVolumeMeasure I M g) := by
     have hu_one : MemLp u 1 (riemannianVolumeMeasure I M g) :=
       hu.mono_exponent hp
@@ -349,8 +349,8 @@ theorem HasWeakRiemannianGrad.const_smul
     · filter_upwards with x
       rw [Real.norm_eq_abs]
       exact hC x
-  have hcong : (fun x : M => (c * u x) * divergence_g (I := I) g X x) =
-      (fun x : M => c * (u x * divergence_g (I := I) g X x)) := by
+  have hcong : (fun x : M => (c * u x) * divergenceG (I := I) g X x) =
+      (fun x : M => c * (u x * divergenceG (I := I) g X x)) := by
     funext x; ring
   rw [hcong, integral_const_mul]
   ring

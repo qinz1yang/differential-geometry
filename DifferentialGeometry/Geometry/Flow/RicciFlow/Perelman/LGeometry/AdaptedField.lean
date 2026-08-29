@@ -371,8 +371,8 @@ private theorem movingRicciPair_smooth
       chartCoord (E := E) i (urep s) * chartCoord (E := E) j (wrep s)
   simp only [chartGramOnE_def, hu_eq]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private theorem adaptCoeff_smooth

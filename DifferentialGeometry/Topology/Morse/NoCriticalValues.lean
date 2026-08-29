@@ -274,7 +274,7 @@ theorem reverseFlow_value_on_levelSet {n : ℕ} {H : Type} [TopologicalSpace H] 
     exact hmain
   linarith
 
-noncomputable def no_critical_value_sublevelHomeomorph [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M]
+noncomputable def noCriticalValueSublevelHomeomorph [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M]
     [T2Space M] [SigmaCompactSpace M]
     (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f) {a b : ℝ} (hab : a ≤ b)
     (hcompact : IsCompact (f ⁻¹' Set.Icc a b))

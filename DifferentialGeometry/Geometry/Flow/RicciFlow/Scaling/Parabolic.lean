@@ -302,19 +302,19 @@ private theorem metricTracePair0SAt_scaleMetric
   classical
   let basis : Module.Basis (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E)
     Real
-      (TangentSpace I x) := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis
+      (TangentSpace I x) := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis
         (I := I) x
   let gInv : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E ->
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
     fun k l =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component (I := I) g x k
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent (I := I) g x k
         l
         (extChartAt I x x)
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis gInv :=
+  have hinv : MetricInverseInBasisGen (I := I) g x basis gInv :=
     Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
       (I := I) g x
   have hinvScale :
-      MetricInverseInBasis_gen (I := I) (scaleMetric (I := I) c hc g) x basis
+      MetricInverseInBasisGen (I := I) (scaleMetric (I := I) c hc g) x basis
         (fun i j => c⁻¹ * gInv i j) :=
     metricInvBasis_scale (I := I) c hc g basis gInv hinv
   rw [DifferentialGeometry.Geometry.Operator.metricTracePair0SAt_eq_sum_basis (I := I)

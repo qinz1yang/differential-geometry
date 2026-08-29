@@ -14,9 +14,9 @@ export DeGiorgi (HasWeakPartialDeriv HasWeakGrad HasWeakDiv)
 
 export DeGiorgi (MemW1p MemW1pWitness MemW01p)
 
-export DeGiorgi (sobolev_smooth sobolev_of_approx C_gns)
+export DeGiorgi (sobolev_smooth sobolev_of_approx CGns)
 
-export DeGiorgi (C_poinc_val poincare_unitBall_W1p_public)
+export DeGiorgi (CPoincVal poincare_unitBall_W1p_public)
 
 export DeGiorgi (sobolev_poincare_unitBall)
 

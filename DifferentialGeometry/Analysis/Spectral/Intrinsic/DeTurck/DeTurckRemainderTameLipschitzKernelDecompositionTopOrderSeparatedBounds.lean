@@ -701,7 +701,7 @@ private theorem reindexCoeffFibGen_innerContractionSwapPerm_eq_comp
         (I := I) 2 s
         DifferentialGeometry.Analysis.Parabolic.TensorSpectral.innerContractionSwapPerm x A =
       A.comp (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.slotPermCLM
-        (I := I) DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm2_10 x) := by
+        (I := I) DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm210 x) := by
   apply ContinuousLinearMap.ext
   intro D
   rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.reindexCoeffFibGen_apply,
@@ -798,25 +798,25 @@ private theorem order0KernelField_eq_arm_combination (g₀ g₁ : SmoothRiemanni
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.connectionDifferenceGradContrInsertionField_toSection]
   simp only [reindexCoeffFibGen_innerContractionSwapPerm_eq_comp]
   rw [show orderZeroKernelOutputPermutation3201 =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm4_3201 from rfl,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm43201 from rfl,
     show orderZeroKernelOutputPermutation2301 =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm4_2301 from rfl,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm42301 from rfl,
     show orderZeroKernelOutputPermutation3102 =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm4_3102 from rfl,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm43102 from rfl,
     show orderZeroKernelOutputPermutation1302 =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm4_1302 from rfl,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm41302 from rfl,
     show orderZeroKernelOutputPermutation1203 =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm4_1203 from rfl,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm41203 from rfl,
     show orderZeroKernelOutputPermutation2103 =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm4_2103 from rfl,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm42103 from rfl,
     show orderZeroKernelOutputPermutation3012 =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm4_3012 from rfl,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm43012 from rfl,
     show orderZeroKernelOutputPermutation2013 =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm4_2013 from rfl,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm42013 from rfl,
     show orderZeroKernelMiddlePermutation102 =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm3_102 from rfl,
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm3102 from rfl,
     show orderZeroKernelMiddlePermutation120 =
-      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm3_120 from rfl]
+      DifferentialGeometry.Analysis.Parabolic.TensorSpectral.perm3120 from rfl]
   unfold DifferentialGeometry.Analysis.Parabolic.TensorSpectral.linearizedRicciConnectionDifferenceOrder0CLM
   simp only [slotPermutationCc0_toSection]
   simp only [ContinuousLinearMap.comp_assoc]
@@ -1521,7 +1521,7 @@ private lemma fiberNormSqComponent_slotExtendFib_eq
   rw [slotExtendFib_apply_eval (I := I) (M := M) r s x A
     (coframeS (I := I) (M := M) g x (r + 1) e K') (eX (e (J' 0)))
     (fun k : Fin s => eX (e (J' (Fin.succ k))))]
-  have hcurry : (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x)
+  have hcurry : (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x)
         (coframeS (I := I) (M := M) g x (r + 1) e K') (e (J' 0)) =
       (if J' 0 = K' 0 then (1 : ℝ) else 0) •
         coframeS (I := I) (M := M) g x r e (fun k => K' (Fin.succ k)) := by
@@ -1579,7 +1579,7 @@ private lemma cometric_frame_sum_eq_inverseMetricSharp (g₀ g₁ : SmoothRieman
             ((Module.finBasis ℝ E) k)) •
           (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
             (DeTurck.cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k))) =
       inverseMetricSharpFib (I := I) g₁ x
         (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.g0FlatCLM (I := I) g₀ x b) := by
@@ -1601,7 +1601,7 @@ private lemma cometric_frame_sum_eq_inverseMetricSharp (g₀ g₁ : SmoothRieman
   have hlhs : ∀ k : Fin (Module.finrank ℝ E),
       (g₁.inner x (g₀.inner x b (eX.symm ((Module.finBasis ℝ E) k)) •
           eX.symm (DeTurck.cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k))))) w =
         g₀.inner x b (eX.symm ((Module.finBasis ℝ E) k)) *
           (Module.finBasis ℝ E).repr (eX w) k := by
@@ -1609,19 +1609,19 @@ private lemma cometric_frame_sum_eq_inverseMetricSharp (g₀ g₁ : SmoothRieman
     rw [ContinuousLinearMap.map_smul, smul_apply, smul_eq_mul]
     congr 1
     have hinner : g₁.inner x (eX.symm (DeTurck.cometricLmodel (I := I) g₁ x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis k)))) w =
         (Module.finBasis ℝ E).cDualBasis k (eX w) := by
       have h1 : eX.symm (DeTurck.cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k))) =
           inverseMetricSharpFib (I := I) g₁ x
-            ((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (𝕜 := ℝ) (I := I) 1 x).symm
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            ((Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (𝕜 := ℝ) (I := I) 1 x).symm
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k))) := rfl
       rw [h1, inverseMetricSharpFib_inner (I := I) g₁ x _ w, cotangentToDualLinear_apply,
         cotangentToDual_apply]
-      change (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+      change (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis k)) (fun _ : Fin 1 => eX w) = _
       rw [Tensor0SBundle.model_covectorOfCLM_apply]
     exact hinner.trans (hcoord k)
@@ -1647,7 +1647,7 @@ private lemma cometric_dual_frame_sum_inner_collapse (g₀ g₁ : SmoothRiemanni
             ((Module.finBasis ℝ E) k)) *
           g₀.inner x a ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
             (DeTurck.cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k))))) =
       g₀.inner x a (inverseMetricSharpFib (I := I) g₁ x
         (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.g0FlatCLM (I := I) g₀ x c)) := by
@@ -1657,12 +1657,12 @@ private lemma cometric_dual_frame_sum_inner_collapse (g₀ g₁ : SmoothRiemanni
   calc (∑ k : Fin (Module.finrank ℝ E),
         g₀.inner x c (eX.symm ((Module.finBasis ℝ E) k)) *
           g₀.inner x a (eX.symm (DeTurck.cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))))
       = ∑ k : Fin (Module.finrank ℝ E), g₀.inner x a
           (g₀.inner x c (eX.symm ((Module.finBasis ℝ E) k)) •
             eX.symm (DeTurck.cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))) := by
         refine Finset.sum_congr rfl (fun k _ => ?_)
         rw [ContinuousLinearMap.map_smul, smul_eq_mul]
@@ -1670,7 +1670,7 @@ private lemma cometric_dual_frame_sum_inner_collapse (g₀ g₁ : SmoothRiemanni
           (∑ k : Fin (Module.finrank ℝ E),
             g₀.inner x c (eX.symm ((Module.finBasis ℝ E) k)) •
               eX.symm (DeTurck.cometricLmodel (I := I) g₁ x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)))) := (map_sum (g₀.inner x a) _ _).symm
     _ = g₀.inner x a (inverseMetricSharpFib (I := I) g₁ x
           (DifferentialGeometry.Analysis.Sobolev.TensorHilbert.g0FlatCLM (I := I) g₀ x c)) := by
@@ -1764,18 +1764,18 @@ private lemma cometricDoubleTrace_component_eq (g₀ g₁ : SmoothRiemannianMetr
   have hterm : ∀ k : Fin (Module.finrank ℝ E),
       Tensor0SBundle.Tensor0SSpace.toModel (coframeS (I := I) (M := M) g₀ x 4 e Q)
           (Fin.cons (DeTurck.cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           (Fin.cons ((Module.finBasis ℝ E) k) (fun l => eX (e (L l))))) =
         (g₀.inner x (e (Q 2)) (e (L 0)) * g₀.inner x (e (Q 3)) (e (L 1))) *
           (g₀.inner x (e (Q 1)) (eX.symm ((Module.finBasis ℝ E) k)) *
             g₀.inner x (e (Q 0)) (eX.symm (DeTurck.cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k))))) := by
     intro k
     set base : Fin 4 → E :=
       Fin.cons (DeTurck.cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))
         (Fin.cons ((Module.finBasis ℝ E) k) (fun l => eX (e (L l)))) with hbase
     have hcfeval : Tensor0SBundle.Tensor0SSpace.toModel
@@ -1786,7 +1786,7 @@ private lemma cometricDoubleTrace_component_eq (g₀ g₁ : SmoothRiemannianMetr
       rw [coframeS_apply]
     rw [hcfeval, Fin.prod_univ_four]
     have hb0 : base 0 = DeTurck.cometricLmodel (I := I) g₁ x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis k)) := by rw [hbase, Fin.cons_zero]
     have hb1 : base 1 = (Module.finBasis ℝ E) k := by
       rw [hbase, show (1 : Fin 4) = Fin.succ 0 from rfl, Fin.cons_succ, Fin.cons_zero]

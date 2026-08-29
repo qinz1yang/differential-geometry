@@ -88,7 +88,7 @@ theorem threeArmJoint_smul
     linearizedRicciThreeArmHjoint (I := I) (M := M) g r
       (fun s => c • A s) (δ := δ) (δ' := δ') := by
   rw [linearizedRicciThreeArmHjoint] at hA ⊢
-  let := tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let := tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) r 2
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]

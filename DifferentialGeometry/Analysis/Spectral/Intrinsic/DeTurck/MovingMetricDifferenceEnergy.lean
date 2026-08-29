@@ -345,7 +345,7 @@ theorem normSq0S_family_continuousOn
               (A q.1.1 q.2 (fun a : Fin s ↦ e.symmL Real q.2 (b (I₀ a)))) *
               (A q.1.1 q.2 (fun a : Fin s ↦ e.symmL Real q.2 (b (J₀ a)))) := by
     filter_upwards [hopen] with q hq
-    have hinv : MetricInverseInBasis_gen (I := I) (g q.1.1) q.2
+    have hinv : MetricInverseInBasisGen (I := I) (g q.1.1) q.2
         (chartBasisFamily (I := I) q₀.2 hq)
         (fun i j ↦ (Gm q)⁻¹ i j) := by
       simpa only [Gm, chartInvGramMatrix] using
@@ -423,7 +423,7 @@ theorem ricciReactionContractInBasis_deriv
   let Tdt : (Fin 2 → Idx) → Real := fun _ => 0
   have hinvAll (r : Real) :
       MetricInverseInBasis (I := I) (g r) x basis (gInv r) := by
-    simpa only [gInv, MetricInverseInBasis, MetricInverseInBasis_gen] using
+    simpa only [gInv, MetricInverseInBasis, MetricInverseInBasisGen] using
       basisInvMetric_real (I := I) (g r) x basis
   have hgInv (i j : Idx) :
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) Set.univ t := by
@@ -1158,7 +1158,7 @@ theorem movingMetricDifferenceNormSq_smooth
       (fun q : Real × M ↦
         movingMetricDifferenceNormSq (I := I) (M := M) g₀ g₁ q.1 q.2) =ᶠ[nhds p] rhs := by
     filter_upwards [(hU.prod e.open_baseSet).mem_nhds ⟨hp.1, hx⟩] with q hq
-    have hinv : MetricInverseInBasis_gen (I := I) (g₀ q.1) q.2
+    have hinv : MetricInverseInBasisGen (I := I) (g₀ q.1) q.2
         (chartBasisFamily (I := I) p.2 hq.2)
         (fun i j ↦ (G₀ q)⁻¹ i j) := by
       simpa only [G₀, x₀, chartInvGramMatrix] using
@@ -1234,7 +1234,7 @@ theorem movingMetricDifferenceNormSq_time_deriv {x : M} {t : Real}
     tensor0SComponent (I := I) Wdot (fun i ↦ basis i) I₀
   have hinvAll (r : Real) :
       MetricInverseInBasis (I := I) (g₀ r) x basis (gInv r) := by
-    simpa only [gInv, MetricInverseInBasis, MetricInverseInBasis_gen] using
+    simpa only [gInv, MetricInverseInBasis, MetricInverseInBasisGen] using
       basisInvMetric_real (I := I) (g₀ r) x basis
   have hgInv (i j : Fin (Module.finrank Real (TangentSpace I x))) :
       HasDerivWithinAt (fun r : Real ↦ gInv r i j) (gInvDt i j) Set.univ t := by

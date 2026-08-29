@@ -267,7 +267,7 @@ theorem scalar0_rawLap_eq_scalarLap
     rw [rawTensorConnLapSmooth_toSection_apply]
     rw [rawLapSection_eq_toRS0 (I := I) (M := M) g S x]
     rw [Tensor0SSpace.toRS0_apply]
-    have hone : (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x)
+    have hone : (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x)
         (Tensor0SField.one0 (n := (∞ : WithTop ℕ∞))
           (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) x) = 1 := by
       change Tensor0SSpace.toModel (Tensor0SField.one0 (n := (∞ : WithTop ℕ∞))

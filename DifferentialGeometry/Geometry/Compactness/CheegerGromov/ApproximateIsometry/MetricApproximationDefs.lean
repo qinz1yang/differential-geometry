@@ -366,13 +366,13 @@ def connectionDifferenceTwoConst (Idx : Type*) [Fintype Idx] : Real :=
     ((Fintype.card (Fin 1 -> Idx) : Real) *
       ((Fintype.card (Fin 4 -> Idx) : Real) * q ^ 2))
 
-def connectionDifferenceEpsConst_two
+def connectionDifferenceEpsConstTwo
     (E : Type uE) [NormedAddCommGroup E] [NormedSpace Real E]
     : Nat -> Real
   | 0 => 12
   | _ + 1 => connectionDifferenceOneConst (Fin (Module.finrank Real E))
 
-def connectionDifferenceEpsConst_three
+def connectionDifferenceEpsConstThree
     (E : Type uE) [NormedAddCommGroup E] [NormedSpace Real E]
     : Nat -> Real
   | 0 => 12

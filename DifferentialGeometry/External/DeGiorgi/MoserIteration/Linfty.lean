@@ -373,7 +373,7 @@ theorem linfty_subsolution_Moser
         (Metric.ball (0 : E) 1) volume) :
     ∀ᵐ x ∂(volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))),
       |max (u x) 0| ^ p₀ ≤
-      C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+      CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
         (p₀ / (p₀ - 1)) ^ (d : ℝ) *
         ∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ p₀ ∂volume := by
   have hiter_raw :=
@@ -405,19 +405,19 @@ theorem linfty_subsolution_Moser_two
         (Metric.ball (0 : E) 1) volume) :
     ∀ᵐ x ∂(volume.restrict (Metric.ball (0 : E) (1 / 2 : ℝ))),
       |max (u x) 0| ^ 2 ≤
-        C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+        CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
           (2 / (2 - 1 : ℝ)) ^ (d : ℝ) *
           ∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ 2 ∂volume := by
   let I₂ : ℝ := ∫ x in Metric.ball (0 : E) 1, |max (u x) 0| ^ 2 ∂volume
-  let c : ℝ := C_DeGiorgi_subsolution_normalized d * A.1.Λ ^ ((d : ℝ) / 4)
+  let c : ℝ := CDeGiorgiSubsolutionNormalized d * A.1.Λ ^ ((d : ℝ) / 4)
   have hI₂_nonneg : 0 ≤ I₂ := by
     dsimp [I₂]
     refine integral_nonneg ?_
     intro x
     positivity
   have hc_nonneg : 0 ≤ c := by
-    have hCDG_nonneg : 0 ≤ C_DeGiorgi_subsolution_normalized d := by
-      dsimp [C_DeGiorgi_subsolution_normalized]
+    have hCDG_nonneg : 0 ≤ CDeGiorgiSubsolutionNormalized d := by
+      dsimp [CDeGiorgiSubsolutionNormalized]
       exact
         (C_DeGiorgiSmallness_pos (d := d)
           (K_DeGiorgi_subsolution_normalized_pos (d := d))).le
@@ -445,11 +445,11 @@ theorem linfty_subsolution_Moser_two
         rw [mul_pow, Real.sq_sqrt hI₂_nonneg]
   have hconst :
       c ^ 2 * I₂ ≤
-        C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+        CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
           (2 / (2 - 1 : ℝ)) ^ (d : ℝ) * I₂ := by
     have hbase :
         c ^ 2 ≤
-          C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+          CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
             (2 / (2 - 1 : ℝ)) ^ (d : ℝ) := by
       have hpow :
           (A.1.Λ ^ ((d : ℝ) / 4)) ^ 2 = A.1.Λ ^ ((d : ℝ) / 2) := by
@@ -457,17 +457,17 @@ theorem linfty_subsolution_Moser_two
         ring_nf
       calc
         c ^ 2
-            = (C_DeGiorgi_subsolution_normalized d) ^ 2 *
+            = (CDeGiorgiSubsolutionNormalized d) ^ 2 *
                 A.1.Λ ^ ((d : ℝ) / 2) := by
                   dsimp [c]
                   rw [mul_pow, hpow]
-        _ ≤ C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) := by
+        _ ≤ CMoser d * A.1.Λ ^ ((d : ℝ) / 2) := by
             exact mul_le_mul_of_nonneg_right
               (C_DeGiorgi_subsolution_normalized_sq_le_C_Moser (d := d))
               (Real.rpow_nonneg A.1.Λ_nonneg _)
-        _ ≤ C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) *
+        _ ≤ CMoser d * A.1.Λ ^ ((d : ℝ) / 2) *
               (2 / (2 - 1 : ℝ)) ^ (d : ℝ) := by
-            have hleft_nonneg : 0 ≤ C_Moser d * A.1.Λ ^ ((d : ℝ) / 2) := by
+            have hleft_nonneg : 0 ≤ CMoser d * A.1.Λ ^ ((d : ℝ) / 2) := by
               exact mul_nonneg
                 (le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_Moser (d := d)))
                 (Real.rpow_nonneg A.1.Λ_nonneg _)

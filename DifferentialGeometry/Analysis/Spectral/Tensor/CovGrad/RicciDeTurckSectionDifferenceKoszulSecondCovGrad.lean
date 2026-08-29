@@ -374,13 +374,13 @@ theorem ricciPrincipalCoefficientDoubleTraceModel_apply
     ricciPrincipalCoefficientDoubleTraceModel (E := E) L D m =
       (1 / 2 : ℝ) *
         ∑ k : Fin (Module.finrank ℝ E),
-          (D (Fin.cons (L (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (D (Fin.cons (L (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)))
               ![m 0, m 1, (Module.finBasis ℝ E) k])
-            + D (Fin.cons (L (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            + D (Fin.cons (L (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)))
                 ![m 1, m 0, (Module.finBasis ℝ E) k])
-            - D (Fin.cons (L (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            - D (Fin.cons (L (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)))
                 (Fin.cons ((Module.finBasis ℝ E) k) m))) := by
   classical
@@ -403,7 +403,7 @@ theorem ricciPrincipalCoefficientDoubleTraceModel_apply
       modelDoubleTrace (E := E) 2 L
           (ContinuousMultilinearMap.domDomCongr koszulDoubleTraceSlotPerm D) mm =
         ∑ k : Fin (Module.finrank ℝ E),
-          D (Fin.cons (L (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          D (Fin.cons (L (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
               ![mm 0, mm 1, (Module.finBasis ℝ E) k]) := by
     intro mm
@@ -439,9 +439,9 @@ alias combinedTrace42Model_apply := ricciPrincipalCoefficientDoubleTraceModel_ap
 
 noncomputable def ricciDeTurckPrincipalCoefficientAtPoint (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
-  (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) 2 x).symm.toContinuousLinearMap.comp
+  (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) 2 x).symm.toContinuousLinearMap.comp
     ((ricciPrincipalCoefficientDoubleTraceModel (E := E) (cometricLmodel (I := I) g₁ x)).comp
-      (Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) 4 x).toContinuousLinearMap)
+      (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) 4 x).toContinuousLinearMap)
 
 abbrev ricciDeTurckPrincipalCoefficientFiber (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace 4 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
@@ -582,17 +582,17 @@ theorem ricciDeTurckPrincipalCoefficient_operatorFieldApplication_eq_combinedTra
         ∑ k : Fin (Module.finrank ℝ E),
           (unitModel (I := I) (M := M) g₀ 4 W x
               (Fin.cons (cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)))
                 ![v 0, v 1, (Module.finBasis ℝ E) k])
             + unitModel (I := I) (M := M) g₀ 4 W x
                 (Fin.cons (cometricLmodel (I := I) g₁ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)))
                   ![v 1, v 0, (Module.finBasis ℝ E) k])
             - unitModel (I := I) (M := M) g₀ 4 W x
                 (Fin.cons (cometricLmodel (I := I) g₁ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)))
                   (Fin.cons ((Module.finBasis ℝ E) k) v))) := by
   rw [unitModel, operatorFieldApplication_toSection]
@@ -633,7 +633,7 @@ theorem cometricDoubleTraceCoefficient_operatorFieldApplication_eq_roughLaplacia
       ∑ k : Fin (Module.finrank ℝ E),
         unitModel (I := I) (M := M) g₀ 4 W x
           (Fin.cons (cometricLmodel (I := I) g₁ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
   rw [unitModel, operatorFieldApplication_toSection]
@@ -661,17 +661,17 @@ theorem covDerivConnectionDifference_tracedPrincipal_eq_operatorFieldApply
         ∑ k : Fin (Module.finrank ℝ E),
           (unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 S) x
               (Fin.cons (cometricLmodel (I := I) g₁ x
-                  (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                  (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                     ((Module.finBasis ℝ E).cDualBasis k)))
                 ![v 0, v 1, (Module.finBasis ℝ E) k])
             + unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 S) x
                 (Fin.cons (cometricLmodel (I := I) g₁ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)))
                   ![v 1, v 0, (Module.finBasis ℝ E) k])
             - unitModel (I := I) (M := M) g₀ 4 (iteratedCovGrad (I := I) g₀ 0 2 2 S) x
                 (Fin.cons (cometricLmodel (I := I) g₁ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k)))
                   (Fin.cons ((Module.finBasis ℝ E) k) v))) :=
   ricciDeTurckPrincipalCoefficient_operatorFieldApplication_eq_combinedTrace (I := I) (M := M) g₀ g₁

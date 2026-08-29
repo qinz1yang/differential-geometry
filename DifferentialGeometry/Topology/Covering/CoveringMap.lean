@@ -450,7 +450,7 @@ def basePoint :
   ⟨(default : X),
     _root_.Path.Homotopic.Quotient.mk (_root_.Path.refl (default : X))⟩
 
-def uc_subpathLift {x : X} (γ : _root_.Path (default : X) x)
+def ucSubpathLift {x : X} (γ : _root_.Path (default : X) x)
     (s : unitInterval) :
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X :=
   ⟨γ s,
@@ -458,7 +458,7 @@ def uc_subpathLift {x : X} (γ : _root_.Path (default : X) x)
 
 omit [ConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 theorem uc_subpathLift_continuous {x : X} (γ : _root_.Path (default : X) x) :
-    Continuous (uc_subpathLift γ) := by
+    Continuous (ucSubpathLift γ) := by
   refine continuous_iff_continuousAt.mpr fun s₀ => ?_
   rw [ContinuousAt, Filter.tendsto_def]
   intro N hN
@@ -467,7 +467,7 @@ theorem uc_subpathLift_continuous {x : X} (γ : _root_.Path (default : X) x) :
   rcases p with ⟨p, hp⟩
   obtain ⟨η₀, hη₀V, hη₀eq⟩ := hTs₀S
   change _root_.Path p (γ s₀) at η₀
-  simp only [uc_subpathLift] at hη₀eq
+  simp only [ucSubpathLift] at hη₀eq
   have hcont_fam :
       Continuous (fun st : unitInterval × unitInterval =>
         γ.subpath s₀ st.1 st.2) := by
@@ -499,7 +499,7 @@ theorem uc_subpathLift_continuous {x : X} (γ : _root_.Path (default : X) x) :
   refine Filter.mem_of_superset (hJopen.mem_nhds hs₀J') ?_
   intro s hsJ
   apply hSN
-  unfold uc_subpathLift
+  unfold ucSubpathLift
   refine ⟨η₀.trans (γ.subpath s₀ s), ?_, ?_⟩
   · intro t
     rw [Path.trans_apply]
@@ -529,7 +529,7 @@ theorem uc_subpathLift_continuous {x : X} (γ : _root_.Path (default : X) x) :
 
 omit [ConnectedSpace X] [LocallyPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 theorem uc_subpathLift_zero {x : X} (γ : _root_.Path (default : X) x) :
-    uc_subpathLift γ 0 = basePoint := by
+    ucSubpathLift γ 0 = basePoint := by
   change (⟨γ 0,
       (_root_.Path.Homotopic.Quotient.mk (γ.subpath 0 0)).cast γ.source.symm rfl⟩ :
     DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X) = basePoint
@@ -547,7 +547,7 @@ theorem uc_subpathLift_zero {x : X} (γ : _root_.Path (default : X) x) :
 
 omit [ConnectedSpace X] [LocallyPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 theorem uc_subpathLift_one {x : X} (γ : _root_.Path (default : X) x) :
-    uc_subpathLift γ 1 =
+    ucSubpathLift γ 1 =
       ⟨x, _root_.Path.Homotopic.Quotient.mk γ⟩ := by
   change (⟨γ 1,
       (_root_.Path.Homotopic.Quotient.mk (γ.subpath 0 1)).cast γ.source.symm rfl⟩ :
@@ -564,7 +564,7 @@ theorem uc_subpathLift_one {x : X} (γ : _root_.Path (default : X) x) :
 
 omit [ConnectedSpace X] [LocallyPathConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 theorem uc_subpathLift_proj {x : X} (γ : _root_.Path (default : X) x)
-    (s : unitInterval) : proj (uc_subpathLift γ s) = γ s := rfl
+    (s : unitInterval) : proj (ucSubpathLift γ s) = γ s := rfl
 
 omit [ConnectedSpace X] [SemilocallySimplyConnectedSpace X] in
 theorem uc_joined_basePoint
@@ -573,7 +573,7 @@ theorem uc_joined_basePoint
   obtain ⟨x, c⟩ := q
   obtain ⟨γ, rfl⟩ := _root_.Path.Homotopic.Quotient.mk_surjective c
   exact ⟨{
-    toFun := uc_subpathLift γ
+    toFun := ucSubpathLift γ
     continuous_toFun := uc_subpathLift_continuous γ
     source' := uc_subpathLift_zero γ
     target' := uc_subpathLift_one γ }⟩
@@ -614,7 +614,7 @@ theorem uc_basePoint_loops_nullhomotopic
     refine ⟨?_, ?_⟩
     · ext t; rfl
     · exact δ.source
-  have hSlift : (⟨uc_subpathLift γ, uc_subpathLift_continuous γ⟩ : C(unitInterval,
+  have hSlift : (⟨ucSubpathLift γ, uc_subpathLift_continuous γ⟩ : C(unitInterval,
       DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X)) =
       hcov.liftPath γX basePoint hγX0 := by
     rw [hcov.eq_liftPath_iff']
@@ -625,13 +625,13 @@ theorem uc_basePoint_loops_nullhomotopic
     · exact uc_subpathLift_zero γ
   have hδeq : (δ : unitInterval →
       DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X) =
-      uc_subpathLift γ := by
+      ucSubpathLift γ := by
     have := hδlift.trans hSlift.symm
     exact congrArg (fun f : C(unitInterval, _) => (f : unitInterval → _)) this
   have hend : (basePoint (X := X)) =
       (⟨default, _root_.Path.Homotopic.Quotient.mk γ⟩ :
         DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover X) := by
-    have h1 : δ 1 = uc_subpathLift γ 1 := congrFun hδeq 1
+    have h1 : δ 1 = ucSubpathLift γ 1 := congrFun hδeq 1
     rw [uc_subpathLift_one] at h1
     rw [← h1, δ.target]
   have hclass : (_root_.Path.Homotopic.Quotient.mk (_root_.Path.refl (default : X))) =

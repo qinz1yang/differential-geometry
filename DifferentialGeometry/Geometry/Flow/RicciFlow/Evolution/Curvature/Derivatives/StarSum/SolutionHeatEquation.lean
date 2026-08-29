@@ -120,7 +120,7 @@ theorem towerHeatSol
     simpa [S', D', gInvAll, gInvDtAll] using hreg0
   let gInv : Real -> Fin 3 -> Fin 3 -> Real := fun r => gInvAll r x
   have hinv : ∀ r : Real,
-      MetricInverseInBasis_gen (I := I) (S'.base.metric r) x basis (gInv r) := by
+      MetricInverseInBasisGen (I := I) (S'.base.metric r) x basis (gInv r) := by
     intro r i j
     constructor
     · simpa [gInv, gInvAll, basis, metricCompInFrame,
@@ -129,7 +129,7 @@ theorem towerHeatSol
     · simpa [gInv, gInvAll, basis, metricCompInFrame,
         IsLocalFrameOn.toBasisAt_coe] using
           (hreg.nondegenerateGram r x hx i j).2
-  have hinvId : MetricInverseInBasis_gen (I := I) g x basis
+  have hinvId : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin 3)) :=
     metricInverseInBasis_identity_of_orthonormal (I := I) g basis horth
   have hgInv : gInv (t : Real) = identityInvMetric (Idx := Fin 3) :=
@@ -207,7 +207,7 @@ theorem towerHeatSol
     exact metricRicciComp_le (I := I) (g := S'.base.metric (t : Real))
       basis (by simpa [g] using horth) p q
   have hheat := nablaKNormHeatAt (I := I) S' k t x basis gInv ric Tdot
-    (fun r => by simpa [MetricInverseInBasis, MetricInverseInBasis_gen] using hinv r)
+    (fun r => by simpa [MetricInverseInBasis, MetricInverseInBasisGen] using hinv r)
     hT hgInvDt
   have hreact0 := nablaKReactionAt_le (I := I) S' (t : Real) x basis
     (gInv (t : Real)) ric Tdot

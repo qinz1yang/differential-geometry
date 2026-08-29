@@ -27,7 +27,7 @@ variable [CompleteSpace E] [SigmaCompactSpace M] [T2Space M]
 
 private local instance tensor0SModelNormedSpace_local {s : ℕ} :
     NormedSpace ℝ (Tensor0SModel s ℝ E) :=
-  Tensor0SBundle.tensor0SModel_normedSpace (𝕜 := Real) (E := E) s
+  Tensor0SBundle.tensor0SModelNormedSpace (𝕜 := Real) (E := E) s
 
 private local instance tensor0SModelNormedAddCommGroup_local {s : ℕ} :
     NormedAddCommGroup (Tensor0SModel s ℝ E) := inferInstance
@@ -128,7 +128,7 @@ theorem nablaRm04NormHeatEquationOn_intrinsic
       (nablaRm04ReactionIntrinsic (I := I) S basis gInv ric Tdot) := by
   classical
   intro t x
-  have hmc : IsMetricCompatible_gen (I := I)
+  have hmc : IsMetricCompatibleGen (I := I)
       (S.family.connection (t : Real)) (S.base.metric (t : Real)) :=
     solution_isMetricCompatible (I := I) S (t : Real)
   have hdt :=

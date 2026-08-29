@@ -262,24 +262,24 @@ theorem normSq0S_restrictOpen_apply
     intro i j
     exact hON i j
   have hinvU :
-      Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := U)
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := U)
         (g.restrictOpen (I := I) U) x basis
         (Tensor0SBundle.identityInvMetric
           (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' :=
       metricInverseInBasis_of_orthonormal
         (I := I) (M := U) (g.restrictOpen (I := I) U) basis hONU
-    change Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := U)
+    change Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := U)
       (g.restrictOpen (I := I) U) x basis
         (fun a k => if a = k then (1 : Real) else 0)
     exact h'
   have hinvM :
-      Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M)
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M)
         g (x : M) basis
         (Tensor0SBundle.identityInvMetric
           (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) g basis hON
-    change Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M)
+    change Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M)
       g (x : M) basis (fun a k => if a = k then (1 : Real) else 0)
     exact h'
   rw [Tensor0SBundle.normSq0S_identity_eq_sum_sq

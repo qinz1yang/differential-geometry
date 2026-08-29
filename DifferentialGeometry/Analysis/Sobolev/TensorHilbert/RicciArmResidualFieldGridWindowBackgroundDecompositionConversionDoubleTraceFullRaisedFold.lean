@@ -333,7 +333,7 @@ lemma secondMetricPairTraceOperator_apply_toModel (X : SmoothCcTensor g₀ 0 4) 
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X)).toSection x) D) =
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRS_domDomCongr ricciFoldRemainderSlotPerm
+          tensorRSDomDomCongr ricciFoldRemainderSlotPerm
             ((slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x)) D) from by
       rw [rsDomDomCongrSection_toSection]]
     rw [toModel_rsDomDomCongr_apply (I := I) (M := M) ricciFoldRemainderSlotPerm
@@ -416,7 +416,7 @@ lemma bgRArmWeight_toModel (x : M) (D : Tensor0SSpace 2 I x)
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2
             (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀))).toSection x) D) =
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRS_domDomCongr (Equiv.swap (1 : Fin 6) 3)
+          tensorRSDomDomCongr (Equiv.swap (1 : Fin 6) 3)
             ((slotExtendIter (I := I) (M := M) g₀ 0 4 2
               (riemannLoweredCc (I := I) (M := M) g₀ g₀ g₀)).toSection x)) D) from by
       rw [rsDomDomCongrSection_toSection]]

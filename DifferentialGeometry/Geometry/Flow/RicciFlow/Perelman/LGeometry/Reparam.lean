@@ -26,8 +26,8 @@ def sqReparam (gamma : Real -> M) (s : Real) : M :=
 def sqrtReparam (alpha : Real → M) (tau : Real) : M :=
   alpha (Real.sqrt tau)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lVelocity_sq
     (gamma : Real -> M) (s : Real)
     (hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma (s ^ 2))
@@ -71,8 +71,8 @@ theorem lVelocity_sq
     with_unfolding_all exact hmap
   with_unfolding_all exact hmid.trans hlin
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lVelocity_sq_pos
     (gamma : Real → M) (s : Real) (hs : 0 < s) :
     lVelocity (I := I) (sqReparam gamma) s =
@@ -122,8 +122,8 @@ noncomputable def lRegDensity
         (lVelocity (I := I) (sqReparam gamma) s) +
     2 * s ^ 2 * S.scalar (T - s ^ 2) (sqReparam gamma s)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem lDensity_sq
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (gamma : Real -> M)
@@ -169,8 +169,8 @@ theorem lDensity_sq
         (fun z : Real => (1 / 2 : Real) * z +
           2 * s ^ 2 * S.scalar (T - s ^ 2) (gamma (s ^ 2))) hquad'.symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem lDensity_sq_pos
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (gamma : Real → M)

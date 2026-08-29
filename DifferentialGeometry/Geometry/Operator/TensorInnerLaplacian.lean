@@ -37,7 +37,7 @@ theorem inner0S_contMDiff {s : ℕ}
     DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x with hframe
   set U : M -> Idx -> Idx -> Real :=
     fun y i j =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
         (I := I) g x i j (extChartAt I x y) with hU
   set cA : M -> (Fin s -> Idx) -> Real :=
     fun y I0 => A y (fun a => frame (I0 a) y) with hcAdef
@@ -52,11 +52,11 @@ theorem inner0S_contMDiff {s : ℕ}
       [(DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet_open (I := I) x).mem_nhds hx]
       with y hy
     rw [inner0S_eq_coord (I := I) g y s
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x hy)
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x hy)
       (U y) (DifferentialGeometry.Tensor.Coordinates.gInvBasisAt (I := I) g x hy)
       (A y) (B y)]
     rw [← coordContract_eq_coordInner0S (I := I) (U y) (A y) (B y)
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x hy)]
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x hy)]
     refine congrArg₂ (fun f h => coordContract (U y) f h) ?_ ?_
     · funext I0
       simp only [tensor0SComponent, cA, frame]
@@ -124,7 +124,7 @@ theorem hessianSec_inner0S_slots {s : ℕ}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov (∞ : WithTop ℕ∞))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (nablaA : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -151,11 +151,11 @@ theorem hessianSec_inner0S_slots {s : ℕ}
       inner0S (I := I) g x s
         (freezeFirstTwoArgs0S (I := I) (nabla2A x) (X x) Y) (B x) +
       inner0S (I := I) g x s
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) Y)
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (X x)) +
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) Y)
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (X x)) +
       inner0S (I := I) g x s
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (X x))
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) Y) +
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (X x))
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) Y) +
       inner0S (I := I) g x s (A x)
         (freezeFirstTwoArgs0S (I := I) (nabla2B x) (X x) Y) := by
   classical
@@ -181,13 +181,13 @@ theorem hessianSec_inner0S_slots {s : ℕ}
     have hL := inner0S_nabla (I := I) cov g hmc A B Z y
     have hAderiv :
         nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s cov Z A y =
-          tensor0S_curry (I := I) (𝕜 := Real) (M := M) s y (nablaA y) (Z y) := by
+          tensor0SCurry (I := I) (𝕜 := Real) (M := M) s y (nablaA y) (Z y) := by
       ext v
       rw [tensor0S_curry_apply_cons]
       exact (TotalNabla0SRealizes.apply (I := I) hA Z y v).symm
     have hBderiv :
         nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s cov Z B y =
-          tensor0S_curry (I := I) (𝕜 := Real) (M := M) s y (nablaB y) (Z y) := by
+          tensor0SCurry (I := I) (𝕜 := Real) (M := M) s y (nablaB y) (Z y) := by
       ext v
       rw [tensor0S_curry_apply_cons]
       exact (TotalNabla0SRealizes.apply (I := I) hB Z y v).symm
@@ -214,21 +214,21 @@ theorem hessianSec_inner0S_slots {s : ℕ}
         inner0S (I := I) g x s
           (freezeFirstTwoArgs0S (I := I) (nabla2A x) (X x) (Z x)) (B x) +
         inner0S (I := I) g x s
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x)
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x)
             ((cov (fun y : M => Z y) x) (X x))) (B x) +
         inner0S (I := I) g x s
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (Z x))
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (X x)) := by
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (Z x))
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (X x)) := by
     have h := inner0S_nabla (I := I) cov g hmc (partialEval0SField (I := I) nablaA Z) B X x
     have hP := nabla_partialEval0S (I := I) cov nablaA nabla2A h2A X Z x
     have hBderiv :
         nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s cov X B x =
-          tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (X x) := by
+          tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (X x) := by
       ext v
       rw [tensor0S_curry_apply_cons]
       exact (TotalNabla0SRealizes.apply (I := I) hB X x v).symm
     have hPx : partialEval0SField (I := I) nablaA Z x =
-        tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (Z x) :=
+        tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (Z x) :=
       partialEval0SField_apply (I := I) nablaA Z x
     have hadd : ∀ (P Q R : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x),
         inner0S (I := I) g x s (P + Q) R =
@@ -242,23 +242,23 @@ theorem hessianSec_inner0S_slots {s : ℕ}
         (fun y : M =>
           inner0S (I := I) g y s (A y) (partialEval0SField (I := I) nablaB Z y)) x (X x) =
         inner0S (I := I) g x s
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (X x))
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (Z x)) +
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (X x))
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (Z x)) +
         inner0S (I := I) g x s (A x)
           (freezeFirstTwoArgs0S (I := I) (nabla2B x) (X x) (Z x)) +
         inner0S (I := I) g x s (A x)
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x)
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x)
             ((cov (fun y : M => Z y) x) (X x))) := by
     have h := inner0S_nabla (I := I) cov g hmc A (partialEval0SField (I := I) nablaB Z) X x
     have hAderiv :
         nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s cov X A x =
-          tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (X x) := by
+          tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (X x) := by
       ext v
       rw [tensor0S_curry_apply_cons]
       exact (TotalNabla0SRealizes.apply (I := I) hA X x v).symm
     have hQ := nabla_partialEval0S (I := I) cov nablaB nabla2B h2B X Z x
     have hQx : partialEval0SField (I := I) nablaB Z x =
-        tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (Z x) :=
+        tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (Z x) :=
       partialEval0SField_apply (I := I) nablaB Z x
     have hadd : ∀ (P Q R : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x),
         inner0S (I := I) g x s P (Q + R) =
@@ -270,10 +270,10 @@ theorem hessianSec_inner0S_slots {s : ℕ}
     ring
   have hcorr : du x (fun _ : Fin 1 => (cov (fun y : M => Z y) x) (X x)) =
       inner0S (I := I) g x s
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x)
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x)
           ((cov (fun y : M => Z y) x) (X x))) (B x) +
       inner0S (I := I) g x s (A x)
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x)
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x)
           ((cov (fun y : M => Z y) x) (X x))) := by
     rw [duSec_apply]
     rw [differential1FormFun_apply_eq_mvfderiv]
@@ -288,13 +288,13 @@ theorem hessianSec_inner0S_slots {s : ℕ}
     have hL := inner0S_nabla (I := I) cov g hmc A B W x
     have hAderiv :
         nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s cov W A x =
-          tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (W x) := by
+          tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (W x) := by
       ext v
       rw [tensor0S_curry_apply_cons]
       exact (TotalNabla0SRealizes.apply (I := I) hA W x v).symm
     have hBderiv :
         nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s cov W B x =
-          tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (W x) := by
+          tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (W x) := by
       ext v
       rw [tensor0S_curry_apply_cons]
       exact (TotalNabla0SRealizes.apply (I := I) hB W x v).symm
@@ -338,11 +338,11 @@ theorem hessianSec_inner0S_slots {s : ℕ}
       inner0S (I := I) g x s
         (freezeFirstTwoArgs0S (I := I) (nabla2A x) (X x) (Z x)) (B x) +
       inner0S (I := I) g x s
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (Z x))
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (X x)) +
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (Z x))
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (X x)) +
       inner0S (I := I) g x s
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (X x))
-        (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (Z x)) +
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (X x))
+        (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (Z x)) +
       inner0S (I := I) g x s (A x)
         (freezeFirstTwoArgs0S (I := I) (nabla2B x) (X x) (Z x)) := by
     rw [hEval']
@@ -393,7 +393,7 @@ theorem laplacianAt_inner0S_eq_inner_roughLap_of_flat
       (∞ : WithTop ℕ∞))
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (G.metric t) x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (G.metric t) x basis gInv)
     (hBflat1 : nablaB x = 0)
     (hBflat2 : metricTrace0S2TensorInBasis (I := I) basis gInv (nabla2B x) = 0) :
     laplacianAt (I := I) G t
@@ -403,7 +403,7 @@ theorem laplacianAt_inner0S_eq_inner_roughLap_of_flat
   classical
   let g : DifferentialGeometry.SmoothRiemannianMetric I M := G.metric t
   let cov : CovariantDerivative I E (TangentSpace I : M -> Type _) := G.connection t
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g := by
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g := by
     simpa [cov, g] using (G.metricCompatible t)
   let phi : M -> Real := fun y => inner0S (I := I) g y s (A y) (B y)
   have hphi : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) phi := inner0S_contMDiff g A B
@@ -429,11 +429,11 @@ theorem laplacianAt_inner0S_eq_inner_roughLap_of_flat
         inner0S (I := I) g x s
           (freezeFirstTwoArgs0S (I := I) (nabla2A x) (basis i) (basis j)) (B x) +
         inner0S (I := I) g x s
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis j))
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis i)) +
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis j))
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis i)) +
         inner0S (I := I) g x s
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis i))
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis j)) +
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis i))
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis j)) +
         inner0S (I := I) g x s (A x)
           (freezeFirstTwoArgs0S (I := I) (nabla2B x) (basis i) (basis j)) := by
     intro i j
@@ -441,7 +441,7 @@ theorem laplacianAt_inner0S_eq_inner_roughLap_of_flat
       hA h2A hB h2B (Ei i) x (basis j)
     simpa [phi, hEi i] using h
   have hcurryB : ∀ w : TangentSpace I x,
-      tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) w = 0 := by
+      tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) w = 0 := by
     intro w
     rw [hBflat1]
     ext v
@@ -471,13 +471,13 @@ theorem laplacianAt_inner0S_eq_inner_roughLap_of_flat
     simp [inner0S]
   have hcross1 : (∑ i : Idx, ∑ j : Idx,
         gInv i j * inner0S (I := I) g x s
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis j))
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis i))) = 0 := by
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis j))
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis i))) = 0 := by
     simp [hcurryB, inner0S]
   have hcross2 : (∑ i : Idx, ∑ j : Idx,
         gInv i j * inner0S (I := I) g x s
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis i))
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis j))) = 0 := by
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis i))
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis j))) = 0 := by
     simp [hcurryB, inner0S]
   unfold metricTrace0S2InBasis
   simp_rw [metricTraceInput_elim0_eq_vec2]
@@ -489,11 +489,11 @@ theorem laplacianAt_inner0S_eq_inner_roughLap_of_flat
           (inner0S (I := I) g x s
             (freezeFirstTwoArgs0S (I := I) (nabla2A x) (basis i) (basis j)) (B x) +
           inner0S (I := I) g x s
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis j))
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis i)) +
+            (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis j))
+            (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis i)) +
           inner0S (I := I) g x s
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis i))
-            (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis j)) +
+            (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaA x) (basis i))
+            (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaB x) (basis j)) +
           inner0S (I := I) g x s (A x)
             (freezeFirstTwoArgs0S (I := I) (nabla2B x) (basis i) (basis j))) := by
       refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_

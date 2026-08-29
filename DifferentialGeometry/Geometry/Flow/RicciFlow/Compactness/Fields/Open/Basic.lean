@@ -280,7 +280,7 @@ structure OpenConvOut
 
 namespace OpenConvOut
 
-noncomputable def at_window
+noncomputable def atWindow
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth

@@ -906,16 +906,16 @@ theorem exists_continuous_nablaCurvSec_frameSum_gNorm_envelope
     have hCRα : 0 ≤ CR α := hCR0 α
     have hCGα : 0 ≤ CG α := hCG0 α
     positivity
-  refine ⟨fun _ => ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), Kα α, continuous_const,
+  refine ⟨fun _ => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Kα α, continuous_const,
     fun _ => Finset.sum_nonneg (fun α _ => hKα_nonneg α), ?_⟩
   intro x a u
   simp only [nablaBaseSlotCurvFrameSumCLM_apply]
   have hsum := DifferentialGeometry.Analysis.Sobolev.Chart.chartAtlasPOU_finset_sum_eq_one
     (I := I) (M := M) x
-  have hex_pos : ∃ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hex_pos : ∃ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ((chartAtlasPOU I M) α) x ≠ 0 := by
     by_contra hno
-    have hzero : ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    have hzero : ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ((chartAtlasPOU I M) α) x = 0 :=
       Finset.sum_eq_zero (fun α hα => by
         by_contra hne; exact hno ⟨α, hα, hne⟩)
@@ -955,7 +955,7 @@ theorem exists_continuous_nablaCurvSec_frameSum_gNorm_envelope
       (smoothOrthoFrame_smooth (I := I) g x i))
     (ContMDiffSection.mk (smoothOrthoFrame (I := I) g x a)
       (smoothOrthoFrame_smooth (I := I) g x a)) hBon hBaon u
-  have hKα_le : Kα α ≤ ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M), Kα β :=
+  have hKα_le : Kα α ≤ ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M), Kα β :=
     Finset.single_le_sum (fun β _ => hKα_nonneg β) hα_mem
   have hguu_nonneg : 0 ≤ g.inner x u u := metric_inner_self_nonneg (I := I) g x u
   calc g.inner x
@@ -974,7 +974,7 @@ theorem exists_continuous_nablaCurvSec_frameSum_gNorm_envelope
           (ContMDiffSection.mk (smoothOrthoFrame (I := I) g x a)
             (smoothOrthoFrame_smooth (I := I) g x a)) x u)
       ≤ Kα α * g.inner x u u := by rw [hKα_def]; exact hpt
-    _ ≤ (∑ β ∈ chartAtlasPOU_finset (I := I) (M := M), Kα β) * g.inner x u u := by
+    _ ≤ (∑ β ∈ chartAtlasPOUFinset (I := I) (M := M), Kα β) * g.inner x u u := by
         gcongr
 
 theorem exists_uniform_nablaCurvSec_LeviCivita_gNorm_bound

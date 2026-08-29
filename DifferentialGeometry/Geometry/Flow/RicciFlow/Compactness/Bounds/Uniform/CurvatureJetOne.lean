@@ -670,7 +670,7 @@ private theorem jet1_norm_le
       Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 5) * K := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h := metricInverseInBasis_of_orthonormal (I := I) g basis hON
     intro i j

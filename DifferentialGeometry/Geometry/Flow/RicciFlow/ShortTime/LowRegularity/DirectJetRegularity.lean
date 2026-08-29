@@ -565,7 +565,7 @@ private theorem force_promote_two
     simp only [Set.projIcc_of_mem hT.le ht]
   have hpr_cont : Continuous pr := continuous_subtype_val.comp continuous_projIcc
   set W : ℝ → tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) := fun t =>
-    tensorHs_of_spectralMass_majorant (I := I) (M := M)
+    tensorHsOfSpectralMassMajorant (I := I) (M := M)
       (fun i => fc i (pr t)) B₂ hB₂_sum
       (fun i => hB₂_le i (pr t) (hpr_mem t)) with hW_def
   set σ' : ℝ := (2 : ℝ) + (((weylSobolevExp (E := E) : ℕ) : ℝ) + 1)
@@ -641,7 +641,7 @@ private theorem carrier_one_coeff
     simp only [Set.projIcc_of_mem hT.le ht]
   have hpr_cont : Continuous pr := continuous_subtype_val.comp continuous_projIcc
   set Frep : ℝ → tensorHs (I := I) (M := M) g 0 2 ((1 : ℕ) : ℝ) := fun t =>
-    tensorHs_of_spectralMass_majorant (I := I) (M := M)
+    tensorHsOfSpectralMassMajorant (I := I) (M := M)
       (fun i => fc i (pr t)) B0 hB0_sum
       (fun i => hB0_le i (pr t) (hpr_mem t)) with hFrep_def
   have hFrep_coeff : ∀ t i, (Frep t).coeff i = fc i (pr t) := fun _ _ => rfl

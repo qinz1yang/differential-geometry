@@ -190,7 +190,7 @@ theorem exists_bound_riemannianFiberNormSq_smoothCcTensor
       riemannianFiberNormSq (I := I) (M := M) g r s b (S.toSection b) ≤ Kα α := fun α =>
     (exists_bound_riemannianFiberNormSq_smoothCcTensor_on_pouTsupport
       (I := I) (M := M) g r s α S).choose_spec.2
-  set K : ℝ := ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), Kα α with hK_def
+  set K : ℝ := ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Kα α with hK_def
   have hK_nonneg : 0 ≤ K := by
     rw [hK_def]
     exact Finset.sum_nonneg (fun α _ => hKα_nonneg α)
@@ -198,7 +198,7 @@ theorem exists_bound_riemannianFiberNormSq_smoothCcTensor
   intro b
   obtain ⟨α, hα_pos⟩ :=
     (chartAtlasPOU I M).exists_pos_of_mem (Set.mem_univ b)
-  have hα_finset : α ∈ chartAtlasPOU_finset (I := I) (M := M) := by
+  have hα_finset : α ∈ chartAtlasPOUFinset (I := I) (M := M) := by
     rw [chartAtlasPOU_finset_mem]
     exact ⟨b, Function.mem_support.mpr (ne_of_gt hα_pos)⟩
   have hb_tsupport : b ∈ tsupport (fun x : M =>

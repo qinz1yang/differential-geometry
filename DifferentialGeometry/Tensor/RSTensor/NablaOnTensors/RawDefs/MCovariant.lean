@@ -35,9 +35,9 @@ theorem modelAt_mcovRS {r s : ℕ}
     (u : Set M) (x₀ : M) :
     tensorRSModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         r s x₀ x₀
-        (mcovariantDeriv_tensorRSWithin (𝕜 := 𝕜) (E := E) (H := H)
+        (mcovariantDerivTensorRSWithin (𝕜 := 𝕜) (E := E) (H := H)
           (I := I) (M := M) (n := n) r s X ΓX T u x₀) =
-      covariantDeriv_tensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
+      covariantDerivTensorRSModelWithin (𝕜 := 𝕜) (E := E) r s
         (fun z => tangentSpaceModelContinuousLinearEquiv z
           (VectorField.mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm
             X (Set.range I) z))
@@ -46,7 +46,7 @@ theorem modelAt_mcovRS {r s : ℕ}
           (M := M) r s x₀ (fun x => T x))
         ((extChartAt I x₀).symm ⁻¹' u ∩ Set.range I)
         (extChartAt I x₀ x₀) := by
-  unfold mcovariantDeriv_tensorRSWithin
+  unfold mcovariantDerivTensorRSWithin
   rw [tensorRSModelAt_trivializationAt_symm]
   rfl
 
@@ -60,7 +60,7 @@ theorem mcovariantDeriv_tensor0SWithin_apply_slots {s : ℕ}
     (u : Set M) (x₀ : M) (slots : Fin s → E) :
     (tensor0SModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         s x₀ x₀
-        (mcovariantDeriv_tensor0SWithin (𝕜 := 𝕜) (E := E) (H := H)
+        (mcovariantDerivTensor0SWithin (𝕜 := 𝕜) (E := E) (H := H)
           (I := I) (M := M) (n := n) s X ΓX α u x₀))
         slots =
       fderivWithin 𝕜
@@ -77,7 +77,7 @@ theorem mcovariantDeriv_tensor0SWithin_apply_slots {s : ℕ}
           (tensor0SModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
             s x₀ x₀ (α x₀))
             (Function.update slots a (ΓX (extChartAt I x₀ x₀) (slots a))) := by
-  unfold mcovariantDeriv_tensor0SWithin
+  unfold mcovariantDerivTensor0SWithin
   rw [tensor0SModelAt_trivializationAt_symm]
   rw [covariantDeriv_tensor0SModelWithin_apply_slots]
   simp only [tensor0SModelInChart]

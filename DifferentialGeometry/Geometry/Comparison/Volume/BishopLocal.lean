@@ -27,8 +27,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem framedBall_eq_small
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -97,8 +97,8 @@ theorem framedBall_eq_small
           exact expDiffeo_eq_intr (I := I) g hEnorm p hvSmall
       _ = q := hvExp
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 def localBallVolume
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [T3Space M] [ConnectedSpace M]
@@ -107,8 +107,8 @@ def localBallVolume
   letI : MetricSpace M := HopfRinow.riemMetricSpace (I := I) (M := M)
   riemannianVolumeMeasure (I := I) (M := M) g (ball p R)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem localBall_eq_normal
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -128,8 +128,8 @@ theorem localBall_eq_normal
   congr 1
   exact (framedBall_eq_small (I := I) g hEnorm p hR hRexp).symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_ball_ratio
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -225,8 +225,8 @@ theorem exists_ball_ratio
   · rw [hball]
     simpa only [f, Ψ, modelHaar_ball (E := E) hr] using hupp
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_euclid_ratio
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -283,8 +283,8 @@ theorem exists_euclid_ratio
         rw [hofupp, ← hhaar]
         simp only [mul_assoc, mul_comm, mul_left_comm]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem localBall_cross
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -342,8 +342,8 @@ theorem localBall_cross
     localBall_eq_normal (I := I) g hEnorm p hr hrexp]
   exact hcross hr hrR (hRρ.trans hρc')
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem localBall_cross_of_complete_metric
     [ConnectedSpace M]
     (g : SmoothRiemannianMetric I M)
@@ -390,8 +390,8 @@ theorem localBall_cross_of_complete_metric
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
   exact localBall_cross (I := I) (M := M) g hEnorm p q hq hd hRic
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem localBall_ratio
     [RiemannianBundle (fun x : M => TangentSpace I x)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -430,8 +430,8 @@ theorem localBall_ratio
   rw [ENNReal.le_div_iff_mul_le (Or.inl hmr0) (Or.inl ENNReal.ofReal_ne_top)]
   exact hcross hr.1 hrR hR.2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem localBall_ratio_of_complete_metric
     [ConnectedSpace M]
     (g : SmoothRiemannianMetric I M)

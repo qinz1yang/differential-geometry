@@ -633,7 +633,7 @@ private lemma continuousAt_leviCivita_toFun_slice
   classical
   set xhat : E := extChartAt I x x with hxhat
   set F : ℝ × E → E := fun q =>
-    chartE_section_repr (I := I) x (fun b : M => Φ (b, q.1)) ((extChartAt I x).symm q.2)
+    chartESectionRepr (I := I) x (fun b : M => Φ (b, q.1)) ((extChartAt I x).symm q.2)
     with hF
   have hgood : x ∈ chartLeviCivitaGoodSet (I := I) x :=
     self_mem_chartLeviCivitaGoodSet (I := I) (α := x)
@@ -707,10 +707,10 @@ private lemma continuousAt_leviCivita_toFun_slice
     filter_upwards [hSopen.mem_nhds hs₀S] with s hs
     rw [LeviCivita_chart_apply (I := I) g' x hgood (hσMD hs) e]
     rw [chartLeviCivita_apply (I := I) g' x (fun b : M => Φ (b, s)) hgood e]
-    have hfun_eq : (chartE_section_repr (I := I) x (fun b : M => Φ (b, s)) ∘
+    have hfun_eq : (chartESectionRepr (I := I) x (fun b : M => Φ (b, s)) ∘
         (extChartAt I x).symm) = fun y : E => F (s, y) := rfl
-    have hval_eq : chartE_section_repr (I := I) x (fun b : M => Φ (b, s)) x = F (s, xhat) :=
-      (congrArg (chartE_section_repr (I := I) x (fun b : M => Φ (b, s))) h_projx).symm
+    have hval_eq : chartESectionRepr (I := I) x (fun b : M => Φ (b, s)) x = F (s, xhat) :=
+      (congrArg (chartESectionRepr (I := I) x (fun b : M => Φ (b, s))) h_projx).symm
     rw [hfun_eq, hval_eq]
   have hFslice : ContinuousAt (fun s : ℝ => F (s, xhat)) s₀ := by
     have h1 : Filter.Tendsto (fun s : ℝ => ((s, xhat) : ℝ × E)) (𝓝 s₀) (𝓝 ((s₀, xhat) : ℝ × E)) :=

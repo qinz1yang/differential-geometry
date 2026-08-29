@@ -42,7 +42,7 @@ theorem nablaRS_toRS0
   let one0 : Tensor0SField ∞ 0 (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) :=
     Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞
   have hone_eval (y : M) :
-      tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) y (one0 y) = 1 := by
+      tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) y (one0 y) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply]
     change Tensor0SField.toScalarField ∞ one0 y = 1
     have h := Tensor0SField.toScalarField_fromScalarField
@@ -72,7 +72,7 @@ theorem nablaRS_toRS0
     rw [hsection, hone_nabla, map_zero, sub_zero]
   apply ContinuousLinearMap.ext
   intro c
-  have heval : tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x c =
+  have heval : tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x c =
       Tensor0SNabla.tensor0Iso I M x c := by
     rw [Tensor0SSpace.evalScalar_apply]
     let S : (y : M) → Tensor0SSpace 0 I y := fun y =>
@@ -84,7 +84,7 @@ theorem nablaRS_toRS0
   have hone_iso : Tensor0SNabla.tensor0Iso I M x (one0 x) = 1 := by
     rw [← Tensor0SNabla.scalarFn_apply]
     rw [hone_scalar]
-  have hc : tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x c • one0 x = c := by
+  have hc : tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x c • one0 x = c := by
     apply (Tensor0SNabla.tensor0Iso I M x).injective
     rw [map_smul, heval, hone_iso, smul_eq_mul, mul_one]
   calc
@@ -94,12 +94,12 @@ theorem nablaRS_toRS0
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
           TensorRSNabla.tensorRSCovariantDerivative I M 0 s cov
             (A.toTensorRSField ∞) x v)
-          (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x c • one0 x) := by rw [hc]
-    _ = tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x c •
+          (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x c • one0 x) := by rw [hc]
+    _ = tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x c •
         (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from
           TensorRSNabla.tensorRSCovariantDerivative I M 0 s cov
             (A.toTensorRSField ∞) x v) (one0 x) := by rw [map_smul]
-    _ = tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x c •
+    _ = tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x c •
         Tensor0SNabla.tensor0SCovariantDerivative I M s cov A x v := by rw [hunit]
     _ = Tensor0SSpace.toRS0
         (Tensor0SNabla.tensor0SCovariantDerivative I M s cov A x v) c := rfl
@@ -438,7 +438,7 @@ theorem rawLap_scalar
         intro i j
         rw [orthoBasis_apply, orthoBasis_apply]
         exact smoothOrthoFrame_orthonormal_at_center (I := I) g x i j
-      have hinv : MetricInverseInBasis_gen (I := I) g x basis
+      have hinv : MetricInverseInBasisGen (I := I) g x basis
           (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
         intro i j
         constructor <;> simp [identityInvMetric, diagonalInvMetric, horth]
@@ -457,7 +457,7 @@ theorem rawLap_scalar
       · intro hi
         exact absurd (Finset.mem_univ i) hi
     _ = laplacian (I := I) (LeviCivita (I := I) g) g f x := by
-      have hmc : IsMetricCompatible_gen (I := I) (LeviCivita (I := I) g) g := by
+      have hmc : IsMetricCompatibleGen (I := I) (LeviCivita (I := I) g) g := by
         simpa [LeviCivita] using
           (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) g)
       have hreal := scalarLap_smooth (I := I) (M := M)

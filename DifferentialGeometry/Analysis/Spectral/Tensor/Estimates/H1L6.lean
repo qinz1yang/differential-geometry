@@ -45,7 +45,7 @@ private theorem component_eLpNorm_six
           ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) := by
   classical
   let : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   obtain ⟨Cgrad, hCgrad, hgrad⟩ :=
     exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_mul_h1Norm
       (I := I) (M := M) g r s α
@@ -114,7 +114,7 @@ theorem h1_lp6_fiber_rs
   classical
   let μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g
   let K : Finset ((M × MIdxC E r) × MIdxC E s) :=
-    ((chartAtlasPOU_finset (I := I) (M := M)).product Finset.univ).product
+    ((chartAtlasPOUFinset (I := I) (M := M)).product Finset.univ).product
       Finset.univ
   obtain ⟨Cr, hCr, hrec⟩ := fiber_sq_le_comps (E := E) (I := I) (M := M) g r s
   choose Ca hCa hcomp using fun α : M =>
@@ -130,7 +130,7 @@ theorem h1_lp6_fiber_rs
     tensorChartComponentScalar (I := I) (M := M)
       g r s S.toCcTensor q.1.1 q.1.2 q.2
   have hsum_sq (x : M) :
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ∑ Idx : MIdxC E r, ∑ Jdx : MIdxC E s,
             (tensorChartComponentScalar (I := I) (M := M)
               g r s S.toCcTensor α Idx Jdx x) ^ 2 =

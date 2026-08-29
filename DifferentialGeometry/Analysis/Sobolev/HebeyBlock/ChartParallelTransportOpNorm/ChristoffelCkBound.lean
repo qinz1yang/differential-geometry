@@ -22,16 +22,20 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
 
-noncomputable local instance : NormedAddCommGroup (E →L[ℝ] E) :=
+noncomputable local instance instNormedAddCommGroupContinuousLinearMapRealIdChristoffelCkBound :
+    NormedAddCommGroup (E →L[ℝ] E) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance : NormedSpace ℝ (E →L[ℝ] E) :=
+noncomputable local instance instNormedSpaceRealContinuousLinearMapIdChristoffelCkBound :
+    NormedSpace ℝ (E →L[ℝ] E) :=
   ContinuousLinearMap.toNormedSpace
 
-noncomputable local instance : NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E) :=
+noncomputable local instance instNormedAddCommGroupContinuousLinearMapBilinearChristoffelCkBound :
+    NormedAddCommGroup (E →L[ℝ] E →L[ℝ] E) :=
   ContinuousLinearMap.toNormedAddCommGroup
 
-noncomputable local instance : NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E) :=
+noncomputable local instance instNormedSpaceRealContinuousLinearMapBilinearChristoffelCkBound :
+    NormedSpace ℝ (E →L[ℝ] E →L[ℝ] E) :=
   ContinuousLinearMap.toNormedSpace
 
 private theorem exists_iteratedFDeriv_norm_bound_on_compact

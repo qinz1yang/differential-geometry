@@ -92,7 +92,7 @@ theorem metricCcTensorFib_section_contMDiff (g : SmoothRiemannianMetric I M) :
       (fun x : M => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SSpace 2 I z) x (metricCcTensorFib (I := I) g x)) := by
   classical
-  let _ := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  let _ := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   refine (contMDiff_multilinearSection_iff_coord (𝕜 := ℝ) (F := E)
       (E := (TangentSpace I : M → Type _)) (IB := I) (n := (∞ : WithTop ℕ∞)) (Module.finBasis ℝ E)
       (fun x : M => (metricCcTensorFib (I := I) g x :
@@ -121,7 +121,7 @@ def metricCcTensor (g₀ g : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 0
   toSection :=
     MixedSection.fromMultilinearSection (𝕜 := ℝ) (F := E) (IB := I)
       (E := (TangentSpace I : M → Type _)) ∞
-      (letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I)
+      (letI := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I)
         (M := M) 2
        (⟨fun x => metricCcTensorFib (I := I) g x,
          metricCcTensorFib_section_contMDiff (I := I) g⟩ :
@@ -167,7 +167,7 @@ private theorem metricCcTensor_ccTensorBilin (g₀ g : SmoothRiemannianMetric I 
     (x : M) (v w : TangentSpace I x) :
     smoothCcTensorBilinForm (I := I) g₀ (metricCcTensor (I := I) (M := M) g₀ g) x v w =
       g.inner x v w := by
-  let _ := Tensor0SBundle.tensor0SBundle_topology
+  let _ := Tensor0SBundle.tensor0SBundleTopology
     (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   have hround : ccTensorMultilinear (I := I) g₀ (metricCcTensor (I := I) (M := M) g₀ g) x =
       metricCcTensorFib (I := I) g x := by

@@ -143,15 +143,15 @@ lemma bdSlotExtendIter_two_toModel (g₀ : SmoothRiemannianMetric I M)
         unitModel (I := I) (M := M) g₀ 4 X x (fun k : Fin 4 => u (Fin.natAdd 2 k)) := by
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
         (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x) D) =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 5 x).symm
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 5 x).symm
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 5 I x from
           (slotExtendIter (I := I) (M := M) g₀ 0 4 1 X).toSection x).comp
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D)) from rfl]
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D)) from rfl]
   have hkey1 := TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := 5)
-    (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 5 x).symm
+    (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 5 x).symm
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 5 I x from
         (slotExtendIter (I := I) (M := M) g₀ 0 4 1 X).toSection x).comp
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D)))
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D)))
     (v0 := u 0) (vs := Matrix.vecTail u)
   rw [ContinuousLinearEquiv.apply_symm_apply] at hkey1
   rw [show (Fin.cons (u 0) (Matrix.vecTail u) : Fin 6 → E) = u from by
@@ -160,12 +160,12 @@ lemma bdSlotExtendIter_two_toModel (g₀ : SmoothRiemannianMetric I M)
   rw [← hkey1]
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 5 I x from
         (slotExtendIter (I := I) (M := M) g₀ 0 4 1 X).toSection x).comp
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D)
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D)
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0))) =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 4 x).symm
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 4 x).symm
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from X.toSection x).comp
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D
               ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0))))) from rfl]
   rw [show (Matrix.vecTail u : Fin 5 → E) =
       Fin.cons (u 1) (fun k : Fin 4 => u (Fin.natAdd 2 k)) from by
@@ -176,34 +176,34 @@ lemma bdSlotExtendIter_two_toModel (g₀ : SmoothRiemannianMetric I M)
       congr 1
       exact Fin.ext (by simp [Fin.succ, Fin.natAdd]; omega)]
   have hkey2 := TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := 4)
-    (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 4 x).symm
+    (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 4 x).symm
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from X.toSection x).comp
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0))))))
     (v0 := u 1) (vs := fun k : Fin 4 => u (Fin.natAdd 2 k))
   rw [ContinuousLinearEquiv.apply_symm_apply] at hkey2
   rw [← hkey2]
   rw [show ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from X.toSection x).comp
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0))))
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 1))) =
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from X.toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 1))) from rfl]
   set t : Tensor0SSpace 0 I x :=
-    tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+    tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 1)) with ht_def
   have htval : Tensor0SSpace.toModel t (fun i : Fin 0 => i.elim0) =
       Tensor0SSpace.toModel D ![u 0, u 1] := by
     rw [ht_def]
     have h1 := TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := 0)
-      (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+      (T := tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0))) (v0 := u 1)
       (vs := fun i : Fin 0 => i.elim0)
     rw [h1]
@@ -572,7 +572,7 @@ lemma bdPairTraceOp_apply_toModel (g₀ gm : SmoothRiemannianMetric I M)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 armPairTraceSlotPerm6
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X)).toSection x) D) =
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRS_domDomCongr armPairTraceSlotPerm6
+          tensorRSDomDomCongr armPairTraceSlotPerm6
             ((slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x)) D) from by
       rw [rsDomDomCongrSection_toSection]]
     rw [toModel_rsDomDomCongr_apply (I := I) (M := M) armPairTraceSlotPerm6
@@ -964,13 +964,13 @@ private lemma bdOmRecover_eq_idEndo_add_raise
     rw [cotangentToDual_apply]
     rw [cometricRaiseSlot0Field_toSection]
     rw [cometricRaiseSlot0Fib_clm_apply (I := I) g₀ 0 x _ om]
-    rw [show (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (0 + 1) x
+    rw [show (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (0 + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om)
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (0 + 2) I x from
                 (ccTensor02Symm (I := I) (M := M) g₀ T).toSection x)
               (unitTensor (I := I) (M := M) x)) (fun _ : Fin 1 => w) : ℝ) =
         Tensor0SSpace.toModel
-          (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (0 + 1) x
+          (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (0 + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om)
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (0 + 2) I x from
                 (ccTensor02Symm (I := I) (M := M) g₀ T).toSection x)
@@ -1415,25 +1415,25 @@ private lemma bdArmSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRiemannian
       (fun i => w ((finRotate 3).symm i)) =
       Tensor0SSpace.eval
         (bilinearSlotInsertCLM (I := I) (M := M) 0 x (Arm x)
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0))))
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0))))
         (Matrix.vecTail (fun i => w ((finRotate 3).symm i))) := by
     rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
           (slotExtend (I := I) (M := M) g₀ 1 2
             (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm)).toSection x) D') =
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x).symm
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x).symm
           ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
               (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm).toSection x).comp
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D')) from rfl]
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D')) from rfl]
     rw [show (fun i => w ((finRotate 3).symm i)) =
         Fin.cons (w ((finRotate 3).symm 0))
           (Matrix.vecTail (fun i => w ((finRotate 3).symm i))) from by
       funext k
       refine Fin.cases rfl (fun j => rfl) k]
     have hkey := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 2)
-      (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x).symm
+      (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x).symm
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
             (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 0 Arm).toSection x).comp
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D')))
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D')))
       (v0 := w ((finRotate 3).symm 0))
       (vs := Matrix.vecTail (fun i => w ((finRotate 3).symm i)))
     rw [ContinuousLinearEquiv.apply_symm_apply] at hkey
@@ -1441,14 +1441,14 @@ private lemma bdArmSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRiemannian
     rfl
   have e4 : Tensor0SSpace.eval
       (bilinearSlotInsertCLM (I := I) (M := M) 0 x (Arm x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0))))
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0))))
       (Matrix.vecTail (fun i => w ((finRotate 3).symm i))) =
       Tensor0SSpace.eval
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0)))
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0)))
         (fun _ : Fin 1 =>
           Arm x (w ((finRotate 3).symm 1)) (w ((finRotate 3).symm 2))) := by
     rw [armSlotFib_apply_eval (I := I) (M := M) 0 x (Arm x)
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0)))
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0)))
       (Matrix.vecTail (fun i => w ((finRotate 3).symm i)))]
     rw [slotInsertEndoFib_apply_natural]
     congr 1
@@ -1457,7 +1457,7 @@ private lemma bdArmSlotEndoCc_one_eq_reindex_slotExtend (g₀ : SmoothRiemannian
     rw [Function.update_self]
     rfl
   have e5 : Tensor0SSpace.eval
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0)))
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D' (w ((finRotate 3).symm 0)))
       (fun _ : Fin 1 =>
         Arm x (w ((finRotate 3).symm 1)) (w ((finRotate 3).symm 2))) =
       Tensor0SSpace.eval D'
@@ -1582,25 +1582,25 @@ private lemma bdArmSlotEndoCc_two_eq_reindex_slotExtend (g₀ : SmoothRiemannian
       (fun i => w (bilinearSlotInsertionCoefficientReindexPermFour i)) =
       Tensor0SSpace.eval
         (bilinearSlotInsertCLM (I := I) (M := M) 1 x (Arm x)
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D' (w (bilinearSlotInsertionCoefficientReindexPermFour 0))))
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D' (w (bilinearSlotInsertionCoefficientReindexPermFour 0))))
         (Matrix.vecTail (fun i => w (bilinearSlotInsertionCoefficientReindexPermFour i))) := by
     rw [show ((show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 4 I x from
           (slotExtend (I := I) (M := M) g₀ 2 3
             (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Arm)).toSection x) D') =
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x).symm
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 3 x).symm
           ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
               (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Arm).toSection x).comp
-            (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D')) from rfl]
+            (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D')) from rfl]
     rw [show (fun i => w (bilinearSlotInsertionCoefficientReindexPermFour i)) =
         Fin.cons (w (bilinearSlotInsertionCoefficientReindexPermFour 0))
           (Matrix.vecTail (fun i => w (bilinearSlotInsertionCoefficientReindexPermFour i))) from by
       funext k
       refine Fin.cases rfl (fun j => rfl) k]
     have hkey := TensorMultilinear.tensor0S_curry_apply_eval (I := I) (M := M) (n := 3)
-      (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 3 x).symm
+      (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 3 x).symm
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 3 I x from
             (bilinearSlotInsertionCoefficient (I := I) (M := M) g₀ 1 Arm).toSection x).comp
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D')))
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D')))
       (v0 := w (bilinearSlotInsertionCoefficientReindexPermFour 0))
       (vs := Matrix.vecTail (fun i => w (bilinearSlotInsertionCoefficientReindexPermFour i)))
     rw [ContinuousLinearEquiv.apply_symm_apply] at hkey
@@ -1608,20 +1608,20 @@ private lemma bdArmSlotEndoCc_two_eq_reindex_slotExtend (g₀ : SmoothRiemannian
     rfl
   have e4 : Tensor0SSpace.eval
       (bilinearSlotInsertCLM (I := I) (M := M) 1 x (Arm x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D' (w (bilinearSlotInsertionCoefficientReindexPermFour 0))))
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D' (w (bilinearSlotInsertionCoefficientReindexPermFour 0))))
       (Matrix.vecTail (fun i => w (bilinearSlotInsertionCoefficientReindexPermFour i))) =
       Tensor0SSpace.eval
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D' (w (bilinearSlotInsertionCoefficientReindexPermFour 0)))
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D' (w (bilinearSlotInsertionCoefficientReindexPermFour 0)))
         (Function.update (Matrix.vecTail
           (Matrix.vecTail (fun i => w (bilinearSlotInsertionCoefficientReindexPermFour i)))) 0
           (Arm x (w (bilinearSlotInsertionCoefficientReindexPermFour 1)) (w (bilinearSlotInsertionCoefficientReindexPermFour 2)))) := by
     rw [armSlotFib_apply_eval (I := I) (M := M) 1 x (Arm x)
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D' (w (bilinearSlotInsertionCoefficientReindexPermFour 0)))
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D' (w (bilinearSlotInsertionCoefficientReindexPermFour 0)))
       (Matrix.vecTail (fun i => w (bilinearSlotInsertionCoefficientReindexPermFour i)))]
     rw [slotInsertEndoFib_apply_natural]
     rfl
   have e5 : Tensor0SSpace.eval
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D' (w (bilinearSlotInsertionCoefficientReindexPermFour 0)))
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D' (w (bilinearSlotInsertionCoefficientReindexPermFour 0)))
       (Function.update (Matrix.vecTail (Matrix.vecTail (fun i => w (bilinearSlotInsertionCoefficientReindexPermFour i))))
         0
         (Arm x (w (bilinearSlotInsertionCoefficientReindexPermFour 1)) (w (bilinearSlotInsertionCoefficientReindexPermFour 2)))) =
@@ -1963,7 +1963,7 @@ private theorem bdFixLoweredCovec_section_contMDiff (g₀ gA gB : SmoothRiemanni
         (E := fun z : M => Tensor0SSpace 4 I z) x
         (bdFixLoweredCovec (I := I) g₀ gA gB x)) := by
   classical
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
   refine (contMDiff_multilinearSection_iff_coord (𝕜 := ℝ) (F := E)
       (E := (TangentSpace I : M → Type _)) (IB := I) (n := (∞ : WithTop ℕ∞)) (Module.finBasis ℝ E)
       (fun x : M => (bdFixLoweredCovec (I := I) g₀ gA gB x :
@@ -1994,7 +1994,7 @@ private theorem bdFixLoweredCovec_section_contMDiff (g₀ gA gB : SmoothRiemanni
 
 private def bdFixLoweredField (g₀ gA gB : SmoothRiemannianMetric I M) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 4 :=
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
+  letI := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 4
   ⟨fun x => bdFixLoweredCovec (I := I) g₀ gA gB x,
     bdFixLoweredCovec_section_contMDiff (I := I) (M := M) g₀ gA gB⟩
 

@@ -172,7 +172,7 @@ lemma slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec
     (T : TensorRSSpace 0 (s + 1) I x) (a : Fin n) :
     slot0Curry (I := I) (M := M) g x s e K₀ T a =
       tensor0SToTensorRS (I := I) (M := M) x
-        (tensor0S_curry (I := I) (M := M) s x
+        (tensor0SCurry (I := I) (M := M) s x
           ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
             (unitZeroSec (I := I) (M := M) x)) (e a)) := by
   unfold slot0Curry tensor0SToTensorRS
@@ -189,7 +189,7 @@ theorem riemannianFiberNormSq_succ_eq_sum_bareSlot0Curry
         ∑ a : Fin n,
           riemannianFiberNormSq (I := I) (M := M) g 0 s x
             (tensor0SToTensorRS (I := I) (M := M) x
-              (tensor0S_curry (I := I) (M := M) s x
+              (tensor0SCurry (I := I) (M := M) s x
                 ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x)
                   (unitZeroSec (I := I) (M := M) x)) (e a))) := by
   classical
@@ -211,7 +211,7 @@ theorem riemannianFiberNormSq_three_eq_sum_bareSlot0Curry
         ∑ a : Fin n,
           riemannianFiberNormSq (I := I) (M := M) g 0 2 x
             (tensor0SToTensorRS (I := I) (M := M) x
-              (tensor0S_curry (I := I) (M := M) 2 x
+              (tensor0SCurry (I := I) (M := M) 2 x
                 ((T : Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x)
                   (unitZeroSec (I := I) (M := M) x)) (e a))) :=
   riemannianFiberNormSq_succ_eq_sum_bareSlot0Curry (I := I) (M := M) g 2 x T

@@ -45,10 +45,10 @@ theorem nablaRS_coordFrame_slots {r s : ℕ}
           x₀ (X x₀) (lower b) k *
           coordComponentRSAt (I := I) (T x₀) upper (Function.update lower b k) := by
   classical
-  simp only [nablaRSFun, TensorLieDeriv.mcovariantDeriv_tensorRSFromConnection,
-    TensorLieDeriv.mcovariantDeriv_tensorRSWithinFromConnection]
+  simp only [nablaRSFun, TensorLieDeriv.mcovariantDerivTensorRSFromConnection,
+    TensorLieDeriv.mcovariantDerivTensorRSWithinFromConnection]
   rw [← tensorRSModelAt_coordComponentRSAt (I := I) x₀
-    (TensorLieDeriv.mcovariantDeriv_tensorRSWithin
+    (TensorLieDeriv.mcovariantDerivTensorRSWithin
       (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) r s X
       (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)
@@ -65,7 +65,7 @@ theorem nablaRS_coordFrame_slots {r s : ℕ}
     (x := extChartAt I x₀ x₀)
     (upper := upper)
     (lower := lower)
-  unfold TensorLieDeriv.mcovariantDeriv_tensorRSWithin
+  unfold TensorLieDeriv.mcovariantDerivTensorRSWithin
   rw [TensorLieDeriv.tensorRSModelAt_trivializationAt_symm]
   refine hmodel.trans ?_
   simp_rw [connCoeff_eq_christoffelAlong_coord (I := I) cov (fun x => X x) x₀]
@@ -79,7 +79,7 @@ theorem nablaRS_coordFrame_slots {r s : ℕ}
           (tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H)
             (I := I) (M := M) r s x₀ (fun x => T x)
             (extChartAt I x₀ x₀)
-            ((continuousMultilinearMap_basis
+            ((continuousMultilinearMapBasis
               (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r)
               (Function.update upper a k)))
             (fun b : Fin s => (Module.finBasis 𝕜 E) (lower b)))
@@ -91,7 +91,7 @@ theorem nablaRS_coordFrame_slots {r s : ℕ}
           (tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H)
             (I := I) (M := M) r s x₀ (fun x => T x)
             (extChartAt I x₀ x₀)
-            ((continuousMultilinearMap_basis
+            ((continuousMultilinearMapBasis
               (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper))
             (Function.update
               (fun c : Fin s => (Module.finBasis 𝕜 E) (lower c))
@@ -118,7 +118,7 @@ theorem nablaRS_coordFrame_slots {r s : ℕ}
           (tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H)
             (I := I) (M := M) r s x₀ (fun x => T x)
             (extChartAt I x₀ x₀)
-            ((continuousMultilinearMap_basis
+            ((continuousMultilinearMapBasis
               (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r)
               (Function.update upper a k)))
             (fun b : Fin s => (Module.finBasis 𝕜 E) (lower b))) =
@@ -142,7 +142,7 @@ theorem nablaRS_coordFrame_slots {r s : ℕ}
           (tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H)
             (I := I) (M := M) r s x₀ (fun x => T x)
             (extChartAt I x₀ x₀)
-            ((continuousMultilinearMap_basis
+            ((continuousMultilinearMapBasis
               (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper))
             (Function.update
               (fun c : Fin s => (Module.finBasis 𝕜 E) (lower c))

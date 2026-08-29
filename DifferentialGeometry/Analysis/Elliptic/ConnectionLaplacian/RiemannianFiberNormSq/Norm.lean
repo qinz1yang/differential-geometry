@@ -27,7 +27,7 @@ noncomputable def riemannianFiberNormedAddCommGroup
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M) :
     NormedAddCommGroup (TensorRSSpace r s I b) := by
   letI : Bundle.RiemannianBundle (fun x : M => TensorRSSpace r s I x) :=
-    tensorRS_riemannianBundle (I := I) (M := M) g r s
+    tensorRSRiemannianBundle (I := I) (M := M) g r s
   let h : Bundle.RiemannianBundle (fun x : M => TensorRSSpace r s I x) := inferInstance
   exact (h.g.toCore b).toNormedAddCommGroupOfTopology
     (h.g.continuousAt b) (h.g.isVonNBounded b)
@@ -51,7 +51,7 @@ theorem riemannianFiberNorm_eq_sqrt (g : SmoothRiemannianMetric I M) (r s : ℕ)
     riemannianFiberNorm g r s b T =
       Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g r s b T) := by
   let : Bundle.RiemannianBundle (fun x : M => TensorRSSpace r s I x) :=
-    tensorRS_riemannianBundle (I := I) (M := M) g r s
+    tensorRSRiemannianBundle (I := I) (M := M) g r s
   let : NormedAddCommGroup (TensorRSSpace r s I b) :=
     riemannianFiberNormedAddCommGroup g r s b
   rw [riemannianFiberNorm, norm_eq_sqrt_tensorInnerPointwise]
@@ -82,7 +82,7 @@ theorem riemannianFiberNorm_smul (g : SmoothRiemannianMetric I M) (r s : ℕ) (b
     (c : ℝ) (T : TensorRSSpace r s I b) :
     riemannianFiberNorm g r s b (c • T) = |c| * riemannianFiberNorm g r s b T := by
   let : Bundle.RiemannianBundle (fun x : M => TensorRSSpace r s I x) :=
-    tensorRS_riemannianBundle (I := I) (M := M) g r s
+    tensorRSRiemannianBundle (I := I) (M := M) g r s
   let h : Bundle.RiemannianBundle (fun x : M => TensorRSSpace r s I x) := inferInstance
   let : NormedAddCommGroup (TensorRSSpace r s I b) :=
     (h.g.toCore b).toNormedAddCommGroupOfTopology

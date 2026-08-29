@@ -124,7 +124,7 @@ private theorem lapTrace_diag
       (by rw [Fintype.card_fin]; rfl)
   have hbasis (i) : basis i = frame i := by
     simp only [basis, coe_basisOfLinearIndependentOfCardEqFinrank]
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ E))) := by
     intro i j
     constructor <;>
@@ -176,7 +176,7 @@ private theorem lift_unit {x : M} (c : ℝ) :
           (unitZeroSec (I := I) (M := M) x))
         (fun i : Fin 0 => Fin.elim0 i) = c := by
   rw [Tensor0SSpace.toRS0_apply]
-  have hu : (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x)
+  have hu : (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x)
       (unitZeroSec (I := I) (M := M) x) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply, unitZeroSec_apply]
     change ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) 1
@@ -240,7 +240,7 @@ private theorem grad_cc_apply
   let A : Tensor0SField ∞ 0 (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) :=
     Tensor0SField.fromScalarField ∞ f hf
   have hunit (y : M) :
-      (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) y)
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) y)
         (unitZeroSec (I := I) (M := M) y) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply, unitZeroSec_apply]
     change ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) 1
@@ -327,7 +327,7 @@ private theorem grad2_cc_diag
     secondRS_scalar (I := I) (M := M) g hcov hf B x]
   rw [hslots, Tensor0SSpace.toRS0_apply]
   have hunit :
-      (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x)
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x)
         (unitZeroSec (I := I) (M := M) x) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply, unitZeroSec_apply]
     change ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) 1
@@ -346,9 +346,9 @@ theorem scalarLapDiff_eq
     (q h : SmoothRiemannianMetric I M) (U : SmoothCcTensor q 0 0) (x : M) :
     TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞))
         (scalarLapDiffCc (I := I) q h U).toSection x =
-      Δ_g (I := I) h ⟨_, (TensorRSField.scalar0_smooth
+      ΔG (I := I) h ⟨_, (TensorRSField.scalar0_smooth
             (n := (∞ : WithTop ℕ∞)) U.toSection)⟩ x -
-        Δ_g (I := I) q ⟨_, (TensorRSField.scalar0_smooth
+        ΔG (I := I) q ⟨_, (TensorRSField.scalar0_smooth
             (n := (∞ : WithTop ℕ∞)) U.toSection)⟩ x := by
   let f := TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) U.toSection
   let hf := TensorRSField.scalar0_smooth
@@ -363,11 +363,11 @@ theorem scalarLapDiff_eq
     simpa [LeviCivita] using
       (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
         (I := I) (M := M) q)
-  have hmch : IsMetricCompatible_gen (I := I)
+  have hmch : IsMetricCompatibleGen (I := I)
       (LeviCivita (I := I) h) h := by
     simpa [LeviCivita] using
       (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) h)
-  have hmcq : IsMetricCompatible_gen (I := I)
+  have hmcq : IsMetricCompatibleGen (I := I)
       (LeviCivita (I := I) q) q := by
     simpa [LeviCivita] using
       (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) q)

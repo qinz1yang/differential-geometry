@@ -42,7 +42,7 @@ omit [CompactSpace M] in
 lemma covGrad_rawConnLap_unit_eval_curry
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (x : M) (w : TangentSpace I x) :
-    tensor0S_curry (I := I) (M := M) 2 x
+    tensor0SCurry (I := I) (M := M) 2 x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           (covGrad (I := I) (M := M) g 0 2
             (rawTensorConnLapSmooth g 0 2 T₀)).toSection x)
@@ -106,7 +106,7 @@ omit [CompactSpace M] in
 lemma curry_unitGradAbstractRoughLap_along
     (g : SmoothRiemannianMetric I M) (T₀ : SmoothCcTensor g 0 2)
     (x : M) (w : TangentSpace I x) :
-    tensor0S_curry (I := I) (M := M) 2 x
+    tensor0SCurry (I := I) (M := M) 2 x
         (unitGradAbstractRoughLap (I := I) (M := M) g T₀ x)
         (smoothExtensionTangent (I := I) x w x) =
       ∑ i : Fin (Module.finrank ℝ E),
@@ -146,7 +146,7 @@ lemma curry_unitGradAbstractRoughLap_along
   have hW : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (smoothExtensionTangent (I := I) x w)) :=
     smoothExtensionTangent_contMDiff x w
   rw [unitGradAbstractRoughLap_def]
-  rw [show (tensor0S_curry (I := I) (M := M) 2 x
+  rw [show (tensor0SCurry (I := I) (M := M) 2 x
         (∑ i : Fin (Module.finrank ℝ E),
           ((Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g)).toFun
               (covApply (Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g))
@@ -158,7 +158,7 @@ lemma curry_unitGradAbstractRoughLap_along
                 (smoothOrthoFrame (I := I) g x i) x
                 (smoothOrthoFrame (I := I) g x i x))))) =
       ∑ i : Fin (Module.finrank ℝ E),
-        (tensor0S_curry (I := I) (M := M) 2 x
+        (tensor0SCurry (I := I) (M := M) 2 x
           ((Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g)).toFun
               (covApply (Tensor0SNabla.tensor0SCovariantDerivative I M 3 (LeviCivita (I := I) g))
                 (smoothOrthoFrame (I := I) g x i) (unitGradField (I := I) (M := M) g T₀)) x
@@ -168,7 +168,7 @@ lemma curry_unitGradAbstractRoughLap_along
               ((LeviCivita (I := I) g).toFun
                 (smoothOrthoFrame (I := I) g x i) x
                 (smoothOrthoFrame (I := I) g x i x)))) from
-      map_sum (tensor0S_curry (I := I) (M := M) 2 x) _ _]
+      map_sum (tensor0SCurry (I := I) (M := M) 2 x) _ _]
   rw [sum_apply]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   have hB : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% (smoothOrthoFrame (I := I) g x i)) :=

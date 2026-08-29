@@ -110,35 +110,35 @@ private lemma grad_g_smul_smooth_section_eq
     {φ v : M → ℝ}
     (hφ : ContMDiff I 𝓘(ℝ, ℝ) ∞ φ)
     (hv : ContMDiff I 𝓘(ℝ, ℝ) ∞ v) :
-    (grad_g (I := I) g
+    (gradG (I := I) g
         (⟨φ * v, hφ.mul hv⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) =
       smoothSmul (I := I) φ hφ
-          (grad_g (I := I) g (⟨v, hv⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) :
+          (gradG (I := I) g (⟨v, hv⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) +
         smoothSmul (I := I) v hv
-          (grad_g (I := I) g (⟨φ, hφ⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) :
+          (gradG (I := I) g (⟨φ, hφ⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) := by
   let φvMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨φ * v, hφ.mul hv⟩
   let vMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨v, hv⟩
   let φMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨φ, hφ⟩
-  change (grad_g (I := I) g φvMap :
+  change (gradG (I := I) g φvMap :
       Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) =
     smoothSmul (I := I) φ hφ
-        (grad_g (I := I) g vMap :
+        (gradG (I := I) g vMap :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) +
       smoothSmul (I := I) v hv
-        (grad_g (I := I) g φMap :
+        (gradG (I := I) g φMap :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
   ext x
   rw [ContMDiffSection.coe_add]
   rw [grad_g_apply]
   change gradFun (I := I) g (fun y : M => φ y * v y) x =
     (smoothSmul (I := I) φ hφ
-        (grad_g (I := I) g vMap :
+        (gradG (I := I) g vMap :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)) x +
       (smoothSmul (I := I) v hv
-        (grad_g (I := I) g φMap :
+        (gradG (I := I) g φMap :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)) x
   rw [smoothSmul_apply, smoothSmul_apply]
   simp only [grad_g_apply]
@@ -151,15 +151,15 @@ private lemma tangentSectionAction_grad_g_eq_inner_grad
     (_hφ : ContMDiff I 𝓘(ℝ, ℝ) ∞ φ)
     (hv : ContMDiff I 𝓘(ℝ, ℝ) ∞ v) (x : M) :
     tangentSectionAction (I := I)
-        (grad_g (I := I) g (⟨v, hv⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) :
+        (gradG (I := I) g (⟨v, hv⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) :
           Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) φ x =
       g.inner x (gradFun (I := I) g φ x) (gradFun (I := I) g v x) := by
   let vMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨v, hv⟩
   change tangentSectionAction (I := I)
-      (grad_g (I := I) g vMap :
+      (gradG (I := I) g vMap :
         Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) φ x = _
   unfold tangentSectionAction
-  rw [show ((grad_g (I := I) g vMap :
+  rw [show ((gradG (I := I) g vMap :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x) =
         gradFun (I := I) g v x from
       grad_g_apply (I := I) g vMap x]
@@ -172,21 +172,21 @@ theorem Δ_g_smul_eq
     {φ v : M → ℝ}
     (hφ : ContMDiff I 𝓘(ℝ, ℝ) ∞ φ)
     (hv : ContMDiff I 𝓘(ℝ, ℝ) ∞ v) (x : M) :
-    Δ_g (I := I) g
+    ΔG (I := I) g
         (⟨φ * v, hφ.mul hv⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) x =
-      φ x * Δ_g (I := I) g
+      φ x * ΔG (I := I) g
         (⟨v, hv⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) x +
         2 * g.inner x (gradFun (I := I) g φ x) (gradFun (I := I) g v x) +
-        v x * Δ_g (I := I) g
+        v x * ΔG (I := I) g
           (⟨φ, hφ⟩ : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯) x := by
   classical
   let φvMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨φ * v, hφ.mul hv⟩
   let vMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨v, hv⟩
   let φMap : C^∞⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯ := ⟨φ, hφ⟩
-  change Δ_g (I := I) g φvMap x =
-    φ x * Δ_g (I := I) g vMap x +
+  change ΔG (I := I) g φvMap x =
+    φ x * ΔG (I := I) g vMap x +
       2 * g.inner x (gradFun (I := I) g φ x) (gradFun (I := I) g v x) +
-      v x * Δ_g (I := I) g φMap x
+      v x * ΔG (I := I) g φMap x
   rw [Δ_g_def]
   rw [grad_g_smul_smooth_section_eq (I := I) (M := M) g hφ hv]
   rw [divergence_g_add (I := I) g]
@@ -194,13 +194,13 @@ theorem Δ_g_smul_eq
   rw [divergence_g_smoothSmul (I := I) g v hv _ x]
   rw [tangentSectionAction_grad_g_eq_inner_grad (I := I) (M := M) g hφ hv x]
   rw [tangentSectionAction_grad_g_eq_inner_grad (I := I) (M := M) g hv hφ x]
-  rw [show divergence_g (I := I) g
-          (grad_g (I := I) g vMap) x =
-        Δ_g (I := I) g vMap x from
+  rw [show divergenceG (I := I) g
+          (gradG (I := I) g vMap) x =
+        ΔG (I := I) g vMap x from
       (Δ_g_def (I := I) g vMap x).symm,
-      show divergence_g (I := I) g
-          (grad_g (I := I) g φMap) x =
-        Δ_g (I := I) g φMap x from
+      show divergenceG (I := I) g
+          (gradG (I := I) g φMap) x =
+        ΔG (I := I) g φMap x from
       (Δ_g_def (I := I) g φMap x).symm]
   have h_symm : g.inner x (gradFun (I := I) g v x) (gradFun (I := I) g φ x) =
       g.inner x (gradFun (I := I) g φ x) (gradFun (I := I) g v x) :=
@@ -218,7 +218,7 @@ theorem pouScalar_oneSubLapClassical_pointwise_leibniz
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
           (gradFun (I := I) g v.toFun x) -
         v.toFun x *
-          Δ_g (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x := by
+          ΔG (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x := by
   classical
   set ρα : M → ℝ := ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) with hρα_def
   set V : M → ℝ := v.toFun with hV_def
@@ -229,29 +229,29 @@ theorem pouScalar_oneSubLapClassical_pointwise_leibniz
       (pouScalar (I := I) (M := M) α v).toFun =
         fun y : M => ρα y * V y := rfl
   change (pouScalar (I := I) (M := M) α v).toFun x -
-      Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+      ΔG (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
         (pouScalar (I := I) (M := M) α v).smooth⟩ x =
     ρα x * v.oneSubLapClassical.toFun x -
       2 * g.inner x (gradFun (I := I) g
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
         (gradFun (I := I) g v.toFun x) -
       v.toFun x *
-        Δ_g (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x
-  have h_lap_eq : Δ_g (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
+        ΔG (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x
+  have h_lap_eq : ΔG (I := I) g ⟨(pouScalar (I := I) (M := M) α v).toFun,
     (pouScalar (I := I) (M := M) α v).smooth⟩ x =
-        Δ_g (I := I) g ⟨ρα * V, hρα_smooth.mul hV_smooth⟩ x := rfl
+        ΔG (I := I) g ⟨ρα * V, hρα_smooth.mul hV_smooth⟩ x := rfl
   rw [h_lap_eq]
   rw [Δ_g_smul_eq (I := I) (M := M) g hρα_smooth hV_smooth x]
   rw [h_pou_toFun]
   change ρα x * V x -
-      (ρα x * Δ_g (I := I) g ⟨_, hV_smooth⟩ x +
+      (ρα x * ΔG (I := I) g ⟨_, hV_smooth⟩ x +
         2 * g.inner x (gradFun (I := I) g ρα x) (gradFun (I := I) g V x) +
-        V x * Δ_g (I := I) g ⟨_, hρα_smooth⟩ x) =
-    ρα x * (V x - Δ_g (I := I) g ⟨v.toFun, v.smooth⟩ x) -
+        V x * ΔG (I := I) g ⟨_, hρα_smooth⟩ x) =
+    ρα x * (V x - ΔG (I := I) g ⟨v.toFun, v.smooth⟩ x) -
       2 * g.inner x (gradFun (I := I) g ρα x) (gradFun (I := I) g V x) -
-      V x * Δ_g (I := I) g ⟨_, hρα_smooth⟩ x
+      V x * ΔG (I := I) g ⟨_, hρα_smooth⟩ x
   have h_lap_v_eq :
-      Δ_g (I := I) g ⟨v.toFun, v.smooth⟩ x = Δ_g (I := I) g ⟨_, hV_smooth⟩ x := rfl
+      ΔG (I := I) g ⟨v.toFun, v.smooth⟩ x = ΔG (I := I) g ⟨_, hV_smooth⟩ x := rfl
   rw [h_lap_v_eq]
   ring
 
@@ -269,7 +269,7 @@ private lemma fHLeibniz_smoothCase_coeFn_aeEq
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
           (gradFun (I := I) g v.toFun x) -
         v.toFun x *
-          Δ_g (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x) := by
+          ΔG (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x) := by
   classical
   rw [fHLeibniz_smoothToH1Compl (I := I) (M := M) g α v]
   set ρα : C^∞⟮I, M; ℝ⟯ := chartAtlasPOU I M α with hρα_def
@@ -316,7 +316,7 @@ private lemma fHLeibniz_smoothCase_coeFn_aeEq
       ρα_fun x * v.oneSubLapClassical.toFun x -
         2 * g.inner x (gradFun (I := I) g ρα x) (gradFun (I := I) g v.toFun x) -
         v.toFun x *
-          Δ_g (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x
+          ΔG (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x
   rw [hx2]
   change ((smoothMulLp (I := I) (M := M) g ρα
             (smoothToLp (I := I) (M := M) g v.oneSubLapClassical)
@@ -329,7 +329,7 @@ private lemma fHLeibniz_smoothCase_coeFn_aeEq
       ρα_fun x * v.oneSubLapClassical.toFun x -
         2 * g.inner x (gradFun (I := I) g ρα x) (gradFun (I := I) g v.toFun x) -
         v.toFun x *
-          Δ_g (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x
+          ΔG (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x
   rw [hx_mul1, hx_mul2, hx_smul]
   change ρα_fun x * ((smoothToLp (I := I) (M := M) g v.oneSubLapClassical
             : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) x -
@@ -341,7 +341,7 @@ private lemma fHLeibniz_smoothCase_coeFn_aeEq
       ρα_fun x * v.oneSubLapClassical.toFun x -
         2 * g.inner x (gradFun (I := I) g ρα x) (gradFun (I := I) g v.toFun x) -
         v.toFun x *
-          Δ_g (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x
+          ΔG (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x
   rw [show ((2 : ℝ) • ((gradInnerSmooth (I := I) (M := M) g ρα v
             : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) x =
       (2 : ℝ) • ((gradInnerSmooth (I := I) (M := M) g ρα v
@@ -350,11 +350,11 @@ private lemma fHLeibniz_smoothCase_coeFn_aeEq
   change ρα_fun x * v.oneSubLapClassical.toFun x -
         (2 : ℝ) • g.inner x (gradFun (I := I) g ρα x)
           (gradFun (I := I) g v.toFun x) -
-        Δ_g (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x * v.toFun x =
+        ΔG (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x * v.toFun x =
       ρα_fun x * v.oneSubLapClassical.toFun x -
         2 * g.inner x (gradFun (I := I) g ρα x) (gradFun (I := I) g v.toFun x) -
         v.toFun x *
-          Δ_g (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x
+          ΔG (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x
   rw [smul_eq_mul]
   ring
 
@@ -378,7 +378,7 @@ theorem pouScalar_oneSubLap_aeEq_fHLeibniz_smooth
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
             (gradFun (I := I) g v.toFun x) -
           v.toFun x *
-            Δ_g (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x :=
+            ΔG (I := I) g (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) x :=
     pouScalar_oneSubLapClassical_pointwise_leibniz (I := I) (M := M) g α v
   refine Filter.EventuallyEq.trans (Filter.Eventually.of_forall h_pointwise) ?_
   exact h.symm

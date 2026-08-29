@@ -61,13 +61,13 @@ theorem pou_tangentSectionAction_finset_sum_eq_zero
 
 theorem chartAtlasPOU_tangentSectionAction_finset_sum_eq_zero
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         tangentSectionAction (I := I) X
           ((chartAtlasPOU I M α : M → ℝ)) x = 0 := by
   classical
   have hsum_one := chartAtlasPOU_finset_sum_eq_one (I := I) (M := M)
   set ρ : SmoothPartitionOfUnity M I M Set.univ := chartAtlasPOU I M with hρ_def
-  set S : Finset M := chartAtlasPOU_finset (I := I) (M := M) with hS_def
+  set S : Finset M := chartAtlasPOUFinset (I := I) (M := M) with hS_def
   exact pou_tangentSectionAction_finset_sum_eq_zero (I := I) X ρ S hsum_one x
 
 end PouGradientCancellation
@@ -121,7 +121,7 @@ theorem integral_weighted_secondOrder_combined_eq_neg_weightDeriv
               (loweredCovDerivAlongVF (I := I) (M := M) g 0 2 v B x))
           + tensorInnerScalar (I := I) (M := M) g 0 2
               (covDerivAlongVFSection (I := I) (M := M) g T B) v x
-            * divergence_g (I := I) g B x)
+            * divergenceG (I := I) g B x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
       -∫ x, tensorInnerScalar (I := I) (M := M) g 0 2
               (covDerivAlongVFSection (I := I) (M := M) g T B) v x
@@ -163,8 +163,8 @@ theorem integral_weighted_secondOrder_combined_eq_neg_weightDeriv
     rw [show loweredCovDerivAt (I := I) (M := M) g 0 2 v x (B x) =
           loweredCovDerivAlongVF (I := I) (M := M) g 0 2 v B x from rfl]
   have hRHS_pt : ∀ x : M,
-      f x * divergence_g (I := I) g Y x =
-        ρ x * (f x * divergence_g (I := I) g B x) +
+      f x * divergenceG (I := I) g Y x =
+        ρ x * (f x * divergenceG (I := I) g B x) +
           f x * tangentSectionAction (I := I) B ρ x := by
     intro x
     rw [hY_def, divergence_g_smoothSmul (I := I) g ρ hρ B x]
@@ -172,12 +172,12 @@ theorem integral_weighted_secondOrder_combined_eq_neg_weightDeriv
   rw [integral_congr_ae (Filter.Eventually.of_forall hRHS_pt)] at hIBP
   have hf_cont : Continuous f := hf_smooth.continuous
   have hρ_cont : Continuous ρ := hρ.continuous
-  have hdivB_cont : Continuous (divergence_g (I := I) g B) :=
+  have hdivB_cont : Continuous (divergenceG (I := I) g B) :=
     (divergence_g_contMDiff (I := I) g B).continuous
   have hBρ_cont : Continuous (tangentSectionAction (I := I) B ρ) :=
     (tangentSectionAction_contMDiff (I := I) B hρ).continuous
   have h_int_a : Integrable
-      (fun x : M => ρ x * (f x * divergence_g (I := I) g B x))
+      (fun x : M => ρ x * (f x * divergenceG (I := I) g B x))
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
       (I := I) g (hρ_cont.mul (hf_cont.mul hdivB_cont))
@@ -200,9 +200,9 @@ theorem integral_weighted_secondOrder_combined_eq_neg_weightDeriv
                 (liftedTensorSection (I := I) (M := M) g 0 2 W x))
               (Tensor0SSpace.toModel
                 (loweredCovDerivAlongVF (I := I) (M := M) g 0 2 v B x))
-            + f x * divergence_g (I := I) g B x) =
+            + f x * divergenceG (I := I) g B x) =
         tangentSectionAction (I := I) Y f x +
-          ρ x * (f x * divergence_g (I := I) g B x) := by
+          ρ x * (f x * divergenceG (I := I) g B x) := by
     intro x
     rw [hLHS_pt x]
     ring
@@ -217,9 +217,9 @@ theorem integral_weighted_secondOrder_combined_eq_neg_weightDeriv
             (Tensor0SSpace.toModel
               (loweredCovDerivAlongVF (I := I) (M := M) g 0 2 v B x))
           + tensorInnerScalar (I := I) (M := M) g 0 2 W v x
-            * divergence_g (I := I) g B x)) =
+            * divergenceG (I := I) g B x)) =
       (fun x : M => tangentSectionAction (I := I) Y f x +
-          ρ x * (f x * divergence_g (I := I) g B x)) from
+          ρ x * (f x * divergenceG (I := I) g B x)) from
     funext (fun x => hgoal_pt x)]
   have h_int_act : Integrable (tangentSectionAction (I := I) Y f)
       (riemannianVolumeMeasure (I := I) (M := M) g) :=

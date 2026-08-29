@@ -94,7 +94,7 @@ lemma iteratedFDeriv_two_tensorRepr_opNorm_le_sum_iteratedFDeriv_components
     (T : SmoothCcTensor g r s) (α : M) {b : M}
     (hb_chart : b ∈ (chartAt H α).source) :
     ‖iteratedFDeriv ℝ 2
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
             (fun y : M => T.toSection y) ∘ (extChartAt I α).symm)
         (extChartAt I α b)‖ ≤
       ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -105,7 +105,7 @@ lemma iteratedFDeriv_two_tensorRepr_opNorm_le_sum_iteratedFDeriv_components
             ‖tensorChartBasisElement (E := E) r s Idx Jdx‖ := by
   classical
   have hψ_eq :
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => T.toSection y) ∘ (extChartAt I α).symm) =
         fun y : E =>
           ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -115,7 +115,7 @@ lemma iteratedFDeriv_two_tensorRepr_opNorm_le_sum_iteratedFDeriv_components
                 tensorChartBasisElement (E := E) r s Idx Jdx := by
     funext y
     set bb := (extChartAt I α).symm y
-    set R : TensorRSModel r s ℝ E := tensorRSChartE_section_repr (I := I)
+    set R : TensorRSModel r s ℝ E := tensorRSChartESectionRepr (I := I)
       r s α (fun z : M => T.toSection z) bb
     have hR_recover : R =
         ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -176,7 +176,7 @@ theorem iteratedFDeriv_two_tensorRSChartE_section_repr_opNorm_le_sum
     ∃ K : ℝ, 0 ≤ K ∧
       ∀ {b : M}, b ∈ (chartAt H α).source →
         ‖iteratedFDeriv ℝ 2
-          (tensorRSChartE_section_repr (I := I) r s α
+          (tensorRSChartESectionRepr (I := I) r s α
               (fun y : M => T.toSection y) ∘ (extChartAt I α).symm)
           (extChartAt I α b)‖
         ≤ K * (∑ Idx : Fin r → Fin (Module.finrank ℝ E),

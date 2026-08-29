@@ -139,7 +139,7 @@ noncomputable def coordInv
     Real -> DifferentialGeometry.Geometry.Curvature.InverseMetricComponents M
       (DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E) :=
   fun t x i j =>
-    DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+    DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
       (I := I) (S.family.metric t) x0 i j (extChartAt I x0 x)
 
 omit [SigmaCompactSpace M] [T2Space M] in
@@ -147,9 +147,9 @@ theorem coordInvReal
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x0 : M) (t : Real) :
-    Tensor0SBundle.MetricInverseInBasis_gen
+    Tensor0SBundle.MetricInverseInBasisGen
       (I := I) (M := M) (S.family.metric t) x0
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x0)
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x0)
       (fun i j => coordInv (I := I) S x0 t x0 i j) := by
   simpa [coordInv] using
     Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
@@ -442,7 +442,7 @@ theorem ricci_heat_mc
         ricciCompInFrame (I := I) S frame t x j i)
     (hframe : forall x i, basis x i = frame i x)
     (hinv : forall t x,
-      Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) (S.base.metric t) x
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) (S.base.metric t) x
         (basis x) (gInv t x))
     (hfields : forall x, DifferentialGeometry.Geometry.Operator.SmoothBasisFieldsAt (I := I)
       (basis x) (X x))

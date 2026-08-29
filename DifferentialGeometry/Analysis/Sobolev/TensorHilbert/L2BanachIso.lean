@@ -65,7 +65,7 @@ private lemma smoothCcTensorHs_norm_eq
   rw [h_eq] at h1
   linarith
 
-noncomputable def TensorPouSobolevHilbert.toTensorL2_continuousLinearEquiv
+noncomputable def TensorPouSobolevHilbert.toTensorL2ContinuousLinearEquiv
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (C₁ C₂ : ℝ)
     (h_norm_le : ∀ T : SmoothCcTensor g r s,
@@ -157,13 +157,13 @@ theorem exists_tensorPouSobolevHsNorm_zero_le_const_mul_norm
   DifferentialGeometry.Analysis.Sobolev.Tensor.tensorPouSobolevHsNorm_zero_toReal_le_norm
     (I := I) (M := M) g r s
 
-noncomputable def TensorPouSobolevHilbert.toTensorL2_continuousLinearEquiv_of_forward
+noncomputable def TensorPouSobolevHilbert.toTensorL2ContinuousLinearEquivOfForward
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (C₁ : ℝ)
     (h_norm_le : ∀ T : SmoothCcTensor g r s,
       ‖T‖ ≤ C₁ * (tensorPouSobolevHsNorm (I := I) (M := M) g 0 T).toReal) :
     TensorPouSobolevHilbert g r s 0 ≃L[ℝ] TensorL2 r s g :=
-  TensorPouSobolevHilbert.toTensorL2_continuousLinearEquiv
+  TensorPouSobolevHilbert.toTensorL2ContinuousLinearEquiv
     (I := I) (M := M) g r s C₁
     (exists_tensorPouSobolevHsNorm_zero_le_const_mul_norm
       (I := I) (M := M) g r s).choose

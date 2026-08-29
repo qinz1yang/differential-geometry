@@ -34,7 +34,7 @@ theorem weak_harnack_of_localized_crossover
     {p a τ t₁ A C : ℝ} (hp : 2 ≤ p) (haτ : a < τ) (hτt₁ : τ ≤ t₁)
     (hA : 0 ≤ A) (hC : 0 ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hcrossover :
       A * moserLocalizedMass (I := I) (M := M) (Module.finrank ℝ E) rho
@@ -73,7 +73,7 @@ theorem weak_harnack_of_localized_rpow_crossover
     {p a τ t₁ A C : ℝ} (hp : 0 < p) (haτ : a < τ) (hτt₁ : τ ≤ t₁)
     (hA : 0 ≤ A) (hC : 0 ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hcrossover :
       A * localizedSpacetimeRpowMoment (I := I) (M := M)
@@ -125,7 +125,7 @@ theorem harnack_of_localized_crossover
     (hC : 0 ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t =
-        Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x)
+        ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x)
     (hcrossover :
       moserLocalizedMass (I := I) (M := M) (Module.finrank ℝ E)
           rho u p a τ t₁ 0 *

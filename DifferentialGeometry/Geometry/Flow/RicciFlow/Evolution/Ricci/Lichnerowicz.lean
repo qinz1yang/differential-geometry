@@ -539,7 +539,7 @@ theorem ricciLichnerowiczSpecializesInFrame_lc
   have hInv : SymmetricInverseMetricComponentsInFrameOn gInv := by
     intro t x i j
     have hinvAt :
-        Tensor0SBundle.MetricInverseInBasis_gen
+        Tensor0SBundle.MetricInverseInBasisGen
           (I := I) (M := M) (S.family.metric t) x
           (hframe.toBasisAt (hcover x)) (fun a b : Idx => gInv t x a b) :=
       metricInverseInBasis_of_local (I := I) S gInv frame hframe hinv t (hcover x)
@@ -691,7 +691,7 @@ theorem evol_ricci_lichnerowicz_coordFrameAt_of_christoffelEvolution_nabla2_comm
   have hx₀ : x₀ ∈ coordinateFrameSet (I := I) x₀ :=
     coordinateFrameAt_mem (I := I) x₀
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasis_gen
+      Tensor0SBundle.MetricInverseInBasisGen
         (I := I) (M := M) (S.family.metric (t : Real)) x₀
         ((coordinateFrameAt_isLocalFrame_one (I := I) x₀).toBasisAt hx₀)
         (fun a b : CoordinateIdx (𝕜 := Real) E => gInv (t : Real) x₀ a b) :=
@@ -819,8 +819,8 @@ noncomputable def ricciPairRHS
     (S : SolutionOn (I := I) (M := M) D)
     (t : Real) (x₀ : M) (v w : TangentSpace I x₀) : Real :=
   ∑ i : CoordinateIdx (𝕜 := Real) E, ∑ j : CoordinateIdx (𝕜 := Real) E,
-    (coordinateFrameAt_toBasis (I := I) x₀).coord i v *
-      (coordinateFrameAt_toBasis (I := I) x₀).coord j w *
+    (coordinateFrameAtToBasis (I := I) x₀).coord i v *
+      (coordinateFrameAtToBasis (I := I) x₀).coord j w *
         ricciEvolutionRHSInFrame (I := I) S S.base.rm04
           (coordInv (I := I) S x₀) (coordinateFrameAt (I := I) x₀)
           (coordRoughRic (I := I) S x₀ (coordNab2Ric (I := I) S x₀))
@@ -841,7 +841,7 @@ theorem ricciPairCoord
       (ricciPairRHS (I := I) S (t : Real) x₀ v w)
       D.carrier (t : Real) := by
   classical
-  let b := coordinateFrameAt_toBasis (I := I) x₀
+  let b := coordinateFrameAtToBasis (I := I) x₀
   let frame := coordinateFrameAt (I := I) x₀
   let rhs : CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real :=
     fun i j =>

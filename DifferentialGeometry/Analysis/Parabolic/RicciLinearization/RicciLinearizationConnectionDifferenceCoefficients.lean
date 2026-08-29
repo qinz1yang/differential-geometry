@@ -84,7 +84,7 @@ lemma toModel_empty_eq_iso {y : M} (T : Tensor0SBundle.Tensor0SSpace 0 I y)
     Tensor0SBundle.Tensor0SSpace.toModel T m = Tensor0SNabla.tensor0Iso I M y T := by
   have h0 : Tensor0SNabla.tensor0Iso I M y T =
       (continuousMultilinearCurryFin0 ℝ E ℝ)
-        ((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (I := I) 0 y) T) := rfl
+        ((Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) 0 y) T) := rfl
   rw [h0, continuousMultilinearCurryFin0_apply]
   exact congrArg _ (funext fun i => i.elim0)
 
@@ -456,9 +456,9 @@ lemma exists_covector_section_eq (x : M) (β : Tensor0SBundle.Tensor0SSpace 1 I 
         (fun z : M => Tensor0SBundle.Tensor0SSpace 1 I z)⟯, om x = β := by
   let : TopologicalSpace (TotalSpace (Tensor0SBundle.Tensor0SModel 1 ℝ E)
       (fun y : M => Tensor0SBundle.Tensor0SSpace 1 I y)) :=
-    Tensor0SBundle.tensor0SBundle_topology 1
+    Tensor0SBundle.tensor0SBundleTopology 1
   let : FiberBundle (Tensor0SBundle.Tensor0SModel 1 ℝ E)
-      (fun y : M => Tensor0SBundle.Tensor0SSpace 1 I y) := Tensor0SBundle.tensor0SBundle_fiber 1
+      (fun y : M => Tensor0SBundle.Tensor0SSpace 1 I y) := Tensor0SBundle.tensor0SBundleFiber 1
   let : VectorBundle ℝ (Tensor0SBundle.Tensor0SModel 1 ℝ E)
       (fun y : M => Tensor0SBundle.Tensor0SSpace 1 I y) := Tensor0SBundle.tensor0SBundle_vector 1
   let : ContMDiffVectorBundle ((⊤ : ℕ∞) : WithTop ℕ∞) (Tensor0SBundle.Tensor0SModel 1 ℝ E)
@@ -563,11 +563,11 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 omit [NeZero (Module.finrank ℝ E)] in
 lemma modelTensorWithCovectorFirst_zero_unit
     (α : Tensor0SBundle.Tensor0SModel 1 ℝ E) :
-    Tensor0SBundle.model_tensorWithCovector_first (𝕜 := ℝ) (E := E) 0 α
+    Tensor0SBundle.modelTensorWithCovectorFirst (𝕜 := ℝ) (E := E) 0 α
       (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ)) = α := by
   apply ContinuousMultilinearMap.ext
   intro v
-  rw [Tensor0SBundle.model_tensorWithCovector_first]
+  rw [Tensor0SBundle.modelTensorWithCovectorFirst]
   simp only [LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk]
   rw [Bundle.continuousMultilinearMap.modelProduct_apply,
     ContinuousMultilinearMap.constOfIsEmpty_apply, mul_one]
@@ -583,7 +583,7 @@ lemma connContrCLM_toModel_apply (m k : ℕ) (x : M)
         Tensor0SBundle.Tensor0SSpace.toModel D
             (Fin.cons ((Module.finBasis ℝ E) i) u ∘ Fin.castAdd (k + 1)) *
           (Tensor0SBundle.TensorRSSpace.toModel B
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis i)))
             (Fin.cons ((Module.finBasis ℝ E) i) u ∘ Fin.natAdd (m + 1)) := by
   classical
@@ -601,20 +601,20 @@ lemma connContrCLM_toModel_apply (m k : ℕ) (x : M)
             Tensor0SBundle.Tensor0SSpace (k + 1) I x from B)) with hΨ
   have hA : Tensor0SBundle.Tensor0SSpace.toModel
       (contractUnitCLM (I := I) (m + 1 + k) x Ψ) =
-      (Tensor0SBundle.model_contract_trace (𝕜 := ℝ) (E := E) 0 (m + 1 + k)
+      (Tensor0SBundle.modelContractTrace (𝕜 := ℝ) (E := E) 0 (m + 1 + k)
         (Tensor0SBundle.TensorRSSpace.toModel Ψ))
         (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ)) := rfl
   have hTB : ∀ i : Fin (Module.finrank ℝ E),
       Tensor0SBundle.TensorRSSpace.toModel Ψ
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis i)) =
       Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) (m + 1) (k + 1)
         (Tensor0SBundle.Tensor0SSpace.toModel D)
         (Tensor0SBundle.TensorRSSpace.toModel B
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis i))) := by
     intro i
-    set β := Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+    set β := Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
       ((Module.finBasis ℝ E).cDualBasis i) with hβ
     rw [show β = Tensor0SBundle.Tensor0SSpace.toModel
         (Tensor0SBundle.Tensor0SSpace.ofModel (I := I) (x := x) β) from
@@ -641,7 +641,7 @@ lemma connContrCLM_toModel_apply (m k : ℕ) (x : M)
   exact Bundle.continuousMultilinearMap.modelProduct_apply (m + 1) (k + 1)
     (Tensor0SBundle.Tensor0SSpace.toModel D)
     (Tensor0SBundle.TensorRSSpace.toModel B
-      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
         ((Module.finBasis ℝ E).cDualBasis i)))
     (Fin.cons ((Module.finBasis ℝ E) i) u)
 
@@ -709,13 +709,13 @@ lemma connectionDifference_model_coeff (g₁ g₀ : SmoothRiemannianMetric I M) 
     (Tensor0SBundle.TensorRSSpace.toModel
         (show Tensor0SBundle.TensorRSSpace 1 2 I x from
           (connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis i))) w =
       ((Module.finBasis ℝ E).cDualBasis i)
         ((PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x ((w 0 : E)) ((w 1 : E)) : TangentSpace I x) :
           E) := by
   classical
-  set β := Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+  set β := Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
     ((Module.finBasis ℝ E).cDualBasis i) with hβdef
   have h1 : Tensor0SBundle.TensorRSSpace.toModel
       (show Tensor0SBundle.TensorRSSpace 1 2 I x from
@@ -752,7 +752,7 @@ lemma connectionDifference_model_coeff (g₁ g₀ : SmoothRiemannianMetric I M) 
     ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))
     ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 1))
   let zE : E := tangentSpaceModelContinuousLinearEquiv (I := I) x z
-  change (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+  change (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
       ((Module.finBasis ℝ E).cDualBasis i))
       (fun _ : Fin 1 => zE) = ((Module.finBasis ℝ E).cDualBasis i) zE
   rw [Tensor0SBundle.model_covectorOfCLM_apply]
@@ -831,7 +831,7 @@ lemma connContr21_insert (g₁ g₀ : SmoothRiemannianMetric I M) (x : M)
         (Tensor0SBundle.TensorRSSpace.toModel
             (show Tensor0SBundle.TensorRSSpace 1 2 I x from
               (connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis i)))
           (Fin.cons ((Module.finBasis ℝ E) i) u ∘ Fin.natAdd 3) =
       Tensor0SBundle.Tensor0SSpace.toModel D
@@ -879,7 +879,7 @@ lemma connContr11_insert (g₁ g₀ : SmoothRiemannianMetric I M) (x : M)
         (Tensor0SBundle.TensorRSSpace.toModel
             (show Tensor0SBundle.TensorRSSpace 1 2 I x from
               (connectionDifferenceSection (I := I) g₁ g₀).toSection x)
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis i)))
           (Fin.cons ((Module.finBasis ℝ E) i) u ∘ Fin.natAdd 2) =
       Tensor0SBundle.Tensor0SSpace.toModel D
@@ -899,7 +899,7 @@ def rs13ContrVec (x : M) (B : Tensor0SBundle.TensorRSSpace 1 3 I x)
     (q : Fin 3 → E) : E :=
   ∑ i : Fin (Module.finrank ℝ E),
     ((Tensor0SBundle.TensorRSSpace.toModel B
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis i))) q) • (Module.finBasis ℝ E) i
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -915,13 +915,13 @@ lemma connContr12_insert (x : M) (B : Tensor0SBundle.TensorRSSpace 1 3 I x)
       Tensor0SBundle.Tensor0SSpace.toModel D
           (Fin.cons ((Module.finBasis ℝ E) i) u ∘ Fin.castAdd 3) *
         (Tensor0SBundle.TensorRSSpace.toModel B
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis i)))
           (Fin.cons ((Module.finBasis ℝ E) i) u ∘ Fin.natAdd 2) =
       Tensor0SBundle.Tensor0SSpace.toModel D
           (Fin.cons ((Module.finBasis ℝ E) i) ![u 0]) *
         ((Tensor0SBundle.TensorRSSpace.toModel B
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis i))) ![u 1, u 2, u 3]) := by
     intro i
     rw [consCast12, consNat12]
@@ -931,7 +931,7 @@ lemma connContr12_insert (x : M) (B : Tensor0SBundle.TensorRSSpace 1 3 I x)
   rw [Finset.sum_congr rfl (fun i _ => hterm i)]
   rw [sum_cons_coeff_collapse (I := I) (M := M) D ![u 0]
     (fun i => (Tensor0SBundle.TensorRSSpace.toModel B
-      (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+      (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
         ((Module.finBasis ℝ E).cDualBasis i))) ![u 1, u 2, u 3])]
   rfl
 
@@ -951,7 +951,7 @@ lemma rs13ContrVec_covGrad_eq (g₁ g₀ : SmoothRiemannianMetric I M)
       (Tensor0SBundle.TensorRSSpace.toModel
           (show Tensor0SBundle.TensorRSSpace 1 3 I x from
             (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g₁ g₀)).toSection x)
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis i)))
         ![((Xf x : TangentSpace I x) : E), ((Yf x : TangentSpace I x) : E),
           ((Zf x : TangentSpace I x) : E)] =
@@ -959,7 +959,7 @@ lemma rs13ContrVec_covGrad_eq (g₁ g₀ : SmoothRiemannianMetric I M)
         ((covDerivConnectionDifference (I := I) g₀ g₁ (fun y => Xf y) (fun y => Zf y) (fun y => Yf y) x :
           TangentSpace I x) : E) := by
     intro i
-    set β := Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+    set β := Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
       ((Module.finBasis ℝ E).cDualBasis i) with hβdef
     obtain ⟨om, homx⟩ := exists_covector_section_eq (I := I) (M := M) x
       (Tensor0SBundle.Tensor0SSpace.ofModel (I := I) (x := x) β)
@@ -1006,7 +1006,7 @@ lemma rs13ContrVec_covGrad_eq (g₁ g₀ : SmoothRiemannianMetric I M)
     let z : TangentSpace I x := covDerivConnectionDifference (I := I) g₀ g₁
       (fun y => Xf y) (fun y => Zf y) (fun y => Yf y) x
     let zE : E := tangentSpaceModelContinuousLinearEquiv (I := I) x z
-    change (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+    change (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
         ((Module.finBasis ℝ E).cDualBasis i))
         (fun _ : Fin 1 => zE) = ((Module.finBasis ℝ E).cDualBasis i) zE
     rw [Tensor0SBundle.model_covectorOfCLM_apply]
@@ -1031,7 +1031,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma slotPerm4_0312_toModel (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm4_0312 x D) ![a, b, c, d] =
+    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm40312 x D) ![a, b, c, d] =
       Tensor0SBundle.Tensor0SSpace.toModel D ![a, d, b, c] := by
   rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -1041,7 +1041,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma slotPerm4_0213_toModel (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm4_0213 x D) ![a, b, c, d] =
+    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm40213 x D) ![a, b, c, d] =
       Tensor0SBundle.Tensor0SSpace.toModel D ![a, c, b, d] := by
   rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -1051,7 +1051,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma slotPerm4_2301_toModel (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm4_2301 x D) ![a, b, c, d] =
+    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm42301 x D) ![a, b, c, d] =
       Tensor0SBundle.Tensor0SSpace.toModel D ![c, d, a, b] := by
   rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -1061,7 +1061,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma slotPerm4_1302_toModel (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm4_1302 x D) ![a, b, c, d] =
+    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm41302 x D) ![a, b, c, d] =
       Tensor0SBundle.Tensor0SSpace.toModel D ![b, d, a, c] := by
   rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -1071,7 +1071,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma slotPerm4_1203_toModel (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm4_1203 x D) ![a, b, c, d] =
+    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm41203 x D) ![a, b, c, d] =
       Tensor0SBundle.Tensor0SSpace.toModel D ![b, c, a, d] := by
   rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -1081,7 +1081,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma slotPerm4_3201_toModel (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm4_3201 x D) ![a, b, c, d] =
+    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm43201 x D) ![a, b, c, d] =
       Tensor0SBundle.Tensor0SSpace.toModel D ![d, c, a, b] := by
   rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -1091,7 +1091,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma slotPerm4_3102_toModel (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm4_3102 x D) ![a, b, c, d] =
+    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm43102 x D) ![a, b, c, d] =
       Tensor0SBundle.Tensor0SSpace.toModel D ![d, b, a, c] := by
   rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -1101,7 +1101,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma slotPerm4_2103_toModel (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm4_2103 x D) ![a, b, c, d] =
+    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm42103 x D) ![a, b, c, d] =
       Tensor0SBundle.Tensor0SSpace.toModel D ![c, b, a, d] := by
   rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -1111,7 +1111,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma slotPerm4_3012_toModel (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm4_3012 x D) ![a, b, c, d] =
+    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm43012 x D) ![a, b, c, d] =
       Tensor0SBundle.Tensor0SSpace.toModel D ![d, a, b, c] := by
   rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -1121,7 +1121,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma slotPerm4_2013_toModel (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm4_2013 x D) ![a, b, c, d] =
+    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm42013 x D) ![a, b, c, d] =
       Tensor0SBundle.Tensor0SSpace.toModel D ![c, a, b, d] := by
   rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -1131,7 +1131,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma slotPerm4_0231_toModel (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm4_0231 x D) ![a, b, c, d] =
+    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm40231 x D) ![a, b, c, d] =
       Tensor0SBundle.Tensor0SSpace.toModel D ![a, c, d, b] := by
   rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -1141,7 +1141,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma slotPerm4_0321_toModel (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm4_0321 x D) ![a, b, c, d] =
+    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm40321 x D) ![a, b, c, d] =
       Tensor0SBundle.Tensor0SSpace.toModel D ![a, d, c, b] := by
   rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -1151,7 +1151,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma slotPerm3_102_toModel (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x)
     (a b c : TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm3_102 x D) ![a, b, c] =
+    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm3102 x D) ![a, b, c] =
       Tensor0SBundle.Tensor0SSpace.toModel D ![b, a, c] := by
   rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -1161,7 +1161,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma slotPerm3_120_toModel (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x)
     (a b c : TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm3_120 x D) ![a, b, c] =
+    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm3120 x D) ![a, b, c] =
       Tensor0SBundle.Tensor0SSpace.toModel D ![b, c, a] := by
   rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -1171,7 +1171,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma slotPerm2_10_toModel (x : M) (D : Tensor0SBundle.Tensor0SSpace 2 I x)
     (a b : TangentSpace I x) :
-    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm2_10 x D) ![a, b] =
+    Tensor0SBundle.Tensor0SSpace.toModel (slotPermCLM (I := I) perm210 x D) ![a, b] =
       Tensor0SBundle.Tensor0SSpace.toModel D ![b, a] := by
   rw [slotPermCLM_apply, Tensor0SBundle.Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
@@ -2021,46 +2021,46 @@ private lemma lichnerowiczFib_toModel_eq_fourTrace (g₀ : SmoothRiemannianMetri
   rw [modelDoubleTrace_apply, modelDoubleTrace_apply, modelDoubleTrace_apply,
     modelDoubleTrace_apply]
   have h0231 : ∀ k : Fin (Module.finrank ℝ E),
-      ContinuousMultilinearMap.domDomCongr perm4_0231
+      ContinuousMultilinearMap.domDomCongr perm40231
         (Tensor0SBundle.Tensor0SSpace.toModel P)
         (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           (Fin.cons ((Module.finBasis ℝ E) k) v)) =
       Tensor0SBundle.Tensor0SSpace.toModel P
         (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           ![v 0, v 1, (Module.finBasis ℝ E) k]) := by
     intro k
     rw [ContinuousMultilinearMap.domDomCongr_apply]
     exact congrArg _ (funext fun j => by fin_cases j <;> rfl)
   have h0321 : ∀ k : Fin (Module.finrank ℝ E),
-      ContinuousMultilinearMap.domDomCongr perm4_0321
+      ContinuousMultilinearMap.domDomCongr perm40321
         (Tensor0SBundle.Tensor0SSpace.toModel P)
         (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           (Fin.cons ((Module.finBasis ℝ E) k) v)) =
       Tensor0SBundle.Tensor0SSpace.toModel P
         (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           ![v 1, v 0, (Module.finBasis ℝ E) k]) := by
     intro k
     rw [ContinuousMultilinearMap.domDomCongr_apply]
     exact congrArg _ (funext fun j => by fin_cases j <;> rfl)
   have h2301 : ∀ k : Fin (Module.finrank ℝ E),
-      ContinuousMultilinearMap.domDomCongr perm4_2301
+      ContinuousMultilinearMap.domDomCongr perm42301
         (Tensor0SBundle.Tensor0SSpace.toModel P)
         (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           (Fin.cons ((Module.finBasis ℝ E) k) v)) =
       Tensor0SBundle.Tensor0SSpace.toModel P
         ![v 0, v 1,
           cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)), (Module.finBasis ℝ E) k] := by
     intro k
     rw [ContinuousMultilinearMap.domDomCongr_apply]
@@ -2069,13 +2069,13 @@ private lemma lichnerowiczFib_toModel_eq_fourTrace (g₀ : SmoothRiemannianMetri
       ContinuousMultilinearMap.domDomCongr traceHessianSlotPerm
         (Tensor0SBundle.Tensor0SSpace.toModel P)
         (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           (Fin.cons ((Module.finBasis ℝ E) k) v)) =
       Tensor0SBundle.Tensor0SSpace.toModel P
         ![v 0, v 1,
           cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)), (Module.finBasis ℝ E) k] := by
     intro k
     rw [ContinuousMultilinearMap.domDomCongr_apply]

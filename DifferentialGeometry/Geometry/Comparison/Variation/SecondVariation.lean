@@ -102,8 +102,8 @@ lemma indexForm_eq_intervalIntegral
     indexForm (I := I) g γ a b V W =
       ∫ t in a..b, indexFormIntegrand (I := I) g γ V W t := rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 lemma continuousOn_g_inner_along_curve

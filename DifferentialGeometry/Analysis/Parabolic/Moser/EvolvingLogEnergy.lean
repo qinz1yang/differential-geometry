@@ -268,7 +268,7 @@ theorem evolving_log_spatial_energy_differential_of_supersolution
     (t : ℝ)
     (hcutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ cutoff)
     (hpde : ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     (1 / 2 : ℝ) * evolvingLocalizedDirichletEnergy
         (I := I) (M := M) g cutoff (fun s x => Real.log (u s x)) t ≤
@@ -306,7 +306,7 @@ theorem evolving_log_average_deriv_lower_bound_of_supersolution
     (htrace : ∀ x : M,
       |(1 / 2) * traceTimeDerivMetric (I := I) g t x| ≤ H)
     (hpde : ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     ((1 / 4 : ℝ) * evolvingLocalizedDirichletEnergy
           (I := I) (M := M) g cutoff (fun s x => Real.log (u s x)) t -
@@ -423,7 +423,7 @@ theorem quarter_evolving_log_dirichlet_energy_le_shifted_center_deriv_of_superso
     (htrace : ∀ x : M,
       |(1 / 2) * traceTimeDerivMetric (I := I) g t x| ≤ H)
     (hpde : ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     ((1 / 4 : ℝ) * evolvingLocalizedDirichletEnergy
         (I := I) (M := M) g cutoff (fun s x => Real.log (u s x)) t) /
@@ -467,7 +467,7 @@ theorem evolvingShiftedLogCenter_monotoneOn_of_supersolution
     (htrace : ∀ t ∈ Icc a b, ∀ x : M,
       |(1 / 2) * traceTimeDerivMetric (I := I) g t x| ≤ H)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
+      ΔG (I := I) (g t) (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     MonotoneOn
       (evolvingShiftedLogCenter

@@ -74,25 +74,25 @@ private lemma strictCutoff_mul_v_eq_finset_sum
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (α : M) (v : M → ℝ) (x : M) :
     chartStrictCutoff (I := I) (M := M) α x * v x =
-      ∑ γ ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+      ∑ γ ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
               (I := I) (M := M),
         pou (I := I) (M := M) γ x *
           (chartStrictCutoff (I := I) (M := M) α x * v x) := by
   classical
   have h_sum_one :
-      ∑ γ ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+      ∑ γ ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
               (I := I) (M := M),
         pou (I := I) (M := M) γ x = 1 := by
     unfold pou
     exact chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x
   calc
     chartStrictCutoff (I := I) (M := M) α x * v x =
-        (∑ γ ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+        (∑ γ ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
                 (I := I) (M := M),
           pou (I := I) (M := M) γ x) *
           (chartStrictCutoff (I := I) (M := M) α x * v x) := by
       rw [h_sum_one]; ring
-    _ = ∑ γ ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+    _ = ∑ γ ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
               (I := I) (M := M),
           pou (I := I) (M := M) γ x *
             (chartStrictCutoff (I := I) (M := M) α x * v x) := by
@@ -103,7 +103,7 @@ private lemma chartPushedRaw_strictCutoff_eq_finset_sum
     (α : M) (v : M → ℝ) (y : EuclN) :
     chartPushedRaw (I := I) (M := M) α
         (fun x => chartStrictCutoff (I := I) (M := M) α x * v x) y =
-      ∑ γ ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+      ∑ γ ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
               (I := I) (M := M),
         chartPushedRaw (I := I) (M := M) α
           (fun x => pou (I := I) (M := M) γ x *
@@ -113,7 +113,7 @@ private lemma chartPushedRaw_strictCutoff_eq_finset_sum
   · rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy]
     set x : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hx_def
     have h_sum_decomp : chartStrictCutoff (I := I) (M := M) α x * v x =
-        ∑ γ ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset
+        ∑ γ ∈ DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset
                 (I := I) (M := M),
           pou (I := I) (M := M) γ x *
             (chartStrictCutoff (I := I) (M := M) α x * v x) :=
@@ -357,17 +357,17 @@ private theorem cross_chart_strictCutoff_pushedRaw_joint
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_smul_smooth_bounded_le
       k hp_one hp_top hΩγ_target_open hη_γ_loc_smooth hC_η_γ_loc_nn
       hη_γ_loc_iter_bound
-  set K_chain : ℝ := Φ.wkpComp_const' k p with hK_chain_def
+  set K_chain : ℝ := Φ.wkpCompConst' k p with hK_chain_def
   have hK_chain_pos : 0 < K_chain := by
     have hp_zero : p ≠ 0 := by
       intro hpz; rw [hpz] at hp_one; exact absurd hp_one (by norm_num)
     have hq_pos : 0 < p.toReal := ENNReal.toReal_pos hp_zero hp_top
-    have hjLB_pos : 0 < Φ.jacobian_lower_bound := Φ.jacobian_lower_bound_pos
-    have hjLB_inv_pos : 0 < 1 / Φ.jacobian_lower_bound := by positivity
-    have hKchg_pos : 0 < (1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal) :=
+    have hjLB_pos : 0 < Φ.jacobianLowerBound := Φ.jacobian_lower_bound_pos
+    have hjLB_inv_pos : 0 < 1 / Φ.jacobianLowerBound := by positivity
+    have hKchg_pos : 0 < (1 / Φ.jacobianLowerBound) ^ (1 / p.toReal) :=
       Real.rpow_pos_of_pos hjLB_inv_pos _
     rw [hK_chain_def]
-    unfold DifferentialGeometry.Analysis.Sobolev.Euclidean.SmoothDiffeoBoundedAtOrder.wkpComp_const'
+    unfold DifferentialGeometry.Analysis.Sobolev.Euclidean.SmoothDiffeoBoundedAtOrder.wkpCompConst'
     have h_zero_in : (0 : ℕ) ∈ Finset.range (k + 1) :=
       Finset.mem_range.mpr (Nat.zero_lt_succ _)
     have h_at_zero : (Fintype.card (Fin 0 → Fin (Module.finrank ℝ E)) : ℝ) = 1 := by
@@ -843,7 +843,7 @@ theorem wkpNorm_chartPushedRaw_strictCutoff_mul_le
         wkpNormChart (I := I) (M := M) k p v := by
   classical
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M)
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M)
     with hS_def
   have h_per_γ : ∀ γ : M, ∃ Cγ : ℝ, 0 < Cγ ∧
       ∀ {v : M → ℝ}, MemWkpChart (I := I) (M := M) k p v →

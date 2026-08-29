@@ -32,7 +32,7 @@ structure GradientLikeFlow (I : ModelWithCorners ℝ E H) (f : M → ℝ) (a b :
   contMDiffAt : ∀ t : ℝ, ∀ x : M, ContMDiffAt I I (⊤ : WithTop ℕ∞) (fun x : M => flow t x) x
   contMDiffAt_t : ∀ x : M, ContMDiffAt 𝓘(ℝ, ℝ) I (⊤ : WithTop ℕ∞) (fun t : ℝ => flow t x) (0 : ℝ)
 
-noncomputable def unitSpeedFlow_of_vectorField [T2Space M] (I : ModelWithCorners ℝ E H)
+noncomputable def unitSpeedFlowOfVectorField [T2Space M] (I : ModelWithCorners ℝ E H)
     [I.Boundaryless] [IsManifold I (⊤ : WithTop ℕ∞) M] (a b : ℝ) (f : M → ℝ)
     (hf : ContMDiff I 𝓘(ℝ, ℝ) (↑(⊤ : ℕ∞) : WithTop ℕ∞) f)
     (v : (x : M) → TangentSpace I x)
@@ -291,10 +291,10 @@ theorem sublevel_transport_of_unitSpeedVectorField [T2Space M] (I : ModelWithCor
     (hdf : ∀ x, (NormedSpace.fromTangentSpace (f x)) ((mfderiv I 𝓘(ℝ, ℝ) f x) (v x)) = -1)
     (hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v)
     (hab : a ≤ b) :
-    (fun x : M => (unitSpeedFlow_of_vectorField I a b f hf v hv hdf hcomplete).flow (a - b) x) ''
+    (fun x : M => (unitSpeedFlowOfVectorField I a b f hf v hv hdf hcomplete).flow (a - b) x) ''
     sublevel f a = sublevel f b :=
   UnitSpeedFlow.image_sublevels (a := a) (b := b)
-    (unitSpeedFlow_of_vectorField I a b f hf v hv hdf hcomplete) hab
+    (unitSpeedFlowOfVectorField I a b f hf v hv hdf hcomplete) hab
 
 theorem sublevel_transport_of_stripUnitSpeedVectorField [I.Boundaryless]
     [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]

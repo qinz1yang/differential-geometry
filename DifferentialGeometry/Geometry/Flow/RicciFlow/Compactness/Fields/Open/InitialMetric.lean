@@ -68,7 +68,7 @@ theorem gInf_zero_eq
   exact DifferentialGeometry.HCGCompactness.gInf_zero_eq (I := I) Φ R bf hsrc htgt
     (RealTimeInterval.openWindowLeft a t₀ n)
     (RealTimeInterval.openWindowRight b t₀ n)
-    (OpenConvOut.at_window Φ co n) hzeroN g₀ hconv₀
+    (OpenConvOut.atWindow Φ co n) hzeroN g₀ hconv₀
 
 end OpenConvOut
 end HCGCompactness

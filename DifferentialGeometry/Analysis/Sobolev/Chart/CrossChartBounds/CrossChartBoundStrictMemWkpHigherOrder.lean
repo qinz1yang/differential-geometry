@@ -225,17 +225,17 @@ theorem crossChartJointK
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNorm_smul_smooth_bounded_le
       k hp_one hp_top hΩα_target_open hη_α_loc_smooth hC_α_nn
       hη_α_loc_iter_bound
-  set K_chain : ℝ := Φ.wkpComp_const' k p with hK_chain_def
+  set K_chain : ℝ := Φ.wkpCompConst' k p with hK_chain_def
   have hK_chain_pos : 0 < K_chain := by
     have hp_zero : p ≠ 0 := by
       intro hpz; rw [hpz] at hp_one; exact absurd hp_one (by norm_num)
     have hq_pos : 0 < p.toReal := ENNReal.toReal_pos hp_zero hp_top
-    have hjLB_pos : 0 < Φ.jacobian_lower_bound := Φ.jacobian_lower_bound_pos
-    have hjLB_inv_pos : 0 < 1 / Φ.jacobian_lower_bound := by positivity
-    have hKchg_pos : 0 < (1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal) :=
+    have hjLB_pos : 0 < Φ.jacobianLowerBound := Φ.jacobian_lower_bound_pos
+    have hjLB_inv_pos : 0 < 1 / Φ.jacobianLowerBound := by positivity
+    have hKchg_pos : 0 < (1 / Φ.jacobianLowerBound) ^ (1 / p.toReal) :=
       Real.rpow_pos_of_pos hjLB_inv_pos _
     rw [hK_chain_def]
-    unfold DifferentialGeometry.Analysis.Sobolev.Euclidean.SmoothDiffeoBoundedAtOrder.wkpComp_const'
+    unfold DifferentialGeometry.Analysis.Sobolev.Euclidean.SmoothDiffeoBoundedAtOrder.wkpCompConst'
     have h_zero_in : (0 : ℕ) ∈ Finset.range (k + 1) :=
       Finset.mem_range.mpr (Nat.zero_lt_succ _)
     have h_at_zero : (Fintype.card (Fin 0 → Fin (Module.finrank ℝ E)) : ℝ) = 1 := by

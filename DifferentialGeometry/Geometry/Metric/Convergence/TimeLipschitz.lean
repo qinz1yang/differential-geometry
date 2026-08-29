@@ -112,7 +112,7 @@ theorem sqrtNormSq0S_add_le
         Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x s w) := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gRef x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gRef x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) gRef basis hON
@@ -177,7 +177,7 @@ theorem timeLipschitz_of_hasDerivAt
   classical
   intro s hs t ht x hxK
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) gRef x
-  have hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) gRef x basis
+  have hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric
         (Idx := Fin (Module.finrank Real (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) gRef basis hON

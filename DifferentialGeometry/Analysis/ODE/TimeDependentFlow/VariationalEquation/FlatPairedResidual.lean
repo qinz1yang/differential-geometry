@@ -45,7 +45,7 @@ theorem leviCivita_basepoint_eq_rawFderiv_add_corrections
             + movingTrivCorrection (I := I) α X
                 (centeredChartTangentEquiv (I := I) α w)
             + christoffelCorrection (I := I) g α α
-                (chartE_section_repr (I := I) α X α) w) := by
+                (chartESectionRepr (I := I) α X α) w) := by
   classical
   have hbridge :
       trivFromE (I := I) α α (chartLeviCivitaInnerCLM (I := I) g α X α w)
@@ -107,7 +107,7 @@ theorem variational_flow_flat_paired_residual_hasDerivAt
                 (X : ∀ y : M, TangentSpace I y)
                 (mfderiv I I (Φ_fam t : M → M) x v))
           + christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x v))
     (hbridge_w :
@@ -121,7 +121,7 @@ theorem variational_flow_flat_paired_residual_hasDerivAt
                 (X : ∀ y : M, TangentSpace I y)
                 (mfderiv I I (Φ_fam t : M → M) x w))
           + christoffelCorrection (I := I) g (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (X : ∀ y : M, TangentSpace I y) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x w)) :
     HasDerivAt
@@ -138,7 +138,7 @@ theorem variational_flow_flat_paired_residual_hasDerivAt
   set dΦw : TangentSpace I α := mfderiv I I (Φ_fam t : M → M) x w with hdΦw
   set Vflat : TangentSpace I α := T'v dΦv + P'v v with hVflat
   set Wflat : TangentSpace I α := T'w dΦw + P'w w with hWflat
-  set Xα : E := chartE_section_repr (I := I) α (X : ∀ y : M, TangentSpace I y) α with hXα
+  set Xα : E := chartESectionRepr (I := I) α (X : ∀ y : M, TangentSpace I y) α with hXα
   set nablaV : TangentSpace I α :=
     (LeviCivita (I := I) g) (X : ∀ y : M, TangentSpace I y) α dΦv with hnablaV
   set nablaW : TangentSpace I α :=

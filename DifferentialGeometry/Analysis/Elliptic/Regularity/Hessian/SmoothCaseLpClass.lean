@@ -119,7 +119,7 @@ theorem perChartAeTransferable_smoothCase
 def perChartAeTransferableSmoothCase
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
     Prop :=
-  ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
     hessPairingMChartContribution (I := I) (M := M) g φ α
         (u_h := smoothToH1Compl (I := I) (M := M) g v)
       =ᵐ[riemannianVolumeMeasure (I := I) (M := M) g]
@@ -131,7 +131,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 @[simp] lemma perChartAeTransferableSmoothCase_def
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯) (v : SmoothScalar g) :
     perChartAeTransferableSmoothCase (I := I) (M := M) g φ v ↔
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         hessPairingMChartContribution (I := I) (M := M) g φ α
         (u_h := smoothToH1Compl (I := I) (M := M) g v)
           =ᵐ[riemannianVolumeMeasure (I := I) (M := M) g]
@@ -153,29 +153,29 @@ theorem hessPairingMOnLapDom_aeEq_pou_weighted_euclid_pairing_smoothCase_of_tran
     hessPairingMOnLapDom (I := I) (M := M) g φ
         (u_h := smoothToH1Compl (I := I) (M := M) g v)
       =ᵐ[riemannianVolumeMeasure (I := I) (M := M) g]
-      (fun x : M => ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (fun x : M => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartAtlasPOU I M α : M → ℝ) x *
           smoothEuclidHessianPairingChart (I := I) (M := M) g α φ v
             ((toEuclidean (E := E)) (extChartAt I α x))) := by
   classical
   have h_union_null :
       (riemannianVolumeMeasure (I := I) (M := M) g)
-        (⋃ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        (⋃ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           {x : M |
             hessPairingMChartContribution (I := I) (M := M) g φ α
         (u_h := smoothToH1Compl (I := I) (M := M) g v) x ≠
               (chartAtlasPOU I M α : M → ℝ) x *
                 smoothEuclidHessianPairingChart (I := I) (M := M) g α φ v
                   ((toEuclidean (E := E)) (extChartAt I α x))}) = 0 := by
-    have h_count : (chartAtlasPOU_finset (I := I) (M := M) : Set M).Countable :=
-      (chartAtlasPOU_finset (I := I) (M := M)).countable_toSet
+    have h_count : (chartAtlasPOUFinset (I := I) (M := M) : Set M).Countable :=
+      (chartAtlasPOUFinset (I := I) (M := M)).countable_toSet
     refine (MeasureTheory.measure_biUnion_null_iff h_count).mpr ?_
     intro α hα
     have h_ae := h_transfer α hα
     rw [Filter.EventuallyEq, MeasureTheory.ae_iff] at h_ae
     exact h_ae
   have h_all_ae : ∀ᵐ x ∂(riemannianVolumeMeasure (I := I) (M := M) g),
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         hessPairingMChartContribution (I := I) (M := M) g φ α
         (u_h := smoothToH1Compl (I := I) (M := M) g v) x =
           (chartAtlasPOU I M α : M → ℝ) x *
@@ -209,7 +209,7 @@ theorem hessPairingMOnLapDom_aeEq_hessPairingChart_smoothCase_of_both
   have h_step1 := hessPairingMOnLapDom_aeEq_pou_weighted_euclid_pairing_smoothCase_of_transferable
     (I := I) (M := M) g φ v h_transfer
   have h_pointwise : ∀ x : M,
-      (∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartAtlasPOU I M α : M → ℝ) x *
           smoothEuclidHessianPairingChart (I := I) (M := M) g α φ v
             ((toEuclidean (E := E)) (extChartAt I α x))) =
@@ -252,7 +252,7 @@ theorem hessPairingMOnLapDom_aeEq_pou_weighted_euclid_pairing_smoothCase
     hessPairingMOnLapDom (I := I) (M := M) g φ
         (u_h := smoothToH1Compl (I := I) (M := M) g v)
       =ᵐ[riemannianVolumeMeasure (I := I) (M := M) g]
-      (fun x : M => ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (fun x : M => ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartAtlasPOU I M α : M → ℝ) x *
           smoothEuclidHessianPairingChart (I := I) (M := M) g α φ v
             ((toEuclidean (E := E)) (extChartAt I α x))) :=

@@ -22,12 +22,12 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 
-def chartE_section_repr (α : M) (σ : Π x : M, TangentSpace I x) (x : M) : E :=
+def chartESectionRepr (α : M) (σ : Π x : M, TangentSpace I x) (x : M) : E :=
   (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x (σ x)
 
 omit [FiniteDimensional ℝ E] in
 lemma chartE_section_repr_def (α : M) (σ : Π x : M, TangentSpace I x) :
-    chartE_section_repr (I := I) α σ =
+    chartESectionRepr (I := I) α σ =
       fun x : M =>
         (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x (σ x) :=
   rfl
@@ -35,17 +35,17 @@ lemma chartE_section_repr_def (α : M) (σ : Π x : M, TangentSpace I x) :
 omit [FiniteDimensional ℝ E] in
 lemma chartE_section_repr_apply
     (α : M) (σ : Π x : M, TangentSpace I x) (x : M) :
-    chartE_section_repr (I := I) α σ x =
+    chartESectionRepr (I := I) α σ x =
       (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x (σ x) := rfl
 
 omit [FiniteDimensional ℝ E] in
 lemma chartE_section_repr_eq_trivialization_snd
     (α : M) (σ : Π x : M, TangentSpace I x) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    chartE_section_repr (I := I) α σ x =
+    chartESectionRepr (I := I) α σ x =
       (trivializationAt E (TangentSpace I) α ⟨x, σ x⟩).2 := by
   classical
-  unfold chartE_section_repr
+  unfold chartESectionRepr
   set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
     trivializationAt E (TangentSpace I) α
   rw [T.apply_eq_prod_continuousLinearEquivAt ℝ x hx (σ x)]
@@ -60,14 +60,14 @@ omit [FiniteDimensional ℝ E] in
 theorem mdifferentiableWithinAt_section_iff_chartE
     (α : M) (σ : Π x : M, TangentSpace I x) {u : Set M} {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    MDiffAt[u] (T% σ) x ↔ MDiffAt[u] (chartE_section_repr (I := I) α σ) x := by
+    MDiffAt[u] (T% σ) x ↔ MDiffAt[u] (chartESectionRepr (I := I) α σ) x := by
   classical
   have hiff :=
     Bundle.Trivialization.mdifferentiableWithinAt_section_iff (𝕜 := ℝ) I (u := u)
       (e := trivializationAt E (TangentSpace I) α) σ hx
   refine hiff.trans ?_
   refine ⟨fun h => ?_, fun h => ?_⟩
-  · refine h.congr_of_eventuallyEq (f₁ := chartE_section_repr (I := I) α σ) ?_ ?_
+  · refine h.congr_of_eventuallyEq (f₁ := chartESectionRepr (I := I) α σ) ?_ ?_
     · filter_upwards
         [mem_nhdsWithin_of_mem_nhds
           ((trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds hx)] with y hy
@@ -86,7 +86,7 @@ omit [FiniteDimensional ℝ E] in
 theorem mdifferentiableAt_section_iff_chartE
     (α : M) (σ : Π x : M, TangentSpace I x) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    MDiffAt (T% σ) x ↔ MDiffAt (chartE_section_repr (I := I) α σ) x := by
+    MDiffAt (T% σ) x ↔ MDiffAt (chartESectionRepr (I := I) α σ) x := by
   classical
   rw [← mdifferentiableWithinAt_univ, ← mdifferentiableWithinAt_univ]
   exact mdifferentiableWithinAt_section_iff_chartE I α σ hx
@@ -121,12 +121,12 @@ theorem mdifferentiableAt_section_iff_chartE_fderiv
     (hx_int : extChartAt I α x ∈ interior ((extChartAt I α).target : Set E)) :
     MDiffAt (T% σ) x ↔
       DifferentiableAt ℝ
-        (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+        (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
         (extChartAt I α x) := by
   classical
   rw [mdifferentiableAt_section_iff_chartE I α σ hx_base]
   rw [mdifferentiableAt_iff_pullback_of_mem_source α
-      (chartE_section_repr (I := I) α σ) hx_src]
+      (chartESectionRepr (I := I) α σ) hx_src]
   exact mdifferentiableWithinAt_range_iff_differentiableAt_of_interior (α := α) hx_int
 
 variable (I) in
@@ -135,7 +135,7 @@ theorem contMDiffWithinAt_section_iff_chartE
     {k : ℕ∞} (α : M) (σ : Π x : M, TangentSpace I x) {u : Set M} {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     ContMDiffWithinAt I (I.prod 𝓘(ℝ, E)) k (T% σ) u x ↔
-      ContMDiffWithinAt I 𝓘(ℝ, E) k (chartE_section_repr (I := I) α σ) u x := by
+      ContMDiffWithinAt I 𝓘(ℝ, E) k (chartESectionRepr (I := I) α σ) u x := by
   classical
   have hiff :=
     Bundle.Trivialization.contMDiffWithinAt_section (𝕜 := ℝ) (IB := I)
@@ -143,7 +143,7 @@ theorem contMDiffWithinAt_section_iff_chartE
       (e := trivializationAt E (TangentSpace I) α) hx
   refine hiff.trans ?_
   refine ⟨fun h => ?_, fun h => ?_⟩
-  · refine h.congr_of_eventuallyEq (f₁ := chartE_section_repr (I := I) α σ) ?_ ?_
+  · refine h.congr_of_eventuallyEq (f₁ := chartESectionRepr (I := I) α σ) ?_ ?_
     · filter_upwards
         [mem_nhdsWithin_of_mem_nhds
           ((trivializationAt E (TangentSpace I) α).open_baseSet.mem_nhds hx)] with y hy
@@ -163,7 +163,7 @@ theorem contMDiffAt_section_iff_chartE
     {k : ℕ∞} (α : M) (σ : Π x : M, TangentSpace I x) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
     ContMDiffAt I (I.prod 𝓘(ℝ, E)) k (T% σ) x ↔
-      ContMDiffAt I 𝓘(ℝ, E) k (chartE_section_repr (I := I) α σ) x := by
+      ContMDiffAt I 𝓘(ℝ, E) k (chartESectionRepr (I := I) α σ) x := by
   classical
   rw [← contMDiffWithinAt_univ, ← contMDiffWithinAt_univ]
   exact contMDiffWithinAt_section_iff_chartE I α σ hx
@@ -177,12 +177,12 @@ theorem mfderiv_section_eq_chartE_fderiv
     (hx_int : extChartAt I α x ∈ interior ((extChartAt I α).target : Set E))
     (hσ : MDiffAt (T% σ) x)
     (v : TangentSpace I x) :
-    (mfderiv I 𝓘(ℝ, E) (chartE_section_repr (I := I) α σ) x) v =
-      fderiv ℝ (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+    (mfderiv I 𝓘(ℝ, E) (chartESectionRepr (I := I) α σ) x) v =
+      fderiv ℝ (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
         (extChartAt I α x)
         ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x v) := by
   classical
-  set fE := chartE_section_repr (I := I) α σ
+  set fE := chartESectionRepr (I := I) α σ
   set φ := extChartAt I α
   set y₀ : E := φ x
   set gE : E → E := fE ∘ φ.symm
@@ -231,7 +231,7 @@ theorem contDiffOn_chartE_pullback_of_contMDiff_section
     {k : ℕ∞} (α : M) (σ : Π x : M, TangentSpace I x)
     (hσ : ContMDiff I (I.prod 𝓘(ℝ, E)) k (T% σ)) :
     ContDiffOn ℝ k
-      (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
       ((extChartAt I α) ''
         ((chartAt H α).source ∩ (trivializationAt E (TangentSpace I) α).baseSet) ∩
         (extChartAt I α).target) := by
@@ -239,7 +239,7 @@ theorem contDiffOn_chartE_pullback_of_contMDiff_section
   intro y hy
   obtain ⟨⟨x, ⟨hx_src, hx_base⟩, hx_eq⟩, hy_target⟩ := hy
   subst hx_eq
-  set fE := chartE_section_repr (I := I) α σ
+  set fE := chartESectionRepr (I := I) α σ
   set φ := extChartAt I α
   have hfE_at : ContMDiffAt I 𝓘(ℝ, E) k fE x :=
     (contMDiffAt_section_iff_chartE I α σ hx_base).mp (hσ x)
@@ -289,39 +289,39 @@ lemma trivToE_trivFromE
 omit [FiniteDimensional ℝ E] in
 @[simp] lemma chartE_section_repr_eq_trivToE
     (α : M) (σ : Π x : M, TangentSpace I x) (x : M) :
-    chartE_section_repr (I := I) α σ x = trivToE (I := I) α x (σ x) := rfl
+    chartESectionRepr (I := I) α σ x = trivToE (I := I) α x (σ x) := rfl
 
 omit [FiniteDimensional ℝ E] in
 lemma chartE_section_repr_add
     (α : M) (σ τ : Π x : M, TangentSpace I x) (x : M) :
-    chartE_section_repr (I := I) α (σ + τ) x =
-      chartE_section_repr (I := I) α σ x + chartE_section_repr (I := I) α τ x := by
+    chartESectionRepr (I := I) α (σ + τ) x =
+      chartESectionRepr (I := I) α σ x + chartESectionRepr (I := I) α τ x := by
   classical
-  unfold chartE_section_repr
+  unfold chartESectionRepr
   rw [Pi.add_apply, map_add]
 
 omit [FiniteDimensional ℝ E] in
 lemma chartE_section_repr_smul
     (α : M) (c : ℝ) (σ : Π x : M, TangentSpace I x) (x : M) :
-    chartE_section_repr (I := I) α (c • σ) x = c • chartE_section_repr (I := I) α σ x := by
+    chartESectionRepr (I := I) α (c • σ) x = c • chartESectionRepr (I := I) α σ x := by
   classical
-  unfold chartE_section_repr
+  unfold chartESectionRepr
   rw [Pi.smul_apply, map_smul]
 
 omit [FiniteDimensional ℝ E] in
 lemma chartE_section_repr_smul_function
     (α : M) (f : M → ℝ) (σ : Π x : M, TangentSpace I x) (x : M) :
-    chartE_section_repr (I := I) α (fun y => f y • σ y) x =
-      f x • chartE_section_repr (I := I) α σ x := by
+    chartESectionRepr (I := I) α (fun y => f y • σ y) x =
+      f x • chartESectionRepr (I := I) α σ x := by
   classical
-  unfold chartE_section_repr
+  unfold chartESectionRepr
   rw [map_smul]
 
 omit [FiniteDimensional ℝ E] in
 lemma chartE_section_repr_zero (α : M) (x : M) :
-    chartE_section_repr (I := I) α (fun _ => (0 : TangentSpace I _)) x = 0 := by
+    chartESectionRepr (I := I) α (fun _ => (0 : TangentSpace I _)) x = 0 := by
   classical
-  unfold chartE_section_repr
+  unfold chartESectionRepr
   rw [map_zero]
 
 variable (I) in

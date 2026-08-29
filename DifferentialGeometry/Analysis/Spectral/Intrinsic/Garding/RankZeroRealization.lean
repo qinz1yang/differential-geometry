@@ -88,7 +88,7 @@ theorem rawLap_cc_scalar
     (g : SmoothRiemannianMetric I M) (S : SmoothCcTensor g 0 0) (x : M) :
     TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞))
         (rawTensorConnLapSmooth (I := I) g 0 0 S).toSection x =
-      DifferentialGeometry.Geometry.Operator.Δ_g (I := I) g ⟨_, (TensorRSField.scalar0_smooth
+      DifferentialGeometry.Geometry.Operator.ΔG (I := I) g ⟨_, (TensorRSField.scalar0_smooth
           (n := (∞ : WithTop ℕ∞)) S.toSection)⟩ x := by
   let f := TensorRSField.scalar0 (n := (∞ : WithTop ℕ∞)) S.toSection
   let hf := TensorRSField.scalar0_smooth
@@ -101,13 +101,13 @@ theorem rawLap_cc_scalar
       (TensorRSField.lift_scalar0
         (n := (∞ : WithTop ℕ∞)) S.toSection)
   rw [hlift] at hraw
-  change (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x)
+  change (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x)
       ((rawTensorConnLapSmooth (I := I) g 0 0 S).toSection x
         (Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
           (I := I) (M := M) (∞ : WithTop ℕ∞) x)) = _
   rw [rawTensorConnLapSmooth_toSection_apply (I := I) (M := M) g 0 0 S x,
     hraw, Tensor0SSpace.toRS0_apply]
-  have hone : (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x)
+  have hone : (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x)
       (Tensor0SField.one0 (𝕜 := ℝ) (E := E) (H := H)
         (I := I) (M := M) (∞ : WithTop ℕ∞) x) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply]
@@ -185,7 +185,7 @@ theorem grad_repr_apply
       (reprScalar0 (I := I) (M := M) v hv)
       (reprScalar0_smooth (I := I) (M := M) v hv)
   have hunit (y : M) :
-      (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) y)
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) y)
         (unitZeroSec (I := I) (M := M) y) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply, unitZeroSec_apply]
     change ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) 1
@@ -285,7 +285,7 @@ theorem grad2_repr_diag
   rw [hslots]
   rw [Tensor0SSpace.toRS0_apply]
   have hunit :
-      (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x)
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x)
         (unitZeroSec (I := I) (M := M) x) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply, unitZeroSec_apply]
     change ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) 1

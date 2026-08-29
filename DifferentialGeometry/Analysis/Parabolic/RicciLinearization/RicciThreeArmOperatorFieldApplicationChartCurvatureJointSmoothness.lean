@@ -291,7 +291,7 @@ private theorem jointTotalSpace_const_smul_local {d : ℕ} {S : Set ℝ} (a : �
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel d ℝ E)
         (E := fun z : M => Tensor0SBundle.Tensor0SSpace d I z) p.1 (a • A p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) d
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -359,7 +359,7 @@ private theorem jointTotalSpaceRS_sub_local {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p - B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -395,7 +395,7 @@ private theorem jointTotalSpaceRS_add_local {r s : ℕ} {S : Set ℝ}
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (A p + B p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -427,7 +427,7 @@ private theorem jointTotalSpaceRS_const_smul_local {r s : ℕ} {S : Set ℝ} (a 
       (fun p : M × ℝ => TotalSpace.mk' (Tensor0SBundle.TensorRSModel r s ℝ E)
         (E := fun z : M => Tensor0SBundle.TensorRSSpace r s I z) p.1 (a • A p))
       ((Set.univ : Set M) ×ˢ S) := by
-  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) r s
   intro p₀ hp₀
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
@@ -840,7 +840,7 @@ private lemma riemannBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
         (riemannBiContrFib (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1 (Y p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   set gfam : ℝ → SmoothRiemannianMetric I M := fun s => metricPerturbationPath (I := I) g₀ T T' hδ hδ' s
     with hgfam
   set S := metricPerturbationPathDomain (δ := δ) (δ' := δ') with hS
@@ -848,7 +848,7 @@ private lemma riemannBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
   set α := p₀.1 with hα
   set e := trivializationAt (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) α with he
-  set Bcmm := continuousMultilinearMap_basis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
+  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
@@ -880,11 +880,11 @@ private lemma riemannBiContrFibAppY_metricPerturbationPath_jointContMDiffOn
         (congrFun (Trivialization.coe_linearMapAt_of_mem (R := ℝ) (e := e) hqbase) _).symm
       rw [hcoe]
       have hfiber :
-          (tensor0SSpace_continuousLinearEquiv (I := I) 2 q.1).symm
+          (tensor0SSpaceContinuousLinearEquiv (I := I) 2 q.1).symm
               (Tensor0SSpace.toModel
                 (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1))) =
             riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1) :=
-        (tensor0SSpace_continuousLinearEquiv (I := I) 2 q.1).symm_apply_apply _
+        (tensor0SSpaceContinuousLinearEquiv (I := I) 2 q.1).symm_apply_apply _
       rw [← hfiber]
       have happly := TensorMultilinear.tensor0SBundle_linearMapAt_apply_of_mem (I := I) α q.1 hqbase
         (Tensor0SSpace.toModel (riemannBiContrFib (I := I) (gfam q.2) q.1 (Y q.1)))
@@ -1196,7 +1196,7 @@ private lemma raisedKoszulFibAppOm_metricPerturbationPath_jointContMDiffOn
             raisedKoszulFib (I := I) g₀ (metricPerturbationPath (I := I) g₀ T T' hδ hδ' p.2) p.1) (om p.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
   classical
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   set gfam : ℝ → SmoothRiemannianMetric I M := fun s => metricPerturbationPath (I := I) g₀ T T' hδ hδ' s
     with hgfam
   set S := metricPerturbationPathDomain (δ := δ) (δ' := δ') with hS
@@ -1204,7 +1204,7 @@ private lemma raisedKoszulFibAppOm_metricPerturbationPath_jointContMDiffOn
   set α := p₀.1 with hα
   set e := trivializationAt (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) α with he
-  set Bcmm := continuousMultilinearMap_basis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
+  set Bcmm := continuousMultilinearMapBasis (𝕜 := ℝ) (F := E) (chartModelBasis E) 2 with hBcmm
   rw [Bundle.contMDiffWithinAt_totalSpace]
   refine ⟨contMDiffWithinAt_fst, ?_⟩
   have hαsrc : α ∈ (chartAt H α).source := mem_chart_source H α
@@ -1243,7 +1243,7 @@ private lemma raisedKoszulFibAppOm_metricPerturbationPath_jointContMDiffOn
         (congrFun (Trivialization.coe_linearMapAt_of_mem (R := ℝ) (e := e) hqbase) _).symm
       rw [hcoe]
       have hfiber :
-          (tensor0SSpace_continuousLinearEquiv (I := I) 2 q.1).symm
+          (tensor0SSpaceContinuousLinearEquiv (I := I) 2 q.1).symm
               (Tensor0SSpace.toModel
                 ((show Tensor0SBundle.Tensor0SSpace 1 I q.1 →L[ℝ]
                     Tensor0SBundle.Tensor0SSpace 2 I q.1 from
@@ -1251,7 +1251,7 @@ private lemma raisedKoszulFibAppOm_metricPerturbationPath_jointContMDiffOn
             (show Tensor0SBundle.Tensor0SSpace 1 I q.1 →L[ℝ]
                 Tensor0SBundle.Tensor0SSpace 2 I q.1 from
               raisedKoszulFib (I := I) g₀ (gfam q.2) q.1) (om q.1) :=
-        (tensor0SSpace_continuousLinearEquiv (I := I) 2 q.1).symm_apply_apply _
+        (tensor0SSpaceContinuousLinearEquiv (I := I) 2 q.1).symm_apply_apply _
       rw [← hfiber]
       have happly := TensorMultilinear.tensor0SBundle_linearMapAt_apply_of_mem (I := I) α q.1 hqbase
         (Tensor0SSpace.toModel

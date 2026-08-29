@@ -66,13 +66,13 @@ private lemma smoothFnSmul_toSection_apply
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartAtlasPOU_finset_sum_eq_one (x : M) :
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ((chartAtlasPOU I M) α x) = 1 := by
   classical
   have h_finsum : ∑ᶠ α : M, ((chartAtlasPOU I M) α x) = 1 :=
     (chartAtlasPOU I M).sum_eq_one (Set.mem_univ x)
   have h_supp : Function.support (fun α : M => ((chartAtlasPOU I M) α x)) ⊆
-      (chartAtlasPOU_finset (I := I) (M := M) : Set M) := by
+      (chartAtlasPOUFinset (I := I) (M := M) : Set M) := by
     intro α hα
     rw [Function.mem_support] at hα
     rw [Finset.mem_coe, chartAtlasPOU_finset_mem]
@@ -80,7 +80,7 @@ private lemma chartAtlasPOU_finset_sum_eq_one (x : M) :
   rw [← h_finsum, finsum_eq_sum_of_support_subset _ h_supp]
 
 private def pouSq (x : M) : ℝ :=
-  ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
     ((chartAtlasPOU I M) α x) * ((chartAtlasPOU I M) α x)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -95,11 +95,11 @@ omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma pouSq_pos (x : M) : 0 < pouSq (I := I) (M := M) x := by
   classical
   have h_sum := chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x
-  have h_nonneg : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have h_nonneg : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       0 ≤ ((chartAtlasPOU I M) α x) := fun α _ => (chartAtlasPOU I M).nonneg α x
   have h_sum_lt :
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), (0 : ℝ) <
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M), ((chartAtlasPOU I M) α x) := by
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), (0 : ℝ) <
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), ((chartAtlasPOU I M) α x) := by
     rw [Finset.sum_const_zero, h_sum]
     exact zero_lt_one
   obtain ⟨α₀, hα₀_mem, hα₀_pos⟩ :=
@@ -129,38 +129,38 @@ private def reconSeed
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma sum_pouSmul_pouSmul_reconSeed_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (T : SmoothCcTensor g r s) :
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         pouSmul (I := I) (M := M) g r s α
           (pouSmul (I := I) (M := M) g r s α
             (reconSeed (I := I) (M := M) g r s T)) = T := by
   classical
   refine SmoothCcTensor.ext (ContMDiffSection.ext (fun x => ?_))
   have h_eval :
-      (∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           pouSmul (I := I) (M := M) g r s α
             (pouSmul (I := I) (M := M) g r s α
               (reconSeed (I := I) (M := M) g r s T))).toSection x =
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           (pouSmul (I := I) (M := M) g r s α
             (pouSmul (I := I) (M := M) g r s α
               (reconSeed (I := I) (M := M) g r s T))).toSection x := by
     have h_sum_section :
-        (∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        (∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
             pouSmul (I := I) (M := M) g r s α
               (pouSmul (I := I) (M := M) g r s α
                 (reconSeed (I := I) (M := M) g r s T))).toSection =
-          ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+          ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
             (pouSmul (I := I) (M := M) g r s α
               (pouSmul (I := I) (M := M) g r s α
                 (reconSeed (I := I) (M := M) g r s T))).toSection :=
       map_sum (SmoothCcTensor.toSectionAddHom (I := I) (M := M) (g := g)
         (r := r) (s := s)) _ _
     rw [h_sum_section]
-    have h_coe : ⇑(∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    have h_coe : ⇑(∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           (pouSmul (I := I) (M := M) g r s α
             (pouSmul (I := I) (M := M) g r s α
               (reconSeed (I := I) (M := M) g r s T))).toSection) =
-        ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+        ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ⇑(pouSmul (I := I) (M := M) g r s α
             (pouSmul (I := I) (M := M) g r s α
               (reconSeed (I := I) (M := M) g r s T))).toSection :=
@@ -185,7 +185,7 @@ private lemma sum_pouSmul_pouSmul_reconSeed_eq
       smoothFnSmul_toSection_apply, smul_smul, smul_smul]
   rw [Finset.sum_congr rfl (fun α _ => h_summand α), ← Finset.sum_smul]
   have h_weight :
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
           ((chartAtlasPOU I M) α x) * ((chartAtlasPOU I M) α x) *
             pouSqRecip (I := I) (M := M) x = 1 := by
     rw [← Finset.sum_mul]
@@ -279,7 +279,7 @@ private lemma tensorL2_eq_zero_of_chartComponent_eq_zero
     intro T
     have h_recon :
         (T : TensorL2 r s g) =
-          ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+          ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
             ((pouSmul (I := I) (M := M) g r s α
               (pouSmul (I := I) (M := M) g r s α
                 (reconSeed (I := I) (M := M) g r s T))) : TensorL2 r s g) := by
@@ -289,7 +289,7 @@ private lemma tensorL2_eq_zero_of_chartComponent_eq_zero
         (fun α : M => pouSmul (I := I) (M := M) g r s α
           (pouSmul (I := I) (M := M) g r s α
             (reconSeed (I := I) (M := M) g r s T)))
-        (chartAtlasPOU_finset (I := I) (M := M))
+        (chartAtlasPOUFinset (I := I) (M := M))
       rw [sum_pouSmul_pouSmul_reconSeed_eq (I := I) (M := M) g r s T] at h_map
       rw [show ((T : TensorL2 r s g)) =
           (UniformSpace.Completion.toComplL :

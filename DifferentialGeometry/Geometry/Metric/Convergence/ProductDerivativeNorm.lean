@@ -124,7 +124,7 @@ theorem normSq0S_iterCov_domDomCongr [FiniteDimensional Real E]
     (Y : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s) (m : ℕ) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) gRef x basis (identityInvMetric (Idx := Idx))) :
+    (hinv : MetricInverseInBasisGen (I := I) gRef x basis (identityInvMetric (Idx := Idx))) :
     normSq0S (I := I) gRef x (s' + m)
         (iterCov (I := I) gRef s'
           (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) e Y) m x) =
@@ -145,7 +145,7 @@ theorem normSq0S_iterCov_shift [FiniteDimensional Real E]
     (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) r) (m : ℕ) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) gRef x basis (identityInvMetric (Idx := Idx))) :
+    (hinv : MetricInverseInBasisGen (I := I) gRef x basis (identityInvMetric (Idx := Idx))) :
     normSq0S (I := I) gRef x (r + (m + 1)) (iterCov (I := I) gRef r T (m + 1) x) =
       normSq0S (I := I) gRef x ((r + 1) + m)
         (iterCov (I := I) gRef (r + 1) (covStep (I := I) gRef r T) m x) := by
@@ -174,14 +174,14 @@ theorem iterCov_product_one [FiniteDimensional Real E] {s q : ℕ}
     (B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) q) :
     iterCov (I := I) gRef (s + q)
-        (tensor0SField_product (∞ : WithTop ℕ∞) A B) 1 =
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B) 1 =
       Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv s q)
-          (tensor0SField_product (∞ : WithTop ℕ∞) (iterCov (I := I) gRef s A 1) B)
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) (iterCov (I := I) gRef s A 1) B)
         + Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv s q)
-          (tensor0SField_product (∞ : WithTop ℕ∞) A (iterCov (I := I) gRef q B 1)) :=
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) A (iterCov (I := I) gRef q B 1)) :=
   totalNabla0SRealizes_unique
     (iterCov_realizes (I := I) gRef
-      (tensor0SField_product (∞ : WithTop ℕ∞) A B) 0)
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B) 0)
     (nabla0S_product_realizes
       (leviCivitaConnectionOfMetric (I := I) gRef) A B
       (iterCov (I := I) gRef s A 1) (iterCov (I := I) gRef q B 1)
@@ -194,7 +194,7 @@ theorem sqrt_normSq0S_add_le [FiniteDimensional Real E]
     (gRef : SmoothRiemannianMetric I M) {s : ℕ} {x : M}
     (u v : Tensor0SSpace s I x)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) gRef x basis (identityInvMetric (Idx := Idx))) :
+    (hinv : MetricInverseInBasisGen (I := I) gRef x basis (identityInvMetric (Idx := Idx))) :
     Real.sqrt (normSq0S (I := I) gRef x s (u + v)) ≤
       Real.sqrt (normSq0S (I := I) gRef x s u) + Real.sqrt (normSq0S (I := I) gRef x s v) := by
   rw [normSq0S_identity_eq_sum_sq (I := I) gRef x s basis hinv,
@@ -211,7 +211,7 @@ theorem iterCov_product_sqrtNormSq_le [FiniteDimensional Real E]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (gRef : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) gRef x basis (identityInvMetric (Idx := Idx)))
+    (hinv : MetricInverseInBasisGen (I := I) gRef x basis (identityInvMetric (Idx := Idx)))
     (m : ℕ) : ∀ {s q : ℕ}
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
@@ -219,7 +219,7 @@ theorem iterCov_product_sqrtNormSq_le [FiniteDimensional Real E]
       (n := (∞ : WithTop ℕ∞)) q),
     Real.sqrt (normSq0S (I := I) gRef x ((s + q) + m)
         (iterCov (I := I) gRef (s + q)
-          (tensor0SField_product (∞ : WithTop ℕ∞) A B) m x)) ≤
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B) m x)) ≤
       ∑ c ∈ Finset.range (m + 1), (m.choose c : Real) *
         Real.sqrt (normSq0S (I := I) gRef x (s + c) (iterCov (I := I) gRef s A c x)) *
         Real.sqrt (normSq0S (I := I) gRef x (q + (m - c))
@@ -233,7 +233,7 @@ theorem iterCov_product_sqrtNormSq_le [FiniteDimensional Real E]
         rw [normSq0S_identity_eq_sum_sq (I := I) gRef x s basis hinv]
         exact Finset.sum_nonneg fun _ _ => sq_nonneg _
       change Real.sqrt (normSq0S (I := I) gRef x (s + q)
-          (tensor0SField_product (∞ : WithTop ℕ∞) A B x)) ≤
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B x)) ≤
         Real.sqrt (normSq0S (I := I) gRef x s (A x)) *
           Real.sqrt (normSq0S (I := I) gRef x q (B x))
       rw [normSq0S_product (I := I) gRef x basis hinv A B, Real.sqrt_mul hnn]
@@ -242,7 +242,7 @@ theorem iterCov_product_sqrtNormSq_le [FiniteDimensional Real E]
       have hL : Real.sqrt (normSq0S (I := I) gRef x ((s + q + 1) + m)
           (iterCov (I := I) gRef (s + q + 1)
             (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv s q)
-              (tensor0SField_product (∞ : WithTop ℕ∞)
+              (tensor0SFieldProduct (∞ : WithTop ℕ∞)
                 (iterCov (I := I) gRef s A 1) B)) m x)) ≤
           ∑ c ∈ Finset.range (m + 1), (m.choose c : ℝ) *
             Real.sqrt (normSq0S (I := I) gRef x (s + (c + 1)) (iterCov (I := I) gRef s A (c + 1) x))
@@ -250,7 +250,7 @@ theorem iterCov_product_sqrtNormSq_le [FiniteDimensional Real E]
             Real.sqrt (normSq0S (I := I) gRef x (q + (m - c))
               (iterCov (I := I) gRef q B (m - c) x)) := by
         rw [normSq0S_iterCov_domDomCongr (I := I) gRef (leibnizLeftEquiv s q)
-          (tensor0SField_product (∞ : WithTop ℕ∞)
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
             (iterCov (I := I) gRef s A 1) B) m x basis hinv]
         refine le_trans (ih (iterCov (I := I) gRef s A 1) B) (le_of_eq ?_)
         refine Finset.sum_congr rfl fun c _ => ?_
@@ -258,38 +258,38 @@ theorem iterCov_product_sqrtNormSq_le [FiniteDimensional Real E]
       have hR : Real.sqrt (normSq0S (I := I) gRef x ((s + q + 1) + m)
           (iterCov (I := I) gRef (s + q + 1)
             (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv s q)
-              (tensor0SField_product (∞ : WithTop ℕ∞)
+              (tensor0SFieldProduct (∞ : WithTop ℕ∞)
                 A (iterCov (I := I) gRef q B 1))) m x)) ≤
           ∑ c ∈ Finset.range (m + 1), (m.choose c : ℝ) *
             Real.sqrt (normSq0S (I := I) gRef x (s + c) (iterCov (I := I) gRef s A c x)) *
             Real.sqrt (normSq0S (I := I) gRef x (q + (m - c + 1))
               (iterCov (I := I) gRef q B (m - c + 1) x)) := by
         rw [normSq0S_iterCov_domDomCongr (I := I) gRef (leibnizRightEquiv s q)
-          (tensor0SField_product (∞ : WithTop ℕ∞)
+          (tensor0SFieldProduct (∞ : WithTop ℕ∞)
             A (iterCov (I := I) gRef q B 1)) m x basis hinv]
         refine le_trans (ih A (iterCov (I := I) gRef q B 1)) (le_of_eq ?_)
         refine Finset.sum_congr rfl fun c _ => ?_
         rw [normSq0S_iterCov_shift (I := I) gRef B (m - c) x basis hinv, iterCov_one]
       calc Real.sqrt (normSq0S (I := I) gRef x ((s + q) + (m + 1))
               (iterCov (I := I) gRef (s + q)
-                (tensor0SField_product (∞ : WithTop ℕ∞) A B) (m + 1) x))
+                (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B) (m + 1) x))
           = Real.sqrt (normSq0S (I := I) gRef x ((s + q + 1) + m)
               (iterCov (I := I) gRef (s + q + 1)
                 (iterCov (I := I) gRef (s + q)
-                  (tensor0SField_product (∞ : WithTop ℕ∞) A B) 1) m
+                  (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B) 1) m
                       x)) := by
             rw [normSq0S_iterCov_shift (I := I) gRef
-              (tensor0SField_product (∞ : WithTop ℕ∞) A B) m x basis hinv,
+              (tensor0SFieldProduct (∞ : WithTop ℕ∞) A B) m x basis hinv,
               ← iterCov_one]
         _ ≤ Real.sqrt (normSq0S (I := I) gRef x ((s + q + 1) + m)
                 (iterCov (I := I) gRef (s + q + 1)
                   (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizLeftEquiv s q)
-                    (tensor0SField_product (∞ : WithTop ℕ∞)
+                    (tensor0SFieldProduct (∞ : WithTop ℕ∞)
                       (iterCov (I := I) gRef s A 1) B)) m x)) +
               Real.sqrt (normSq0S (I := I) gRef x ((s + q + 1) + m)
                 (iterCov (I := I) gRef (s + q + 1)
                   (Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (leibnizRightEquiv s q)
-                    (tensor0SField_product (∞ : WithTop ℕ∞)
+                    (tensor0SFieldProduct (∞ : WithTop ℕ∞)
                       A (iterCov (I := I) gRef q B 1))) m x)) := by
             rw [iterCov_product_one (I := I) gRef A B, iterCov_add]
             exact sqrt_normSq0S_add_le (I := I) gRef _ _ basis hinv
@@ -322,10 +322,10 @@ theorem smulByFun_eq_product [FiniteDimensional Real E] {q : ℕ}
     (φ : M → Real) (hφ : ContMDiff I 𝓘(ℝ, ℝ) ∞ φ)
     (B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) q) :
-    tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+    tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (∞ : WithTop ℕ∞) φ hφ B =
       Tensor0SField.domDomCongr (∞ : WithTop ℕ∞) (finCongr (Nat.zero_add q))
-        (tensor0SField_product (∞ : WithTop ℕ∞)
+        (tensor0SFieldProduct (∞ : WithTop ℕ∞)
           (Tensor0SField.fromScalarField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             (∞ : WithTop ℕ∞) φ hφ) B) := by
   refine DFunLike.ext _ _ (fun x => ?_)
@@ -355,13 +355,13 @@ theorem iterCov_smulF_le [FiniteDimensional Real E]
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (gRef : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasis_gen (I := I) gRef x basis (identityInvMetric (Idx := Idx)))
+    (hinv : MetricInverseInBasisGen (I := I) gRef x basis (identityInvMetric (Idx := Idx)))
     (m : ℕ) {q : ℕ} (φ : M → Real) (hφ : ContMDiff I 𝓘(ℝ, ℝ) ∞ φ)
     (B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) q) :
     Real.sqrt (normSq0S (I := I) gRef x (q + m)
         (iterCov (I := I) gRef q
-          (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
+          (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             (∞ : WithTop ℕ∞) φ hφ B) m x)) ≤
       ∑ c ∈ Finset.range (m + 1), (m.choose c : Real) *
         Real.sqrt (normSq0S (I := I) gRef x (0 + c)
@@ -372,7 +372,7 @@ theorem iterCov_smulF_le [FiniteDimensional Real E]
           (iterCov (I := I) gRef q B (m - c) x)) := by
   rw [smulByFun_eq_product (I := I) φ hφ B,
     normSq0S_iterCov_domDomCongr (I := I) gRef (finCongr (Nat.zero_add q))
-      (tensor0SField_product (∞ : WithTop ℕ∞)
+      (tensor0SFieldProduct (∞ : WithTop ℕ∞)
         (Tensor0SField.fromScalarField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           (∞ : WithTop ℕ∞) φ hφ) B) m x basis hinv]
   exact iterCov_product_sqrtNormSq_le (I := I) gRef x basis hinv m

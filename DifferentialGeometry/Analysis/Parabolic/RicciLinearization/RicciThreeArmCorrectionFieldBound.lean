@@ -106,8 +106,8 @@ private lemma fiberNormSqComponent_connectionDifferenceBiContrFib_self
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
   rw [hcf]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
 theorem riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -119,7 +119,7 @@ theorem riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one
       (_hbound : metricCauchySchwarzBound (I := I) g₀ (ccTensorBilinSymm (I := I) g₀ P) δ)
       (x : M),
       letI instTens : Bundle.RiemannianBundle (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
       letI : ∀ y : M, NormedAddCommGroup (Tensor0SBundle.TensorRSSpace 0 3 I y) :=
         fun y => tensorRSRiemannianNormedAddCommGroup (I := I) 0 3 (h := instTens) y
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
@@ -130,7 +130,7 @@ theorem riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one
   classical
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   let instNorm : ∀ y : M, NormedAddCommGroup (Tensor0SBundle.TensorRSSpace 0 3 I y) :=
     fun y => tensorRSRiemannianNormedAddCommGroup (I := I) 0 3 (h := instTens) y
   obtain ⟨C₀, hC₀0, hpw⟩ :=
@@ -270,8 +270,8 @@ theorem riemannianFiberNormSq_gInvDiffQuadResidualField_le_of_lt_one
           push_cast; ring
         rw [hcard, ← hnE]; ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_gInvDiffQuadResidualField_metricPerturbationPath_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
@@ -298,7 +298,7 @@ theorem exists_gInvDiffQuadResidualField_metricPerturbationPath_riemannianFiberN
   intro T T' δ hδ_le hδ δ' hδ'_le hδ' hTball hT'ball s hs x
   let instTens : Bundle.RiemannianBundle
       (fun y : M => Tensor0SBundle.TensorRSSpace 0 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   let instNorm : ∀ y : M, NormedAddCommGroup (Tensor0SBundle.TensorRSSpace 0 3 I y) :=
     fun y => tensorRSRiemannianNormedAddCommGroup (I := I) 0 3 (h := instTens) y
   set m : ℝ := max δ₀ 0 with hm_def
@@ -344,7 +344,7 @@ theorem exists_gInvDiffQuadResidualField_metricPerturbationPath_riemannianFiberN
     have hterms : ∀ k ∈ Finset.range 3, 0 ≤
         (letI instTensK : Bundle.RiemannianBundle
             (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
         letI : ∀ b : M, NormedAddCommGroup (Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
           fun b => tensorRSRiemannianNormedAddCommGroup (I := I) 0 (2 + k) (h := instTensK) b
         ‖(iteratedCovGrad (I := I) g₀ 0 2 k
@@ -352,7 +352,7 @@ theorem exists_gInvDiffQuadResidualField_metricPerturbationPath_riemannianFiberN
       intro k _
       let instTensK : Bundle.RiemannianBundle
           (fun b : M => Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + k)
       let instNormK : ∀ b : M, NormedAddCommGroup
           (Tensor0SBundle.TensorRSSpace 0 (2 + k) I b) :=
         fun b => tensorRSRiemannianNormedAddCommGroup (I := I) 0 (2 + k)
@@ -794,8 +794,8 @@ private lemma fiberNormSqComponent_bgRBiContrFib
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one]
   rw [hcf]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem riemannianFiberNormSq_backgroundRiemannBiContrFib_le
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (g₁ : SmoothRiemannianMetric I M)
@@ -919,8 +919,8 @@ theorem riemannianFiberNormSq_backgroundRiemannBiContrFib_le
           push_cast; ring
         rw [hcard, ← hnE]
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem
     exists_ricciArmOrder0BackgroundCurvatureCoeffField_metricPerturbationPath_riemannianFiberNormSq_ballUniform
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)

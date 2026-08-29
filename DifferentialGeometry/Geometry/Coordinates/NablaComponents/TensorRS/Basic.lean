@@ -31,7 +31,7 @@ def coordDerivRSAt {r s : ℕ}
     (upper : Fin r -> CoordinateIdx (𝕜 := 𝕜) E)
     (lower : Fin s -> CoordinateIdx (𝕜 := 𝕜) E) : 𝕜 :=
   let β₀ : Tensor0SModel r 𝕜 E :=
-    (continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper
+    (continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper
   let β : (x : M) -> Tensor0SSpace (𝕜 := 𝕜) (E := E) (H := H) (I := I) r x :=
     Tensor0SSpace.constInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       r x₀ β₀
@@ -56,7 +56,7 @@ def modelDerivRSAt {r s : ℕ}
     tensorRSModelInChart (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       r s x₀ T
   let β₀ : Tensor0SModel r 𝕜 E :=
-    (continuousMultilinearMap_basis (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper
+    (continuousMultilinearMapBasis (𝕜 := 𝕜) (F := E) (Module.finBasis 𝕜 E) r) upper
   (fderivWithin 𝕜 T'
       (((extChartAt I x₀).symm ⁻¹' Set.univ) ∩ Set.range I)
       (extChartAt I x₀ x₀)

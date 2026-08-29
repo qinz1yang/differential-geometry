@@ -39,7 +39,7 @@ theorem tensorL2Inner_eq_zero_of_pointwise_inner_eq_divergence
     (hdiv : (fun x : M => tensorInnerPointwise (I := I) (M := M) g 0 (s + 1) x
               (W.toFun x) (Y.toFun x))
         =ᵐ[riemannianVolumeMeasure (I := I) (M := M) g]
-      (fun x : M => divergence_g (I := I) g X x)) :
+      (fun x : M => divergenceG (I := I) g X x)) :
     tensorL2Inner (I := I) (M := M) g 0 (s + 1) W.toFun Y.toFun = 0 := by
   classical
   unfold tensorL2Inner

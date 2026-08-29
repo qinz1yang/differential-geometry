@@ -521,7 +521,7 @@ noncomputable def tensorRSRiemannianNorm
     (g₀ : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (W : TensorRSSpace r s I x) : ℝ :=
   let instRS : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ r s
   letI : NormedAddCommGroup (TensorRSSpace r s I x) :=
     (instRS.g.toCore x).toNormedAddCommGroupOfTopology
       (instRS.g.continuousAt x) (instRS.g.isVonNBounded x)
@@ -537,7 +537,7 @@ private theorem tensorRSRiemannianNorm_nonneg
     (W : TensorRSSpace r s I x) :
     0 ≤ tensorRSRiemannianNorm (I := I) (M := M) g₀ r s x W := by
   let instRS : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ r s
   let : NormedAddCommGroup (TensorRSSpace r s I x) :=
     (instRS.g.toCore x).toNormedAddCommGroupOfTopology
       (instRS.g.continuousAt x) (instRS.g.isVonNBounded x)

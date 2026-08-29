@@ -21,8 +21,8 @@ variable {I : ModelWithCorners Real E H}
 
 namespace PointedRiemannianManifold
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem compact_of_ricci
     [NeZero (Module.finrank Real E)]

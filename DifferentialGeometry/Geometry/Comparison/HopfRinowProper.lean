@@ -25,8 +25,8 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem closedEBall_isCompact
     {g : SmoothRiemannianMetric I M}
     (hg : RiemannianMetricComplete (I := I) g)
@@ -118,8 +118,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [ConnectedSpace M] [T3Space M]
 variable [RiemannianBundle (fun x : M => TangentSpace I x)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 @[reducible] noncomputable def riemMetricSpace
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)] :
     MetricSpace M :=
@@ -128,8 +128,8 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
     rw [IsRiemannianManifold.out (I := I) x y]
     exact riemannianEDist_ne_top (I := I) x y)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
 theorem riemMetric_realizes
@@ -144,8 +144,8 @@ theorem riemMetric_realizes
   intro x y
   exact edist_dist x y
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [T2Space (TangentBundle I M)] [SigmaCompactSpace M] in
 theorem riemMetric_dist_eq
@@ -167,8 +167,8 @@ theorem riemMetric_dist_eq
     exact hreal
   rw [hriem, ENNReal.toReal_ofReal dist_nonneg]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 omit [T2Space (TangentBundle I M)] in
 theorem expImgClosedBall_compact
@@ -191,8 +191,8 @@ theorem expImgClosedBall_compact
   exact (isCompact_closedBall (0 : TangentSpace I p) R).image
     (expMapIntrinsic_continuous (I := I) g hEnorm p)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem closedBall_subset_expImg
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (hcomplete :
@@ -224,8 +224,8 @@ theorem closedBall_subset_expImg
   rw [riemMetric_dist_eq (I := I) (M := M) p y] at hy'
   exact hy'
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem properSpace_riemMetric
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (hcomplete :
@@ -247,8 +247,8 @@ theorem properSpace_riemMetric
       (Metric.isClosed_closedBall : IsClosed (Metric.closedBall p R))
   exact himg.of_isClosed_subset hclosed hsubset
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intermediateDist_riemMetric
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (hcomplete :
@@ -283,8 +283,8 @@ theorem intermediateDist_riemMetric
     intermediate_value_Icc (show (0 : ℝ) ≤ 1 by norm_num) hf_cont hmem
   exact ⟨γ s, by simpa [f] using hs⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
 theorem properSpace_riemMetric_of_complete_metric
     (g : SmoothRiemannianMetric I M)
@@ -324,8 +324,8 @@ theorem properSpace_riemMetric_of_complete_metric
     exact tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
   exact properSpace_riemMetric (I := I) (M := M) hcomplete.complete g hEnorm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space (TangentBundle I M)] in
 theorem riemMetric_dist_eq_of_complete_metric
@@ -365,8 +365,8 @@ theorem riemMetric_dist_eq_of_complete_metric
   let : CompleteSpace M := hcomplete.complete
   exact riemMetric_dist_eq (I := I) (M := M) x y
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
 theorem intermediateDist_riemMetric_of_complete_metric
     (g : SmoothRiemannianMetric I M)

@@ -65,8 +65,8 @@ private lemma tsupport_chartPushedRaw_subset_chartImage
 private lemma wkpComp_const'_pos
     {d : ℕ} {kmax : ℕ} {Ω Ω' : Set (EuclideanSpace ℝ (Fin d))}
     (Φ : SmoothDiffeoBoundedAtOrder d Ω Ω' kmax) (k : ℕ) (p : ℝ≥0∞) :
-    0 < Φ.wkpComp_const' k p := by
-  unfold SmoothDiffeoBoundedAtOrder.wkpComp_const'
+    0 < Φ.wkpCompConst' k p := by
+  unfold SmoothDiffeoBoundedAtOrder.wkpCompConst'
   have h_card_pos : (0 : ℝ) <
       (Finset.range (k + 1)).sum (fun j => (Fintype.card (Fin j → Fin d) : ℝ)) := by
     have h_zero_in : (0 : ℕ) ∈ Finset.range (k + 1) :=
@@ -83,8 +83,8 @@ private lemma wkpComp_const'_pos
     exact_mod_cast Nat.factorial_pos k
   have h_deriv_pos : (0 : ℝ) < Φ.derivBoundMaxOne ^ k :=
     pow_pos Φ.derivBoundMaxOne_pos k
-  have h_jac_pos : 0 < Φ.jacobian_lower_bound := Φ.jacobian_lower_bound_pos
-  have h_rpow_pos : (0 : ℝ) < (1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal) :=
+  have h_jac_pos : 0 < Φ.jacobianLowerBound := Φ.jacobian_lower_bound_pos
+  have h_rpow_pos : (0 : ℝ) < (1 / Φ.jacobianLowerBound) ^ (1 / p.toReal) :=
     Real.rpow_pos_of_pos (by positivity) _
   have h_k1_pos : (0 : ℝ) < ((k + 1 : ℕ) : ℝ) := by
     exact_mod_cast Nat.zero_lt_succ k
@@ -93,7 +93,7 @@ private lemma wkpComp_const'_pos
 private lemma wkpComp_const'_nonneg
     {d : ℕ} {kmax : ℕ} {Ω Ω' : Set (EuclideanSpace ℝ (Fin d))}
     (Φ : SmoothDiffeoBoundedAtOrder d Ω Ω' kmax) (k : ℕ) (p : ℝ≥0∞) :
-    0 ≤ Φ.wkpComp_const' k p :=
+    0 ≤ Φ.wkpCompConst' k p :=
   (wkpComp_const'_pos Φ k p).le
 
 private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
@@ -105,9 +105,9 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
     {u : EuclideanSpace ℝ (Fin d) → ℝ} (hu : MemWkp (d := d) k p u Ω')
     (hu_compactSupport : HasCompactSupport u) (hu_supp : tsupport u ⊆ Ω') :
     iteratedWeakSobolevNorm (d := d) k p (fun x => u (Φ.toFun x)) Ω ≤
-      ENNReal.ofReal (Φ.wkpComp_const' k p) * iteratedWeakSobolevNorm (d := d) k p u Ω' := by
+      ENNReal.ofReal (Φ.wkpCompConst' k p) * iteratedWeakSobolevNorm (d := d) k p u Ω' := by
   classical
-  set K_const : ℝ := Φ.wkpComp_const' k p with hK_def
+  set K_const : ℝ := Φ.wkpCompConst' k p with hK_def
   have hK_pos : 0 < K_const := wkpComp_const'_pos Φ k p
   have hK_nonneg : 0 ≤ K_const := hK_pos.le
   have h_approx : ∀ n : ℕ, ∃ ψ : EuclideanSpace ℝ (Fin d) → ℝ,
@@ -255,7 +255,7 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
       eLpNorm (fun x => u (Φ.toFun x) - ψ n (Φ.toFun x)) p
         (volume.restrict Ω) ≤
         ENNReal.ofReal
-            ((1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal)) *
+            ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
           ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)) := by
     intro n
     have h_chg := Φ.eLpNorm_comp_toFun_le_const hp_one hp_top hΩ
@@ -298,7 +298,7 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
           eLpNorm (fun x => v x - u (Φ.toFun x)) p (volume.restrict Ω) ≤
             iteratedWeakSobolevNorm (d := d) k p (fun x => v x - ψ n (Φ.toFun x)) Ω +
             ENNReal.ofReal
-                ((1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal)) *
+                ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
               ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)) := by
         intro n
         have h_ψn_comp_aestrong : AEStronglyMeasurable
@@ -328,7 +328,7 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
             eLpNorm (fun x => ψ n (Φ.toFun x) - u (Φ.toFun x)) p
                 (volume.restrict Ω) ≤
               ENNReal.ofReal
-                  ((1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal)) *
+                  ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
                 ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)) := by
           have h_eq :
               (fun x => ψ n (Φ.toFun x) - u (Φ.toFun x)) =
@@ -380,7 +380,7 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
       have h_tendsto_second :
           Filter.Tendsto
             (fun n : ℕ => ENNReal.ofReal
-                ((1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal)) *
+                ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
               ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)))
             atTop (𝓝 0) := by
         have h_inner_tendsto :
@@ -393,7 +393,7 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
           have h_ofReal := (ENNReal.continuous_ofReal.tendsto 0).comp h_real
           simpa only [Function.comp_def, ENNReal.ofReal_zero] using h_ofReal
         set C : ℝ≥0∞ := ENNReal.ofReal
-            ((1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal)) with hC_def
+            ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) with hC_def
         have hC_ne_top : C ≠ ⊤ := by rw [hC_def]; exact ENNReal.ofReal_ne_top
         have h_const_mul := ENNReal.Tendsto.const_mul (a := C) (b := 0)
           h_inner_tendsto (Or.inr hC_ne_top)
@@ -402,7 +402,7 @@ private lemma wkpNorm_comp_smoothDiffeoBoundedAtOrder_le
           Filter.Tendsto
             (fun n => iteratedWeakSobolevNorm (d := d) k p (fun x => v x - ψ n (Φ.toFun x)) Ω +
               ENNReal.ofReal
-                  ((1 / Φ.jacobian_lower_bound) ^ (1 / p.toReal)) *
+                  ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
                 ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)))
             atTop (𝓝 0) := by
         have := h_tendsto_first.add h_tendsto_second
@@ -627,7 +627,7 @@ private lemma wkpNorm_chartTransitionTransportCLM_le
       (by norm_num) (by norm_num)
       hΩαβ_open hcE_smooth' hCcoeff_nn
       (fun j hj y _ => hCcoeff_bound y j hj)
-  set Kcomp : ℝ := Φ.wkpComp_const' k 2 with hKcomp_def
+  set Kcomp : ℝ := Φ.wkpCompConst' k 2 with hKcomp_def
   have hKcomp_nn : 0 ≤ Kcomp := wkpComp_const'_nonneg Φ k 2
   refine ⟨Kc' * (Kcomp * Kχ), by positivity, ?_⟩
   intro f hf

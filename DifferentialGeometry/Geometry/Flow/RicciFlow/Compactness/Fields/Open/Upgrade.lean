@@ -230,7 +230,7 @@ theorem open_upgrade_of_raw
     exact congrArg
       (fun y => DifferentialGeometry.PDE.RicciFlow.ricciNorm (I := I)
         (X.term ((mc.subseq ∘ co.φ) k)).S t y) (hmap k x).symm
-  let d := flowUpgrade_of_open (I := I) mc L mc.limit rfl hL0 Phi
+  let d := flowUpgradeOfOpen (I := I) mc L mc.limit rfl hL0 Phi
     mc.limit.metric bf hsrc htgt hzero_mem hD co (fun _ _ => HEq.rfl) scalar
     ricciNorm
   refine ⟨d, ?_⟩

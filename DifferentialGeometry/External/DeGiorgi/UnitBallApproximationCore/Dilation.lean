@@ -39,7 +39,7 @@ noncomputable def MemW1pWitness.unitBallDilate
       (fun z ↦ u ((0 : E) + lam⁻¹ • z)) by
     funext z
     rw [unitBallDilate_apply, zero_add]]
-  exact MemW1pWitness.rescale_to_unitBall (d := d) (x₀ := (0 : E))
+  exact MemW1pWitness.rescaleToUnitBall (d := d) (x₀ := (0 : E))
     (R := lam⁻¹) (u := u) (by positivity) hwSmall
 
 lemma one_lt_midpoint_of_one_lt {lam : ℝ} (hlam : 1 < lam) :
@@ -205,7 +205,7 @@ private lemma weakPartialDeriv_unitBallDilate_to_ball
     _ = -∫ x in Metric.ball (0 : E) lam, lam⁻¹ * g (lam⁻¹ • x) * φ x := by rw [hconst]
 
 /-- Outward dilation from the unit ball to the larger ball `B(0, lam)`. -/
-noncomputable def MemW1pWitness.unitBallDilate_largeBall
+noncomputable def MemW1pWitness.unitBallDilateLargeBall
     {p : ℝ} (_hp : 1 ≤ p)
     {u : E → ℝ} {lam : ℝ}
     (hlam : 1 < lam)

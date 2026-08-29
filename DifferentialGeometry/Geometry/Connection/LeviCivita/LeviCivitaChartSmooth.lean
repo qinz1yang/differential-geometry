@@ -66,7 +66,7 @@ def christoffelCorrectionCLM (g : SmoothRiemannianMetric I M)
     ∑ j : Fin (Module.finrank ℝ E),
       ∑ k : Fin (Module.finrank ℝ E),
         (((chartModelBasis E).repr
-              (chartE_section_repr (I := I) α σ x) j *
+              (chartESectionRepr (I := I) α σ x) j *
             chartChristoffel (I := I) g α i j k (extChartAt I α x)) •
           christoffelBlockCLM (E := E) i k)
 
@@ -80,7 +80,7 @@ lemma christoffelCorrectionCLM_apply
           ∑ k : Fin (Module.finrank ℝ E),
             (((chartModelBasis E).repr w) i *
                 ((chartModelBasis E).repr
-                    (chartE_section_repr (I := I) α σ x)) j *
+                    (chartESectionRepr (I := I) α σ x)) j *
                 chartChristoffel (I := I) g α i j k (extChartAt I α x)) •
               (chartModelBasis E) k := by
   classical
@@ -92,13 +92,13 @@ lemma christoffelCorrectionCLM_apply
   rw [sum_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
   rw [smul_apply]
-  change ((chartModelBasis E).repr (chartE_section_repr (I := I) α σ x) j *
+  change ((chartModelBasis E).repr (chartESectionRepr (I := I) α σ x) j *
         chartChristoffel (I := I) g α i j k (extChartAt I α x)) •
       christoffelBlockCLM (E := E) i k w =
     _
   unfold christoffelBlockCLM
   rw [ContinuousLinearMap.smulRight_apply]
-  change ((chartModelBasis E).repr (chartE_section_repr (I := I) α σ x) j *
+  change ((chartModelBasis E).repr (chartESectionRepr (I := I) α σ x) j *
         chartChristoffel (I := I) g α i j k (extChartAt I α x)) •
       (((chartModelBasis E).repr w) i • (chartModelBasis E) k) = _
   rw [smul_smul]
@@ -112,7 +112,7 @@ lemma christoffelCorrection_eq_christoffelCorrectionCLM
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (w : E) :
     christoffelCorrection (I := I) g α x
-        (chartE_section_repr (I := I) α σ x)
+        (chartESectionRepr (I := I) α σ x)
         (trivFromE (I := I) α x w) =
       christoffelCorrectionCLM (I := I) g α σ x w := by
   classical
@@ -131,7 +131,7 @@ lemma chartE_pullback_contDiffOn_goodSet
     (hσ : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (T% σ)
       (chartLeviCivitaGoodSet (I := I) α)) :
     ContDiffOn ℝ ∞
-      (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) := by
   classical
   set hgood_open : IsOpen (chartLeviCivitaGoodSet (I := I) α) :=
@@ -144,7 +144,7 @@ lemma chartE_pullback_contDiffOn_goodSet
       x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     chartLeviCivitaGoodSet_mem_baseSet (I := I) hxS
   have hfE_at : ContMDiffAt I 𝓘(ℝ, E) ∞
-      (chartE_section_repr (I := I) α σ) x := by
+      (chartESectionRepr (I := I) α σ) x := by
     have hσ_at : ContMDiffAt I (I.prod 𝓘(ℝ, E)) ∞ (T% σ) x :=
       hσ.contMDiffAt (hgood_open.mem_nhds hxS)
     exact (contMDiffAt_section_iff_chartE I α σ (k := (⊤ : ℕ∞)) hx_base).mp hσ_at
@@ -158,9 +158,9 @@ lemma chartE_pullback_contDiffOn_goodSet
       contMDiffOn_extChartAt_symm (I := I) (n := ∞) (x := α)
     exact hsymm_on (φ x) hxφ_tgt
   have hcomp_at : ContMDiffWithinAt 𝓘(ℝ, E) 𝓘(ℝ, E) ∞
-      (chartE_section_repr (I := I) α σ ∘ φ.symm) φ.target (φ x) := by
+      (chartESectionRepr (I := I) α σ ∘ φ.symm) φ.target (φ x) := by
     have hfE_at' : ContMDiffAt I 𝓘(ℝ, E) ∞
-        (chartE_section_repr (I := I) α σ) (φ.symm (φ x)) := by
+        (chartESectionRepr (I := I) α σ) (φ.symm (φ x)) := by
       rw [hxφ_inv]; exact hfE_at
     exact hfE_at'.comp_contMDiffWithinAt (φ x) hsymm_at
   rw [contMDiffWithinAt_iff_contDiffWithinAt] at hcomp_at
@@ -176,7 +176,7 @@ lemma chartE_section_repr_contMDiffOn_goodSet
     (hσ : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (T% σ)
       (chartLeviCivitaGoodSet (I := I) α)) :
     ContMDiffOn I 𝓘(ℝ, E) ∞
-      (fun x : M => chartE_section_repr (I := I) α σ x)
+      (fun x : M => chartESectionRepr (I := I) α σ x)
       (chartLeviCivitaGoodSet (I := I) α) := by
   classical
   set hgood_open : IsOpen (chartLeviCivitaGoodSet (I := I) α) :=
@@ -198,12 +198,12 @@ lemma chartE_section_repr_basis_component_contMDiffOn
     (j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun x : M =>
-        ((chartModelBasis E).repr (chartE_section_repr (I := I) α σ x)) j)
+        ((chartModelBasis E).repr (chartESectionRepr (I := I) α σ x)) j)
       (chartLeviCivitaGoodSet (I := I) α) := by
   classical
   have hbase :
       ContMDiffOn I 𝓘(ℝ, E) ∞
-        (fun x : M => chartE_section_repr (I := I) α σ x)
+        (fun x : M => chartESectionRepr (I := I) α σ x)
         (chartLeviCivitaGoodSet (I := I) α) :=
     chartE_section_repr_contMDiffOn_goodSet (I := I) α hσ
   have hcoord_clm : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ) ∞
@@ -256,7 +256,7 @@ lemma christoffelCorrectionCLM_contMDiffOn
     chartChristoffel_contMDiffOn_goodSet (I := I) g α i j k
   have hscalar : ContMDiffOn I 𝓘(ℝ) ∞
       (fun x : M =>
-        ((chartModelBasis E).repr (chartE_section_repr (I := I) α σ x)) j *
+        ((chartModelBasis E).repr (chartESectionRepr (I := I) α σ x)) j *
         chartChristoffel (I := I) g α i j k (extChartAt I α x))
       (chartLeviCivitaGoodSet (I := I) α) :=
     hrepr_smooth.mul hΓ_smooth
@@ -272,11 +272,11 @@ lemma fderiv_chartE_pullback_contDiffOn_goodSet
     (hσ : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞ (T% σ)
       (chartLeviCivitaGoodSet (I := I) α)) :
     ContDiffOn ℝ ∞
-      (fderiv ℝ (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm))
+      (fderiv ℝ (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm))
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) := by
   classical
   have hpull : ContDiffOn ℝ ∞
-      (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+      (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
       ((extChartAt I α) '' chartLeviCivitaGoodSet (I := I) α) :=
     chartE_pullback_contDiffOn_goodSet (I := I) α hσ
   have himg_open := chartLeviCivitaGoodSet_image_isOpen (I := I) α
@@ -291,7 +291,7 @@ lemma fderiv_chartE_pullback_contMDiffOn
       (chartLeviCivitaGoodSet (I := I) α)) :
     ContMDiffOn I 𝓘(ℝ, E →L[ℝ] E) ∞
       (fun x : M =>
-        fderiv ℝ (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+        fderiv ℝ (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
           (extChartAt I α x))
       (chartLeviCivitaGoodSet (I := I) α) := by
   classical
@@ -303,7 +303,7 @@ lemma fderiv_chartE_pullback_contMDiffOn
   have hφ_at : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I α) x :=
     contMDiffAt_extChartAt' (I := I) (n := ∞) hx_src
   have hfd_chart : ContDiffAt ℝ ∞
-      (fderiv ℝ (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm))
+      (fderiv ℝ (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm))
       (extChartAt I α x) :=
     h_fd_on.contDiffAt (himg_open.mem_nhds (Set.mem_image_of_mem _ hx))
   exact (hfd_chart.comp_contMDiffAt hφ_at).contMDiffWithinAt
@@ -315,7 +315,7 @@ lemma inCoordinates_chartLeviCivita_eq
     (hx : x ∈ chartLeviCivitaGoodSet (I := I) α) :
     ContinuousLinearMap.inCoordinates E (TangentSpace I) E (TangentSpace I)
       α x α x (chartLeviCivita (I := I) g α σ x) =
-      fderiv ℝ (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+      fderiv ℝ (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
         (extChartAt I α x) +
       christoffelCorrectionCLM (I := I) g α σ x := by
   classical
@@ -331,7 +331,7 @@ lemma inCoordinates_chartLeviCivita_eq
   rw [trivToE_trivFromE (I := I) α hx_base]
   rw [trivToE_trivFromE (I := I) α hx_base]
   rw [show christoffelCorrection (I := I) g α x
-        (chartE_section_repr (I := I) α σ x) (trivFromE (I := I) α x w) =
+        (chartESectionRepr (I := I) α σ x) (trivFromE (I := I) α x w) =
       christoffelCorrectionCLM (I := I) g α σ x w from
     christoffelCorrection_eq_christoffelCorrectionCLM (I := I) g α σ hx_base w]
   rw [add_apply]
@@ -356,7 +356,7 @@ theorem chartLeviCivita_contMDiffCovariantDerivativeOn
       christoffelCorrectionCLM_contMDiffOn (I := I) g α hσ_inf
     have h_sum : ContMDiffOn I 𝓘(ℝ, E →L[ℝ] E) ∞
         (fun x : M =>
-          fderiv ℝ (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+          fderiv ℝ (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
             (extChartAt I α x) +
           christoffelCorrectionCLM (I := I) g α σ x)
         (chartLeviCivitaGoodSet (I := I) α) :=
@@ -381,7 +381,7 @@ theorem chartLeviCivita_contMDiffCovariantDerivativeOn
       have hcov :
           ContinuousLinearMap.inCoordinates E (TangentSpace I) E (TangentSpace I)
             α x' α x' (chartLeviCivita (I := I) g α σ x') =
-          fderiv ℝ (chartE_section_repr (I := I) α σ ∘ (extChartAt I α).symm)
+          fderiv ℝ (chartESectionRepr (I := I) α σ ∘ (extChartAt I α).symm)
             (extChartAt I α x') +
           christoffelCorrectionCLM (I := I) g α σ x' :=
         inCoordinates_chartLeviCivita_eq (I := I) g α σ hx'

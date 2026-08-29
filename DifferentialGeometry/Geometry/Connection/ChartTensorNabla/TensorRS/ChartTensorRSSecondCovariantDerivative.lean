@@ -66,10 +66,10 @@ theorem chartTensorRSSecondCovariantDerivative_eq_abstract
       letI _h_top : TopologicalSpace
           (TotalSpace (TensorRSModel r s ℝ E)
             (fun x : M => TensorRSSpace r s I x)) :=
-        tensorRSBundle_topology r s
+        tensorRSBundleTopology r s
       letI _h_fib : FiberBundle (TensorRSModel r s ℝ E)
           (fun x : M => TensorRSSpace r s I x) :=
-        tensorRSBundle_fiber r s
+        tensorRSBundleFiber r s
       Cₛ^∞⟮I; TensorRSModel r s ℝ E,
         fun b => TensorRSSpace r s I b⟯)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
@@ -86,10 +86,10 @@ theorem chartTensorRSSecondCovariantDerivative_eq_abstract
   let _h_top : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
         (fun x : M => TensorRSSpace r s I x)) :=
-    tensorRSBundle_topology r s
+    tensorRSBundleTopology r s
   let _h_fib : FiberBundle (TensorRSModel r s ℝ E)
       (fun x : M => TensorRSSpace r s I x) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   have hCovApply_smooth :
       ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
         (fun y : M => TotalSpace.mk' (TensorRSModel r s ℝ E)

@@ -66,7 +66,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
 private theorem isMetricCompatibleSol
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
       (S.family.connection t) (S.family.metric t) := by
   simpa [SolutionFamily.connection, SolutionOn.family_metric] using
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -312,15 +312,15 @@ theorem scalarLaplacianTraceInFrame_coord_eq_laplacianAt
   set cov := S.family.connection (t : Real) with hcov_def
   set g := S.family.metric (t : Real) with hg_def
   set frame := coordinateFrameAt (I := I) x₀ with hframe_def
-  set basis := coordinateFrameAt_toBasis (I := I) x₀ with hbasis_def
+  set basis := coordinateFrameAtToBasis (I := I) x₀ with hbasis_def
   set gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun a b => coordInv (I := I) S x₀ (t : Real) x₀ a b with hgInv_def
   have hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov (∞ : WithTop ℕ∞) :=
     connSmoothInf (I := I) S (t : Real)
-  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g :=
+  have hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g :=
     isMetricCompatibleSol (I := I) S (t : Real)
   have hinv :
-      Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) g x₀ basis gInv := by
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) g x₀ basis gInv := by
     simpa [hg_def, hbasis_def, hgInv_def] using coordInvReal (I := I) S x₀ (t : Real)
   have hscalar_eq :
       S.scalar (t : Real) = fun y => metricTracePair0SAt (I := I) g (S.ricci (t : Real) y) := by
@@ -451,11 +451,11 @@ private theorem coordScalarRmTrace_center
       -ricciNormSqInFrame (I := I) S (coordInv (I := I) S x₀)
         (coordinateFrameAt (I := I) x₀) (t : Real) x₀ := by
   classical
-  set basis := coordinateFrameAt_toBasis (I := I) x₀ with hbasis_def
+  set basis := coordinateFrameAtToBasis (I := I) x₀ with hbasis_def
   set gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
     fun a b => coordInv (I := I) S x₀ (t : Real) x₀ a b with hgInv_def
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M)
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M)
         (S.family.metric (t : Real)) x₀ basis gInv := by
     simpa [hbasis_def, hgInv_def] using coordInvReal (I := I) S x₀ (t : Real)
   have hRm13 :
@@ -539,20 +539,20 @@ private theorem coordScalarTraceDerivRHS_center
   set gInv := coordInv (I := I) S x₀ with hgInv_def
   set roughLapRic := coordRoughRic (I := I) S x₀ (coordNab2Ric (I := I) S x₀)
     with hrough_def
-  have hbasis : coordinateFrameAt_toBasis (I := I) x₀ =
+  have hbasis : coordinateFrameAtToBasis (I := I) x₀ =
       (coordinateFrameAt_isLocalFrame_one (I := I) x₀).toBasisAt
         (coordinateFrameAt_mem (I := I) x₀) := by
     ext k
     rw [IsLocalFrameOn.toBasisAt_coe, coordinateFrameAt_toBasis_apply]
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M)
-        (S.family.metric (t : Real)) x₀ (coordinateFrameAt_toBasis (I := I) x₀)
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M)
+        (S.family.metric (t : Real)) x₀ (coordinateFrameAtToBasis (I := I) x₀)
         (fun a b => gInv (t : Real) x₀ a b) := by
     simpa [hgInv_def] using coordInvReal (I := I) S x₀ (t : Real)
   have hInvSym : ∀ i j : CoordinateIdx (𝕜 := Real) E,
       gInv (t : Real) x₀ i j = gInv (t : Real) x₀ j i :=
     Tensor0SBundle.invMetric_symm (I := I) (M := M) (S.family.metric (t : Real))
-      x₀ (coordinateFrameAt_toBasis (I := I) x₀)
+      x₀ (coordinateFrameAtToBasis (I := I) x₀)
       (fun a b => gInv (t : Real) x₀ a b) hinvAt
   have hRicSym : ∀ i j : CoordinateIdx (𝕜 := Real) E,
       ricciCompInFrame (I := I) S frame (t : Real) x₀ i j =
@@ -560,7 +560,7 @@ private theorem coordScalarTraceDerivRHS_center
     intro i j
     have hsym :=
       DifferentialGeometry.Geometry.Curvature.metricRicciSymm (I := I) (M := M)
-        (S.family.metric (t : Real)) (coordinateFrameAt_toBasis (I := I) x₀)
+        (S.family.metric (t : Real)) (coordinateFrameAtToBasis (I := I) x₀)
         (fun a b => gInv (t : Real) x₀ a b) hinvAt i j
     simpa [ricciCompInFrame, SolutionOn.ricciAt, SolutionFamily.ricciAt, frame,
       coordinateFrameAt_toBasis_apply] using hsym

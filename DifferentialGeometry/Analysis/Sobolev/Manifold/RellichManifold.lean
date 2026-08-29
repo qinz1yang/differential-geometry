@@ -1400,7 +1400,7 @@ private lemma memLp_riemannianMeasure_of_memWkpChart
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) := by
   classical
   set S : Finset M :=
-    DifferentialGeometry.Integral.Measure.chartAtlasPOU_finset (I := I) (M := M)
+    DifferentialGeometry.Integral.Measure.chartAtlasPOUFinset (I := I) (M := M)
     with hS_def
   have h_sum : u =
       fun x : M => ∑ α ∈ S,

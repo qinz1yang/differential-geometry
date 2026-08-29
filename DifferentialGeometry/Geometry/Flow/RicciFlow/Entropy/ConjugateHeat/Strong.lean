@@ -432,10 +432,10 @@ theorem conj_weak_ae
             closure
               (Set.range fun v : ScalarH2Core (I := I) (M := M) q =>
                 ((v.1 : tensorHs (I := I) (M := M) q 0 0 2),
-                  ∫ x, (Δ_g (I := I) (S.family.metric ((T : Real) - t))
+                  ∫ x, (ΔG (I := I) (S.family.metric ((T : Real) - t))
                           ⟨reprScalar0 (I := I) (M := M) v.1 v.2,
                             reprScalar0_smooth (I := I) (M := M) v.1 v.2⟩ x -
-                        Δ_g (I := I) q ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x) *
+                        ΔG (I := I) q ⟨_, (reprScalar0_smooth (I := I) (M := M) v.1 v.2)⟩ x) *
                       reprScalar0 (I := I) (M := M) w.1 w.2 x
                     ∂(riemannianVolumeMeasure (I := I) (M := M) q)))) ∧
         (∀ v : ScalarH1Core (I := I) (M := M) q,

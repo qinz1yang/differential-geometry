@@ -1114,7 +1114,7 @@ private lemma tensorRank4OuterSlotBilinearCLM_apply (D : Tensor0SBundle.Tensor0S
 
 private def sharpCovCLM (g₁ : SmoothRiemannianMetric I M) (x : M) :
     (E →L[ℝ] ℝ) →L[ℝ] E :=
-  (cometricLmodel (I := I) g₁ x).comp (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E))
+  (cometricLmodel (I := I) g₁ x).comp (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E))
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -1158,7 +1158,7 @@ private lemma tangentSharpCovCLM_inner (g₁ : SmoothRiemannianMetric I M) (x : 
   rw [tangentSharpCovCLM, tangentOfModel_eq]
   change g₁.inner x
       (cometricLmodel (I := I) g₁ x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)) u = _
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ)) u = _
   exact cometricLmodel_covectorOfCLM_inner (I := I) g₁ x φ u
 
 
@@ -1167,7 +1167,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma sharpCovCLM_apply (g₁ : SmoothRiemannianMetric I M) (x : M) (φ : E →L[ℝ] ℝ) :
     sharpCovCLM (I := I) (M := M) g₁ x φ =
       cometricLmodel (I := I) g₁ x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ) := rfl
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ) := rfl
 
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -1416,7 +1416,7 @@ private def perm4_1032 : Equiv.Perm (Fin 4) :=
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma domDomCongr_0312_eval (D : Tensor0SBundle.Tensor0SModel 4 ℝ E) (a b c d : E) :
-    ContinuousMultilinearMap.domDomCongr perm4_0312
+    ContinuousMultilinearMap.domDomCongr perm40312
       (D : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ) ![a, b, c, d] = D ![a, d, b, c] := by
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   congr 1
@@ -1436,7 +1436,7 @@ private lemma domDomCongr_1032_eval (D : Tensor0SBundle.Tensor0SModel 4 ℝ E) (
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma domDomCongr_1203_eval (D : Tensor0SBundle.Tensor0SModel 4 ℝ E) (a b c d : E) :
-    ContinuousMultilinearMap.domDomCongr perm4_1203
+    ContinuousMultilinearMap.domDomCongr perm41203
       (D : ContinuousMultilinearMap ℝ (fun _ : Fin 4 => E) ℝ) ![a, b, c, d] = D ![b, c, a, d] := by
   rw [ContinuousMultilinearMap.domDomCongr_apply]
   congr 1
@@ -1449,7 +1449,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
 private lemma eval_domDomCongr_0312 (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
     Tensor0SBundle.Tensor0SSpace.eval
-        (Tensor0SBundle.Tensor0SSpace.domDomCongr D perm4_0312) ![a, b, c, d] =
+        (Tensor0SBundle.Tensor0SSpace.domDomCongr D perm40312) ![a, b, c, d] =
       Tensor0SBundle.Tensor0SSpace.eval D ![a, d, b, c] := by
   rw [Tensor0SBundle.Tensor0SSpace.eval_domDomCongr]
   congr 1
@@ -1462,7 +1462,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
 private lemma eval_domDomCongr_1203 (x : M) (D : Tensor0SBundle.Tensor0SSpace 4 I x)
     (a b c d : TangentSpace I x) :
     Tensor0SBundle.Tensor0SSpace.eval
-        (Tensor0SBundle.Tensor0SSpace.domDomCongr D perm4_1203) ![a, b, c, d] =
+        (Tensor0SBundle.Tensor0SSpace.domDomCongr D perm41203) ![a, b, c, d] =
       Tensor0SBundle.Tensor0SSpace.eval D ![b, c, a, d] := by
   rw [Tensor0SBundle.Tensor0SSpace.eval_domDomCongr]
   congr 1
@@ -1547,7 +1547,7 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
       sharpCovCLM (I := I) (M := M) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
                   ((Module.finBasis ℝ E).cDualBasis k) =
         cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)) := fun k => rfl
   have hRHS : unitModelTangent (I := I) (M := M) g₀ 2
       (operatorFieldApply (I := I) (M := M) g₀ 4 2
@@ -1605,7 +1605,7 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
         (fun i => tangentOfModel (I := I) x
           ((Fin.cons
             (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
             ![tangentSpaceModelContinuousLinearEquiv (I := I) x p,
               tangentSpaceModelContinuousLinearEquiv (I := I) x q,
@@ -1621,7 +1621,7 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
         (fun i => tangentOfModel (I := I) x
           ((Fin.cons
             (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
             (Fin.cons ((Module.finBasis ℝ E) k)
               (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (v j))) : Fin 4 → E) i)) =
@@ -1644,7 +1644,7 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
                 (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s).toSection x)
                 (unitTensor (I := I) (M := M) x)))
             (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)))
               (Fin.cons ((Module.finBasis ℝ E) k)
                 (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (v j)))) =
@@ -1667,7 +1667,7 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
       have hargs : (fun i => tangentOfModel (I := I) x
           ((Fin.cons
             (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
             (Fin.cons ((Module.finBasis ℝ E) k)
               (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (v j))) : Fin 4 → E)
@@ -1701,7 +1701,7 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
                 (velocitySecondCovGradCc (I := I) g₀ T T' hδ hδ' s).toSection x)
                 (unitTensor (I := I) (M := M) x)))
             (Fin.cons (cometricLmodel (I := I) (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s) x
-                (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                   ((Module.finBasis ℝ E).cDualBasis k)))
               (Fin.cons ((Module.finBasis ℝ E) k)
                 (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) x (v j))))) =
@@ -1844,14 +1844,14 @@ theorem linearizedRicciAt_eq_lichnerowicz_velocitySecondCovGrad
         Tensor0SBundle.Tensor0SSpace.eval D ![Tm k, Bm k, v 0, v 1] := by
     simpa only [Bc, Tc, Bm, Tm, eval_domDomCongr_0312] using
       slotPair_trace_swap_tangent (I := I) g₁ x
-        (Tensor0SBundle.Tensor0SSpace.domDomCongr D perm4_0312) (v 0) (v 1)
+        (Tensor0SBundle.Tensor0SSpace.domDomCongr D perm40312) (v 0) (v 1)
   have hTB2 : (∑ i : Fin (Module.finrank ℝ E),
       Tensor0SBundle.Tensor0SSpace.eval D ![v 0, v 1, Bc i, Tc i]) =
       ∑ k : Fin (Module.finrank ℝ E),
         Tensor0SBundle.Tensor0SSpace.eval D ![v 0, v 1, Tm k, Bm k] := by
     simpa only [Bc, Tc, Bm, Tm, eval_domDomCongr_1203] using
       slotPair_trace_swap_tangent (I := I) g₁ x
-        (Tensor0SBundle.Tensor0SSpace.domDomCongr D perm4_1203) (v 0) (v 1)
+        (Tensor0SBundle.Tensor0SSpace.domDomCongr D perm41203) (v 0) (v 1)
   have hmid : (∑ i : Fin (Module.finrank ℝ E),
       Tensor0SBundle.Tensor0SSpace.eval D ![v 0, Bc i, v 1, Tc i]) =
       ∑ i : Fin (Module.finrank ℝ E),

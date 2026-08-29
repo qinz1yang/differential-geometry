@@ -244,7 +244,7 @@ private theorem ric_quad_le_of_rm04
     (g : SmoothRiemannianMetric I M) (x : M) {n : ℕ}
     (basis : Module.Basis (Fin n) ℝ (TangentSpace I x))
     (hON : ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : ℝ) else 0)
-    (hinv : MetricInverseInBasis_gen (I := I) g x basis (identityInvMetric (Idx := Fin n)))
+    (hinv : MetricInverseInBasisGen (I := I) g x basis (identityInvMetric (Idx := Fin n)))
     (Rm04 : Tensor04At (I := I) (M := M) x) {C : ℝ}
     (htrace : ∀ i j, metricRicciAt g x (vec2 (I := I) (basis i) (basis j))
         = ∑ a, Rm04 (vec4 (I := I) (basis a) (basis i) (basis j) (basis a)))
@@ -272,7 +272,7 @@ theorem ric_quad_le_of_realizes
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
   have hdelta := metricInverseInBasis_of_orthonormal (I := I) g basis hON
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
     have he : (fun a k : Fin (Module.finrank ℝ (TangentSpace I x)) => if a = k then (1 : ℝ) else 0)
         = identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x))) := by

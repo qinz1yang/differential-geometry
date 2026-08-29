@@ -76,8 +76,8 @@ noncomputable def iteratedCovGradSobolevNorm
   ‖SmoothCcTensor.toHs (g := g) (r := r) (s := s + j) (2 * (k - j))
     (iteratedCovGrad g r s j T)‖
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem iteratedCovGrad_toSobolev_embedding_Cm
     (g : SmoothRiemannianMetric I M) (r s k m : ℕ)
@@ -86,7 +86,7 @@ theorem iteratedCovGrad_toSobolev_embedding_Cm
       ∀ (T : SmoothCcTensor g r s) (x : M),
         (∑ j ∈ Finset.range (m + 1),
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + j)
             ‖(iteratedCovGrad g r s j T).toSection x‖)) ≤
           C * ∑ j ∈ Finset.range (m + 1),
             iteratedCovGradSobolevNorm g r s k j T := by
@@ -94,7 +94,7 @@ theorem iteratedCovGrad_toSobolev_embedding_Cm
   have h_perdeg : ∀ j : ℕ,
       ∃ Cj : ℝ, 0 < Cj ∧ (j ≤ m → ∀ (T : SmoothCcTensor g r s) (x : M),
         (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + j) I b) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + j)
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + j)
         ‖(iteratedCovGrad g r s j T).toSection x‖) ≤
           Cj * iteratedCovGradSobolevNorm g r s k j T) := by
     intro j
@@ -122,7 +122,7 @@ theorem iteratedCovGrad_toSobolev_embedding_Cm
       le_trans (le_of_lt (hCfun_pos j₀)) (Finset.le_sup' Cfun hj₀)
     calc (∑ j ∈ Finset.range (m + 1),
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace r (s + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r (s + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r (s + j)
             ‖(iteratedCovGrad g r s j T).toSection x‖))
         ≤ ∑ j ∈ Finset.range (m + 1),
             Cmax * iteratedCovGradSobolevNorm g r s k j T := by
@@ -142,8 +142,8 @@ theorem iteratedCovGrad_toSobolev_embedding_Cm
           unfold iteratedCovGradSobolevNorm
           exact norm_nonneg _
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem iteratedCovGrad_toSobolev_embedding_C2
     (g : SmoothRiemannianMetric I M) (k : ℕ)
@@ -152,7 +152,7 @@ theorem iteratedCovGrad_toSobolev_embedding_C2
       ∀ (T : SmoothCcTensor g 0 2) (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 (2 + j)
             ‖(iteratedCovGrad g 0 2 j T).toSection x‖)) ≤
           C * ∑ j ∈ Finset.range 3,
             iteratedCovGradSobolevNorm g 0 2 k j T := by

@@ -360,7 +360,7 @@ theorem localizedSpacetimeRpowNorm_le_canonicalEvolvingEarlyBombieriGiustiRevers
           (gradFun (I := I) (g t) rho.toFun x)
           (gradFun (I := I) (g t) rho.toFun x) ≤ G)
     (hpde : ∀ t ∈ Icc A τ, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hVtop : V ≠ ⊤)
@@ -871,7 +871,7 @@ theorem localizedSpacetimeRpowNorm_inv_le_canonicalEvolvingLateBombieriGiustiRev
     (hSobolev : ∀ t ∈ Icc τ D,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc τ D, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (htrace : ∀ t ∈ Icc τ D, ∀ x : M,
@@ -1081,7 +1081,7 @@ theorem localizedSpacetimeRpowNorm_inv_le_canonicalEvolvingLateBombieriGiustiRev
     (hSobolev : ∀ t ∈ Icc τ D,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc τ D, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (htrace : ∀ t ∈ Icc τ D, ∀ x : M,
@@ -1158,7 +1158,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalEvolvingBombieriGi
           (gradFun (I := I) (g t) rho.toFun x)
           (gradFun (I := I) (g t) rho.toFun x) ≤ G)
     (hpde : ∀ t ∈ Icc A τ, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hVtop : V ≠ ⊤)
@@ -1270,7 +1270,7 @@ theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombier
     (hSobolev : ∀ t ∈ Icc τ D,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc τ D, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (htrace : ∀ t ∈ Icc τ D, ∀ x : M,
@@ -1419,7 +1419,7 @@ theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombier
     (hSobolev : ∀ t ∈ Icc τ D,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc τ D, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (htrace : ∀ t ∈ Icc τ D, ∀ x : M,
@@ -1586,7 +1586,7 @@ theorem inv_le_evolvingBombieriGiustiLatePointwiseFactor_mul_localizedSpacetimeR
     (hSobolev : ∀ t ∈ Icc τ D,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc τ D, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (htrace : ∀ t ∈ Icc τ D, ∀ x : M,
@@ -1812,7 +1812,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalEvolvingBombieriGi
           (gradFun (I := I) (g t) rho.toFun x)
           (gradFun (I := I) (g t) rho.toFun x) ≤ G)
     (hpde : ∀ t ∈ Icc A τ, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hVtop : V ≠ ⊤)
@@ -1852,7 +1852,7 @@ theorem early_localizedSpacetimeRpowNorm_le_exp_tsum_canonicalEvolvingBombieriGi
   have hv := contMDiff_exponentialTimeRescale rate center u hu
   have hvpos := exponentialTimeRescale_pos rate center u hpos
   have hvpde : ∀ t ∈ Icc A τ, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) v hv t).toContMDiffMap x ≤
         deriv (fun s => v s x) t := by
     intro t ht x
@@ -1931,7 +1931,7 @@ theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombier
           (gradFun (I := I) (g t) rho.toFun x)
           (gradFun (I := I) (g t) rho.toFun x) ≤ G)
     (hpde : ∀ t ∈ Icc τ D, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hVzero : V ≠ 0) (hVtop : V ≠ ⊤)
@@ -1974,7 +1974,7 @@ theorem late_localizedSpacetimeRpowNorm_inv_le_exp_tsum_canonicalEvolvingBombier
   have hv := contMDiff_exponentialTimeRescale rate center u hu
   have hvpos := exponentialTimeRescale_pos rate center u hpos
   have hvpde : ∀ t ∈ Icc τ D, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) v hv t).toContMDiffMap x ≤
         deriv (fun s => v s x) t := by
     intro t ht x
@@ -2190,7 +2190,7 @@ theorem localizedSpacetimeRpowNorm_mul_inv_le_canonicalEvolvingBombieriGiustiCro
           (gradFun (I := I) (g t) rho.toFun x)
           (gradFun (I := I) (g t) rho.toFun x) ≤ G)
     (hpde : ∀ t ∈ Icc A D, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hVzero : V ≠ 0) (hVtop : V ≠ ⊤)
@@ -2339,7 +2339,7 @@ theorem localizedSpacetimeRpowNorm_le_canonicalEvolvingBombieriGiustiWeakHarnack
           (gradFun (I := I) (g t) rho.toFun x)
           (gradFun (I := I) (g t) rho.toFun x) ≤ G)
     (hpde : ∀ t ∈ Icc A D, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (hVzero : V ≠ 0) (hVtop : V ≠ ⊤)
@@ -2389,7 +2389,7 @@ theorem localizedSpacetimeRpowNorm_le_canonicalEvolvingBombieriGiustiWeakHarnack
   have hv := contMDiff_exponentialTimeRescale rate center u hu
   have hvpos := exponentialTimeRescale_pos rate center u hpos
   have hvpde : ∀ t ∈ Icc τ D, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) v hv t).toContMDiffMap x ≤
         deriv (fun s => v s x) t := by
     intro t ht x

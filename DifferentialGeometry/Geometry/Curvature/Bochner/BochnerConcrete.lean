@@ -210,7 +210,7 @@ omit [SigmaCompactSpace M] in
 theorem frobeniusSq_grad_vector_eq_chartHessFrobeniusSq
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f) (x : M) :
-    frobeniusSq_grad_vector (I := I) g
+    frobeniusSqGradVector (I := I) g
         (fun b : M => gradFun (I := I) g f b) x =
       chartHessFrobeniusSq (I := I) g f x := by
   classical
@@ -224,7 +224,7 @@ theorem frobeniusSq_grad_vector_eq_chartHessFrobeniusSq
   have hB_orth : ∀ i j : Fin (Module.finrank ℝ E),
       g.inner x (B i) (B j) = if i = j then (1 : ℝ) else 0 := fun i j =>
     smoothOrthoFrame_orthonormal_at_center (I := I) g x i j
-  have hStep1 : frobeniusSq_grad_vector (I := I) g
+  have hStep1 : frobeniusSqGradVector (I := I) g
         (fun b => gradFun (I := I) g f b) x =
       ∑ i : Fin (Module.finrank ℝ E),
         g.inner x (T (B i)) (T (B i)) := by
@@ -380,30 +380,30 @@ omit [SigmaCompactSpace M] in
 theorem bochner_pointwise_grad_normSq_of_boundaryless
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
-      2 * frobeniusSq_grad_vector (I := I) g
+    ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
+      2 * frobeniusSqGradVector (I := I) g
             (fun b => gradFun (I := I) g f b) x +
         2 * ricciTensor (I := I) g x
               (gradFun (I := I) g f x) (gradFun (I := I) g f x) +
         2 * g.inner x (gradFun (I := I) g f x)
-            (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) := by
+            (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) := by
   have h := bochner_pointwise_abstract_of_smooth (I := I) g hf x
-  have hLHS_eq : Δ_g (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
-      Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x := rfl
+  have hLHS_eq : ΔG (I := I) g ⟨_, (normGradSq_contMDiff (I := I) g hf)⟩ x =
+      ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x := rfl
   rw [hLHS_eq] at h
-  have h' : Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
-      2 * (g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
+  have h' : ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
+      2 * (g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x)
             (gradFun (I := I) g f x) +
           ricciTensor (I := I) g x (gradFun (I := I) g f x)
             (gradFun (I := I) g f x) +
-          frobeniusSq_grad_vector (I := I) g
+          frobeniusSqGradVector (I := I) g
             (fun b => gradFun (I := I) g f b) x) := by
     linarith [h]
   rw [h']
-  rw [show g.inner x (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x)
+  rw [show g.inner x (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x)
           (gradFun (I := I) g f x) =
         g.inner x (gradFun (I := I) g f x)
-          (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) from
+          (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) from
     g.symm x _ _]
   ring
 
@@ -411,12 +411,12 @@ omit [SigmaCompactSpace M] in
 theorem bochner_pointwise_concrete_metric
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
+    ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
       2 * chartHessFrobeniusSq (I := I) g f x +
         2 * ricciTensor (I := I) g x
               (gradFun (I := I) g f x) (gradFun (I := I) g f x) +
         2 * g.inner x (gradFun (I := I) g f x)
-            (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) := by
+            (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) := by
   rw [bochner_pointwise_grad_normSq_of_boundaryless (I := I) g hf x]
   rw [frobeniusSq_grad_vector_eq_chartHessFrobeniusSq (I := I) g hf x]
 
@@ -433,12 +433,12 @@ omit [SigmaCompactSpace M] in
 theorem bochner_pointwise_half_grad_normSq_of_boundaryless
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (x : M) :
-    (1 / 2 : ℝ) * Δ_g (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
+    (1 / 2 : ℝ) * ΔG (I := I) g ⟨_, (normGradSqFun_contMDiff (I := I) g hf)⟩ x =
       chartHessFrobeniusSq (I := I) g f x +
         ricciTensor (I := I) g x
           (gradFun (I := I) g f x) (gradFun (I := I) g f x) +
         g.inner x (gradFun (I := I) g f x)
-          (gradFun (I := I) g (Δ_g (I := I) g ⟨_, hf⟩) x) := by
+          (gradFun (I := I) g (ΔG (I := I) g ⟨_, hf⟩) x) := by
   rw [bochner_pointwise_concrete_metric (I := I) g hf x]
   ring
 

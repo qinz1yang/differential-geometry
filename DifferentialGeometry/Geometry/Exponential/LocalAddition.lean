@@ -56,8 +56,8 @@ noncomputable def connCompMetric
 
 section
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 @[reducible] private noncomputable def connCompRiemBundle
     (g : SmoothRiemannianMetric I M) (p : M) :
@@ -158,8 +158,8 @@ noncomputable def connAddChart
     connDiagExp (I := I) g p ∘
     (extChartAt I.tangent z).symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 @[simp] theorem connAdd_zero
     (g : SmoothRiemannianMetric I M) (p : M) :
     connDiagExp (I := I) g p
@@ -188,8 +188,8 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
     (expMapIntrinsic_zero (I := I) (connCompMetric (I := I) g p)
       (connComp_enorm (I := I) g p) (connCompPt (I := I) p))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem connAdd_cd
     (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) :
     ContMDiffAt I.tangent (I.prod I) (n : ℕ∞)
@@ -218,8 +218,8 @@ theorem connAdd_cd
     (connCompMetric (I := I) g p) (connComp_enorm (I := I) g p)
     (connCompPt (I := I) p) n
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem connAdd_fderiv
     (g : SmoothRiemannianMetric I M) (p : M) (n : ℕ) (hn : 1 ≤ n) :
     HasFDerivAt (connAddChart (I := I) g p)

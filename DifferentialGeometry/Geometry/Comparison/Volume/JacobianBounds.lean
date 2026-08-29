@@ -604,8 +604,8 @@ lemma density_le_gronwall_of_scaled_radius
       hinit hmodel hxrad)
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_dens_le_rm04_at
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
@@ -659,8 +659,8 @@ theorem exists_dens_le_rm04_at
       hγ hcard F hpar hON hFdiff hinit hmodel hxrad)
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_dens_le_rm04
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
@@ -797,8 +797,8 @@ lemma normalDensity_ge_of_dir_bound
       exact h)
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_dens_ge_rm04_at
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
@@ -857,8 +857,8 @@ theorem exists_dens_ge_rm04_at
       hγ hcard F hpar hON hFdiff hmodel hxrad)
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_dens_ge_rm04
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
@@ -911,8 +911,8 @@ theorem exists_dens_ge_rm04
     (fun _ _ => hγ.contMDiffAt) hcard F hpar hON hFdiff hmodel
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_dens_two_rm04_at
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
@@ -996,8 +996,8 @@ theorem exists_dens_two_rm04_at
   exact ⟨hlower, hupper⟩
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_dens_pair_rm04_at
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]
@@ -1082,8 +1082,8 @@ theorem exists_dens_pair_rm04_at
   exact ⟨hlower, hupper⟩
 
 open Bundle in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_dens_two_rm04
     [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
     [IsRiemannianManifold I M] [CompleteSpace M] [ConnectedSpace M]

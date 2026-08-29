@@ -1032,7 +1032,7 @@ theorem scalarSigns_covHess
         (Set.Icc t0 (t0 + delta)))
     (d : TensorFirstNullData (I := I) (M := M) G
       (twoTensorSecToFamily (I := I) (M := M) S) epsilon delta t0)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov (G d.t1))
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov (G d.t1))
     (hreal1 :
       TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         2 cov B nablaB)
@@ -1167,7 +1167,7 @@ theorem scalarSigns_secHess
     (hcovInf : CovariantDerivative.ContMDiffCovariantDerivativeLocally
       (cov d.t1) (∞ : WithTop ℕ∞))
     (hmc : ∀ t : Real,
-      DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (cov t) (G t))
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (cov t) (G t))
     (hS : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S)
     (Xsec :
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))

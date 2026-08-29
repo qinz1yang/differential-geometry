@@ -87,9 +87,9 @@ private theorem norm02_event
           ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
             ∑ k : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
               ∑ l : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
-                DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+                DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
                     (I := I) g x₀ i k (extChartAt I x₀ y) *
-                  DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+                  DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
                     (I := I) g x₀ j l (extChartAt I x₀ y) *
                     A y
                       (fun q : Fin 2 =>
@@ -103,12 +103,12 @@ private theorem norm02_event
   filter_upwards
     [(DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet_open (I := I) x₀).mem_nhds
       (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_mem (I := I) x₀)] with y hy
-  let basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x₀ hy
+  let basis := DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x₀ hy
   let gInv :
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E →
         DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
     fun i j =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
         (I := I) g x₀ i j (extChartAt I x₀ y)
   have hnorm :=
     Tensor0SBundle.normSq0S_two_eq_coord (I := I) (M := M) g y
@@ -130,9 +130,9 @@ private theorem norm02_event
           ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
             ∑ k : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
               ∑ l : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
-                DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+                DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
                     (I := I) g x₀ i k (extChartAt I x₀ y) *
-                  DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+                  DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
                     (I := I) g x₀ j l (extChartAt I x₀ y) *
                     A y
                       (fun q : Fin 2 =>
@@ -170,9 +170,9 @@ theorem norm02_smooth
             ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
               ∑ k : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
                 ∑ l : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
-                  DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+                  DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
                       (I := I) g x₀ i k (extChartAt I x₀ y) *
-                    DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+                    DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
                       (I := I) g x₀ j l (extChartAt I x₀ y) *
                       A y
                         (fun q : Fin 2 =>
@@ -219,7 +219,7 @@ theorem inner02_eq_coord_direct
     (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv)
+    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
     (A B : Tensor02At (I := I) x) :
     inner02 (I := I) g x A B =
       ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
@@ -244,7 +244,7 @@ theorem metricInverseInBasis_of_frame
     (hframe : IsLocalFrameOn I E ∞ frame u)
     (hinv : InverseMetricComponentsInFrameTime (I := I) G gInv frame)
     (t : Time) {x : M} (hx : x ∈ u) :
-    Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) (G.metric t) x
+    Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) (G.metric t) x
       (hframe.toBasisAt hx) (fun i j : Idx => gInv t x i j) := by
   intro i j
   constructor
@@ -267,7 +267,7 @@ theorem inner02_eq_coord
           tensor02Comp (I := I) A frame t x i j *
             tensor02Comp (I := I) B frame t x k l := by
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) (G.metric t) x
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) (G.metric t) x
         (hframe.toBasisAt hx) (fun i j : Idx => gInv t x i j) :=
     metricInverseInBasis_of_frame (I := I) G gInv frame hframe hinv t hx
   have h := inner02_eq_coord_direct (I := I) (G.metric t) x
@@ -298,7 +298,7 @@ theorem normSq02_eq_coord
           tensor02Comp (I := I) A frame t x i j *
             tensor02Comp (I := I) A frame t x k l := by
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) (G.metric t) x
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) (G.metric t) x
         (hframe.toBasisAt hx) (fun i j : Idx => gInv t x i j) :=
     metricInverseInBasis_of_frame (I := I) G gInv frame hframe hinv t hx
   simpa [tensorNormSq02, normSq02, inner02, tensor02Comp,
@@ -522,7 +522,7 @@ private theorem tensor0S_curry_apply_cons_local
     (A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 1) x)
     (X : TangentSpace I x) (tail : Fin s -> TangentSpace I x) :
-    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x A X) tail =
+    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x A X) tail =
       A (Fin.cons X tail) := by
   exact Tensor0SBundle.tensor0S_curry_apply_cons (I := I) s A X tail
 
@@ -684,7 +684,7 @@ theorem inner02_rough
     (g : SmoothRiemannianMetric I M)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv)
+    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
     (A B : Tensor02At (I := I) x) :
     inner02 (I := I) g x B A =
       tensor02RoughInnerCoord (I := I) basis gInv A B := by
@@ -720,7 +720,7 @@ theorem tensor02FreezeNabla_eq_curry
     (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 3 x)
     (X : TangentSpace I x) :
     tensor02FreezeNabla (I := I) nablaA X =
-      tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x nablaA X := by
+      tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x nablaA X := by
   ext v
   have hv : v = vec2 (I := I) (v 0) (v 1) := by
     funext a
@@ -737,7 +737,7 @@ noncomputable def freeze02Field
       (TangentSpace I : M -> Type _)) :
     Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2 := by
-  letI := tensor0SBundle_topology (𝕜 := Real) (E := E) (H := H)
+  letI := tensor0SBundleTopology (𝕜 := Real) (E := E) (H := H)
     (I := I) (M := M) 2
   refine ⟨fun y : M => tensor02FreezeNabla (I := I) (nablaA y) (Y y), ?_⟩
   intro x₀
@@ -752,7 +752,7 @@ noncomputable def freeze02Field
       (fun y : M =>
         TotalSpace.mk' (Tensor0SModel 2 Real E)
           (E := fun x : M => Tensor0SSpace 2 I x) y
-          ((TensorMultilinear.curriedSection_gen (𝕜 := Real) (I := I) (M := M)
+          ((TensorMultilinear.curriedSectionGen (𝕜 := Real) (I := I) (M := M)
             (fun z : M => nablaA z) y) (Y y))) x₀ :=
     ContMDiffAt.clm_bundle_apply (𝕜 := Real) (n := (∞ : WithTop ℕ∞))
       (F₁ := E) (F₂ := Tensor0SModel 2 Real E)
@@ -761,12 +761,12 @@ noncomputable def freeze02Field
       (IM := I) (IB := I)
       (b := id)
       (ϕ := fun y : M =>
-        TensorMultilinear.curriedSection_gen (𝕜 := Real) (I := I) (M := M)
+        TensorMultilinear.curriedSectionGen (𝕜 := Real) (I := I) (M := M)
           (fun z : M => nablaA z) y)
       (v := fun y : M => Y y) hcurry hY
   refine happ.congr_of_eventuallyEq ?_
   filter_upwards with y
-  simpa [TensorMultilinear.curriedSection_gen] using
+  simpa [TensorMultilinear.curriedSectionGen] using
     tensor02FreezeNabla_eq_curry (I := I) (nablaA y) (Y y)
 
 @[simp] theorem freeze02Field_apply
@@ -785,7 +785,7 @@ noncomputable def freeze02Field
 theorem tensor02_inner_mvfderiv_eq_inner_nabla
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (nablaA nablaB :
@@ -808,12 +808,12 @@ theorem tensor02_inner_mvfderiv_eq_inner_nabla
       cov g hmc A B nablaA nablaB hA hB X x
   have hfreezeA :
       tensor02FreezeNabla (I := I) (nablaA x) (X x) =
-        tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+        tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x
           (nablaA x) (X x) :=
     tensor02FreezeNabla_eq_curry (I := I) (nablaA x) (X x)
   have hfreezeB :
       tensor02FreezeNabla (I := I) (nablaB x) (X x) =
-        tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+        tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x
           (nablaB x) (X x) :=
     tensor02FreezeNabla_eq_curry (I := I) (nablaB x) (X x)
   simpa [inner02, hfreezeA, hfreezeB] using h
@@ -840,7 +840,7 @@ private theorem inner02_mdiff
 private theorem inner02_nablaFun
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -886,7 +886,7 @@ theorem du_norm02
     [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (nablaA :
@@ -940,7 +940,7 @@ def tensor02FreezeNabla2
     (nabla2A : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x)
     (X Y : TangentSpace I x) : Tensor02At (I := I) x :=
   freezeLastTwo0S3 (I := I)
-    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 3 x nabla2A X) Y
+    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 3 x nabla2A X) Y
 
 omit [FiniteDimensional ℝ E] in
 @[simp] theorem tensor02FreezeNabla2_apply
@@ -952,7 +952,7 @@ omit [FiniteDimensional ℝ E] in
   unfold tensor02FreezeNabla2
   rw [freezeLastTwo0S3_apply]
   change Tensor0SSpace.eval
-      (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 3 x nabla2A X)
+      (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 3 x nabla2A X)
       (vec3 (I := I) Y Z W) =
     Tensor0SSpace.eval nabla2A (vec4 (I := I) X Y Z W)
   rw [TensorMultilinear.tensor0S_curry_apply_eval_gen]
@@ -963,7 +963,7 @@ theorem freeze02_deriv
     [T2Space M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) 2)
     (nablaA :
@@ -1246,10 +1246,10 @@ theorem hess_norm02
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv)
+    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
     (X : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (hfields : SmoothBasisFieldsAt (I := I) basis X)
@@ -1496,10 +1496,10 @@ theorem second_norm02_mc
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) g x basis gInv)
+    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) g x basis gInv)
     (X : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
     (hfields : SmoothBasisFieldsAt (I := I) basis X)
@@ -1682,7 +1682,7 @@ theorem ricci_lap_mc
       Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 y)
     (hframe : forall x i, basis x i = frame i x)
     (hinv : forall t x,
-      Tensor0SBundle.MetricInverseInBasis_gen (I := I) (M := M) (G.metric t) x
+      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) (G.metric t) x
         (basis x) (gInv t x))
     (hfields : forall x, SmoothBasisFieldsAt (I := I) (basis x) (X x))
     (hlapTrace : forall t x,

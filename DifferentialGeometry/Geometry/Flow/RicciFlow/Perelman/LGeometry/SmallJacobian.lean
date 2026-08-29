@@ -27,8 +27,8 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 variable {D : RealTimeInterval}
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lJacCoord_zero_lim
@@ -118,8 +118,8 @@ private noncomputable def lNormGram
       ((2 * s)⁻¹ • lRegJacobiField S T x Z ((chartModelBasis F) i) s)
       ((2 * s)⁻¹ • lRegJacobiField S T x Z ((chartModelBasis F) j) s)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompactSpace N] in
 omit [NeZero (Module.finrank ℝ F)] in
 private theorem lNormGram_lim
@@ -345,8 +345,8 @@ private theorem lNormGram_eq
   rw [hleft, hright, pow_two]
   ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompactSpace N] in
 omit [NeZero (Module.finrank ℝ F)] in
 theorem lExpDen_zero_lim

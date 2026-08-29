@@ -26,7 +26,7 @@ theorem contDiffOn_wedge_product {s : Set E} (a : E → E [⋀^Fin k]→L[ℝ] �
     ContDiffOn ℝ ⊤ (fun x => a x ∧[ℝ] b x) s := by
   let B : (E [⋀^Fin k]→L[ℝ] ℝ) →L[ℝ] (E [⋀^Fin l]→L[ℝ] ℝ) →L[ℝ]
       (E [⋀^Fin (k + l)]→L[ℝ] ℝ) :=
-    wedge_productL (ContinuousLinearMap.mul ℝ ℝ)
+    wedgeProductL (ContinuousLinearMap.mul ℝ ℝ)
   have h₁ : ContDiffOn ℝ ⊤ (fun x => B (a x)) s := by
     exact (contDiffOn_const (c := B)).clm_apply ha
   exact h₁.clm_apply hb

@@ -28,7 +28,7 @@ def RiemannianMetric.to02Tensor {I : ModelWithCorners ℝ E H} {n : WithTop ℕ�
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ω M]
     (g : RiemannianMetric I n M) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (I := I) (M := M) (n := n) 2 :=
-  Tensor.RSTensor.RiemannianMetric_gen.to02Tensor_gen (I := I) (n := n) g
+  Tensor.RSTensor.RiemannianMetricGen.to02TensorGen (I := I) (n := n) g
 
 end
 end DifferentialGeometry

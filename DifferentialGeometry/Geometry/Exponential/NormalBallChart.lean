@@ -471,8 +471,8 @@ theorem sharp_norm_le (g : SmoothRiemannianMetric I M) {p : M}
   norm_num at hbound ⊢
   exact hbound
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space (TangentBundle I M)] in
 theorem abs_apply_le (g : SmoothRiemannianMetric I M) {p : M}
     {c : NormalBallChart (I := I) p} {U : Set E}

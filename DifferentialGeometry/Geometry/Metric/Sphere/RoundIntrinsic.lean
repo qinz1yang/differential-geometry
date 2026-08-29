@@ -33,8 +33,8 @@ theorem dIncl_orth (p : sphere (0 : E) 1) (v : TangentSpace (𝓡 n) p) :
   rw [← range_mvfderiv_subtypeVal (n := n) p]
   exact ⟨v, rfl⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 variable
   [RiemannianBundle

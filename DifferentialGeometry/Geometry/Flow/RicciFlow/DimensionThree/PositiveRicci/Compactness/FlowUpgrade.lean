@@ -72,16 +72,16 @@ private theorem srm_eq_of_inner
 private def hamiltonCommonD :
     DifferentialGeometry.Geometry.Curvature.RealTimeInterval :=
   DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closed
-    (-(hamilton_reference_radius ^ 2)) 0 (neg_nonpos.mpr (sq_nonneg hamilton_reference_radius))
+    (-(hamiltonReferenceRadius ^ 2)) 0 (neg_nonpos.mpr (sq_nonneg hamiltonReferenceRadius))
 
 private def hamiltonShiLeft : Real :=
-  -(2 * hamilton_reference_radius ^ 2)
+  -(2 * hamiltonReferenceRadius ^ 2)
 
 private noncomputable def hamiltonWinStart
     {g0 : SmoothRiemannianMetric I M}
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) : Nat :=
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius) : Nat :=
   Classical.choose hwindow
 
 private noncomputable def hamiltonBufStart
@@ -89,14 +89,14 @@ private noncomputable def hamiltonBufStart
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q) : Nat :=
-  Classical.choose (hsel.2.2.2.1 (2 * hamilton_reference_radius ^ 2))
+  Classical.choose (hsel.2.2.2.1 (2 * hamiltonReferenceRadius ^ 2))
 
 private noncomputable def hamiltonStart
     {g0 : SmoothRiemannianMetric I M}
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) : Nat :=
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius) : Nat :=
   max (hamiltonWinStart (I := I) P Q hwindow) (hamiltonBufStart (I := I) P Q hsel)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -106,9 +106,9 @@ private theorem hamiltonStart_spec
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius) :
     ∀ i : Nat, hamiltonStart (I := I) P Q hsel hwindow ≤ i →
-      ∀ s : Real, -(hamilton_reference_radius ^ 2) ≤ s → s ≤ 0 →
+      ∀ s : Real, -(hamiltonReferenceRadius ^ 2) ≤ s → s ≤ 0 →
         -(hamiltonBlowupScale (I := I) P Q i * Q.time i) ≤ s ∧ s ≤ 0 :=
   fun i hi s hs h0 =>
     Classical.choose_spec hwindow i
@@ -121,12 +121,12 @@ private theorem hamiltonBuf_spec
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius) :
     ∀ i : Nat, hamiltonStart (I := I) P Q hsel hwindow ≤ i →
-      2 * hamilton_reference_radius ^ 2 ≤
+      2 * hamiltonReferenceRadius ^ 2 ≤
         hamiltonBlowupScale (I := I) P Q i * Q.time i :=
   fun i hi =>
-    Classical.choose_spec (hsel.2.2.2.1 (2 * hamilton_reference_radius ^ 2)) i
+    Classical.choose_spec (hsel.2.2.2.1 (2 * hamiltonReferenceRadius ^ 2)) i
       (le_trans (Nat.le_max_right _ _) hi)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -140,7 +140,7 @@ private theorem hamilton_car_subset
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     (i : Nat) :
     hamiltonCommonD.carrier ⊆
       (DifferentialGeometry.PDE.RicciFlow.paraInterval P.D
@@ -149,7 +149,7 @@ private theorem hamilton_car_subset
           (hamiltonStart (I := I) P Q hsel hwindow + i))
         (hsel.2.2.1 (hamiltonStart (I := I) P Q hsel hwindow + i))).carrier := by
   intro s hs
-  change s ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 at hs
+  change s ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 at hs
   let j := hamiltonStart (I := I) P Q hsel hwindow + i
   have hj : hamiltonStart (I := I) P Q hsel hwindow ≤ j := by
     simpa only [j] using
@@ -188,7 +188,7 @@ private theorem hamilton_reg_subset
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     (i : Nat) :
     hamiltonCommonD.regular ⊆
       (DifferentialGeometry.PDE.RicciFlow.paraInterval P.D
@@ -197,14 +197,14 @@ private theorem hamilton_reg_subset
           (hamiltonStart (I := I) P Q hsel hwindow + i))
         (hsel.2.2.1 (hamiltonStart (I := I) P Q hsel hwindow + i))).regular := by
   intro s hs
-  change s ∈ Set.Ioo (-(hamilton_reference_radius ^ 2)) 0 at hs
+  change s ∈ Set.Ioo (-(hamiltonReferenceRadius ^ 2)) 0 at hs
   let j := hamiltonStart (I := I) P Q hsel hwindow + i
   have hj : hamiltonStart (I := I) P Q hsel hwindow ≤ j := by
     simpa only [j] using
       Nat.le_add_right (hamiltonStart (I := I) P Q hsel hwindow) i
   have hw0 :=
-    hamiltonStart_spec (I := I) P Q hsel hwindow j hj (-(hamilton_reference_radius ^ 2))
-      le_rfl (neg_nonpos.mpr (sq_nonneg hamilton_reference_radius))
+    hamiltonStart_spec (I := I) P Q hsel hwindow j hj (-(hamiltonReferenceRadius ^ 2))
+      le_rfl (neg_nonpos.mpr (sq_nonneg hamiltonReferenceRadius))
   rw [DifferentialGeometry.PDE.RicciFlow.paraInterval_regular]
   change hamiltonRescaledTime (I := I) P Q j s ∈ P.D.regular
   rw [hD]
@@ -236,7 +236,7 @@ noncomputable def hamiltonSourceSequence
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius) :
     PointedFlowSeq.{u, uE, uH} (I := I) where
   D := hamiltonCommonD
   term := fun i =>
@@ -273,9 +273,9 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius) :
     (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow).D.carrier =
-      Set.Icc (-(hamilton_reference_radius ^ 2)) 0 := by
+      Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 := by
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -288,9 +288,9 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius) :
     (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow).D.regular =
-      Set.Ioo (-(hamilton_reference_radius ^ 2)) 0 := by
+      Set.Ioo (-(hamiltonReferenceRadius ^ 2)) 0 := by
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
@@ -304,7 +304,7 @@ private theorem hamilton_shi_car
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     (i : Nat) :
     Set.Icc hamiltonShiLeft 0 ⊆
       (DifferentialGeometry.PDE.RicciFlow.paraInterval P.D
@@ -324,7 +324,7 @@ private theorem hamilton_shi_car
   have hscale := hsel.1 j
   have htimeMem := hsel.2.2.1 j
   rw [hD] at htimeMem
-  have hsleft : -(2 * hamilton_reference_radius ^ 2) ≤ s := by
+  have hsleft : -(2 * hamiltonReferenceRadius ^ 2) ≤ s := by
     simpa only [hamiltonShiLeft] using hs.1
   have hnum : 0 ≤ hamiltonBlowupScale (I := I) P Q j * Q.time j + s := by
     linarith [hsleft]
@@ -353,7 +353,7 @@ private theorem hamilton_shi_reg
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     (i : Nat) :
     Set.Ioc hamiltonShiLeft 0 ⊆
       (DifferentialGeometry.PDE.RicciFlow.paraInterval P.D
@@ -373,7 +373,7 @@ private theorem hamilton_shi_reg
   have hscale := hsel.1 j
   have htimeMem := hsel.2.2.1 j
   rw [hD] at htimeMem
-  have hsleft : -(2 * hamilton_reference_radius ^ 2) < s := by
+  have hsleft : -(2 * hamiltonReferenceRadius ^ 2) < s := by
     simpa only [hamiltonShiLeft] using hs.1
   have hnum : 0 < hamiltonBlowupScale (I := I) P Q j * Q.time j + s := by
     linarith [hsleft]
@@ -398,7 +398,7 @@ private theorem hamilton_shi_rm
     (P : HamiltonFiniteTimeFlow (I := I) (M := M) g0)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
     (i : Nat) :
     ∀ s ∈ Set.Icc hamiltonShiLeft 0, ∀ x : M,
@@ -414,7 +414,7 @@ private theorem hamilton_shi_rm
     simpa only [j] using
       Nat.le_add_right (hamiltonStart (I := I) P Q hsel hwindow) i
   have hbuf := hamiltonBuf_spec (I := I) P Q hsel hwindow j hj
-  have hsleft : -(2 * hamilton_reference_radius ^ 2) ≤ s := by
+  have hsleft : -(2 * hamiltonReferenceRadius ^ 2) ≤ s := by
     simpa only [hamiltonShiLeft] using hs.1
   have hleft :
       -(hamiltonBlowupScale (I := I) P Q j * Q.time j) ≤ s := by
@@ -465,9 +465,9 @@ private theorem hamilton_ball_rm
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
-    {r : Real} (hr : 0 < r) (hrle : r ≤ hamilton_reference_radius)
+    {r : Real} (hr : 0 < r) (hrle : r ≤ hamiltonReferenceRadius)
     (i : Nat) :
     (hamiltonRescaledBall (I := I) P Q hsel
       (hamiltonStart (I := I) P Q hsel hwindow + i) r hr).IsRmControlled := by
@@ -476,7 +476,7 @@ private theorem hamilton_ball_rm
   change B.IsRmControlled
   unfold PDE.RicciFlow.Perelman.FlowMetricBall.IsRmControlled
   dsimp only [B, hamiltonRescaledBall, hamiltonRescaledInitialTime]
-  have hrsq : r ^ 2 ≤ hamilton_reference_radius ^ 2 := by
+  have hrsq : r ^ 2 ≤ hamiltonReferenceRadius ^ 2 := by
     nlinarith
       [mul_nonneg (sub_nonneg.mpr hrle)
         (add_nonneg hr.le hamilton_reference_radius_pos.le)]
@@ -485,12 +485,12 @@ private theorem hamilton_ball_rm
     apply hamilton_shi_car (I := I) h0omega P hD Q hsel hwindow i
     refine ⟨?_, ht.2⟩
     dsimp only [hamiltonShiLeft]
-    nlinarith [ht.1, hrsq, sq_nonneg hamilton_reference_radius]
+    nlinarith [ht.1, hrsq, sq_nonneg hamiltonReferenceRadius]
   · intro t ht x _hx
     have htShi : t ∈ Set.Icc hamiltonShiLeft 0 := by
       refine ⟨?_, ht.2⟩
       dsimp only [hamiltonShiLeft]
-      nlinarith [ht.1, hrsq, sq_nonneg hamilton_reference_radius]
+      nlinarith [ht.1, hrsq, sq_nonneg hamiltonReferenceRadius]
     have hsq :=
       hamilton_shi_rm (I := I) P Q hsel hwindow hrm i t htShi x
     change r ^ 4 *
@@ -505,10 +505,10 @@ private theorem hamilton_ball_rm
               ((hamiltonRescaledSolution (I := I) P Q hsel j).base.metric t) x 4
               ((hamiltonRescaledSolution (I := I) P Q hsel j).base.rm04 t x)
           ≤ r ^ 4 * (100 : Real) ^ 2 := hmul
-      _ ≤ hamilton_reference_radius ^ 4 * (100 : Real) ^ 2 := by
+      _ ≤ hamiltonReferenceRadius ^ 4 * (100 : Real) ^ 2 := by
         gcongr
       _ = 1 := by
-        norm_num [hamilton_reference_radius]
+        norm_num [hamiltonReferenceRadius]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private theorem hamilton_win_equiv
@@ -520,14 +520,14 @@ private theorem hamilton_win_equiv
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     (hrm : hamiltonRiemannCurvatureBound (I := I) P Q) :
     ∃ A Bmax : Real, 0 ≤ A ∧ 1 ≤ Bmax ∧
-      (∀ t : Real, t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 →
+      (∀ t : Real, t ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 →
         metricEquivalenceFactor 1 A t 0 ≤ Bmax) ∧
       ∀ i : Nat,
         MetricUniformEquivalentOnWindow (I := I) Set.univ
-          (-(hamilton_reference_radius ^ 2)) 0
+          (-(hamiltonReferenceRadius ^ 2)) 0
           ((hamiltonRescaledSolution (I := I) P Q hsel
             (hamiltonStart (I := I) P Q hsel hwindow + i)).family.metric 0)
           (fun _ t ↦
@@ -536,7 +536,7 @@ private theorem hamilton_win_equiv
           (fun t ↦ metricEquivalenceFactor 1 A t 0) := by
   let C : Real := (100 : Real) ^ 2
   let A : Real := (Module.finrank Real E : Real) ^ 2 * Real.sqrt C
-  let timeRadius : Real := hamilton_reference_radius ^ 2
+  let timeRadius : Real := hamiltonReferenceRadius ^ 2
   let Bmax : Real := Real.exp (2 * A * timeRadius)
   have hC : 0 ≤ C := by
     dsimp only [C]
@@ -551,13 +551,13 @@ private theorem hamilton_win_equiv
     dsimp only [Bmax]
     exact Real.one_le_exp
       (mul_nonneg (mul_nonneg (by norm_num) hA) hRadius)
-  have habs : ∀ t : Real, t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 →
+  have habs : ∀ t : Real, t ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 →
       |t| ≤ timeRadius := by
     intro t ht
     rw [abs_of_nonpos ht.2]
     dsimp only [timeRadius]
     nlinarith [ht.1]
-  have hB : ∀ t : Real, t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 →
+  have hB : ∀ t : Real, t ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 →
       metricEquivalenceFactor 1 A t 0 ≤ Bmax := by
     intro t ht
     rw [metricEquivalenceFactor]
@@ -586,13 +586,13 @@ private theorem hamilton_win_equiv
   have hSseq : ∀ n : Nat,
       DifferentialGeometry.PDE.RicciFlow.IsSolutionOn (I := I) (Sseq n) :=
     fun _ ↦ hraw
-  have hcarrier : Set.Icc (-(hamilton_reference_radius ^ 2)) 0 ⊆ Draw.carrier := by
+  have hcarrier : Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 ⊆ Draw.carrier := by
     intro t ht
     apply hamilton_shi_car (I := I) h0omega P hD Q hsel hwindow i
     refine ⟨?_, ht.2⟩
     dsimp only [hamiltonShiLeft]
     nlinarith [sq_pos_of_pos hamilton_reference_radius_pos, ht.1]
-  have hregular : Set.Icc (-(hamilton_reference_radius ^ 2)) 0 ⊆ Draw.regular := by
+  have hregular : Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 ⊆ Draw.regular := by
     intro t ht
     apply hamilton_shi_reg (I := I) h0omega P hD Q hsel hwindow i
     refine ⟨?_, ht.2⟩
@@ -601,7 +601,7 @@ private theorem hamilton_win_equiv
   have hquad :=
     DifferentialGeometry.Geometry.Curvature.twoTensorQuadBound_of_solutions
       (I := I)
-      Sseq Set.univ (-(hamilton_reference_radius ^ 2)) 0 C
+      Sseq Set.univ (-(hamiltonReferenceRadius ^ 2)) 0 C
     (fun _ t ht x _hx ↦ by
       simpa only [Sseq, Sraw, C, j] using
         hamilton_shi_rm (I := I) P Q hsel hwindow hrm i t
@@ -618,11 +618,11 @@ private theorem hamilton_win_equiv
     intro x _hx v
     simp only [Sseq, inv_one, one_mul]
     exact ⟨le_rfl, le_rfl⟩
-  have hzero : (0 : Real) ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 :=
-    ⟨neg_nonpos.mpr (sq_nonneg hamilton_reference_radius), le_rfl⟩
+  have hzero : (0 : Real) ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 :=
+    ⟨neg_nonpos.mpr (sq_nonneg hamiltonReferenceRadius), le_rfl⟩
   have hequiv :=
     metric_uniform_equivalent_on_window_of_solutions (I := I)
-      Sseq hSseq Set.univ (-(hamilton_reference_radius ^ 2)) 0 0 1 A
+      Sseq hSseq Set.univ (-(hamiltonReferenceRadius ^ 2)) 0 0 1 A
       (Sraw.family.metric 0) hregular hzero le_rfl hA hequiv0 hquad.2
   simpa only [Sseq, Sraw, j] using hequiv
 
@@ -636,12 +636,12 @@ private theorem hamilton_win_shi
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     (hrm : hamiltonRiemannCurvatureBound (I := I) P Q) :
     ∀ N : Nat, ∃ KShi : Real, 0 ≤ KShi ∧
       ∀ i : Nat,
         MovingShiBoundOn (I := I) Set.univ
-          (-(hamilton_reference_radius ^ 2)) 0
+          (-(hamiltonReferenceRadius ^ 2)) 0
           (fun _ t ↦
             (hamiltonRescaledSolution (I := I) P Q hsel
               (hamiltonStart (I := I) P Q hsel hwindow + i)).family.metric t)
@@ -650,7 +650,7 @@ private theorem hamilton_win_shi
   intro N
   let KShi : Real :=
     shiOpenConst (Module.finrank Real E) ((100 : Real) ^ 2)
-      hamiltonShiLeft (-(hamilton_reference_radius ^ 2)) 0 N
+      hamiltonShiLeft (-(hamiltonReferenceRadius ^ 2)) 0 N
   refine ⟨KShi, shiOpenConst_nonneg _ _ _ _ _ _, ?_⟩
   intro i
   let j := hamiltonStart (I := I) P Q hsel hwindow + i
@@ -682,11 +682,11 @@ private theorem hamilton_win_shi
     dsimp only [MetricComplete, PointedFlowData.atTime]
     refine @complete_of_compact Fraw.M ?_ ?_
     simpa only [Fraw] using hcompact
-  have halphaBeta : hamiltonShiLeft < -(hamilton_reference_radius ^ 2) := by
+  have halphaBeta : hamiltonShiLeft < -(hamiltonReferenceRadius ^ 2) := by
     dsimp only [hamiltonShiLeft]
     nlinarith [sq_pos_of_pos hamilton_reference_radius_pos]
-  have hbetaZero : -(hamilton_reference_radius ^ 2) ≤ (0 : Real) :=
-    neg_nonpos.mpr (sq_nonneg hamilton_reference_radius)
+  have hbetaZero : -(hamiltonReferenceRadius ^ 2) ≤ (0 : Real) :=
+    neg_nonpos.mpr (sq_nonneg hamiltonReferenceRadius)
   have hShi := movingShi_of_bound (I := I) Fraw
     halphaBeta hbetaZero
     (hamilton_shi_car (I := I) h0omega P hD Q hsel hwindow i)
@@ -712,14 +712,14 @@ private theorem hamilton_src_rm
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
-    {r : Real} (hr : 0 < r) (hrle : r ≤ hamilton_reference_radius)
+    {r : Real} (hr : 0 < r) (hrle : r ≤ hamiltonReferenceRadius)
     (i : Nat) :
     let X := hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow
     let hzero : (0 : Real) ∈ X.D.carrier := by
-      change (0 : Real) ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0
-      exact ⟨neg_nonpos.mpr (sq_nonneg hamilton_reference_radius), le_rfl⟩
+      change (0 : Real) ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0
+      exact ⟨neg_nonpos.mpr (sq_nonneg hamiltonReferenceRadius), le_rfl⟩
     letI : TopologicalSpace (X.term i).M := (X.term i).topology
     letI : ChartedSpace H (X.term i).M := (X.term i).charted
     letI : IsManifold I ∞ (X.term i).M := (X.term i).smooth
@@ -735,8 +735,8 @@ private theorem hamilton_src_rm
       hzero r hr).IsRmControlled := by
   let X := hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow
   let hzero : (0 : Real) ∈ X.D.carrier := by
-    change (0 : Real) ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0
-    exact ⟨neg_nonpos.mpr (sq_nonneg hamilton_reference_radius), le_rfl⟩
+    change (0 : Real) ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0
+    exact ⟨neg_nonpos.mpr (sq_nonneg hamiltonReferenceRadius), le_rfl⟩
   let : TopologicalSpace (X.term i).M := (X.term i).topology
   let : ChartedSpace H (X.term i).M := (X.term i).charted
   let : IsManifold I ∞ (X.term i).M := (X.term i).smooth
@@ -752,7 +752,7 @@ private theorem hamilton_src_rm
     hzero r hr
   change B.IsRmControlled
   unfold PDE.RicciFlow.Perelman.FlowMetricBall.IsRmControlled
-  have hrsq : r ^ 2 ≤ hamilton_reference_radius ^ 2 := by
+  have hrsq : r ^ 2 ≤ hamiltonReferenceRadius ^ 2 := by
     nlinarith
       [mul_nonneg (sub_nonneg.mpr hrle)
         (add_nonneg hr.le hamilton_reference_radius_pos.le)]
@@ -760,7 +760,7 @@ private theorem hamilton_src_rm
   · intro t ht
     have ht' : t ∈ Set.Icc ((0 : Real) - r ^ 2) 0 := by
       simpa only [B, PointedFlowData.baseFlowBall] using ht
-    change t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0
+    change t ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0
     exact ⟨by linarith [ht'.1, hrsq], ht'.2⟩
   · intro t ht x _hx
     have ht' : t ∈ Set.Icc ((0 : Real) - r ^ 2) 0 := by
@@ -769,7 +769,7 @@ private theorem hamilton_src_rm
     have htShi : t ∈ Set.Icc hamiltonShiLeft 0 := by
       refine ⟨?_, ht'.2⟩
       dsimp only [hamiltonShiLeft]
-      linarith [ht'.1, hrsq, sq_nonneg hamilton_reference_radius]
+      linarith [ht'.1, hrsq, sq_nonneg hamiltonReferenceRadius]
     have hsq :=
       hamilton_shi_rm (I := I) P Q hsel hwindow hrm i t htShi x
     change r ^ 4 *
@@ -784,10 +784,10 @@ private theorem hamilton_src_rm
               ((hamiltonRescaledSolution (I := I) P Q hsel j).base.metric t) x 4
               ((hamiltonRescaledSolution (I := I) P Q hsel j).base.rm04 t x)
           ≤ r ^ 4 * (100 : Real) ^ 2 := hmul
-      _ ≤ hamilton_reference_radius ^ 4 * (100 : Real) ^ 2 := by
+      _ ≤ hamiltonReferenceRadius ^ 4 * (100 : Real) ^ 2 := by
         gcongr
       _ = 1 := by
-        norm_num [hamilton_reference_radius]
+        norm_num [hamiltonReferenceRadius]
 
 omit [NeZero (Module.finrank Real E)] in
 theorem hamilton_source_chart_jet_bound
@@ -799,7 +799,7 @@ theorem hamilton_source_chart_jet_bound
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     {P₀ : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat → Nat}
     (Φ : PointedCGHMaps (I := I)
@@ -826,7 +826,7 @@ theorem hamilton_source_chart_jet_bound
         iteratedFDeriv Real r
           (DifferentialGeometry.Geometry.Operator.chartGramOnE (I := I)
             (gSeqExt (I := I) Φ R bf hsrc htgt k p.1) x₀ i j) p.2)
-      (Set.Icc (-(hamilton_reference_radius ^ 2)) 0 ×ˢ C) := by
+      (Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 ×ˢ C) := by
   let X := hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow
   change PointedCGHMaps (I := I) X P₀ subseq at Φ
   let : TopologicalSpace P₀.M := P₀.topology
@@ -919,16 +919,16 @@ theorem hamilton_source_chart_jet_bound
       P.isSmooth.isSolution (Q.time j₀)
       (hamiltonBlowupScale (I := I) P Q j₀)
       (hsel.1 j₀) (hsel.2.2.1 j₀)
-  let S := DifferentialGeometry.PDE.RicciFlow.solutionOn_pullback (I := I)
-    (solutionOn_restrictOpen (I := I) Sraw (targetOpen (I := I) Φ k))
+  let S := DifferentialGeometry.PDE.RicciFlow.solutionOnPullback (I := I)
+    (solutionOnRestrictOpen (I := I) Sraw (targetOpen (I := I) Φ k))
     (sourceTargetDiff (I := I) Φ k)
   have hS : DifferentialGeometry.PDE.RicciFlow.IsSolutionOn (I := I) S := by
     exact DifferentialGeometry.PDE.RicciFlow.isSolutionOn_pullback (I := I)
-      (solutionOn_restrictOpen (I := I) Sraw (targetOpen (I := I) Φ k))
+      (solutionOnRestrictOpen (I := I) Sraw (targetOpen (I := I) Φ k))
       (isSolutionOn_restrictOpen (I := I) Sraw hraw
         (targetOpen (I := I) Φ k))
       (sourceTargetDiff (I := I) Φ k)
-  have hreg : Set.Icc (-(hamilton_reference_radius ^ 2)) 0 ⊆
+  have hreg : Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 ⊆
       Draw.regular := by
     intro t ht
     apply hamilton_shi_reg (I := I) h0omega P hD Q hsel hwindow (subseq k)
@@ -953,7 +953,7 @@ theorem hamilton_limit_chart_jets_continuous
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     {P₀ : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat → Nat}
     (Φ : PointedCGHMaps (I := I)
@@ -963,7 +963,7 @@ theorem hamilton_limit_chart_jets_continuous
       letI : IsManifold I ∞ P₀.M := P₀.smooth
       SmoothRiemannianMetric I P₀.M}
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
-    (co : ConvOut (I := I) Φ R bf hsrc htgt (-(hamilton_reference_radius ^ 2)) 0) :
+    (co : ConvOut (I := I) Φ R bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0) :
     letI : TopologicalSpace P₀.M := P₀.topology
     letI : ChartedSpace H P₀.M := P₀.charted
     letI : T2Space P₀.M := P₀.t2
@@ -974,7 +974,7 @@ theorem hamilton_limit_chart_jets_continuous
           iteratedFDeriv Real r
             (DifferentialGeometry.Geometry.Operator.chartGramOnE
               (I := I) (co.gInf p.1) x₀ i j) p.2)
-        (Set.Icc (-(hamilton_reference_radius ^ 2)) 0 ×ˢ
+        (Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 ×ˢ
           interior (extChartAt I x₀).target) := by
   let : TopologicalSpace P₀.M := P₀.topology
   let : ChartedSpace H P₀.M := P₀.charted
@@ -1004,7 +1004,7 @@ theorem hamilton_limit_chart_gram_smooth
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     {P₀ : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat → Nat}
     (Φ : PointedCGHMaps (I := I)
@@ -1014,7 +1014,7 @@ theorem hamilton_limit_chart_gram_smooth
       letI : IsManifold I ∞ P₀.M := P₀.smooth
       SmoothRiemannianMetric I P₀.M}
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
-    (co : ConvOut (I := I) Φ R bf hsrc htgt (-(hamilton_reference_radius ^ 2)) 0) :
+    (co : ConvOut (I := I) Φ R bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0) :
     letI : TopologicalSpace P₀.M := P₀.topology
     letI : ChartedSpace H P₀.M := P₀.charted
     letI : T2Space P₀.M := P₀.t2
@@ -1024,7 +1024,7 @@ theorem hamilton_limit_chart_gram_smooth
         (fun p : Real × P₀.M =>
           DifferentialGeometry.Integral.Measure.chartGramMatrix
             (I := I) (co.gInf p.1) x₀ p.2 i j)
-        (Set.Icc (-(hamilton_reference_radius ^ 2)) 0 ×ˢ
+        (Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet) := by
   let : TopologicalSpace P₀.M := P₀.topology
   let : ChartedSpace H P₀.M := P₀.charted
@@ -1047,7 +1047,7 @@ theorem hamilton_limit_is_solution
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     {P₀ : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat → Nat}
     (Φ : PointedCGHMaps (I := I)
@@ -1057,7 +1057,7 @@ theorem hamilton_limit_is_solution
       letI : IsManifold I ∞ P₀.M := P₀.smooth
       SmoothRiemannianMetric I P₀.M}
     {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
-    (co : ConvOut (I := I) Φ R bf hsrc htgt (-(hamilton_reference_radius ^ 2)) 0) :
+    (co : ConvOut (I := I) Φ R bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0) :
     letI : TopologicalSpace P₀.M := P₀.topology
     letI : ChartedSpace H P₀.M := P₀.charted
     letI : T2Space P₀.M := P₀.t2
@@ -1073,8 +1073,8 @@ theorem hamilton_limit_is_solution
   let : T2Space P₀.M := P₀.t2
   let : IsManifold I ∞ P₀.M := P₀.smooth
   let : SigmaCompactSpace P₀.M := P₀.sigmaCompact
-  let J : Set Real := Set.Icc (-(hamilton_reference_radius ^ 2)) 0
-  have hJlt : -(hamilton_reference_radius ^ 2) < (0 : Real) :=
+  let J : Set Real := Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0
+  have hJlt : -(hamiltonReferenceRadius ^ 2) < (0 : Real) :=
     neg_lt_zero.mpr (sq_pos_of_pos hamilton_reference_radius_pos)
   have hJ : UniqueDiffOn Real J := by
     simpa only [J] using uniqueDiffOn_Icc hJlt
@@ -1167,7 +1167,7 @@ noncomputable def hamiltonSourceDerivativeInput
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
     (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius) :
     FlowDerivativeInput (I := I)
       (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow) := by
   classical
@@ -1176,12 +1176,12 @@ noncomputable def hamiltonSourceDerivativeInput
   let Cderiv : Nat -> Real := fun k =>
     Real.sqrt
       (rmOpenBound (Module.finrank Real E) ((100 : Real) ^ 2)
-        hamiltonShiLeft (-(hamilton_reference_radius ^ 2)) 0 k k)
-  have halphaBeta : hamiltonShiLeft < -(hamilton_reference_radius ^ 2) := by
+        hamiltonShiLeft (-(hamiltonReferenceRadius ^ 2)) 0 k k)
+  have halphaBeta : hamiltonShiLeft < -(hamiltonReferenceRadius ^ 2) := by
     dsimp only [hamiltonShiLeft]
     nlinarith [sq_pos_of_pos hamilton_reference_radius_pos]
-  have hbetaZero : -(hamilton_reference_radius ^ 2) ≤ (0 : Real) :=
-    neg_nonpos.mpr (sq_nonneg hamilton_reference_radius)
+  have hbetaZero : -(hamiltonReferenceRadius ^ 2) ≤ (0 : Real) :=
+    neg_nonpos.mpr (sq_nonneg hamiltonReferenceRadius)
   have hsp : FlowDerivBounds (I := I) X := by
     refine
       { C := Cderiv
@@ -1241,30 +1241,30 @@ noncomputable def hamiltonSourceDerivativeInput
       k
     unfold HasSpacetimeCurvDerivBound
     intro t ht x
-    have ht' : t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 := by
-      change t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 at ht
+    have ht' : t ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 := by
+      change t ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 at ht
       exact ht
     unfold curvDerivNorm Cderiv
     change Real.sqrt
         (curvDerivNormSq k ((X.term i).S.base.metric t) x) ≤
       Real.sqrt
         (rmOpenBound (Module.finrank Real E) ((100 : Real) ^ 2)
-          hamiltonShiLeft (-(hamilton_reference_radius ^ 2)) 0 k k)
+          hamiltonShiLeft (-(hamiltonReferenceRadius ^ 2)) 0 k k)
     rw [curvNormSq_eq (S := (X.term i).S)]
     apply Real.sqrt_le_sqrt
     change DifferentialGeometry.PDE.RicciFlow.nablaKRm04NormSqIntrinsic (I := I)
         (Sraw.timeRestrict hamiltonCommonD)
         k t x ≤
       rmOpenBound (Module.finrank Real E) ((100 : Real) ^ 2)
-        hamiltonShiLeft (-(hamilton_reference_radius ^ 2)) 0 k k
+        hamiltonShiLeft (-(hamiltonReferenceRadius ^ 2)) 0 k k
     rw [nablaK_restrict (I := I) Sraw k t x]
     simpa only [Fraw, Sraw, j] using hsq k le_rfl t ht' x
   have hzero : (0 : Real) ∈ X.D.carrier := by
-    change (0 : Real) ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0
+    change (0 : Real) ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0
     exact ⟨hbetaZero, le_rfl⟩
   exact
     { spacetime := hsp
-      at_zero_geom := hsp.at_time hzero }
+      atZeroGeom := hsp.atTime hzero }
 
 omit [NeZero (Module.finrank Real E)] in
 theorem hamilton_source_covariant_lipschitz_bound
@@ -1276,7 +1276,7 @@ theorem hamilton_source_covariant_lipschitz_bound
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     {P₀ : PointedRiemannianManifold.{u, uE, uH} (I := I)}
     {subseq : Nat → Nat}
     (Φ : PointedCGHMaps (I := I)
@@ -1304,7 +1304,7 @@ theorem hamilton_source_covariant_lipschitz_bound
           sourceDomSmooth (I := I) Φ k
         letI : SigmaCompactSpace (SourceDomain (I := I) Φ k) :=
           sourceDomSigmaOf (I := I) Φ k (hsrc k)
-        ∀ t : Real, t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 →
+        ∀ t : Real, t ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 →
           MetricUniformEquivalentOn (I := I)
             (Set.univ : Set (SourceDomain (I := I) Φ k))
             (refRes (I := I) Φ R k)
@@ -1329,7 +1329,7 @@ theorem hamilton_source_covariant_lipschitz_bound
             sourceDomSigmaOf (I := I) Φ k (hsrc k)
           MovingShiBoundOn (I := I)
             (Set.univ : Set (SourceDomain (I := I) Φ k))
-            (-(hamilton_reference_radius ^ 2)) 0
+            (-(hamiltonReferenceRadius ^ 2)) 0
             (fun _ t ↦ srcMetric (I := I) Φ hsrc htgt k t) N KShi)
     (hinit :
       letI : TopologicalSpace P₀.M := P₀.topology
@@ -1353,9 +1353,9 @@ theorem hamilton_source_covariant_lipschitz_bound
             metricCovDerivNorm (I := I) q
                 (srcMetric (I := I) Φ hsrc htgt k 0)
                 (refRes (I := I) Φ R k) y ≤ Cq) :
-    SrcCovLipData (I := I) Φ R hsrc htgt (-(hamilton_reference_radius ^ 2)) 0 := by
+    SrcCovLipData (I := I) Φ R hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 := by
   refine srcCovLip_of_flow (I := I)
-    (β := -(hamilton_reference_radius ^ 2)) (ψ := 0) (t₀ := 0)
+    (β := -(hamiltonReferenceRadius ^ 2)) (ψ := 0) (t₀ := 0)
     Φ R hsrc htgt
     (fun k ↦
       DifferentialGeometry.PDE.RicciFlow.paraInterval P.D
@@ -1381,7 +1381,7 @@ theorem hamilton_source_covariant_lipschitz_bound
     ?_ ?_ ?_ Bmax hBmax hequiv hShi hinit
   · intro k r
     rfl
-  · exact ⟨neg_nonpos.mpr (sq_nonneg hamilton_reference_radius), le_rfl⟩
+  · exact ⟨neg_nonpos.mpr (sq_nonneg hamiltonReferenceRadius), le_rfl⟩
   · intro k s hs
     apply hamilton_shi_reg (I := I) h0omega P hD Q hsel hwindow (subseq k)
     refine ⟨?_, hs.2⟩
@@ -1399,7 +1399,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
     (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius)
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius)
     (canon : CanonicalMetricCompactness (I := I)
       ((hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow).atZero
         (I := I))) :
@@ -1412,7 +1412,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
   let : CompactSpace M := hcompact
   let X := hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow
   let mc := canon.compactness
-  let Phi := pointedCGHMaps_of_manifold (I := I) X
+  let Phi := pointedCGHMapsOfManifold (I := I) X
     mc.limit mc.subseq mc.maps
   let : TopologicalSpace mc.limit.M := mc.limit.topology
   let : ChartedSpace H mc.limit.M := mc.limit.charted
@@ -1506,7 +1506,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
       letI : SigmaCompactSpace (X.term (mc.subseq k)).M :=
         (X.term (mc.subseq k)).sigmaCompact
       MetricUniformEquivalentOnWindow (I := I) (Phi.target k)
-        (-(hamilton_reference_radius ^ 2)) 0 (gRefT k)
+        (-(hamiltonReferenceRadius ^ 2)) 0 (gRefT k)
         (fun _ t => (X.term (mc.subseq k)).S.family.metric t) B := by
     intro k
     let : TopologicalSpace (X.term (mc.subseq k)).M :=
@@ -1526,7 +1526,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
             (hamiltonStart (I := I) P Q hsel hwindow + mc.subseq k)).base.metric t := by
       rfl
     have hall' : MetricUniformEquivalentOnWindow (I := I) Set.univ
-        (-(hamilton_reference_radius ^ 2)) 0 (gRefT k)
+        (-(hamiltonReferenceRadius ^ 2)) 0 (gRefT k)
         (fun _ t => (X.term (mc.subseq k)).S.family.metric t) B := by
       intro i t ht
       rw [show gRefT k = (X.term (mc.subseq k)).S.family.metric 0 by rfl]
@@ -1556,7 +1556,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
         letI : SigmaCompactSpace (X.term (mc.subseq k)).M :=
           (X.term (mc.subseq k)).sigmaCompact
         MovingShiBoundOn (I := I) (Phi.target k)
-          (-(hamilton_reference_radius ^ 2)) 0
+          (-(hamiltonReferenceRadius ^ 2)) 0
           (fun _ t => (X.term (mc.subseq k)).S.family.metric t) N KShi := by
     intro N
     obtain ⟨KShi, hKShi, hShiAll⟩ :=
@@ -1613,12 +1613,12 @@ theorem hamilton_flow_upgrade_of_metric_compactness
           sourceDomSigmaOf (I := I) Phi k (hsrc k)
         MovingShiBoundOn (I := I)
           (Set.univ : Set (SourceDomain (I := I) Phi k))
-          (-(hamilton_reference_radius ^ 2)) 0
+          (-(hamiltonReferenceRadius ^ 2)) 0
           (fun _ t => srcMetric (I := I) Phi hsrc htgt k t) N KShi := by
     intro N
     obtain ⟨KShi, hKShi, hShi⟩ := hShiT N
     exact ⟨KShi, hKShi, fun k =>
-      srcShi (I := I) Phi hsrc htgt (-(hamilton_reference_radius ^ 2)) 0
+      srcShi (I := I) Phi hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0
         N KShi hShi k⟩
   have hBsrc : 1 ≤ Crel * Bmax :=
     one_le_mul_of_one_le_of_one_le hCrel hBmax
@@ -1633,7 +1633,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
         sourceDomSmooth (I := I) Phi k
       letI : SigmaCompactSpace (SourceDomain (I := I) Phi k) :=
         sourceDomSigmaOf (I := I) Phi k (hsrc k)
-      ∀ t : Real, t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 →
+      ∀ t : Real, t ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 →
         MetricUniformEquivalentOn (I := I)
           (Set.univ : Set (SourceDomain (I := I) Phi k))
           (refRes (I := I) Phi mc.limit.metric k)
@@ -1650,12 +1650,12 @@ theorem hamilton_flow_upgrade_of_metric_compactness
     let : SigmaCompactSpace (SourceDomain (I := I) Phi k) :=
       sourceDomSigmaOf (I := I) Phi k (hsrc k)
     have hEq := srcEquivOn (I := I) Phi mc.limit.metric hsrc htgt
-      (-(hamilton_reference_radius ^ 2)) 0 gRefT B Crel hequivT hrel k t ht
+      (-(hamiltonReferenceRadius ^ 2)) 0 gRefT B Crel hequivT hrel k t ht
     exact metricUniformEquivalentOn_of_le (I := I) hEq
       (mul_le_mul_of_nonneg_left (hBmajor t ht)
         (zero_le_one.trans hCrel))
   have srcData : SrcCovLipData (I := I) Phi mc.limit.metric hsrc htgt
-      (-(hamilton_reference_radius ^ 2)) 0 :=
+      (-(hamiltonReferenceRadius ^ 2)) 0 :=
     hamilton_source_covariant_lipschitz_bound (I := I) h0omega P hD Q hsel hwindow
       Phi mc.limit.metric hsrc htgt (Crel * Bmax) hBsrc
       hequivSrc hShiSrc hinit
@@ -1666,7 +1666,7 @@ theorem hamilton_flow_upgrade_of_metric_compactness
       letI : TopologicalSpace mc.limit.M := mc.limit.topology
       letI : ChartedSpace H mc.limit.M := mc.limit.charted
       letI : IsManifold I ∞ mc.limit.M := mc.limit.smooth
-      ∀ (k : Nat) (t : Real), t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 →
+      ∀ (k : Nat) (t : Real), t ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 →
         ∀ (y : SourceDomain (I := I) Phi k)
           (v : letI : TopologicalSpace (SourceDomain (I := I) Phi k) :=
                 sourceDomTop (I := I) Phi k
@@ -1696,13 +1696,13 @@ theorem hamilton_flow_upgrade_of_metric_compactness
       letI : IsManifold I ∞ mc.limit.M := mc.limit.smooth
       letI : SigmaCompactSpace mc.limit.M := mc.limit.sigmaCompact
       ∀ q : Nat, ∃ C : Real, ∀ (k : Nat) (t : Real),
-        t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 →
+        t ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 →
           ∀ z : mc.limit.M, z ∈ bf.grow k →
             metricCovDerivNorm (I := I) q
               (gSeqExt (I := I) Phi mc.limit.metric bf hsrc htgt k t)
               mc.limit.metric z ≤ C := by
     have hcovSrc : ∀ q : Nat, ∃ C : Real, 0 ≤ C ∧
-        ∀ (k : Nat) (t : Real), t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 →
+        ∀ (k : Nat) (t : Real), t ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 →
           ∀ y : SourceDomain (I := I) Phi k,
             (y : mc.limit.M) ∈ bf.grow k →
               letI : TopologicalSpace (SourceDomain (I := I) Phi k) :=
@@ -1722,18 +1722,18 @@ theorem hamilton_flow_upgrade_of_metric_compactness
       obtain ⟨C, hC, hcov⟩ := srcData.cov q
       exact ⟨C, hC, fun k t ht y _hy => hcov k t ht y⟩
     exact covTail_of_bounds (I := I) Phi mc.limit.metric bf hsrc htgt
-      (-(hamilton_reference_radius ^ 2)) 0 hcovSrc
-  let co := convOut_of_src (I := I) Phi mc.limit.metric bf hsrc htgt
-    (neg_nonpos.mpr (sq_nonneg hamilton_reference_radius)) hBsrc hequivSrc srcData
-  have hcarrier : X.D.carrier ⊆ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 := by
+      (-(hamiltonReferenceRadius ^ 2)) 0 hcovSrc
+  let co := convOutOfSrc (I := I) Phi mc.limit.metric bf hsrc htgt
+    (neg_nonpos.mpr (sq_nonneg hamiltonReferenceRadius)) hBsrc hequivSrc srcData
+  have hcarrier : X.D.carrier ⊆ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 := by
     intro t ht
-    change t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 at ht
+    change t ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 at ht
     exact ht
-  have hzeroMem : (0 : Real) ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 :=
-    ⟨neg_nonpos.mpr (sq_nonneg hamilton_reference_radius), le_rfl⟩
+  have hzeroMem : (0 : Real) ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 :=
+    ⟨neg_nonpos.mpr (sq_nonneg hamiltonReferenceRadius), le_rfl⟩
   have hzero : co.gInf 0 = mc.limit.metric :=
     gInf_zero_eq (I := I) Phi mc.limit.metric bf hsrc htgt
-      (-(hamilton_reference_radius ^ 2)) 0 co hzeroMem mc.limit.metric
+      (-(hamiltonReferenceRadius ^ 2)) 0 co hzeroMem mc.limit.metric
       (conv0_of_cp (I := I) Phi mc.limit.metric hsrc htgt
         mc.limit.metric hcp)
   have hsol :=
@@ -1742,10 +1742,10 @@ theorem hamilton_flow_upgrade_of_metric_compactness
   have hL0 : L.atTime (I := I) 0 = mc.limit :=
     flowOfMetric_atTime (I := I) X.D mc.limit co.gInf hsol 0 hzero
   have hscalarRaw := ConvOut.scalar_conv (I := I) (Φ := Phi)
-    mc.limit.metric bf hsrc htgt (-(hamilton_reference_radius ^ 2)) 0 cLow hcLow
+    mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 cLow hcLow
     hbound hcovTail co hcarrier
   have hricRaw := ConvOut.ricNorm_conv (I := I) (Φ := Phi)
-    mc.limit.metric bf hsrc htgt (-(hamilton_reference_radius ^ 2)) 0 cLow hcLow
+    mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 cLow hcLow
     hbound hcovTail co hcarrier
   have map_cast {P₁ P₂ : PointedRiemannianManifold (I := I)}
       {s : Nat → Nat} (h : P₁ = P₂)
@@ -1832,26 +1832,26 @@ theorem hamilton_flow_upgrade_of_metric_compactness
       (fun y => DifferentialGeometry.PDE.RicciFlow.ricciNorm
         (I := I) (X.term ((mc.subseq ∘ co.φ) k)).S t y)
       (hmap k x).symm
-  let d := flowUpgrade_of_maps (I := I) (X := X) mc L mc.limit rfl hL0
-    Phi mc.limit.metric bf hsrc htgt (-(hamilton_reference_radius ^ 2)) 0 hcarrier co
+  let d := flowUpgradeOfMaps (I := I) (X := X) mc L mc.limit rfl hL0
+    Phi mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 hcarrier co
     (fun _ _ => HEq.rfl) scalar ricciNorm
   refine ⟨d, ?_⟩
   intro t ht
-  have htWindow : t ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 := hcarrier ht
+  have htWindow : t ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 := hcarrier ht
   have hseq : ∀ (k : Nat) (s : Real),
-      s ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0 →
+      s ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0 →
         ∀ (x : mc.limit.M) (v : TangentSpace I x),
           min cLow 1 * mc.limit.metric.inner x v v ≤
             (gSeqExt (I := I) Phi mc.limit.metric bf hsrc htgt
               (co.φ k) s).inner x v v := by
     intro k s hs x v
     exact gSeqExt_lower (I := I) Phi mc.limit.metric bf hsrc htgt
-      cLow (-(hamilton_reference_radius ^ 2)) 0 hcLow hbound (co.φ k) s hs x v
+      cLow (-(hamiltonReferenceRadius ^ 2)) 0 hcLow hbound (co.φ k) s hs x v
   have hcomplete := ConvOut.complete_at (I := I) Phi mc.limit_complete co
     (lt_min hcLow one_pos) hseq htWindow
   have hdL : d.data.L = L :=
     flowUpgrade_maps_L (I := I) (X := X) mc L mc.limit rfl hL0
-      Phi mc.limit.metric bf hsrc htgt (-(hamilton_reference_radius ^ 2)) 0 hcarrier co
+      Phi mc.limit.metric bf hsrc htgt (-(hamiltonReferenceRadius ^ 2)) 0 hcarrier co
       (fun _ _ => HEq.rfl) scalar ricciNorm
   rw [hdL]
   change MetricComplete (I := I)
@@ -1871,7 +1871,7 @@ theorem exists_hamilton_vol
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
     (hrm : hamiltonRiemannCurvatureBound (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius) :
     ∃ V : FlowerScaleVolData (I := I)
         (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow),
       IsFlowerScaleVolBound (I := I) V := by
@@ -1885,7 +1885,7 @@ theorem exists_hamilton_vol
   have hsol : PDE.RicciFlow.IsSolutionOn (I := I) P.S :=
     P.isSmooth.isSolution
   have hnlc :
-      PDE.RicciFlow.Perelman.NoLocalCollapsing P.S hamilton_reference_radius := by
+      PDE.RicciFlow.Perelman.NoLocalCollapsing P.S hamiltonReferenceRadius := by
     have htransport :
         ∀ (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval)
           (hD' : D =
@@ -1893,7 +1893,7 @@ theorem exists_hamilton_vol
               0 omega h0omega)
           (S : PDE.RicciFlow.SolutionOn (I := I) (M := M) D),
           PDE.RicciFlow.IsSolutionOn (I := I) S →
-            PDE.RicciFlow.Perelman.NoLocalCollapsing S hamilton_reference_radius := by
+            PDE.RicciFlow.Perelman.NoLocalCollapsing S hamiltonReferenceRadius := by
       intro D hD' S hS
       subst D
       exact PDE.RicciFlow.Perelman.no_local_open
@@ -1902,19 +1902,19 @@ theorem exists_hamilton_vol
   rcases hnlc with ⟨kappa, hkappa, hbelow⟩
   let X := hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow
   have hzero : (0 : Real) ∈ X.D.carrier := by
-    change (0 : Real) ∈ Set.Icc (-(hamilton_reference_radius ^ 2)) 0
-    exact ⟨neg_nonpos.mpr (sq_nonneg hamilton_reference_radius), le_rfl⟩
-  let c : Real := (2 * hamilton_reference_radius ^ 2) / omega
+    change (0 : Real) ∈ Set.Icc (-(hamiltonReferenceRadius ^ 2)) 0
+    exact ⟨neg_nonpos.mpr (sq_nonneg hamiltonReferenceRadius), le_rfl⟩
+  let c : Real := (2 * hamiltonReferenceRadius ^ 2) / omega
   have hc : 0 < c := by
     dsimp only [c]
     exact div_pos
       (mul_pos (by norm_num) (sq_pos_of_pos hamilton_reference_radius_pos)) h0omega
-  let r : Real := min hamilton_reference_radius (Real.sqrt c * hamilton_reference_radius)
+  let r : Real := min hamiltonReferenceRadius (Real.sqrt c * hamiltonReferenceRadius)
   have hr : 0 < r := by
     dsimp only [r]
     exact lt_min hamilton_reference_radius_pos
       (mul_pos (Real.sqrt_pos.2 hc) hamilton_reference_radius_pos)
-  have hrle : r ≤ hamilton_reference_radius := by
+  have hrle : r ≤ hamiltonReferenceRadius := by
     exact min_le_left _ _
   let V : FlowerScaleVolData (I := I) X :=
     { zero_mem := hzero
@@ -1949,7 +1949,7 @@ theorem exists_hamilton_vol
           Real.sqrt (hamiltonBlowupScale (I := I) P Q j) :=
       Real.sqrt_le_sqrt hcscale
     have hradius :
-        r ≤ Real.sqrt (hamiltonBlowupScale (I := I) P Q j) * hamilton_reference_radius := by
+        r ≤ Real.sqrt (hamiltonBlowupScale (I := I) P Q j) * hamiltonReferenceRadius := by
       exact (min_le_right _ _).trans
         (mul_le_mul_of_nonneg_right hsqrt hamilton_reference_radius_pos.le)
     let B := hamiltonRescaledBall (I := I) P Q hsel j r hr
@@ -1961,7 +1961,7 @@ theorem exists_hamilton_vol
       PDE.RicciFlow.Perelman.para_noncollapse
         (I := I) P.S (Q.time j)
         (hamiltonBlowupScale (I := I) P Q j) hscale (hsel.2.2.1 j)
-        kappa hamilton_reference_radius hbelow
+        kappa hamiltonReferenceRadius hbelow
     have hkB : B.IsKappaNoncollapsed kappa :=
       hbelow_i.2 (hamiltonRescaledInitialTime (I := I) P Q hsel j) B
         hradius hRmB
@@ -2023,7 +2023,7 @@ noncomputable def hamiltonSourceLink
         0 omega h0omega)
     (Q : HamiltonBlowup M)
     (hsel : hamiltonBlowupPointSelection (I := I) P Q)
-    (hwindow : hamiltonWindow (I := I) P Q hamilton_reference_radius) :
+    (hwindow : hamiltonWindow (I := I) P Q hamiltonReferenceRadius) :
     HamiltonSourceLink (I := I) (M := M) P Q hsel
       (hamiltonSourceSequence (I := I) h0omega P hD Q hsel hwindow) := by
   refine

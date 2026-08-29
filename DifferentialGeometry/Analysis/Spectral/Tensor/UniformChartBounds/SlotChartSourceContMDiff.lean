@@ -45,7 +45,7 @@ private lemma chartE_section_repr_contMDiffOn_chartSource
     (α : M) {X : Π b : M, TangentSpace I b}
     (hX : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞ (T% X)) :
     ContMDiffOn I 𝓘(ℝ, E) ∞
-      (fun b : M => chartE_section_repr (I := I) α X b)
+      (fun b : M => chartESectionRepr (I := I) α X b)
       ((chartAt H α).source) := by
   classical
   intro b hb_src
@@ -66,7 +66,7 @@ private lemma chartE_section_repr_basis_component_contMDiffOn_chartSource
     (j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M =>
-        ((chartModelBasis E).repr (chartE_section_repr (I := I) α X b)) j)
+        ((chartModelBasis E).repr (chartESectionRepr (I := I) α X b)) j)
       ((chartAt H α).source) := by
   classical
   have hbase :=
@@ -127,7 +127,7 @@ private lemma christoffelCorrectionCLM_contMDiffOn_chartSource
     chartChristoffel_contMDiffOn_chartSource (I := I) (M := M) g α i j k
   have hscalar : ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M =>
-        ((chartModelBasis E).repr (chartE_section_repr (I := I) α X b)) j *
+        ((chartModelBasis E).repr (chartESectionRepr (I := I) α X b)) j *
         chartChristoffel (I := I) g α i j k (extChartAt I α b))
       ((chartAt H α).source) :=
     hrepr_smooth.mul hΓ_smooth
@@ -171,7 +171,7 @@ private lemma chartLeviCivitaParallelCLM_trivImage_eq_christoffelCorrectionCLM
   rw [trivToE_trivFromE (I := I) α hb_base]
   have hY :
       trivToE (I := I) α b (X b) =
-        chartE_section_repr (I := I) α X b := rfl
+        chartESectionRepr (I := I) α X b := rfl
   rw [hY]
   exact christoffelCorrection_eq_christoffelCorrectionCLM (I := I) g α X hb_base w
 
@@ -214,7 +214,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M] [I.Bounda
 private lemma chartE_section_repr_chartBasisVec_eq_const_on_chart_source
     (α : M) (j : Fin (Module.finrank ℝ E)) :
     ∀ b ∈ (chartAt H α).source,
-      chartE_section_repr (I := I) α (chartBasisVecFiber (I := I) α j) b =
+      chartESectionRepr (I := I) α (chartBasisVecFiber (I := I) α j) b =
         (chartModelBasis E) j := by
   intro b hb
   have hbase_eq :
@@ -223,7 +223,7 @@ private lemma chartE_section_repr_chartBasisVec_eq_const_on_chart_source
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [hbase_eq]; exact hb
   have h1 :
-      chartE_section_repr (I := I) α (chartBasisVecFiber (I := I) α j) b =
+      chartESectionRepr (I := I) α (chartBasisVecFiber (I := I) α j) b =
         trivToE (I := I) α b (chartBasisVecFiber (I := I) α j b) := rfl
   rw [h1]
   have h2 := trivializationAt_chartBasisVec_snd (I := I) α j (x := b) hb_base
@@ -242,19 +242,19 @@ private lemma chartE_section_repr_chartBasisVec_basis_component_contMDiffOn_char
     ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M =>
         ((chartModelBasis E).repr
-          (chartE_section_repr (I := I) α
+          (chartESectionRepr (I := I) α
             (chartBasisVecFiber (I := I) α j) b)) j')
       ((chartAt H α).source) := by
   classical
   have h_const_on :
       ∀ b ∈ (chartAt H α).source,
         ((chartModelBasis E).repr
-          (chartE_section_repr (I := I) α
+          (chartESectionRepr (I := I) α
             (chartBasisVecFiber (I := I) α j) b)) j' =
           (if j' = j then (1 : ℝ) else 0) := by
     intro b hb
     have h_repr_eq :
-        chartE_section_repr (I := I) α
+        chartESectionRepr (I := I) α
           (chartBasisVecFiber (I := I) α j) b =
           (chartModelBasis E) j :=
       chartE_section_repr_chartBasisVec_eq_const_on_chart_source
@@ -324,7 +324,7 @@ private lemma christoffelCorrectionCLM_chartBasisVec_contMDiffOn_chartSource
   have hscalar : ContMDiffOn I 𝓘(ℝ) ∞
       (fun b : M =>
         ((chartModelBasis E).repr
-          (chartE_section_repr (I := I) α
+          (chartESectionRepr (I := I) α
             (chartBasisVecFiber (I := I) α j) b)) j' *
         chartChristoffel (I := I) g α i j' k (extChartAt I α b))
       ((chartAt H α).source) :=
@@ -387,7 +387,7 @@ theorem chartLeviCivitaParallelCLM_chartBasisVec_trivImage_contMDiffOn_chartSour
   rw [trivToE_trivFromE (I := I) α hb_base]
   have hY :
       trivToE (I := I) α b (chartBasisVecFiber (I := I) α j b) =
-        chartE_section_repr (I := I) α
+        chartESectionRepr (I := I) α
           (chartBasisVecFiber (I := I) α j) b := rfl
   rw [hY]
   exact christoffelCorrection_eq_christoffelCorrectionCLM
@@ -505,7 +505,7 @@ private lemma slotSubst_trivProj_entry_closedForm
     (X : Π b' : M, TangentSpace I b') {b : M}
     (hb : b ∈ (chartAt H α).source)
     (Idx Jdx : Fin r → Fin (Module.finrank ℝ E)) :
-    evalAtBasisCLE_TensorRSModel (E := E) r r
+    evalAtBasisCLETensorRSModel (E := E) r r
       ((trivializationAt (TensorRSModel r r ℝ E)
         (fun y : M => TensorRSSpace r r I y) α).continuousLinearMapAt ℝ b
         ((tensorSlotSubstCLM (I := I) r b
@@ -913,7 +913,7 @@ theorem tensorSlotSubstCLM_chartLeviCivita_chartBasisVec_trivImage_contMDiffOn_c
   intro Idx Jdx
   have hentry_eq :
       ∀ b ∈ (chartAt H α).source,
-        evalAtBasisCLE_TensorRSModel (E := E) r r
+        evalAtBasisCLETensorRSModel (E := E) r r
           ((trivializationAt (TensorRSModel r r ℝ E)
             (fun y : M => TensorRSSpace r r I y) α
             ⟨b, TensorRSSpace.ofCLM (𝕜 := ℝ) (I := I)

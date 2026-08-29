@@ -38,20 +38,20 @@ private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
 private local instance edgeTensorRSModelNormedAddCommGroup (r s : ℕ) :
     NormedAddCommGroup (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup r s
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup r s
 
 private local instance edgeTensorRSModelNormedSpace (r s : ℕ) :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 private local instance edgeTensorRSTotalSpaceTopology (r s : ℕ) :
     TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x)) :=
-  Tensor0SBundle.tensorRSBundle_topology r s
+  Tensor0SBundle.tensorRSBundleTopology r s
 
 private local instance edgeTensorRSFiberBundle (r s : ℕ) :
     FiberBundle (TensorRSModel r s ℝ E) (fun x : M => TensorRSSpace r s I x) :=
-  Tensor0SBundle.tensorRSBundle_fiber r s
+  Tensor0SBundle.tensorRSBundleFiber r s
 
 def ricciPalatiniHalfCoefficient (g g₁ : SmoothRiemannianMetric I M) :
     SmoothCcTensor g 2 2 :=
@@ -546,7 +546,7 @@ private lemma edge_extend_cons
       Tensor0SSpace.toModel
         ((show Tensor0SSpace r I x →L[Real] Tensor0SSpace s I x from
           Φ.toSection x)
-          (tensor0S_curry (I := I) (M := M) (𝕜 := Real) r x D
+          (tensor0SCurry (I := I) (M := M) (𝕜 := Real) r x D
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v0))) vs := by
   rw [show ((show Tensor0SSpace (r + 1) I x →L[Real]
       Tensor0SSpace (s + 1) I x from
@@ -584,18 +584,18 @@ private lemma edge_extend2_eval (g : SmoothRiemannianMetric I M)
     (slotExtendIter (I := I) (M := M) g 0 2 1 B) x D (u 0)]
   rw [show ((show Tensor0SSpace 1 I x →L[Real] Tensor0SSpace 3 I x from
       (slotExtendIter (I := I) (M := M) g 0 2 1 B).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := Real) 1 x D
+        (tensor0SCurry (I := I) (M := M) (𝕜 := Real) 1 x D
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))) =
       ((show Tensor0SSpace 1 I x →L[Real] Tensor0SSpace 3 I x from
         (slotExtend (I := I) (M := M) g 0 2 B).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := Real) 1 x D
+        (tensor0SCurry (I := I) (M := M) (𝕜 := Real) 1 x D
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))) from rfl]
   rw [edge_extend_cons (I := I) (M := M) g 0 2 B x
-    (tensor0S_curry (I := I) (M := M) (𝕜 := Real) 1 x D
+    (tensor0SCurry (I := I) (M := M) (𝕜 := Real) 1 x D
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0))) (u 1)]
   set t : Tensor0SSpace 0 I x :=
-    tensor0S_curry (I := I) (M := M) (𝕜 := Real) 0 x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := Real) 1 x D
+    tensor0SCurry (I := I) (M := M) (𝕜 := Real) 0 x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := Real) 1 x D
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 1))
       with ht_def
@@ -603,7 +603,7 @@ private lemma edge_extend2_eval (g : SmoothRiemannianMetric I M)
       Tensor0SSpace.toModel D ![u 0, u 1] := by
     rw [ht_def]
     rw [TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)
-      (T := tensor0S_curry (I := I) (M := M) (𝕜 := Real) 1 x D
+      (T := tensor0SCurry (I := I) (M := M) (𝕜 := Real) 1 x D
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))
       (v0 := u 1) (vs := fun i : Fin 0 => i.elim0)]
     rw [TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M)

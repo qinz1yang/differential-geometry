@@ -158,7 +158,7 @@ noncomputable def lieCorrectionZeroVBFib
   (2 : ℝ) • ((lieCorrectionZeroTraceStep (I := I) g₁ 2 lieCorrectionZeroVectorBundleTracePermutation x).comp
     ((tensor0SProdKappaFib (I := I) (p := 1) (q := 3) x
         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)).comp
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 x
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
         ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x))))
 
 def lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour : Equiv.Perm (Fin 5) :=
@@ -373,18 +373,18 @@ theorem lieCorrectionZeroVBFib_contMDiff
   have hip : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 1 ℝ E)) ∞
       (fun x : M => TotalSpace.mk' (Tensor0SModel 1 ℝ E)
         (E := fun z : M => Tensor0SSpace 1 I z) x
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 x
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
           ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x) (Y x))) :=
-    (Tensor0SBundle.contract_Tensor0SField (𝕜 := ℝ) (I := I) (n := (∞ : WithTop ℕ∞)) 1 Y
+    (Tensor0SBundle.contractTensor0SField (𝕜 := ℝ) (I := I) (n := (∞ : WithTop ℕ∞)) 1 Y
       (PDE.DeTurck.deTurckVF (I := I) g₁ g₀)).contMDiff
   have hprod := lieCorrectionZero_prod_section_contMDiff (I := I) (p := 1) (q := 3)
-    (fun x => Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 x
+    (fun x => Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
       ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x) (Y x))
     (fun x => metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
     hip (metricConnectionDifferenceLoweredFib_contMDiff (I := I) g₁ g₁ g₀)
   have htr := lieCorrectionZeroTraceStep_section_contMDiff (I := I) g₁ 2 lieCorrectionZeroVectorBundleTracePermutation
     (fun x => tensor0SProdKappaFib (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 x
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
         ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x) (Y x)))
     hprod
   have hsmul : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
@@ -392,7 +392,7 @@ theorem lieCorrectionZeroVBFib_contMDiff
         (E := fun z : M => Tensor0SSpace 2 I z) x
         ((2 : ℝ) • lieCorrectionZeroTraceStep (I := I) g₁ 2 lieCorrectionZeroVectorBundleTracePermutation x
           (tensor0SProdKappaFib (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
-            (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) 1 x
+            (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
               ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x) (Y x))))) :=
     ContMDiff.smul_section contMDiff_const htr
   refine hsmul.congr (fun x => ?_)

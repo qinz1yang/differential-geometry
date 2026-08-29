@@ -132,7 +132,7 @@ theorem tensor0S_ricciIdentity_coordFrame_of_christoffelCurv
     · simp [tensor0SRicciIdentityCoordInput, metricTraceInput, slots]
     · intro a
       refine Fin.cases ?_ ?_ a
-      · change (coordinateFrameAt_toBasis (I := I) x0) j =
+      · change (coordinateFrameAtToBasis (I := I) x0) j =
           coordinateFrameAt (I := I) x0 j x0
         rw [coordinateFrameAt_toBasis_apply]
       · intro a
@@ -150,7 +150,7 @@ theorem tensor0S_ricciIdentity_coordFrame_of_christoffelCurv
     · simp [tensor0SRicciIdentityCoordInput, metricTraceInput, slots]
     · intro a
       refine Fin.cases ?_ ?_ a
-      · change (coordinateFrameAt_toBasis (I := I) x0) i =
+      · change (coordinateFrameAtToBasis (I := I) x0) i =
           coordinateFrameAt (I := I) x0 i x0
         rw [coordinateFrameAt_toBasis_apply]
       · intro a
@@ -213,7 +213,7 @@ theorem one_form_third_comm_coord_of_christoffelCurv
     OneFormThirdCovDerivCommAt (I := I) Rm13 alpha nabla2Alpha := by
   let := _h
   refine one_form_third_comm_of_coord_ijk (I := I) Rm13 alpha
-    (coordinateFrameAt_toBasis (I := I) x₀) nabla2Alpha ?_
+    (coordinateFrameAtToBasis (I := I) x₀) nabla2Alpha ?_
   intro i k j
   have hRmCoord := rm13_eval_eq_christoffelCurvCoord
     (I := I) cov hcov Rm13 x₀ alpha hRm hcurv i k j

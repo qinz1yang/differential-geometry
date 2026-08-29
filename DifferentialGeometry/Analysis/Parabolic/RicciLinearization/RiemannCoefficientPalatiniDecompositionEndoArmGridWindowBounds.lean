@@ -272,10 +272,10 @@ private lemma bdConnectionDifferenceSection_eq_cometricRaise (g₀ g₁ : Smooth
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x u)
           (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ k))) := by
     rw [Tensor0SSpace.eval_eq, cometricRaiseSlot0Fib_clm_apply (I := I) g₀ 1 x D om]
-    rw [show (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (1 + 1) x
+    rw [show (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (1 + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) D YZ : ℝ) =
         Tensor0SSpace.toModel
-          (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (1 + 1) x
+          (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (1 + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) D)
           (fun k => tangentSpaceModelContinuousLinearEquiv (I := I) x (YZ k)) from by
       rw [Tensor0SSpace.toModel_apply_tangent, Tensor0SSpace.eval_eq]]
@@ -748,7 +748,7 @@ private theorem bdDLb_eq_slotInsert_sum
           (endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
             (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg))).toSection x)
       = (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-          tensorRS_domDomCongr (I := I) (M := M) (Equiv.swap (0 : Fin 2) 1)
+          tensorRSDomDomCongr (I := I) (M := M) (Equiv.swap (0 : Fin 2) 1)
             ((endoSlotZeroCcTensor (I := I) (M := M) g₀ 1
               (deTurckVectorFieldCovariantDerivativeEndomorphismSection (I := I) (M := M) g₁ g_bg)).toSection x)) from by
     rw [rsDomDomCongrSection_toSection]]
@@ -866,7 +866,7 @@ private lemma bdReindexSwap_sub (g₀ : SmoothRiemannianMetric I M)
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 2 (Equiv.swap (0 : Fin 2) 1)
           Z).toSection x) =
         (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
-          tensorRS_domDomCongr (I := I) (M := M) (Equiv.swap (0 : Fin 2) 1)
+          tensorRSDomDomCongr (I := I) (M := M) (Equiv.swap (0 : Fin 2) 1)
             (Z.toSection x)) from by
       rw [rsDomDomCongrSection_toSection]]
     rw [toModel_rsDomDomCongr_apply]

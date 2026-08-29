@@ -46,7 +46,7 @@ theorem supersolution_preMoser_inverse
       (∫ x in Metric.ball (0 : E) r,
           |(u x)⁻¹| ^ (moserChi d * p) ∂volume) ^
           (1 / (moserChi d * p)) ≤
-        ((C_MoserAnchor d / (s - r) ^ 2) *
+        ((CMoserAnchor d / (s - r) ^ 2) *
             (A.1.Λ * (p / (1 + p)) ^ 2 + 1)) ^ (1 / p) *
           (∫ x in Metric.ball (0 : E) s, |(u x)⁻¹| ^ p ∂volume) ^ (1 / p) := by
   -- Set up the cutoff function
@@ -113,14 +113,14 @@ theorem supersolution_preMoser_inverse
       (ENNReal.mul_lt_top_iff.mpr (Or.inl ⟨by simp,
         lt_top_iff_ne_top.mpr (by simpa using hwv_real.weakGrad_norm_memLp.eLpNorm_ne_top)⟩))
   have hSob' : eLpNorm v q μ ≤
-      ENNReal.ofReal (C_gns d 2) *
+      ENNReal.ofReal (CGns d 2) *
         eLpNorm (fun x => ‖hwv_real.weakGrad x‖) 2 μ := by
     simpa [q, μ, Ω] using hSob
   have hgrad_ne_top : eLpNorm (fun x => ‖hwv_real.weakGrad x‖) 2 μ ≠ ⊤ := by
     simpa using hwv_real.weakGrad_norm_memLp.eLpNorm_ne_top
   have hSob_real :
       MeasureTheory.lpNorm v q μ ≤
-        (C_gns d 2) * MeasureTheory.lpNorm (fun x => ‖hwv_real.weakGrad x‖) 2 μ := by
+        (CGns d 2) * MeasureTheory.lpNorm (fun x => ‖hwv_real.weakGrad x‖) 2 μ := by
     have hSob_toReal :=
       (ENNReal.toReal_le_toReal hv_memLp_q.eLpNorm_ne_top
         (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hgrad_ne_top)).2 hSob'
@@ -187,11 +187,11 @@ theorem supersolution_preMoser_inverse
   have hCη_sq : Cη ^ 2 = 4 * (Mst : ℝ) ^ 2 / (s - r) ^ 2 := by
     dsimp [Cη]; field_simp [hsr_pos.ne']; ring
   have hconst_bound :
-      (C_gns d 2) ^ 2 * (2 * Cη ^ 2) ≤ C_MoserAnchor d / (s - r) ^ 2 := by
+      (CGns d 2) ^ 2 * (2 * Cη ^ 2) ≤ CMoserAnchor d / (s - r) ^ 2 := by
     rw [hCη_sq]
     have hrewrite :
-        (C_gns d 2) ^ 2 * (2 * (4 * (Mst : ℝ) ^ 2 / (s - r) ^ 2)) =
-          ((C_gns d 2) ^ 2 * (8 * (Mst : ℝ) ^ 2)) / (s - r) ^ 2 := by
+        (CGns d 2) ^ 2 * (2 * (4 * (Mst : ℝ) ^ 2 / (s - r) ^ 2)) =
+          ((CGns d 2) ^ 2 * (8 * (Mst : ℝ) ^ 2)) / (s - r) ^ 2 := by
       field_simp [hsr_pos.ne']; ring
     rw [hrewrite]
     exact div_le_div_of_nonneg_right
@@ -201,7 +201,7 @@ theorem supersolution_preMoser_inverse
   have hcoeff_nonneg : 0 ≤ A.1.Λ * (p / (1 + p)) ^ 2 + 1 := by
     exact add_nonneg (mul_nonneg A.1.Λ_nonneg (sq_nonneg (p / (1 + p)))) zero_le_one
   have hIp_nonneg : 0 ≤ ∫ x in Ω, |(u x)⁻¹| ^ p ∂volume := integral_nonneg fun x => by positivity
-  -- Main chain: Lᵖˣ(Bᵣ) ≤ Sobolev(v) ≤ C_gns · gradient ≤ C_gns · energy^{1/2} ≤ constant · Lᵖ(Bₛ)
+  -- Main chain: Lᵖˣ(Bᵣ) ≤ Sobolev(v) ≤ CGns · gradient ≤ CGns · energy^{1/2} ≤ constant · Lᵖ(Bₛ)
   have hqexp_mul : (1 / qexp : ℝ) * (2 / p) = 1 / (moserChi d * p) := by
     dsimp [qexp, moserChi]; field_simp
   have hhalf_mul : (1 / (2 : ℝ)) * (2 / p) = 1 / p := by field_simp [hp.ne']
@@ -216,7 +216,7 @@ theorem supersolution_preMoser_inverse
   have hmain_lp :
       (∫ x in Metric.ball (0 : E) r,
           |(u x)⁻¹| ^ (moserChi d * p) ∂volume) ^ (1 / (moserChi d * p)) ≤
-        ((C_MoserAnchor d / (s - r) ^ 2) *
+        ((CMoserAnchor d / (s - r) ^ 2) *
             (A.1.Λ * (p / (1 + p)) ^ 2 + 1) *
             ∫ x in Ω, |(u x)⁻¹| ^ p ∂volume) ^ (1 / p) := by
     calc (∫ x in Metric.ball (0 : E) r,
@@ -226,35 +226,35 @@ theorem supersolution_preMoser_inverse
       _ = ((∫ x in Ω, |v x| ^ qexp ∂volume) ^ (1 / qexp)) ^ (2 / p) := by
             rw [← Real.rpow_mul hright_nonneg, hqexp_mul]
       _ = (MeasureTheory.lpNorm v q μ) ^ (2 / p) := by rw [hv_lp_eq]
-      _ ≤ ((C_gns d 2) * MeasureTheory.lpNorm (fun x => ‖hwv_real.weakGrad x‖) 2 μ) ^ (2 / p) := by
+      _ ≤ ((CGns d 2) * MeasureTheory.lpNorm (fun x => ‖hwv_real.weakGrad x‖) 2 μ) ^ (2 / p) := by
             exact Real.rpow_le_rpow MeasureTheory.lpNorm_nonneg hSob_real (by positivity)
-      _ ≤ ((C_gns d 2) * (2 * Cη ^ 2 * (A.1.Λ * (p / (1 + p)) ^ 2 + 1) *
+      _ ≤ ((CGns d 2) * (2 * Cη ^ 2 * (A.1.Λ * (p / (1 + p)) ^ 2 + 1) *
               ∫ x in Ω, |(u x)⁻¹| ^ p ∂volume) ^ (1 / (2 : ℝ))) ^ (2 / p) := by
             exact Real.rpow_le_rpow
               (mul_nonneg (C_gns_nonneg d 2) MeasureTheory.lpNorm_nonneg)
               (mul_le_mul_of_nonneg_left hgrad_bound (C_gns_nonneg d 2))
               (by positivity)
-      _ = ((C_gns d 2) ^ 2 * (2 * Cη ^ 2) *
+      _ = ((CGns d 2) ^ 2 * (2 * Cη ^ 2) *
               (A.1.Λ * (p / (1 + p)) ^ 2 + 1) *
               ∫ x in Ω, |(u x)⁻¹| ^ p ∂volume) ^ (1 / p) := by
-            calc ((C_gns d 2) * (2 * Cη ^ 2 * (A.1.Λ * (p / (1 + p)) ^ 2 + 1) *
+            calc ((CGns d 2) * (2 * Cη ^ 2 * (A.1.Λ * (p / (1 + p)) ^ 2 + 1) *
                     ∫ x in Ω, |(u x)⁻¹| ^ p ∂volume) ^ (1 / (2 : ℝ))) ^ (2 / p)
-                = (C_gns d 2) ^ (2 / p) *
+                = (CGns d 2) ^ (2 / p) *
                     ((2 * Cη ^ 2 * (A.1.Λ * (p / (1 + p)) ^ 2 + 1) *
                       ∫ x in Ω, |(u x)⁻¹| ^ p ∂volume) ^ (1 / (2 : ℝ))) ^ (2 / p) := by
                   rw [Real.mul_rpow (C_gns_nonneg d 2) hgrad_rhs_nonneg]
-              _ = ((C_gns d 2) ^ 2) ^ (1 / p) *
+              _ = ((CGns d 2) ^ 2) ^ (1 / p) *
                     (2 * Cη ^ 2 * (A.1.Λ * (p / (1 + p)) ^ 2 + 1) *
                       ∫ x in Ω, |(u x)⁻¹| ^ p ∂volume) ^ (1 / p) := by
                   congr 1
                   · rw [show (2 / p : ℝ) = 2 * (1 / p) by field_simp [hp.ne']]
                     simpa using (Real.rpow_mul (C_gns_nonneg d 2) 2 (1 / p))
                   · rw [← Real.rpow_mul hinner_nonneg, hhalf_mul]
-              _ = ((C_gns d 2) ^ 2 * (2 * Cη ^ 2) *
+              _ = ((CGns d 2) ^ 2 * (2 * Cη ^ 2) *
                     (A.1.Λ * (p / (1 + p)) ^ 2 + 1) *
                     ∫ x in Ω, |(u x)⁻¹| ^ p ∂volume) ^ (1 / p) := by
-                  rw [← Real.mul_rpow (sq_nonneg (C_gns d 2)) hinner_nonneg]; congr 1; ring
-      _ ≤ ((C_MoserAnchor d / (s - r) ^ 2) *
+                  rw [← Real.mul_rpow (sq_nonneg (CGns d 2)) hinner_nonneg]; congr 1; ring
+      _ ≤ ((CMoserAnchor d / (s - r) ^ 2) *
               (A.1.Λ * (p / (1 + p)) ^ 2 + 1) *
               ∫ x in Ω, |(u x)⁻¹| ^ p ∂volume) ^ (1 / p) := by
             apply Real.rpow_le_rpow (by positivity)
@@ -265,16 +265,16 @@ theorem supersolution_preMoser_inverse
             · positivity
   -- Separate the outer coefficient before applying `Real.mul_rpow`.
   refine ⟨hleft_int, ?_⟩
-  have hsplit_nonneg : 0 ≤ (C_MoserAnchor d / (s - r) ^ 2) *
+  have hsplit_nonneg : 0 ≤ (CMoserAnchor d / (s - r) ^ 2) *
       (A.1.Λ * (p / (1 + p)) ^ 2 + 1) := by
     exact mul_nonneg (div_nonneg (le_trans (by norm_num : (0 : ℝ) ≤ 1)
       (one_le_C_MoserAnchor (d := d))) (by positivity)) hcoeff_nonneg
   calc (∫ x in Metric.ball (0 : E) r,
           |(u x)⁻¹| ^ (moserChi d * p) ∂volume) ^ (1 / (moserChi d * p))
-      ≤ ((C_MoserAnchor d / (s - r) ^ 2) *
+      ≤ ((CMoserAnchor d / (s - r) ^ 2) *
           (A.1.Λ * (p / (1 + p)) ^ 2 + 1) *
           ∫ x in Ω, |(u x)⁻¹| ^ p ∂volume) ^ (1 / p) := hmain_lp
-    _ = ((C_MoserAnchor d / (s - r) ^ 2) *
+    _ = ((CMoserAnchor d / (s - r) ^ 2) *
             (A.1.Λ * (p / (1 + p)) ^ 2 + 1)) ^ (1 / p) *
           (∫ x in Ω, |(u x)⁻¹| ^ p ∂volume) ^ (1 / p) := by
           rw [Real.mul_rpow hsplit_nonneg hIp_nonneg]
@@ -296,7 +296,7 @@ theorem supersolution_reverseHolder_inverse
       (∫ x in Metric.ball (0 : E) r,
           |(u x)⁻¹| ^ (moserChi d * p) ∂volume) ^
           (1 / (moserChi d * p)) ≤
-        ((C_MoserAnchor d / (s - r) ^ 2) *
+        ((CMoserAnchor d / (s - r) ^ 2) *
             (A.1.Λ * (p / (1 + p)) ^ 2 + 1)) ^ (1 / p) *
           (∫ x in Metric.ball (0 : E) s, |(u x)⁻¹| ^ p ∂volume) ^ (1 / p) := by
   exact supersolution_preMoser_inverse hd A hp hr hrs hs1 hu_pos hsuper hpInt

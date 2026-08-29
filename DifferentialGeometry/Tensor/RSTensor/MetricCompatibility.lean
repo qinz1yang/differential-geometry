@@ -35,7 +35,7 @@ def metricTensorField
       pos := g.pos
       isVonNBounded := g.isVonNBounded
       contMDiff := g.contMDiff.of_le (by simp) }
-  exact RiemannianMetric_gen.to02Tensor_gen (I := I) (M := M)
+  exact RiemannianMetricGen.to02TensorGen (I := I) (M := M)
     (n := (∞ : WithTop ℕ∞)) gInf
 
 @[simp]
@@ -58,7 +58,7 @@ theorem nabla_metric_eval
     [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (V : Fin 2 -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
@@ -109,7 +109,7 @@ theorem nabla_metric_zero
     [T2Space M] [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (x : M) :
     nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 cov X
@@ -206,7 +206,7 @@ theorem zero_realizes_metric
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g) :
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       2 cov (metricTensorField (I := I) g)
       (0 : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -237,7 +237,7 @@ theorem nabla_smul_metric
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (f : M -> Real)
     (hf : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) f)
     (df : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
@@ -246,7 +246,7 @@ theorem nabla_smul_metric
       df x (fun _ : Fin 1 => v) = mvfderiv (I := I) f x v) :
     TotalNabla0SRealizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       2 cov
-      (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+      (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
         f hf (metricTensorField (I := I) g))
       (MultilinearSection.product (𝕜 := Real) (F := E) (IB := I)
@@ -292,7 +292,7 @@ theorem nabla_smul_metric
   have hnabla :=
     nabla0SFun_eval_smooth_slots (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) cov X V
-      (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+      (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
         (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
         f hf metricSec) x
   have hslots :
@@ -313,7 +313,7 @@ theorem nabla_smul_metric
         df metricSec) x (Fin.cons (X x) slots)
         =
           mvfderiv (I := I) f x (X x) * metricSec x slots := by
-          change (Bundle.continuousMultilinearMap.product_fun
+          change (Bundle.continuousMultilinearMap.productFun
               (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 1 x (df x))
               (tensor0SSpaceFiberContinuousLinearEquiv (I := I) 2 x (metricSec x)))
                 (Fin.cons (X x) slots) =
@@ -336,14 +336,14 @@ theorem nabla_smul_metric
       _ =
           nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
             2 cov X
-            (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+            (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
               (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
               f hf metricSec) x slots := by
           rw [← hslots]
           rw [hnabla]
           have hfun :
               (fun p : M =>
-                (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+                (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
                     (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
                     f hf metricSec p) (fun a : Fin 2 => V a p)) =
                 fun p : M => f p * mfun p := by
@@ -351,7 +351,7 @@ theorem nabla_smul_metric
             rfl
           have hcorr :
               (∑ a : Fin 2,
-                (tensor0SField_smulByFun (𝕜 := Real) (E := E) (H := H)
+                (tensor0SFieldSmulByFun (𝕜 := Real) (E := E) (H := H)
                     (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
                     f hf metricSec x)
                   (Function.update (fun b : Fin 2 => V b x) a
@@ -391,7 +391,7 @@ noncomputable def metricDerivsZero
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g) :
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g) :
     CanonicalSpatialDerivs0S (𝕜 := Real) (E := E) (H := H) (I := I)
       (M := M) cov (metricTensorField (I := I) g) where
   nablaA := 0
@@ -405,7 +405,7 @@ theorem metricDerivsZero_nabla
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (x : M) (slots : Fin 3 -> TangentSpace I x) :
     (metricDerivsZero (I := I) cov g hmc).nablaA x slots = 0 := rfl
 
@@ -415,7 +415,7 @@ theorem metricDerivsZero_nabla2
     [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (x : M) (slots : Fin 4 -> TangentSpace I x) :
     (metricDerivsZero (I := I) cov g hmc).nabla2A x slots = 0 := rfl
 

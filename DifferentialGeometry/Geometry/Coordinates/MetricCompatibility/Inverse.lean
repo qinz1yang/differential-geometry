@@ -208,7 +208,7 @@ theorem flatChart_inv
 theorem coordBasis_model
     (x₀ : M) {x : M} (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (i : CoordinateIdx (𝕜 := Real) E) :
-    coordinateFrameAt_basis (I := I) x₀ hx i =
+    coordinateFrameAtBasis (I := I) x₀ hx i =
       (trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real x
         ((Module.finBasis Real E) i) := by
   rw [coordinateFrameAt_basis_apply]
@@ -287,7 +287,7 @@ theorem inverseMetricFlatModelInChart_contDiffWithinAt
         (x := extChartAt I x₀ x₀)
         (metricFlatModelInChart_contDiffWithinAt (I := I) g x₀)
 
-noncomputable def inverseMetricFlatModelInChart_component
+noncomputable def inverseMetricFlatModelInChartComponent
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (k l : CoordinateIdx (𝕜 := Real) E) (y : E) : Real :=
   (Module.finBasis Real E).coord k
@@ -301,7 +301,7 @@ theorem inverseMetricFlatModelInChart_component_contDiffWithinAt
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (k l : CoordinateIdx (𝕜 := Real) E) :
     ContDiffWithinAt Real ∞
-      (inverseMetricFlatModelInChart_component (I := I) g x₀ k l)
+      (inverseMetricFlatModelInChartComponent (I := I) g x₀ k l)
       (Set.range I) (extChartAt I x₀ x₀) := by
   let εl : E →L[Real] Real :=
     LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord l)
@@ -315,7 +315,7 @@ theorem inverseMetricFlatModelInChart_component_contDiffWithinAt
               (metricFlatModelInChart (I := I) g x₀ y)) εl)
         (Set.range I) (extChartAt I x₀ x₀) := by
     simpa [εl] using hinv.clm_apply contDiffWithinAt_const
-  unfold inverseMetricFlatModelInChart_component
+  unfold inverseMetricFlatModelInChartComponent
   exact (contDiffWithinAt_const (c := εk)).clm_apply happ
 
 theorem gInvComp_contMDiffAt
@@ -323,11 +323,11 @@ theorem gInvComp_contMDiffAt
     (k l : CoordinateIdx (𝕜 := Real) E) :
     ContMDiffAt I 𝓘(Real, Real) ∞
       (fun y : M =>
-        inverseMetricFlatModelInChart_component (I := I) g x₀ k l
+        inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
           (extChartAt I x₀ y)) x₀ := by
   have : CompleteSpace E := FiniteDimensional.complete Real E
   let f : E -> Real :=
-    inverseMetricFlatModelInChart_component (I := I) g x₀ k l
+    inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
   have hf :
       ContDiffWithinAt Real ∞ f (Set.range I) (extChartAt I x₀ x₀) :=
     inverseMetricFlatModelInChart_component_contDiffWithinAt (I := I) g x₀ k l
@@ -352,16 +352,16 @@ theorem gInvComp_mdiffAt
     (k l : CoordinateIdx (𝕜 := Real) E) :
     MDifferentiableAt I 𝓘(Real, Real)
       (fun y : M =>
-        inverseMetricFlatModelInChart_component (I := I) g x₀ k l
+        inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
           (extChartAt I x₀ y)) x₀ := by
   exact (gInvComp_contMDiffAt (I := I) g x₀ k l).mdifferentiableAt (by simp)
 
 theorem inverseMetricFlatModelInChart_component_center_eq_symm
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (i j : CoordinateIdx (𝕜 := Real) E) :
-    inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+    inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
         (extChartAt I x₀ x₀) =
-      inverseMetricFlatModelInChart_component (I := I) g x₀ j i
+      inverseMetricFlatModelInChartComponent (I := I) g x₀ j i
         (extChartAt I x₀ x₀) := by
   let A : E ≃L[Real] (E →L[Real] Real) := metricFlatContinuousEquiv (I := I) g x₀
   let ε : CoordinateIdx (𝕜 := Real) E -> E →L[Real] Real :=
@@ -372,7 +372,7 @@ theorem inverseMetricFlatModelInChart_component_center_eq_symm
         A.symm := by
     rw [metricFlatModelInChart_center_eq (I := I) g x₀]
     exact ContinuousLinearMap.inverse_equiv A
-  simp only [inverseMetricFlatModelInChart_component]
+  simp only [inverseMetricFlatModelInChartComponent]
   rw [hInv]
   calc
     (Module.finBasis Real E).coord i (A.symm (ε j))
@@ -399,9 +399,9 @@ theorem gInvChart_symm
     (g : SmoothRiemannianMetric I M) (x₀ : M) {x : M}
     (hx : x ∈ coordinateFrameSet (I := I) x₀)
     (i j : CoordinateIdx (𝕜 := Real) E) :
-    inverseMetricFlatModelInChart_component (I := I) g x₀ i j
+    inverseMetricFlatModelInChartComponent (I := I) g x₀ i j
         (extChartAt I x₀ x) =
-      inverseMetricFlatModelInChart_component (I := I) g x₀ j i
+      inverseMetricFlatModelInChartComponent (I := I) g x₀ j i
         (extChartAt I x₀ x) := by
   let A : E →L[Real] (E →L[Real] Real) :=
     metricFlatModelInChart (I := I) g x₀ (extChartAt I x₀ x)
@@ -422,7 +422,7 @@ theorem gInvChart_symm
             exact g.symm x _ _
       _ = A w v := by
             rw [flatChart_apply (I := I) g x₀ hx w v]
-  simp only [inverseMetricFlatModelInChart_component]
+  simp only [inverseMetricFlatModelInChartComponent]
   calc
     (Module.finBasis Real E).coord i (ContinuousLinearMap.inverse A (ε j))
         = (ε i) (ContinuousLinearMap.inverse A (ε j)) := rfl
@@ -440,9 +440,9 @@ theorem gInvChart_symm
 theorem gInvBasisAt
     (g : SmoothRiemannianMetric I M) (x₀ : M) {x : M}
     (hx : x ∈ coordinateFrameSet (I := I) x₀) :
-    MetricInverseInBasis_gen (I := I) g x (coordinateFrameAt_basis (I := I) x₀ hx)
+    MetricInverseInBasisGen (I := I) g x (coordinateFrameAtBasis (I := I) x₀ hx)
       (fun k l : CoordinateIdx (𝕜 := Real) E =>
-        inverseMetricFlatModelInChart_component (I := I) g x₀ k l
+        inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
           (extChartAt I x₀ x)) := by
   classical
   let A : E →L[Real] (E →L[Real] Real) :=
@@ -450,7 +450,7 @@ theorem gInvBasisAt
   let ε : CoordinateIdx (𝕜 := Real) E -> E →L[Real] Real :=
     fun a => LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord a)
   let gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
-    fun k l => inverseMetricFlatModelInChart_component (I := I) g x₀ k l
+    fun k l => inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
       (extChartAt I x₀ x)
   have hInv : A.IsInvertible := flatChart_inv (I := I) g x₀ hx
   have hginv (k l : CoordinateIdx (𝕜 := Real) E) :
@@ -471,8 +471,8 @@ theorem gInvBasisAt
       _ = A w v := by
             rw [flatChart_apply (I := I) g x₀ hx w v]
   have hmetric (i j : CoordinateIdx (𝕜 := Real) E) :
-      g.inner x ((coordinateFrameAt_basis (I := I) x₀ hx) i)
-          ((coordinateFrameAt_basis (I := I) x₀ hx) j) =
+      g.inner x ((coordinateFrameAtBasis (I := I) x₀ hx) i)
+          ((coordinateFrameAtBasis (I := I) x₀ hx) j) =
         A ((Module.finBasis Real E) i) ((Module.finBasis Real E) j) := by
     rw [coordBasis_model (I := I) x₀ hx i]
     rw [coordBasis_model (I := I) x₀ hx j]
@@ -491,8 +491,8 @@ theorem gInvBasisAt
       _ = (Module.finBasis Real E).coord l (A.inverse (ε k)) := rfl
   have hsecond (i j : CoordinateIdx (𝕜 := Real) E) :
       (∑ k : CoordinateIdx (𝕜 := Real) E,
-          g.inner x ((coordinateFrameAt_basis (I := I) x₀ hx) i)
-            ((coordinateFrameAt_basis (I := I) x₀ hx) k) * gInv k j) =
+          g.inner x ((coordinateFrameAtBasis (I := I) x₀ hx) i)
+            ((coordinateFrameAtBasis (I := I) x₀ hx) k) * gInv k j) =
         (if i = j then 1 else 0) := by
     simp only [hmetric, hginv]
     calc
@@ -543,15 +543,15 @@ theorem gInvBasisAt
   constructor
   · calc
       (∑ k : CoordinateIdx (𝕜 := Real) E,
-          gInv i k * g.inner x ((coordinateFrameAt_basis (I := I) x₀ hx) k)
-            ((coordinateFrameAt_basis (I := I) x₀ hx) j))
+          gInv i k * g.inner x ((coordinateFrameAtBasis (I := I) x₀ hx) k)
+            ((coordinateFrameAtBasis (I := I) x₀ hx) j))
           =
         ∑ k : CoordinateIdx (𝕜 := Real) E,
-          g.inner x ((coordinateFrameAt_basis (I := I) x₀ hx) j)
-            ((coordinateFrameAt_basis (I := I) x₀ hx) k) * gInv k i := by
+          g.inner x ((coordinateFrameAtBasis (I := I) x₀ hx) j)
+            ((coordinateFrameAtBasis (I := I) x₀ hx) k) * gInv k i := by
             refine Finset.sum_congr rfl fun k _ => ?_
-            rw [hsym i k, g.symm x ((coordinateFrameAt_basis (I := I) x₀ hx) k)
-              ((coordinateFrameAt_basis (I := I) x₀ hx) j)]
+            rw [hsym i k, g.symm x ((coordinateFrameAtBasis (I := I) x₀ hx) k)
+              ((coordinateFrameAtBasis (I := I) x₀ hx) j)]
             ring
       _ = (if j = i then 1 else 0) := hsecond j i
       _ = (if i = j then 1 else 0) := by
@@ -564,16 +564,16 @@ theorem gInvBasisAt
 
 theorem inverseMetricFlatModelInChart_metricInverseInBasis_center
     (g : SmoothRiemannianMetric I M) (x₀ : M) :
-    MetricInverseInBasis_gen (I := I) g x₀ (coordinateFrameAt_toBasis (I := I) x₀)
+    MetricInverseInBasisGen (I := I) g x₀ (coordinateFrameAtToBasis (I := I) x₀)
       (fun k l : CoordinateIdx (𝕜 := Real) E =>
-        inverseMetricFlatModelInChart_component (I := I) g x₀ k l
+        inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
           (extChartAt I x₀ x₀)) := by
   classical
   let A : E ≃L[Real] (E →L[Real] Real) := metricFlatContinuousEquiv (I := I) g x₀
   let ε : CoordinateIdx (𝕜 := Real) E -> E →L[Real] Real :=
     fun a => LinearMap.toContinuousLinearMap ((Module.finBasis Real E).coord a)
   let gInv : CoordinateIdx (𝕜 := Real) E -> CoordinateIdx (𝕜 := Real) E -> Real :=
-    fun k l => inverseMetricFlatModelInChart_component (I := I) g x₀ k l
+    fun k l => inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
       (extChartAt I x₀ x₀)
   have hInv :
       ContinuousLinearMap.inverse
@@ -582,13 +582,13 @@ theorem inverseMetricFlatModelInChart_metricInverseInBasis_center
     rw [metricFlatModelInChart_center_eq (I := I) g x₀]
     exact ContinuousLinearMap.inverse_equiv A
   have hbasis (i : CoordinateIdx (𝕜 := Real) E) :
-      coordinateFrameAt_toBasis (I := I) x₀ i =
+      coordinateFrameAtToBasis (I := I) x₀ i =
         (trivializationAt E (TangentSpace I) x₀).symmL Real x₀
           ((Module.finBasis Real E) i) :=
     coordBasis_model (I := I) x₀ (coordinateFrameAt_mem (I := I) x₀) i
   have hginv (k l : CoordinateIdx (𝕜 := Real) E) :
       gInv k l = (Module.finBasis Real E).coord k (A.symm (ε l)) := by
-    dsimp [gInv, inverseMetricFlatModelInChart_component]
+    dsimp [gInv, inverseMetricFlatModelInChartComponent]
     simpa [extChartAt] using
       congrArg (fun L : (E →L[Real] Real) →L[Real] E =>
         (Module.finBasis Real E).coord k (L (ε l))) hInv
@@ -622,8 +622,8 @@ theorem inverseMetricFlatModelInChart_metricInverseInBasis_center
       ((trivializationAt E (TangentSpace I) x₀).symmL Real x₀ w)
   have hsecond (i j : CoordinateIdx (𝕜 := Real) E) :
       (∑ k : CoordinateIdx (𝕜 := Real) E,
-          g.inner x₀ ((coordinateFrameAt_toBasis (I := I) x₀) i)
-            ((coordinateFrameAt_toBasis (I := I) x₀) k) * gInv k j) =
+          g.inner x₀ ((coordinateFrameAtToBasis (I := I) x₀) i)
+            ((coordinateFrameAtToBasis (I := I) x₀) k) * gInv k j) =
         (if i = j then 1 else 0) := by
     simp only [hbasis, hginv, ← metricFlatContinuousEquiv_apply (I := I) g x₀]
     calc
@@ -671,14 +671,14 @@ theorem inverseMetricFlatModelInChart_metricInverseInBasis_center
   constructor
   · calc
       (∑ k : CoordinateIdx (𝕜 := Real) E,
-          gInv i k * g.inner x₀ ((coordinateFrameAt_toBasis (I := I) x₀) k)
-            ((coordinateFrameAt_toBasis (I := I) x₀) j))
+          gInv i k * g.inner x₀ ((coordinateFrameAtToBasis (I := I) x₀) k)
+            ((coordinateFrameAtToBasis (I := I) x₀) j))
           = ∑ k : CoordinateIdx (𝕜 := Real) E,
-              g.inner x₀ ((coordinateFrameAt_toBasis (I := I) x₀) j)
-                ((coordinateFrameAt_toBasis (I := I) x₀) k) * gInv k i := by
+              g.inner x₀ ((coordinateFrameAtToBasis (I := I) x₀) j)
+                ((coordinateFrameAtToBasis (I := I) x₀) k) * gInv k i := by
             refine Finset.sum_congr rfl fun k _ => ?_
-            rw [hsym i k, g.symm x₀ ((coordinateFrameAt_toBasis (I := I) x₀) k)
-              ((coordinateFrameAt_toBasis (I := I) x₀) j)]
+            rw [hsym i k, g.symm x₀ ((coordinateFrameAtToBasis (I := I) x₀) k)
+              ((coordinateFrameAtToBasis (I := I) x₀) j)]
             ring
       _ = (if j = i then 1 else 0) := hsecond j i
       _ = (if i = j then 1 else 0) := by
@@ -700,7 +700,7 @@ theorem gInvBasisNhds
     (g : SmoothRiemannianMetric I M) (x₀ : M)
     (i j : CoordinateIdx (𝕜 := Real) E) :
     (fun y : M => ∑ k : CoordinateIdx (𝕜 := Real) E,
-        inverseMetricFlatModelInChart_component (I := I) g x₀ i k
+        inverseMetricFlatModelInChartComponent (I := I) g x₀ i k
           (extChartAt I x₀ y) *
           metricCompForMetricInFrame (I := I) g
             (coordinateFrameAt (I := I) x₀) y k j) =ᶠ[𝓝 x₀]

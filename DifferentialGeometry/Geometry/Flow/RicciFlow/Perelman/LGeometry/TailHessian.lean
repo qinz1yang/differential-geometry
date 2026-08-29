@@ -70,8 +70,8 @@ private theorem tailHess_clamp
       dsimp only [hi, eps] at hhi
       linarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
 private theorem lTail_mfd_at
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -199,8 +199,8 @@ private theorem lTail_mfd_at
       (lVelocity (I := I) (fun s : Real ↦ alpha (A, s)) b))
   exact hout
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] [SigmaCompactSpace M] in
 private theorem lTail_grad_on
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -290,8 +290,8 @@ private theorem lTail_grad_on
       congrArg (NormedSpace.fromTangentSpace (𝕜 := Real) (branch y)) hcast
     _ = _ := ContinuousLinearEquiv.apply_symm_apply _ _
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
 omit [SigmaCompactSpace M] in
 private theorem lTailEnd_cov
@@ -519,8 +519,8 @@ private theorem lTailEnd_cov
     exact hcomm.trans (by simpa using hc)
   exact hchain'.symm.trans (hcovGrad.trans hcomm')
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
 omit [SigmaCompactSpace M] in
 theorem lTailBranch_hess
@@ -568,8 +568,8 @@ theorem lTailBranch_hess
     (fun Q : TangentSpace I (alpha (A0, b)) ↦
       (S.base.metric (T - b ^ 2)).inner (alpha (A0, b)) Q Z) hcov)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem lTail_hess_le
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)

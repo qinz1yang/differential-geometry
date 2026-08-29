@@ -15,12 +15,12 @@ namespace DeGiorgi
 
 /-- The local Moser base constant appearing in the Chapter 07 endpoint bounds. -/
 noncomputable def localMoserBase (d : ℕ) [NeZero d] : ℝ :=
-  C_Moser d * (((d : ℝ) - 1) ^ (d : ℝ)) * ((4 : ℝ) ^ (d : ℝ))
+  CMoser d * (((d : ℝ) - 1) ^ (d : ℝ)) * ((4 : ℝ) ^ (d : ℝ))
 
 /-- The local weak Harnack base constant appearing in the Chapter 07 endpoint
 bounds. -/
 noncomputable def localWeakHarnackBase (d : ℕ) [NeZero d] : ℝ :=
-  C_weakHarnack_of d * ((d : ℝ) ^ (weak_harnack_decay_exp d))
+  CWeakHarnackOf d * ((d : ℝ) ^ (weakHarnackDecayExp d))
 
 theorem localMoserBase_nonneg (d : ℕ) [NeZero d] : 0 ≤ localMoserBase d := by
   unfold localMoserBase
@@ -55,7 +55,7 @@ theorem localWeakHarnackBase_pos (d : ℕ) [NeZero d] :
 theorem one_le_localMoserBase (d : ℕ) [NeZero d] (hd : 2 < (d : ℝ)) :
     1 ≤ localMoserBase d := by
   unfold localMoserBase
-  have hcm : 1 ≤ C_Moser d := one_le_C_Moser (d := d)
+  have hcm : 1 ≤ CMoser d := one_le_C_Moser (d := d)
   have hpow1 : 1 ≤ ((d : ℝ) - 1) ^ (d : ℝ) := by
     have hbase : 1 ≤ (d : ℝ) - 1 := by linarith
     exact Real.one_le_rpow hbase (by positivity)
@@ -66,12 +66,12 @@ theorem one_le_localMoserBase (d : ℕ) [NeZero d] (hd : 2 < (d : ℝ)) :
 theorem one_le_localWeakHarnackBase (d : ℕ) [NeZero d] (hd : 2 < (d : ℝ)) :
     1 ≤ localWeakHarnackBase d := by
   unfold localWeakHarnackBase
-  have hcm : 1 ≤ C_weakHarnack_of d := by
+  have hcm : 1 ≤ CWeakHarnackOf d := by
     exact one_le_C_weakHarnack_of (d := d)
-  have hpow : 1 ≤ (d : ℝ) ^ (weak_harnack_decay_exp d) := by
+  have hpow : 1 ≤ (d : ℝ) ^ (weakHarnackDecayExp d) := by
     have hd_one : 1 ≤ (d : ℝ) := by
       exact_mod_cast Nat.succ_le_of_lt (Nat.pos_of_ne_zero (NeZero.ne d))
-    have hdecay_nonneg : 0 ≤ weak_harnack_decay_exp d :=
+    have hdecay_nonneg : 0 ≤ weakHarnackDecayExp d :=
       weak_harnack_decay_exp_nonneg (d := d) hd
     exact Real.one_le_rpow hd_one hdecay_nonneg
   exact one_le_mul_of_one_le_of_one_le hcm hpow

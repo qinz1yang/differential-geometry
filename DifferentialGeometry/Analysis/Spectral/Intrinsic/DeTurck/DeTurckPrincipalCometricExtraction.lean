@@ -72,17 +72,17 @@ private lemma cometricLmodel_covectorOfCLM_inner_loc (g₁ : SmoothRiemannianMet
     (φ : E →L[ℝ] ℝ) (u : TangentSpace I y) :
     g₁.inner y ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
       (cometricLmodel (I := I) g₁ y
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ))) u =
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ))) u =
       φ (tangentSpaceModelContinuousLinearEquiv (I := I) y u) := by
   have h1 : (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
         (cometricLmodel (I := I) g₁ y
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)) =
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ)) =
       inverseMetricSharpFib (I := I) g₁ y
-        ((Tensor0SBundle.tensor0SSpace_continuousLinearEquiv (𝕜 := ℝ) (I := I) 1 y).symm
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)) := rfl
+        ((Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (𝕜 := ℝ) (I := I) 1 y).symm
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ)) := rfl
   rw [h1, inverseMetricSharpFib_inner (I := I) g₁ y _ u, cotangentToDualLinear_apply,
     cotangentToDual_apply]
-  change (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)
+  change (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ)
       (fun _ : Fin 1 => tangentSpaceModelContinuousLinearEquiv (I := I) y u) =
     φ (tangentSpaceModelContinuousLinearEquiv (I := I) y u)
   rw [Tensor0SBundle.model_covectorOfCLM_apply]
@@ -91,15 +91,15 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 theorem cometricLmodel_sub_eq_metricComparisonDifferenceEndomorphism
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) (φ : E →L[ℝ] ℝ) :
-    cometricLmodel (I := I) g₁ x (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)
-        - cometricLmodel (I := I) g₀ x (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ) =
+    cometricLmodel (I := I) g₁ x (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ)
+        - cometricLmodel (I := I) g₀ x (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ) =
       tangentSpaceModelContinuousLinearEquiv (I := I) x
         (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
             (cometricLmodel (I := I) g₀ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ)))) := by
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ)))) := by
   set α : Tensor0SSpace 1 I x :=
-    Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E) φ with hα
+    Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E) φ with hα
   set w₀ : TangentSpace I x := (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
     (cometricLmodel (I := I) g₀ x α) with hw₀
   set w₁ : TangentSpace I x := (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
@@ -142,7 +142,7 @@ theorem cometricDoubleTraceCoefficient_operatorFieldApplication_sub_eq_gInvDiffC
               (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
                   (cometricLmodel (I := I) g₀ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k))))))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
   classical
@@ -169,12 +169,12 @@ theorem cometricDoubleTraceCoefficient_operatorFieldApplication_sub_eq_gInvDiffC
     rw [map_sub, sub_apply]
   have hkey : unitModel (I := I) (M := M) g₀ 4 W x
         (Fin.cons (cometricLmodel (I := I) g₁ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)))
           (Fin.cons ((Module.finBasis ℝ E) k) v))
         - unitModel (I := I) (M := M) g₀ 4 W x
           (Fin.cons (cometricLmodel (I := I) g₀ x
-              (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+              (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                 ((Module.finBasis ℝ E).cDualBasis k)))
             (Fin.cons ((Module.finBasis ℝ E) k) v))
       = unitModel (I := I) (M := M) g₀ 4 W x
@@ -183,7 +183,7 @@ theorem cometricDoubleTraceCoefficient_operatorFieldApplication_sub_eq_gInvDiffC
               (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
                   (cometricLmodel (I := I) g₀ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k))))))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
     rw [hcons (cometricLmodel (I := I) g₁ x _), hcons (cometricLmodel (I := I) g₀ x _),
@@ -210,7 +210,7 @@ theorem connLapCometric_g1_sub_g0_eq_gInvDiffContraction
               (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
                   (cometricLmodel (I := I) g₀ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k))))))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
   have hg₀ : unitModel (I := I) (M := M) g₀ 2
@@ -263,7 +263,7 @@ theorem deTurckPrincipalCometricArm_unitModel_eq_gInvDiffContraction
               (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
                   (cometricLmodel (I := I) g₀ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k))))))
             (Fin.cons ((Module.finBasis ℝ E) k) v)) := by
   classical
@@ -309,7 +309,7 @@ private lemma deTurckCoeff_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I M) (
               (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
                   (cometricLmodel (I := I) g₀ x
-                    (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+                    (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
                       ((Module.finBasis ℝ E).cDualBasis k))))))
             (Fin.cons (((Module.finBasis ℝ E) k : E)) m)) := by
   classical
@@ -327,16 +327,16 @@ private lemma deTurckCoeff_toModel_eq (g₀ g₁ : SmoothRiemannianMetric I M) (
             z) tail := by
     intro z; rw [continuousMultilinearCurryLeftEquiv_apply]
   rw [hcurry (cometricLmodel (I := I) g₁ x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis k))),
     hcurry (cometricLmodel (I := I) g₀ x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis k))),
     hcurry (tangentSpaceModelContinuousLinearEquiv (I := I) x
       (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
           (cometricLmodel (I := I) g₀ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k))))))]
   rw [← sub_apply, ← map_sub]
   rw [cometricLmodel_sub_eq_metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x
@@ -373,7 +373,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma cometricLmodel_covOf_g0flat_eq (g₀ : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
     cometricLmodel (I := I) g₀ x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((g₀.inner x v).comp
             (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm.toContinuousLinearMap)) =
       tangentSpaceModelContinuousLinearEquiv (I := I) x v := by
@@ -396,7 +396,7 @@ private lemma flatRecon_eq_basisVec (g₀ : SmoothRiemannianMetric I M) (x : M)
         (g₀.inner x (e b) ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
           ((Module.finBasis ℝ E) k)) : ℝ) •
           cometricLmodel (I := I) g₀ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k)) =
       tangentSpaceModelContinuousLinearEquiv (I := I) x (e b) := by
   classical
@@ -404,10 +404,10 @@ private lemma flatRecon_eq_basisVec (g₀ : SmoothRiemannianMetric I M) (x : M)
       (g₀.inner x (e b) ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
         ((Module.finBasis ℝ E) k)) : ℝ) •
           cometricLmodel (I := I) g₀ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((Module.finBasis ℝ E).cDualBasis k))
         = cometricLmodel (I := I) g₀ x
-            (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+            (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
               ((g₀.inner x (e b) ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
                 ((Module.finBasis ℝ E) k)) : ℝ) •
                 ((Module.finBasis ℝ E).cDualBasis k))) := by
@@ -464,7 +464,7 @@ private lemma deTurckCoeff_component_eq (g₀ g₁ : SmoothRiemannianMetric I M)
   set Rk : Fin (Module.finrank ℝ E) → TangentSpace I x := fun k =>
     (tangentSpaceModelContinuousLinearEquiv (I := I) x).symm
       (cometricLmodel (I := I) g₀ x
-        (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+        (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
           ((Module.finBasis ℝ E).cDualBasis k))) with hRk
   set Λ : TangentSpace I x →L[ℝ] TangentSpace I x :=
     metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x with hΛ

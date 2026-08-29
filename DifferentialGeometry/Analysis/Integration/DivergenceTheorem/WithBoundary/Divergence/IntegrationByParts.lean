@@ -145,7 +145,7 @@ theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_bound
     (hX_int : tsupport X ⊆ I.interior M) :
     ∫ x, tangentSectionAction (I := I) X f x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      -∫ x, f x * divergence_g_with_boundary (I := I) g X x
+      -∫ x, f x * divergenceGWithBoundary (I := I) g X x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   set Y : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ :=
@@ -155,29 +155,29 @@ theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_bound
   have hY_int : tsupport (Y : ∀ x, TangentSpace I x) ⊆ I.interior M :=
     tsupport_smoothSmul_subset_interior (I := I) hf X hX_int
   have hY_div : ∀ x : M,
-      divergence_g_with_boundary (I := I) g Y x =
-        f x * divergence_g_with_boundary (I := I) g X x +
+      divergenceGWithBoundary (I := I) g Y x =
+        f x * divergenceGWithBoundary (I := I) g X x +
           tangentSectionAction (I := I) X f x :=
     divergence_g_with_boundary_smoothSmul (I := I) g f hf X
   have hf_cont : Continuous f := hf.continuous
-  have hX_div_cont : Continuous (divergence_g_with_boundary (I := I) g X) := by
-    have hdiv_supp : tsupport (divergence_g_with_boundary (I := I) g X) ⊆ tsupport X :=
+  have hX_div_cont : Continuous (divergenceGWithBoundary (I := I) g X) := by
+    have hdiv_supp : tsupport (divergenceGWithBoundary (I := I) g X) ⊆ tsupport X :=
       tsupport_divergence_g_with_boundary_subset
         (I := I) g X
     have hdiv_supp_int :
-        tsupport (divergence_g_with_boundary (I := I) g X) ⊆ I.interior M :=
+        tsupport (divergenceGWithBoundary (I := I) g X) ⊆ I.interior M :=
       hdiv_supp.trans hX_int
     rw [continuous_iff_continuousAt]
     intro x
-    by_cases hx_supp : x ∈ tsupport (divergence_g_with_boundary (I := I) g X)
+    by_cases hx_supp : x ∈ tsupport (divergenceGWithBoundary (I := I) g X)
     · have hx_int : x ∈ I.interior M := hdiv_supp_int hx_supp
       have hcont_int :
-          ContinuousOn (divergence_g_with_boundary (I := I) g X) (I.interior M) :=
+          ContinuousOn (divergenceGWithBoundary (I := I) g X) (I.interior M) :=
         divergence_g_with_boundary_continuousOn_interior (I := I) g X
       exact (hcont_int x hx_int).continuousAt (isOpen_interior_M.mem_nhds hx_int)
-    · have h_open : IsOpen (tsupport (divergence_g_with_boundary (I := I) g X))ᶜ :=
+    · have h_open : IsOpen (tsupport (divergenceGWithBoundary (I := I) g X))ᶜ :=
         (isClosed_tsupport _).isOpen_compl
-      have hev_zero : (divergence_g_with_boundary (I := I) g X) =ᶠ[𝓝 x]
+      have hev_zero : (divergenceGWithBoundary (I := I) g X) =ᶠ[𝓝 x]
           (fun _ => (0 : ℝ)) := by
         filter_upwards [h_open.mem_nhds hx_supp] with y hy
         by_contra hne
@@ -185,31 +185,31 @@ theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_bound
       exact (continuous_const.continuousAt.congr hev_zero.symm)
   have hAct_cont : Continuous (tangentSectionAction (I := I) X f) :=
     tangentSectionAction_continuous_of_interior_support (I := I) X hf hf_int
-  have hX_div_cs : HasCompactSupport (divergence_g_with_boundary (I := I) g X) :=
+  have hX_div_cs : HasCompactSupport (divergenceGWithBoundary (I := I) g X) :=
     hasCompactSupport_divergence_g_with_boundary (I := I) g hX
   have hAct_cs : HasCompactSupport (tangentSectionAction (I := I) X f) :=
     hasCompactSupport_tangentSectionAction (I := I) hX f
-  have hMul_cont : Continuous (fun x : M => f x * divergence_g_with_boundary (I := I) g X x) :=
+  have hMul_cont : Continuous (fun x : M => f x * divergenceGWithBoundary (I := I) g X x) :=
     hf_cont.mul hX_div_cont
-  have hMul_cs : HasCompactSupport (fun x : M => f x * divergence_g_with_boundary (I := I) g X x) :=
+  have hMul_cs : HasCompactSupport (fun x : M => f x * divergenceGWithBoundary (I := I) g X x) :=
     hX_div_cs.mul_left
   have h_div_Y_zero :
-      ∫ x, divergence_g_with_boundary (I := I) g Y x
+      ∫ x, divergenceGWithBoundary (I := I) g Y x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 :=
     integral_divergence_with_boundary_eq_zero_of_hasCompactSupport_of_interior_support
       (I := I) g Y hY_cs hY_int
-  have h_eq_pointwise : ∀ x : M, divergence_g_with_boundary (I := I) g Y x =
-      f x * divergence_g_with_boundary (I := I) g X x +
+  have h_eq_pointwise : ∀ x : M, divergenceGWithBoundary (I := I) g Y x =
+      f x * divergenceGWithBoundary (I := I) g X x +
         tangentSectionAction (I := I) X f x := hY_div
   have h_div_Y_split :
-      ∫ x, divergence_g_with_boundary (I := I) g Y x
+      ∫ x, divergenceGWithBoundary (I := I) g Y x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-        ∫ x, (f x * divergence_g_with_boundary (I := I) g X x +
+        ∫ x, (f x * divergenceGWithBoundary (I := I) g X x +
                 tangentSectionAction (I := I) X f x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
     refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
     exact h_eq_pointwise x
-  have h_int_mul : Integrable (fun x : M => f x * divergence_g_with_boundary (I := I) g X x)
+  have h_int_mul : Integrable (fun x : M => f x * divergenceGWithBoundary (I := I) g X x)
       (riemannianVolumeMeasure (I := I) (M := M) g) :=
     Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
       (I := I) g hMul_cont hMul_cs
@@ -218,16 +218,16 @@ theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence_with_bound
     Continuous.integrable_of_hasCompactSupport_riemannianVolumeMeasure
       (I := I) g hAct_cont hAct_cs
   have h_int_split :
-      ∫ x, (f x * divergence_g_with_boundary (I := I) g X x +
+      ∫ x, (f x * divergenceGWithBoundary (I := I) g X x +
               tangentSectionAction (I := I) X f x)
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-        ∫ x, f x * divergence_g_with_boundary (I := I) g X x
+        ∫ x, f x * divergenceGWithBoundary (I := I) g X x
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) +
           ∫ x, tangentSectionAction (I := I) X f x
             ∂(riemannianVolumeMeasure (I := I) (M := M) g) :=
     integral_add h_int_mul h_int_act
   have h_sum_zero :
-      ∫ x, f x * divergence_g_with_boundary (I := I) g X x
+      ∫ x, f x * divergenceGWithBoundary (I := I) g X x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) +
         ∫ x, tangentSectionAction (I := I) X f x
           ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
@@ -258,7 +258,7 @@ theorem integral_tangentSectionAction_mul_add_eq_neg_with_boundary
     ∫ x, (tangentSectionAction (I := I) X f x * h x +
             f x * tangentSectionAction (I := I) X h x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) =
-      -∫ x, f x * h x * divergence_g_with_boundary (I := I) g X x
+      -∫ x, f x * h x * divergenceGWithBoundary (I := I) g X x
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) := by
   classical
   have hfh : ContMDiff I 𝓘(ℝ) ∞ (f * h) := hf.mul hh

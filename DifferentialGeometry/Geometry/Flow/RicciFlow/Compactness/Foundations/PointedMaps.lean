@@ -1033,7 +1033,7 @@ structure SourceMetricConvergenceData
 
 namespace SourceMetricConvergenceData
 
-noncomputable def of_derivNormSupOn
+noncomputable def ofDerivNormSupOn
     {X : PointedFlowSeq (I := I)}
     {P : PointedRiemannianManifold (I := I)}
     {subseq : Nat -> Nat}
@@ -1084,7 +1084,7 @@ noncomputable def ofRestrictPullback
               (Φ := Φ) (k := k) (hσsrc k)
               (referenceMetric k) limitMetricFamily).derivNormSupOn (I := I) K p t) < ε) :
     SourceMetricConvergenceData (I := I) Φ :=
-  SourceMetricConvergenceData.of_derivNormSupOn (I := I)
+  SourceMetricConvergenceData.ofDerivNormSupOn (I := I)
     (D := fun k => SourceDomainMetricData.ofRestrictPullback (I := I)
       (Φ := Φ) (k := k) (hσsrc k) (referenceMetric k) limitMetricFamily)
     hconv

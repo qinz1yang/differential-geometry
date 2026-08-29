@@ -243,7 +243,7 @@ theorem metricCcTensor_apply (g₀ g : SmoothRiemannianMetric I M)
     (x : M) (v w : TangentSpace I x) :
     smoothCcTensorBilinForm (I := I) g₀ (metricCcTensor (I := I) (M := M) g₀ g) x v w =
       g.inner x v w := by
-  let _ := Tensor0SBundle.tensor0SBundle_topology
+  let _ := Tensor0SBundle.tensor0SBundleTopology
     (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   have hround : ccTensorMultilinear (I := I) g₀ (metricCcTensor (I := I) (M := M) g₀ g) x =
       metricCcTensorFib (I := I) g x := by

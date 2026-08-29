@@ -124,7 +124,7 @@ theorem scalar0_fiber_sq
   rw [riemannianFiberNormSq_eq_tensorInnerPointwise, ← hTx,
     inner_toRS0_zero (I := I) (M := M) g x]
   have hscalar :
-      (tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x) (A x) =
+      (tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x) (A x) =
       TensorRSField.scalar0 T.toSection x := by
     rw [Tensor0SSpace.evalScalar_apply]
     rfl
@@ -302,8 +302,8 @@ theorem hs3_grad_low2
           (mul_le_mul_of_nonneg_right hCptChs hN) 2
   · exact hVjet
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem hs2_op_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
@@ -331,7 +331,7 @@ theorem hs2_op_bound
   intro x v w
   let _ : Bundle.RiemannianBundle
       (fun b : M => Tensor0SBundle.TensorRSSpace 0 2 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g 0 2
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g 0 2
   let _ : ∀ b : M,
       NormedAddCommGroup (Tensor0SBundle.TensorRSSpace 0 2 I b) :=
     fun b =>

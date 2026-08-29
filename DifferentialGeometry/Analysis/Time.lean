@@ -105,7 +105,7 @@ theorem isSmoothFam_const_mul (td : TimeDerivativeData R A Time) [TimeRegularFam
   rw [h]
   exact td.isSmoothFam_mul _ _ (td.isSmoothFam_const c) hf
 
-def dt_apply (td : TimeDerivativeData R A Time) (f : Time -> R) (t : Time) : R :=
+def dtApply (td : TimeDerivativeData R A Time) (f : Time -> R) (t : Time) : R :=
   td.eval (td.dt (td.lift f)) t
 
 @[simp] theorem eval_zero (td : TimeDerivativeData R A Time) (t : Time) :
@@ -115,26 +115,26 @@ def dt_apply (td : TimeDerivativeData R A Time) (f : Time -> R) (t : Time) : R :
 theorem dt_apply_add (td : TimeDerivativeData R A Time) [TimeRegularFam td]
     (f g : Time -> R) (t : Time)
     (hf : td.isSmoothFam f) (hg : td.isSmoothFam g) :
-    td.dt_apply (f + g) t = td.dt_apply f t + td.dt_apply g t := by
-  simp [dt_apply, td.lift_add f g hf hg, map_add, td.eval_add]
+    td.dtApply (f + g) t = td.dtApply f t + td.dtApply g t := by
+  simp [dtApply, td.lift_add f g hf hg, map_add, td.eval_add]
 
 theorem dt_apply_const (td : TimeDerivativeData R A Time)
     (c : R) (t : Time) :
-    td.dt_apply (fun _ => c) t = 0 := by
-  simp [dt_apply, td.lift_algebraMap c, Derivation.map_algebraMap]
+    td.dtApply (fun _ => c) t = 0 := by
+  simp [dtApply, td.lift_algebraMap c, Derivation.map_algebraMap]
 
 theorem dt_apply_mul (td : TimeDerivativeData R A Time) [TimeRegularFam td]
     (f g : Time -> R) (t : Time)
     (hf : td.isSmoothFam f) (hg : td.isSmoothFam g) :
-    td.dt_apply (f * g) t = f t * td.dt_apply g t + g t * td.dt_apply f t := by
-  simp only [dt_apply, td.lift_mul f g hf hg]
+    td.dtApply (f * g) t = f t * td.dtApply g t + g t * td.dtApply f t := by
+  simp only [dtApply, td.lift_mul f g hf hg]
   rw [td.dt.leibniz (td.lift f) (td.lift g)]
   simp only [td.eval_add, td.eval_mul, smul_eq_mul, td.eval_lift f hf,
     td.eval_lift g hg]
 
 theorem dt_apply_const_mul (td : TimeDerivativeData R A Time) [TimeRegularFam td]
     (c : R) (f : Time -> R) (t : Time) (hf : td.isSmoothFam f) :
-    td.dt_apply (fun s => c * f s) t = c * td.dt_apply f t := by
+    td.dtApply (fun s => c * f s) t = c * td.dtApply f t := by
   have h : (fun s => c * f s) = (fun _ => c) * f := by
     ext s
     rfl
@@ -144,10 +144,10 @@ theorem dt_apply_const_mul (td : TimeDerivativeData R A Time) [TimeRegularFam td
 
 theorem dt_apply_neg (td : TimeDerivativeData R A Time) [TimeRegularFam td]
     (f : Time -> R) (t : Time) (hf : td.isSmoothFam f) :
-    td.dt_apply (-f) t = -td.dt_apply f t := by
+    td.dtApply (-f) t = -td.dtApply f t := by
   have h := td.dt_apply_add f (-f) t hf (td.isSmoothFam_neg f hf)
-  have h0 : td.dt_apply (0 : Time -> R) t = 0 := by
-    change td.dt_apply (fun _ => (0 : R)) t = 0
+  have h0 : td.dtApply (0 : Time -> R) t = 0 := by
+    change td.dtApply (fun _ => (0 : R)) t = 0
     exact td.dt_apply_const 0 t
   simp only [add_neg_cancel] at h
   rw [h0] at h
@@ -156,7 +156,7 @@ theorem dt_apply_neg (td : TimeDerivativeData R A Time) [TimeRegularFam td]
 theorem dt_apply_sub (td : TimeDerivativeData R A Time) [TimeRegularFam td]
     (f g : Time -> R) (t : Time)
     (hf : td.isSmoothFam f) (hg : td.isSmoothFam g) :
-    td.dt_apply (f - g) t = td.dt_apply f t - td.dt_apply g t := by
+    td.dtApply (f - g) t = td.dtApply f t - td.dtApply g t := by
   have h : f - g = f + (-g) := by
     ext s
     simp [sub_eq_add_neg]
@@ -167,11 +167,11 @@ theorem dt_apply_sub (td : TimeDerivativeData R A Time) [TimeRegularFam td]
 theorem dt_apply_sum (td : TimeDerivativeData R A Time) [TimeRegularFam td]
     {ι : Type*} (s : Finset ι) (f : ι -> Time -> R) (t : Time)
     (hfs : forall i, i ∈ s -> td.isSmoothFam (f i)) :
-    td.dt_apply (∑ i ∈ s, f i) t = ∑ i ∈ s, td.dt_apply (f i) t := by
+    td.dtApply (∑ i ∈ s, f i) t = ∑ i ∈ s, td.dtApply (f i) t := by
   induction s using Finset.cons_induction with
   | empty =>
       simp only [Finset.sum_empty]
-      change td.dt_apply (fun _ => (0 : R)) t = 0
+      change td.dtApply (fun _ => (0 : R)) t = 0
       exact td.dt_apply_const 0 t
   | cons a s' ha ih =>
       have h_tail_smooth : td.isSmoothFam (∑ i ∈ s', f i) :=

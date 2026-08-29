@@ -38,7 +38,7 @@ lemma gradInnerSmooth_continuous
     Continuous (fun x : M =>
       g.inner x (gradFun (I := I) g ρα x) (gradFun (I := I) g v.toFun x)) := by
   have h := TangentBundle.continuous_g_inner_of_smooth_sections (I := I) (M := M) g
-    (grad_g (I := I) g ρα) (grad_g (I := I) g ⟨v.toFun, v.smooth⟩)
+    (gradG (I := I) g ρα) (gradG (I := I) g ⟨v.toFun, v.smooth⟩)
   refine h.congr ?_
   intro x
   change g.inner x (gradFun (I := I) g ρα x) (gradFun (I := I) g v.toFun x) =
@@ -374,9 +374,9 @@ lemma integral_inner_grad_self_le_h1_norm_sq
   have h_l2_nonneg :=
     SmoothScalar.integral_mul_self_nonneg (I := I) (M := M) (g := g) v
   have h_grad_eq :
-      (∫ x, g.inner x ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
+      (∫ x, g.inner x ((gradG (I := I) g ⟨v.toFun, v.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-          ((grad_g (I := I) g ⟨v.toFun, v.smooth⟩ :
+          ((gradG (I := I) g ⟨v.toFun, v.smooth⟩ :
             Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g)) =
       (∫ x, g.inner x (gradFun (I := I) g v.toFun x)

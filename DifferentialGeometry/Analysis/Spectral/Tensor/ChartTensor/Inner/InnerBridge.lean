@@ -195,7 +195,7 @@ theorem chartTensorInnerPointwise_0s_eq_tensorInnerPointwise_0s_chartJ
     (g : SmoothRiemannianMetric I M) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (s : ℕ) (A B : Tensor0SModel s ℝ E) :
-    chartTensorInnerPointwise_0s (I := I) (M := M) s g α b A B =
+    chartTensorInnerPointwise0s (I := I) (M := M) s g α b A B =
       covariantTensorInnerPointwise (I := I) (M := M) s g b
         (A.compContinuousLinearMap
           (fun _ : Fin s => chartTrivializationLinearMap (I := I) (M := M) α b))
@@ -239,11 +239,11 @@ theorem chartTensorInnerPointwise_rs_model_eq_tensorInnerPointwise_0s_compChartJ
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (T₀ T₁ : TensorRSModel r s ℝ E) :
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T₀ T₁ =
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T₀ T₁ =
       covariantTensorInnerPointwise (I := I) (M := M) (r + s) g b
-        ((chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T₀).compContinuousLinearMap
+        ((chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T₀).compContinuousLinearMap
           (fun _ : Fin (r + s) => chartTrivializationLinearMap (I := I) (M := M) α b))
-        ((chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T₁).compContinuousLinearMap
+        ((chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T₁).compContinuousLinearMap
           (fun _ : Fin (r + s) => chartTrivializationLinearMap (I := I) (M := M) α b)) := by
   rw [chartTensorInnerPointwise_rs_model_def]
   exact chartTensorInnerPointwise_0s_eq_tensorInnerPointwise_0s_chartJ
@@ -273,7 +273,7 @@ lemma chartLowerAllUpperIndices_model_compChartJ
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (T : TensorRSModel r s ℝ E) :
-    (chartLowerAllUpperIndices_model (I := I) (M := M) r s g α b T).compContinuousLinearMap
+    (chartLowerAllUpperIndicesModel (I := I) (M := M) r s g α b T).compContinuousLinearMap
         (fun _ : Fin (r + s) => chartTrivializationLinearMap (I := I) (M := M) α b)
       = lowerAllUpperIndices (I := I) (M := M) g r s b
           (chartRSTwist (I := I) (M := M) α b r s T) := by
@@ -301,7 +301,7 @@ theorem chartTensorInnerPointwise_rs_model_eq_tensorInnerPointwise
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (T₀ T₁ : TensorRSModel r s ℝ E) :
-    chartTensorInnerPointwise_rs_model (I := I) (M := M) g r s α b T₀ T₁ =
+    chartTensorInnerPointwiseRsModel (I := I) (M := M) g r s α b T₀ T₁ =
       tensorInnerPointwise (I := I) (M := M) g r s b
         (chartRSTwist (I := I) (M := M) α b r s T₀)
         (chartRSTwist (I := I) (M := M) α b r s T₁) := by

@@ -20,7 +20,7 @@ variable {X : PointedFlowSeq (I := I)}
 variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat → Nat}
 
-noncomputable def convOut_of_src
+noncomputable def convOutOfSrc
     (Φ : PointedCGHMaps (I := I) X P subseq)
     (R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted

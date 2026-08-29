@@ -55,7 +55,7 @@ lemma lower_toRS0
     (Tensor0SSpace.ofModel (I := I) (x := x)
       (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ)))]
   rw [Tensor0SSpace.toRS0_apply]
-  have hone : tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x
+  have hone : tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x
       (Tensor0SSpace.ofModel (I := I) (x := x)
         (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ))) = 1 := by
     rw [Tensor0SSpace.evalScalar_apply]
@@ -99,8 +99,8 @@ lemma inner_toRS0_zero
     tensorInnerPointwise (I := I) (M := M) g 0 0 x
         (TensorRSSpace.toModel (Tensor0SSpace.toRS0 A))
         (TensorRSSpace.toModel (Tensor0SSpace.toRS0 B)) =
-      tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x A *
-        tensor0SSpace_evalScalar (𝕜 := ℝ) (I := I) (M := M) x B := by
+      tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x A *
+        tensor0SSpaceEvalScalar (𝕜 := ℝ) (I := I) (M := M) x B := by
   rw [inner_toRS0 (I := I) (M := M) g 0 x,
     tensorInnerPointwise_0s_zero_arity,
     Tensor0SSpace.evalScalar_apply, Tensor0SSpace.evalScalar_apply]

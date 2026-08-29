@@ -126,7 +126,7 @@ theorem sobolev_lpNorm
   have hgrad_cont : Continuous gradNorm := by
     have hinner := TangentBundle.continuous_g_inner_of_smooth_sections
       (I := I) (M := M) g
-      (grad_g (I := I) g ⟨_, hu⟩) (grad_g (I := I) g ⟨_, hu⟩)
+      (gradG (I := I) g ⟨_, hu⟩) (gradG (I := I) g ⟨_, hu⟩)
     have hinner' : Continuous (fun x ↦
         g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g u x)) :=
       hinner.congr (fun _ ↦ rfl)
@@ -269,7 +269,7 @@ theorem sobolev_two_integral
   have hgrad_cont : Continuous gradNorm := by
     have hinner := TangentBundle.continuous_g_inner_of_smooth_sections
       (I := I) (M := M) g
-      (grad_g (I := I) g ⟨u, hu⟩) (grad_g (I := I) g ⟨u, hu⟩)
+      (gradG (I := I) g ⟨u, hu⟩) (gradG (I := I) g ⟨u, hu⟩)
     have hinner' : Continuous (fun x ↦
         g.inner x (gradFun (I := I) g u x) (gradFun (I := I) g u x)) :=
       hinner.congr (fun _ ↦ rfl)

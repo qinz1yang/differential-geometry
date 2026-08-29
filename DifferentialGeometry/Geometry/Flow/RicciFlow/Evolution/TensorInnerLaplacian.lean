@@ -49,7 +49,7 @@ theorem laplacianAt_inner0S_eq_inner_roughLap_flowG_of_flat
       (s + 1) (S.base.connection t) nablaB nabla2B)
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis_gen (I := I) (S.base.metric t) x basis gInv)
+    (hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv)
     (hBflat1 : nablaB x = 0)
     (hBflat2 : metricTrace0S2TensorInBasis (I := I) basis gInv (nabla2B x) = 0) :
     laplacianAt (I := I) (flowG (I := I) S) t

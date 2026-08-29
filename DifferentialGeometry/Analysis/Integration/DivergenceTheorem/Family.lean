@@ -33,7 +33,7 @@ theorem integral_divergence_eq_zero_of_compact_family
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (t : ℝ) :
-    ∫ x, divergence_g (I := I) (g_fam t) X x
+    ∫ x, divergenceG (I := I) (g_fam t) X x
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) = 0 := by
   rw [riemannianMeasureFamily_def]
   exact integral_divergence_eq_zero_of_compact (I := I) (g_fam t) X
@@ -43,7 +43,7 @@ theorem integral_divergence_eq_zero_of_hasCompactSupport_family
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (hX : HasCompactSupport X) (t : ℝ) :
-    ∫ x, divergence_g (I := I) (g_fam t) X x
+    ∫ x, divergenceG (I := I) (g_fam t) X x
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) = 0 := by
   rw [riemannianMeasureFamily_def]
   exact integral_divergence_eq_zero_of_hasCompactSupport (I := I) (g_fam t) X hX
@@ -56,7 +56,7 @@ theorem integral_tangentSectionAction_eq_neg_integral_smul_divergence_family
     (hX : HasCompactSupport X) (t : ℝ) :
     ∫ x, tangentSectionAction (I := I) X f x
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) =
-      -∫ x, f x * divergence_g (I := I) (g_fam t) X x
+      -∫ x, f x * divergenceG (I := I) (g_fam t) X x
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) := by
   rw [riemannianMeasureFamily_def]
   exact integral_tangentSectionAction_eq_neg_integral_smul_divergence
@@ -71,7 +71,7 @@ theorem integral_tangentSectionAction_mul_add_eq_neg_family
     ∫ x, (tangentSectionAction (I := I) X f x * h x +
             f x * tangentSectionAction (I := I) X h x)
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) =
-      -∫ x, f x * h x * divergence_g (I := I) (g_fam t) X x
+      -∫ x, f x * h x * divergenceG (I := I) (g_fam t) X x
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) := by
   rw [riemannianMeasureFamily_def]
   exact integral_tangentSectionAction_mul_add_eq_neg
@@ -83,12 +83,12 @@ theorem integral_inner_grad_eq_neg_integral_smul_laplacian_family
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (hh_supp : HasCompactSupport h) (t : ℝ) :
     ∫ x, (g_fam t).inner x
-            ((grad_g (I := I) (g_fam t) ⟨_, hf⟩ :
+            ((gradG (I := I) (g_fam t) ⟨_, hf⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
-            ((grad_g (I := I) (g_fam t) ⟨_, hh⟩ :
+            ((gradG (I := I) (g_fam t) ⟨_, hh⟩ :
                 Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) x)
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) =
-      -∫ x, f x * Δ_g (I := I) (g_fam t) ⟨_, hh⟩ x
+      -∫ x, f x * ΔG (I := I) (g_fam t) ⟨_, hh⟩ x
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) := by
   rw [riemannianMeasureFamily_def]
   exact green_first_integral_inner_grad_eq_neg_integral_smul_laplacian
@@ -99,8 +99,8 @@ theorem integral_smul_laplacian_sub_eq_zero_family
     (g_fam : ℝ → SmoothRiemannianMetric I M)
     {f h : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) (hh : ContMDiff I 𝓘(ℝ, ℝ) ∞ h)
     (t : ℝ) :
-    ∫ x, (f x * Δ_g (I := I) (g_fam t) ⟨_, hh⟩ x -
-            h x * Δ_g (I := I) (g_fam t) ⟨_, hf⟩ x)
+    ∫ x, (f x * ΔG (I := I) (g_fam t) ⟨_, hh⟩ x -
+            h x * ΔG (I := I) (g_fam t) ⟨_, hf⟩ x)
         ∂(riemannianMeasureFamily (I := I) (M := M) g_fam t) = 0 := by
   rw [riemannianMeasureFamily_def]
   exact green_second_integral_smul_laplacian_sub_eq_zero (I := I) (g_fam t) hf hh

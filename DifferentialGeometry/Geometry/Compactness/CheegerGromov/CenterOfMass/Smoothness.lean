@@ -371,8 +371,8 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 variable [RiemannianBundle (fun x : M => TangentSpace I x)]
 variable [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem normalChart_eq_diagExpInv_snd
@@ -390,8 +390,8 @@ theorem normalChart_eq_diagExpInv_snd
   rw [hexp] at h
   exact h
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem diagExpInv_eq_normal
@@ -412,8 +412,8 @@ theorem diagExpInv_eq_normal
   exact heq_of_eq
     (normalChart_eq_diagExpInv_snd (I := I) g hEnorm p y q hsrc hexp).symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem diagInv_eq_normal_lt
@@ -437,8 +437,8 @@ theorem diagInv_eq_normal_lt
   exact diagExpInv_eq_normal (I := I) g hEnorm p y q
     hproj hsrc (hcompat.trans hintr)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem diagExpReadout_contMDiffAt
@@ -456,8 +456,8 @@ theorem diagExpReadout_contMDiffAt
   rw [hproj] at h
   exact h.2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem diagExpReadout_contMDiffAt_order
@@ -475,8 +475,8 @@ theorem diagExpReadout_contMDiffAt_order
   rw [hproj] at h
   exact h.2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem diagReadout_of_md
@@ -495,8 +495,8 @@ theorem diagReadout_of_md
   exact (((trivializationAt E (TangentSpace I) p).contMDiffAt_iff
     ((trivializationAt E (TangentSpace I) p).mem_source.2 hbase)).mp hsm).2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem exists_readoutDom
@@ -529,8 +529,8 @@ theorem exists_readoutDom
   exact ⟨diagReadout_of_md (I := I) g hEnorm p y n hbranch.1 hbase,
     hbranch.2⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem exists_readoutDom_inf
@@ -577,8 +577,8 @@ theorem exists_readoutDom_inf
   intro y hy
   exact hU y hy.1
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
 theorem exists_readoutEBall
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
@@ -624,8 +624,8 @@ theorem exists_readoutEBall
   intro y hy
   exact hU y (hball hy)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] in
 theorem centerPairs_lt_of
@@ -681,8 +681,8 @@ theorem centerPairs_lt_of
       _ ≤ 2 * r + dist p q := by linarith [h.r_pos]
       _ = dist p q + 2 * r := add_comm _ _
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] in
 theorem centerPairs_lt_le
@@ -708,8 +708,8 @@ theorem centerPairs_lt_le
   apply centerPairs_lt_of (I := I) g μ pts join p r h q
   exact lt_of_le_of_lt (ENNReal.ofReal_le_ofReal (add_le_add_left hpq _)) hδ
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] in
 theorem centerPairs_lt
@@ -728,8 +728,8 @@ theorem centerPairs_lt
   simpa using
     (centerPairs_lt_of (I := I) g μ pts join p r h p (by simpa using hδ))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def chartCmEqnB
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -741,8 +741,8 @@ noncomputable def chartCmEqnB
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z,
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def chartCmEqn'
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -754,8 +754,8 @@ noncomputable def chartCmEqn'
         ((NormalCoordinates.normalChartAt (I := I) g p).symm z,
           (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)))).2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem chartCmEqnB_std
@@ -768,8 +768,8 @@ theorem chartCmEqnB_std
   unfold chartCmEqnB chartCmEqn' DiagInvBranch.diagReadout
   rw [std_inv_eq (I := I) g hEnorm p]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem chartCmEqnB_cdAt
@@ -828,8 +828,8 @@ theorem chartCmEqnB_cdAt
         (z₀, params₀) (hsm i) hinner
     exact hcomp
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem readoutB_sum_eq
@@ -861,8 +861,8 @@ theorem readoutB_sum_eq
   exact Finset.sum_congr rfl (fun i _ => by
     rw [map_smul, map_smul])
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem readoutB_zero_iff
@@ -881,8 +881,8 @@ theorem readoutB_zero_iff
   rw [(trivializationAt E (TangentSpace I) p).continuousLinearEquivAt ℝ y hy |>.map_eq_zero_iff]
   exact (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm.map_eq_zero_iff
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem readoutSolB_strict
@@ -922,8 +922,8 @@ theorem readoutSolB_strict
     (fun z params => chartCmEqnB (I := I) g hEnorm p B z params)
     z₀ params₀ _ hjoint hinv hzero
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem readoutSolB_cdAt
@@ -959,8 +959,8 @@ theorem readoutSolB_cdAt
     (fun z params => chartCmEqnB (I := I) g hEnorm p B z params)
     z₀ params₀ n hn hjoint hinv hzero
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem readout_sum_eq_clm
@@ -992,8 +992,8 @@ theorem readout_sum_eq_clm
   exact Finset.sum_congr rfl (fun i _ => by
     rw [map_smul, map_smul])
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem readout_sum_eq_zero_iff
@@ -1012,8 +1012,8 @@ theorem readout_sum_eq_zero_iff
   rw [(trivializationAt E (TangentSpace I) p).continuousLinearEquivAt ℝ y hy |>.map_eq_zero_iff]
   exact (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm.map_eq_zero_iff
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem chartCmEqn'_contDiffAt
@@ -1054,8 +1054,8 @@ theorem chartCmEqn'_contDiffAt
     have hcomp := (hsm i).comp (z₀, params₀) hinner
     exact hcomp
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem chartCmEqn'_contDiffAt_order
@@ -1096,8 +1096,8 @@ theorem chartCmEqn'_contDiffAt_order
     have hcomp := (hsm i).comp (z₀, params₀) hinner
     exact hcomp
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem readoutSol_hasStrictFDerivAt
@@ -1131,8 +1131,8 @@ theorem readoutSol_hasStrictFDerivAt
   exact implicitSol_hasStrictFDerivAt
     (fun z params => chartCmEqn' (I := I) g hEnorm p z params) z₀ params₀ _ hjoint' hinv' hz₀'
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem readoutSol_contDiffAt
@@ -1163,8 +1163,8 @@ theorem readoutSol_contDiffAt
   exact implicitSol_contDiffAt
     (fun z params => chartCmEqn' (I := I) g hEnorm p z params) z₀ params₀ n hn hjoint_cd hinv' hz₀'
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem centerB_hasStrict
@@ -1206,8 +1206,8 @@ theorem centerB_hasStrict
     exact hu hs
   exact hfderiv.congr_of_eventuallyEq hid.symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem centerB_contDiff
@@ -1247,8 +1247,8 @@ theorem centerB_contDiff
     exact hu hs
   exact hfcd.congr_of_eventuallyEq hid
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem center_hasStrictFDerivAt
@@ -1289,8 +1289,8 @@ theorem center_hasStrictFDerivAt
     exact hu hs
   exact hfderiv.congr_of_eventuallyEq hid.symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
 theorem center_contDiffAt
@@ -1328,8 +1328,8 @@ theorem center_contDiffAt
     exact hu hs
   exact hfcd.congr_of_eventuallyEq hid
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem centerOfMass_hasStrictFDerivAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -1375,8 +1375,8 @@ theorem centerOfMass_hasStrictFDerivAt
         (H params))
     hc_solves hc_cont
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem centerOfMass_contDiffAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
@@ -1421,8 +1421,8 @@ theorem centerOfMass_contDiffAt
         (H params))
     hc_solves hc_cont
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M] in
 omit [RiemannianBundle (fun x : M => TangentSpace I x)] in
 theorem centerOfMassChart_cont

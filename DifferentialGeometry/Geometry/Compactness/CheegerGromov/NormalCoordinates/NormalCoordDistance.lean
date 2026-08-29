@@ -30,8 +30,8 @@ variable [NeZero (Module.finrank Real E)]
 variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H} [I.Boundaryless]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
 theorem MetricIsometry.normal_transition_dist_le
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I)) (x y : Y.M)
@@ -98,8 +98,8 @@ variable [NeZero (Module.finrank Real F)]
 variable {H' : Type uH} [TopologicalSpace H']
 variable {J : ModelWithCorners Real F H'} [J.Boundaryless]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ F)] in
 omit [CompleteSpace F] [J.Boundaryless] in
 theorem NormalBallChart.MetricEquivOn.hom_dist_le
@@ -208,8 +208,8 @@ theorem NormalBallChart.MetricEquivOn.hom_dist_le
   rw [hreal] at hriem
   exact (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp hriem
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace F] in
 theorem NormalBallChart.MetricEquivOn.inv_dist_le
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := J))
@@ -430,8 +430,8 @@ theorem NormalBallChart.MetricEquivOn.inv_dist_le
 
 end ProviderDistance
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
 theorem NormalCoordMetricEquivOn.symm_dist_le
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -543,8 +543,8 @@ theorem NormalCoordMetricEquivOn.symm_dist_le
     (ENNReal.ofReal_le_ofReal_iff (by positivity)).mp hriem
   exact hdist
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem NormalCoordMetricEquivOn.chart_dist_le
     (Y : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) Y)

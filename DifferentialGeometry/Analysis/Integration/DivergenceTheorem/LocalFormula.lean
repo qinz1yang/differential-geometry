@@ -303,20 +303,20 @@ theorem localDivergence_contMDiffOn
   exact hnum.div₀ hden
     (chartDensity_ne_zero_on_localDivergenceDomain (I := I) g α)
 
-def divergence_g (g : SmoothRiemannianMetric I M)
+def divergenceG (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) : M → ℝ :=
   fun x => localDivergence (I := I) g x X x
 
 @[simp] lemma divergence_g_def
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    divergence_g (I := I) g X x = localDivergence (I := I) g x X x := rfl
+    divergenceG (I := I) g X x = localDivergence (I := I) g x X x := rfl
 
 theorem divergence_g_chart_product
     [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    divergence_g (I := I) g X x =
+    divergenceG (I := I) g X x =
       (∑ i : Fin (Module.finrank ℝ E),
         partialDeriv (E := E) i
           (chartCoeffOnE (I := I) x X i) (extChartAt I x x)) +

@@ -595,8 +595,8 @@ noncomputable def lRegEulerPair
         (fun r ↦ lVelocity (I := I) alpha r) s -
       lRegAccel S T s (alpha s) (lVelocity (I := I) alpha s))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem lRegEuler_sq
@@ -991,8 +991,8 @@ private theorem lReg_curve_accel
   rw [hcov, heq.self_of_nhds, hvel.self_of_nhds]
   exact congrArg (fun v : TangentSpace I (alpha s) ↦ (v : E)) hacc
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lRegJacobi_affine
@@ -1608,8 +1608,8 @@ theorem IsLRegJacobi.sub
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRegJacobiVel_diff
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
@@ -1669,8 +1669,8 @@ theorem lRegJacobiVel_diff
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRegJacobi_dyn_eq
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
@@ -1799,8 +1799,8 @@ theorem lRegJacobi_dyn_eq
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lRegJacobi_dyn
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : Real)
@@ -1914,7 +1914,7 @@ private noncomputable def lCovLast2
     {x : M} (B : Tensor0SSpace 2 I x)
     (X : TangentSpace I x) : Module.Dual Real (TangentSpace I x) :=
   cotangentToDual (I := I)
-    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x B X)
+    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x B X)
 
 omit [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
@@ -1930,7 +1930,7 @@ private noncomputable def lCovLast3
     {x : M} (C : Tensor0SSpace 3 I x)
     (X Y : TangentSpace I x) : Module.Dual Real (TangentSpace I x) :=
   lCovLast2 (I := I)
-    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x C X) Y
+    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x C X) Y
 
 omit [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
@@ -1948,7 +1948,7 @@ private noncomputable def lCovLast4
     {x : M} (R : Tensor0SSpace 4 I x)
     (X Y Z : TangentSpace I x) : Module.Dual Real (TangentSpace I x) :=
   lCovLast3 (I := I)
-    (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 3 x R X) Y Z
+    (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 3 x R X) Y Z
 
 omit [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
@@ -2074,20 +2074,20 @@ private noncomputable def lRegJacobiCovLM
     (S.base.connection t) (S.ricci t) x
   let toDual := cotangentToDualLinear (I := I) (x := x)
   let curvY := (lFix3LM (I := I) A A).comp
-    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 3 x
+    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 3 x
       (S.base.rm04 t x)).toLinearMap)
   let hessY := toDual.comp
-    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x Hs).toLinearMap)
+    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x Hs).toLinearMap)
   let ricP := toDual.comp
-    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
       (S.ricciAt t x)).toLinearMap)
   let nabAY := toDual.comp
-    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
-      ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x N) A)).toLinearMap)
+    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
+      ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x N) A)).toLinearMap)
   let nabYA := (lFix2LM (I := I) A).comp
-    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x N).toLinearMap)
+    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x N).toLinearMap)
   let nabWA := (lFix2LM (I := I) A).comp
-    ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 2 x
+    ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 2 x
       (Tensor0SSpace.domDomCongr N
         (Equiv.swap (0 : Fin 3) (2 : Fin 3)))).toLinearMap)
   ((-curvY + (2 * s ^ 2) • hessY + (2 * s) • nabAY -

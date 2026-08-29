@@ -42,23 +42,23 @@ theorem chart_loc_of_iterated_diff_data_and_uniform_bound
     {h₀ : ℝ} (hh₀ : 0 < h₀)
     (h_room : Metric.cthickening h₀ (closure Ω'') ⊆
       chartTargetEuclid (I := I) (M := M) α)
-    {M_bound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ}
-    (hM_nn : ∀ i k, 0 ≤ M_bound i k)
+    {MBound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ}
+    (hM_nn : ∀ i k, 0 ≤ MBound i k)
     (h_uniform_bd :
       ∀ (i : Fin (Module.finrank ℝ E)) (k : Fin (Module.finrank ℝ E))
         (h : ℝ), 0 < |h| → |h| ≤ h₀ →
           eLpNorm
               (DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h (D₂.weak_partial i)) 2
+                (d := Module.finrank ℝ E) k h (D₂.weakPartial i)) 2
               ((volume : Measure EuclN).restrict Ω'')
-            ≤ ENNReal.ofReal (M_bound i k)) :
+            ≤ ENNReal.ofReal (MBound i k)) :
     ∀ i k : Fin (Module.finrank ℝ E),
     ∃ g_ik : EuclN → ℝ,
       MemLp g_ik 2 ((volume : Measure EuclN).restrict Ω'') ∧
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k g_ik
-        (D₂.weak_partial i) Ω'' ∧
+        (D₂.weakPartial i) Ω'' ∧
       eLpNorm g_ik 2 ((volume : Measure EuclN).restrict Ω'') ≤
-        ENNReal.ofReal (M_bound i k) := by
+        ENNReal.ofReal (MBound i k) := by
   classical
   intro i k
   exact exists_weak_second_partial_of_uniform_diffQuot_bound (I := I) (M := M)
@@ -79,23 +79,23 @@ theorem exists_weak_second_partial_of_iterated_diff_data_explicit
     {h₀ : ℝ} (hh₀ : 0 < h₀)
     (h_room : Metric.cthickening h₀ (closure Ω'') ⊆
       chartTargetEuclid (I := I) (M := M) α)
-    {M_bound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ}
-    (hM_nn : ∀ i k, 0 ≤ M_bound i k)
+    {MBound : Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ}
+    (hM_nn : ∀ i k, 0 ≤ MBound i k)
     (h_uniform_bd :
       ∀ (i : Fin (Module.finrank ℝ E)) (k : Fin (Module.finrank ℝ E))
         (h : ℝ), 0 < |h| → |h| ≤ h₀ →
           eLpNorm
               (DifferentialGeometry.Analysis.Sobolev.diffQuot
-                (d := Module.finrank ℝ E) k h (D₂.weak_partial i)) 2
+                (d := Module.finrank ℝ E) k h (D₂.weakPartial i)) 2
               ((volume : Measure EuclN).restrict Ω'')
-            ≤ ENNReal.ofReal (M_bound i k)) :
+            ≤ ENNReal.ofReal (MBound i k)) :
     ∀ i k : Fin (Module.finrank ℝ E),
     ∃ g_ik : EuclN → ℝ,
       MemLp g_ik 2 ((volume : Measure EuclN).restrict Ω'') ∧
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) k g_ik
-        (D₂.weak_partial i) Ω'' ∧
+        (D₂.weakPartial i) Ω'' ∧
       eLpNorm g_ik 2 ((volume : Measure EuclN).restrict Ω'') ≤
-        ENNReal.ofReal (M_bound i k) := by
+        ENNReal.ofReal (MBound i k) := by
   let _ := D₀
   let _ := D₀_l
   let _ := D₁

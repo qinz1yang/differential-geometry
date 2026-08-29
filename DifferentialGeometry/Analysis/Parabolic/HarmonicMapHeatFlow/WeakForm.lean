@@ -172,11 +172,11 @@ omit [CompactSpace M] in
 theorem hmfPrincipal_eq
     (g₀ : SmoothRiemannianMetric I M) (S : SmoothCcTensor g₀ 0 1) (x : M) :
     hmfPrincipal (I := I) g₀ S x =
-      connLaplacian_vector (I := I) g₀ (hmfUnknown (I := I) g₀ S) x := by
+      connLaplacianVector (I := I) g₀ (hmfUnknown (I := I) g₀ S) x := by
   change inverseMetricSharpFib (I := I) g₀ x
       ((connLaplacianMixed (I := I) (M := M) g₀ 0 1 S.toSection x)
         (unitZeroSec (I := I) (M := M) x)) =
-    connLaplacian_vector (I := I) g₀
+    connLaplacianVector (I := I) g₀
       (fun y => inverseMetricSharpFib (I := I) g₀ y
         (unitEvalSection (I := I) (M := M) g₀ 1 S y)) x
   exact (sharp_connLap (I := I) (M := M) g₀ S x).symm

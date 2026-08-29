@@ -26,33 +26,33 @@ theorem chartRHSD_pou_lip
       Λ⁻¹ * gBase.inner b v v ≤ (gSeq k).inner b v v ∧
         (gSeq k).inner b v v ≤ Λ * gBase.inner b v v)
     (Q₀ : ℝ) (hQ₀_nn : 0 ≤ Q₀)
-    (hQ₀ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₀ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ a c : Fin (Module.finrank ℝ E),
           |chartGramOnE (I := I) (gSeq k) α a c (extChartAt I α b)| ≤ Q₀)
     (Q₁ : ℝ) (hQ₁_nn : 0 ≤ Q₁)
-    (hQ₁ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₁ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m a c : Fin (Module.finrank ℝ E),
           |partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α a c)
               (extChartAt I α b)| ≤ Q₁)
-    (hQ₁Base : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₁Base : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m a c : Fin (Module.finrank ℝ E),
           |partialDeriv (E := E) m (chartGramOnE (I := I) gBase α a c)
               (extChartAt I α b)| ≤ Q₁)
     (Q₂ : ℝ) (hQ₂_nn : 0 ≤ Q₂)
-    (hQ₂ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₂ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d m a c : Fin (Module.finrank ℝ E),
           |partialDeriv (E := E) d
             (partialDeriv (E := E) m
               (chartGramOnE (I := I) (gSeq k) α a c)) (extChartAt I α b)| ≤ Q₂)
-    (hQ₂Base : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₂Base : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d m a c : Fin (Module.finrank ℝ E),
@@ -60,7 +60,7 @@ theorem chartRHSD_pou_lip
             (partialDeriv (E := E) m
               (chartGramOnE (I := I) gBase α a c)) (extChartAt I α b)| ≤ Q₂)
     (Q₃ : ℝ) (hQ₃_nn : 0 ≤ Q₃)
-    (hQ₃ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₃ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ e d m a c : Fin (Module.finrank ℝ E),
@@ -68,7 +68,7 @@ theorem chartRHSD_pou_lip
             (partialDeriv (E := E) d
               (partialDeriv (E := E) m
                 (chartGramOnE (I := I) (gSeq k) α a c))) (extChartAt I α b)| ≤ Q₃)
-    (hQ₃Base : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₃Base : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ e d m a c : Fin (Module.finrank ℝ E),
@@ -77,7 +77,7 @@ theorem chartRHSD_pou_lip
               (partialDeriv (E := E) m
                 (chartGramOnE (I := I) gBase α a c))) (extChartAt I α b)| ≤ Q₃) :
     ∃ C : ℝ, 0 < C ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k₁ k₂ : ι, ∀ b ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ d i j : Fin (Module.finrank ℝ E),
@@ -107,7 +107,7 @@ theorem chartRHSD_pou_lip
             ((inv_le_one₀ hΛpos).2 hΛ) hnonneg
         · simpa [gAll] using mul_le_mul_of_nonneg_right hΛ hnonneg
     | some k => simpa [gAll] using hequiv k b v
-  have hQ₁All : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hQ₁All : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : Option ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m a c : Fin (Module.finrank ℝ E),
@@ -117,7 +117,7 @@ theorem chartRHSD_pou_lip
     cases k with
     | none => simpa [gAll] using hQ₁Base α hα b hb m a c
     | some k => simpa [gAll] using hQ₁ α hα k b hb m a c
-  have hQ₂All : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hQ₂All : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : Option ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d m a c : Fin (Module.finrank ℝ E),
@@ -128,7 +128,7 @@ theorem chartRHSD_pou_lip
     cases k with
     | none => simpa [gAll] using hQ₂Base α hα b hb d m a c
     | some k => simpa [gAll] using hQ₂ α hα k b hb d m a c
-  have hQ₃All : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hQ₃All : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : Option ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ e d m a c : Fin (Module.finrank ℝ E),
@@ -610,33 +610,33 @@ theorem chartRHSD_pou_bnd
       Λ⁻¹ * gBase.inner b v v ≤ (gSeq k).inner b v v ∧
         (gSeq k).inner b v v ≤ Λ * gBase.inner b v v)
     (Q₀ : ℝ) (hQ₀_nn : 0 ≤ Q₀)
-    (hQ₀ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₀ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ a c : Fin (Module.finrank ℝ E),
           |chartGramOnE (I := I) (gSeq k) α a c (extChartAt I α b)| ≤ Q₀)
     (Q₁ : ℝ) (hQ₁_nn : 0 ≤ Q₁)
-    (hQ₁ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₁ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m a c : Fin (Module.finrank ℝ E),
           |partialDeriv (E := E) m (chartGramOnE (I := I) (gSeq k) α a c)
               (extChartAt I α b)| ≤ Q₁)
-    (hQ₁Base : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₁Base : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m a c : Fin (Module.finrank ℝ E),
           |partialDeriv (E := E) m (chartGramOnE (I := I) gBase α a c)
               (extChartAt I α b)| ≤ Q₁)
     (Q₂ : ℝ) (hQ₂_nn : 0 ≤ Q₂)
-    (hQ₂ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₂ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d m a c : Fin (Module.finrank ℝ E),
           |partialDeriv (E := E) d
             (partialDeriv (E := E) m
               (chartGramOnE (I := I) (gSeq k) α a c)) (extChartAt I α b)| ≤ Q₂)
-    (hQ₂Base : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₂Base : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d m a c : Fin (Module.finrank ℝ E),
@@ -644,7 +644,7 @@ theorem chartRHSD_pou_bnd
             (partialDeriv (E := E) m
               (chartGramOnE (I := I) gBase α a c)) (extChartAt I α b)| ≤ Q₂)
     (Q₃ : ℝ) (hQ₃_nn : 0 ≤ Q₃)
-    (hQ₃ : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₃ : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ e d m a c : Fin (Module.finrank ℝ E),
@@ -652,7 +652,7 @@ theorem chartRHSD_pou_bnd
             (partialDeriv (E := E) d
               (partialDeriv (E := E) m
                 (chartGramOnE (I := I) (gSeq k) α a c))) (extChartAt I α b)| ≤ Q₃)
-    (hQ₃Base : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (hQ₃Base : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ e d m a c : Fin (Module.finrank ℝ E),
@@ -661,7 +661,7 @@ theorem chartRHSD_pou_bnd
               (partialDeriv (E := E) m
                 (chartGramOnE (I := I) gBase α a c))) (extChartAt I α b)| ≤ Q₃) :
     ∃ C : ℝ, 0 < C ∧
-      ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∀ k : ι, ∀ b ∈ tsupport
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
           ∀ d i j : Fin (Module.finrank ℝ E),
@@ -686,7 +686,7 @@ theorem chartRHSD_pou_bnd
             ((inv_le_one₀ hΛpos).2 hΛ) hnonneg
         · simpa [gAll] using mul_le_mul_of_nonneg_right hΛ hnonneg
     | some k => simpa [gAll] using hequiv k b v
-  have hQ₁All : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hQ₁All : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : Option ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ m a c : Fin (Module.finrank ℝ E),
@@ -696,7 +696,7 @@ theorem chartRHSD_pou_bnd
     cases k with
     | none => simpa [gAll] using hQ₁Base α hα b hb m a c
     | some k => simpa [gAll] using hQ₁ α hα k b hb m a c
-  have hQ₂All : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hQ₂All : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : Option ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ d m a c : Fin (Module.finrank ℝ E),
@@ -707,7 +707,7 @@ theorem chartRHSD_pou_bnd
     cases k with
     | none => simpa [gAll] using hQ₂Base α hα b hb d m a c
     | some k => simpa [gAll] using hQ₂ α hα k b hb d m a c
-  have hQ₃All : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hQ₃All : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       ∀ k : Option ι, ∀ b ∈ tsupport
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ),
         ∀ e d m a c : Fin (Module.finrank ℝ E),

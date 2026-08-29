@@ -476,11 +476,11 @@ theorem chartTransition_smoothDiffeoBoundedAtOrder
       invFun_bijOn := hBijOn_T_αγ,
       left_inv := hLeft_inv,
       right_inv := hRight_inv,
-      deriv_bound := B,
+      derivBound := B,
       deriv_bound_pos := hB_pos,
       iter_deriv_bounded_at := hB_γ_bound,
       iter_deriv_invFun_bounded_at := hB_α_bound,
-      jacobian_lower_bound := 1,
+      jacobianLowerBound := 1,
       jacobian_lower_bound_pos := one_pos,
       jacobian_lower := ?_
     }, ?_⟩
@@ -527,11 +527,11 @@ theorem chartTransition_smoothDiffeoBoundedAtOrder
       invFun_bijOn := hBijOn_T_αγ,
       left_inv := hLeft_inv,
       right_inv := hRight_inv,
-      deriv_bound := B,
+      derivBound := B,
       deriv_bound_pos := hB_pos,
       iter_deriv_bounded_at := hB_γ_bound,
       iter_deriv_invFun_bounded_at := hB_α_bound,
-      jacobian_lower_bound := J,
+      jacobianLowerBound := J,
       jacobian_lower_bound_pos := hJ_pos,
       jacobian_lower := hJ_lower_T_γα
     }, ?_⟩

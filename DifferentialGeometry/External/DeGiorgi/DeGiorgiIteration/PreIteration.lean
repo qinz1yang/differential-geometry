@@ -144,7 +144,7 @@ theorem deGiorgi_preiter_of_ballSobolev_on_concentricBalls_of_posPartApprox
       ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
         Csob *
           (∫ x in Metric.ball x₀ r,
-            ‖(positivePartSub_memW1pWitness_on_ball hs hu θ happroxBallTheta).weakGrad x‖ ^ 2
+            ‖(positivePartSubMemW1pWitnessOnBall hs hu θ happroxBallTheta).weakGrad x‖ ^ 2
               ∂volume) *
           ((volume.restrict (Metric.ball x₀ s)).real {x | lam < u x}) ^ (2 / (d : ℝ))) :
     ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
@@ -156,7 +156,7 @@ theorem deGiorgi_preiter_of_ballSobolev_on_concentricBalls_of_posPartApprox
     rw [isFiniteMeasure_restrict]
     exact measure_ball_lt_top.ne
   let hwTheta : MemW1pWitness 2 (positivePartSub u θ) (Metric.ball x₀ s) :=
-    positivePartSub_memW1pWitness_on_ball hs hu θ happroxBallTheta
+    positivePartSubMemW1pWitnessOnBall hs hu θ happroxBallTheta
   have hθ_int :
       Integrable (fun x => |positivePartSub u θ x| ^ 2)
         (volume.restrict (Metric.ball x₀ s)) := by
@@ -207,7 +207,7 @@ private theorem deGiorgi_cutoffSobolev_prepare
       eLpNorm (deGiorgiCutoffTestGeneral η u θ)
           (ENNReal.ofReal ((d : ℝ) * 2 / ((d : ℝ) - 2)))
           (volume.restrict (Metric.ball x₀ s)) ≤
-        ENNReal.ofReal (C_gns d 2) *
+        ENNReal.ofReal (CGns d 2) *
           eLpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2
             (volume.restrict (Metric.ball x₀ s)) := by
   classical
@@ -242,7 +242,7 @@ private theorem deGiorgi_cutoffSobolev_prepare
     simpa using hwηθ
   let hwηθ_univ_raw :
       MemW1pWitness (ENNReal.ofReal (2 : ℝ)) (Ω.indicator v) Set.univ :=
-    zeroExtend_memW1pWitness_p (d := d) hΩ_open (p := 2) (by norm_num) hvW01_real hwηθ_real
+    zeroExtendMemW1pWitnessP (d := d) hΩ_open (p := 2) (by norm_num) hvW01_real hwηθ_real
   let hwηθ_univ : MemW1pWitness (ENNReal.ofReal (2 : ℝ)) v Set.univ :=
     { memLp := by
         simpa [hv_indicator_eq] using hwηθ_univ_raw.memLp
@@ -262,14 +262,14 @@ private theorem deGiorgi_cutoffSobolev_prepare
       MemW1pWitness.ae_eq_p (d := d) isOpen_univ (p := 2) (by norm_num) hwSob hwηθ_univ
   have hSob' :
       eLpNorm v q volume ≤
-        ENNReal.ofReal (C_gns d 2) *
+        ENNReal.ofReal (CGns d 2) *
           eLpNorm (fun x => ‖hwηθ_univ.weakGrad x‖) 2 volume := by
     calc
       eLpNorm v q volume
-          ≤ ENNReal.ofReal (C_gns d 2) *
+          ≤ ENNReal.ofReal (CGns d 2) *
               eLpNorm (fun x => ‖hwSob.weakGrad x‖) 2 volume := by
                 simpa [q] using hSob
-      _ = ENNReal.ofReal (C_gns d 2) *
+      _ = ENNReal.ofReal (CGns d 2) *
             eLpNorm (fun x => ‖hwηθ_univ.weakGrad x‖) 2 volume := by
           congr 1
           exact eLpNorm_congr_ae (hae_grad.fun_comp (‖·‖))
@@ -277,8 +277,8 @@ private theorem deGiorgi_cutoffSobolev_prepare
       hwηθ_univ.weakGrad = Ω.indicator hwηθ_real.weakGrad := by
     ext x i
     by_cases hx : x ∈ Ω
-    · simp [hwηθ_univ, hwηθ_univ_raw, zeroExtend_memW1pWitness_p, hx]
-    · simp [hwηθ_univ, hwηθ_univ_raw, zeroExtend_memW1pWitness_p, hx]
+    · simp [hwηθ_univ, hwηθ_univ_raw, zeroExtendMemW1pWitnessP, hx]
+    · simp [hwηθ_univ, hwηθ_univ_raw, zeroExtendMemW1pWitnessP, hx]
   have hgrad_ext :
       (fun x => ‖hwηθ_univ.weakGrad x‖) = Ω.indicator (fun x => ‖hwηθ_real.weakGrad x‖) := by
     ext x
@@ -298,12 +298,12 @@ private theorem deGiorgi_cutoffSobolev_prepare
       (MeasureTheory.eLpNorm_restrict_eq_of_support_subset (μ := volume) (p := q) hv_support)
   have hSob'' :
       eLpNorm v q μ ≤
-        ENNReal.ofReal (C_gns d 2) * eLpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ := by
+        ENNReal.ofReal (CGns d 2) * eLpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ := by
     calc
       eLpNorm v q μ = eLpNorm v q volume := hv_restrict
-      _ ≤ ENNReal.ofReal (C_gns d 2) *
+      _ ≤ ENNReal.ofReal (CGns d 2) *
             eLpNorm (fun x => ‖hwηθ_univ.weakGrad x‖) 2 volume := hSob'
-      _ = ENNReal.ofReal (C_gns d 2) * eLpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ := by
+      _ = ENNReal.ofReal (CGns d 2) * eLpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ := by
             rw [hgrad_restrict]
   exact ⟨hwηθ_real, hSob''⟩
 
@@ -322,11 +322,11 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
       eLpNorm (deGiorgiCutoffTestGeneral η u θ)
           (ENNReal.ofReal ((d : ℝ) * 2 / ((d : ℝ) - 2)))
           (volume.restrict (Metric.ball x₀ s)) ≤
-        ENNReal.ofReal (C_gns d 2) *
+        ENNReal.ofReal (CGns d 2) *
           eLpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2
             (volume.restrict (Metric.ball x₀ s))) :
     ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
-      (C_gns d 2) ^ 2 *
+      (CGns d 2) ^ 2 *
         (∫ x in Metric.ball x₀ s, ‖hwηθ_real.weakGrad x‖ ^ 2 ∂volume) *
         ((volume.restrict (Metric.ball x₀ s)).real {x | lam < u x}) ^ (2 / (d : ℝ)) := by
   classical
@@ -465,7 +465,7 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
         eLpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ < ∞ :=
       hgrad_memLp2.eLpNorm_lt_top
     have hrhs_lt_top :
-        ENNReal.ofReal (C_gns d 2) *
+        ENNReal.ofReal (CGns d 2) *
           eLpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ < ∞ := by
       rw [ENNReal.mul_lt_top_iff]
       exact Or.inl ⟨by simp, hgrad_lt_top⟩
@@ -522,20 +522,20 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
         two_ne_zero ENNReal.ofNat_ne_top hwηθ_real.weakGrad_norm_memLp.aestronglyMeasurable)
   have hSob_real :
       MeasureTheory.lpNorm v q μ ≤
-        (C_gns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ := by
+        (CGns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ := by
     have hgrad_ne_top :
         eLpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ ≠ ∞ :=
       hgrad_memLp2.eLpNorm_ne_top
     have hrhs_ne_top :
-        ENNReal.ofReal (C_gns d 2) *
+        ENNReal.ofReal (CGns d 2) *
             eLpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ ≠ ∞ :=
       ENNReal.mul_ne_top (by simp) hgrad_ne_top
     have hSob_toReal :
         (eLpNorm v q μ).toReal ≤
-          (ENNReal.ofReal (C_gns d 2) *
+          (ENNReal.ofReal (CGns d 2) *
             eLpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ).toReal :=
       (ENNReal.toReal_le_toReal hv_memLp_q.eLpNorm_ne_top hrhs_ne_top).2 hSob''
-    have hC_toReal : (ENNReal.ofReal (C_gns d 2)).toReal = C_gns d 2 :=
+    have hC_toReal : (ENNReal.ofReal (CGns d 2)).toReal = CGns d 2 :=
       ENNReal.toReal_ofReal (C_gns_nonneg d 2)
     have hSob_toReal' := hSob_toReal
     rw [MeasureTheory.toReal_eLpNorm hv_memLp_q.aestronglyMeasurable,
@@ -573,7 +573,7 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
     rw [hsqrt, Real.sq_sqrt hnonneg]
   have hmain_lp :
       MeasureTheory.lpNorm v 2 (μ.restrict T) ≤
-        (C_gns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ *
+        (CGns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ *
           (μ.real S) ^ (1 / (d : ℝ)) := by
     calc
       MeasureTheory.lpNorm v 2 (μ.restrict T)
@@ -584,33 +584,33 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
         rw [hμT_real, hexp]
       _ ≤ MeasureTheory.lpNorm v q μ * (μ.real S) ^ (1 / (d : ℝ)) := by
         gcongr
-      _ ≤ ((C_gns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ) *
+      _ ≤ ((CGns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ) *
             (μ.real S) ^ (1 / (d : ℝ)) := by
         gcongr
-      _ = (C_gns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ *
+      _ = (CGns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ *
             (μ.real S) ^ (1 / (d : ℝ)) := by ring
   have hmain_sq :
       ∫ x in T, |v x| ^ 2 ∂μ ≤
-        (C_gns d 2) ^ 2 *
+        (CGns d 2) ^ 2 *
           (∫ x in Ω, ‖hwηθ_real.weakGrad x‖ ^ 2 ∂volume) *
           (μ.real S) ^ (2 / (d : ℝ)) := by
     have hμ_nonneg : 0 ≤ μ.real S := measureReal_nonneg
     have hnonneg_left : 0 ≤ MeasureTheory.lpNorm v 2 (μ.restrict T) := MeasureTheory.lpNorm_nonneg
     have hnonneg_right :
-        0 ≤ (C_gns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ *
+        0 ≤ (CGns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ *
           (μ.real S) ^ (1 / (d : ℝ)) := by
       have hpow_nonneg : 0 ≤ (μ.real S) ^ (1 / (d : ℝ)) := Real.rpow_nonneg hμ_nonneg _
       exact mul_nonneg (mul_nonneg (C_gns_nonneg d 2) MeasureTheory.lpNorm_nonneg) hpow_nonneg
     have hsq :
         (MeasureTheory.lpNorm v 2 (μ.restrict T)) ^ 2 ≤
-          ((C_gns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ *
+          ((CGns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ *
             (μ.real S) ^ (1 / (d : ℝ))) ^ 2 := by
       exact (sq_le_sq₀ hnonneg_left hnonneg_right).2 hmain_lp
     calc
       ∫ x in T, |v x| ^ 2 ∂μ = (MeasureTheory.lpNorm v 2 (μ.restrict T)) ^ 2 := hT_lp_sq
-      _ ≤ ((C_gns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ *
+      _ ≤ ((CGns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ *
                 (μ.real S) ^ (1 / (d : ℝ))) ^ 2 := hsq
-      _ = (C_gns d 2) ^ 2 *
+      _ = (CGns d 2) ^ 2 *
             (∫ x in Ω, ‖hwηθ_real.weakGrad x‖ ^ 2 ∂volume) *
             (μ.real S) ^ (2 / (d : ℝ)) := by
           have hpow :
@@ -620,17 +620,17 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
             · ring_nf
             · positivity
           calc
-            ((C_gns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ *
+            ((CGns d 2) * MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ *
                 (μ.real S) ^ (1 / (d : ℝ))) ^ 2
-                = (C_gns d 2) ^ 2 *
+                = (CGns d 2) ^ 2 *
                     (MeasureTheory.lpNorm (fun x => ‖hwηθ_real.weakGrad x‖) 2 μ) ^ 2 *
                     ((μ.real S) ^ (1 / (d : ℝ))) ^ 2 := by
                     ring
-            _ = (C_gns d 2) ^ 2 *
+            _ = (CGns d 2) ^ 2 *
                   (∫ x in Ω, ‖hwηθ_real.weakGrad x‖ ^ 2 ∂volume) *
                   ((μ.real S) ^ (1 / (d : ℝ))) ^ 2 := by
                   rw [hgrad_sq]
-            _ = (C_gns d 2) ^ 2 *
+            _ = (CGns d 2) ^ 2 *
                   (∫ x in Ω, ‖hwηθ_real.weakGrad x‖ ^ 2 ∂volume) *
                   (μ.real S) ^ (2 / (d : ℝ)) := by
                   rw [hpow]
@@ -640,10 +640,10 @@ private theorem deGiorgi_cutoffSobolev_superlevelStep
     _ = ∫ x in T, |v x| ^ 2 ∂μ := by
       rw [show ∫ x in Ω, T.indicator g x ∂volume = ∫ x, T.indicator g x ∂μ by rfl,
         MeasureTheory.integral_indicator hT_meas]
-    _ ≤ (C_gns d 2) ^ 2 *
+    _ ≤ (CGns d 2) ^ 2 *
           (∫ x in Ω, ‖hwηθ_real.weakGrad x‖ ^ 2 ∂volume) *
           (μ.real S) ^ (2 / (d : ℝ)) := hmain_sq
-    _ = (C_gns d 2) ^ 2 *
+    _ = (CGns d 2) ^ 2 *
           (∫ x in Metric.ball x₀ s, ‖hwηθ_real.weakGrad x‖ ^ 2 ∂volume) *
           ((volume.restrict (Metric.ball x₀ s)).real {x | lam < u x}) ^ (2 / (d : ℝ)) := by
       simp [Ω, μ, S]
@@ -674,7 +674,7 @@ theorem deGiorgi_cutoffSobolev_on_concentricBalls_of_ballPosPart
     (hη_sub_ball : tsupport η ⊆ Metric.ball x₀ s) :
     ∃ hwηθ : MemW1pWitness 2 (deGiorgiCutoffTestGeneral η u θ) (Metric.ball x₀ s),
       ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
-        (C_gns d 2) ^ 2 *
+        (CGns d 2) ^ 2 *
           (∫ x in Metric.ball x₀ s, ‖hwηθ.weakGrad x‖ ^ 2 ∂volume) *
           ((volume.restrict (Metric.ball x₀ s)).real {x | lam < u x}) ^ (2 / (d : ℝ)) := by
   let _ := _hη_nonneg
@@ -738,7 +738,7 @@ theorem deGiorgi_cutoffSobolev_on_concentricBalls_of_posPartApprox
     (hη_sub_ball : tsupport η ⊆ Metric.ball x₀ s) :
     ∃ hwηθ : MemW1pWitness 2 (deGiorgiCutoffTestGeneral η u θ) (Metric.ball x₀ s),
       ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
-        (C_gns d 2) ^ 2 *
+        (CGns d 2) ^ 2 *
           (∫ x in Metric.ball x₀ s, ‖hwηθ.weakGrad x‖ ^ 2 ∂volume) *
           ((volume.restrict (Metric.ball x₀ s)).real {x | lam < u x}) ^ (2 / (d : ℝ)) := by
   let _ := _hη_nonneg
@@ -762,7 +762,7 @@ theorem deGiorgi_cutoffSobolev_on_concentricBalls_of_posPartApprox
       isWeakGrad := by
         simpa [v] using hwηθ_real.isWeakGrad }
   let hwθ : MemW1pWitness 2 (positivePartSub u θ) (Metric.ball x₀ s) :=
-    positivePartSub_memW1pWitness_on_ball hs hu θ happroxBallTheta
+    positivePartSubMemW1pWitnessOnBall hs hu θ happroxBallTheta
   refine ⟨hwηθ, ?_⟩
   simpa [v, hwηθ, hwθ] using
     deGiorgi_cutoffSobolev_superlevelStep (d := d) hd hr hrs hu hwθ hθl hη_eq_one
@@ -999,7 +999,7 @@ theorem deGiorgi_preiter_on_concentricBalls_of_ballPosPart
     (hη_grad_bound : ∀ x, ‖fderiv ℝ η x‖ ≤ Cη)
     (hη_sub_ball : tsupport η ⊆ Metric.ball x₀ s) :
     ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
-      (C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *
+      (CGns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *
         ((((lam - θ) ^ 2)⁻¹ *
             ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume) ^ (2 / (d : ℝ))) *
           ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume := by
@@ -1067,7 +1067,7 @@ theorem deGiorgi_preiter_on_concentricBalls_of_ballPosPart
       (Ilam := ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume)
       (Iθ := ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume)
       (G := ∫ x in Metric.ball x₀ s, ‖hwηθ.weakGrad x‖ ^ 2 ∂volume)
-      (Csob := (C_gns d 2) ^ 2)
+      (Csob := (CGns d 2) ^ 2)
       (Cenergy := 8 * (ellipticityRatio A + 1) * Cη ^ 2)
       hθl
       (sq_nonneg _)
@@ -1079,7 +1079,7 @@ theorem deGiorgi_preiter_on_concentricBalls_of_ballPosPart
       (by rfl)
   calc
     ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
-        (C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *
+        (CGns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *
           ((((lam - θ) ^ 2)⁻¹ *
             ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume) ^
               (2 / (d : ℝ))) *
@@ -1127,15 +1127,15 @@ theorem deGiorgi_preiter_on_concentricBalls_of_posPartApprox
     (hη_grad_bound : ∀ x, ‖fderiv ℝ η x‖ ≤ Cη)
     (hη_sub_ball : tsupport η ⊆ Metric.ball x₀ s) :
     ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
-      (C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *
+      (CGns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *
         ((((lam - θ) ^ 2)⁻¹ *
             ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume) ^ (2 / (d : ℝ))) *
           ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume := by
   let hwθ : MemW1pWitness 2 (positivePartSub u θ) (Metric.ball x₀ s) :=
-    positivePartSub_memW1pWitness_on_ball hs hu θ happroxBallTheta
+    positivePartSubMemW1pWitnessOnBall hs hu θ happroxBallTheta
   change
     ∫ x in Metric.ball x₀ r, |positivePartSub u lam x| ^ 2 ∂volume ≤
-      (C_gns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *
+      (CGns d 2) ^ 2 * (8 * (ellipticityRatio A + 1) * Cη ^ 2) *
         ((((lam - θ) ^ 2)⁻¹ *
             ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume) ^ (2 / (d : ℝ))) *
           ∫ x in Metric.ball x₀ s, |positivePartSub u θ x| ^ 2 ∂volume

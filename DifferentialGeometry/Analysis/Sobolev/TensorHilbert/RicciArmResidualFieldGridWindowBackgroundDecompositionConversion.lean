@@ -145,7 +145,7 @@ private lemma ricciFoldWeight_unitModel_gen (σ : Equiv.Perm (Fin 6))
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2 R4) S)).toSection x)
         (unitTensor (I := I) (M := M) x)) =
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRS_domDomCongr σ
+          tensorRSDomDomCongr σ
             ((ccOperatorFieldComp (I := I) (M := M) g₀ 0 2 6
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2 R4) S).toSection x))
           (unitTensor (I := I) (M := M) x)) from by
@@ -947,7 +947,7 @@ lemma koszulConnectionDifferenceFoldWeight_unitModel_general (σ : Equiv.Perm (F
             (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))).toSection x)
         (unitTensor (I := I) (M := M) x)) =
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRS_domDomCongr σ
+          tensorRSDomDomCongr σ
             ((ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 κ3)
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)).toSection x))
@@ -1007,15 +1007,15 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
       g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ P y v w)
     (x : M) (p q v0 v1 : TangentSpace I x) :
     unitModel (I := I) (M := M) g₀ 4
-        ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)) x
+        ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+          (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+            koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)) x
         ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       sharpGradKoszulKernelBilin (I := I) g₀ g₁ (ccTensor02Symm (I := I) g₀ P) x p q v0 v1 := by
   classical
   have hM1 : unitModel (I := I) (M := M) g₀ 4
-      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P) x
+      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P) x
       ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       ∑ e : Fin (Module.finrank ℝ E),
         g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q v0)
@@ -1023,25 +1023,25 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
           unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
             ![(v1 : E), (p : E),
               ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)] := by
-    rw [show koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P =
+    rw [show koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P =
         ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernel_positivePermutation
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernelPositivePermutation
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceFoldWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P x
+    rw [koszulConnectionDifferenceFoldWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
         ![((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_positivePermutation 0)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelPositivePermutation 0)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_positivePermutation 1)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelPositivePermutation 1)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_positivePermutation 2))] =
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelPositivePermutation 2))] =
         unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
           ![(q : E), (v0 : E),
             ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)] := by
@@ -1051,13 +1051,13 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
     have h2 : unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
         ![((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_positivePermutation 3)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelPositivePermutation 3)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_positivePermutation 4)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelPositivePermutation 4)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_positivePermutation 5))] =
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelPositivePermutation 5))] =
         unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
           ![(v1 : E), (p : E),
             ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)] := by
@@ -1072,7 +1072,7 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
       Matrix.cons_val_two, Matrix.tail_cons] at h12
     exact h12
   have hM2 : unitModel (I := I) (M := M) g₀ 4
-      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) x
+      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) x
       ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       ∑ e : Fin (Module.finrank ℝ E),
         g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q v0)
@@ -1080,25 +1080,25 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
           unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
             ![((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E),
               (p : E), (v1 : E)] := by
-    rw [show koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P =
+    rw [show koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P =
         ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernel_positiveKoszulSwapPermutation
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernelPositiveKoszulSwapPermutation
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceFoldWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P x
+    rw [koszulConnectionDifferenceFoldWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
         ![((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_positiveKoszulSwapPermutation 0)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelPositiveKoszulSwapPermutation 0)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_positiveKoszulSwapPermutation 1)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelPositiveKoszulSwapPermutation 1)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_positiveKoszulSwapPermutation 2))] =
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelPositiveKoszulSwapPermutation 2))] =
         unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
           ![(q : E), (v0 : E),
             ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)] := by
@@ -1108,13 +1108,13 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
     have h2 : unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
         ![((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_positiveKoszulSwapPermutation 3)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelPositiveKoszulSwapPermutation 3)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_positiveKoszulSwapPermutation 4)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelPositiveKoszulSwapPermutation 4)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_positiveKoszulSwapPermutation 5))] =
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelPositiveKoszulSwapPermutation 5))] =
         unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
           ![((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E),
             (p : E), (v1 : E)] := by
@@ -1129,7 +1129,7 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
       Matrix.cons_val_two, Matrix.tail_cons] at h12
     exact h12
   have hM3 : unitModel (I := I) (M := M) g₀ 4
-      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P) x
+      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P) x
       ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       ∑ e : Fin (Module.finrank ℝ E),
         g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q p)
@@ -1137,25 +1137,25 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
           unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
             ![(v1 : E), (v0 : E),
               ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)] := by
-    rw [show koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P =
+    rw [show koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P =
         ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernel_negativePermutation
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernelNegativePermutation
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceFoldWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P x
+    rw [koszulConnectionDifferenceFoldWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
         ![((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_negativePermutation 0)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelNegativePermutation 0)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_negativePermutation 1)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelNegativePermutation 1)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_negativePermutation 2))] =
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelNegativePermutation 2))] =
         unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
           ![(q : E), (p : E),
             ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)] := by
@@ -1165,13 +1165,13 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
     have h2 : unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
         ![((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_negativePermutation 3)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelNegativePermutation 3)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_negativePermutation 4)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelNegativePermutation 4)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_negativePermutation 5))] =
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelNegativePermutation 5))] =
         unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
           ![(v1 : E), (v0 : E),
             ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)] := by
@@ -1186,7 +1186,7 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
       Matrix.cons_val_two, Matrix.tail_cons] at h12
     exact h12
   have hM4 : unitModel (I := I) (M := M) g₀ 4
-      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P) x
+      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P) x
       ![(v0 : E), (v1 : E), (p : E), (q : E)] =
       ∑ e : Fin (Module.finrank ℝ E),
         g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x q p)
@@ -1194,25 +1194,25 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
           unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
             ![((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E),
               (v0 : E), (v1 : E)] := by
-    rw [show koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P =
+    rw [show koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P =
         ccOperatorFieldComp (I := I) (M := M) g₀ 0 6 4 (cometricDoubleTraceField (I := I) g₀ 4)
-          (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernel_negativeKoszulSwapPermutation
+          (rsDomDomCongrSection (I := I) (M := M) g₀ 0 6 sharpGradKoszulKernelNegativeKoszulSwapPermutation
             (ccOperatorFieldComp (I := I) (M := M) g₀ 0 3 6
               (slotExtendIter (I := I) (M := M) g₀ 0 3 3 (koszulCovecCc (I := I) g₀ P))
               (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁))) from rfl]
-    rw [koszulConnectionDifferenceFoldWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P x
+    rw [koszulConnectionDifferenceFoldWeight_unitModel_general (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P x
       ![(v0 : E), (v1 : E), (p : E), (q : E)]]
     refine Finset.sum_congr rfl fun e _ => ?_
     have h1 : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
         ![((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_negativeKoszulSwapPermutation 0)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelNegativeKoszulSwapPermutation 0)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_negativeKoszulSwapPermutation 1)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelNegativeKoszulSwapPermutation 1)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_negativeKoszulSwapPermutation 2))] =
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelNegativeKoszulSwapPermutation 2))] =
         unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x
           ![(q : E), (p : E),
             ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)] := by
@@ -1222,13 +1222,13 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
     have h2 : unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
         ![((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_negativeKoszulSwapPermutation 3)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelNegativeKoszulSwapPermutation 3)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_negativeKoszulSwapPermutation 4)),
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelNegativeKoszulSwapPermutation 4)),
           ((Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
             (Fin.cons ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E)
-              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernel_negativeKoszulSwapPermutation 5))] =
+              ![(v0 : E), (v1 : E), (p : E), (q : E)]) : Fin 6 → E) (sharpGradKoszulKernelNegativeKoszulSwapPermutation 5))] =
         unitModel (I := I) (M := M) g₀ 3 (koszulCovecCc (I := I) g₀ P) x
           ![((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E),
             (v0 : E), (v1 : E)] := by
@@ -1336,16 +1336,16 @@ private lemma sharpGradKoszulKernel_foldWeights_unitModel (P : SmoothCcTensor g�
       (fun e => ((smoothOrthoFrame (I := I) g₀ x e x : TangentSpace I x) : E))
       ((v0 : TangentSpace I x) : E) ((v1 : TangentSpace I x) : E)
   rw [unitModel_sub_pt (I := I) (M := M) g₀ 4
-    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-      koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P)
-    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-      koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P) x]
+    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+      koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P)
+    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+      koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P) x]
   rw [unitModel_add_pt (I := I) (M := M) g₀ 4
-    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P)
-    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) x]
+    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P)
+    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) x]
   rw [unitModel_add_pt (I := I) (M := M) g₀ 4
-    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P)
-    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P) x]
+    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P)
+    (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P) x]
   rw [sub_apply, add_apply,
     add_apply]
   rw [hM1, hM2, hM3, hM4]
@@ -1364,10 +1364,10 @@ lemma sharpGradKoszulResidualField_eq_decomposition (P : SmoothCcTensor g₀ 0 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)))) := by
+              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)))) := by
   classical
   apply SmoothCcTensor.ext
   apply ContMDiffSection.ext
@@ -1384,47 +1384,47 @@ lemma sharpGradKoszulResidualField_eq_decomposition (P : SmoothCcTensor g₀ 0 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P))))).toSection x)) D) =
+              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x)) D) =
       (2 : ℝ) • ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
         (ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P))))).toSection x)
+              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x)
                     D) := by
     rw [show ((((2 : ℝ) •
         ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
           (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
           (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
             (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P))))).toSection x)) =
+              ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                  koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x)) =
         (2 : ℝ) •
           ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2
             (secondMetricPairTraceOperator (I := I) (M := M) g₀ g₁)
             (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 ricciFoldRemainderSlotPerm
               (slotExtendIter (I := I) (M := M) g₀ 0 4 2
-                ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-                    koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-                    koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P))))).toSection x)
+                ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+                    koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+                  (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+                    koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P))))).toSection x)
                       from by
       rw [SmoothCcTensor.toSection_smul]; rfl]
     rfl
   rw [hRHSsmul, Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul]
   rw [secondMetricPairTraceOperator_apply_toModel (I := I) (M := M) g₀ g₁
-    ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)) x D v]
+    ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+      (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+        koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)) x D v]
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 2 I x from
       (ricciArmSharpGradKoszulResidualField (I := I) (M := M) g₀ g₁
         (ccTensor02Symm (I := I) g₀ P)).toSection x) D) =
@@ -1461,10 +1461,10 @@ lemma sharpGradKoszulResidualField_eq_decomposition (P : SmoothCcTensor g₀ 0 2
     with_unfolding_all
       rfl
   have hfold : unitModel (I := I) (M := M) g₀ 4
-      ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positivePermutation P +
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_positiveKoszulSwapPermutation P) -
-        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativePermutation P +
-          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernel_negativeKoszulSwapPermutation P)) x
+      ((koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositivePermutation P +
+          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelPositiveKoszulSwapPermutation P) -
+        (koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativePermutation P +
+          koszulConnectionDifferenceFoldWeight (I := I) (M := M) g₀ g₁ sharpGradKoszulKernelNegativeKoszulSwapPermutation P)) x
       ![v 0, v 1,
         (tangentSpaceModelContinuousLinearEquiv (I := I) x)
           (smoothOrthoFrame (I := I) g₁ x a x),

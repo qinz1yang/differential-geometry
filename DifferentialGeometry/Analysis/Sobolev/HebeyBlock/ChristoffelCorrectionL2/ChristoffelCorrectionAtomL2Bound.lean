@@ -585,7 +585,7 @@ theorem g3_christoffel_atom_eLpNorm_le_uniform_intrinsic_pou
         ENNReal.ofReal C := by
   classical
   set S_act : Finset M :=
-    chartAtlasPOU_activeFinset (I := I) (M := M) with hS_act_def
+    chartAtlasPOUActiveFinset (I := I) (M := M) with hS_act_def
   have hper : ∀ α : M, ∀ k : Fin (Module.finrank ℝ E),
       ∃ C : ℝ, 0 ≤ C ∧
         eLpNorm

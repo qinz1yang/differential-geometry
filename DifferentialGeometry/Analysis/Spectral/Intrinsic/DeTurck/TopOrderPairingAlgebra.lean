@@ -371,7 +371,7 @@ private lemma pair_extend_cons
       Tensor0SSpace.toModel
         ((show Tensor0SSpace r I x →L[Real] Tensor0SSpace s I x from
           Φ.toSection x)
-          (tensor0S_curry (I := I) (M := M) (𝕜 := Real) r x D v0)) vs := by
+          (tensor0SCurry (I := I) (M := M) (𝕜 := Real) r x D v0)) vs := by
   rw [show ((show Tensor0SSpace (r + 1) I x →L[Real]
       Tensor0SSpace (s + 1) I x from
       (slotExtend (I := I) (M := M) g r s Φ).toSection x) D) =
@@ -442,15 +442,15 @@ private lemma pair_extend2_eval (g : SmoothRiemannianMetric I M)
     (slotExtendIter (I := I) (M := M) g 0 2 1 B) x D (u 0)]
   rw [show ((show Tensor0SSpace 1 I x →L[Real] Tensor0SSpace 3 I x from
       (slotExtendIter (I := I) (M := M) g 0 2 1 B).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := Real) 1 x D (u 0))) =
+        (tensor0SCurry (I := I) (M := M) (𝕜 := Real) 1 x D (u 0))) =
       ((show Tensor0SSpace 1 I x →L[Real] Tensor0SSpace 3 I x from
         (slotExtend (I := I) (M := M) g 0 2 B).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := Real) 1 x D (u 0))) from rfl]
+        (tensor0SCurry (I := I) (M := M) (𝕜 := Real) 1 x D (u 0))) from rfl]
   rw [pair_extend_cons (I := I) (M := M) g 0 2 B x
-    (tensor0S_curry (I := I) (M := M) (𝕜 := Real) 1 x D (u 0)) (u 1)]
+    (tensor0SCurry (I := I) (M := M) (𝕜 := Real) 1 x D (u 0)) (u 1)]
   set t : Tensor0SSpace 0 I x :=
-    tensor0S_curry (I := I) (M := M) (𝕜 := Real) 0 x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := Real) 1 x D (u 0)) (u 1)
+    tensor0SCurry (I := I) (M := M) (𝕜 := Real) 0 x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := Real) 1 x D (u 0)) (u 1)
       with ht_def
   have htval : Tensor0SSpace.toModel t (fun i : Fin 0 => i.elim0) =
       Tensor0SSpace.toModel D
@@ -459,7 +459,7 @@ private lemma pair_extend2_eval (g : SmoothRiemannianMetric I M)
     rw [ht_def]
     have hfirst := TensorMultilinear.tensor0S_curry_toModel_apply
       (I := I) (M := M)
-      (T := tensor0S_curry (I := I) (M := M) (𝕜 := Real) 1 x D (u 0))
+      (T := tensor0SCurry (I := I) (M := M) (𝕜 := Real) 1 x D (u 0))
       (v0 := tangentSpaceModelContinuousLinearEquiv (I := I) x (u 1))
       (vs := fun i : Fin 0 => i.elim0)
     have hsecond := TensorMultilinear.tensor0S_curry_toModel_apply

@@ -32,12 +32,12 @@ theorem ricHess_eq_inner
     (hcov : CovariantDerivative.ContMDiffCovariantDerivativeLocally cov
       (∞ : WithTop ℕ∞))
     (g : SmoothRiemannianMetric I M)
-    (hmc : IsMetricCompatible_gen (I := I) cov g)
+    (hmc : IsMetricCompatibleGen (I := I) cov g)
     (f : M -> Real) (hf : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) f)
     (x : M) :
     LinearMap.trace Real (TangentSpace I x)
-        ((cotangentSharpLinear_gen (I := I) g x).comp
-          ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+        ((cotangentSharpLinearGen (I := I) g x).comp
+          ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
               (metricRicciAt (I := I) g x)).toLinearMap.comp
             (cov (fun y : M => gradientFun (I := I) g f y) x).toLinearMap)) =
       inner02 (I := I) g x (metricRicciAt (I := I) g x)
@@ -48,13 +48,13 @@ theorem ricHess_eq_inner
   let D : TangentSpace I x →L[Real] TangentSpace I x := cov G x
   let Ric := metricRicciAt (I := I) g x
   let R : TangentSpace I x →ₗ[Real] TangentSpace I x :=
-    (cotangentSharpLinear_gen (I := I) g x).comp
-      (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x Ric).toLinearMap
+    (cotangentSharpLinearGen (I := I) g x).comp
+      (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x Ric).toLinearMap
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
   let delta : Fin (Module.finrank Real (TangentSpace I x)) ->
       Fin (Module.finrank Real (TangentSpace I x)) -> Real :=
     fun i j => if i = j then 1 else 0
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis delta :=
+  have hinv : MetricInverseInBasisGen (I := I) g x basis delta :=
     metricInverseInBasis_of_orthonormal (I := I) g basis hON
   have hrepr (i j : Fin (Module.finrank Real (TangentSpace I x))) :
       basis.repr (D (basis i)) j = g.inner x (D (basis i)) (basis j) := by
@@ -73,8 +73,8 @@ theorem ricHess_eq_inner
   have hraise (v w : TangentSpace I x) :
       g.inner x (R v) w = Ric (vec2 (I := I) v w) := by
     change g.inner x
-        (cotangentSharp_gen (I := I) g x
-          (tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x Ric v)) w = _
+        (cotangentSharpGen (I := I) g x
+          (tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x Ric v)) w = _
     rw [cotangentSharp_inner_eval, tensor0S_curry_one_apply]
     rfl
   have htrace :
@@ -110,8 +110,8 @@ theorem ricHess_eq_inner
     rw [tensor0S_curry_one_apply]
   calc
     LinearMap.trace Real (TangentSpace I x)
-        ((cotangentSharpLinear_gen (I := I) g x).comp
-          ((tensor0S_curry (I := I) (𝕜 := Real) (M := M) 1 x
+        ((cotangentSharpLinearGen (I := I) g x).comp
+          ((tensor0SCurry (I := I) (𝕜 := Real) (M := M) 1 x
               (metricRicciAt (I := I) g x)).toLinearMap.comp
             (cov (fun y : M => gradientFun (I := I) g f y) x).toLinearMap)) =
         ∑ i, Ric (vec2 (I := I) (D (basis i)) (basis i)) := by

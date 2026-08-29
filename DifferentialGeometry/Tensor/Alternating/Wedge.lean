@@ -34,12 +34,12 @@ variable
   {N'' : Type*} [NormedAddCommGroup N''] [NormedSpace 𝕜 N'']
   {m n p m' d : ℕ}
 
-def wedge_product (g : M [⋀^Fin m]→L[𝕜] N) (h : M [⋀^Fin n]→L[𝕜] N')
+def wedgeProduct (g : M [⋀^Fin m]→L[𝕜] N) (h : M [⋀^Fin n]→L[𝕜] N')
     (f : N →L[𝕜] N' →L[𝕜] N'') : M [⋀^Fin (m + n)]→L[𝕜] N'' :=
   uncurryFinAdd (f.compContinuousAlternatingMap₂ g h)
 
-notation g "∧["f"]" h => wedge_product g h f
-notation g "∧["𝕜"]" h => wedge_product g h (ContinuousLinearMap.mul 𝕜 𝕜)
+notation g "∧["f"]" h => wedgeProduct g h f
+notation g "∧["𝕜"]" h => wedgeProduct g h (ContinuousLinearMap.mul 𝕜 𝕜)
 
 noncomputable def covectorWedge (α : M →L[𝕜] 𝕜) (β : M [⋀^Fin n]→L[𝕜] 𝕜) :
     M [⋀^Fin (n + 1)]→L[𝕜] 𝕜 :=
@@ -287,31 +287,31 @@ theorem norm_wedge_product_le (g : M [⋀^Fin m]→L[𝕜] N) (h : M [⋀^Fin n]
     _ = Fintype.card (Equiv.Perm.ModSumCongr (Fin m) (Fin n)) * (‖f‖ * ‖g‖ * ‖h‖) *
           ∏ i, ‖v i‖ := by ring
 
-noncomputable def wedge_productL (f : N →L[𝕜] N' →L[𝕜] N'') :
+noncomputable def wedgeProductL (f : N →L[𝕜] N' →L[𝕜] N'') :
     (M [⋀^Fin m]→L[𝕜] N) →L[𝕜] (M [⋀^Fin n]→L[𝕜] N') →L[𝕜]
         (M [⋀^Fin (m + n)]→L[𝕜] N'') :=
   LinearMap.mkContinuous₂
     { toFun := fun g =>
-        { toFun := fun h => wedge_product g h f
+        { toFun := fun h => wedgeProduct g h f
           map_add' := fun h₁ h₂ => wedge_add g h₁ h₂ f
           map_smul' := fun c h => wedge_smul c g h f }
       map_add' := fun g₁ g₂ => by ext h : 1; exact add_wedge g₁ g₂ h f
       map_smul' := fun c g => by ext h : 1; exact smul_wedge c g h f }
     (Fintype.card (Equiv.Perm.ModSumCongr (Fin m) (Fin n)) * ‖f‖ + 1) fun g h => by
-      change ‖wedge_product g h f‖ ≤ _
+      change ‖wedgeProduct g h f‖ ≤ _
       have hwedge := norm_wedge_product_le g h f
       nlinarith [hwedge, norm_nonneg g, norm_nonneg h, norm_nonneg f]
 
 @[simp] theorem wedge_productL_apply (f : N →L[𝕜] N' →L[𝕜] N'')
     (g : M [⋀^Fin m]→L[𝕜] N) (h : M [⋀^Fin n]→L[𝕜] N') :
-    wedge_productL f g h = wedge_product g h f := rfl
+    wedgeProductL f g h = wedgeProduct g h f := rfl
 
 theorem uncurryFin_wedge_productL_precompL_apply (f : N →L[𝕜] N' →L[𝕜] N'')
     (g' : M →L[𝕜] (M [⋀^Fin m]→L[𝕜] N)) (h : M [⋀^Fin n]→L[𝕜] N')
     (v : Fin (m + n + 1) → M) :
-    uncurryFin ((wedge_productL f).precompL M g' h) v =
+    uncurryFin ((wedgeProductL f).precompL M g' h) v =
       ∑ k : Fin (m + n + 1), (-1 : ℤ) ^ k.val •
-        wedge_product (g' (v k)) h f (k.removeNth v) := by
+        wedgeProduct (g' (v k)) h f (k.removeNth v) := by
   rw [uncurryFin_apply]
   refine Finset.sum_congr rfl fun k _ => ?_
   simp only [ContinuousLinearMap.precompL_apply, wedge_productL_apply]
@@ -319,8 +319,8 @@ theorem uncurryFin_wedge_productL_precompL_apply (f : N →L[𝕜] N' →L[𝕜]
 theorem wedge_product_uncurryFin_apply (f : N →L[𝕜] N' →L[𝕜] N'')
     (g' : M →L[𝕜] (M [⋀^Fin m]→L[𝕜] N)) (h : M [⋀^Fin n]→L[𝕜] N')
     (v : Fin (m + n + 1) → M) :
-    domDomCongr Fin.finAddFlipAssoc (wedge_product (uncurryFin g') h f) v =
-      (wedge_product (uncurryFin g') h f) (v ∘ ⇑Fin.finAddFlipAssoc) := by
+    domDomCongr Fin.finAddFlipAssoc (wedgeProduct (uncurryFin g') h f) v =
+      (wedgeProduct (uncurryFin g') h f) (v ∘ ⇑Fin.finAddFlipAssoc) := by
   rw [ContinuousAlternatingMap.domDomCongr_apply]
 
 private def uncurryFinLeftExpandedSummand
@@ -1473,14 +1473,14 @@ private theorem uncurryFin_wedge_productL_precompL_fiber
 theorem uncurryFin_wedge_productL_precompL_eq_domDomCongr
     (f : N →L[𝕜] N' →L[𝕜] N'')
     (g' : M →L[𝕜] (M [⋀^Fin m]→L[𝕜] N)) (h : M [⋀^Fin n]→L[𝕜] N') :
-    uncurryFin ((wedge_productL f).precompL M g' h) =
-      domDomCongr Fin.finAddFlipAssoc (wedge_product (uncurryFin g') h f) := by
+    uncurryFin ((wedgeProductL f).precompL M g' h) =
+      domDomCongr Fin.finAddFlipAssoc (wedgeProduct (uncurryFin g') h f) := by
   ext v
   let w : Fin (m + 1) ⊕ Fin n → M := (v ∘ ⇑Fin.finAddFlipAssoc) ∘ ⇑finSumFinEquiv
   calc
-    uncurryFin ((wedge_productL f).precompL M g' h) v
+    uncurryFin ((wedgeProductL f).precompL M g' h) v
         = ∑ k : Fin (m + n + 1), (-1 : ℤ) ^ k.val •
-            wedge_product (g' (v k)) h f (k.removeNth v) := by
+            wedgeProduct (g' (v k)) h f (k.removeNth v) := by
           exact uncurryFin_wedge_productL_precompL_apply f g' h v
     _ = ∑ k : Fin (m + n + 1), (-1 : ℤ) ^ k.val •
             uncurrySum (f.compContinuousAlternatingMap₂ (g' (v k)) h)
@@ -1581,9 +1581,9 @@ theorem uncurryFin_wedge_productL_precompL_eq_domDomCongr
               (Quot.out_eq (q := τ')))
     _ = uncurrySum (f.compContinuousAlternatingMap₂ (uncurryFin g') h) w := by
           rw [uncurrySum_apply, _root_.sum_apply]
-    _ = (wedge_product (uncurryFin g') h f) (v ∘ ⇑Fin.finAddFlipAssoc) := by
+    _ = (wedgeProduct (uncurryFin g') h f) (v ∘ ⇑Fin.finAddFlipAssoc) := by
           rw [wedge_product_def, uncurryFinAdd, ContinuousAlternatingMap.domDomCongr_apply]
-    _ = domDomCongr Fin.finAddFlipAssoc (wedge_product (uncurryFin g') h f) v := by
+    _ = domDomCongr Fin.finAddFlipAssoc (wedgeProduct (uncurryFin g') h f) v := by
           rw [wedge_product_uncurryFin_apply]
 
 private def placementSummand (g : M [⋀^Fin m]→L[𝕜] 𝕜) (h : M [⋀^Fin n]→L[𝕜] 𝕜)
@@ -2185,7 +2185,7 @@ private theorem uncurrySum_summand_swap (g : M [⋀^Fin m]→L[𝕜] 𝕜)
     uncurrySum.summand (ContinuousLinearMap.mul 𝕜 𝕜 |>.compContinuousAlternatingMap₂ h g)
         σ (v ∘ finSumFinEquiv) =
       uncurrySum.summand (ContinuousLinearMap.mul 𝕜 𝕜 |>.compContinuousAlternatingMap₂ g h)
-        (Equiv.Perm.finAddFlip_equiv (m := n) (n := m) σ)
+        (Equiv.Perm.finAddFlipEquiv (m := n) (n := m) σ)
         ((v ∘ finAddFlip) ∘ finSumFinEquiv) := by
   refine Quotient.inductionOn' σ ?_
   intro σ'
@@ -2231,13 +2231,13 @@ private theorem wedge_product_swap (g : M [⋀^Fin m]→L[𝕜] 𝕜)
     _root_.sum_apply, _root_.sum_apply]
   refine Finset.sum_bij
     (fun (σ : Equiv.Perm.ModSumCongr (Fin n) (Fin m)) _ =>
-      Equiv.Perm.finAddFlip_equiv (m := n) (n := m) σ) ?_ ?_ ?_ ?_
+      Equiv.Perm.finAddFlipEquiv (m := n) (n := m) σ) ?_ ?_ ?_ ?_
   · intro σ hσ
     simp
   · intro σ₁ hσ₁ σ₂ hσ₂ h
-    exact Equiv.injective (Equiv.Perm.finAddFlip_equiv (m := n) (n := m)) h
+    exact Equiv.injective (Equiv.Perm.finAddFlipEquiv (m := n) (n := m)) h
   · intro τ hτ
-    exact ⟨(Equiv.Perm.finAddFlip_equiv (m := n) (n := m)).symm τ, by simp,
+    exact ⟨(Equiv.Perm.finAddFlipEquiv (m := n) (n := m)).symm τ, by simp,
       Equiv.apply_symm_apply _ τ⟩
   · intro σ hσ
     exact uncurrySum_summand_swap g h v σ
@@ -2280,12 +2280,12 @@ lemma domDomCongr_finAddFlip_wedge_self (g : M [⋀^Fin m]→L[𝕜] 𝕜) :
   rw[wedge_product_mul, uncurryFinAdd, domDomCongr_apply, domDomCongr_apply, uncurrySum_apply,
     _root_.sum_apply, wedge_product_mul, uncurryFinAdd, domDomCongr_apply,
     uncurrySum_apply, _root_.sum_apply]
-  conv_rhs => rw[← Equiv.sum_comp Equiv.Perm.finAddFlip_equiv_eqFin]
+  conv_rhs => rw[← Equiv.sum_comp Equiv.Perm.finAddFlipEquivEqFin]
   apply Finset.sum_congr rfl
   rintro σ -
   refine Quotient.inductionOn' σ fun σ₁ => ?_
-  rw [show Equiv.Perm.finAddFlip_equiv_eqFin (Quotient.mk'' σ₁) =
-      Quotient.mk'' (Equiv.Perm.sumCommPerm_eqFin σ₁) from rfl]
+  rw [show Equiv.Perm.finAddFlipEquivEqFin (Quotient.mk'' σ₁) =
+      Quotient.mk'' (Equiv.Perm.sumCommPermEqFin σ₁) from rfl]
   rw[uncurrySum_summand_eval]
   rw[uncurrySum_summand_eval]
   simp only [Equiv.Perm.sign_sumCommPerm_eqFin, Units.smul_def,

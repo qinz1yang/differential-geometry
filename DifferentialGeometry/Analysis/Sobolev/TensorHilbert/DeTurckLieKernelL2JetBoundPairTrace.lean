@@ -247,7 +247,7 @@ private lemma deTurckLieConnectionDifferenceDerivativePairTraceOperator_toModel 
         (rsDomDomCongrSection (I := I) (M := M) g₀ 2 6 deTurckLieConnectionDifferenceDerivativeInputPermutation
           (slotExtendIter (I := I) (M := M) g₀ 0 4 2 X)).toSection x) D) =
         ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
-          tensorRS_domDomCongr deTurckLieConnectionDifferenceDerivativeInputPermutation
+          tensorRSDomDomCongr deTurckLieConnectionDifferenceDerivativeInputPermutation
             ((slotExtendIter (I := I) (M := M) g₀ 0 4 2 X).toSection x)) D) from by
       rw [rsDomDomCongrSection_toSection]]
     rw [toModel_rsDomDomCongr_apply (I := I) (M := M) deTurckLieConnectionDifferenceDerivativeInputPermutation

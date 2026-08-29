@@ -55,8 +55,8 @@ theorem polar_right_inv
 variable [FiniteDimensional ℝ E]
 variable {n : ℕ} [Fact (finrank ℝ E = n + 1)] [NeZero n]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace
 
 private instance sphereModel_neZero :
     NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin n))) := by

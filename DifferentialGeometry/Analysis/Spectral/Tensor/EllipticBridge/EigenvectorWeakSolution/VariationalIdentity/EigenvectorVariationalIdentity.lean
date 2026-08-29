@@ -654,14 +654,14 @@ def eigenvectorTensorChartBilinearData
     (i : TensorEigenIdx (I := I) (M := M) g r s)
     (α : M) (P₀ : TensorCompIdx (E := E) r s) :
     TensorChartBilinearH1ComplData (I := I) (M := M) g r s α P₀ :=
-  ⟨{ u_chart := fun y =>
+  ⟨{ uChart := fun y =>
         ((tensorL2ChartComponent (I := I) (M := M) g r s
           (tensorResolventEigenbasisVec (I := I) (M := M)
             (tensorResolventL2_isCompactOperator (I := I) (M := M)
               g r s) i) α P₀ :
           Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y
-     f_chart := eigenvectorChartRHS (I := I) (M := M) g r s i α P₀
-     weak_partial := eigenvectorChartWeakPartial (I := I) (M := M)
+     fChart := eigenvectorChartRHS (I := I) (M := M) g r s i α P₀
+     weakPartial := eigenvectorChartWeakPartial (I := I) (M := M)
        g r s i α P₀
      u_chart_memLp_weighted :=
        tensorL2ChartComponent_memLp_weighted (I := I) (M := M) g r s

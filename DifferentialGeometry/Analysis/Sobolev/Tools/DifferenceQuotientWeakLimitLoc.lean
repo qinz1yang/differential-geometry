@@ -453,7 +453,7 @@ private lemma integrable_w_partial_phi_loc
     (h_partial_cont.memLp_of_hasCompactSupport h_partial_supp).restrict _
   exact MemLp.integrable_mul hw_l2 h_partial_memLp
 
-def smoothTestFunctional_loc
+def smoothTestFunctionalLoc
     {Ω Ω'' : Set E} {w : E → ℝ}
     (hw_l2 : MemLp w 2 ((volume : Measure E).restrict Ω))
     (k : Fin d) :
@@ -554,7 +554,7 @@ omit [NeZero d] in
     {Ω Ω'' : Set E} {w : E → ℝ}
     (hw_l2 : MemLp w 2 ((volume : Measure E).restrict Ω))
     (k : Fin d) (φ : smoothCSSupportedInSubmodule (d := d) Ω'') :
-    smoothTestFunctional_loc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ =
+    smoothTestFunctionalLoc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ =
       -∫ x in Ω, w x * (fderiv ℝ φ.1 x) (EuclideanSpace.single k 1)
         ∂(volume : Measure E) := rfl
 
@@ -806,7 +806,7 @@ private lemma abs_smoothTestFunctional_loc_le
       eLpNorm (diffQuot k h w) 2 ((volume : Measure E).restrict Ω'')
         ≤ ENNReal.ofReal M)
     (φ : smoothCSSupportedInSubmodule (d := d) Ω'') :
-    |smoothTestFunctional_loc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ| ≤
+    |smoothTestFunctionalLoc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ| ≤
       M * (eLpNorm φ.1 2 ((volume : Measure E).restrict Ω'')).toReal := by
   let _ := hΩ_open
   let _ := hΩ''_open
@@ -1104,7 +1104,7 @@ private lemma abs_smoothTestFunctional_loc_le_lpNorm
       eLpNorm (diffQuot k h w) 2 ((volume : Measure E).restrict Ω'')
         ≤ ENNReal.ofReal M)
     (φ : smoothCSSupportedInSubmodule (d := d) Ω'') :
-    |smoothTestFunctional_loc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ| ≤
+    |smoothTestFunctionalLoc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ| ≤
       M * ‖smoothCSSupportedInToLp (d := d) Ω'' φ‖ := by
   have h := abs_smoothTestFunctional_loc_le (d := d) hΩ_open hΩ''_open
     hΩ''_compact_closure hh₀ h_room hw_l2 k hM_nn h_bdd φ
@@ -1119,13 +1119,13 @@ private lemma abs_smoothTestFunctional_loc_le_lpNorm
   rw [h_norm_eq]
   exact h
 
-def smoothTestFunctional_loc_ext
+def smoothTestFunctionalLocExt
     {Ω Ω'' : Set E}
     {w : E → ℝ}
     (hw_l2 : MemLp w 2 ((volume : Measure E).restrict Ω))
     (k : Fin d) :
     Lp ℝ 2 ((volume : Measure E).restrict Ω'') →L[ℝ] ℝ :=
-  (smoothTestFunctional_loc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k).extendOfNorm
+  (smoothTestFunctionalLoc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k).extendOfNorm
     (smoothCSSupportedInToLp (d := d) Ω'')
 
 omit [NeZero d] in
@@ -1141,8 +1141,8 @@ private lemma opNorm_smoothTestFunctional_loc_ext_le
     (h_bdd : ∀ h : ℝ, 0 < |h| → |h| ≤ h₀ →
       eLpNorm (diffQuot k h w) 2 ((volume : Measure E).restrict Ω'')
         ≤ ENNReal.ofReal M) :
-    ‖smoothTestFunctional_loc_ext (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k‖ ≤ M := by
-  unfold smoothTestFunctional_loc_ext
+    ‖smoothTestFunctionalLocExt (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k‖ ≤ M := by
+  unfold smoothTestFunctionalLocExt
   refine LinearMap.opNorm_extendOfNorm_le
     (denseRange_smoothCSSupportedInToLp (d := d) hΩ''_open hΩ''_compact_closure)
     hM_nn ?_
@@ -1164,10 +1164,10 @@ private lemma smoothTestFunctional_loc_ext_apply
       eLpNorm (diffQuot k h w) 2 ((volume : Measure E).restrict Ω'')
         ≤ ENNReal.ofReal M)
     (φ : smoothCSSupportedInSubmodule (d := d) Ω'') :
-    smoothTestFunctional_loc_ext (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k
+    smoothTestFunctionalLocExt (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k
         (smoothCSSupportedInToLp (d := d) Ω'' φ) =
-      smoothTestFunctional_loc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ := by
-  unfold smoothTestFunctional_loc_ext
+      smoothTestFunctionalLoc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ := by
+  unfold smoothTestFunctionalLocExt
   refine LinearMap.extendOfNorm_eq
     (denseRange_smoothCSSupportedInToLp (d := d) hΩ''_open hΩ''_compact_closure)
     ⟨M, ?_⟩ φ
@@ -1175,7 +1175,7 @@ private lemma smoothTestFunctional_loc_ext_apply
   exact abs_smoothTestFunctional_loc_le_lpNorm (d := d) hΩ_open hΩ''_open
     hΩ''_compact_closure hh₀ h_room hw_l2 k hM_nn h_bdd ψ
 
-def smoothTestFunctional_loc_riesz
+def smoothTestFunctionalLocRiesz
     {Ω Ω'' : Set E}
     {w : E → ℝ}
     (hw_l2 : MemLp w 2 ((volume : Measure E).restrict Ω))
@@ -1183,7 +1183,7 @@ def smoothTestFunctional_loc_riesz
     Lp ℝ 2 ((volume : Measure E).restrict Ω'') :=
   (InnerProductSpace.toDual ℝ
       (Lp ℝ 2 ((volume : Measure E).restrict Ω''))).symm
-    (smoothTestFunctional_loc_ext (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k)
+    (smoothTestFunctionalLocExt (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k)
 
 omit [NeZero d] in
 private lemma norm_smoothTestFunctional_loc_riesz
@@ -1191,9 +1191,9 @@ private lemma norm_smoothTestFunctional_loc_riesz
     {w : E → ℝ}
     (hw_l2 : MemLp w 2 ((volume : Measure E).restrict Ω))
     (k : Fin d) :
-    ‖smoothTestFunctional_loc_riesz (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k‖ =
-      ‖smoothTestFunctional_loc_ext (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k‖ := by
-  unfold smoothTestFunctional_loc_riesz
+    ‖smoothTestFunctionalLocRiesz (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k‖ =
+      ‖smoothTestFunctionalLocExt (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k‖ := by
+  unfold smoothTestFunctionalLocRiesz
   exact (InnerProductSpace.toDual ℝ
     (Lp ℝ 2 ((volume : Measure E).restrict Ω''))).symm.norm_map _
 
@@ -1204,9 +1204,9 @@ private lemma smoothTestFunctional_loc_ext_eq_inner
     (hw_l2 : MemLp w 2 ((volume : Measure E).restrict Ω))
     (k : Fin d)
     (f : Lp ℝ 2 ((volume : Measure E).restrict Ω'')) :
-    smoothTestFunctional_loc_ext (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k f =
-      ⟪smoothTestFunctional_loc_riesz (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k, f⟫_ℝ := by
-  unfold smoothTestFunctional_loc_riesz
+    smoothTestFunctionalLocExt (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k f =
+      ⟪smoothTestFunctionalLocRiesz (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k, f⟫_ℝ := by
+  unfold smoothTestFunctionalLocRiesz
   rw [InnerProductSpace.toDual_symm_apply]
 
 omit [NeZero d] in
@@ -1228,7 +1228,7 @@ theorem hasWeakPartialDeriv_of_diffQuot_uniform_bound_loc
       DeGiorgi.HasWeakPartialDeriv (d := d) k g w Ω'' ∧
       eLpNorm g 2 ((volume : Measure E).restrict Ω'') ≤ ENNReal.ofReal M := by
   set g_lp : Lp ℝ 2 ((volume : Measure E).restrict Ω'') :=
-    smoothTestFunctional_loc_riesz (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k with hg_lp_def
+    smoothTestFunctionalLocRiesz (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k with hg_lp_def
   refine ⟨⇑g_lp, ?_, ?_, ?_⟩
   · exact Lp.memLp g_lp
   · intro φ hφ_smooth hφ_supp hφ_supp_in
@@ -1241,7 +1241,7 @@ theorem hasWeakPartialDeriv_of_diffQuot_uniform_bound_loc
       smoothTestFunctional_loc_ext_eq_inner (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k
         (smoothCSSupportedInToLp (d := d) Ω'' φ_cs)
     have h_func_val :
-        smoothTestFunctional_loc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ_cs =
+        smoothTestFunctionalLoc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ_cs =
           -∫ x in Ω, w x * (fderiv ℝ φ x) (EuclideanSpace.single k 1)
             ∂(volume : Measure E) := by
       rw [smoothTestFunctional_loc_apply]
@@ -1270,7 +1270,7 @@ theorem hasWeakPartialDeriv_of_diffQuot_uniform_bound_loc
         rw [h_inner_eq, hx]; ring
       rw [h_eq]
     have h_chain :
-        smoothTestFunctional_loc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ_cs =
+        smoothTestFunctionalLoc (d := d) (Ω := Ω) (Ω'' := Ω'') hw_l2 k φ_cs =
           ∫ x in Ω'', g_lp x * φ x ∂(volume : Measure E) := by
       rw [← h_ext_apply, h_ext_inner, h_inner_def, h_int_eq]
     rw [h_func_val] at h_chain

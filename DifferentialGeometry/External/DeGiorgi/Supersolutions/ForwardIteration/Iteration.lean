@@ -39,11 +39,11 @@ noncomputable def superIterNormFwd
     (1 / moserExponentSeq d p₀ n)
 
 /-- The step constant in the forward low-power iteration at stage `n`.
-This is `(C_MoserAnchor d / gap² · (Λ (pₙ/(1-pₙ))² + 1))^{1/pₙ}`. -/
+This is `(CMoserAnchor d / gap² · (Λ (pₙ/(1-pₙ))² + 1))^{1/pₙ}`. -/
 noncomputable def superStepConstFwd
     (A : NormalizedEllipticCoeff d (Metric.ball (0 : E) 1))
     (p₀ : ℝ) (n : ℕ) : ℝ :=
-  ((C_MoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
+  ((CMoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
     (A.1.Λ * (moserExponentSeq d p₀ n /
       (1 - moserExponentSeq d p₀ n)) ^ 2 + 1)) ^
     (1 / moserExponentSeq d p₀ n)
@@ -124,7 +124,7 @@ theorem supersolution_iteration_forward
               (1 / (moserChi d * p_n)) := by
         simp [superIterNormFwd, superIterIntegralFwd, p_n, moserExponentSeq_succ]
       have heq_step : superStepConstFwd (d := d) A p₀ n =
-          ((C_MoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
+          ((CMoserAnchor d / (moserRadius n - moserRadius (n + 1)) ^ 2) *
             (A.1.Λ * (p_n / (1 - p_n)) ^ 2 + 1)) ^ (1 / p_n) := by
         simp [superStepConstFwd, p_n]
       have hstep_nonneg : 0 ≤ superStepConstFwd (d := d) A p₀ n := by
@@ -165,7 +165,7 @@ theorem superStepConstFwd_le
     (hi : i ∈ Finset.range (m + 1)) :
     let p₀ := q * (moserChi d)⁻¹ ^ m
     superStepConstFwd (d := d) A p₀ i ≤
-      (16 * C_MoserAnchor d * (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) *
+      (16 * CMoserAnchor d * (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) *
         (4 * moserChi d ^ 2) ^ i) ^
         (1 / moserExponentSeq d p₀ i) := by
   intro p₀
@@ -197,8 +197,8 @@ theorem superStepConstFwd_le
             mul_le_mul_of_nonneg_left hprod_le hq.le
         _ = q := mul_one q
     have hp_i_lt_one : moserExponentSeq d p₀ i < 1 := lt_of_le_of_lt hp_i_le_q hq1
-    have hgap_eq : C_MoserAnchor d / (moserRadius i - moserRadius (i + 1)) ^ 2 =
-        C_MoserAnchor d * (4 : ℝ) ^ (i + 2) := by
+    have hgap_eq : CMoserAnchor d / (moserRadius i - moserRadius (i + 1)) ^ 2 =
+        CMoserAnchor d * (4 : ℝ) ^ (i + 2) := by
       rw [moserRadius_gap]
       have hsq : (((1 / 2 : ℝ) ^ (i + 2)) ^ 2) = (1 / 4 : ℝ) ^ (i + 2) := by
         rw [← pow_mul, show (i + 2) * 2 = 2 * (i + 2) by ring, pow_mul]; norm_num
@@ -253,14 +253,14 @@ theorem superStepConstFwd_le
         _ = (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) * (moserChi d ^ 2) ^ i := by
               ring
     rw [hgap_eq, hpow4]
-    calc C_MoserAnchor d * (16 * 4 ^ i) *
+    calc CMoserAnchor d * (16 * 4 ^ i) *
             (A.1.Λ * (moserExponentSeq d p₀ i / (1 - moserExponentSeq d p₀ i)) ^ 2 + 1)
-        ≤ C_MoserAnchor d * (16 * 4 ^ i) *
+        ≤ CMoserAnchor d * (16 * 4 ^ i) *
             ((A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) * (moserChi d ^ 2) ^ i) := by
           gcongr
           exact mul_nonneg (le_trans (by norm_num : (0 : ℝ) ≤ 1) (one_le_C_MoserAnchor (d := d)))
             (by positivity)
-      _ = 16 * C_MoserAnchor d * (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) *
+      _ = 16 * CMoserAnchor d * (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) *
             (4 * moserChi d ^ 2) ^ i := by
           rw [show (4 * moserChi d ^ 2) ^ i = 4 ^ i * (moserChi d ^ 2) ^ i by rw [mul_pow]]
           ring
@@ -270,7 +270,7 @@ theorem superStepConstFwd_le
 
 The key bound is:
 ```
-∏ᵢ₌₀ᵐ step_i ≤ (C_Moser d * (Λp₀²/(1-q)² + 1)^{d/2})^{1/p₀}
+∏ᵢ₌₀ᵐ step_i ≤ (CMoser d * (Λp₀²/(1-q)² + 1)^{d/2})^{1/p₀}
 ```
 The crucial point: `1 - pₙ ≥ 1 - q > 0` for `n ≤ m` (since `pₘ = q`
 is the largest exponent), so the `(1-p)` denominators stay bounded. -/
@@ -281,14 +281,14 @@ theorem supersolution_geometric_majorant_fwd
     (hq : 0 < q) (hq1 : q < 1) :
     let p₀ := q * (moserChi d)⁻¹ ^ m
     ∏ i ∈ Finset.range (m + 1), superStepConstFwd (d := d) A p₀ i ≤
-      (C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) ^
+      (CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) ^
         ((d : ℝ) / 2)) ^ (1 / p₀) := by
   intro p₀
   have hp₀ : 0 < p₀ := by
     dsimp [p₀]
     exact mul_pos hq (pow_pos (inv_pos.mpr (moserChi_pos (d := d) hd)) m)
   let ρ := moserDecayRatio d
-  let K₀ : ℝ := 16 * C_MoserAnchor d
+  let K₀ : ℝ := 16 * CMoserAnchor d
   let L : ℝ := A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1
   let K : ℝ := K₀ * L
   let CC : ℝ := 4 * moserChi d ^ 2
@@ -423,7 +423,7 @@ theorem supersolution_geometric_majorant_fwd
             (Real.rpow_nonneg (sq_nonneg _) _)
             (Real.rpow_nonneg (by norm_num : (0 : ℝ) ≤ 4) _)
   have hK₀_pow_le_big :
-      K₀ ^ ((d : ℝ) / 2) ≤ ((32 : ℝ) * C_MoserAnchor d) ^ ((d : ℝ) / 2) := by
+      K₀ ^ ((d : ℝ) / 2) ≤ ((32 : ℝ) * CMoserAnchor d) ^ ((d : ℝ) / 2) := by
     exact Real.rpow_le_rpow
       hK₀_nonneg
       (by
@@ -431,32 +431,32 @@ theorem supersolution_geometric_majorant_fwd
         nlinarith [one_le_C_MoserAnchor (d := d)])
       (by positivity)
   have hCMoser_le :
-      K₀ ^ ((d : ℝ) / 2) * 4 ^ (∑' i : ℕ, (i : ℝ) * ρ ^ i) ≤ C_Moser d := by
+      K₀ ^ ((d : ℝ) / 2) * 4 ^ (∑' i : ℕ, (i : ℝ) * ρ ^ i) ≤ CMoser d := by
     have hbase :
         K₀ ^ ((d : ℝ) / 2) * 4 ^ (∑' i : ℕ, (i : ℝ) * ρ ^ i) ≤
-          ((32 : ℝ) * C_MoserAnchor d) ^ ((d : ℝ) / 2) *
+          ((32 : ℝ) * CMoserAnchor d) ^ ((d : ℝ) / 2) *
             4 ^ (∑' i : ℕ, (i : ℝ) * ρ ^ i) := by
       exact mul_le_mul_of_nonneg_right hK₀_pow_le_big
         (Real.rpow_nonneg (by norm_num : (0 : ℝ) ≤ 4) _)
     have hmax :
-        ((32 : ℝ) * C_MoserAnchor d) ^ ((d : ℝ) / 2) *
+        ((32 : ℝ) * CMoserAnchor d) ^ ((d : ℝ) / 2) *
             4 ^ (∑' i : ℕ, (i : ℝ) * ρ ^ i) ≤
-          C_Moser d := by
-      dsimp [C_Moser, ρ]
+          CMoser d := by
+      dsimp [CMoser, ρ]
       split_ifs with hlt
       · exact
-          le_max_right (C_MoserAnchor d)
-            (((32 : ℝ) * C_MoserAnchor d) ^ ((d : ℝ) / 2) *
+          le_max_right (CMoserAnchor d)
+            (((32 : ℝ) * CMoserAnchor d) ^ ((d : ℝ) / 2) *
               4 ^ (∑' i : ℕ, (i : ℝ) * moserDecayRatio d ^ i))
       · exact False.elim (hlt hd)
     exact hbase.trans hmax
   have hCweak_eq :
-      C_Moser d * (moserChi d ^ 2) ^ (∑' i : ℕ, (i : ℝ) * ρ ^ i) =
-        C_weakHarnack0 d := by
-    simp [C_weakHarnack0, hd, ρ]
+      CMoser d * (moserChi d ^ 2) ^ (∑' i : ℕ, (i : ℝ) * ρ ^ i) =
+        CWeakHarnack0 d := by
+    simp [CWeakHarnack0, hd, ρ]
   have hbody_le :
       K ^ S * CC ^ T ≤
-        C_weakHarnack0 d * L ^ ((d : ℝ) / 2) := by
+        CWeakHarnack0 d * L ^ ((d : ℝ) / 2) := by
     have hK_target_nonneg :
         0 ≤ K₀ ^ ((d : ℝ) / 2) * L ^ ((d : ℝ) / 2) := by
       exact mul_nonneg (Real.rpow_nonneg hK₀_nonneg _) (Real.rpow_nonneg hL_nonneg _)
@@ -471,11 +471,11 @@ theorem supersolution_geometric_majorant_fwd
       _ = (K₀ ^ ((d : ℝ) / 2) * 4 ^ (∑' i : ℕ, (i : ℝ) * ρ ^ i)) *
             ((moserChi d ^ 2) ^ (∑' i : ℕ, (i : ℝ) * ρ ^ i) * L ^ ((d : ℝ) / 2)) := by
               ring
-      _ ≤ C_Moser d *
+      _ ≤ CMoser d *
             ((moserChi d ^ 2) ^ (∑' i : ℕ, (i : ℝ) * ρ ^ i) * L ^ ((d : ℝ) / 2)) := by
               exact mul_le_mul_of_nonneg_right hCMoser_le
                 (mul_nonneg (Real.rpow_nonneg (sq_nonneg _) _) (Real.rpow_nonneg hL_nonneg _))
-      _ = C_weakHarnack0 d * L ^ ((d : ℝ) / 2) := by
+      _ = CWeakHarnack0 d * L ^ ((d : ℝ) / 2) := by
             rw [← hCweak_eq]
             ring
   calc
@@ -483,11 +483,11 @@ theorem supersolution_geometric_majorant_fwd
         ≤ ∏ i ∈ Finset.range (m + 1), (K * CC ^ i) ^ (1 / moserExponentSeq d p₀ i) := hprod_le
     _ = (K ^ S * CC ^ T) ^ (1 / p₀) := by
           simpa [ρ, S, T] using hprod_eval (m + 1)
-    _ ≤ (C_weakHarnack0 d * L ^ ((d : ℝ) / 2)) ^ (1 / p₀) := by
+    _ ≤ (CWeakHarnack0 d * L ^ ((d : ℝ) / 2)) ^ (1 / p₀) := by
           exact Real.rpow_le_rpow
             (mul_nonneg (Real.rpow_nonneg hK_nonneg _) (Real.rpow_nonneg hCC_nonneg _))
             hbody_le (by positivity)
-    _ = (C_weakHarnack0 d * (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) ^ ((d : ℝ) / 2)) ^ (1 / p₀) := by
+    _ = (CWeakHarnack0 d * (A.1.Λ * p₀ ^ 2 / (1 - q) ^ 2 + 1) ^ ((d : ℝ) / 2)) ^ (1 / p₀) := by
           simp [L]
 
 

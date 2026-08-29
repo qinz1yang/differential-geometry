@@ -285,7 +285,7 @@ theorem riemannianMetricCovariantTensor_contMDiff (g₀ : SmoothRiemannianMetric
 
 def riemannianMetricCovariantTensorField (g₀ : SmoothRiemannianMetric I M) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ 2 :=
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
+  letI := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) 2
   ⟨fun x => riemannianMetricCovariantTensor (I := I) g₀ x, riemannianMetricCovariantTensor_contMDiff (I := I) g₀⟩
 
 def riemannianMetricCcTensor (g₀ : SmoothRiemannianMetric I M) : SmoothCcTensor g₀ 0 2 where
@@ -323,7 +323,7 @@ lemma toModel_covector_apply (x : M) (om : Tensor0SSpace 1 I x)
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 lemma riemannianMetricCovariantTensor_curry_eq_flat (g₀ : SmoothRiemannianMetric I M) (x : M)
     (v : TangentSpace I x) :
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x) (riemannianMetricCovariantTensor (I := I) g₀ x) v =
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x) (riemannianMetricCovariantTensor (I := I) g₀ x) v =
       g0FlatCLM (I := I) g₀ x v := by
   apply tensor0SSpace_ext (𝕜 := ℝ) 1 x
   intro w
@@ -366,17 +366,17 @@ lemma lowerContravariantSlot_unitModel_apply (g₀ : SmoothRiemannianMetric I M)
   rw [show ((show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace (s + 2) I x from
         (slotExtend (I := I) (M := M) g₀ 1 (s + 1) Z).toSection x)
         (riemannianMetricCovariantTensor (I := I) g₀ x)) =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace (s + 1) I x from Z.toSection x).comp
-          ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x)
+          ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x)
             (riemannianMetricCovariantTensor (I := I) g₀ x))) from rfl]
   rw [show m = Fin.cons (m 0) (Matrix.vecTail m) from by
     funext k
     refine Fin.cases rfl (fun j => rfl) k]
   rw [← TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := s + 1)
-    (T := (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
+    (T := (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x).symm
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace (s + 1) I x from Z.toSection x).comp
-        ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x)
+        ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x)
           (riemannianMetricCovariantTensor (I := I) g₀ x))))]
   simp only [ContinuousLinearEquiv.apply_symm_apply, ContinuousLinearMap.comp_apply]
   rw [riemannianMetricCovariantTensor_curry_eq_flat (I := I) (M := M) g₀ x
@@ -390,12 +390,12 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 lemma interiorProduct_toModel_apply (s : ℕ) (x : M) (vv : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (w : Fin s → E) :
     Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x vv D) w =
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x vv D) w =
       Tensor0SSpace.toModel D
         (Fin.cons (tangentSpaceModelContinuousLinearEquiv (I := I) x vv) w) := by
   have h1 : Tensor0SSpace.toModel
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x vv D) =
-      Tensor0SBundle.model_interior_product (𝕜 := ℝ) (E := E) s
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x vv D) =
+      Tensor0SBundle.modelInteriorProduct (𝕜 := ℝ) (E := E) s
         (tangentSpaceModelContinuousLinearEquiv (I := I) x vv) (Tensor0SSpace.toModel D) := rfl
   rw [h1]
   rfl

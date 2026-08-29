@@ -303,7 +303,7 @@ theorem strictCert_sec
       CovariantDerivative.ContMDiffCovariantDerivativeLocally
         (cov t) (∞ : WithTop ℕ∞))
     (hmc : ∀ t : Real,
-      DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) (cov t) (G t))
+      DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) (cov t) (G t))
     (hS : TensorSpatialDerivs (I := I) (M := M) cov S nablaS nabla2S) :
     ∃ delta : Real, 0 < delta ∧ t0 + delta ≤ T ∧
       TensorStrictCertSlab (I := I) (M := M) G

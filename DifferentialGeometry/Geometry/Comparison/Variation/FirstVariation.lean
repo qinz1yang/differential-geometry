@@ -535,8 +535,8 @@ lemma velocityField_chartRep_differentiableAt
     exact hbridge
   exact (heq.differentiableAt_iff).mpr (hsec_cdiff.differentiableAt (by simp))
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
 private lemma g_inner_along_curve_contMDiff

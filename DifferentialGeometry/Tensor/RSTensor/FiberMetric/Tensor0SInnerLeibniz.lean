@@ -517,7 +517,7 @@ open DifferentialGeometry.Tensor.Coordinates
 theorem inner0S_nabla {s : Nat}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (A B : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
@@ -535,7 +535,7 @@ theorem inner0S_nabla {s : Nat}
     DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x with hframe
   set U : M -> Idx -> Idx -> Real :=
     fun y i j =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
         (I := I) g x i j (extChartAt I x y) with hU
   set cA : M -> (Fin s -> Idx) -> Real :=
     fun y I0 => A y (fun a => frame (I0 a) y) with hcAdef
@@ -589,11 +589,11 @@ theorem inner0S_nabla {s : Nat}
       [(DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet_open (I := I) x).mem_nhds hx]
       with y hy
     rw [inner0S_eq_coord (I := I) g y s
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x hy)
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x hy)
       (U y) (DifferentialGeometry.Tensor.Coordinates.gInvBasisAt (I := I) g x hy)
       (A y) (B y)]
     rw [← coordContract_eq_coordInner0S (I := I) (U y) (A y) (B y)
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x hy)]
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x hy)]
     refine congrArg₂ (fun f h => coordContract (U y) f h) ?_ ?_
     · funext I0
       simp only [tensor0SComponent, cA, frame]
@@ -698,13 +698,13 @@ theorem inner0S_nabla {s : Nat}
         inner0S (I := I) g x s T S := by
     intro T S
     rw [show (fun i => frame i x) =
-        ⇑(DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x hx) from by
+        ⇑(DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x hx) from by
       funext i
       rw [DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis_apply]]
     rw [coordContract_eq_coordInner0S (I := I) (U x) T S
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x hx)]
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x hx)]
     rw [← inner0S_eq_coord (I := I) g x s
-      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis (I := I) x hx)
+      (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtBasis (I := I) x hx)
       (U x) (DifferentialGeometry.Tensor.Coordinates.gInvBasisAt (I := I) g x hx) T S]
   have hgroupA :
       coordContract (U x)
@@ -743,7 +743,7 @@ theorem inner0S_nabla {s : Nat}
 theorem normSq0S_nabla {s : Nat}
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (g : DifferentialGeometry.SmoothRiemannianMetric I M)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
     (T : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (n := (∞ : WithTop ℕ∞)) s)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))

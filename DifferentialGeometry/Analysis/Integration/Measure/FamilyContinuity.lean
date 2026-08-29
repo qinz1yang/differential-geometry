@@ -213,7 +213,7 @@ theorem integral_family_cont
     rw [← continuousOn_univ]
     exact hf.comp (continuousOn_const.prodMk continuousOn_id)
       (fun x _ ↦ ⟨ht, Set.mem_univ x⟩)
-  let S : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  let S : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   let J : M → Real → Real := fun α t ↦
     ∫ y in (extChartAt I α).target,
       f t ((extChartAt I α).symm y) *

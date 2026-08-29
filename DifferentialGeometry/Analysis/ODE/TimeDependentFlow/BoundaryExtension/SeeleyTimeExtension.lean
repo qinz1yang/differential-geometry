@@ -25,7 +25,7 @@ theorem chartE_jointReading_contMDiffOn
       (fun q : ℝ × M => (TotalSpace.mk' E q.2 (X q.1 q.2) : TangentBundle I M))
       (s ×ˢ (univ : Set M))) :
     ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, E) ∞
-      (fun q : ℝ × M => chartE_section_repr (I := I) α (X q.1) q.2)
+      (fun q : ℝ × M => chartESectionRepr (I := I) α (X q.1) q.2)
       (s ×ˢ (chartAt H α).source) := by
   set e : Trivialization E (π E (TangentSpace I : M → Type _)) :=
     trivializationAt E (TangentSpace I) α with he
@@ -152,11 +152,11 @@ private theorem chartE_euclideanReading_contDiffOn
       (s ×ˢ (univ : Set M))) :
     ContDiffOn ℝ ∞
       (Function.uncurry fun t (z : E) =>
-        chartE_section_repr (I := I) α (X t) ((extChartAt I α).symm z))
+        chartESectionRepr (I := I) α (X t) ((extChartAt I α).symm z))
       (s ×ˢ (extChartAt I α).target) := by
   classical
   have hread := chartE_jointReading_contMDiffOn (I := I) X s α hX
-  set R : ℝ × M → E := fun q => chartE_section_repr (I := I) α (X q.1) q.2 with hR
+  set R : ℝ × M → E := fun q => chartESectionRepr (I := I) α (X q.1) q.2 with hR
   have hΨsymm : ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) (𝓘(ℝ, ℝ).prod I) ∞
       (fun q : ℝ × E => (q.1, (extChartAt I α).symm q.2))
       (s ×ˢ (extChartAt I α).target) := by
@@ -173,7 +173,7 @@ private theorem chartE_euclideanReading_contDiffOn
     rw [← extChartAt_source (I := I) α]
     exact (extChartAt I α).map_target hq.2
   rw [show (Function.uncurry fun t (z : E) =>
-        chartE_section_repr (I := I) α (X t) ((extChartAt I α).symm z))
+        chartESectionRepr (I := I) α (X t) ((extChartAt I α).symm z))
       = fun q : ℝ × E => R (q.1, (extChartAt I α).symm q.2) from rfl]
   rw [← contMDiffOn_iff_contDiffOn, ← chartedSpaceSelf_prod, modelWithCornersSelf_prod]
   exact hcomp
@@ -246,7 +246,7 @@ theorem seeley_time_extend
       (∀ t ∈ Set.Icc 0 T, ∀ x : M, Xext t x = X t x) := by
   classical
   set g : M → ℝ → E → E :=
-    fun α t z => chartE_section_repr (I := I) α (X t) ((extChartAt I α).symm z) with hg
+    fun α t z => chartESectionRepr (I := I) α (X t) ((extChartAt I α).symm z) with hg
   have hgC : ∀ α : M, ContDiffOn ℝ ∞ (Function.uncurry (g α))
       (Set.Icc 0 T ×ˢ (extChartAt I α).target) :=
     fun α => chartE_euclideanReading_contDiffOn (I := I) X (Set.Icc 0 T) α hsmooth0
@@ -312,7 +312,7 @@ theorem seeley_time_extend
         change (trivFromE (I := I) α x) (gext α t (extChartAt I α x)) = X t x
         rw [hgextval]
         change (trivFromE (I := I) α x)
-            (chartE_section_repr (I := I) α (X t) ((extChartAt I α).symm (extChartAt I α x)))
+            (chartESectionRepr (I := I) α (X t) ((extChartAt I α).symm (extChartAt I α x)))
           = X t x
         rw [hsymm]
         rw [chartE_section_repr_eq_trivToE (I := I) α (X t) x]

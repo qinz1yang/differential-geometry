@@ -85,11 +85,11 @@ private lemma chartTensor0SParallelExtend_zero_scalar_pullback_eventuallyEq
     funext i; exact i.elim0
   rw [htuple_eq] at happly
   rw [← happly]
-  change (tensor0SChartE_section_repr (I := I) 0 α
+  change (tensor0SChartESectionRepr (I := I) 0 α
         (chartTensor0SParallelExtend (I := I) 0 α b T₀) b')
       (fun i : Fin 0 => Fin.elim0 i) =
     (e.continuousLinearMapAt ℝ b T₀) (fun i : Fin 0 => Fin.elim0 i)
-  rw [show tensor0SChartE_section_repr (I := I) 0 α
+  rw [show tensor0SChartESectionRepr (I := I) 0 α
         (chartTensor0SParallelExtend (I := I) 0 α b T₀) b' =
       e.continuousLinearMapAt ℝ b T₀ from hy_repr]
 
@@ -123,7 +123,7 @@ private lemma chartTensor0SParallelExtend_zero_scalar_apply
   rw [← happly]
   have hrepr := chartTensor0SE_section_repr_chartTensor0SParallelExtend
     (I := I) 0 α b T₀ hb'
-  change (tensor0SChartE_section_repr (I := I) 0 α
+  change (tensor0SChartESectionRepr (I := I) 0 α
         (chartTensor0SParallelExtend (I := I) 0 α b T₀) b')
       (fun i : Fin 0 => Fin.elim0 i) =
     ((trivializationAt (Tensor0SModel 0 ℝ E)

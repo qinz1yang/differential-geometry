@@ -49,12 +49,12 @@ theorem rm13_apply_eq_rm04_raise
     (β : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (X Y Z : TangentSpace I x) :
     Rm13 β (vec3 (I := I) X Y Z) =
-      Rm04 (vec4 (I := I) X Y Z (cotangentSharp_gen (I := I) g x β)) := by
-  have hL := hLower X Y Z (cotangentSharp_gen (I := I) g x β)
+      Rm04 (vec4 (I := I) X Y Z (cotangentSharpGen (I := I) g x β)) := by
+  have hL := hLower X Y Z (cotangentSharpGen (I := I) g x β)
   rw [hL]
   have hβ :
-      dualToCotangent_gen (I := I)
-          ((tangentFlatLinear_gen (I := I) g x) (cotangentSharp_gen (I := I) g x β)) = β := by
+      dualToCotangentGen (I := I)
+          ((tangentFlatLinearGen (I := I) g x) (cotangentSharpGen (I := I) g x β)) = β := by
     refine cotangentToDualLinear_injective_gen (I := I) (x := x) ?_
     rw [cotangentToDualLinear_apply_gen, cotangentToDualLinear_apply_gen,
       cotangentToDual_dualToCotangent_gen]
@@ -76,7 +76,7 @@ theorem curvatureAction0SAt_eq_rm04_raise
     curvatureAction0SAt (I := I) Rm13 alpha X Y slots =
       -∑ q : Fin s,
         Rm04 (vec4 (I := I) X Y (slots q)
-          (cotangentSharp_gen (I := I) g x
+          (cotangentSharpGen (I := I) g x
             (oneFormAtSlot0S (I := I) alpha slots q))) := by
   change
     -∑ q : Fin s,
@@ -101,7 +101,7 @@ theorem nablaLapComm_secondTerm_eq_rm04_raise
           (vec4 (I := I) (coordinateFrameAt (I := I) x₀ a x₀)
             (coordinateFrameAt (I := I) x₀ c x₀)
             (nabla3InnerSlots (I := I) (coordinateFrameAt (I := I) x₀) x₀ b m q)
-            (cotangentSharp_gen (I := I) (S.base.metric t) x₀
+            (cotangentSharpGen (I := I) (S.base.metric t) x₀
               (oneFormAtSlot0S (I := I) (nablaRm04Field (I := I) S t x₀)
                 (nabla3InnerSlots (I := I) (coordinateFrameAt (I := I) x₀) x₀ b m) q))) :=
   curvatureAction0SAt_eq_rm04_raise (I := I) (S.base.metric t) (S.base.rm13 t)

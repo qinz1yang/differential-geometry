@@ -302,7 +302,7 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_secondOrder_bound
     exact le_rfl
   let inst3 : Bundle.RiemannianBundle
       (fun x : M => TensorRSSpace 0 3 I x) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   have hgrad_pt : ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 2 3 x
           ((iteratedCovGrad (I := I) g₀ 2 2 1

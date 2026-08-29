@@ -49,8 +49,8 @@ theorem lRegSpeedSq_nonneg
     simp
   · exact ((S.base.metric (T - s ^ 2)).pos (alpha s) _ hzero).le
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem lRegSpeedSq_deriv
@@ -110,8 +110,8 @@ private theorem speedDeriv_le
         (1 + 2 * C * R ^ 2) := by
       nlinarith [mul_nonneg hC (sq_nonneg R), mul_nonneg hC hR]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem lRegSpeed_gron
@@ -162,8 +162,8 @@ theorem lRegSpeed_gron
       (lRegSpeedSq_nonneg (I := I) S T alpha s)
       (hgrad s hs) (hric s hs)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in
 theorem lRegInit_bdd

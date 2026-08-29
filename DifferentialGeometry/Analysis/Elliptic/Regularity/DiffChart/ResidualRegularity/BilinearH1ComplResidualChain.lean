@@ -70,7 +70,7 @@ theorem gradInnerCLM_mem_image_density
       atTop (𝓝 (gradInnerLaplacianCandidateUnconditional
         (I := I) (M := M) g φ hu_h)))
     (h_smooth_identity : ∀ n,
-      smoothCandidate_identification_target (I := I) (M := M) g φ
+      smoothCandidateIdentificationTarget (I := I) (M := M) g φ
         (h_smooth_seq n)) :
     gradInnerCLM (I := I) (M := M) g φ u_h ∈
       Set.image (H1ComplToLp (I := I) (M := M) g)
@@ -104,7 +104,7 @@ theorem smoothMulH1Compl_mem_pow_two_density
       atTop (𝓝 (gradInnerLaplacianCandidateUnconditional
         (I := I) (M := M) g φ hu_h)))
     (h_smooth_identity : ∀ n,
-      smoothCandidate_identification_target (I := I) (M := M) g φ
+      smoothCandidateIdentificationTarget (I := I) (M := M) g φ
         (h_smooth_seq n)) :
     smoothMulH1Compl (I := I) (M := M) g φ u_h ∈
       laplacianDomainPow (I := I) (M := M) g 2 :=
@@ -193,7 +193,7 @@ theorem fHLeibnizResidualLp_coeFn_memWkpChart_two_two_density
         (I := I) (M := M) g
         (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) hu_h)))
     (h_smooth_identity : ∀ n,
-      smoothCandidate_identification_target (I := I) (M := M) g
+      smoothCandidateIdentificationTarget (I := I) (M := M) g
         (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) (h_smooth_seq n)) :
     DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
       (I := I) (M := M) 2 2
@@ -218,7 +218,7 @@ theorem fHLeibnizResidualLp_coeFn_memWkpChart_two_two_density
   exact fHLeibnizResidualLp_coeFn_memWkpChart_two_two_of_mem
     (I := I) (M := M) g α hu_h h_mem
 
-noncomputable def diffChartBilinearH1ComplData_of_laplacianDomainPow_two_density
+noncomputable def diffChartBilinearH1ComplDataOfLaplacianDomainPowTwoDensity
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl g} (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (direction : Fin (Module.finrank ℝ E))
@@ -238,9 +238,9 @@ noncomputable def diffChartBilinearH1ComplData_of_laplacianDomainPow_two_density
           ∂(volume : Measure EuclN)) +
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityOnEuclid (I := I) g α y *
-            (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+            (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
               (laplacianDomainPow_succ_subset_laplacianDomain
-                (I := I) (M := M) g 1 hu_h)).weak_partial direction y * ψ y
+                (I := I) (M := M) g 1 hu_h)).weakPartial direction y * ψ y
           ∂(volume : Measure EuclN)) =
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityOnEuclid (I := I) g α y *
@@ -250,25 +250,25 @@ noncomputable def diffChartBilinearH1ComplData_of_laplacianDomainPow_two_density
           (∑ i : Fin (Module.finrank ℝ E),
             ∑ j : Fin (Module.finrank ℝ E),
               weightedInvGramDerivOnEuclid (I := I) g α i j direction y *
-                (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+                (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
                   (laplacianDomainPow_succ_subset_laplacianDomain
-                    (I := I) (M := M) g 1 hu_h)).weak_partial i y *
+                    (I := I) (M := M) g 1 hu_h)).weakPartial i y *
                 (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
           ∂(volume : Measure EuclN)) -
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityDerivOnEuclid (I := I) g α direction y *
-            (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+            (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
               (laplacianDomainPow_succ_subset_laplacianDomain
-                (I := I) (M := M) g 1 hu_h)).u_chart y * ψ y
+                (I := I) (M := M) g 1 hu_h)).uChart y * ψ y
           ∂(volume : Measure EuclN)) +
         (∫ y in chartTargetEuclid (I := I) (M := M) α,
           densityDerivOnEuclid (I := I) g α direction y *
-            (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+            (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
               (laplacianDomainPow_succ_subset_laplacianDomain
-                (I := I) (M := M) g 1 hu_h)).f_chart y * ψ y
+                (I := I) (M := M) g 1 hu_h)).fChart y * ψ y
           ∂(volume : Measure EuclN))) :
     DiffChartBilinearH1ComplData (I := I) (M := M) g α :=
-  diffChartBilinearH1ComplData_of_laplacianDomainPow_two_via_residual
+  diffChartBilinearH1ComplDataOfLaplacianDomainPowTwoViaResidual
     (I := I) (M := M) g α hu_h direction h_residual_memW1p h_identity
 
 end DiffChartBilinearH1ComplFinal

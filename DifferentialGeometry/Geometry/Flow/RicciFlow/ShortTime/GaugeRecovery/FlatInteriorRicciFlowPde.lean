@@ -76,7 +76,7 @@ theorem pullbackMetric_hasDerivWithinAt_ricciFlow_interior
         = negCovariantSlotValue (I := I) (g_DT t)
             (deTurckVF (I := I) (g_DT t) g_bg) Φ_fam t x v
           + christoffelCorrection (I := I) (g_DT t) (Φ_fam t x) (Φ_fam t x)
-              (chartE_section_repr (I := I) (Φ_fam t x)
+              (chartESectionRepr (I := I) (Φ_fam t x)
                 (deTurckVF (I := I) (g_DT t) g_bg) (Φ_fam t x))
               (mfderiv I I (Φ_fam t : M → M) x v)) :
     ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,

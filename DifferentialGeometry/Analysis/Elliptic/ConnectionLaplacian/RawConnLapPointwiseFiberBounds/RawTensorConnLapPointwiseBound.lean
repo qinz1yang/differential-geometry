@@ -33,7 +33,7 @@ noncomputable def chartFrameData
     (T₀ : Π b : M, TensorRSSpace r s I b)
     (y : M) (i : Fin (Module.finrank ℝ E)) : ℝ :=
   (max (1 + ‖smoothOrthoFrame (I := I) g y i y‖) 1) ^ (max r s) *
-    (‖fderiv ℝ (tensorRSChartE_section_repr (I := I) r s α
+    (‖fderiv ℝ (tensorRSChartESectionRepr (I := I) r s α
         (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
           (LeviCivita (I := I) g))
           (smoothOrthoFrame (I := I) g y i) T₀) ∘
@@ -58,7 +58,7 @@ lemma chartFrameData_nonneg
   have h2 : 0 ≤ (max (1 + ‖smoothOrthoFrame (I := I) g y i y‖) 1) ^ (max r s) :=
     pow_nonneg h1 _
   have h3 : 0 ≤
-      ‖fderiv ℝ (tensorRSChartE_section_repr (I := I) r s α
+      ‖fderiv ℝ (tensorRSChartESectionRepr (I := I) r s α
           (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
             (LeviCivita (I := I) g))
             (smoothOrthoFrame (I := I) g y i) T₀) ∘
@@ -68,7 +68,7 @@ lemma chartFrameData_nonneg
             (LeviCivita (I := I) g))
             (smoothOrthoFrame (I := I) g y i) T₀ y‖ := by
     have h_a : 0 ≤
-        ‖fderiv ℝ (tensorRSChartE_section_repr (I := I) r s α
+        ‖fderiv ℝ (tensorRSChartESectionRepr (I := I) r s α
           (covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
             (LeviCivita (I := I) g))
             (smoothOrthoFrame (I := I) g y i) T₀) ∘
@@ -89,7 +89,7 @@ noncomputable def secondAppChartData
   (max (1 +
       ‖(LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g y i) y
         (smoothOrthoFrame (I := I) g y i y)‖) 1) ^ (max r s) *
-    (‖fderiv ℝ (tensorRSChartE_section_repr (I := I) r s α T₀ ∘
+    (‖fderiv ℝ (tensorRSChartESectionRepr (I := I) r s α T₀ ∘
         (extChartAt I α).symm) (extChartAt I α y)‖ *
       ‖(LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g y i) y
         (smoothOrthoFrame (I := I) g y i y)‖
@@ -114,7 +114,7 @@ lemma secondAppChartData_nonneg
         (smoothOrthoFrame (I := I) g y i y)‖) 1) ^ (max r s) :=
     pow_nonneg h1 _
   have h3a : 0 ≤
-      ‖fderiv ℝ (tensorRSChartE_section_repr (I := I) r s α T₀ ∘
+      ‖fderiv ℝ (tensorRSChartESectionRepr (I := I) r s α T₀ ∘
           (extChartAt I α).symm) (extChartAt I α y)‖ *
         ‖(LeviCivita (I := I) g).toFun (smoothOrthoFrame (I := I) g y i) y
           (smoothOrthoFrame (I := I) g y i y)‖ :=

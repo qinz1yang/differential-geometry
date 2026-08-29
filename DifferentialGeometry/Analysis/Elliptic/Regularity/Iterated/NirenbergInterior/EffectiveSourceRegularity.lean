@@ -85,14 +85,14 @@ def ofBase
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (h_base_f_chart_memW1p :
       DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α))
     (h_base_f_chart_ae_zero :
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart =ᵐ[(volume : Measure EuclN).restrict
+            (I := I) (M := M) g 1 hu_h)).fChart =ᵐ[(volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α \
             chartImagePOUTsupport (I := I) (M := M) α)]
         (fun _ : EuclN => (0 : ℝ))) :
@@ -125,7 +125,7 @@ def step
           B_m.data.diffChartForcing (dirs_seq m))
         (chartTargetEuclid (I := I) (M := M) α)) :
     CanonicalIteratedDataBundle (I := I) (M := M) g α u_h dirs_seq (m + 1) where
-  data := iteratedDiffChartBilinearData_step (I := I) (M := M) g α
+  data := iteratedDiffChartBilinearDataStep (I := I) (M := M) g α
     (u_h := u_h) m B_m.data (dirs_seq m)
     h_chart_H_m_plus_1 h_chart_H_m_plus_2
     B_m.fChartEff_memW1p B_m.fChartEff_ae_zero_off_K
@@ -183,14 +183,14 @@ def canonicalBundle
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (h_base_f_chart_memW1p :
       DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α))
     (h_base_f_chart_ae_zero :
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart =ᵐ[(volume : Measure EuclN).restrict
+            (I := I) (M := M) g 1 hu_h)).fChart =ᵐ[(volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α \
             chartImagePOUTsupport (I := I) (M := M) α)]
         (fun _ : EuclN => (0 : ℝ)))
@@ -220,21 +220,21 @@ def canonicalBundle
         (g := g) (α := α) (u_h := u_h) (dirs_seq := dirs_seq) (m := m)
         B_m h_chart_H_m_plus_1 h_chart_H_m_plus_2 h_next_W1p
 
-def iteratedDiffChartBilinearData_canonical
+def iteratedDiffChartBilinearDataCanonical
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (dirs_seq : ℕ → Fin (Module.finrank ℝ E))
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (h_base_f_chart_memW1p :
       DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α))
     (h_base_f_chart_ae_zero :
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart =ᵐ[(volume : Measure EuclN).restrict
+            (I := I) (M := M) g 1 hu_h)).fChart =ᵐ[(volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α \
             chartImagePOUTsupport (I := I) (M := M) α)]
         (fun _ : EuclN => (0 : ℝ)))
@@ -253,14 +253,14 @@ theorem fChartEff_at_level_ae_zero_off_K_alpha
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (h_base_f_chart_memW1p :
       DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α))
     (h_base_f_chart_ae_zero :
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart =ᵐ[(volume : Measure EuclN).restrict
+            (I := I) (M := M) g 1 hu_h)).fChart =ᵐ[(volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α \
             chartImagePOUTsupport (I := I) (M := M) α)]
         (fun _ : EuclN => (0 : ℝ)))
@@ -268,7 +268,7 @@ theorem fChartEff_at_level_ae_zero_off_K_alpha
     (h_chart_H_seq : ChartHRegHyp (I := I) (M := M) g α u_h (m + 2))
     (h_step_propagator :
       FChartEffStepW1pHyp (I := I) (M := M) g α u_h dirs_seq m) :
-    (iteratedDiffChartBilinearData_canonical (I := I) (M := M) g α
+    (iteratedDiffChartBilinearDataCanonical (I := I) (M := M) g α
         dirs_seq hu_h h_base_f_chart_memW1p h_base_f_chart_ae_zero m
         h_chart_H_seq h_step_propagator).diffChartForcing =ᵐ[
       (volume : Measure EuclN).restrict
@@ -311,22 +311,22 @@ private def ofBase
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (h_base_f_chart_memW1p :
       DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α))
     (h_base_f_chart_ae_zero :
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart =ᵐ[(volume : Measure EuclN).restrict
+            (I := I) (M := M) g 1 hu_h)).fChart =ᵐ[(volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α \
             chartImagePOUTsupport (I := I) (M := M) α)]
         (fun _ : EuclN => (0 : ℝ)))
     (h_base_f_chart_memWkp :
       MemWkp (d := Module.finrank ℝ E) (K + M_max) 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α)) :
     CanonicalBundleWithMemWkp (I := I) (M := M) g α u_h dirs_seq M_max K 0 :=
   { toCanonicalIteratedDataBundle :=
@@ -334,9 +334,9 @@ private def ofBase
         h_base_f_chart_memW1p h_base_f_chart_ae_zero
     fChartEff_memWkp := by
       change MemWkp (d := Module.finrank ℝ E) (K + (M_max - 0)) 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α)
       have h_eq : M_max - 0 = M_max := Nat.sub_zero _
       rw [h_eq]
@@ -389,22 +389,22 @@ private def canonicalBundleWithMemWkp_aux
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (h_base_f_chart_memW1p :
       DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α))
     (h_base_f_chart_ae_zero :
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart =ᵐ[(volume : Measure EuclN).restrict
+            (I := I) (M := M) g 1 hu_h)).fChart =ᵐ[(volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α \
             chartImagePOUTsupport (I := I) (M := M) α)]
         (fun _ : EuclN => (0 : ℝ)))
     (h_base_f_chart_memWkp :
       MemWkp (d := Module.finrank ℝ E) (K + M_max) 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α))
     (h_chart_H_seq : ChartHRegHyp (I := I) (M := M) g α u_h (M_max + 2))
     (h_step_W1p : FChartEffStepW1pHyp (I := I) (M := M) g α u_h dirs_seq M_max)
@@ -442,7 +442,7 @@ private def canonicalBundleWithMemWkp_aux
         (M_max := M_max) (K := K) (m := m) hm B_m
         h_chart_H_m_plus_1 h_chart_H_m_plus_2 h_step_w1p_m h_step_memWkp_m
 
-def iteratedDiffChartBilinearData_canonicalMemWkp
+def iteratedDiffChartBilinearDataCanonicalMemWkp
     (g : SmoothRiemannianMetric I M) (α : M)
     {u_h : H1Compl (I := I) (M := M) g}
     (dirs_seq : ℕ → Fin (Module.finrank ℝ E))
@@ -450,22 +450,22 @@ def iteratedDiffChartBilinearData_canonicalMemWkp
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (h_base_f_chart_memW1p :
       DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α))
     (h_base_f_chart_ae_zero :
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart =ᵐ[(volume : Measure EuclN).restrict
+            (I := I) (M := M) g 1 hu_h)).fChart =ᵐ[(volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α \
             chartImagePOUTsupport (I := I) (M := M) α)]
         (fun _ : EuclN => (0 : ℝ)))
     (h_base_f_chart_memWkp :
       MemWkp (d := Module.finrank ℝ E) (K + m) 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α))
     (h_chart_H_seq : ChartHRegHyp (I := I) (M := M) g α u_h (m + 2))
     (h_step_propagator :
@@ -485,22 +485,22 @@ theorem fChartEff_at_level_memWkp_K
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
     (h_base_f_chart_memW1p :
       DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α))
     (h_base_f_chart_ae_zero :
-      (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+      (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart =ᵐ[(volume : Measure EuclN).restrict
+            (I := I) (M := M) g 1 hu_h)).fChart =ᵐ[(volume : Measure EuclN).restrict
           (chartTargetEuclid (I := I) (M := M) α \
             chartImagePOUTsupport (I := I) (M := M) α)]
         (fun _ : EuclN => (0 : ℝ)))
     (h_base_f_chart_memWkp :
       MemWkp (d := Module.finrank ℝ E) (K + m) 2
-        (chartBilinearH1ComplData_of_laplacianDomain (I := I) (M := M) g α
+        (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
           (laplacianDomainPow_succ_subset_laplacianDomain
-            (I := I) (M := M) g 1 hu_h)).f_chart
+            (I := I) (M := M) g 1 hu_h)).fChart
         (chartTargetEuclid (I := I) (M := M) α))
     (h_chart_H_seq : ChartHRegHyp (I := I) (M := M) g α u_h (m + 2))
     (h_step_propagator :
@@ -508,7 +508,7 @@ theorem fChartEff_at_level_memWkp_K
     (h_step_memWkp :
       FChartEffStepMemWkpHyp (I := I) (M := M) g α u_h dirs_seq m K) :
     MemWkp (d := Module.finrank ℝ E) K 2
-      (iteratedDiffChartBilinearData_canonicalMemWkp (I := I) (M := M) g α
+      (iteratedDiffChartBilinearDataCanonicalMemWkp (I := I) (M := M) g α
         dirs_seq m K hu_h h_base_f_chart_memW1p h_base_f_chart_ae_zero
         h_base_f_chart_memWkp h_chart_H_seq h_step_propagator
         h_step_memWkp).diffChartForcing

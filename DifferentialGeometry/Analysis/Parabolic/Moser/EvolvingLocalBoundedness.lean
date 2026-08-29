@@ -390,7 +390,7 @@ theorem evolvingMoserLocalizedMass_succ_le_of_subsolution
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)
@@ -617,7 +617,7 @@ theorem evolvingMoserLocalizedMass_succ_le_majorant
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)
@@ -698,7 +698,7 @@ theorem evolvingMoserNormalizedMass_succ_le_of_subsolution
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)
@@ -770,7 +770,7 @@ theorem evolvingMoserNormalizedMass_le_of_subsolution
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)
@@ -854,7 +854,7 @@ theorem evolving_local_boundedness_of_subsolution_of_volume_le
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)
@@ -1021,7 +1021,7 @@ theorem evolving_local_boundedness_of_subsolution
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => u s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
       traceTimeDerivMetric (I := I) g t x ≤ B)
@@ -1070,7 +1070,7 @@ theorem evolving_reciprocal_local_boundedness_of_supersolution_of_volume_le
     (hSobolev : ∀ t ∈ Icc a t₁,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
@@ -1101,7 +1101,7 @@ theorem evolving_reciprocal_local_boundedness_of_supersolution_of_volume_le
   have hvpos : ∀ t x, 0 < v t x := fun t x => inv_pos.mpr (hpos t x)
   have hvpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => v s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) v hv t).toContMDiffMap x := by
     intro t ht x
     have h := rpow_subsolution_of_supersolution
@@ -1136,7 +1136,7 @@ theorem evolving_reciprocal_local_boundedness_of_supersolution
     (hSobolev : ∀ t ∈ Icc a t₁,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
@@ -1164,7 +1164,7 @@ theorem evolving_reciprocal_local_boundedness_of_supersolution
   have hvpos : ∀ t x, 0 < v t x := fun t x => inv_pos.mpr (hpos t x)
   have hvpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => v s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) v hv t).toContMDiffMap x := by
     intro t ht x
     have h := rpow_subsolution_of_supersolution
@@ -1198,7 +1198,7 @@ theorem evolving_reciprocal_local_boundedness_of_supersolution_rpow_of_volume_le
     (hSobolev : ∀ t ∈ Icc a t₁,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,
@@ -1237,7 +1237,7 @@ theorem evolving_reciprocal_local_boundedness_of_supersolution_rpow_of_volume_le
     Real.rpow_pos_of_pos (hpos t x) _
   have hvpde : ∀ t ∈ Icc a t₁, ∀ x : M,
       deriv (fun s => v s x) t ≤
-        Δ_g (I := I) (g t)
+        ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) v hv t).toContMDiffMap x := by
     intro t ht x
     have h := rpow_subsolution_of_supersolution
@@ -1302,7 +1302,7 @@ theorem evolving_reciprocal_local_boundedness_of_supersolution_rpow
     (hSobolev : ∀ t ∈ Icc a t₁,
       localizedSobolevConstant (I := I) (M := M) (g t) hdim ≤ C)
     (hpde : ∀ t ∈ Icc a t₁, ∀ x : M,
-      Δ_g (I := I) (g t)
+      ΔG (I := I) (g t)
           (smoothScalarSlice (I := I) (g t) u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t)
     (htrace : ∀ t ∈ Icc a t₁, ∀ x : M,

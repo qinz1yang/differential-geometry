@@ -366,9 +366,9 @@ theorem centered_exponential_time_rescale_supersolution
     (hpos : ∀ t x, 0 < u t x)
     (τ : ℝ) {t : ℝ} {x : M}
     (hpde :
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
-    Δ_g (I := I) g
+    ΔG (I := I) g
         (smoothScalarSlice (I := I) g
           (exponentialTimeRescale
             (logCenterDrift (I := I) (M := M) g averagingCutoff)
@@ -666,7 +666,7 @@ theorem shifted_log_mass_monotone_on
     (hpos : ∀ t x, 0 < u t x)
     {a b : ℝ}
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     MonotoneOn (shiftedLogMass (I := I) (M := M) g cutoff u hu hpos)
       (Icc a b) := by
@@ -720,7 +720,7 @@ theorem shifted_log_center_monotone_on
     {a b : ℝ}
     (hmass : 0 < cutoffMass (I := I) (M := M) cutoff)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     MonotoneOn (shiftedLogCenter (I := I) (M := M) g cutoff u hu hpos)
       (Icc a b) := by
@@ -739,7 +739,7 @@ theorem half_localized_dirichlet_energy_le_shifted_log_center_deriv
     (hmass : 0 < cutoffMass (I := I) (M := M) cutoff)
     (t : ℝ)
     (hpde : ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     (1 / 2 : ℝ) *
         localizedDirichletEnergy (I := I) (M := M) cutoff
@@ -805,7 +805,7 @@ theorem early_log_superlevel_tail_with_center_gap_of_supersolution
     (hr : 0 ≤ r)
     (hmass : 0 < cutoffMass (I := I) (M := M) averagingCutoff)
     (hpde : ∀ t ∈ Icc a τ, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     (shiftedLogCenter (I := I) (M := M) g averagingCutoff u hu hpos τ -
           shiftedLogCenter (I := I) (M := M) g averagingCutoff u hu hpos s + r) ^ 2 *
@@ -855,7 +855,7 @@ theorem late_log_sublevel_tail_with_center_gap_of_supersolution
     (hr : 0 ≤ r)
     (hmass : 0 < cutoffMass (I := I) (M := M) averagingCutoff)
     (hpde : ∀ t ∈ Icc τ b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     (shiftedLogCenter (I := I) (M := M) g averagingCutoff u hu hpos s -
           shiftedLogCenter (I := I) (M := M) g averagingCutoff u hu hpos τ + r) ^ 2 *
@@ -903,7 +903,7 @@ theorem integrated_early_log_superlevel_tail_of_supersolution
     (haτ : a ≤ τ) (hr : 0 < r)
     (hmass : 0 < cutoffMass (I := I) (M := M) averagingCutoff)
     (hpde : ∀ t ∈ Icc a τ, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     (∫ s in a..τ,
         localizedSuperlevelMass (I := I) (M := M) deviationCutoff
@@ -969,7 +969,7 @@ theorem integrated_late_log_sublevel_tail_of_supersolution
     (hτb : τ ≤ b) (hr : 0 < r)
     (hmass : 0 < cutoffMass (I := I) (M := M) averagingCutoff)
     (hpde : ∀ t ∈ Icc τ b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     (∫ s in τ..b,
         localizedSublevelMass (I := I) (M := M) deviationCutoff
@@ -1035,7 +1035,7 @@ theorem integrated_early_centered_log_superlevel_tail_of_supersolution
     (haτ : a ≤ τ) (hr : 0 < r)
     (hmass : 0 < cutoffMass (I := I) (M := M) averagingCutoff)
     (hpde : ∀ t ∈ Icc a τ, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     (∫ s in a..τ,
         localizedSuperlevelMass (I := I) (M := M) deviationCutoff
@@ -1093,7 +1093,7 @@ theorem integrated_late_centered_log_sublevel_tail_of_supersolution
     (hτb : τ ≤ b) (hr : 0 < r)
     (hmass : 0 < cutoffMass (I := I) (M := M) averagingCutoff)
     (hpde : ∀ t ∈ Icc τ b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     (∫ s in τ..b,
         localizedSublevelMass (I := I) (M := M) deviationCutoff
@@ -1154,7 +1154,7 @@ theorem early_log_superlevel_tail_of_supersolution
     (hr : 0 ≤ r)
     (hmass : 0 < cutoffMass (I := I) (M := M) averagingCutoff)
     (hpde : ∀ t ∈ Icc a τ, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     r ^ 2 * localizedSuperlevelMass (I := I) (M := M) deviationCutoff
         (smoothScalarSlice (I := I) g (fun q x => Real.log (u q x))
@@ -1198,7 +1198,7 @@ theorem late_log_sublevel_tail_of_supersolution
     (hr : 0 ≤ r)
     (hmass : 0 < cutoffMass (I := I) (M := M) averagingCutoff)
     (hpde : ∀ t ∈ Icc τ b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun q => u q x) t) :
     r ^ 2 * localizedSublevelMass (I := I) (M := M) deviationCutoff
         (smoothScalarSlice (I := I) g (fun q x => Real.log (u q x))

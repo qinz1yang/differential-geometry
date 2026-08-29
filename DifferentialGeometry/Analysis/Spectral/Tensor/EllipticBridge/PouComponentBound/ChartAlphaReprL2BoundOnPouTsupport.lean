@@ -229,10 +229,10 @@ theorem pointwise_α_repr_le_sum_β_componentPou_sq
     ∃ K_pt : ℝ, 0 ≤ K_pt ∧
       ∀ (T : SmoothCcTensor g r s) (α : M) (b : M),
         (chartAtlasPOU I M α : M → ℝ) b *
-          ‖tensorRSChartE_section_repr (I := I) r s α
+          ‖tensorRSChartESectionRepr (I := I) r s α
               (fun z : M => T.toSection z) b‖ ^ 2 ≤
           K_pt *
-            ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+            ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
               ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
                 ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
                   (tensorChartComponentPou (I := I) (M := M) g r s T β Idx Jdx b) ^ 2 := by
@@ -243,7 +243,7 @@ theorem pointwise_α_repr_le_sum_β_componentPou_sq
   have hN_nn : 0 ≤ N := Nat.cast_nonneg _
   set Bnorm : ℝ := tensorChartBasisNormConstant (E := E) r s with hBnorm_def
   have hBnorm_nn : 0 ≤ Bnorm := tensorChartBasisNormConstant_nonneg (E := E) r s
-  set N_pou : ℝ := ((chartAtlasPOU_finset (I := I) (M := M)).card : ℝ)
+  set N_pou : ℝ := ((chartAtlasPOUFinset (I := I) (M := M)).card : ℝ)
     with hN_pou_def
   have hN_pou_nn : 0 ≤ N_pou := Nat.cast_nonneg _
   obtain ⟨K_swap, hK_swap_nn, hK_swap_le⟩ :=
@@ -256,7 +256,7 @@ theorem pointwise_α_repr_le_sum_β_componentPou_sq
   set ρα : ℝ := (chartAtlasPOU I M α : M → ℝ) b with hρα_def
   have hρα_nn : 0 ≤ ρα := (chartAtlasPOU I M).nonneg α b
   have hρα_le_one : ρα ≤ 1 := (chartAtlasPOU I M).le_one α b
-  set V : ℝ := ‖tensorRSChartE_section_repr (I := I) r s α
+  set V : ℝ := ‖tensorRSChartESectionRepr (I := I) r s α
       (fun z : M => T.toSection z) b‖ with hV_def
   have hV_nn : 0 ≤ V := norm_nonneg _
   have hV_sq_nn : 0 ≤ V ^ 2 := sq_nonneg _
@@ -267,37 +267,37 @@ theorem pointwise_α_repr_le_sum_β_componentPou_sq
       (I := I) (M := M) g r s T α b
     have h_sum_one := chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) b
     have h_one_sq : (1 : ℝ) ≤
-        N_pou * ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+        N_pou * ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
           ((chartAtlasPOU I M β : M → ℝ) b) ^ 2 := by
       have hbase := Finset.sum_mul_sq_le_sq_mul_sq
-        (chartAtlasPOU_finset (I := I) (M := M))
+        (chartAtlasPOUFinset (I := I) (M := M))
         (fun _ : M => (1 : ℝ))
         (fun β : M => (chartAtlasPOU I M β : M → ℝ) b)
       simp only [one_mul, one_pow] at hbase
-      have h_card : (∑ _β ∈ chartAtlasPOU_finset (I := I) (M := M), (1 : ℝ)) = N_pou := by
+      have h_card : (∑ _β ∈ chartAtlasPOUFinset (I := I) (M := M), (1 : ℝ)) = N_pou := by
         simp [hN_pou_def]
       rw [h_card] at hbase
-      have h_sum_eq : ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+      have h_sum_eq : ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
             (chartAtlasPOU I M β : M → ℝ) b = 1 := h_sum_one
-      have h_sum_sq_one : (∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+      have h_sum_sq_one : (∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
             (chartAtlasPOU I M β : M → ℝ) b) ^ 2 = 1 := by
         rw [h_sum_eq]; norm_num
       rw [h_sum_sq_one] at hbase
       exact hbase
     have h_V_sq_bound : V ^ 2 ≤
-        N_pou * ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+        N_pou * ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
           ((chartAtlasPOU I M β : M → ℝ) b) ^ 2 * V ^ 2 := by
       have h_mul := mul_le_mul_of_nonneg_right h_one_sq hV_sq_nn
       rw [one_mul] at h_mul
-      rw [show N_pou * (∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+      rw [show N_pou * (∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
               ((chartAtlasPOU I M β : M → ℝ) b) ^ 2) * V ^ 2 =
-            N_pou * ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+            N_pou * ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
               ((chartAtlasPOU I M β : M → ℝ) b) ^ 2 * V ^ 2 from by
         rw [mul_assoc, Finset.sum_mul]] at h_mul
       exact h_mul
     have h_step1 : ρα * V ^ 2 ≤ V ^ 2 := by
       nlinarith [hρα_nn, hρα_le_one, hV_sq_nn]
-    have h_per_β : ∀ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+    have h_per_β : ∀ β ∈ chartAtlasPOUFinset (I := I) (M := M),
         ((chartAtlasPOU I M β : M → ℝ) b) ^ 2 * V ^ 2 ≤
           (N * Bnorm ^ 2 * K_swap) *
             (((chartAtlasPOU I M β : M → ℝ) b) ^ 2 *
@@ -380,9 +380,9 @@ theorem pointwise_α_repr_le_sum_β_componentPou_sq
       exact Finset.sum_congr rfl (fun Jdx _ => h_pt Idx Jdx)
     calc ρα * V ^ 2
         ≤ V ^ 2 := h_step1
-      _ ≤ N_pou * ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+      _ ≤ N_pou * ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
               ((chartAtlasPOU I M β : M → ℝ) b) ^ 2 * V ^ 2 := h_V_sq_bound
-      _ ≤ N_pou * ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+      _ ≤ N_pou * ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
               ((N * Bnorm ^ 2 * K_swap) *
                 (((chartAtlasPOU I M β : M → ℝ) b) ^ 2 *
                   ∑ Idx, ∑ Jdx,
@@ -390,13 +390,13 @@ theorem pointwise_α_repr_le_sum_β_componentPou_sq
               refine mul_le_mul_of_nonneg_left ?_ hN_pou_nn
               exact Finset.sum_le_sum h_per_β
       _ = N_pou * (N * Bnorm ^ 2) * K_swap *
-            ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+            ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
               (((chartAtlasPOU I M β : M → ℝ) b) ^ 2 *
                 ∑ Idx, ∑ Jdx,
                   (tensorChartComponentRaw (I := I) (M := M) g r s T β Idx Jdx b) ^ 2) := by
             rw [← Finset.mul_sum]; ring
       _ = N_pou * (N * Bnorm ^ 2) * K_swap *
-            ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+            ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
               ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
                 ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
                   (tensorChartComponentPou (I := I) (M := M) g r s T β Idx Jdx b) ^ 2 := by

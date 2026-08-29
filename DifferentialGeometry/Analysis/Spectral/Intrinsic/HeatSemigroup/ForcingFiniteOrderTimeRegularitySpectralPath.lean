@@ -44,11 +44,11 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 private local instance tensorRSModelNormedAddCommGroup_local :
     NormedAddCommGroup (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedAddCommGroup 0 2
+  Tensor0SBundle.tensorRSModelNormedAddCommGroup 0 2
 
 private local instance tensorRSModelNormedSpace_local :
     NormedSpace ℝ (Tensor0SBundle.TensorRSModel 0 2 ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace 0 2
+  Tensor0SBundle.tensorRSModelNormedSpace 0 2
 
 private lemma continuousLinearMap_map_fintype_sum
     {ι V W : Type*} [Fintype ι]
@@ -89,7 +89,7 @@ theorem smoothCcTensor_rawChartComponent_eigenSeries_tsum_eq_local
       ∑' i, d i * tensorChartComponentRaw (I := I) (M := M) g 0 2
         (eigenvectorSmooth (I := I) (M := M) g 0 2 i) α ![] Jdx x := by
   classical
-  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) 0 2
   set u : TensorL2 0 2 g := SmoothCcTensor.toL2 (g := g) (r := 0) (s := 2) S with hu_def
   have hcoeff_u : ∀ i, tensorL2Coeff (I := I) (M := M)
@@ -113,11 +113,11 @@ theorem smoothCcTensor_rawChartComponent_eigenSeries_tsum_eq_local
     spectralPartialSum_toL2_tendsto (I := I) (M := M) g u
   have hTrep : (S : TensorL2 0 2 g) = u := rfl
   have hsum := chartAtlasPOU_finset_sum_eq_one (I := I) (M := M) x
-  have hexists : ∃ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have hexists : ∃ β ∈ chartAtlasPOUFinset (I := I) (M := M),
       0 < ((chartAtlasPOU I M) β : C^∞⟮I, M; ℝ⟯) x := by
     by_contra hcon
     push Not at hcon
-    have hzero : ∀ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+    have hzero : ∀ β ∈ chartAtlasPOUFinset (I := I) (M := M),
         ((chartAtlasPOU I M) β : M → ℝ) x = 0 := by
       intro β hβ
       have hle := hcon β hβ
@@ -463,7 +463,7 @@ theorem spectralPathFO_section_jointContMDiffOn_local
         ((T_rep p.2).toSection p.1))
       ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) := by
   classical
-  let := Tensor0SBundle.tensorRSBundle_topology (𝕜 := ℝ) (E := E) (H := H)
+  let := Tensor0SBundle.tensorRSBundleTopology (𝕜 := ℝ) (E := E) (H := H)
     (I := I) (M := M) 0 2
   refine contMDiffOn_of_locally_contMDiffOn ?_
   rintro ⟨x₀, s₀⟩ ⟨-, hs₀⟩

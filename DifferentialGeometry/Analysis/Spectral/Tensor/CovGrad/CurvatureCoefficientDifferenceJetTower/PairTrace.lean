@@ -149,7 +149,7 @@ lemma covGrad_slotExtend_toSection_rsDomDomCongr_b
       (covGrad (I := I) (M := M) g r s Φ).toSection x)
     d (m 1) (fun k : Fin (s + 1) => m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Fin.succ k)))]
   rw [covGrad_toSection_apply_natural (I := I) (M := M) g r s Φ x
-    ((tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x) d (m 1))
+    ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x) d (m 1))
     (fun k : Fin (s + 1) => m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Fin.succ k)))]
   have hdir : m ((Equiv.swap (0 : Fin (s + 1 + 1)) 1) (Fin.succ (0 : Fin (s + 1)))) = m 0 := by
     rw [show (Fin.succ (0 : Fin (s + 1)) : Fin (s + 1 + 1)) = 1 from rfl, Equiv.swap_apply_right]
@@ -177,19 +177,19 @@ lemma slotExtend_zero_cc (g : SmoothRiemannianMetric I M) (r s : ℕ) :
   refine ContinuousMultilinearMap.ext (fun m => ?_)
   rw [show ((show Tensor0SSpace (r + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from
       (slotExtend (I := I) (M := M) g r s (0 : SmoothCcTensor g r s)).toSection x) D) =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
           (0 : SmoothCcTensor g r s).toSection x).comp
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x D)) from rfl]
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x D)) from rfl]
   rw [show ((0 : SmoothCcTensor g r s).toSection x) = (0 : TensorRSSpace r s I x) from by
     rw [SmoothCcTensor.toSection_zero]; rfl]
   rw [show ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
       (0 : TensorRSSpace r s I x)).comp
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x D)) =
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x D)) =
       (0 : Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x).comp
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x D) from rfl]
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x D) from rfl]
   rw [ContinuousLinearMap.zero_comp,
-    ContinuousLinearEquiv.map_zero (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm]
+    ContinuousLinearEquiv.map_zero (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm]
   rw [show ((0 : SmoothCcTensor g (r + 1) (s + 1)).toSection x) =
       (0 : TensorRSSpace (r + 1) (s + 1) I x) from by
     rw [SmoothCcTensor.toSection_zero]; rfl]
@@ -211,7 +211,7 @@ lemma rsDomDomCongrSection_zero_cc (g : SmoothRiemannianMetric I M) (r s : ℕ)
   refine ContinuousMultilinearMap.ext (fun m => ?_)
   change Tensor0SSpace.toModel
       ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
-        tensorRS_domDomCongr σ (0 : TensorRSSpace r s I x)) D) m =
+        tensorRSDomDomCongr σ (0 : TensorRSSpace r s I x)) D) m =
     Tensor0SSpace.toModel
       ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
         (0 : TensorRSSpace r s I x)) D) m
@@ -239,7 +239,7 @@ lemma covGrad_slotExtend_parallel (g : SmoothRiemannianMetric I M) (r s : ℕ)
   refine ContinuousMultilinearMap.ext (fun m => ?_)
   change Tensor0SSpace.toModel
       ((show Tensor0SSpace (r + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
-        tensorRS_domDomCongr (Equiv.swap (0 : Fin (s + 1 + 1)) 1)
+        tensorRSDomDomCongr (Equiv.swap (0 : Fin (s + 1 + 1)) 1)
           (0 : TensorRSSpace (r + 1) (s + 1 + 1) I x)) D) m =
     Tensor0SSpace.toModel
       ((show Tensor0SSpace (r + 1) I x →L[ℝ] Tensor0SSpace (s + 1 + 1) I x from
@@ -339,7 +339,7 @@ private lemma slotExtend_toModel_cons_pairTrace
         (Fin.cons v0 vs) =
       Tensor0SSpace.toModel
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Φ.toSection x)
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x D
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x D
             ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v0))) vs := by
   rw [show ((show Tensor0SSpace (r + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from
       (slotExtend (I := I) (M := M) g r s Φ).toSection x) D) =
@@ -378,25 +378,25 @@ lemma slotExtendIter_two_toModel (g₀ : SmoothRiemannianMetric I M)
     (slotExtend (I := I) (M := M) g₀ 0 4 X) x D (u 0)]
   rw [show ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 5 I x from
       (slotExtend (I := I) (M := M) g₀ 0 4 X).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))) =
       ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 5 I x from
         (slotExtend (I := I) (M := M) g₀ 0 4 X).toSection x)
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D
           ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))) from rfl]
   rw [slotExtend_toModel_cons_pairTrace (I := I) (M := M) g₀ 0 4 X x
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0))) (u 1)]
   set t : Tensor0SSpace 0 I x :=
-    tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+    tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))
       ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 1)) with ht_def
   have htval : Tensor0SSpace.toModel t (fun i : Fin 0 => i.elim0) =
       Tensor0SSpace.toModel D ![u 0, u 1] := by
     rw [ht_def]
     have h1 := TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := 0)
-      (T := tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+      (T := tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (u 0)))
       (v0 := u 1) (vs := fun i : Fin 0 => i.elim0)
     rw [h1]
@@ -1326,7 +1326,7 @@ lemma operatorFieldComposition_sub_right_cc (g₀ : SmoothRiemannianMetric I M) 
 
 instance tensorRSModelNormedSpaceCC {r s : ℕ} :
     NormedSpace ℝ (TensorRSModel r s ℝ E) :=
-  Tensor0SBundle.tensorRSModel_normedSpace r s
+  Tensor0SBundle.tensorRSModelNormedSpace r s
 
 def pureDoubleTraceField (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) :
     SmoothCcTensor g₀ (s + 2) s where
@@ -1674,27 +1674,27 @@ lemma slotExtend_sub_cc (g₀ : SmoothRiemannianMetric I M) (r s : ℕ)
     rw [SmoothCcTensor.toSection_sub]; rfl]
   rw [sub_apply]
   rw [show ((slotExtend (I := I) (M := M) g₀ r s (X - Y)).toSection x) D =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
           (X - Y).toSection x).comp
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x D)) from rfl]
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x D)) from rfl]
   rw [show ((slotExtend (I := I) (M := M) g₀ r s X).toSection x) D =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from X.toSection x).comp
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x D)) from rfl]
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x D)) from rfl]
   rw [show ((slotExtend (I := I) (M := M) g₀ r s Y).toSection x) D =
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x).symm
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x).symm
         ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Y.toSection x).comp
-          (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x D)) from rfl]
+          (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x D)) from rfl]
   rw [show ((X - Y).toSection x) = X.toSection x - Y.toSection x from by
     rw [SmoothCcTensor.toSection_sub]; rfl]
   rw [show ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
       X.toSection x - Y.toSection x).comp
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x D)) =
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x D)) =
       ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from X.toSection x).comp
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x D)) -
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x D)) -
       ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Y.toSection x).comp
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) r x D)) from by
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) r x D)) from by
     apply ContinuousLinearMap.ext
     intro w
     rfl]
@@ -1724,10 +1724,10 @@ lemma rsDomDomCongrSection_sub_cc (g₀ : SmoothRiemannianMetric I M) (r s : ℕ
   rw [rsDomDomCongrSection_toSection, rsDomDomCongrSection_toSection]
   change Tensor0SSpace.toModel
       ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
-        tensorRS_domDomCongr σ (X.toSection x - Y.toSection x)) D) m =
+        tensorRSDomDomCongr σ (X.toSection x - Y.toSection x)) D) m =
     Tensor0SSpace.toModel
       ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
-        tensorRS_domDomCongr σ (X.toSection x) - tensorRS_domDomCongr σ (Y.toSection x)) D) m
+        tensorRSDomDomCongr σ (X.toSection x) - tensorRSDomDomCongr σ (Y.toSection x)) D) m
   rw [toModel_rsDomDomCongr_apply (I := I) (M := M) σ (X.toSection x - Y.toSection x) D]
   rw [show ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
       X.toSection x - Y.toSection x) D) =
@@ -1735,11 +1735,11 @@ lemma rsDomDomCongrSection_sub_cc (g₀ : SmoothRiemannianMetric I M) (r s : ℕ
         (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from Y.toSection x) D from rfl]
   rw [Tensor0SSpace.toModel_sub]
   rw [show ((show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
-      tensorRS_domDomCongr σ (X.toSection x) - tensorRS_domDomCongr σ (Y.toSection x)) D) =
+      tensorRSDomDomCongr σ (X.toSection x) - tensorRSDomDomCongr σ (Y.toSection x)) D) =
       (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
-        tensorRS_domDomCongr σ (X.toSection x)) D -
+        tensorRSDomDomCongr σ (X.toSection x)) D -
         (show Tensor0SSpace r I x →L[ℝ] Tensor0SSpace s I x from
-          tensorRS_domDomCongr σ (Y.toSection x)) D from rfl]
+          tensorRSDomDomCongr σ (Y.toSection x)) D from rfl]
   rw [Tensor0SSpace.toModel_sub, toModel_rsDomDomCongr_apply, toModel_rsDomDomCongr_apply]
   rfl
 

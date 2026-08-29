@@ -385,8 +385,8 @@ theorem pathLength_deriv_ge
   simpa only [Q, Ric, G, v] using hmono
 
 omit [IsManifold I 2 M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem intrGeo_vel_ne
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -619,8 +619,8 @@ private structure CalabiFlowCore
       2 * n / r + n * q
 
 omit [IsManifold I 2 M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem calabi_core_of_solution
     [RiemannianBundle (fun y : M => TangentSpace I y)]
     [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1078,8 +1078,8 @@ private theorem CalabiFlowCore.scale
   exact hpar
 
 omit [IsManifold I 2 M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem scaled_of_quad
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
@@ -1163,8 +1163,8 @@ private theorem scaled_of_quad
       _ = 2 * n / r + n * q := by rw [hnq]
   exact core.scale hT ht hcoef
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem scaledDist_support
     {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)

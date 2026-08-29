@@ -99,7 +99,7 @@ private theorem metric_self_norm
     normSq0S (I := I) g x 2 (metricTensorField (I := I) g x) =
       (Module.finrank ℝ E : ℝ) := by
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
     have h' := metricInverseInBasis_of_orthonormal (I := I) g basis hON
     intro a b
@@ -120,7 +120,7 @@ private theorem sqrt_normSq_zero
       (0 : Tensor0SSpace s I x)) = 0 := by
   classical
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g x
-  have hinv : MetricInverseInBasis_gen (I := I) g x basis
+  have hinv : MetricInverseInBasisGen (I := I) g x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) := by
     intro i j
     constructor <;> simp [identityInvMetric, diagonalInvMetric, hON]
@@ -179,7 +179,7 @@ theorem reverseJetOne
   have hΛ0 : 0 ≤ Λ := le_trans zero_le_one hEq.1
   intro x _
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₀ x
-  have hinv : MetricInverseInBasis_gen (I := I) g₀ x basis
+  have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
   rw [metricCovDerivNorm_eq_iterCov (I := I) gBase g₀ 1 basis hinv]
@@ -233,7 +233,7 @@ theorem reverseJetTwo
         else 0) 2
   intro x _
   obtain ⟨basis, hON⟩ := exists_gOrthonormalBasis (I := I) g₀ x
-  have hinv : MetricInverseInBasis_gen (I := I) g₀ x basis
+  have hinv : MetricInverseInBasisGen (I := I) g₀ x basis
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) :=
     metricInverseInBasis_of_orthonormal (I := I) g₀ basis hON
   rw [metricCovDerivNorm_eq_iterCov (I := I) gBase g₀ 2 basis hinv]

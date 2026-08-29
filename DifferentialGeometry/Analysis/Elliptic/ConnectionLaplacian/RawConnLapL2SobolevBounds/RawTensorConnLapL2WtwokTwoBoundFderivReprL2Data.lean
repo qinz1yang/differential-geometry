@@ -151,7 +151,7 @@ lemma repr_symm_differentiableAt
     (T : SmoothCcTensor g r s) (α : M)
     {e : E} (he : e ∈ (extChartAt I α).target) :
     DifferentiableAt ℝ
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
         (fun y : M => T.toSection y) ∘ (extChartAt I α).symm) e := by
   classical
   set b : M := (extChartAt I α).symm e
@@ -160,7 +160,7 @@ lemma repr_symm_differentiableAt
     rwa [← extChartAt_source_eq_chartAt_source (I := I)]
   have he_eq : extChartAt I α b = e := (extChartAt I α).right_inv he
   have hψ_eq :
-      (tensorRSChartE_section_repr (I := I) r s α
+      (tensorRSChartESectionRepr (I := I) r s α
           (fun y : M => T.toSection y) ∘ (extChartAt I α).symm) =
         fun y : E =>
           ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -170,7 +170,7 @@ lemma repr_symm_differentiableAt
                 tensorChartBasisElement (E := E) r s Idx Jdx := by
     funext y
     set bb := (extChartAt I α).symm y
-    set R : TensorRSModel r s ℝ E := tensorRSChartE_section_repr (I := I)
+    set R : TensorRSModel r s ℝ E := tensorRSChartESectionRepr (I := I)
       r s α (fun z : M => T.toSection z) bb
     have hR_recover : R =
         ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
@@ -277,7 +277,7 @@ lemma fderiv_repr_opNormSq_le_sum_fderiv_components_sq
     (T : SmoothCcTensor g r s) (α : M) {e : E}
     (he : e ∈ (extChartAt I α).target) :
     ‖fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
             (fun y : M => T.toSection y) ∘ (extChartAt I α).symm)
         e‖ ^ 2 ≤
       ((Finset.univ : Finset
@@ -322,7 +322,7 @@ lemma fderiv_repr_opNormSq_le_sum_fderiv_components_sq
     refine Finset.sum_le_sum (fun Jdx _ => ?_)
     exact mul_le_mul_of_nonneg_left (hbasis_le Idx Jdx) (norm_nonneg _)
   have h_norm_le : ‖fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
             (fun y : M => T.toSection y) ∘ (extChartAt I α).symm) e‖ ≤
       (∑ Idx, ∑ Jdx,
         ‖fderiv ℝ (tensorChartComponentRaw (I := I) (M := M) g r s T α
@@ -353,14 +353,14 @@ lemma fderiv_repr_opNormSq_le_sum_fderiv_components_sq
           p.1 p.2 ∘ (extChartAt I α).symm) e‖) * Bnorm :=
     mul_nonneg h_sum_nn hBnorm_nn
   have h_norm_le' : ‖fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
             (fun y : M => T.toSection y) ∘ (extChartAt I α).symm) e‖ ≤
       (∑ p ∈ V,
           ‖fderiv ℝ (tensorChartComponentRaw (I := I) (M := M) g r s T α
               p.1 p.2 ∘ (extChartAt I α).symm) e‖) * Bnorm := by
     rw [← h_sum_pair_eq] at h_norm_le; exact h_norm_le
   have h_norm_sq : ‖fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
             (fun y : M => T.toSection y) ∘ (extChartAt I α).symm) e‖ ^ 2 ≤
       ((∑ p ∈ V,
           ‖fderiv ℝ (tensorChartComponentRaw (I := I) (M := M) g r s T α
@@ -385,7 +385,7 @@ lemma fderiv_repr_opNormSq_le_sum_fderiv_components_sq
     rw [h_sum_one] at hbase
     exact hbase
   have h_combined : ‖fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
             (fun y : M => T.toSection y) ∘ (extChartAt I α).symm) e‖ ^ 2 ≤
       (V.card : ℝ) * Bnorm ^ 2 *
         ∑ p ∈ V,
@@ -400,7 +400,7 @@ lemma fderiv_repr_opNormSq_le_sum_fderiv_components_sq
     rw [h_sq_eq] at h_norm_sq
     have h_mul := mul_le_mul_of_nonneg_right hCS (sq_nonneg Bnorm)
     calc ‖fderiv ℝ
-            (tensorRSChartE_section_repr (I := I) r s α
+            (tensorRSChartESectionRepr (I := I) r s α
                 (fun y : M => T.toSection y) ∘ (extChartAt I α).symm) e‖ ^ 2
         ≤ (∑ p ∈ V,
             ‖fderiv ℝ (tensorChartComponentRaw (I := I) (M := M) g r s T α
@@ -442,7 +442,7 @@ lemma pou_sq_fderiv_repr_sq_pointwise
     (((chartAtlasPOU I M α : M → ℝ)
           ((extChartAt I α).symm e)) ^ 2) *
       (‖fderiv ℝ
-          (tensorRSChartE_section_repr (I := I) r s α
+          (tensorRSChartESectionRepr (I := I) r s α
             (fun z : M => T.toSection z) ∘ (extChartAt I α).symm) e‖ ^ 2) ≤
       (2 * ((Finset.univ : Finset
             ((Fin r → Fin (Module.finrank ℝ E)) ×
@@ -477,7 +477,7 @@ lemma pou_sq_fderiv_repr_sq_pointwise
     (I := I) (M := M) g r s T α (e := e) he
   have h_scaled : ρ ^ 2 *
       ‖fderiv ℝ
-        (tensorRSChartE_section_repr (I := I) r s α
+        (tensorRSChartESectionRepr (I := I) r s α
             (fun z : M => T.toSection z) ∘ (extChartAt I α).symm) e‖ ^ 2 ≤
       ρ ^ 2 * (N * Bnorm ^ 2 *
         ∑ Idx, ∑ Jdx,
@@ -868,7 +868,7 @@ private lemma chartTarget_pouWeighted_fderiv_repr_pointwise
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
         ENNReal.ofReal
           (‖fderiv ℝ
-            (tensorRSChartE_section_repr (I := I) r s α
+            (tensorRSChartESectionRepr (I := I) r s α
               (fun z : M => T.toSection z) ∘ (extChartAt I α).symm)
             ((toEuclidean (E := E)).symm y)‖ ^ 2) ≤
       ENNReal.ofReal C1 *
@@ -894,7 +894,7 @@ private lemma chartTarget_pouWeighted_fderiv_repr_pointwise
     simp [he_def, (toEuclidean (E := E)).apply_symm_apply]
   set ρ : ℝ := (chartAtlasPOU I M α : M → ℝ) ((extChartAt I α).symm e) with hρ_def
   set FRsq : ℝ := ‖fderiv ℝ
-    (tensorRSChartE_section_repr (I := I) r s α
+    (tensorRSChartESectionRepr (I := I) r s α
       (fun z : M => T.toSection z) ∘ (extChartAt I α).symm) e‖ ^ 2 with hFRsq_def
   set fSum : ℝ := ∑ Idx : Fin r → Fin (Module.finrank ℝ E),
     ∑ Jdx : Fin s → Fin (Module.finrank ℝ E),
@@ -917,7 +917,7 @@ private lemma chartTarget_pouWeighted_fderiv_repr_pointwise
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
           ENNReal.ofReal
             (‖fderiv ℝ
-              (tensorRSChartE_section_repr (I := I) r s α
+              (tensorRSChartESectionRepr (I := I) r s α
                 (fun z : M => T.toSection z) ∘ (extChartAt I α).symm)
               ((toEuclidean (E := E)).symm y)‖ ^ 2) =
         ENNReal.ofReal (ρ ^ 2 * FRsq) := by
@@ -983,7 +983,7 @@ theorem chartTargetPouWeightedL2NormSq_fderiv_repr_le_sum_chartComp_data
                     ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) ^ 2) *
               ENNReal.ofReal
                 (‖fderiv ℝ
-                    (tensorRSChartE_section_repr (I := I) r s α
+                    (tensorRSChartESectionRepr (I := I) r s α
                       (fun z : M => T.toSection z) ∘ (extChartAt I α).symm)
                     ((toEuclidean (E := E)).symm y)‖ ^ 2)
             ∂(volume : Measure EuclN) ≤
@@ -1028,7 +1028,7 @@ theorem chartTargetPouWeightedL2NormSq_fderiv_repr_le_sum_chartComp_data
     ENNReal.ofReal (((chartAtlasPOU I M α : M → ℝ) (sym y)) ^ 2) *
       ENNReal.ofReal
         (‖fderiv ℝ
-            (tensorRSChartE_section_repr (I := I) r s α
+            (tensorRSChartESectionRepr (I := I) r s α
                 (fun z : M => T.toSection z) ∘ (extChartAt I α).symm)
             ((toEuclidean (E := E)).symm y)‖ ^ 2) with hlhs_def
   set fIntegrand : (Fin r → Fin (Module.finrank ℝ E)) →

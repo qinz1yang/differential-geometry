@@ -33,8 +33,8 @@ private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
 
 omit [T2Space M] [SigmaCompactSpace M] in
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem gBall_model_eucl
     (g : SmoothRiemannianMetric I M) (x : M) {R : ℝ} (hR : 0 < R) :
     (∫⁻ θ : Metric.sphere (0 : E) 1,
@@ -103,8 +103,8 @@ theorem gBall_model_eucl
       Measure.addHaar_closedBall_eq_addHaar_ball
         (volume : Measure E) (0 : E) R
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
@@ -260,8 +260,8 @@ theorem segBall_vol_le_euclidean [ConnectedSpace M] [PseudoEMetricSpace M]
             (hypRadVol q (Module.finrank ℝ E - 1) R) :=
       hnormal
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem segBall_vol_pow [ConnectedSpace M] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]

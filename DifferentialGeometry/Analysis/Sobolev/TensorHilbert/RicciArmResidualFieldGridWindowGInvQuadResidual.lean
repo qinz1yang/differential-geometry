@@ -211,11 +211,11 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma interiorProduct_toModel_eval (s : ℕ) (x : M) (v : TangentSpace I x)
     (D : Tensor0SSpace (s + 1) I x) (w : Fin s → TangentSpace I x) :
     Tensor0SSpace.toModel
-        (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) w =
+        (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D) w =
       Tensor0SSpace.toModel D (Fin.cons (show E from v) (fun k => (show E from w k))) := by
   have h1 : Tensor0SSpace.toModel
-      (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) s x v D) =
-      Tensor0SBundle.model_interior_product (𝕜 := ℝ) (E := E) s (show E from v)
+      (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) s x v D) =
+      Tensor0SBundle.modelInteriorProduct (𝕜 := ℝ) (E := E) s (show E from v)
         (Tensor0SSpace.toModel D) := rfl
   rw [h1]
   rfl
@@ -259,10 +259,10 @@ private lemma connectionDifferenceSection_eq_raise_lowered :
         cometricRaiseSlot0Fib (I := I) g₀ 1 x D) om YZ =
       Tensor0SSpace.toModel D (Fin.cons (show E from u) (fun k => (show E from YZ k))) := by
     rw [cometricRaiseSlot0Fib_clm_apply (I := I) g₀ 1 x D om]
-    rw [show (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (1 + 1) x
+    rw [show (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (1 + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) D YZ : ℝ) =
         Tensor0SSpace.toModel
-          (Tensor0SBundle.interior_product (𝕜 := ℝ) (I := I) (1 + 1) x
+          (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) (1 + 1) x
             (inverseMetricSharpFib (I := I) g₀ x om) D) YZ from rfl]
     rw [interiorProduct_toModel_eval (I := I) (M := M) (1 + 1) x
       (inverseMetricSharpFib (I := I) g₀ x om) D YZ, ← hu]
@@ -381,11 +381,11 @@ private lemma slotExtend_connectionDifferenceLowered_toModel (x : M)
   rw [slotExtendFib_apply_eval (I := I) (M := M) 0 3 x
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
       (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁).toSection x) om v0 vs]
-  have hc : tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x om
+  have hc : tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x om
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v0) =
       Tensor0SSpace.toModel om ![v0] • unitTensor (I := I) (M := M) x := by
     have h1 := tensor0S_rank0_eq_smul_unit (I := I) (M := M) x
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x om
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x om
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v0))
     rw [h1]
     congr 1
@@ -487,7 +487,7 @@ private lemma gInvQuadDecompositionWeight_toModel (x : M) (D : Tensor0SSpace 2 I
       (smoothOrthoFrame (I := I) g₀ x a x)) m)]
   simp only [ContinuousLinearEquiv.symm_apply_apply]
   rw [gInvQuadDecompositionArm_toModel (I := I) (M := M) g₀ g₁ x
-    (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x
+    (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x
       (Tensor0SSpace.ofModel
         (ContinuousMultilinearMap.domDomCongr (Equiv.swap (0 : Fin 2) 1)
           (Tensor0SSpace.toModel D)))

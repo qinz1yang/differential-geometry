@@ -42,34 +42,34 @@ private lemma memLp_two_of_continuous_compact_closure
 structure SmoothApproximation
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     (_u _f : E → ℝ) where
-  u_seq : ℕ → E → ℝ
-  f_seq : ℕ → E → ℝ
-  u_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (u_seq n)
+  uSeq : ℕ → E → ℝ
+  fSeq : ℕ → E → ℝ
+  u_seq_smooth : ∀ n, ContDiff ℝ (⊤ : ℕ∞) (uSeq n)
   is_smooth_weak_sol :
-    ∀ n, B.IsSmoothWeakSolution (u_seq n) (f_seq n)
+    ∀ n, B.IsSmoothWeakSolution (uSeq n) (fSeq n)
   f_seq_l2_loc :
     ∀ n {S : Set E}, IsCompact (closure S) →
-      MemLp (f_seq n) 2 (volume.restrict S)
+      MemLp (fSeq n) 2 (volume.restrict S)
   u_seq_l2_loc :
     ∀ n {S : Set E}, IsCompact (closure S) →
-      MemLp (u_seq n) 2 (volume.restrict S)
+      MemLp (uSeq n) 2 (volume.restrict S)
   grad_seq_l2_loc :
     ∀ n {S : Set E}, IsCompact (closure S) →
       ∀ j : Fin d,
-        MemLp (fun y : E => (fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1))
+        MemLp (fun y : E => (fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1))
           2 (volume.restrict S)
-  data_bound : ℝ
-  data_bound_nn : 0 ≤ data_bound
+  dataBound : ℝ
+  data_bound_nn : 0 ≤ dataBound
   data_integrated_bound :
     ∀ {Ω' : Set E}, IsOpen Ω' → IsCompact (closure Ω') →
       ∃ C : ℝ, 0 ≤ C ∧ ∀ n,
         (∫ y in Ω',
             ∑ j : Fin d,
-              ((fderiv ℝ (u_seq n) y) (EuclideanSpace.single j 1)) ^ 2
+              ((fderiv ℝ (uSeq n) y) (EuclideanSpace.single j 1)) ^ 2
           ∂(volume : Measure E)) +
-        (∫ y in Ω', (u_seq n y) ^ 2 ∂(volume : Measure E)) +
-        (∫ y in Ω', (f_seq n y) ^ 2 ∂(volume : Measure E)) ≤
-          C * data_bound
+        (∫ y in Ω', (uSeq n y) ^ 2 ∂(volume : Measure E)) +
+        (∫ y in Ω', (fSeq n y) ^ 2 ∂(volume : Measure E)) ≤
+          C * dataBound
 
 private lemma loc_per_n_smooth_bound
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
@@ -82,17 +82,17 @@ private lemma loc_per_n_smooth_bound
     ∃ g : E → ℝ,
       MemLp g 2 (volume.restrict Ω'') ∧
       DeGiorgi.HasWeakPartialDeriv (d := d) k g
-        (fun y : E => (fderiv ℝ (S.u_seq n) y) (EuclideanSpace.single i 1)) Ω'' ∧
+        (fun y : E => (fderiv ℝ (S.uSeq n) y) (EuclideanSpace.single i 1)) Ω'' ∧
       ∃ Ω' : Set E, IsOpen Ω' ∧ closure Ω'' ⊆ Ω' ∧ closure Ω' ⊆ Ω ∧
         IsCompact (closure Ω') ∧
         ∃ C : ℝ, 0 ≤ C ∧
           ∫ x in Ω'', g x ^ 2 ∂(volume : Measure E) ≤
             C * (∫ x in Ω',
                   ∑ j : Fin d,
-                    ((fderiv ℝ (S.u_seq n) x) (EuclideanSpace.single j 1)) ^ 2
+                    ((fderiv ℝ (S.uSeq n) x) (EuclideanSpace.single j 1)) ^ 2
                 ∂(volume : Measure E) +
-              ∫ x in Ω', (S.u_seq n x) ^ 2 ∂(volume : Measure E) +
-              ∫ x in Ω', (S.f_seq n x) ^ 2 ∂(volume : Measure E)) := by
+              ∫ x in Ω', (S.uSeq n x) ^ 2 ∂(volume : Measure E) +
+              ∫ x in Ω', (S.fSeq n x) ^ 2 ∂(volume : Measure E)) := by
   obtain ⟨C, hC_nn, h_eng⟩ := loc_smooth_solution (d := d) B
     hΩ'' hΩ''_compact_closure h_room
   obtain ⟨g, hg_memLp, hg_weak, Ω', hΩ'_open, hΩ''_in_Ω', hΩ'_in,
@@ -112,9 +112,9 @@ theorem loc_nonsmooth_per_n_bound
       MemLp g 2 (volume.restrict Ω'') ∧
       DeGiorgi.HasWeakPartialDeriv (d := d) k g
         (fun y : E =>
-          (fderiv ℝ (S.u_seq n) y) (EuclideanSpace.single i 1)) Ω'' ∧
+          (fderiv ℝ (S.uSeq n) y) (EuclideanSpace.single i 1)) Ω'' ∧
       ∃ K : ℝ, 0 ≤ K ∧
-        ∫ x in Ω'', g x ^ 2 ∂(volume : Measure E) ≤ K * S.data_bound := by
+        ∫ x in Ω'', g x ^ 2 ∂(volume : Measure E) ≤ K * S.dataBound := by
   classical
   intro i k n
   obtain ⟨g, hg_l2, hg_partial, Ω', hΩ'_open, _hΩ''_in_Ω', _hΩ'_in_Ω,
@@ -128,9 +128,9 @@ theorem loc_nonsmooth_per_n_bound
   have h_data_le := hD_bound n
   refine hC_bound.trans ?_
   calc C * _
-      ≤ C * (D * S.data_bound) :=
+      ≤ C * (D * S.dataBound) :=
         mul_le_mul_of_nonneg_left h_data_le hC_nn
-    _ = (C * D) * S.data_bound := by ring
+    _ = (C * D) * S.dataBound := by ring
 
 theorem loc_nonsmooth_solution
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
@@ -143,9 +143,9 @@ theorem loc_nonsmooth_solution
       MemLp g_n 2 (volume.restrict Ω'') ∧
       DeGiorgi.HasWeakPartialDeriv (d := d) k g_n
         (fun y : E =>
-          (fderiv ℝ (S.u_seq n) y) (EuclideanSpace.single i 1)) Ω'' ∧
+          (fderiv ℝ (S.uSeq n) y) (EuclideanSpace.single i 1)) Ω'' ∧
       ∃ K : ℝ, 0 ≤ K ∧
-        ∫ x in Ω'', g_n x ^ 2 ∂(volume : Measure E) ≤ K * S.data_bound :=
+        ∫ x in Ω'', g_n x ^ 2 ∂(volume : Measure E) ≤ K * S.dataBound :=
   loc_nonsmooth_per_n_bound (d := d) B hΩ'' hΩ''_compact_closure
     h_room S
 

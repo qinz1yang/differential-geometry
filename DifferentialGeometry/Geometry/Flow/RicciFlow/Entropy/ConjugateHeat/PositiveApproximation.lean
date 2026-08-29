@@ -143,8 +143,8 @@ private theorem energy_mix_le
 variable [T2Space M] [CompactSpace M]
 variable [Nonempty M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_pos_wform
     (g : SmoothRiemannianMetric I M) {v : M → ℝ}
     (hv : ContMDiff I 𝓘(ℝ, ℝ) ∞ v)

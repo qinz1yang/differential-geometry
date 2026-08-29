@@ -777,7 +777,7 @@ theorem carrier_coeff_pmConv
   have hpr_cont : Continuous pr :=
     continuous_subtype_val.comp continuous_projIcc
   set Frep : ℝ → tensorHs (I := I) (M := M) g 0 2 (2 : ℝ) :=
-    fun t => tensorHs_of_spectralMass_majorant (I := I) (M := M)
+    fun t => tensorHsOfSpectralMassMajorant (I := I) (M := M)
       (fun i => fc i (pr t)) B0 hB0_sum
       (fun i => hB0_le i (pr t) (hpr_mem t)) with hFrep_def
   have hFrep_coeff : ∀ (t : ℝ) (i : TensorEigenIdx (I := I) (M := M) g 0 2),

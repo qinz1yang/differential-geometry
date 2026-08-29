@@ -49,7 +49,7 @@ theorem tensorPouSobolevHs_order2_equiv_pouSobolev
   iterated_nabla_vs_iterated_partial_equivalence_H1
     (I := I) (M := M) g r s 2
 
-def tensorHs_order2_isometryEquiv_tensorL2
+def tensorHsOrder2IsometryEquivTensorL2
     (g : SmoothRiemannianMetric I M) (r s : ℕ) :
     tensorHs (I := I) (M := M) g r s 2 ≃ₗᵢ[ℝ] TensorL2 r s g :=
   (tensorHsEquivOfFractionalPower (I := I) (M := M)
@@ -93,7 +93,7 @@ private lemma smoothCcTensorHs2_norm_eq
   rw [h_eq] at h1
   linarith
 
-noncomputable def tensorPouSobolevHilbert_order2_continuousLinearEquiv_of_normEquiv
+noncomputable def tensorPouSobolevHilbertOrder2ContinuousLinearEquivOfNormEquiv
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
     (e₂ : SmoothCcTensor g r s →ₗ[ℝ] F)

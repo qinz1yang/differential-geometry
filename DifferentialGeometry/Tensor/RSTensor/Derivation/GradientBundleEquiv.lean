@@ -42,23 +42,23 @@ def covGradBundleEquiv (r s : ℕ) (x : M) :
     (TangentSpace I x →L[ℝ] TensorRSSpace r s I x) ≃L[ℝ]
       TensorRSSpace r (s + 1) I x :=
   ((ContinuousLinearEquiv.refl ℝ (TangentSpace I x)).arrowCongr
-      (tensorRSSpace_continuousLinearEquiv (I := I) r s x)).trans
+      (tensorRSSpaceContinuousLinearEquiv (I := I) r s x)).trans
     ((covGradModelEquiv (E := E) r s).trans
-      (tensorRSSpace_continuousLinearEquiv (I := I) r (s + 1) x).symm)
+      (tensorRSSpaceContinuousLinearEquiv (I := I) r (s + 1) x).symm)
 
 theorem covGradBundleEquiv_apply (r s : ℕ) (x : M)
     (Φ : TangentSpace I x →L[ℝ] TensorRSSpace r s I x) :
     covGradBundleEquiv (I := I) (M := M) r s x Φ =
       TensorRSSpace.ofModel
         (covGradModelEquiv (E := E) r s
-          (((tensorRSSpace_continuousLinearEquiv (I := I) r s x : _ →L[ℝ] _).comp
+          (((tensorRSSpaceContinuousLinearEquiv (I := I) r s x : _ →L[ℝ] _).comp
             Φ : TangentSpace I x →L[ℝ] TensorRSModel r s ℝ E))) :=
   rfl
 
 theorem covGradBundleEquiv_symm_apply (r s : ℕ) (x : M)
     (T : TensorRSSpace r (s + 1) I x) :
     (covGradBundleEquiv (I := I) (M := M) r s x).symm T =
-      ((tensorRSSpace_continuousLinearEquiv (I := I) r s x).symm
+      ((tensorRSSpaceContinuousLinearEquiv (I := I) r s x).symm
           : TensorRSModel r s ℝ E →L[ℝ] TensorRSSpace r s I x).comp
         ((covGradModelEquiv (E := E) r s).symm
           (TensorRSSpace.toModel T)) :=
@@ -137,7 +137,7 @@ private theorem tensor0S_trivFibre_apply (n : ℕ) (α : M) {b : M}
       Tensor0SSpace.toModel X
         (fun j => tangentSpaceModelContinuousLinearEquiv (I := I) b
           ((trivializationAt E (TangentSpace I) α).symmL ℝ b (v j))) := by
-  have hX : X = (tensor0SSpace_continuousLinearEquiv (I := I) n b).symm
+  have hX : X = (tensor0SSpaceContinuousLinearEquiv (I := I) n b).symm
       (Tensor0SSpace.toModel X) :=
     (Tensor0SSpace.ofModel_toModel X).symm
   have hkey := tensor0SBundle_linearMapAt_apply_of_mem (I := I) (M := M) α b hb
@@ -163,11 +163,11 @@ theorem covGradBundleEquiv_trivializationAt_eq (r s : ℕ) (α : M) {b : M}
           (fun y : M => TangentSpace I y →L[ℝ] TensorRSSpace r s I y) α
           ⟨b, Φ⟩).2) := by
   let : TopologicalSpace (TotalSpace (Tensor0SModel r ℝ E)
-      (fun x : M => Tensor0SSpace r I x)) := tensor0SBundle_topology r
+      (fun x : M => Tensor0SSpace r I x)) := tensor0SBundleTopology r
   let : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
-      (fun x : M => Tensor0SSpace s I x)) := tensor0SBundle_topology s
+      (fun x : M => Tensor0SSpace s I x)) := tensor0SBundleTopology s
   let : TopologicalSpace (TotalSpace (Tensor0SModel (s + 1) ℝ E)
-      (fun x : M => Tensor0SSpace (s + 1) I x)) := tensor0SBundle_topology (s + 1)
+      (fun x : M => Tensor0SSpace (s + 1) I x)) := tensor0SBundleTopology (s + 1)
   have hb_r : b ∈ (trivializationAt (Tensor0SModel r ℝ E)
       (fun x : M => Tensor0SSpace r I x) α).baseSet := hb
   have hb_s : b ∈ (trivializationAt (Tensor0SModel s ℝ E)
@@ -347,7 +347,7 @@ theorem covGradBundleEquiv_symm_contMDiff_totalSpace (r s : ℕ) :
             (fun y : M => TangentSpace I y →L[ℝ] TensorRSSpace r s I y))) := by
   let : TopologicalSpace (TotalSpace (TensorRSModel r (s + 1) ℝ E)
       (fun y : M => TensorRSSpace r (s + 1) I y)) :=
-    tensorRSBundle_topology r (s + 1)
+    tensorRSBundleTopology r (s + 1)
   intro p₀
   rw [contMDiffAt_totalSpace]
   refine ⟨?_, ?_⟩
@@ -374,15 +374,15 @@ theorem covGradBundleEquiv_symm_contMDiff_totalSpace (r s : ℕ) :
 
 noncomputable def covGradBundleSmoothEquiv (r s : ℕ) :=
   letI : NormedAddCommGroup (TensorRSModel r (s + 1) ℝ E) :=
-    tensorRSModel_normedAddCommGroup r (s + 1)
+    tensorRSModelNormedAddCommGroup r (s + 1)
   letI : NormedSpace ℝ (TensorRSModel r (s + 1) ℝ E) :=
-    tensorRSModel_normedSpace r (s + 1)
+    tensorRSModelNormedSpace r (s + 1)
   letI : TopologicalSpace (TotalSpace (TensorRSModel r (s + 1) ℝ E)
       (fun y : M => TensorRSSpace r (s + 1) I y)) :=
-    tensorRSBundle_topology r (s + 1)
+    tensorRSBundleTopology r (s + 1)
   letI : FiberBundle (TensorRSModel r (s + 1) ℝ E)
       (fun y : M => TensorRSSpace r (s + 1) I y) :=
-    tensorRSBundle_fiber r (s + 1)
+    tensorRSBundleFiber r (s + 1)
   letI : VectorBundle ℝ (TensorRSModel r (s + 1) ℝ E)
       (fun y : M => TensorRSSpace r (s + 1) I y) :=
     tensorRSBundle_vector r (s + 1)

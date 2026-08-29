@@ -605,8 +605,8 @@ theorem ccTensorContract_topOrder_l2_twoArm_mixed_le
           + ΛΦ ^ 2 * ∑ l ∈ Finset.range (q + 1),
             ‖iteratedCovGrad (I := I) g₀ 0 b₀ l W‖ ^ 2) := by ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 theorem deTurckSmoothRemainderDiff_supercritical_pointwise_jet_le_fixedWindow
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -626,7 +626,7 @@ theorem deTurckSmoothRemainderDiff_supercritical_pointwise_jet_le_fixedWindow
   have hperdeg : ∀ q : ℕ, q ≤ 2 → ∃ Dq : ℝ, 0 ≤ Dq ∧
       ∀ (W : SmoothCcTensor g₀ 0 2) (x : M),
         (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + q) I b) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + q)
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + q)
         ‖(iteratedCovGrad (I := I) g₀ 0 2 q W).toSection x‖) ≤
           Dq * ∑ j ∈ Finset.range (L + 1), ‖iteratedCovGrad (I := I) g₀ 0 2 j W‖ := by
     intro q hq
@@ -662,7 +662,7 @@ theorem deTurckSmoothRemainderDiff_supercritical_pointwise_jet_le_fixedWindow
           (2 * K + q) W‖ := hCit W
     have hemb := hCemb (iteratedCovGrad (I := I) g₀ 0 2 q W) x
     calc (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + q) I b) :=
-            Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + q)
+            Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + q)
           ‖(iteratedCovGrad (I := I) g₀ 0 2 q W).toSection x‖)
         ≤ Cemb * ‖DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensor.toHs
           (g := g₀) (r := 0) (s := 2 + q)
@@ -689,14 +689,14 @@ theorem deTurckSmoothRemainderDiff_supercritical_pointwise_jet_le_fixedWindow
     with hSsum_def
   have hSsum_nn : 0 ≤ Ssum := Finset.sum_nonneg fun j _ => norm_nonneg _
   let inst0 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + 0) I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + 0)
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + 0)
   let inst1 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + 1) I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
   let inst2 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + 2) I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + 2)
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + 2)
   have hptdeg : ∀ q : ℕ, q ≤ 2 →
       (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + q) I b) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + q)
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + q)
       ‖(iteratedCovGrad (I := I) g₀ 0 2 q W).toSection x‖) ≤ D * Ssum := by
     intro q hq
     interval_cases q

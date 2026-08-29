@@ -182,7 +182,7 @@ theorem deTurckLieConnectionDifferenceDerivativeLoweredCc_raise_repr (g₀ g₁ 
         (rsDomDomCongrSection (I := I) (M := M) g₀ 1 3 σ
           (deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ ga gb)).toSection x) om) =
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 3 I x from
-          tensorRS_domDomCongr σ ((deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ ga gb).toSection x)) om) from by
+          tensorRSDomDomCongr σ ((deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ ga gb).toSection x)) om) from by
       rw [rsDomDomCongrSection_toSection]]
     rw [toModel_rsDomDomCongr_apply (I := I) (M := M) σ
       ((deTurckLieConnectionDifferenceDerivativeQuadCc (I := I) (M := M) g₀ ga gb).toSection x) om]

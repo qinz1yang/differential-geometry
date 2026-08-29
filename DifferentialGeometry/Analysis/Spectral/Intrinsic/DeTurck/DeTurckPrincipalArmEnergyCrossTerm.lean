@@ -389,8 +389,8 @@ private theorem arm_commutator_Hs_family_tame
     _ = (CE2 j + CE3 j + CE4 j + CE56 j + CE56 j) *
           ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((j + 3 : ℕ) : ℝ) S‖ := by ring
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 private theorem arm_covGrad_coeffLower_l2_tame [Nonempty M]
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 4 * Module.finrank ℝ E + 10 ≤ a) {R₀ : ℝ} (hR₀ : 0 ≤ R₀)
@@ -412,9 +412,9 @@ private theorem arm_covGrad_coeffLower_l2_tame [Nonempty M]
           Cgrad * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((2 : ℕ) : ℝ) S‖ := by
   classical
   let inst03 : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 0 3 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 3
   let inst23 : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace 2 3 I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 2 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 2 3
   obtain ⟨Cpo, hCpo_nn, hCpo⟩ :=
     deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient (I := I) (M := M) g₀
   obtain ⟨Cenv, hCenv_nn, hCenv⟩ :=

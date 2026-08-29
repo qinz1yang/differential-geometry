@@ -42,7 +42,7 @@ private theorem componentRS_eq_gen
     (T : Tensor0SBundle.TensorRSSpace r s I x)
     (upper : Fin r -> Idx) (lower : Fin s -> Idx) :
     Tensor0SBundle.componentRS (I := I) basis T upper lower =
-      Tensor0SBundle.componentRS_gen (I := I) basis T upper lower := rfl
+      Tensor0SBundle.componentRSGen (I := I) basis T upper lower := rfl
 
 omit [FiniteDimensional Real E] [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
 theorem localFrameOneOfInf

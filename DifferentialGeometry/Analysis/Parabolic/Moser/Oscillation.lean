@@ -283,7 +283,7 @@ theorem integrated_localized_l2_oscillation_of_log_supersolution
     (hpos : ∀ t x, 0 < u t x)
     {a b : ℝ} (hab : a ≤ b)
     (hpde : ∀ t ∈ Icc a b, ∀ x : M,
-      Δ_g (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
+      ΔG (I := I) g (smoothScalarSlice (I := I) g u hu t).toContMDiffMap x ≤
         deriv (fun s => u s x) t) :
     ∫ t in a..b,
         localizedL2Oscillation (I := I) (M := M) averagingCutoff

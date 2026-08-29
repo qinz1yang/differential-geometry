@@ -24,60 +24,60 @@ variable [CompleteSpace 𝕜]
 
 section ModelCovariantDerivative
 
-def covariantDeriv_tensor0SModelAt (s : ℕ)
+def covariantDerivTensor0SModelAt (s : ℕ)
     (dα_X : Tensor0SModel (𝕜 := 𝕜) (E := E) s) (ΓX : E →L[𝕜] E)
     (α : Tensor0SModel (𝕜 := 𝕜) (E := E) s) :
     Tensor0SModel (𝕜 := 𝕜) (E := E) s :=
-  dα_X - lieDeriv_correction s ΓX α
+  dα_X - lieDerivCorrection s ΓX α
 
 omit [CompleteSpace 𝕜] in
 @[simp] lemma covariantDeriv_tensor0SModelAt_apply (s : ℕ)
     (dα_X : Tensor0SModel (𝕜 := 𝕜) (E := E) s) (ΓX : E →L[𝕜] E)
     (α : Tensor0SModel (𝕜 := 𝕜) (E := E) s) :
-    covariantDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) s dα_X ΓX α =
-      dα_X - lieDeriv_correction s ΓX α := by
+    covariantDerivTensor0SModelAt (𝕜 := 𝕜) (E := E) s dα_X ΓX α =
+      dα_X - lieDerivCorrection s ΓX α := by
   rfl
 
-def covariantDeriv_tensor0SModel (s : ℕ)
+def covariantDerivTensor0SModel (s : ℕ)
     (X : E → E) (ΓX : E → E →L[𝕜] E)
     (α : E → Tensor0SModel (𝕜 := 𝕜) (E := E) s) (x : E) :
     Tensor0SModel (𝕜 := 𝕜) (E := E) s :=
-  covariantDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) s
+  covariantDerivTensor0SModelAt (𝕜 := 𝕜) (E := E) s
     (fderiv 𝕜 α x (X x)) (ΓX x) (α x)
 
-def covariantDeriv_tensor0SModelWithin (s : ℕ)
+def covariantDerivTensor0SModelWithin (s : ℕ)
     (X : E → E) (ΓX : E → E →L[𝕜] E)
     (α : E → Tensor0SModel (𝕜 := 𝕜) (E := E) s) (u : Set E) (x : E) :
     Tensor0SModel (𝕜 := 𝕜) (E := E) s :=
-  covariantDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) s
+  covariantDerivTensor0SModelAt (𝕜 := 𝕜) (E := E) s
     (fderivWithin 𝕜 α u x (X x)) (ΓX x) (α x)
 
-def covariantDeriv_tensorRSModelAt (r s : ℕ)
+def covariantDerivTensorRSModelAt (r s : ℕ)
     (dT_X : TensorRSModel r s 𝕜 E) (ΓX : E →L[𝕜] E)
     (T : TensorRSModel r s 𝕜 E) :
     TensorRSModel r s 𝕜 E :=
   dT_X
-    - (lieDeriv_correctionL (𝕜 := 𝕜) (E := E) s ΓX).comp T
-    + T.comp (lieDeriv_correctionL (𝕜 := 𝕜) (E := E) r ΓX)
+    - (lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s ΓX).comp T
+    + T.comp (lieDerivCorrectionL (𝕜 := 𝕜) (E := E) r ΓX)
 
 @[simp] theorem covariantDeriv_tensorRSModelAt_apply (r s : ℕ)
     (dT_X : TensorRSModel r s 𝕜 E) (ΓX : E →L[𝕜] E)
     (T : TensorRSModel r s 𝕜 E) :
-    covariantDeriv_tensorRSModelAt (𝕜 := 𝕜) (E := E) r s dT_X ΓX T =
+    covariantDerivTensorRSModelAt (𝕜 := 𝕜) (E := E) r s dT_X ΓX T =
       dT_X
-        - (lieDeriv_correctionL (𝕜 := 𝕜) (E := E) s ΓX).comp T
-        + T.comp (lieDeriv_correctionL (𝕜 := 𝕜) (E := E) r ΓX) := by
+        - (lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s ΓX).comp T
+        + T.comp (lieDerivCorrectionL (𝕜 := 𝕜) (E := E) r ΓX) := by
   rfl
 
 theorem covariantDeriv_tensorRSModelAt_eval (r s : ℕ)
     (dT_X : TensorRSModel r s 𝕜 E) (ΓX : E →L[𝕜] E)
     (T : TensorRSModel r s 𝕜 E)
     (β : Tensor0SModel (𝕜 := 𝕜) (E := E) r) (v : Fin s → E) :
-    (covariantDeriv_tensorRSModelAt (𝕜 := 𝕜) (E := E) r s dT_X ΓX T β) v =
+    (covariantDerivTensorRSModelAt (𝕜 := 𝕜) (E := E) r s dT_X ΓX T β) v =
       (dT_X β) v -
-        ((lieDeriv_correctionL (𝕜 := 𝕜) (E := E) s ΓX) (T β)) v +
-        (T ((lieDeriv_correctionL (𝕜 := 𝕜) (E := E) r ΓX) β)) v := by
-  simp [covariantDeriv_tensorRSModelAt, sub_eq_add_neg, add_assoc]
+        ((lieDerivCorrectionL (𝕜 := 𝕜) (E := E) s ΓX) (T β)) v +
+        (T ((lieDerivCorrectionL (𝕜 := 𝕜) (E := E) r ΓX) β)) v := by
+  simp [covariantDerivTensorRSModelAt, sub_eq_add_neg, add_assoc]
 
 section ChristoffelModel
 
@@ -175,14 +175,14 @@ theorem covariantDeriv_tensor0SModelAt_apply_basis_slots {s : ℕ}
     (ΓX : E →L[𝕜] E)
     (α : Tensor0SModel (𝕜 := 𝕜) (E := E) s)
     (slots : Fin s → Idx) :
-    covariantDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) s dα_X ΓX α
+    covariantDerivTensor0SModelAt (𝕜 := 𝕜) (E := E) s dα_X ΓX α
         (fun a : Fin s => basis (slots a)) =
       dα_X (fun a : Fin s => basis (slots a)) -
         ∑ a : Fin s, ∑ k : Idx,
           connectionEndomorphismCoeff basis ΓX (slots a) k *
             α (Function.update (fun b : Fin s => basis (slots b)) a (basis k)) := by
   classical
-  unfold covariantDeriv_tensor0SModelAt lieDeriv_correction substituteArg
+  unfold covariantDerivTensor0SModelAt lieDerivCorrection substituteArg
     connectionEndomorphismCoeff
   simp only [sub_apply, sum_apply,
     ContinuousMultilinearMap.compContinuousLinearMap_apply]
@@ -208,13 +208,13 @@ theorem covariantDeriv_tensor0SModelWithin_apply_basis_slots {s : ℕ}
     (X : E → E) (ΓX : E → E →L[𝕜] E)
     (α : E → Tensor0SModel (𝕜 := 𝕜) (E := E) s)
     (u : Set E) (x : E) (slots : Fin s → Idx) :
-    covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) s X ΓX α u x
+    covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E) s X ΓX α u x
         (fun a : Fin s => basis (slots a)) =
       fderivWithin 𝕜 α u x (X x) (fun a : Fin s => basis (slots a)) -
         ∑ a : Fin s, ∑ k : Idx,
           connectionEndomorphismCoeff basis (ΓX x) (slots a) k *
             α x (Function.update (fun b : Fin s => basis (slots b)) a (basis k)) := by
-  unfold covariantDeriv_tensor0SModelWithin
+  unfold covariantDerivTensor0SModelWithin
   exact covariantDeriv_tensor0SModelAt_apply_basis_slots (𝕜 := 𝕜) (E := E)
     basis (fderivWithin 𝕜 α u x (X x)) (ΓX x) (α x) slots
 
@@ -225,12 +225,12 @@ theorem covariantDeriv_tensor0SModelAt_one_apply_basis
     (ΓX : E →L[𝕜] E)
     (α : Tensor0SModel (𝕜 := 𝕜) (E := E) 1)
     (j : Idx) :
-    covariantDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) 1 dα_X ΓX α
+    covariantDerivTensor0SModelAt (𝕜 := 𝕜) (E := E) 1 dα_X ΓX α
         (fun _ : Fin 1 => basis j) =
       dα_X (fun _ : Fin 1 => basis j) -
         ∑ k : Idx, connectionEndomorphismCoeff basis ΓX j k *
           α (fun _ : Fin 1 => basis k) := by
-  unfold covariantDeriv_tensor0SModelAt lieDeriv_correction substituteArg
+  unfold covariantDerivTensor0SModelAt lieDerivCorrection substituteArg
     connectionEndomorphismCoeff
   simp only [sub_apply,
     Finset.univ_unique, Fin.default_eq_zero, Finset.sum_singleton,
@@ -253,14 +253,14 @@ theorem covariantDeriv_tensor0SModelAt_two_apply_basis
     (ΓX : E →L[𝕜] E)
     (A : Tensor0SModel (𝕜 := 𝕜) (E := E) 2)
     (j l : Idx) :
-    covariantDeriv_tensor0SModelAt (𝕜 := 𝕜) (E := E) 2 dA_X ΓX A
+    covariantDerivTensor0SModelAt (𝕜 := 𝕜) (E := E) 2 dA_X ΓX A
         (fun q : Fin 2 => if q = 0 then basis j else basis l) =
       dA_X (fun q : Fin 2 => if q = 0 then basis j else basis l) -
         ∑ k : Idx, connectionEndomorphismCoeff basis ΓX j k *
           A (fun q : Fin 2 => if q = 0 then basis k else basis l) -
         ∑ k : Idx, connectionEndomorphismCoeff basis ΓX l k *
           A (fun q : Fin 2 => if q = 0 then basis j else basis k) := by
-  unfold covariantDeriv_tensor0SModelAt lieDeriv_correction substituteArg
+  unfold covariantDerivTensor0SModelAt lieDerivCorrection substituteArg
     connectionEndomorphismCoeff
   simp only [sub_apply, sum_apply,
     ContinuousMultilinearMap.compContinuousLinearMap_apply]
@@ -290,12 +290,12 @@ theorem covariantDeriv_tensor0SModelWithin_one_apply_basis
     (X : E → E) (ΓX : E → E →L[𝕜] E)
     (α : E → Tensor0SModel (𝕜 := 𝕜) (E := E) 1)
     (u : Set E) (x : E) (j : Idx) :
-    covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) 1 X ΓX α u x
+    covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E) 1 X ΓX α u x
         (fun _ : Fin 1 => basis j) =
       fderivWithin 𝕜 α u x (X x) (fun _ : Fin 1 => basis j) -
         ∑ k : Idx, connectionEndomorphismCoeff basis (ΓX x) j k *
           α x (fun _ : Fin 1 => basis k) := by
-  unfold covariantDeriv_tensor0SModelWithin
+  unfold covariantDerivTensor0SModelWithin
   exact covariantDeriv_tensor0SModelAt_one_apply_basis (𝕜 := 𝕜) (E := E)
     basis (fderivWithin 𝕜 α u x (X x)) (ΓX x) (α x) j
 
@@ -305,7 +305,7 @@ theorem covariantDeriv_tensor0SModelWithin_two_apply_basis
     (X : E → E) (ΓX : E → E →L[𝕜] E)
     (A : E → Tensor0SModel (𝕜 := 𝕜) (E := E) 2)
     (u : Set E) (x : E) (j l : Idx) :
-    covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) 2 X ΓX A u x
+    covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E) 2 X ΓX A u x
         (fun q : Fin 2 => if q = 0 then basis j else basis l) =
       fderivWithin 𝕜 A u x (X x)
           (fun q : Fin 2 => if q = 0 then basis j else basis l) -
@@ -313,7 +313,7 @@ theorem covariantDeriv_tensor0SModelWithin_two_apply_basis
           A x (fun q : Fin 2 => if q = 0 then basis k else basis l) -
         ∑ k : Idx, connectionEndomorphismCoeff basis (ΓX x) l k *
           A x (fun q : Fin 2 => if q = 0 then basis j else basis k) := by
-  unfold covariantDeriv_tensor0SModelWithin
+  unfold covariantDerivTensor0SModelWithin
   exact covariantDeriv_tensor0SModelAt_two_apply_basis (𝕜 := 𝕜) (E := E)
     basis (fderivWithin 𝕜 A u x (X x)) (ΓX x) (A x) j l
 
@@ -323,7 +323,7 @@ theorem covariantDeriv_tensor0SModelWithin_one_apply_basis_clm
     (X : E → E) (ΓX : E → E →L[𝕜] E)
     (α : E → ContinuousMultilinearMap 𝕜 (fun _ : Fin 1 => E) 𝕜)
     (u : Set E) (x : E) (j : Idx) :
-    covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) 1 X ΓX α u x
+    covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E) 1 X ΓX α u x
         (fun _ : Fin 1 => basis j) =
       fderivWithin 𝕜 α u x (X x) (fun _ : Fin 1 => basis j) -
         ∑ k : Idx, connectionEndomorphismCoeff basis (ΓX x) j k *
@@ -337,7 +337,7 @@ theorem covariantDeriv_tensor0SModelWithin_two_apply_basis_clm
     (X : E → E) (ΓX : E → E →L[𝕜] E)
     (A : E → ContinuousMultilinearMap 𝕜 (fun _ : Fin 2 => E) 𝕜)
     (u : Set E) (x : E) (j l : Idx) :
-    covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) 2 X ΓX A u x
+    covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E) 2 X ΓX A u x
         (fun q : Fin 2 => if q = 0 then basis j else basis l) =
       fderivWithin 𝕜 A u x (X x)
           (fun q : Fin 2 => if q = 0 then basis j else basis l) -
@@ -350,30 +350,30 @@ theorem covariantDeriv_tensor0SModelWithin_two_apply_basis_clm
 
 end ChristoffelModel
 
-def covariantDeriv_tensorRSModel (r s : ℕ)
+def covariantDerivTensorRSModel (r s : ℕ)
     (X : E → E) (ΓX : E → E →L[𝕜] E)
     (T : E → TensorRSModel r s 𝕜 E) (x : E) :
     TensorRSModel r s 𝕜 E :=
-  covariantDeriv_tensorRSModelAt (𝕜 := 𝕜) (E := E) r s
+  covariantDerivTensorRSModelAt (𝕜 := 𝕜) (E := E) r s
     (fderiv 𝕜 T x (X x)) (ΓX x) (T x)
 
-def covariantDeriv_tensorRSModelWithin (r s : ℕ)
+def covariantDerivTensorRSModelWithin (r s : ℕ)
     (X : E → E) (ΓX : E → E →L[𝕜] E)
     (T : E → TensorRSModel r s 𝕜 E) (u : Set E) (x : E) :
     TensorRSModel r s 𝕜 E :=
-  covariantDeriv_tensorRSModelAt (𝕜 := 𝕜) (E := E) r s
+  covariantDerivTensorRSModelAt (𝕜 := 𝕜) (E := E) r s
     (fderivWithin 𝕜 T u x (X x)) (ΓX x) (T x)
 
 omit [CompleteSpace 𝕜] in
 lemma covariantSlotCorrection_modelProduct (s q : ℕ) (ΓX : E →L[𝕜] E)
     (α : Tensor0SModel (𝕜 := 𝕜) (E := E) s)
     (β : Tensor0SModel (𝕜 := 𝕜) (E := E) q) :
-    lieDeriv_correction (s + q) ΓX
+    lieDerivCorrection (s + q) ΓX
         (Bundle.continuousMultilinearMap.modelProduct s q α β) =
       Bundle.continuousMultilinearMap.modelProduct s q
-          (lieDeriv_correction s ΓX α) β +
+          (lieDerivCorrection s ΓX α) β +
         Bundle.continuousMultilinearMap.modelProduct s q
-          α (lieDeriv_correction q ΓX β) :=
+          α (lieDerivCorrection q ΓX β) :=
   lieDeriv_correction_modelProduct (𝕜 := 𝕜) (E := E) s q ΓX α β
 
 end ModelCovariantDerivative
@@ -382,7 +382,7 @@ section TangentCovariantDerivative
 
 variable [IsManifold I 1 M]
 
-def covariantDeriv_vectorField
+def covariantDerivVectorField
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (X Y : (x : M) → TangentSpace I x) (x : M) :
     TangentSpace I x :=
@@ -392,7 +392,7 @@ omit [FiniteDimensional 𝕜 E] [CompleteSpace 𝕜] in
 @[simp] lemma covariantDeriv_vectorField_apply
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (X Y : (x : M) → TangentSpace I x) (x : M) :
-    covariantDeriv_vectorField (I := I) cov X Y x = cov Y x (X x) := by
+    covariantDerivVectorField (I := I) cov X Y x = cov Y x (X x) := by
   rfl
 
 noncomputable def tangentConstInChart (x₀ : M) (v : E) (p : M) :
@@ -643,7 +643,7 @@ theorem tensor0SModelInChart_contMDiffWithinAt (s : ℕ) (x₀ : M)
     (extChartAt I x₀ x₀)
   exact hcomp
 
-noncomputable def mcovariantDeriv_tensor0SWithin (s : ℕ)
+noncomputable def mcovariantDerivTensor0SWithin (s : ℕ)
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
     (ΓX : E → E →L[𝕜] E)
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) s)
@@ -656,7 +656,7 @@ noncomputable def mcovariantDeriv_tensor0SWithin (s : ℕ)
     (trivializationAt (Tensor0SModel (𝕜 := 𝕜) (E := E) s)
       (fun p : M => Tensor0SSpace s I p) x₀).symm
         x₀
-      (covariantDeriv_tensor0SModelWithin s X' ΓX α'
+      (covariantDerivTensor0SModelWithin s X' ΓX α'
         ((extChartAt I x₀).symm ⁻¹' u ∩ range I)
         (extChartAt I x₀ x₀))
 
@@ -671,7 +671,7 @@ theorem mcovariantDeriv_tensor0SWithin_one_apply_basis
     (u : Set M) (x₀ : M) (j : Idx) :
     (tensor0SModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         1 x₀ x₀
-        (mcovariantDeriv_tensor0SWithin (𝕜 := 𝕜) (E := E) (H := H)
+        (mcovariantDerivTensor0SWithin (𝕜 := 𝕜) (E := E) (H := H)
           (I := I) (M := M) (n := n) 1 X ΓX α u x₀))
         (fun _ : Fin 1 => basis j) =
       fderivWithin 𝕜
@@ -689,7 +689,7 @@ theorem mcovariantDeriv_tensor0SWithin_one_apply_basis
             (tensor0SModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
               1 x₀ x₀ (α x₀)) (fun _ : Fin 1 => basis k) := by
   classical
-  unfold mcovariantDeriv_tensor0SWithin
+  unfold mcovariantDerivTensor0SWithin
   rw [tensor0SModelAt_trivializationAt_symm]
   rw [covariantDeriv_tensor0SModelWithin_one_apply_basis (basis := basis)]
   simp only [tensor0SModelInChart]
@@ -707,7 +707,7 @@ theorem mcovariantDeriv_tensor0SWithin_two_apply_basis
     (u : Set M) (x₀ : M) (j l : Idx) :
     (tensor0SModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         2 x₀ x₀
-        (mcovariantDeriv_tensor0SWithin (𝕜 := 𝕜) (E := E) (H := H)
+        (mcovariantDerivTensor0SWithin (𝕜 := 𝕜) (E := E) (H := H)
           (I := I) (M := M) (n := n) 2 X ΓX A u x₀))
         (fun q : Fin 2 => if q = 0 then basis j else basis l) =
       fderivWithin 𝕜
@@ -729,7 +729,7 @@ theorem mcovariantDeriv_tensor0SWithin_two_apply_basis
             (tensor0SModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
               2 x₀ x₀ (A x₀)) (fun q : Fin 2 => if q = 0 then basis j else basis k) := by
   classical
-  unfold mcovariantDeriv_tensor0SWithin
+  unfold mcovariantDerivTensor0SWithin
   rw [tensor0SModelAt_trivializationAt_symm]
   rw [covariantDeriv_tensor0SModelWithin_two_apply_basis (basis := basis)]
   simp only [tensor0SModelInChart]
@@ -747,7 +747,7 @@ theorem mcovariantDeriv_tensor0SWithin_apply_basis_slots
     (u : Set M) (x₀ : M) (slots : Fin s → Idx) :
     (tensor0SModelAt (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         s x₀ x₀
-        (mcovariantDeriv_tensor0SWithin (𝕜 := 𝕜) (E := E) (H := H)
+        (mcovariantDerivTensor0SWithin (𝕜 := 𝕜) (E := E) (H := H)
           (I := I) (M := M) (n := n) s X ΓX α u x₀))
         (fun a : Fin s => basis (slots a)) =
       fderivWithin 𝕜
@@ -766,26 +766,26 @@ theorem mcovariantDeriv_tensor0SWithin_apply_basis_slots
               s x₀ x₀ (α x₀))
               (Function.update (fun b : Fin s => basis (slots b)) a (basis k)) := by
   classical
-  unfold mcovariantDeriv_tensor0SWithin
+  unfold mcovariantDerivTensor0SWithin
   rw [tensor0SModelAt_trivializationAt_symm]
   rw [covariantDeriv_tensor0SModelWithin_apply_basis_slots (basis := basis)]
   simp only [tensor0SModelInChart]
   rw [extChartAt_to_inv]
   rfl
 
-noncomputable def mcovariantDeriv_tensor0S (s : ℕ)
+noncomputable def mcovariantDerivTensor0S (s : ℕ)
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
     (ΓX : E → E →L[𝕜] E)
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) s)
     (x₀ : M) : Tensor0SSpace s I x₀ :=
-  mcovariantDeriv_tensor0SWithin (n := n) s X ΓX α univ x₀
+  mcovariantDerivTensor0SWithin (n := n) s X ΓX α univ x₀
 
-noncomputable def mcovariantDeriv_tensorRSWithin (r s : ℕ)
+noncomputable def mcovariantDerivTensorRSWithin (r s : ℕ)
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
     (ΓX : E → E →L[𝕜] E)
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) r s)
     (u : Set M) (x₀ : M) : TensorRSSpace r s I x₀ := by
-  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+  letI := tensorRSBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
   let X' : E → E := vectorFieldModelInChart (I := I) (n := n) x₀ X
   let T' : E → TensorRSModel r s 𝕜 E :=
     fun y =>
@@ -795,50 +795,50 @@ noncomputable def mcovariantDeriv_tensorRSWithin (r s : ℕ)
   exact
     (trivializationAt (TensorRSModel r s 𝕜 E)
         (fun x => TensorRSSpace r s I x) x₀).symm x₀
-      (covariantDeriv_tensorRSModelWithin r s X' ΓX T'
+      (covariantDerivTensorRSModelWithin r s X' ΓX T'
         ((extChartAt I x₀).symm ⁻¹' u ∩ range I)
         (extChartAt I x₀ x₀))
 
-noncomputable def mcovariantDeriv_tensorRS (r s : ℕ)
+noncomputable def mcovariantDerivTensorRS (r s : ℕ)
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
     (ΓX : E → E →L[𝕜] E)
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) r s)
     (x₀ : M) : TensorRSSpace r s I x₀ :=
-  mcovariantDeriv_tensorRSWithin (n := n) r s X ΓX T univ x₀
+  mcovariantDerivTensorRSWithin (n := n) r s X ΓX T univ x₀
 
 section ExtractedConnection
 
 variable [IsManifold I 2 M]
 
-noncomputable def mcovariantDeriv_tensor0SWithinFromConnection (s : ℕ)
+noncomputable def mcovariantDerivTensor0SWithinFromConnection (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) s)
     (u : Set M) (x₀ : M) : Tensor0SSpace s I x₀ :=
-  mcovariantDeriv_tensor0SWithin (n := n) s X
+  mcovariantDerivTensor0SWithin (n := n) s X
     (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀) α u x₀
 
-noncomputable def mcovariantDeriv_tensor0SFromConnection (s : ℕ)
+noncomputable def mcovariantDerivTensor0SFromConnection (s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) s)
     (x₀ : M) : Tensor0SSpace s I x₀ :=
-  mcovariantDeriv_tensor0SWithinFromConnection (n := n) s cov X α univ x₀
+  mcovariantDerivTensor0SWithinFromConnection (n := n) s cov X α univ x₀
 
-noncomputable def mcovariantDeriv_tensorRSWithinFromConnection (r s : ℕ)
+noncomputable def mcovariantDerivTensorRSWithinFromConnection (r s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) r s)
     (u : Set M) (x₀ : M) : TensorRSSpace r s I x₀ :=
-  mcovariantDeriv_tensorRSWithin (n := n) r s X
+  mcovariantDerivTensorRSWithin (n := n) r s X
     (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀) T u x₀
 
-noncomputable def mcovariantDeriv_tensorRSFromConnection (r s : ℕ)
+noncomputable def mcovariantDerivTensorRSFromConnection (r s : ℕ)
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) (n := n) r s)
     (x₀ : M) : TensorRSSpace r s I x₀ :=
-  mcovariantDeriv_tensorRSWithinFromConnection (n := n) r s cov X T univ x₀
+  mcovariantDerivTensorRSWithinFromConnection (n := n) r s cov X T univ x₀
 
 end ExtractedConnection
 
@@ -874,7 +874,7 @@ noncomputable def nabla0SFun (s : ℕ)
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := n) s)
     (x : M) : Tensor0SSpace s I x :=
-  TensorLieDeriv.mcovariantDeriv_tensor0SFromConnection
+  TensorLieDeriv.mcovariantDerivTensor0SFromConnection
     (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
     (n := n) s cov X α x
 
@@ -884,7 +884,7 @@ noncomputable def nablaRSFun (r s : ℕ)
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := n) r s)
     (x : M) : TensorRSSpace r s I x :=
-  TensorLieDeriv.mcovariantDeriv_tensorRSFromConnection
+  TensorLieDeriv.mcovariantDerivTensorRSFromConnection
     (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
     (n := n) r s cov X T x
 
@@ -896,7 +896,7 @@ omit [IsManifold I n M] [IsManifold I (n + 1) M] in
       (n := n) s)
     (x : M) :
     nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s cov X α x =
-      TensorLieDeriv.mcovariantDeriv_tensor0SFromConnection
+      TensorLieDeriv.mcovariantDerivTensor0SFromConnection
         (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         (n := n) s cov X α x := rfl
 
@@ -908,7 +908,7 @@ omit [IsManifold I n M] [IsManifold I (n + 1) M] in
       (n := n) r s)
     (x : M) :
     nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s cov X T x =
-      TensorLieDeriv.mcovariantDeriv_tensorRSFromConnection
+      TensorLieDeriv.mcovariantDerivTensorRSFromConnection
         (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
         (n := n) r s cov X T x := rfl
 
@@ -917,7 +917,7 @@ abbrev Nabla0SRegular (s : ℕ)
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
     (α : Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := n) s) : Prop :=
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  letI := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
   ContMDiff I (I.prod 𝓘(𝕜, Tensor0SModel s 𝕜 E)) n
     (fun x : M =>
       (⟨x, nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
@@ -929,7 +929,7 @@ abbrev NablaRSRegular (r s : ℕ)
     (X : ContMDiffSection I E n (TangentSpace I : M → Type _))
     (T : TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := n) r s) : Prop :=
-  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+  letI := tensorRSBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
   ContMDiff I (I.prod 𝓘(𝕜, TensorRSModel r s 𝕜 E)) n
     (fun x : M =>
       (⟨x, nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
@@ -945,7 +945,7 @@ noncomputable def nabla0S (s : ℕ)
       s cov X α) :
     Tensor0SField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := n) s :=
-  letI := tensor0SBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
+  letI := tensor0SBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s
   ⟨nabla0SFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) s cov X α, hreg⟩
 
 noncomputable def nablaRS (r s : ℕ)
@@ -957,7 +957,7 @@ noncomputable def nablaRS (r s : ℕ)
       r s cov X T) :
     TensorRSField (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M)
       (n := n) r s :=
-  letI := tensorRSBundle_topology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
+  letI := tensorRSBundleTopology (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s
   ⟨nablaRSFun (𝕜 := 𝕜) (E := E) (H := H) (I := I) (M := M) r s cov X T, hreg⟩
 
 omit [IsManifold I n M] [IsManifold I (n + 1) M] in

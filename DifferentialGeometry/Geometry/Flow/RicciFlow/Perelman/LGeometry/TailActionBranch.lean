@@ -98,8 +98,8 @@ private theorem tailVel_smooth
   exact heq_of_eq (by
     simpa only [lVelocity, hzero, zero_add] using hsplit.symm)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] in
 private theorem tailLag_smooth
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -163,8 +163,8 @@ private theorem tailLag_smooth
     simpa only [J, lRegLag] using hlag
   exact hlag'.contDiffWithinAt
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem tailAct_bdry
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (f : Real → Real → M) (hf : IsSmoothVariation (I := I) f)
@@ -245,8 +245,8 @@ private theorem tail_open_clamp
       dsimp only [hi, eps] at hhi
       linarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [I.Boundaryless] in
 theorem lTailAct_smooth
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -340,8 +340,8 @@ theorem lTailAct_smooth
       (a := (0 : Real)) (b := 1) (b - a) a)
   exact (hAact.mono (fun _ _ ↦ mem_univ _)).congr fun A hA ↦ (heq hA).symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lTailAct_joint
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
@@ -754,8 +754,8 @@ theorem lTailAct_joint
       (lag b) • ContinuousLinearMap.snd Real E Real) (A0, b)
   exact hfinal
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lTailJoint_mfd
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)
@@ -927,8 +927,8 @@ theorem lTailJoint_mfd
   rw [hdBranch] at hComp
   simpa only [J, L, Act, q0, hloc, dBranch, g, Ab, Lb] using hComp
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lTailBranch_smooth
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T a b : Real) (hab : a < b)

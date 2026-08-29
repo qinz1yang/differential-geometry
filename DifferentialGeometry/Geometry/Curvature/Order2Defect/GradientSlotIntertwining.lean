@@ -41,7 +41,7 @@ omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 theorem tensor0S_curry_covGradBundleEquiv_unit
     (x : M) (Φ : TangentSpace I x →L[ℝ] TensorRSSpace 0 2 I x)
     (v : TangentSpace I x) :
-    tensor0S_curry (I := I) (M := M) 2 x
+    tensor0SCurry (I := I) (M := M) 2 x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           covGradBundleEquiv (I := I) (M := M) 0 2 x Φ)
           (unitZeroSec (I := I) (M := M) x)) v =
@@ -51,7 +51,7 @@ theorem tensor0S_curry_covGradBundleEquiv_unit
   apply ContinuousMultilinearMap.ext
   intro u
   rw [show Tensor0SSpace.toModel
-        (tensor0S_curry (I := I) (M := M) 2 x
+        (tensor0SCurry (I := I) (M := M) 2 x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
             covGradBundleEquiv (I := I) (M := M) 0 2 x Φ)
             (unitZeroSec (I := I) (M := M) x)) v) u =
@@ -81,7 +81,7 @@ theorem covGradBundleEquiv_tensorCov_unit_curry_eq_abstractCovDeriv
     (g : SmoothRiemannianMetric I M)
     (σ : Cₛ^∞⟮I; TensorRSModel 0 2 ℝ E, (fun y : M => TensorRSSpace 0 2 I y)⟯)
     (x : M) (v : TangentSpace I x) :
-    tensor0S_curry (I := I) (M := M) 2 x
+    tensor0SCurry (I := I) (M := M) 2 x
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
           covGradBundleEquiv (I := I) (M := M) 0 2 x
             (tensorRSCovariantDerivative I M 0 2 (LeviCivita (I := I) g)

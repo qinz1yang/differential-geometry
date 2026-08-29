@@ -893,8 +893,8 @@ theorem sum_index_form_bound_by_curvature_hypothesis
   apply le_of_eq
   ring
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem bonnet_myers_length_le_of_ricci_bound
     [T2Space (TangentBundle I M)]
     [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]

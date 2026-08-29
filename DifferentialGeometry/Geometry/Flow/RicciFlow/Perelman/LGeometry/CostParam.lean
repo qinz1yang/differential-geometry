@@ -22,8 +22,8 @@ variable {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
 variable {D : RealTimeInterval}
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [CompactSpace M] in
 theorem lRegLag_time_cont
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -113,8 +113,8 @@ theorem lRegTime_nhds (D : RealTimeInterval) (T a b : Real)
   rw [Metric.mem_ball] at hR
   simpa only [dist_sub_right] using hR
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [CompactSpace M] in
 theorem lRegAction_T_cont
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
@@ -180,8 +180,8 @@ theorem lRegAction_T_cont
           (continuous_fst.sub (continuous_snd.pow 2))).mem_nhds hregTs)
       exact ContinuousAt.comp' (f := fun R : Real ↦ (R, s)) hout hpair
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [NeZero (Module.finrank Real E)] in
 theorem lCost_lt_T_event
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)

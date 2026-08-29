@@ -427,8 +427,8 @@ private theorem covGrad_connectionDifferenceSection_flat_eval_eq_inner_local
   rw [hA_def]
   exact hbridge
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_fixed_covDerivConnectionDifference_sqrt_bound
     (g₀ g_bg : SmoothRiemannianMetric I M) :
@@ -450,7 +450,7 @@ theorem exists_fixed_covDerivConnectionDifference_sqrt_bound
   refine ⟨Real.sqrt K, Real.sqrt_nonneg _, ?_⟩
   intro x v w u
   let instW : Bundle.RiemannianBundle (fun y : M => Tensor0SBundle.TensorRSSpace 1 3 I y) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 1 3
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 1 3
   set W : Tensor0SBundle.TensorRSSpace 1 3 I x :=
     (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g_bg g₀)).toSection x
     with hW_def

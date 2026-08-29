@@ -28,9 +28,9 @@ private theorem metricTraceFirstTwo0SAt_zero
           (s + 2) x)
         tail = 0 := by
   rw [metricTraceFirstTwo0SAt_eq_sum_basis (I := I) g
-    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_toBasis (I := I) x)
+    (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x)
     (fun k l : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E =>
-      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChart_component (I := I) g x k
+      DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent (I := I) g x k
         l
         (extChartAt I x x))
     (Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
@@ -84,7 +84,7 @@ def tensorDrift0SAt
     (nablaA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 1) x) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) s x :=
-  tensor0S_curry (I := I) (𝕜 := Real) (M := M) s x nablaA (X x)
+  tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x nablaA (X x)
 
 omit [FiniteDimensional ℝ E] in
 @[simp]

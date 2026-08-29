@@ -125,9 +125,9 @@ private lemma cgt_quarter {s : Real} (hs : 0 < s) :
     s < (5 * s) / 4 := by
   nlinarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
-noncomputable def flowInj_of_vol
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+noncomputable def flowInjOfVol
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (hcomplete : SeqMetricComplete (I := I) (X.atZero (I := I)))
     (hconn : ∀ i : Nat,

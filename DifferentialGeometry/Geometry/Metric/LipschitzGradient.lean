@@ -26,8 +26,8 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I (↑(⊤ : ℕ∞) : WithTop ℕ∞) M]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem grad_norm_le_lip_ne
     [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) {u : M → ℝ} {L : ℝ≥0} {x : M}
@@ -158,8 +158,8 @@ private theorem grad_norm_le_lip_ne
   · have hspos : 0 < s := lt_of_le_of_ne hs0 (Ne.symm hs)
     nlinarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem grad_norm_le_lip
     [I.Boundaryless] [T2Space M]
     (g : SmoothRiemannianMetric I M) {u : M → ℝ} {L : ℝ≥0} {x : M}

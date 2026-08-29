@@ -325,7 +325,7 @@ theorem koszulComp_at
         (n := (⊤ : ℕ∞)) y (frame (idx 2) y)).choose,
       (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) y (frame (idx 2) y)).choose_spec⟩
-  have hmcK : DifferentialGeometry.Geometry.Connection.IsMetricCompatible_gen
+  have hmcK : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
       (I := I) (leviCivitaConnectionOfMetric (I := I) gK) gK :=
     leviCivitaConnectionOfMetric_isMetricCompatible (I := I) gK
   have htfK : DifferentialGeometry.Geometry.Connection.IsTorsionFreeAt (I := I)

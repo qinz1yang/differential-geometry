@@ -32,7 +32,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance tensor0SModelNormedSpace_local2 {s : ℕ} :
     NormedSpace ℝ (Tensor0SModel s ℝ E) :=
-  Tensor0SBundle.tensor0SModel_normedSpace s
+  Tensor0SBundle.tensor0SModelNormedSpace s
 
 private local instance tensorRSModelFiniteDimensional_local2 {r s : ℕ} :
     FiniteDimensional ℝ (TensorRSModel r s ℝ E) :=
@@ -58,9 +58,9 @@ private lemma exists_smooth_tensorRS_section_eq (r s : ℕ) (x : M) (T₀ : Tens
         (fun b => TotalSpace.mk' (TensorRSModel r s ℝ E)
           (E := fun z : M => TensorRSSpace r s I z) b (A b)) := by
   let : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
-      (fun y : M => TensorRSSpace r s I y)) := tensorRSBundle_topology r s
+      (fun y : M => TensorRSSpace r s I y)) := tensorRSBundleTopology r s
   let : FiberBundle (TensorRSModel r s ℝ E) (fun y : M => TensorRSSpace r s I y) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   let : VectorBundle ℝ (TensorRSModel r s ℝ E) (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
   let : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel r s ℝ E)
@@ -80,9 +80,9 @@ private lemma exists_smooth_tensor0S_section_eq2 (r : ℕ) (x : M) (Y₀ : Tenso
         (fun b => TotalSpace.mk' (Tensor0SModel r ℝ E)
           (E := fun z : M => Tensor0SSpace r I z) b (A b)) := by
   let : TopologicalSpace (TotalSpace (Tensor0SModel r ℝ E) (fun y : M => Tensor0SSpace r I y)) :=
-    tensor0SBundle_topology r
+    tensor0SBundleTopology r
   let : FiberBundle (Tensor0SModel r ℝ E) (fun y : M => Tensor0SSpace r I y) :=
-    tensor0SBundle_fiber r
+    tensor0SBundleFiber r
   let : VectorBundle ℝ (Tensor0SModel r ℝ E) (fun y : M => Tensor0SSpace r I y) :=
     tensor0SBundle_vector r
   let : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (Tensor0SModel r ℝ E)
@@ -111,25 +111,25 @@ theorem riemannOp_tensorCovRS_apply_eval
               u := by
   classical
   let : TopologicalSpace (TotalSpace (Tensor0SModel r ℝ E)
-      (fun y : M => Tensor0SSpace r I y)) := tensor0SBundle_topology r
+      (fun y : M => Tensor0SSpace r I y)) := tensor0SBundleTopology r
   let : FiberBundle (Tensor0SModel r ℝ E) (fun y : M => Tensor0SSpace r I y) :=
-    tensor0SBundle_fiber r
+    tensor0SBundleFiber r
   let : VectorBundle ℝ (Tensor0SModel r ℝ E) (fun y : M => Tensor0SSpace r I y) :=
     tensor0SBundle_vector r
   let : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (Tensor0SModel r ℝ E)
       (fun y : M => Tensor0SSpace r I y) I := tensor0SBundle_smooth ∞ r
   let : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
-      (fun y : M => Tensor0SSpace s I y)) := tensor0SBundle_topology s
+      (fun y : M => Tensor0SSpace s I y)) := tensor0SBundleTopology s
   let : FiberBundle (Tensor0SModel s ℝ E) (fun y : M => Tensor0SSpace s I y) :=
-    tensor0SBundle_fiber s
+    tensor0SBundleFiber s
   let : VectorBundle ℝ (Tensor0SModel s ℝ E) (fun y : M => Tensor0SSpace s I y) :=
     tensor0SBundle_vector s
   let : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (Tensor0SModel s ℝ E)
       (fun y : M => Tensor0SSpace s I y) I := tensor0SBundle_smooth ∞ s
   let : TopologicalSpace (TotalSpace (TensorRSModel r s ℝ E)
-      (fun y : M => TensorRSSpace r s I y)) := tensorRSBundle_topology r s
+      (fun y : M => TensorRSSpace r s I y)) := tensorRSBundleTopology r s
   let : FiberBundle (TensorRSModel r s ℝ E) (fun y : M => TensorRSSpace r s I y) :=
-    tensorRSBundle_fiber r s
+    tensorRSBundleFiber r s
   let : VectorBundle ℝ (TensorRSModel r s ℝ E) (fun y : M => TensorRSSpace r s I y) :=
     tensorRSBundle_vector r s
   let : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (TensorRSModel r s ℝ E)

@@ -281,7 +281,7 @@ noncomputable def tensorLimitSec
         ((u m).1 - (u n).1) ≤ ENNReal.ofReal ε) :
     RSTensorSection I M r s :=
   fun x =>
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       secModelPull (I := I) (M := M) r s α
         (secModelLimit (I := I) (M := M) r s k hp u
           h_cauchy α) x

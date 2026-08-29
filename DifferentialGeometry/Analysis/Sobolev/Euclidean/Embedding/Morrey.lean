@@ -275,7 +275,7 @@ private noncomputable def cutoffWitness
     (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_compact : HasCompactSupport η)
     (hη_range : Set.range η ⊆ Set.Icc (0 : ℝ) 1) :
     DeGiorgi.MemW1pWitness (ENNReal.ofReal p) (fun x => η x * u x) Ω :=
-  DeGiorgi.MemW1pWitness.mul_smooth_bounded_p (d := d)
+  DeGiorgi.MemW1pWitness.mulSmoothBoundedP (d := d)
     (hp := by
       rw [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp]
       exact ENNReal.ofReal_le_ofReal hp_one)

@@ -95,8 +95,8 @@ private theorem exists_tail_cut
   obtain ⟨a, haerr, ha⟩ := Filter.Eventually.exists hall
   exact ⟨a, ha.1, ha.2, by simpa only [err] using haerr⟩
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_redWeak_sup [ConnectedSpace M]
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (K T sigma tau : Real)

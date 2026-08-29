@@ -64,7 +64,7 @@ theorem frameSummed_bracketIntegral_empty_eq_zero
                 (covGrad (I := I) (M := M) g 0 s S).toSection (V i) x))
           + tensorInnerScalar (I := I) (M := M) g 0 (s + 1) (W i).toSection
               (covGrad (I := I) (M := M) g 0 s S).toSection x
-            * divergence_g (I := I) g (V i) x)
+            * divergenceG (I := I) g (V i) x)
         ∂(riemannianVolumeMeasure (I := I) (M := M) g) = 0 := by
   simp only [Finset.univ_eq_empty, Finset.sum_empty]
 

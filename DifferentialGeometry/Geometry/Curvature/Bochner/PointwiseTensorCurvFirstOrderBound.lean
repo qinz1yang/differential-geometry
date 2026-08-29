@@ -396,12 +396,12 @@ private lemma slot0Curry_secondCovDeriv_sub_eq_commutatorSum
     (hXs : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun b : M => (⟨b, X b⟩ : TotalSpace E (TangentSpace I))))
     (x : M) :
-    tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+    tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
             tensorSecondCovDeriv (I := I) g 0 (s + 1) V V
                 (fun y : M => (covGrad (I := I) (M := M) g 0 s S).toSection y) x)
             (unitZeroSec (I := I) (M := M) x)) (X x) -
-        tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+        tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
             (covGrad (I := I) (M := M) g 0 s
               (secondCovDerivCc (I := I) (M := M) g s hVs S)).toSection x)
@@ -451,7 +451,7 @@ private lemma slot0_read_curv_eq_sum_carrier
       (fun b : M => (⟨b, X b⟩ : TotalSpace E (TangentSpace I))))
     (x : M) :
     tensor0SToTensorRS (I := I) (M := M) x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
             (pointwiseTensorCurv (I := I) (M := M) g s S).toSection x)
             (unitZeroSec (I := I) (M := M) x)) (X x)) =
@@ -584,7 +584,7 @@ lemma slot0_read_curv_eq_frameFree
       (fun b : M => (⟨b, X b⟩ : TotalSpace E (TangentSpace I))))
     (x : M) :
     tensor0SToTensorRS (I := I) (M := M) x
-        (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) s x
+        (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) s x
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from
             (pointwiseTensorCurv (I := I) (M := M) g s S).toSection x)
             (unitZeroSec (I := I) (M := M) x)) (X x)) =
@@ -1447,9 +1447,9 @@ private theorem tensorCurv_le_of
         - ∑ k : Fin s,
           tensorSlotSubstCLM (I := I) s x (tangentSlotCLM (I := I) s k W) T₀ := by
     let : TopologicalSpace (TotalSpace (Tensor0SModel s ℝ E)
-        (fun y : M => Tensor0SSpace s I y)) := tensor0SBundle_topology s
+        (fun y : M => Tensor0SSpace s I y)) := tensor0SBundleTopology s
     let : FiberBundle (Tensor0SModel s ℝ E) (fun y : M => Tensor0SSpace s I y) :=
-      tensor0SBundle_fiber s
+      tensor0SBundleFiber s
     let : VectorBundle ℝ (Tensor0SModel s ℝ E) (fun y : M => Tensor0SSpace s I y) :=
       tensor0SBundle_vector s
     let : ContMDiffVectorBundle (∞ : WithTop ℕ∞) (Tensor0SModel s ℝ E)

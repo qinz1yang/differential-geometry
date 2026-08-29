@@ -606,11 +606,11 @@ private lemma bilinForm_rescaleToUnitBall
     (hu : MemW1pWitness 2 u (Metric.ball x₀ R))
     (hφ : MemW1pWitness 2 φ (Metric.ball (0 : E) 1)) :
     bilinFormOfCoeff (rescaleCoeffToUnitBall (d := d) (x₀ := x₀) (R := R) hR A)
-      (hu.rescale_to_unitBall (d := d) (x₀ := x₀) (R := R) hR) hφ =
+      (hu.rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) hR) hφ =
       ((R ^ Module.finrank ℝ E)⁻¹ * R ^ (2 : ℕ)) *
         bilinFormOfCoeff A hu
           (hφ.transportFromUnitBall (d := d) (x₀ := x₀) (R := R) hR) := by
-  let huR := hu.rescale_to_unitBall (d := d) (x₀ := x₀) (R := R) hR
+  let huR := hu.rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) hR
   let hφB := hφ.transportFromUnitBall (d := d) (x₀ := x₀) (R := R) hR
   have hpoint :
       ∀ z : E,
@@ -637,7 +637,7 @@ private lemma bilinForm_rescaleToUnitBall
           = ⟪matMulE (A.a (x₀ + R • z)) (R • hu.weakGrad (x₀ + R • z)),
               hφ.weakGrad z⟫_ℝ := by
                 simp [bilinFormIntegrandOfCoeff, huR, rescaleCoeffToUnitBall,
-                  MemW1pWitness.rescale_to_unitBall]
+                  MemW1pWitness.rescaleToUnitBall]
       _ = ⟪R • matMulE (A.a (x₀ + R • z)) (hu.weakGrad (x₀ + R • z)),
             R • hφB.weakGrad (x₀ + R • z)⟫_ℝ := by rw [hmat, hgrad]
       _ = R ^ (2 : ℕ) *
@@ -679,7 +679,7 @@ theorem rescaleToUnitBall_isSubsolution
       (rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) u) := by
   rcases hsub with ⟨hu_mem, hsub_ineq⟩
   let hu : MemW1pWitness 2 u (Metric.ball x₀ R) := DeGiorgi.MemW1p.someWitness hu_mem
-  let huR := hu.rescale_to_unitBall (d := d) (x₀ := x₀) (R := R) hR
+  let huR := hu.rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) hR
   refine ⟨huR.memW1p, ?_⟩
   intro hu' φ hφ0 hφ hφ_nonneg
   let hφB := hφ.transportFromUnitBall (d := d) (x₀ := x₀) (R := R) hR
@@ -712,7 +712,7 @@ theorem rescaleToUnitBall_isSupersolution
       (rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) u) := by
   rcases hsuper with ⟨hu_mem, hsuper_ineq⟩
   let hu : MemW1pWitness 2 u (Metric.ball x₀ R) := DeGiorgi.MemW1p.someWitness hu_mem
-  let huR := hu.rescale_to_unitBall (d := d) (x₀ := x₀) (R := R) hR
+  let huR := hu.rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) hR
   refine ⟨huR.memW1p, ?_⟩
   intro hu' φ hφ0 hφ hφ_nonneg
   let hφB := hφ.transportFromUnitBall (d := d) (x₀ := x₀) (R := R) hR
@@ -758,7 +758,7 @@ theorem rescaleToUnitBall_isHomogeneousWeakSolution
       (rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) u) := by
   rcases hweak with ⟨hu_mem, hweak_eq⟩
   let hu : MemW1pWitness 2 u (Metric.ball x₀ R) := DeGiorgi.MemW1p.someWitness hu_mem
-  let huR := hu.rescale_to_unitBall (d := d) (x₀ := x₀) (R := R) hR
+  let huR := hu.rescaleToUnitBall (d := d) (x₀ := x₀) (R := R) hR
   refine ⟨huR.memW1p, ?_⟩
   intro hu' φ hφ0 hφ
   let hφB := hφ.transportFromUnitBall (d := d) (x₀ := x₀) (R := R) hR

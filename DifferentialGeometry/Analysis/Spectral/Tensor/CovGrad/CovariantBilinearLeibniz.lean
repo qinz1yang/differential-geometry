@@ -109,15 +109,15 @@ namespace ParallelTensorProduct
 
 variable {g : SmoothRiemannianMetric I M} {r₁ s₁ r₂ s₂ r₀ s₀ : ℕ}
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private theorem eq_zero_of_riemannianFiberNormSq_eq_zero (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (x : M) (z : Tensor0SBundle.TensorRSSpace r s I x)
     (hz : riemannianFiberNormSq (I := I) (M := M) g r s x z = 0) : z = 0 := by
   let : Bundle.RiemannianBundle (fun b : M => Tensor0SBundle.TensorRSSpace r s I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g r s
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g r s
   have hnorm_sq : ‖z‖ ^ 2 = 0 :=
     (riemannianFiberNormSq_eq_bundle_norm_sq' (I := I) (M := M) g r s x z).symm.trans hz
   have hnorm : ‖z‖ = 0 := by nlinarith [norm_nonneg z, hnorm_sq]

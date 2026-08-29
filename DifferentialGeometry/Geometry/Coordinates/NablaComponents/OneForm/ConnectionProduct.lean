@@ -28,7 +28,7 @@ theorem oneForm_covariantDerivative_coordFrame_product_rule
       (n := (∞ : WithTop ℕ∞)) 1)
     (x₀ : M) (z dz : CoordinateIdx (𝕜 := 𝕜) E -> 𝕜)
     (hz : ∀ j : CoordinateIdx (𝕜 := 𝕜) E,
-      z j = (coordinateFrameAt_toBasis (I := I) x₀).coord j (Z x₀))
+      z j = (coordinateFrameAtToBasis (I := I) x₀).coord j (Z x₀))
     (hdz : ∀ j : CoordinateIdx (𝕜 := 𝕜) E,
       dz j =
         mvfderiv (I := I)

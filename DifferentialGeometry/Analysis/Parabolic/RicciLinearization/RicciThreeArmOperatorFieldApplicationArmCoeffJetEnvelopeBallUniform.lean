@@ -61,8 +61,8 @@ private local instance tensorRSRiemannianNormedAddCommGroup_local
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] [SigmaCompactSpace M] in
@@ -70,24 +70,24 @@ private lemma jetEnvelope_covGrad_one_le (g₀ : SmoothRiemannianMetric I M)
     (P : SmoothCcTensor g₀ 0 2) (x : M) (B : ℝ)
     (henv : (∑ j ∈ Finset.range 3,
         (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
         ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B) :
     (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + 1) I b) :=
-      Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
+      Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
     ‖(iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x‖) ≤ B := by
   refine le_trans ?_ henv
   exact Finset.single_le_sum (f := fun j =>
       letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-        Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+        Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
       ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)
       (fun j _ =>
         letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-          Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+          Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
         norm_nonneg ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x))
       (by simp : (1 : ℕ) ∈ Finset.range 3)
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
 theorem exists_perMetric_linearizedRicciArm1Fib_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ) :
@@ -101,7 +101,7 @@ theorem exists_perMetric_linearizedRicciArm1Fib_le_of_jetEnvelope
         (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x‖)) ≤ B →
           riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x
               (show TensorRSSpace 3 2 I x from
@@ -136,7 +136,7 @@ theorem exists_perMetric_linearizedRicciArm1Fib_le_of_jetEnvelope
   rw [hlin_eq]
   refine hcomp.trans ?_
   let instTens12 : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + 1) I b) :=
-    Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
+    Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + 1)
   set N : ℝ := ‖(iteratedCovGrad (I := I) g₀ 0 2 1 P).toSection x‖ with hN_def
   have hN_nn : 0 ≤ N := norm_nonneg _
   have hnorm_le : N ≤ B := jetEnvelope_covGrad_one_le (I := I) g₀ P x B henv
@@ -180,8 +180,8 @@ theorem exists_perMetric_linearizedRicciArm1Fib_le_of_jetEnvelope
     mul_le_mul hkosB hcometB hriemannianFiberNormSq_com_nn hCkosB_nn
   exact hfinal
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
 theorem exists_riemannianFiberNormSq_linearizedRicciArm1Fib_metricPerturbationPath_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ) :
@@ -194,7 +194,7 @@ theorem exists_riemannianFiberNormSq_linearizedRicciArm1Fib_metricPerturbationPa
         (s : ℝ) (_hs : s ∈ Set.Icc (0 : ℝ) 1) (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j
                 (convexPerturbation (I := I) g₀ T T' s)).toSection x‖)) ≤ B →
           riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x
@@ -243,8 +243,8 @@ theorem exists_riemannianFiberNormSq_linearizedRicciArm1Fib_metricPerturbationPa
     nlinarith only [hle', hprod]
   exact hΛ g₁ (convexPerturbation (I := I) g₀ T T' s) (le_of_eq hδ₁_def) hδs htie x henv
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 omit [SigmaCompactSpace M] in
 theorem exists_arm1Koszul_metricPerturbationPath_pointwise_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ) :
@@ -257,7 +257,7 @@ theorem exists_arm1Koszul_metricPerturbationPath_pointwise_le_of_jetEnvelope
         (s : ℝ) (_hs : s ∈ Set.Icc (0 : ℝ) 1) (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j
                 (convexPerturbation (I := I) g₀ T T' s)).toSection x‖)) ≤ B →
           riemannianFiberNormSq (I := I) (M := M) g₀ 3 2 x
@@ -301,8 +301,8 @@ theorem exists_arm1Koszul_metricPerturbationPath_riemannianFiberNormSq_ballUnifo
   refine hΛarm1 T T' hδ_le hδ hδ'_le hδ' s hs x ?_
   exact hCsob T T' hR hTball hT'ball s hs x
 
-attribute [-instance] Tensor0SBundle.tensorRSSpace_normedAddCommGroup
-  Tensor0SBundle.tensorRSSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
+  Tensor0SBundle.tensorRSSpaceNormedSpace in
 theorem exists_riemannArm0_curvCoeff_metricPerturbationPath_pointwise_le_of_jetEnvelope
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (B : ℝ)
     (hB : 0 ≤ B) :
@@ -315,7 +315,7 @@ theorem exists_riemannArm0_curvCoeff_metricPerturbationPath_pointwise_le_of_jetE
         (s : ℝ) (_hs : s ∈ Set.Icc (0 : ℝ) 1) (x : M),
         (∑ j ∈ Finset.range 3,
             (letI : Bundle.RiemannianBundle (fun b : M => TensorRSSpace 0 (2 + j) I b) :=
-              Tensor0SBundle.tensorRS_riemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
+              Tensor0SBundle.tensorRSRiemannianBundle (I := I) (M := M) g₀ 0 (2 + j)
             ‖(iteratedCovGrad (I := I) g₀ 0 2 j
                 (convexPerturbation (I := I) g₀ T T' s)).toSection x‖)) ≤ B →
           riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x

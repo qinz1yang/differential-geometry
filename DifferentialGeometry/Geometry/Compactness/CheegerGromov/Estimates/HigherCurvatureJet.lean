@@ -344,8 +344,8 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
 variable [RiemannianBundle (fun x : M => TangentSpace I x)]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def IntrJetAtom.eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -374,8 +374,8 @@ noncomputable def IntrJetAtom.eval
       covSnd (I := I) g f
         (fun r t => covFstIter (I := I) g f n B r t) q.1 q.2
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem IntrJetAtom.pathDt_zero
     [PseudoEMetricSpace M]
@@ -411,8 +411,8 @@ theorem IntrJetAtom.pathDt_zero
       (I := I) g gamma t hgamma).2 (hgeo.hasGeodesicEquationAt t)
   simpa only [IntrJetAtom.eval, f, gamma, covSnd, varSnd] using hz
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem IntrJetAtom.aJet_eq_self
     [PseudoEMetricSpace M]
@@ -437,8 +437,8 @@ theorem IntrJetAtom.aJet_eq_self
   rw [hf]
   exact intrAJet_self (I := I) g hEnorm p u a n (r, t)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem IntrJetAtom.aTime_eq_self
     [PseudoEMetricSpace M]
@@ -469,8 +469,8 @@ theorem IntrJetAtom.aTime_eq_self
   funext s v
   exact intrAJet_self (I := I) g hEnorm p u a n (s, v)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem IntrJetAtom.aJet_time0
     [PseudoEMetricSpace M]
@@ -496,8 +496,8 @@ theorem IntrJetAtom.aJet_time0
     rfl
   exact covFstIter_zero_of (I := I) g f A 0 hzero n r
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem IntrJetAtom.bJet_time0
     [PseudoEMetricSpace M]
@@ -510,8 +510,8 @@ theorem IntrJetAtom.bJet_time0
   change intrLaunchJet (I := I) g hEnorm p u a b n (r, 0) = 0
   exact intrLaunchJet_time0 (I := I) g hEnorm p u a b n r
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def CurvJetTerm.eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -533,8 +533,8 @@ noncomputable def CurvJetTerm.eval
         (intrLaunch3 (I := I) g hEnorm p u a b ((q.1, 0), q.2))
         (fun i => (slots i).eval g hEnorm p u a b q)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem CurvJetTerm.eval_le_at
     [PseudoEMetricSpace M]
@@ -654,8 +654,8 @@ theorem CurvJetTerm.eval_le_at
           mul_le_mul_of_nonneg_left hprod (hC k)
         _ = (CurvJetTerm.curv k slots).majorant C B := rfl
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem CurvJetTerm.eval_le_atoms
     [PseudoEMetricSpace M]
@@ -693,8 +693,8 @@ theorem CurvJetTerm.eval_le_atoms
     (I := I) g hEnorm p u a b C hC B P hcurv q
     (fun atom hatomP => hatom atom hatomP q) term hterm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem CurvJetTerm.eval_le_of
     [PseudoEMetricSpace M]
@@ -731,8 +731,8 @@ theorem CurvJetTerm.eval_le_of
     hcurv (fun atom _ q => hatom atom q)
     term (CurvJetTerm.allAtoms_true term) q
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem CurvJetTerm.eval_le_geom
     (P : PointedRiemannianManifold.{u, uE, uH} (I := I))
@@ -803,8 +803,8 @@ theorem CurvJetTerm.eval_le_geom
     exact HasCurvDerivBound.curvOpN_le (I := I) P (hP.bound k) x v
   · exact hatom
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 private theorem IntrJetAtom.eval_smooth
     [PseudoEMetricSpace M]
@@ -890,8 +890,8 @@ private theorem IntrJetAtom.eval_smooth
           (fun r t => covFstIter (I := I) g f n B r t) hn
       simpa only [IntrJetAtom.eval, f, B, covSnd] using hdn
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 private theorem CurvJetTerm.finSum_eval
     [PseudoEMetricSpace M]
@@ -919,8 +919,8 @@ private theorem CurvJetTerm.finSum_eval
           ∑ i, (terms i).eval g hEnorm p u a b q
       rw [Fin.sum_univ_succ, ih]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 private theorem CurvJetTerm.eval_launch_smooth
     [PseudoEMetricSpace M]
@@ -1011,8 +1011,8 @@ private theorem CurvJetTerm.eval_launch_smooth
           (fun i r => (slots i).eval g hEnorm p u a b (r, t))
           hgamma ih
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem IntrJetAtom.launchDeriv_eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1222,8 +1222,8 @@ private theorem IntrJetAtom.launchDeriv_eval
         covFstIter_zero, covFstIter_succ, varCurv, curvAlong_eq_op0,
         hslots3]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 private theorem IntrJetAtom.covFst_time0_of_const
     [PseudoEMetricSpace M]
@@ -1264,8 +1264,8 @@ private theorem IntrJetAtom.covFst_time0_of_const
     deriv_const _ _
   exact hcongr.trans (hflat.trans hzero)
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem IntrJetAtom.aTime_zero
     [PseudoEMetricSpace M]
@@ -1297,8 +1297,8 @@ theorem IntrJetAtom.aTime_zero
   rw [hf]
   exact intrLaunchDJ_time0 (I := I) g hEnorm p u a a r
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem IntrJetAtom.bTime_zero
     [PseudoEMetricSpace M]
@@ -1311,8 +1311,8 @@ theorem IntrJetAtom.bTime_zero
   simpa only [IntrJetAtom.eval, covFstIter_zero] using
     intrLaunchDJ_time0 (I := I) g hEnorm p u a b r
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 private theorem IntrJetAtom.timeCurv_time0
     [PseudoEMetricSpace M]
@@ -1336,8 +1336,8 @@ private theorem IntrJetAtom.timeCurv_time0
     (I := I) g hEnorm p u a b (r, 0) = 0
   exact IntrJetAtom.aJet_time0 (I := I) g hEnorm p u a b 0 r
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 private theorem IntrJetAtom.time_succ_zero
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1370,8 +1370,8 @@ private theorem IntrJetAtom.time_succ_zero
   rw [hcurv, add_zero] at hstep
   exact hstep.symm
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem IntrJetAtom.aTime_succ_time0
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1396,8 +1396,8 @@ theorem IntrJetAtom.aTime_succ_time0
         (I := I) g hEnorm p u a b 0
         (.aTime (n + 1)) (.aJet (n + 1)) (.aTime (n + 1 + 1)) rfl ih r
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem IntrJetAtom.bTime_succ_time0
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1422,8 +1422,8 @@ theorem IntrJetAtom.bTime_succ_time0
         (I := I) g hEnorm p u a b 0
         (.bTime (n + 1)) (.bJet (n + 1)) (.bTime (n + 1 + 1)) rfl ih r
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem CurvJetTerm.launchDeriv_eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1626,8 +1626,8 @@ theorem CurvJetTerm.launchDeriv_eval
                   (I := I) g hEnorm p u a b (r, t)
       rw [hlead, hnext, hsum]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem CurvJetTerm.launchIter_eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1651,8 +1651,8 @@ theorem CurvJetTerm.launchIter_eval
       exact CurvJetTerm.launchDeriv_eval
         (I := I) g hEnorm p u a b (term.launchIter m) r t
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrCorrTerm_eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1840,8 +1840,8 @@ theorem intrCorrTerm_eval
     hslots4, IntrJetAtom.eval, covFstIter_zero, varCurv,
     curvAlong_eq_op0, f, A, B, W]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrResidualTerm_eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]
@@ -1874,8 +1874,8 @@ theorem intrResidualTerm_eval
       simp only [intrResidualTerm, CurvJetTerm.eval, hevalScale,
         sub_eq_add_neg, neg_one_smul]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem intrCorrIter_eval
     [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M]

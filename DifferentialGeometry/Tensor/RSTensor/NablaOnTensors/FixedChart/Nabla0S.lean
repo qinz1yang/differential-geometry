@@ -32,7 +32,7 @@ noncomputable def fixedChartNabla0SModel (s : ℕ)
       (n := n) s)
     (x₀ : M) [IsManifold I 2 M] (y : E) :
     Tensor0SModel (𝕜 := 𝕜) (E := E) s :=
-  covariantDeriv_tensor0SModelWithin (𝕜 := 𝕜) (E := E) s
+  covariantDerivTensor0SModelWithin (𝕜 := 𝕜) (E := E) s
     (fun z => tangentSpaceModelContinuousLinearEquiv z
       (mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm X (range I) z))
     (connectionEndomorphismInChart (𝕜 := 𝕜) (I := I) cov (fun x => X x) x₀)

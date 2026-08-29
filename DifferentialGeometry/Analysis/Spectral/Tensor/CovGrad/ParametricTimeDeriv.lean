@@ -127,7 +127,7 @@ private theorem modelPath_diff
   have hslice : DifferentiableAt ℝ
       (fun τ : ℝ => (e ⟨x, (Φ τ).toSection x⟩).2) t :=
     (contMDiffAt_iff_contDiffAt.mp hsliceMD).differentiableAt (by simp)
-  let R := tensorRSSpace_continuousLinearEquiv (I := I) b c x
+  let R := tensorRSSpaceContinuousLinearEquiv (I := I) b c x
   let L := e.continuousLinearEquivAt ℝ x hxe
   let K := R.symm.trans L
   have hreadoff (T : TensorRSSpace b c I x) :
@@ -207,7 +207,7 @@ private theorem coord_deriv_eq
   have hslice : DifferentiableAt ℝ
       (fun t : ℝ => (e ⟨p.1, (Φ t).toSection p.1⟩).2) p.2 :=
     (contMDiffAt_iff_contDiffAt.mp hsliceMD).differentiableAt (by simp)
-  let R := tensorRSSpace_continuousLinearEquiv (I := I) b c p.1
+  let R := tensorRSSpaceContinuousLinearEquiv (I := I) b c p.1
   have hreadoff (T : TensorRSSpace b c I p.1) :
       (e ⟨p.1, T⟩).2 = L T := rfl
   let K := R.symm.trans L

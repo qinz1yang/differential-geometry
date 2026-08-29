@@ -101,8 +101,8 @@ theorem lCost_le_join_bdd
   have hlim := le_of_tendsto' hneg fun n ↦ neg_le_neg (hcostDelta n)
   linarith
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem lCost_le_ray_bdd

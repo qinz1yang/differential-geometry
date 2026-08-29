@@ -116,11 +116,11 @@ lemma InteriorSmoothScalar.norm_smoothToLp_sq_le
   rw [f.norm_smoothToLp_sq, f.norm_sq_eq_inner_self]
   unfold interiorSmoothScalarH1Inner
   have h_grad_nonneg :
-      0 ≤ ∫ x, g.inner x ((grad_g_with_boundary_section
+      0 ≤ ∫ x, g.inner x ((gradGWithBoundarySection
               (I := I_half n) g f.smooth f.interior_support :
             Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
               (TangentSpace (I_half n) : M → Type _)⟯) x)
-            ((grad_g_with_boundary_section
+            ((gradGWithBoundarySection
               (I := I_half n) g f.smooth f.interior_support :
             Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
               (TangentSpace (I_half n) : M → Type _)⟯) x)

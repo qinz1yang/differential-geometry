@@ -1273,7 +1273,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_of_barrier
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
+        ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x)
     {rho : M → Real}
     (hrho : ContMDiff I 𝓘(Real, Real) ∞ rho)
     (hrho_nonneg : ∀ x : M, 0 ≤ rho x)
@@ -1289,7 +1289,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_of_barrier
   let K : Set M := {x : M | r ≤ rho x ∧ rho x ≤ R}
   let q : M → Real := fun x => g.inner x
     (gradientFun (I := I) g rho x) (gradientFun (I := I) g rho x)
-  let ell : M → Real := fun x => |Δ_g (I := I) g ⟨rho, hrho⟩ x|
+  let ell : M → Real := fun x => |ΔG (I := I) g ⟨rho, hrho⟩ x|
   have hq_cont : Continuous q := by
     apply continuous_iff_continuousAt.mpr
     intro x
@@ -1412,7 +1412,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_of_barrier
     (hu_super : ∀ (t : Real) (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t)
       (x : M),
       0 ≤ derivWithin (fun s => u s x) (Set.Icc 0 T) t -
-        (Δ_g (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
+        (ΔG (I := I) g ⟨u t, hu_space t ht htpos⟩ x +
           g.inner x (X t x) (gradientFun (I := I) g (u t) x)))
     {rho : M → Real}
     (hrho : ContMDiff I 𝓘(Real, Real) ∞ rho)
@@ -1426,7 +1426,7 @@ theorem scalar_strong_maximum_principle_fixed_metric_with_drift_of_barrier
         (gradientFun (I := I) g rho x))
     (hheat_upper : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
       r ≤ rho x → rho x ≤ R →
-      Δ_g (I := I) g ⟨rho, hrho⟩ x +
+      ΔG (I := I) g ⟨rho, hrho⟩ x +
         g.inner x (X t x) (gradientFun (I := I) g rho x) ≤ B)
     (hkappa : 0 < kappa) (hinit : R ≤ kappa * T ^ 2)
     (htime : R ≤ kappa * delta ^ 2)

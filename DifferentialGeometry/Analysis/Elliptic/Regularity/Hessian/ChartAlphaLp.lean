@@ -73,14 +73,14 @@ theorem smoothTensorPairing_eq_hessPairingChart_on_chartSource
 theorem pou_weighted_tensor_pairing_eq_hessPairingChart_pointwise
     (g : SmoothRiemannianMetric I M) (φ : C^∞⟮I, M; ℝ⟯)
     (v : SmoothScalar g) (x : M) :
-    ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+    ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         (chartAtlasPOU I M α : M → ℝ) x *
           smoothTensorPairingChart (I := I) (M := M) g α φ v
             ((toEuclidean (E := E)) (extChartAt I α x)) =
       hessPairingChart (I := I) g φ
         (smoothScalarToContMDiffMap (I := I) (g := g) v) x := by
   classical
-  have h_per_term : ∀ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+  have h_per_term : ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),
       (chartAtlasPOU I M α : M → ℝ) x *
         smoothTensorPairingChart (I := I) (M := M) g α φ v
           ((toEuclidean (E := E)) (extChartAt I α x)) =

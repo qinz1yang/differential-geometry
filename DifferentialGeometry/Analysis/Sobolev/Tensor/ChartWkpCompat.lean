@@ -226,7 +226,7 @@ theorem secCompDecomp
     secChartComp (I := I) (M := M) r s S α P.1 P.2 =ᵐ[
       (volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)]
-      (fun y => ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (fun y => ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ Q : TensorCompIdx (E := E) r s,
           secTransTerm (I := I) (M := M) r s β α P Q
             (secChartComp (I := I) (M := M) r s S β Q.1 Q.2) y) := by
@@ -245,18 +245,18 @@ theorem secCompDecomp
   calc
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
         secCompRaw (I := I) (M := M) r s S α P.1 P.2 x =
-      (∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+      (∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
           ((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) *
         (((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
           secCompRaw (I := I) (M := M) r s S α P.1 P.2 x) := by
       rw [hsum, one_mul]
-    _ = ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+    _ = ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
         ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
           (((chartAtlasPOU I M β : C^∞⟮I, M; ℝ⟯) : M → ℝ) x *
             secCompRaw (I := I) (M := M) r s S α P.1 P.2 x) := by
       rw [Finset.sum_mul]
       refine Finset.sum_congr rfl (fun β _ => by ring)
-    _ = ∑ β ∈ chartAtlasPOU_finset (I := I) (M := M),
+    _ = ∑ β ∈ chartAtlasPOUFinset (I := I) (M := M),
         ∑ Q : TensorCompIdx (E := E) r s,
           secTransTerm (I := I) (M := M) r s β α P Q
             (secChartComp (I := I) (M := M) r s S β Q.1 Q.2) y := by

@@ -369,7 +369,7 @@ theorem deTurckSobolevNHa2_jetSpectralMass_preserving
     intro t ht
     obtain ⟨B0, hB0s, hB0le⟩ := hmass0 0 le_rfl
     set v0 : tensorHs (I := I) (M := M) g₀ 0 2 0 :=
-      tensorHs_of_spectralMass_majorant (I := I) (M := M) (ct t) B0 hB0s
+      tensorHsOfSpectralMassMajorant (I := I) (M := M) (ct t) B0 hB0s
         (fun i => by
           have := hB0le i t ht
           simpa [hct_def] using this) with hv0_def

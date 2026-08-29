@@ -53,7 +53,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 private lemma chartE_section_repr_ofModel {n : ℕ} (α : M) (f : M → Tensor0SModel n ℝ E)
     {b : M} (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    tensor0SChartE_section_repr (I := I) n α (fun y => Tensor0SSpace.ofModel (f y)) b =
+    tensor0SChartESectionRepr (I := I) n α (fun y => Tensor0SSpace.ofModel (f y)) b =
       (f b).compContinuousLinearMap (fun _ : Fin n =>
         (tangentSpaceModelContinuousLinearEquiv (I := I) b).toContinuousLinearMap.comp
           (trivFromE (I := I) α b)) := by
@@ -91,7 +91,7 @@ theorem unitModelProdField_contMDiff (g : SmoothRiemannianMetric I M) {p q : ℕ
               (unitModel (I := I) (M := M) g p S x)
               (unitModel (I := I) (M := M) g q T x)) :
             Tensor0SSpace (p + q) I x))) := by
-  let := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  let := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (p + q)
   classical
   have hSfield : ContMDiff I (I.prod 𝓘(ℝ, Tensor0SModel p ℝ E)) ∞
@@ -153,7 +153,7 @@ theorem unitModelProdField_contMDiff (g : SmoothRiemannianMetric I M) {p q : ℕ
           (Bundle.continuousMultilinearMap ℝ n E (TangentSpace I)) x₀
           ⟨x, tensor0SSpaceFiberContinuousLinearEquiv (I := I) n x
             (Tensor0SSpace.ofModel (f x))⟩).2 =
-        tensor0SChartE_section_repr (I := I) n x₀
+        tensor0SChartESectionRepr (I := I) n x₀
           (fun y => Tensor0SSpace.ofModel (f y)) x := by
     let Traw := tensor0SSpaceFiberContinuousLinearEquiv (I := I) n x
       (Tensor0SSpace.ofModel (f x))
@@ -179,7 +179,7 @@ theorem unitModelProdField_contMDiff (g : SmoothRiemannianMetric I M) {p q : ℕ
           (fun i => (trivializationAt E (TangentSpace I) x₀).symmL ℝ x (v i)) := by
             rw [ContinuousMultilinearMap.compContinuousLinearMap_apply]
             rfl
-      _ = tensor0SChartE_section_repr (I := I) n x₀
+      _ = tensor0SChartESectionRepr (I := I) n x₀
           (fun y => Tensor0SSpace.ofModel (f y)) x v := by
             exact (tensor0SChartE_section_repr_apply_tuple (I := I) (n := n) x₀
               (fun y => Tensor0SSpace.ofModel (f y)) hx v).symm
@@ -219,7 +219,7 @@ theorem unitModelProdField_contMDiff (g : SmoothRiemannianMetric I M) {p q : ℕ
 noncomputable def unitModelProdField (g : SmoothRiemannianMetric I M) {p q : ℕ}
     (S : SmoothCcTensor g 0 p) (T : SmoothCcTensor g 0 q) :
     Tensor0SBundle.Tensor0SField (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M) ∞ (p + q) :=
-  letI := Tensor0SBundle.tensor0SBundle_topology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
+  letI := Tensor0SBundle.tensor0SBundleTopology (𝕜 := ℝ) (E := E) (H := H) (I := I) (M := M)
     (p + q)
   letI := TangentBundle.contMDiffVectorBundle (I := I) (M := M) (n := ∞)
   ⟨fun x => Tensor0SSpace.ofModel
@@ -301,10 +301,10 @@ omit [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma chartE_section_repr_prodUnitEval (g : SmoothRiemannianMetric I M) {p q : ℕ}
     (S : SmoothCcTensor g 0 p) (T : SmoothCcTensor g 0 q) (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    tensor0SChartE_section_repr (I := I) (p + q) α (prodUnitEval (I := I) g S T) b =
+    tensor0SChartESectionRepr (I := I) (p + q) α (prodUnitEval (I := I) g S T) b =
       Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) p q
-        (tensor0SChartE_section_repr (I := I) p α (factorUnitEval (I := I) g S) b)
-        (tensor0SChartE_section_repr (I := I) q α (factorUnitEval (I := I) g T) b) := by
+        (tensor0SChartESectionRepr (I := I) p α (factorUnitEval (I := I) g S) b)
+        (tensor0SChartESectionRepr (I := I) q α (factorUnitEval (I := I) g T) b) := by
   classical
   have hprod : (prodUnitEval (I := I) g S T) = fun y => Tensor0SSpace.ofModel
       (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) p q
@@ -329,12 +329,12 @@ private lemma prodUnitEval_chartPullback_eventuallyEq (g : SmoothRiemannianMetri
     (S : SmoothCcTensor g 0 p) (T : SmoothCcTensor g 0 q) (α : M) {b : M}
     (hb_src : b ∈ (extChartAt I α).source)
     (hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    (tensor0SChartE_section_repr (I := I) (p + q) α (prodUnitEval (I := I) g S T) ∘
+    (tensor0SChartESectionRepr (I := I) (p + q) α (prodUnitEval (I := I) g S T) ∘
         (extChartAt I α).symm) =ᶠ[𝓝 (extChartAt I α b)]
       (fun y : E => Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) p q
-        ((tensor0SChartE_section_repr (I := I) p α (factorUnitEval (I := I) g S) ∘
+        ((tensor0SChartESectionRepr (I := I) p α (factorUnitEval (I := I) g S) ∘
           (extChartAt I α).symm) y)
-        ((tensor0SChartE_section_repr (I := I) q α (factorUnitEval (I := I) g T) ∘
+        ((tensor0SChartESectionRepr (I := I) q α (factorUnitEval (I := I) g T) ∘
           (extChartAt I α).symm) y)) := by
   classical
   set φ := extChartAt I α with hφ
@@ -357,23 +357,23 @@ private lemma fderiv_prodUnitEval_chartPullback (g : SmoothRiemannianMetric I M)
     (hb_src : b ∈ (extChartAt I α).source)
     (hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     (hS : DifferentiableAt ℝ
-      (tensor0SChartE_section_repr (I := I) p α (factorUnitEval (I := I) g S) ∘
+      (tensor0SChartESectionRepr (I := I) p α (factorUnitEval (I := I) g S) ∘
         (extChartAt I α).symm) (extChartAt I α b))
     (hT : DifferentiableAt ℝ
-      (tensor0SChartE_section_repr (I := I) q α (factorUnitEval (I := I) g T) ∘
+      (tensor0SChartESectionRepr (I := I) q α (factorUnitEval (I := I) g T) ∘
         (extChartAt I α).symm) (extChartAt I α b)) :
     fderiv ℝ
-        (tensor0SChartE_section_repr (I := I) (p + q) α (prodUnitEval (I := I) g S T) ∘
+        (tensor0SChartESectionRepr (I := I) (p + q) α (prodUnitEval (I := I) g S T) ∘
           (extChartAt I α).symm) (extChartAt I α b) =
       (Bundle.continuousMultilinearMap.modelProductL (𝕜 := ℝ) (F := E) p q).precompR E
-          ((tensor0SChartE_section_repr (I := I) p α (factorUnitEval (I := I) g S) ∘
+          ((tensor0SChartESectionRepr (I := I) p α (factorUnitEval (I := I) g S) ∘
             (extChartAt I α).symm) (extChartAt I α b))
-          (fderiv ℝ (tensor0SChartE_section_repr (I := I) q α (factorUnitEval (I := I) g T) ∘
+          (fderiv ℝ (tensor0SChartESectionRepr (I := I) q α (factorUnitEval (I := I) g T) ∘
             (extChartAt I α).symm) (extChartAt I α b))
         + (Bundle.continuousMultilinearMap.modelProductL (𝕜 := ℝ) (F := E) p q).precompL E
-          (fderiv ℝ (tensor0SChartE_section_repr (I := I) p α (factorUnitEval (I := I) g S) ∘
+          (fderiv ℝ (tensor0SChartESectionRepr (I := I) p α (factorUnitEval (I := I) g S) ∘
             (extChartAt I α).symm) (extChartAt I α b))
-          ((tensor0SChartE_section_repr (I := I) q α (factorUnitEval (I := I) g T) ∘
+          ((tensor0SChartESectionRepr (I := I) q α (factorUnitEval (I := I) g T) ∘
             (extChartAt I α).symm) (extChartAt I α b)) := by
   classical
   rw [Filter.EventuallyEq.fderiv_eq
@@ -393,7 +393,7 @@ private lemma toModel_tensor0SChartFiberFromModel_self (s : ℕ) (x : M)
   intro v
   have hcoe := congrFun (congrArg DFunLike.coe h) v
   rw [show Tensor0SSpace.toModel (tensor0SChartFiberFromModel (I := I) s x x m) =
-      tensor0SSpace_continuousLinearEquiv s x (tensor0SChartFiberFromModel (I := I) s x x m)
+      tensor0SSpaceContinuousLinearEquiv s x (tensor0SChartFiberFromModel (I := I) s x x m)
       from rfl, tensor0SSpace_continuousLinearEquiv_apply]
   exact hcoe
 
@@ -401,13 +401,13 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 private lemma factor_chartPullback_self (g : SmoothRiemannianMetric I M) {p : ℕ}
     (S : SmoothCcTensor g 0 p) (x : M) :
-    (tensor0SChartE_section_repr (I := I) p x (factorUnitEval (I := I) g S) ∘
+    (tensor0SChartESectionRepr (I := I) p x (factorUnitEval (I := I) g S) ∘
         (extChartAt I x).symm) (extChartAt I x x) =
       unitModel (I := I) (M := M) g p S x := by
   classical
   rw [Function.comp_apply]
   rw [show (extChartAt I x).symm (extChartAt I x x) = x from extChartAt_to_inv (I := I) x]
-  rw [tensor0SChartE_section_repr]
+  rw [tensor0SChartESectionRepr]
   apply ContinuousMultilinearMap.ext
   intro v
   have h :=
@@ -418,7 +418,7 @@ private lemma factor_chartPullback_self (g : SmoothRiemannianMetric I M) {p : �
   have hcoe := congrFun (congrArg DFunLike.coe h) v
   rw [← factorUnitEval_toModel (I := I) g S x]
   rw [show Tensor0SSpace.toModel (factorUnitEval (I := I) g S x) =
-      tensor0SSpace_continuousLinearEquiv p x (factorUnitEval (I := I) g S x) from rfl,
+      tensor0SSpaceContinuousLinearEquiv p x (factorUnitEval (I := I) g S x) from rfl,
     tensor0SSpace_continuousLinearEquiv_apply]
   exact hcoe
 
@@ -427,7 +427,7 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma toModel_tensor0SIntrinsicChartCLM_self (s : ℕ) (x : M)
     (T : Π b : M, Tensor0SSpace s I b) (v : TangentSpace I x) :
     Tensor0SSpace.toModel (tensor0SIntrinsicChartCLM (I := I) s x T x v) =
-      fderiv ℝ (tensor0SChartE_section_repr (I := I) s x T ∘ (extChartAt I x).symm)
+      fderiv ℝ (tensor0SChartESectionRepr (I := I) s x T ∘ (extChartAt I x).symm)
         (extChartAt I x x) v := by
   classical
   rw [tensor0SIntrinsicChartCLM_apply]
@@ -662,21 +662,21 @@ private lemma toModel_chartTensor0SSlotCorrection_sum_prodUnitEval (g : SmoothRi
       ∑ k : Fin (p + q),
         Tensor0SSpace.toModel
           (chartTensor0SSlotCorrection (I := I) (p + q) g x (prodUnitEval (I := I) g S T) X x k)
-      from map_sum (tensor0SSpace_continuousLinearEquiv (p + q) x) _ _]
+      from map_sum (tensor0SSpaceContinuousLinearEquiv (p + q) x) _ _]
   rw [show Tensor0SSpace.toModel
         (∑ k : Fin p,
           chartTensor0SSlotCorrection (I := I) p g x (factorUnitEval (I := I) g S) X x k) =
       ∑ k : Fin p,
         Tensor0SSpace.toModel
           (chartTensor0SSlotCorrection (I := I) p g x (factorUnitEval (I := I) g S) X x k)
-      from map_sum (tensor0SSpace_continuousLinearEquiv p x) _ _]
+      from map_sum (tensor0SSpaceContinuousLinearEquiv p x) _ _]
   rw [show Tensor0SSpace.toModel
         (∑ k : Fin q,
           chartTensor0SSlotCorrection (I := I) q g x (factorUnitEval (I := I) g T) X x k) =
       ∑ k : Fin q,
         Tensor0SSpace.toModel
           (chartTensor0SSlotCorrection (I := I) q g x (factorUnitEval (I := I) g T) X x k)
-      from map_sum (tensor0SSpace_continuousLinearEquiv q x) _ _]
+      from map_sum (tensor0SSpaceContinuousLinearEquiv q x) _ _]
   rw [add_apply]
   with_unfolding_all
     simp only [sum_apply,
@@ -742,7 +742,7 @@ private lemma toModel_chartTensor0SCovariantDerivative_eq_intrinsic_sub_slotSum
   cases n with
   | succ m =>
       rw [chartTensor0SCovariantDerivative_succ (I := I) m g x Y X x]
-      exact map_sub (tensor0SSpace_continuousLinearEquiv (m + 1) x) _ _
+      exact map_sub (tensor0SSpaceContinuousLinearEquiv (m + 1) x) _ _
   | zero =>
       have hx_good : x ∈ chartLeviCivitaGoodSet (I := I) x := self_mem_chartLeviCivitaGoodSet x
       rw [Finset.univ_eq_empty, Finset.sum_empty, Tensor0SSpace.toModel_zero, sub_zero]
@@ -782,7 +782,7 @@ private lemma toModel_chartTensor0SCovariantDerivative_factor_succ (g : SmoothRi
             chartTensor0SSlotCorrection (I := I) (s + 1) g x (factorUnitEval (I := I) g S) X x
               k) := by
   rw [chartTensor0SCovariantDerivative_succ (I := I) s g x (factorUnitEval (I := I) g S) X x]
-  exact map_sub (tensor0SSpace_continuousLinearEquiv (s + 1) x) _ _
+  exact map_sub (tensor0SSpaceContinuousLinearEquiv (s + 1) x) _ _
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -825,7 +825,7 @@ private lemma toModel_chartTensor0SCovariantDerivative_prodUnitEval_succ
           (∑ k : Fin ((p' + 1) + (q' + 1)),
             chartTensor0SSlotCorrection (I := I) ((p' + 1) + (q' + 1)) g x
               (prodUnitEval (I := I) g S T) X x k)
-      from map_sub (tensor0SSpace_continuousLinearEquiv ((p' + 1) + (q' + 1)) x) _ _]
+      from map_sub (tensor0SSpaceContinuousLinearEquiv ((p' + 1) + (q' + 1)) x) _ _]
   rw [toModel_tensor0SIntrinsicChartCLM_prodUnitEval_self (I := I) g S T x (X x)]
   rw [toModel_chartTensor0SSlotCorrection_sum_prodUnitEval (I := I) g S T X x]
   rw [toModel_chartTensor0SCovariantDerivative_factor_succ (I := I) g S X x,

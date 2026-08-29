@@ -551,11 +551,11 @@ private lemma lintegral_comp_toFun_le_const
     (hΩ_open : IsOpen Ω)
     (F : EuclideanSpace ℝ (Fin d) → ℝ≥0∞) :
     (∫⁻ y in Ω, F (Φ.toFun y) ∂(volume : Measure (EuclideanSpace ℝ (Fin d)))) ≤
-      ENNReal.ofReal (1 / Φ.jacobian_lower_bound) *
+      ENNReal.ofReal (1 / Φ.jacobianLowerBound) *
         (∫⁻ z in Ω', F z ∂(volume : Measure (EuclideanSpace ℝ (Fin d)))) := by
   classical
   have h_aux := Φ.lintegral_image_eq hΩ_open F
-  have h_mono : ENNReal.ofReal Φ.jacobian_lower_bound *
+  have h_mono : ENNReal.ofReal Φ.jacobianLowerBound *
         (∫⁻ y in Ω, F (Φ.toFun y) ∂(volume : Measure (EuclideanSpace ℝ (Fin d)))) ≤
       ∫⁻ y in Ω,
         ENNReal.ofReal |(fderiv ℝ Φ.toFun y).det| * F (Φ.toFun y)
@@ -565,36 +565,36 @@ private lemma lintegral_comp_toFun_le_const
     rw [ae_restrict_iff' hΩ_open.measurableSet]
     refine Filter.Eventually.of_forall ?_
     intro y hy
-    have hdet : ENNReal.ofReal Φ.jacobian_lower_bound ≤
+    have hdet : ENNReal.ofReal Φ.jacobianLowerBound ≤
         ENNReal.ofReal |(fderiv ℝ Φ.toFun y).det| :=
       ENNReal.ofReal_le_ofReal (Φ.jacobian_lower y hy)
     exact mul_le_mul_of_nonneg_right hdet (zero_le)
-  have h_le : ENNReal.ofReal Φ.jacobian_lower_bound *
+  have h_le : ENNReal.ofReal Φ.jacobianLowerBound *
         (∫⁻ y in Ω, F (Φ.toFun y) ∂(volume : Measure (EuclideanSpace ℝ (Fin d)))) ≤
       ∫⁻ z in Ω', F z ∂(volume : Measure (EuclideanSpace ℝ (Fin d))) :=
     h_mono.trans_eq h_aux.symm
-  have h_jac_ne : ENNReal.ofReal Φ.jacobian_lower_bound ≠ 0 := by
+  have h_jac_ne : ENNReal.ofReal Φ.jacobianLowerBound ≠ 0 := by
     exact (ENNReal.ofReal_ne_zero_iff.mpr Φ.jacobian_lower_bound_pos)
-  have h_mul_inv : ENNReal.ofReal (1 / Φ.jacobian_lower_bound) *
-        ENNReal.ofReal Φ.jacobian_lower_bound = 1 := by
+  have h_mul_inv : ENNReal.ofReal (1 / Φ.jacobianLowerBound) *
+        ENNReal.ofReal Φ.jacobianLowerBound = 1 := by
     rw [← ENNReal.ofReal_mul (div_nonneg (by norm_num) Φ.jacobian_lower_bound_pos.le)]
-    rw [show (1 / Φ.jacobian_lower_bound) * Φ.jacobian_lower_bound = 1 from
-      div_mul_cancel₀ (a := (1 : ℝ)) (b := Φ.jacobian_lower_bound)
+    rw [show (1 / Φ.jacobianLowerBound) * Φ.jacobianLowerBound = 1 from
+      div_mul_cancel₀ (a := (1 : ℝ)) (b := Φ.jacobianLowerBound)
         Φ.jacobian_lower_bound_pos.ne']
     norm_num
-  have hstep : ENNReal.ofReal (1 / Φ.jacobian_lower_bound) *
-        (ENNReal.ofReal Φ.jacobian_lower_bound *
+  have hstep : ENNReal.ofReal (1 / Φ.jacobianLowerBound) *
+        (ENNReal.ofReal Φ.jacobianLowerBound *
           (∫⁻ y in Ω, F (Φ.toFun y) ∂(volume : Measure (EuclideanSpace ℝ (Fin d))))) ≤
-      ENNReal.ofReal (1 / Φ.jacobian_lower_bound) *
+      ENNReal.ofReal (1 / Φ.jacobianLowerBound) *
         (∫⁻ z in Ω', F z ∂(volume : Measure (EuclideanSpace ℝ (Fin d)))) :=
     mul_le_mul_of_nonneg_left h_le (zero_le)
   calc
     (∫⁻ y in Ω, F (Φ.toFun y) ∂(volume : Measure (EuclideanSpace ℝ (Fin d))))
-        = ENNReal.ofReal (1 / Φ.jacobian_lower_bound) *
-              (ENNReal.ofReal Φ.jacobian_lower_bound *
+        = ENNReal.ofReal (1 / Φ.jacobianLowerBound) *
+              (ENNReal.ofReal Φ.jacobianLowerBound *
                 (∫⁻ y in Ω, F (Φ.toFun y) ∂(volume : Measure (EuclideanSpace ℝ (Fin d))))) := by
           rw [← mul_assoc, h_mul_inv, one_mul]
-    _ ≤ ENNReal.ofReal (1 / Φ.jacobian_lower_bound) *
+    _ ≤ ENNReal.ofReal (1 / Φ.jacobianLowerBound) *
           (∫⁻ z in Ω', F z ∂(volume : Measure (EuclideanSpace ℝ (Fin d)))) := hstep
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
@@ -806,7 +806,7 @@ private lemma lintegral_pouWeightedF0_le
         ((volume : Measure EuclN).restrict Ω)) :
     (∫⁻ y in Ω ∩ C,
       pouWeightedF0 (I := I) (M := M) g r s T γ α P₀ m y ∂volume) ≤
-      (a * ENNReal.ofReal (1 / Φ.jacobian_lower_bound)) *
+      (a * ENNReal.ofReal (1 / Φ.jacobianLowerBound)) *
         pouWeightedSum (I := I) (M := M) g r s T γ m
           (chartTargetEuclid (I := I) (M := M) γ) := by
   have hsum_integral :
@@ -820,11 +820,11 @@ private lemma lintegral_pouWeightedF0_le
     intro Q _
     rw [lintegral_finsetSum' (Finset.range (m + 1)) (fun j _ => hmeas Q j)]
   have hchange : pouWeightedSumComp (I := I) (M := M) g r s T γ m Ω Φ.toFun ≤
-      ENNReal.ofReal (1 / Φ.jacobian_lower_bound) *
+      ENNReal.ofReal (1 / Φ.jacobianLowerBound) *
         pouWeightedSum (I := I) (M := M) g r s T γ m Ω' := by
     simp only [pouWeightedSumComp, pouWeightedSum]
     exact finset_sum_le_finset_sum_mul_of_forall m
-      (ENNReal.ofReal (1 / Φ.jacobian_lower_bound))
+      (ENNReal.ofReal (1 / Φ.jacobianLowerBound))
       (fun Q j => ∫⁻ y in Ω,
         pouWeightedIntegrand (I := I) (M := M) g r s T γ Q j (Φ.toFun y) ∂volume)
       (fun Q j => ∫⁻ z in Ω',
@@ -854,22 +854,22 @@ private lemma lintegral_pouWeightedF0_le
       hpointwise
     _ = a * pouWeightedSumComp (I := I) (M := M) g r s T γ m Ω Φ.toFun := by
       rw [hsum_integral]
-    _ ≤ a * (ENNReal.ofReal (1 / Φ.jacobian_lower_bound) *
+    _ ≤ a * (ENNReal.ofReal (1 / Φ.jacobianLowerBound) *
         pouWeightedSum (I := I) (M := M) g r s T γ m Ω') :=
       mul_le_mul_of_nonneg_left hchange (zero_le)
-    _ ≤ a * (ENNReal.ofReal (1 / Φ.jacobian_lower_bound) *
+    _ ≤ a * (ENNReal.ofReal (1 / Φ.jacobianLowerBound) *
         pouWeightedSum (I := I) (M := M) g r s T γ m
           (chartTargetEuclid (I := I) (M := M) γ)) := by
       exact mul_le_mul_of_nonneg_left
         (mul_le_mul_of_nonneg_left hmono (zero_le)) (zero_le)
-    _ = (a * ENNReal.ofReal (1 / Φ.jacobian_lower_bound)) *
+    _ = (a * ENNReal.ofReal (1 / Φ.jacobianLowerBound)) *
         pouWeightedSum (I := I) (M := M) g r s T γ m
           (chartTargetEuclid (I := I) (M := M) γ) := by rw [mul_assoc]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma chartAtlasPOU_sum_eq_one_on_chartTarget
     (α : M) (y : EuclN) :
-    (∑ γ ∈ chartAtlasPOU_finset (I := I) (M := M),
+    (∑ γ ∈ chartAtlasPOUFinset (I := I) (M := M),
       ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ)
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) = 1 := by
   classical
@@ -881,7 +881,7 @@ lemma chartAtlasPOU_sum_eq_one_on_chartTarget
   rw [← hsum_fin]
   exact (finsum_eq_sum_of_support_subset
     (f := fun γ : M => ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
-    (s := chartAtlasPOU_finset (I := I) (M := M))
+    (s := chartAtlasPOUFinset (I := I) (M := M))
     (by
       intro γ hγ_supp
       by_contra hγ
@@ -1764,7 +1764,7 @@ lemma eLpNorm_pou_weighted_raw_transition_le
     with hU_def
   set K_E_γ : Set EuclN := (fun x : M => (toEuclidean (E := E)) (extChartAt I γ x)) '' K_M
     with hKEγ_def
-  set Kchg : ℝ := (1 / Φ.jacobian_lower_bound) ^ (1 / (2 : ℝ≥0∞).toReal) with hKchg_def
+  set Kchg : ℝ := (1 / Φ.jacobianLowerBound) ^ (1 / (2 : ℝ≥0∞).toReal) with hKchg_def
   have hK_Eγ_compact : IsCompact K_E_γ := by
     have hcont : ContinuousOn (fun x : M =>
         (toEuclidean (E := E)) (extChartAt I γ x)) K_M :=
@@ -2233,7 +2233,7 @@ lemma eLpNorm_pou_weighted_raw_transition_le
       (I := I) (M := M) g r s T γ α P₀ m hΩαγ_open hC_meas_top
         hΩγα_subset_target Φ (ENNReal.ofReal (K_pw ^ 2 * N_terms))
         ENNReal.ofReal_ne_top h_pt h_meas
-    have h_jac_inv : Kchg ^ 2 = 1 / Φ.jacobian_lower_bound := by
+    have h_jac_inv : Kchg ^ 2 = 1 / Φ.jacobianLowerBound := by
       dsimp [Kchg]
       rw [← Real.rpow_natCast, ← Real.rpow_mul
         (div_nonneg (by norm_num) Φ.jacobian_lower_bound_pos.le)]

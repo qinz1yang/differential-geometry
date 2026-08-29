@@ -25,8 +25,8 @@ variable {H : Type uH} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable [I.Boundaryless]
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 noncomputable def PointedRiemannianManifold.intrInjRadius
     (X : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hcomplete : MetricComplete (I := I) X)
@@ -88,8 +88,8 @@ theorem HasInjRadiusAt.le_intr
     ENNReal.ofReal rho ≤ X.intrInjRadius (I := I) hcomplete x :=
   h.2 hcomplete
 
-attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
-  Tensor0SBundle.tangentSpace_normedSpace in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 omit [CompleteSpace E] in
 theorem HasInjRadiusAt.injOn_ball
     {X : PointedRiemannianManifold.{u, uE, uH} (I := I)} {x : X.M}

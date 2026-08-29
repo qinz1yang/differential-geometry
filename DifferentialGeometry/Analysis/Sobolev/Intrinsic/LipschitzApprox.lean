@@ -161,11 +161,11 @@ private lemma grad_eq_pou
     (hu : MDifferentiableAt I 𝓘(ℝ, ℝ) u x)
     (hv : MDifferentiableAt I 𝓘(ℝ, ℝ) v x) :
     gradFun (I := I) g (fun y => u y - v y) x =
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         gradFun (I := I) g (fun y =>
           (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) y * (u y - v y)) x := by
   classical
-  let S : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  let S : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   let w : M → ℝ := fun y => u y - v y
   let f : M → M → ℝ := fun α y =>
     (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) y * w y
@@ -211,7 +211,7 @@ theorem gNorm_sub_le_sum
     Real.sqrt (g.inner x
         (gradFun (I := I) g (fun y => u y - v y) x)
         (gradFun (I := I) g (fun y => u y - v y) x)) ≤
-      ∑ α ∈ chartAtlasPOU_finset (I := I) (M := M),
+      ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M),
         Real.sqrt (g.inner x
           (gradFun (I := I) g (fun y =>
             (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) y * (u y - v y)) x)
@@ -219,7 +219,7 @@ theorem gNorm_sub_le_sum
             (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) y * (u y - v y)) x)) := by
   rw [grad_eq_pou (I := I) (M := M) g hu hv]
   exact gNorm_sum_le (I := I) (M := M) g x
-    (chartAtlasPOU_finset (I := I) (M := M))
+    (chartAtlasPOUFinset (I := I) (M := M))
     (fun α => gradFun (I := I) g (fun y =>
       (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) y * (u y - v y)) x)
 
@@ -234,7 +234,7 @@ private noncomputable def gramSup
     have hKs : K ⊆ (chartAt H α).source :=
       chartAtlasPOU_isSubordinate I M α
     have hc : ContinuousOn
-        (chartInvGramMatrix_l1Sum (I := I) (M := M) g α) K :=
+        (chartInvGramMatrixL1Sum (I := I) (M := M) g α) K :=
       (chartInvGramMatrix_l1Sum_continuousOn (I := I) (M := M) g α).mono hKs
     exact (hKc.image_of_continuousOn hc).bddAbove.choose
   · exact 0
@@ -253,7 +253,7 @@ private lemma gramSup_nonneg
     have hKs : K ⊆ (chartAt H α).source :=
       chartAtlasPOU_isSubordinate I M α
     have hc : ContinuousOn
-        (chartInvGramMatrix_l1Sum (I := I) (M := M) g α) K :=
+        (chartInvGramMatrixL1Sum (I := I) (M := M) g α) K :=
       (chartInvGramMatrix_l1Sum_continuousOn (I := I) (M := M) g α).mono hKs
     obtain ⟨x, hx⟩ := hK
     exact (chartInvGramMatrix_l1Sum_nonneg
@@ -266,7 +266,7 @@ private lemma gram_le_sup
     (g : SmoothRiemannianMetric I M) (α : M) {x : M}
     (hx : x ∈ tsupport
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :
-    chartInvGramMatrix_l1Sum (I := I) (M := M) g α x ≤
+    chartInvGramMatrixL1Sum (I := I) (M := M) g α x ≤
       gramSup (I := I) (M := M) g α := by
   classical
   unfold gramSup
@@ -278,7 +278,7 @@ private lemma gram_le_sup
   have hKs : K ⊆ (chartAt H α).source :=
     chartAtlasPOU_isSubordinate I M α
   have hc : ContinuousOn
-      (chartInvGramMatrix_l1Sum (I := I) (M := M) g α) K :=
+      (chartInvGramMatrixL1Sum (I := I) (M := M) g α) K :=
     (chartInvGramMatrix_l1Sum_continuousOn (I := I) (M := M) g α).mono hKs
   exact (hKc.image_of_continuousOn hc).bddAbove.choose_spec ⟨x, hx, rfl⟩
 
@@ -286,7 +286,7 @@ theorem grad_sub_chart_le
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) :
     ∃ C : ℝ, 0 ≤ C ∧
-      ∀ {α : M}, α ∈ chartAtlasPOU_finset (I := I) (M := M) →
+      ∀ {α : M}, α ∈ chartAtlasPOUFinset (I := I) (M := M) →
       ∀ {u v : M → ℝ} {x : M},
         MDifferentiableAt I 𝓘(ℝ, ℝ) u x →
         MDifferentiableAt I 𝓘(ℝ, ℝ) v x →
@@ -303,7 +303,7 @@ theorem grad_sub_chart_le
                 (chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) y * (u y - v y)))
               (extChartAt I α x)) ^ 2 := by
   classical
-  let S : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  let S : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   let C : ℝ := ∑ α ∈ S, gramSup (I := I) (M := M) g α
   refine ⟨C, Finset.sum_nonneg (fun α _ ↦ gramSup_nonneg
     (I := I) (M := M) g α), ?_⟩
@@ -317,7 +317,7 @@ theorem grad_sub_chart_le
       (by simp) |>.mul hdiff
   have hbase := g_inner_gradFun_le_chartInvGramMatrix_l1Sum_mul_sum_sq_partials
     (I := I) (M := M) g α hlocal hxsrc
-  have hcoef : chartInvGramMatrix_l1Sum (I := I) (M := M) g α x ≤ C := by
+  have hcoef : chartInvGramMatrixL1Sum (I := I) (M := M) g α x ≤ C := by
     refine (gram_le_sup (I := I) (M := M) g α hx).trans ?_
     exact Finset.single_le_sum
       (fun β _ ↦ gramSup_nonneg (I := I) (M := M) g β)
@@ -333,7 +333,7 @@ theorem grad_sub_chart_le
 private lemma local_grad_l2_le
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M] [I.Boundaryless]
     (g : SmoothRiemannianMetric I M) (α : M)
-    (hα : α ∈ chartAtlasPOU_finset (I := I) (M := M)) :
+    (hα : α ∈ chartAtlasPOUFinset (I := I) (M := M)) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {u v : M → ℝ} {L B : NNReal},
       (∀ x y, edist (u x) (u y) ≤ (L : ENNReal) *
         riemannianEDistOf (I := I) g x y) →
@@ -566,7 +566,7 @@ theorem grad_sub_l2_le
   have : BorelSpace E := ⟨rfl⟩
   let : MeasurableSpace M := borel M
   have : BorelSpace M := ⟨rfl⟩
-  let S : Finset M := chartAtlasPOU_finset (I := I) (M := M)
+  let S : Finset M := chartAtlasPOUFinset (I := I) (M := M)
   have hlocal (a : S) :=
     local_grad_l2_le (I := I) (M := M) g a.1 a.2
   choose C hC hlocal_bound using hlocal

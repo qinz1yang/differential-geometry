@@ -62,7 +62,7 @@ private lemma unitTensor_model (x : M) (m : Fin 0 → E) :
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
 private lemma curry_zero (x : M) (D : Tensor0SSpace 1 I x) (v₀ : E) :
-    tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x D
+    tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x D
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v₀) =
       (Tensor0SSpace.toModel D (fun _ : Fin 1 => v₀)) •
         unitTensor (I := I) (M := M) x := by
@@ -71,7 +71,7 @@ private lemma curry_zero (x : M) (D : Tensor0SSpace 1 I x) (v₀ : E) :
   intro m
   beta_reduce
   have h₁ : Tensor0SSpace.toModel
-      (tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 0 x D
+      (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 0 x D
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm v₀)) m =
       Tensor0SSpace.toModel D (Fin.cons v₀ m) :=
     TensorMultilinear.tensor0S_curry_toModel_apply (I := I) (M := M) (n := 0)
@@ -120,7 +120,7 @@ private lemma slotExtendIter_rank_two_by_rank_three_apply (g₀ : SmoothRiemanni
     rw [DifferentialGeometry.Integral.Connection.slotExtendFib_apply_eval (I := I) (M := M) 1 4 x _ D
       (m 0) (Fin.tail m)]
     set D₁ : Tensor0SSpace 1 I x :=
-      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 1 x D
+      tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 1 x D
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) with hD₁
     rw [show
         ((show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 4 I x from
@@ -190,7 +190,7 @@ private lemma slotExtendIter_rank_three_by_rank_three_apply (g₀ : SmoothRieman
     rw [DifferentialGeometry.Integral.Connection.slotExtendFib_apply_eval (I := I) (M := M) 2 5 x _ D
       (m 0) (Fin.tail m)]
     set D₂ : Tensor0SSpace 2 I x :=
-      tensor0S_curry (I := I) (M := M) (𝕜 := ℝ) 2 x D
+      tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) with hD₂
     rw [slotExtendIter_rank_two_by_rank_three_apply (I := I) (M := M) g₀ K x D₂, ← hκ,
       tensor0SProdKappaFib_apply (I := I) x κ D₂,
@@ -283,12 +283,12 @@ private lemma lieCorrectionZeroMixedConnection_trace_output_swap (g₁ : SmoothR
   funext i
   have hpt : ∀ t : Fin 4,
       (Fin.cons (cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))
         (Fin.cons ((Module.finBasis ℝ E) k)
           (fun j : Fin 2 => w ((Equiv.swap (0 : Fin 2) 1) j))) : Fin 4 → E) t =
       (Fin.cons (cometricLmodel (I := I) g₁ x
-          (Tensor0SBundle.model_covectorOfCLM (𝕜 := ℝ) (E := E)
+          (Tensor0SBundle.modelCovectorOfCLM (𝕜 := ℝ) (E := E)
             ((Module.finBasis ℝ E).cDualBasis k)))
         (Fin.cons ((Module.finBasis ℝ E) k) w) : Fin 4 → E) (lieCorrectionZeroMixedConnectionTraceOutputSwapPermutation t) := by
     intro t

@@ -62,7 +62,7 @@ theorem bijective_sc
   have hli : Function.LeftInverse s f := fun e => congrFun hsf e
   exact hli.injective
 
-noncomputable def homeomorph_sc
+noncomputable def homeomorphSc
     [PreconnectedSpace E] [Nonempty E]
     [SimplyConnectedSpace X] [LocallyPathConnectedSpace X]
     (hf : IsCoveringMap f) : E ≃ₜ X :=
@@ -79,7 +79,7 @@ variable {H' : Type*} [TopologicalSpace H'] {I' : ModelWithCorners 𝕜 F' H'}
 variable [ChartedSpace H E] [IsManifold I ∞ E]
 variable [ChartedSpace H' X] [IsManifold I' ∞ X]
 
-noncomputable def diffeomorph_sc
+noncomputable def diffeomorphSc
     [PreconnectedSpace E] [Nonempty E]
     [SimplyConnectedSpace X] [LocallyPathConnectedSpace X]
     (hf : IsCoveringMap f) (hloc : IsLocalDiffeomorph I I' ∞ f) :
@@ -91,7 +91,7 @@ omit [IsManifold I ∞ E] [IsManifold I' ∞ X] in
     [PreconnectedSpace E] [Nonempty E]
     [SimplyConnectedSpace X] [LocallyPathConnectedSpace X]
     (hf : IsCoveringMap f) (hloc : IsLocalDiffeomorph I I' ∞ f) :
-    ⇑(hf.diffeomorph_sc hloc) = f := rfl
+    ⇑(hf.diffeomorphSc hloc) = f := rfl
 
 end Smooth
 
