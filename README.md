@@ -1,6 +1,6 @@
 # Differential Geometry in Lean 4
 
-An ongoing Lean 4 library for differential geometry and geometric analysis, currently focused on Ricci flow and Perelman's L-geometry.
+An ongoing Lean 4 library for differential geometry and geometric analysis, currently focused on Ricci flow.
 
 ## How to use
 
