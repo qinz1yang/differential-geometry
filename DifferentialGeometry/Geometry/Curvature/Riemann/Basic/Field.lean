@@ -961,7 +961,7 @@ private theorem smooth_linear_tangentSection_pointwise
     refine ⟨U', hU'_open, hxU', ?_⟩
     intro y hy
     simp only [ContMDiffSection.coe_sub, Pi.sub_apply, sub_eq_zero,
-      ContMDiffSection.finset_sum_apply_gen, ContMDiffSection.coe_smulContMDiffMap]
+      ContMDiffSection.finset_sum_apply, ContMDiffSection.coe_smulContMDiffMap]
     exact hU y (hU'U hy)
   have hloc := hlocal (δ - ∑ i, u' i • s' i) hU_open hxU hU_vanish
   rw [hsub δ (∑ i, u' i • s' i)] at hloc

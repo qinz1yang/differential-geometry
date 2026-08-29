@@ -369,7 +369,7 @@ theorem metricNabla0S_self (g : SmoothRiemannianMetric I M) :
   have hfib : metricNabla0S (I := I) g (metricTensorField (I := I) g) x = 0 := by
     refine ContinuousMultilinearMap.ext fun v => ?_
     obtain ⟨Xsec, hXx⟩ :=
-      ContMDiffSection.exists_eq_at_gen
+      ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (v 0)
     have hv : Fin.cons (Xsec x) (Fin.tail v) = v := by
       rw [hXx]

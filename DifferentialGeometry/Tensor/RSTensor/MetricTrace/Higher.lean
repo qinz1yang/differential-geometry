@@ -171,7 +171,7 @@ theorem nabla2Trace02
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       3 cov nablaA x
   obtain ⟨Xsec, hXsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x X
   obtain ⟨Ysec, hYsec, hYcov⟩ :=
@@ -590,7 +590,7 @@ theorem nablaTrace04
     totalNabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       2 cov traceA x
   obtain ⟨Xsec, hXsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x X
   obtain ⟨Ysec, hYsec, hYcov⟩ :=

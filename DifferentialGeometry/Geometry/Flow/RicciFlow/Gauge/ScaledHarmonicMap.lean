@@ -1,4 +1,4 @@
-import DifferentialGeometry.Bundle.VectorField
+import DifferentialGeometry.Bundle.VectorField.Basic
 import DifferentialGeometry.Geometry.Metric.DeTurck.Naturality
 import DifferentialGeometry.Geometry.Metric.DeTurck.HarmonicMapTension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Gauge.InverseFamily

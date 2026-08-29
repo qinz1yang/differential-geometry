@@ -57,7 +57,7 @@ theorem exists_contMDiffSection_eventuallyEq_tangentConstAt
               rfl
     calc
       V p = ∑ i, (b.repr vModel i) • s' i p := by
-        simp [V, ContMDiffSection.finset_sum_apply_gen]
+        simp [V, ContMDiffSection.finset_sum_apply]
       _ = ∑ i, (b.repr vModel i) • e.localFrame b i p := by
         apply Finset.sum_congr rfl
         intro i hi

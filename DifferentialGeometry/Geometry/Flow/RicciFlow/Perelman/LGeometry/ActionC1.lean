@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.KineticChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ScalarCompact
-import DifferentialGeometry.Topology.CurveChartCover
+import DifferentialGeometry.Topology.Manifold.CurveChart.Subdivision
 
 set_option autoImplicit false
 
@@ -35,7 +35,7 @@ theorem lRegLag_int_c1
     IntervalIntegrable (lRegLag S T alpha) volume a b := by
   classical
   obtain ⟨t, ht0, htmono, ⟨m, hm⟩, hchart⟩ :=
-    DifferentialGeometry.Geometry.exists_chart_split (H := H) hab halpha.continuousOn
+    DifferentialGeometry.Geometry.exists_chart_subdivision (H := H) hab halpha.continuousOn
   have hseg (n : Nat) : (t n : Real) ≤ t (n + 1) :=
     htmono (Nat.le_succ n)
   have hkinPiece (n : Nat) : IntervalIntegrable

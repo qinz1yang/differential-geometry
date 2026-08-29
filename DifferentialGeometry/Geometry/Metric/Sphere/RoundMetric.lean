@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Basic
 import DifferentialGeometry.Geometry.Metric.MetricExistence
-import DifferentialGeometry.Bundle.ClmSectionSmooth
+import DifferentialGeometry.Bundle.ContinuousLinearMapSection
 import Mathlib.Geometry.Manifold.Instances.Sphere
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.Riemannian.Basic
@@ -82,11 +82,11 @@ noncomputable def roundMetric : SmoothRiemannianMetric (𝓡 n) (sphere (0 : E) 
     classical
     have : FiniteDimensional ℝ E := .of_fact_finrank_eq_succ n
     have : CompactSpace (sphere (0 : E) 1) := Metric.sphere.compactSpace _ _
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_continuousLinearMap_section_of_apply
       (V₂ := fun x : sphere (0 : E) 1 => TangentSpace (𝓡 n) x →L[ℝ] ℝ)
       (φ := fun x : sphere (0 : E) 1 => roundInner (n := n) x)
     intro Y
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_continuousLinearMap_section_of_apply
       (V₂ := fun _ : sphere (0 : E) 1 => ℝ)
       (φ := fun x : sphere (0 : E) 1 => roundInner (n := n) x (Y x))
     intro W

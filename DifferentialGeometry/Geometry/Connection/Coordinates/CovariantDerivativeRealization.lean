@@ -85,7 +85,7 @@ theorem covDerivStepComp_frameComp_eq {s : ℕ}
   set V : Fin s → (y : M) → TangentSpace I y :=
     fun q y => frame (Fin.tail n q) y with hV_def
   obtain ⟨X, hX⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (frame (n 0) x)
   have hV_at : ∀ q : Fin s,
       ContMDiffAt I (I.prod 𝓘(Real, E)) (1 : WithTop ℕ∞)

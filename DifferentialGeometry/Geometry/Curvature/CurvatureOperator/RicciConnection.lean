@@ -992,16 +992,16 @@ theorem riemannOp_section_contMDiff (g : SmoothRiemannianMetric I M) :
             TangentSpace I x)
         b (riemannOp (LeviCivita (I := I) g) b)) := by
   classical
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun x : M =>
       TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] TangentSpace I x)
     (φ := fun x : M => riemannOp (LeviCivita (I := I) g) x)
   intro X
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x)
     (φ := fun x : M => riemannOp (LeviCivita (I := I) g) x (X x))
   intro Y
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun x : M => TangentSpace I x)
     (φ := fun x : M => riemannOp (LeviCivita (I := I) g) x (X x) (Y x))
   intro Z
@@ -1240,11 +1240,11 @@ theorem ricciTensor_contMDiff (g : SmoothRiemannianMetric I M) :
         (E := fun x : M => TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ) b
         (ricciTensor (I := I) g b)) := by
   classical
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
     (φ := fun x : M => ricciTensor (I := I) g x)
   intro Y
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun _ : M => ℝ)
     (φ := fun x : M => ricciTensor (I := I) g x (Y x))
   intro W

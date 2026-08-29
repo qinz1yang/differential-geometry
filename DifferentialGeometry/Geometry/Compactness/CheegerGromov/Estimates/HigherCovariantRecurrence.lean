@@ -808,11 +808,11 @@ theorem hkoszul_of_leviCivita {u : Set M} (hu : IsOpen u)
   set covH := DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I) gRef
     with hcovH
   funext idx
-  obtain ⟨Xa, hXa⟩ := ContMDiffSection.exists_eq_at_gen (I := I) (F := E)
+  obtain ⟨Xa, hXa⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E)
     (V := TangentSpace I) (n := (⊤ : ℕ∞)) y (frame (idx 0) y)
-  obtain ⟨Xb, hXb⟩ := ContMDiffSection.exists_eq_at_gen (I := I) (F := E)
+  obtain ⟨Xb, hXb⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E)
     (V := TangentSpace I) (n := (⊤ : ℕ∞)) y (frame (idx 1) y)
-  obtain ⟨Xe, hXe⟩ := ContMDiffSection.exists_eq_at_gen (I := I) (F := E)
+  obtain ⟨Xe, hXe⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E)
     (V := TangentSpace I) (n := (⊤ : ℕ∞)) y (frame (idx 2) y)
   have hexp : ∀ v : TangentSpace I y, (∑ c : Idx, hframe.coeff c y v • frame c y) = v := by
     intro v

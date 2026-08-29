@@ -35,7 +35,7 @@ private theorem totalNabla0SRealizes_eval_point_vector_smooth_slots
           (Function.update (fun r : Fin s => V r x) q
             ((cov (fun y : M => V q y) x) W)) := by
   obtain ⟨Wsec, hWsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x W
   have h0 := TotalNabla0SRealizes.eval_smooth_slots
     (I := I) hA Wsec V x
@@ -68,7 +68,7 @@ theorem cotangentSharp_cov_eq_sharp_curry_of_mdiffAt
   apply eq_of_inner_basis_eq_gen (I := I) g x basis
   intro i
   obtain ⟨Zsec, hZsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (basis i)
   have hX : MDiffAt (T% (fun y : M => X y)) x :=
     X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)

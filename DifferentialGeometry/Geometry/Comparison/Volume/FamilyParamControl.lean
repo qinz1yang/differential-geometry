@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.ParamEvaluation
 import DifferentialGeometry.Topology.Manifold.TangentPartialDiffeomorph
 import DifferentialGeometry.Geometry.Metric.Family.Basic
 import DifferentialGeometry.Geometry.Exponential.GaussLemmaPullback
-import DifferentialGeometry.Topology.FiberBundleT2
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

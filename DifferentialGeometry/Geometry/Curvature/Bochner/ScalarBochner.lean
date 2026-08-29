@@ -372,7 +372,7 @@ theorem traceNablaHessianRealizesDLapAt_of_lapTrace
     TraceNablaHessianRealizesDLapAt (I := I) cov g u (nabla2DuSec x) := by
   intro Y
   obtain ⟨X, hX⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x Y
   have htrace := extDeriv_metricTrace_eq_traceNabla
     (I := I) cov g hmc nablaDuSec nabla2DuSec hnabla X x

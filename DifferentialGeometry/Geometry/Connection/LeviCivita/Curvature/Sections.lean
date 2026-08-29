@@ -190,13 +190,13 @@ private theorem nabla0SFun_perm
   classical
   let V : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) := fun a =>
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (slots a)).choose
   have hV : ∀ a : Fin s, V a x = slots a := by
     intro a
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (slots a)).choose_spec
   let Vσ : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
@@ -432,7 +432,7 @@ theorem levi_civita_covariant_riemann_symmetries
     let Rm04 : Tensor04Section (I := I) (M := M) :=
       DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm04Section (I := I) g cov hcov
     obtain ⟨Asec, hAsec⟩ :=
-      ContMDiffSection.exists_eq_at_gen
+      ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) x A
     have hsymm :=
@@ -469,7 +469,7 @@ theorem levi_civita_covariant_riemann_symmetries
     let Rm04 : Tensor04Section (I := I) (M := M) :=
       DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm04Section (I := I) g cov hcov
     obtain ⟨Asec, hAsec⟩ :=
-      ContMDiffSection.exists_eq_at_gen
+      ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) x A
     have hsymm :=
@@ -508,7 +508,7 @@ theorem levi_civita_covariant_riemann_symmetries
     let Rm04 : Tensor04Section (I := I) (M := M) :=
       DifferentialGeometry.Geometry.Curvature.CovariantDerivative.rm04Section (I := I) g cov hcov
     obtain ⟨Asec, hAsec⟩ :=
-      ContMDiffSection.exists_eq_at_gen
+      ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) x A
     have hsymm :=
@@ -1303,7 +1303,7 @@ theorem levi_civita_second_covariant_riemann_symmetries
         (slots 0) (slots 1) (slots 2) (slots 3) (slots 4)
       simpa [nablaRm04, totalNabla0S_apply, σ, vec5, Equiv.ofBijective] using h
     obtain ⟨Asec, hAsec⟩ :=
-      ContMDiffSection.exists_eq_at_gen
+      ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) x A
     have h := nabla0SFun_perm (I := I)
@@ -1334,7 +1334,7 @@ theorem levi_civita_second_covariant_riemann_symmetries
         (slots 0) (slots 2) (slots 1) (slots 3) (slots 4)
       simpa [nablaRm04, totalNabla0S_apply, σ, vec5, Equiv.ofBijective] using h
     obtain ⟨Asec, hAsec⟩ :=
-      ContMDiffSection.exists_eq_at_gen
+      ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) x A
     have h := nabla0SFun_perm (I := I)
@@ -1364,7 +1364,7 @@ theorem levi_civita_second_covariant_riemann_symmetries
         (slots 0) (slots 1) (slots 2) (slots 3) (slots 4)
       simpa [nablaRm04, totalNabla0S_apply, σ, vec5, Equiv.ofBijective] using h
     obtain ⟨Asec, hAsec⟩ :=
-      ContMDiffSection.exists_eq_at_gen
+      ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) x A
     have h := nabla0SFun_perm (I := I)

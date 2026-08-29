@@ -33,7 +33,7 @@ private theorem covDeriv_self_one (g : SmoothRiemannianMetric I M) :
     metricCovDeriv (I := I) g g 1 = 0 := by
   refine DFunLike.ext _ _ (fun x => ?_)
   refine ContinuousMultilinearMap.ext (fun slots => ?_)
-  obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at_gen (I := I) (F := E)
+  obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E)
     (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (slots 0)
   have hcons : Fin.cons (X x) (Fin.tail slots) = slots := by
     rw [hX]

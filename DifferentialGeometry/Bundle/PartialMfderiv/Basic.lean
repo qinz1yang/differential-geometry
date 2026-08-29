@@ -331,7 +331,7 @@ theorem mvfderiv_apply_mlieBracket
           (fun y : M => mvfderiv (I := I) f y (X y)) x (Y x) := by
   exact vderiv_mlieBracket (I := I) X Y f x hX hY hf
 
-theorem contMDiff_partial_deriv_fst_gen
+theorem contMDiff_partial_deriv_fst
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]

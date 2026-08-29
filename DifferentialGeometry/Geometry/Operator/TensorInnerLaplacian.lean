@@ -165,10 +165,10 @@ theorem hessianSec_inner0S_slots {s : ℕ}
       (n := (∞ : WithTop ℕ∞)) 1 :=
     duSec (I := I) phi hphi
   let Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x Y).choose
   have hZ : Z x = Y :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x Y).choose_spec
   have hHess := hessianSec_realizesAt (I := I) cov hcov phi hphi x
   have hduZ : ∀ y : M,
@@ -278,11 +278,11 @@ theorem hessianSec_inner0S_slots {s : ℕ}
     rw [duSec_apply]
     rw [differential1FormFun_apply_eq_mvfderiv]
     let W : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
         ((cov (fun y : M => Z y) x) (X x))).choose
     have hW : W x = (cov (fun y : M => Z y) x) (X x) :=
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
         ((cov (fun y : M => Z y) x) (X x))).choose_spec
     have hL := inner0S_nabla (I := I) cov g hmc A B W x
@@ -419,10 +419,10 @@ theorem laplacianAt_inner0S_eq_inner_roughLap_of_flat
   rw [metricTraceFirstTwo0SAt_eq_sum_basis g basis gInv hinv
     (hessianSec (I := I) cov hcov phi hphi x) Fin.elim0]
   let Ei : Idx -> ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
-    fun i => (ContMDiffSection.exists_eq_at_gen
+    fun i => (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (basis i)).choose
   have hEi : ∀ i : Idx, Ei i x = basis i := fun i =>
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (basis i)).choose_spec
   have hslot : ∀ i j : Idx,
       (hessianSec (I := I) cov hcov phi hphi x) (vec2 (I := I) (basis i) (basis j)) =

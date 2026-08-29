@@ -925,19 +925,19 @@ theorem tensor0S_ricciIdentity_with_torsion
   classical
   intro X Y slots
   obtain ⟨Xsec, hXx⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x X
   obtain ⟨Ysec, hYx⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x Y
   let Vsec : Fin s → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _) :=
     fun q =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
         (slots q)).choose
   have hVx (q : Fin s) : Vsec q x = slots q :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
       (slots q)).choose_spec
   have hslots : (fun q : Fin s => Vsec q x) = slots := by

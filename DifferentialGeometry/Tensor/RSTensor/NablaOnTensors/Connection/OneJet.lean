@@ -228,7 +228,7 @@ theorem exists_cov_zero_at
     ext W
     let W₀ : E := W
     obtain ⟨Xsec, hXsec⟩ :=
-      ContMDiffSection.exists_eq_at_gen
+      ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
         (n := (⊤ : ℕ∞)) x₀ W
     let X : (x : M) -> TangentSpace I x := fun x => Xsec x

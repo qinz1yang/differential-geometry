@@ -13,7 +13,7 @@ namespace Geometry
 variable {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M]
 
-theorem exists_chart_head
+theorem exists_chart_initial_segment
     {a b : Real} (hab : a < b) {gamma : Real → M}
     (hgamma : ContinuousOn gamma (Icc a b)) {p : M}
     (hp : gamma a ∈ (chartAt H p).source) :

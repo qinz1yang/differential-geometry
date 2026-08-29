@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.LocalIsometryRigidity
 import DifferentialGeometry.Geometry.Metric.Sphere.IsometryExtension
-import DifferentialGeometry.Topology.FiberBundleT2
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import Mathlib.Analysis.Normed.Module.Connected
 open DifferentialGeometry.Geometry.Curvature
 

@@ -126,13 +126,13 @@ private theorem sum_rm04_diag
     ∑ i, metricRm04 (I := I) (M := M) g x (vec4 (e i) A A (e i)) =
       metricRicci (I := I) (M := M) g x (vec2 A A) := by
   classical
-  obtain ⟨Asec, hAsec⟩ := ContMDiffSection.exists_eq_at_gen
+  obtain ⟨Asec, hAsec⟩ := ContMDiffSection.exists_eq_at
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x A
   rw [metricRicci_apply, metricRicciAt_apply_eq_ricciTensor]
   rw [ricciTensor_eq_orthonormal_trace (I := I) g x A A e hON]
   apply Finset.sum_congr rfl
   intro i _
-  obtain ⟨Esec, hEsec⟩ := ContMDiffSection.exists_eq_at_gen
+  obtain ⟨Esec, hEsec⟩ := ContMDiffSection.exists_eq_at
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (e i)
   have hRm :=
     (metricCurvData (I := I) (M := M) g).rm04Realizes Esec Asec Asec Esec x
@@ -204,12 +204,12 @@ private theorem sum_nablaRicci_first
     ∑ i, totalNabla0SFun (𝕜 := Real) (I := I) 2 (LeviCivita (I := I) g)
         (metricRicci (I := I) (M := M) g) x (vec3 A (e i) (e i)) =
       nablaScalar (I := I) g
-        (ContMDiffSection.exists_eq_at_gen
+        (ContMDiffSection.exists_eq_at
           (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x A).choose x := by
   classical
-  let X := (ContMDiffSection.exists_eq_at_gen
+  let X := (ContMDiffSection.exists_eq_at
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x A).choose
-  have hX : X x = A := (ContMDiffSection.exists_eq_at_gen
+  have hX : X x = A := (ContMDiffSection.exists_eq_at
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x A).choose_spec
   let dRic := totalNabla0SFun (𝕜 := Real) (I := I) 2 (LeviCivita (I := I) g)
     (metricRicci (I := I) (M := M) g) x
@@ -246,12 +246,12 @@ private theorem sum_nablaRicci_div
     ∑ i, totalNabla0SFun (𝕜 := Real) (I := I) 2 (LeviCivita (I := I) g)
         (metricRicci (I := I) (M := M) g) x (vec3 (e i) (e i) A) =
       (1 / 2 : Real) * nablaScalar (I := I) g
-        (ContMDiffSection.exists_eq_at_gen
+        (ContMDiffSection.exists_eq_at
           (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x A).choose x := by
   classical
-  let X := (ContMDiffSection.exists_eq_at_gen
+  let X := (ContMDiffSection.exists_eq_at
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x A).choose
-  have hX : X x = A := (ContMDiffSection.exists_eq_at_gen
+  have hX : X x = A := (ContMDiffSection.exists_eq_at
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x A).choose_spec
   let dRic := totalNabla0SFun (𝕜 := Real) (I := I) 2 (LeviCivita (I := I) g)
     (metricRicci (I := I) (M := M) g) x
@@ -353,7 +353,7 @@ theorem lIndexInt_trace
   have hFirst :
       ∑ i, dRic (vec3 A (P i s) (P i s)) =
         nablaScalar (I := I) g
-          (ContMDiffSection.exists_eq_at_gen
+          (ContMDiffSection.exists_eq_at
             (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x A).choose x := by
     change ∑ i, totalNabla0SFun (𝕜 := Real) (I := I) 2
         (LeviCivita (I := I) g) (metricRicci (I := I) (M := M) g) x
@@ -362,7 +362,7 @@ theorem lIndexInt_trace
   have hDiv :
       ∑ i, dRic (vec3 (P i s) (P i s) A) =
         (1 / 2 : Real) * nablaScalar (I := I) g
-          (ContMDiffSection.exists_eq_at_gen
+          (ContMDiffSection.exists_eq_at
             (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x A).choose x := by
     change ∑ i, totalNabla0SFun (𝕜 := Real) (I := I) 2
         (LeviCivita (I := I) g) (metricRicci (I := I) (M := M) g) x

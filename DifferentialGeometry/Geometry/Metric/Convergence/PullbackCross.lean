@@ -105,17 +105,17 @@ theorem metricCovDeriv_pullbackCross
   | succ a ih =>
       intro x slots
       obtain ⟨X, hX⟩ :=
-        ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+        ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
           (n := (⊤ : ℕ∞)) x (slots 0)
       let V : Fin (a + 2) →
           ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
         fun q =>
-          (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+          (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
             (n := (⊤ : ℕ∞)) x (slots q.succ)).choose
       have hV : ∀ q : Fin (a + 2), V q x = slots q.succ := by
         intro q
         exact
-          (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+          (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
             (n := (⊤ : ℕ∞)) x (slots q.succ)).choose_spec
       have hsmooth :
           metricCovDeriv (I := I)

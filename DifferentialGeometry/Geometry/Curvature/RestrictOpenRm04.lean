@@ -93,16 +93,16 @@ theorem metricRm04StdAt_restrictOpen
         (mfderiv I I (Subtype.val : U → M) x Z)
         (mfderiv I I (Subtype.val : U → M) x W) := by
   obtain ⟨Xs, hXs⟩ :=
-    ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) (x : M) (mfderiv I I (Subtype.val : U → M) x X)
   obtain ⟨Ys, hYs⟩ :=
-    ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) (x : M) (mfderiv I I (Subtype.val : U → M) x Y)
   obtain ⟨Zs, hZs⟩ :=
-    ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) (x : M) (mfderiv I I (Subtype.val : U → M) x Z)
   obtain ⟨Ws, hWs⟩ :=
-    ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) (x : M) (mfderiv I I (Subtype.val : U → M) x W)
   have hR :
       metricRm04StdAt (I := I) (M := M) g (x : M)

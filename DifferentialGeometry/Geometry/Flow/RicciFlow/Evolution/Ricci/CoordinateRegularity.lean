@@ -355,13 +355,13 @@ theorem coordNablaReal
   let V : Fin 2 -> (x : M) -> TangentSpace I x :=
     fun q y => if q = 0 then frame a y else frame b y
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x₀ (frame d x₀)).choose
   have hX : X x₀ = frame d x₀ := by
     dsimp [X]
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x₀ (frame d x₀)).choose_spec
   have hframeAt (r : Idx) :
@@ -489,13 +489,13 @@ theorem coordNablaRealOn
   let V : Fin 2 -> (x : M) -> TangentSpace I x :=
     fun q y => if q = 0 then frame a y else frame b y
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (frame d x)).choose
   have hX : X x = frame d x := by
     dsimp [X]
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (frame d x)).choose_spec
   have hframeAt (r : Idx) :
@@ -635,13 +635,13 @@ theorem coordNab2Can
   let V : Fin 3 -> (x : M) -> TangentSpace I x :=
     fun q y => if q = 0 then frame a y else if q = 1 then frame i y else frame j y
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x0 (frame d x0)).choose
   have hX : X x0 = frame d x0 := by
     dsimp [X]
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x0 (frame d x0)).choose_spec
   have hframeAt (r : Idx) :

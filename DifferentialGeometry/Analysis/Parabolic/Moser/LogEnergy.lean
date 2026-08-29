@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Energy.Caccioppoli
-import DifferentialGeometry.Bundle.PartialMfderiv
+import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Geometry.Operator.LaplacianBridge
 
 noncomputable section

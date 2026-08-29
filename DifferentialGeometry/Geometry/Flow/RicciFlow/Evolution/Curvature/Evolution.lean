@@ -247,13 +247,13 @@ theorem rm2Bianchi
         (Fin.cons P (DifferentialGeometry.Geometry.Curvature.vec5 (I := I) C A B U W)) = 0 := by
   classical
   obtain ⟨X, hX⟩ :=
-    ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x P
   have hVex : ∀ a : Fin 5,
       ∃ s : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _),
         s x = DifferentialGeometry.Geometry.Curvature.vec5 (I := I) A B C U W a := by
     intro a
-    exact ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    exact ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x _
   choose V hV using hVex
   have hstep : ∀ w : Fin 5 → TangentSpace I x,

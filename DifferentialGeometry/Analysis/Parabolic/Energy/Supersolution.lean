@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Energy.Caccioppoli
-import DifferentialGeometry.Bundle.PartialMfderiv
+import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 
 set_option autoImplicit false
 

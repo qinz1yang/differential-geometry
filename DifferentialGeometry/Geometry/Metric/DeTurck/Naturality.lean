@@ -1,4 +1,4 @@
-import DifferentialGeometry.Bundle.VectorFieldPushforward
+import DifferentialGeometry.Bundle.VectorField.Pushforward
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference
 import DifferentialGeometry.Geometry.Connection.LeviCivita.CovariantDerivativePointwise
 open DifferentialGeometry.Geometry.Curvature

@@ -370,11 +370,11 @@ theorem riemannKernelBilin_homSection_contMDiff (g₁ : SmoothRiemannianMetric I
         (E := fun b : M => TangentSpace I b →L[ℝ] TangentSpace I b →L[ℝ] ℝ)
         x (riemannKernelBilin (I := I) g₁ x (p x) (q x))) := by
   classical
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
     (φ := fun x : M => riemannKernelBilin (I := I) g₁ x (p x) (q x))
   intro Y
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun _ : M => ℝ)
     (φ := fun x : M => riemannKernelBilin (I := I) g₁ x (p x) (q x) (Y x))
   intro W

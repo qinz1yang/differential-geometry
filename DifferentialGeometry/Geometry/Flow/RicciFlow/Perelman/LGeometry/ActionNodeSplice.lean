@@ -44,10 +44,10 @@ theorem exists_chartH1_join
         (Icc (0 : Real) (lSegLen t i))) := by
   classical
   obtain ⟨s0, hs00, hs0mono, ⟨m0, hs0last⟩, hp0⟩ :=
-    DifferentialGeometry.Geometry.exists_chart_split (H := H) hac.le
+    DifferentialGeometry.Geometry.exists_chart_subdivision (H := H) hac.le
       hgamma0.continuousOn
   obtain ⟨s1, hs10, hs1mono, ⟨m1, hs1last⟩, hp1⟩ :=
-    DifferentialGeometry.Geometry.exists_chart_split (H := H) hcb.le
+    DifferentialGeometry.Geometry.exists_chart_subdivision (H := H) hcb.le
       hgamma1.continuousOn
   let t0 : Fin (m0 + 1) → Real := fun i ↦ s0 i
   let t1 : Fin (m1 + 1) → Real := fun i ↦ s1 i

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.CutoffExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.Variation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.Pullback
-import DifferentialGeometry.Bundle.PartialMfderiv
+import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartMetric
 import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
 open DifferentialGeometry.Geometry.Curvature

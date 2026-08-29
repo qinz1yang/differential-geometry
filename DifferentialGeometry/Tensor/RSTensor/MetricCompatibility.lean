@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility
 import DifferentialGeometry.Tensor.RSTensor.Metric
 import DifferentialGeometry.Tensor.RSTensor.CoordinateBasis
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.HigherOrder
-import DifferentialGeometry.Bundle.SectionOperations
+import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
 import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
@@ -123,13 +123,13 @@ theorem nabla_metric_zero
   let V : Fin 2 -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
     fun a =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (basis (slots a))).choose
   have hV : ∀ a : Fin 2, V a x = basis (slots a) := by
     intro a
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (basis (slots a))).choose_spec
   have hzero := nabla_metric_eval (I := I) cov g hmc X V x
@@ -157,13 +157,13 @@ theorem nabla_zero
   let V : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
     fun a =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (basis (slots a))).choose
   have hV : ∀ a : Fin s, V a x = basis (slots a) := by
     intro a
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (basis (slots a))).choose_spec
   have hzero :
@@ -257,13 +257,13 @@ theorem nabla_smul_metric
   let V : Fin 2 -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
     fun a =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (slots a)).choose
   have hV : ∀ a : Fin 2, V a x = slots a := by
     intro a
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (slots a)).choose_spec
   let metricSec : Tensor0SField (𝕜 := Real) (E := E) (H := H)

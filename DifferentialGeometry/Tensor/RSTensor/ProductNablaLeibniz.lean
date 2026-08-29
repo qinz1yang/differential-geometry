@@ -52,11 +52,11 @@ theorem nabla0S_product_realizes {s q : ℕ}
   let V : Fin (s + q) -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
     fun a =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (slots a)).choose
   have hV : ∀ a : Fin (s + q), V a x = slots a := fun a =>
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (slots a)).choose_spec
   have hslots : (fun a : Fin (s + q) => V a x) = slots := funext hV

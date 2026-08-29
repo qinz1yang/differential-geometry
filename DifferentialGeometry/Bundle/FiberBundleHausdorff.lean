@@ -7,7 +7,6 @@ namespace DifferentialGeometry
 
 open Bundle Set Topology
 
-
 instance FiberBundle.t2Space_totalSpace
     {B F : Type*} [TopologicalSpace B] [TopologicalSpace F]
     {E : B → Type*} [TopologicalSpace (Bundle.TotalSpace F E)] [∀ b, TopologicalSpace (E b)]

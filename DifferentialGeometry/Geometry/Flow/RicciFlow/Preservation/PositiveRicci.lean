@@ -2315,13 +2315,13 @@ theorem scalarMetric1Sec_realizes
   let V : Fin 2 -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
     fun a =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (slots a)).choose
   have hV : ∀ a : Fin 2, V a x = slots a := by
     intro a
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (slots a)).choose_spec
   let metricSec : Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -2438,13 +2438,13 @@ theorem scalarMetric2Sec_realizes
   let V : Fin 3 -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
     fun a =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (slots a)).choose
   have hV : ∀ a : Fin 3, V a x = slots a := by
     intro a
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (slots a)).choose_spec
   let alphaSec : Tensor0SField (𝕜 := Real) (E := E) (H := H)

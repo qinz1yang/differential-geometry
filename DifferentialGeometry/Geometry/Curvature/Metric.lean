@@ -366,10 +366,10 @@ theorem nablaRic_ein3
   let := tensor0SBundle_smooth (𝕜 := Real) (E := E) (H := H)
     (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) (s := 2)
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x A).choose
   have hX : X x = A :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x A).choose_spec
   let slots : Fin 2 -> TangentSpace I x := DifferentialGeometry.Geometry.Curvature.vec2 (I := I) B
     C
@@ -605,7 +605,7 @@ theorem metricNablaSymm
   classical
   intro A B C
   obtain ⟨X, hX⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x A
   have hRicSymm :

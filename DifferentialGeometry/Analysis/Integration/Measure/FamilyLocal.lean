@@ -1,5 +1,4 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Family
-import DifferentialGeometry.Bundle.PartialMfderiv
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import Mathlib.Analysis.SpecialFunctions.SmoothTransition
 

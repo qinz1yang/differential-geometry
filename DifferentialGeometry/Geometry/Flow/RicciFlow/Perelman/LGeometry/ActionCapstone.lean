@@ -88,7 +88,7 @@ theorem lAction_chart_lsc
     funext s
     exact hgamma_eq s
   obtain ⟨q, hq0, hqmono, ⟨m, hqm⟩, hpieces⟩ :=
-    DifferentialGeometry.Geometry.exists_cpt_split (H := H) hab
+    DifferentialGeometry.Geometry.exists_compact_chart_subdivision (H := H) hab
       hgamma.continuousOn
   let t : Fin (m + 1) → Real := fun i ↦ (q i).1
   have htmono : Monotone t := fun i j hij ↦

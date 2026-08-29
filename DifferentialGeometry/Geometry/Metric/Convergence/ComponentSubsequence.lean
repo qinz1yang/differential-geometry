@@ -470,10 +470,10 @@ theorem componentConv_covDeriv_of_chartCInf
   refine ⟨ψ, hψ, ?_⟩
   have hxU : extChartAt I x x ∈ U := hImg ⟨x, hxint, rfl⟩
   set V : Fin (a + 2) → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    fun q => (ContMDiffSection.exists_eq_at_gen (I := I) (n := (⊤ : ℕ∞)) x (b (I0 q))).choose
+    fun q => (ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞)) x (b (I0 q))).choose
     with hVdef
   have hVval : ∀ q, V q x = b (I0 q) := fun q =>
-    (ContMDiffSection.exists_eq_at_gen (I := I) (n := (⊤ : ℕ∞)) x (b (I0 q))).choose_spec
+    (ContMDiffSection.exists_eq_at (I := I) (n := (⊤ : ℕ∞)) x (b (I0 q))).choose_spec
   have hcar : ∀ (g : SmoothRiemannianMetric I M),
       χ (extChartAt I x x) * writtenInExtChartAt I 𝓘(Real, Real) x
           (fun w : M => (covDerivOfField (I := I) gRef
@@ -550,7 +550,7 @@ theorem componentBz_eq_covDeriv
         (Module.finBasis Real E).repr (basisE (I0 q)) j • frame j) z)
   congr 1
   funext q
-  rw [bz_eq_tangentConst, tangentConst_basis_expand, ContMDiffSection.finset_sum_apply_gen]
+  rw [bz_eq_tangentConst, tangentConst_basis_expand, ContMDiffSection.finset_sum_apply]
   refine Finset.sum_congr rfl fun j _ => ?_
   simp only [ContMDiffSection.coe_smul, Pi.smul_apply]
   rw [(hframeσ j).self_of_nhdsSet z hzKc]

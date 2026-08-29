@@ -309,21 +309,21 @@ theorem koszulComp_at
   funext idx
   obtain ⟨X, hX⟩ : ∃ X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _),
       X y = frame (idx 0) y :=
-    ⟨(ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ⟨(ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) y (frame (idx 0) y)).choose,
-      (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) y (frame (idx 0) y)).choose_spec⟩
   obtain ⟨Y, hY⟩ : ∃ Y : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _),
       Y y = frame (idx 1) y :=
-    ⟨(ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ⟨(ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) y (frame (idx 1) y)).choose,
-      (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) y (frame (idx 1) y)).choose_spec⟩
   obtain ⟨Z, hZ⟩ : ∃ Z : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _),
       Z y = frame (idx 2) y :=
-    ⟨(ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ⟨(ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) y (frame (idx 2) y)).choose,
-      (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) y (frame (idx 2) y)).choose_spec⟩
   have hmcK : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
       (I := I) (leviCivitaConnectionOfMetric (I := I) gK) gK :=

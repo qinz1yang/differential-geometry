@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionNodeHead
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionNodeSame
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeC1Overlap
-import DifferentialGeometry.Topology.CurveChartHead
+import DifferentialGeometry.Topology.Manifold.CurveChart.InitialSegment
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGram
 
 set_option autoImplicit false
@@ -163,7 +163,7 @@ theorem lNode_mom_match
     exact hsrc 0 (by simpa using (show t 1 ∈ Icc (t 0) (t 1) from
       ⟨(hpos 0).le, le_rfl⟩))
   obtain ⟨c, h1c0, hc20, hsrcHead'⟩ :=
-    DifferentialGeometry.Geometry.exists_chart_head (H := H)
+    DifferentialGeometry.Geometry.exists_chart_initial_segment (H := H)
       (hpos 1) hgamma1.continuousOn hpNode
   have h1c : t 1 < c := by simpa only [hfin1c] using h1c0
   have hc2 : c ≤ t (Fin.last 2) := by simpa only [hfin1s] using hc20

@@ -55,19 +55,19 @@ theorem rm04LowersRm13At_of_realizes
     Rm04LowersRm13At (I := I) g x (Rm13 x) (Rm04 x) := by
   intro X Y Z W
   obtain ⟨Wsec, hWsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
       (n := (⊤ : ℕ∞)) x W
   obtain ⟨Xsec, hXsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
       (n := (⊤ : ℕ∞)) x X
   obtain ⟨Ysec, hYsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
       (n := (⊤ : ℕ∞)) x Y
   obtain ⟨Zsec, hZsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
       (n := (⊤ : ℕ∞)) x Z
   let alpha : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x :=

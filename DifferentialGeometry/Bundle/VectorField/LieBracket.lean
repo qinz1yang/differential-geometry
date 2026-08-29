@@ -1,4 +1,4 @@
-import DifferentialGeometry.Bundle.VectorFieldPushforward
+import DifferentialGeometry.Bundle.VectorField.Pushforward
 import Mathlib.Geometry.Manifold.VectorField.LieBracket
 
 

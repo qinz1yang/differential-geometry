@@ -193,11 +193,11 @@ theorem connectionDifferenceAACommKernelBilin_homSection_contMDiff
         (E := fun b : M => TangentSpace I b →L[ℝ] TangentSpace I b →L[ℝ] ℝ) x
         (connectionDifferenceIteratedCommKernelBilin (I := I) g₀ g₁ x (p x) (q x))) := by
   classical
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
     (φ := fun x : M => connectionDifferenceIteratedCommKernelBilin (I := I) g₀ g₁ x (p x) (q x))
   intro V0
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun _ : M => ℝ)
     (φ := fun x : M => connectionDifferenceIteratedCommKernelBilin (I := I) g₀ g₁ x (p x) (q x) (V0 x))
   intro W

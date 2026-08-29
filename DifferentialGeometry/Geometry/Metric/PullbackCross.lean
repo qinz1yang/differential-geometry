@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Pullback
 import DifferentialGeometry.Geometry.Metric.MetricBallMonotone
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Bundle.ClmSectionSmooth
+import DifferentialGeometry.Bundle.ContinuousLinearMapSection
 import Mathlib.Geometry.Manifold.Diffeomorph
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
@@ -151,11 +151,11 @@ noncomputable def Diffeomorph.pullbackMetricCross
   isVonNBounded x := Diffeomorph.pullbackInnerCross_isVonNBounded g Φ x
   contMDiff := by
     classical
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_continuousLinearMap_section_of_apply
       (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
       (φ := fun x : M => Diffeomorph.pullbackInnerCross g Φ x)
     intro Y
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_continuousLinearMap_section_of_apply
       (V₂ := fun _ : M => ℝ)
       (φ := fun x : M => Diffeomorph.pullbackInnerCross g Φ x (Y x))
     intro W

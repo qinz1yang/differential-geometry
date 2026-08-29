@@ -109,7 +109,7 @@ theorem coordNab2Ric_eq_nabla2RicField
   set frame := coordinateFrameAt (I := I) x₀ with hframe_def
   set nablaA := nablaRicField (I := I) S t with hnablaA_def
   obtain ⟨Dsec, hDsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x₀ (frame d x₀)
   let slot : Fin 3 -> CoordinateIdx (𝕜 := Real) E :=
     fun q => if q = 0 then a else if q = 1 then i else j

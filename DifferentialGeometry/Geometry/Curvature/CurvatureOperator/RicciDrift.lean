@@ -131,12 +131,12 @@ private theorem div_ricGrad [I.Boundaryless]
     metricInverseInBasis_of_orthonormal (I := I) g basis hON
   let X : Fin (Module.finrank Real (TangentSpace I x)) ->
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
-    fun i => (ContMDiffSection.exists_eq_at_gen
+    fun i => (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x (basis i)).choose
   have hX (i : Fin (Module.finrank Real (TangentSpace I x))) :
       X i x = basis i :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x (basis i)).choose_spec
   have hsharp (i : Fin (Module.finrank Real (TangentSpace I x))) :

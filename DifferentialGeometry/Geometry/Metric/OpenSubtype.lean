@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Bundle.ClmSectionSmooth
+import DifferentialGeometry.Bundle.ContinuousLinearMapSection
 import DifferentialGeometry.Topology.Manifold.OpenSubtype
 
 set_option autoImplicit false
@@ -66,11 +66,11 @@ theorem SmoothRiemannianMetric.restrictOpenInner_contMDiff
     (H := H) (M := M) (s := U)
   let : IsManifold I ∞ U :=
     { U.instHasGroupoid (contDiffGroupoid ∞ I) with }
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun x : U => TangentSpace I x →L[Real] Real)
     (φ := fun x : U => g.restrictOpenInner (I := I) U x)
   intro Y
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun _ : U => Real)
     (φ := fun x : U => g.restrictOpenInner (I := I) U x (Y x))
   intro W
@@ -165,11 +165,11 @@ noncomputable def SmoothRiemannianMetric.restrictOpenOfSubset
     exact g.isVonNBounded (TopologicalSpace.Opens.inclusion hVU x)
   contMDiff := by
     let incl : V → U := TopologicalSpace.Opens.inclusion hVU
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_continuousLinearMap_section_of_apply
       (V₂ := fun x : V => TangentSpace I x →L[Real] Real)
       (φ := fun x : V => g.inner (incl x))
     intro Y
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_continuousLinearMap_section_of_apply
       (V₂ := fun _ : V => Real)
       (φ := fun x : V => g.inner (incl x) (Y x))
     intro W

@@ -70,7 +70,7 @@ import Mathlib.Topology.FiberBundle.Basic
 import DifferentialGeometry.Tensor.Product.Fiber
 import Mathlib.Topology.VectorBundle.Basic
 import Mathlib.LinearAlgebra.TensorProduct.Basis
-import DifferentialGeometry.Bundle.SectionOperations
+import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Tensor.RSTensor.Field
 import DifferentialGeometry.Tensor.Auxiliary.PredualBasis
 import Mathlib.LinearAlgebra.Dual.Basis

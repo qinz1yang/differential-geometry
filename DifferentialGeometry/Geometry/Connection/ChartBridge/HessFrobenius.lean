@@ -57,10 +57,10 @@ private theorem hessSec_abs
     leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally
       (I := I) (M := M) g
   obtain ⟨X, hX⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x v
   obtain ⟨Y, hY⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x w
   have hsec := (hessianSec_nabla (I := I) cov hcov f hf) x X (Y x)
   have heval := nabla0SFun_one_eval_smooth_slots

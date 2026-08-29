@@ -241,7 +241,7 @@ theorem metricCov_restrictOpen_apply_section
   intro ζ
   let ζM : TangentSpace I (x : M) := ζ
   obtain ⟨Z, hZx⟩ :=
-    ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) (x : M) ζM
   have hZrestrict :
       restrictOpenTangentField (I := I) U (fun y : M => Z y) x = ζ := by
@@ -295,7 +295,7 @@ theorem metricCov_restrictOpen_globalSection
       (metricCov (I := I) (M := M) g (fun y : M => Y y) (x : M)) v := by
   let vM : TangentSpace I (x : M) := v
   obtain ⟨X, hXx⟩ :=
-    ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) (x : M) vM
   have hXrestrict :
       restrictOpenTangentField (I := I) U (fun y : M => X y) x = v := by

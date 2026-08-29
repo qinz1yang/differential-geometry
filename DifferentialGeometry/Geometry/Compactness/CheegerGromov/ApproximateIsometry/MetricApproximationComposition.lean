@@ -2,7 +2,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeBounds
 
 
-import DifferentialGeometry.Bundle.ClmSectionSmooth
+import DifferentialGeometry.Bundle.ContinuousLinearMapSection
 import DifferentialGeometry.Geometry.Metric.MetricExistence
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
@@ -154,11 +154,11 @@ theorem exists_pullbackInner (Φ : PartialDiffeomorph I I M N (∞ : WithTop ℕ
     (ContinuousLinearMap.precomp ℝ (mfderiv I I Φ x)).comp
       ((h.inner (Φ x)).comp (mfderiv I I Φ x)) with hQ
   refine ⟨χ, fun x => χ x • Q x, ?_, hχ, hχK, hχsupp, hχ01, fun x => rfl⟩
-  · apply cotangentCov_clmSection_smooth_aux
+  · apply contMDiff_continuousLinearMap_section_of_apply
       (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
       (φ := fun x => χ x • Q x)
     intro Y
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_continuousLinearMap_section_of_apply
       (V₂ := fun _ : M => ℝ)
       (φ := fun x => (χ x • Q x) (Y x))
     intro W x₀

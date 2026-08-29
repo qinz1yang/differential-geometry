@@ -55,11 +55,11 @@ theorem nabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I 2 M]
   let V : Fin s' -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
     fun a =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (slots a)).choose
   have hV : ∀ a : Fin s', V a x = slots a := fun a =>
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (slots a)).choose_spec
   have h1 := nabla0SFun_eval_smooth_slots (I := I) cov X V
@@ -104,11 +104,11 @@ theorem totalNabla0SFun_domDomCongr [T2Space M] [IsManifold I 1 M] [IsManifold I
   apply ext0S_basis (I := I) basis
   intro idx
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (basis (idx 0))).choose
   have hX : X x = basis (idx 0) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (basis (idx 0))).choose_spec
   have hcons :
@@ -168,9 +168,9 @@ theorem totalNabla0SRealizes_unique [T2Space M] {s : ℕ}
   obtain ⟨X, hX⟩ :
       ∃ X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _),
         X x = v 0 :=
-    ⟨(ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ⟨(ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) x (v 0)).choose,
-      (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) x (v 0)).choose_spec⟩
   have hcons : Fin.cons (X x) (Fin.tail v) = v := by
     rw [hX]; exact Fin.cons_self_tail v

@@ -145,7 +145,7 @@ theorem tensor_positive_definite_on_of_nonnegative_of_strict_supersolution
   have hsymSlab : TwoTensorFamilySymmetricOn (I := I) (M := M)
       Sraw (Set.Icc 0 (0 + t)) := by simpa only [zero_add] using hsym
   obtain ⟨Xsec, hXsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (X t x)
   have hsigns : TensorFirstNullScalarSigns (I := I) (M := M)

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivativeAlgebra
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.TotalNabla0STimeDeriv
-import DifferentialGeometry.Bundle.SectionOperations
+import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Geometry.Curvature.Riemann.Basic.Sections
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Connection.Tangent
@@ -63,7 +63,7 @@ theorem covDerivOfField_eval_hasDerivWithinAt
       have hext : ∀ a : Fin (p + 3),
           ∃ σ : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _),
             σ x = v a :=
-        fun a => ContMDiffSection.exists_eq_at_gen x (v a)
+        fun a => ContMDiffSection.exists_eq_at x (v a)
       choose σ hσ using hext
       have hcl := Tensor0SBundle.totalNabla0SFun_hasDerivWithinAt_pt (I := I)
         (leviCivitaConnectionOfMetric (I := I) gRef)

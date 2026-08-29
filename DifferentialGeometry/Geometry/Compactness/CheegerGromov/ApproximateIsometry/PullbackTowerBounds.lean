@@ -94,7 +94,7 @@ theorem iterCov_metric_zero (g : SmoothRiemannianMetric I M) (a : Nat) :
         Tensor0SBundle.Tensor0SSpace.eval
           ((0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
             (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 3) x) slots
-      obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at_gen (I := I) (F := E)
+      obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E)
         (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (slots 0)
       have hslots : slots = Fin.cons (X x) (Fin.tail slots) := by
         rw [hX]

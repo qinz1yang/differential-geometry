@@ -191,11 +191,11 @@ theorem nabla_partialEval0S {s : ℕ}
   let V : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
     fun a =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (v a)).choose
   have hV : ∀ a : Fin s, V a x = v a := fun a =>
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (v a)).choose_spec
   have hVx : (fun a : Fin s => V a x) = v := funext hV
@@ -396,7 +396,7 @@ theorem du_norm0S {s : ℕ}
       2 * inner0S (I := I) g x s
         (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x (nablaT x) W) (T x) := by
   obtain ⟨Wsec, hWsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x W
   have hAderiv :
       nabla0SFun (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)

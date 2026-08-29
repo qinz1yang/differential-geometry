@@ -200,11 +200,11 @@ theorem perturbedInner_contMDiff
         (E := fun b : M => TangentSpace I b →L[ℝ] TangentSpace I b →L[ℝ] ℝ)
         x (perturbedInner g h x)) := by
   classical
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
     (φ := fun x : M => perturbedInner g h x)
   intro Y
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun _ : M => ℝ)
     (φ := fun x : M => perturbedInner g h x (Y x))
   intro W

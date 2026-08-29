@@ -487,7 +487,7 @@ theorem nabla_metricTraceFirstTwo0S {s : ℕ}
             (Fin.cons X (metricTraceInput (I := I) (basis i) (basis j) tail)) := by
   classical
   obtain ⟨Xsec, hXsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x X
   choose Vtail hVtailx hVtailcov using fun b : Fin s =>
     TensorLieDeriv.exists_cov_zero_at_apply (I := I) cov x (tail b)

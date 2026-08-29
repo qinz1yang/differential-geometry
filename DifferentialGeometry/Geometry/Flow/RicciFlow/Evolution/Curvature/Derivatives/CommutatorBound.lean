@@ -122,7 +122,7 @@ theorem nabla3Rm04Field_eval_expand
   set V : Fin 6 → (x : M) → TangentSpace I x :=
     nabla3SlotFields (I := I) frame d₁ d₂ m with hV_def
   obtain ⟨X, hX⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x₀ (frame a x₀)
   have hV_at : ∀ q : Fin 6,
       ContMDiffAt I (I.prod 𝓘(Real, E)) (1 : WithTop ℕ∞)

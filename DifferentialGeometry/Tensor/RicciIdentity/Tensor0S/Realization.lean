@@ -108,7 +108,7 @@ theorem Nabla0SSectionRealizes.eval_point_vector_smooth_slots
           (Function.update (fun r : Fin s => V r x) q
             ((cov (fun y : M => V q y) x) W)) := by
   obtain ⟨Wsec, hWsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x W
   have h0 := Nabla0SSectionRealizes.eval_smooth_slots
     (I := I) h Wsec V x

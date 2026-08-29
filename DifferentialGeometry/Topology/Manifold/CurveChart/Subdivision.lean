@@ -1,6 +1,6 @@
 import Mathlib.Geometry.Manifold.ChartedSpace
 import Mathlib.Topology.UnitInterval
-import Mathlib.Topology.UniformSpace.Compact
+import Mathlib.Topology.Separation.Regular
 
 set_option autoImplicit false
 
@@ -15,21 +15,7 @@ namespace Geometry
 variable {H M : Type*} [TopologicalSpace H] [TopologicalSpace M]
   [ChartedSpace H M]
 
-theorem mapsTo_eventually
-    {X Y ι : Type*} [TopologicalSpace X] [UniformSpace Y]
-    {A : Set X} (hA : IsCompact A) {f : X → Y}
-    (hf : ContinuousOn f A) {U : Set Y} (hU : IsOpen U)
-    (hmap : MapsTo f A U) {F : ι → X → Y} {p : Filter ι}
-    (hconv : TendstoUniformly F f p) :
-    ∀ᶠ n in p, MapsTo (F n) A U := by
-  obtain ⟨V, hV, _hVopen, hball⟩ :=
-    lebesgue_number_of_compact_open
-      (hA.image_of_continuousOn hf) hU (mapsTo_iff_image_subset.mp hmap)
-  filter_upwards [hconv V hV] with n hn
-  intro x hx
-  exact hball (f x) (mem_image_of_mem f hx) (hn x)
-
-theorem exists_chart_split
+theorem exists_chart_subdivision
     {a b : ℝ} (hab : a ≤ b) {γ : ℝ → M}
     (hγ : ContinuousOn γ (Icc a b)) :
     ∃ t : ℕ → Icc a b,
@@ -66,7 +52,7 @@ theorem exists_chart_split
       le_trans hr.2 (t (n + 1)).property.2⟩
   exact hp (show (⟨r, hrab⟩ : Icc a b) ∈ Icc (t n) (t (n + 1)) from hr)
 
-theorem exists_cpt_split
+theorem exists_compact_chart_subdivision
     [LocallyCompactSpace M] [RegularSpace M]
     {a b : ℝ} (hab : a ≤ b) {γ : ℝ → M}
     (hγ : ContinuousOn γ (Icc a b)) :
@@ -79,7 +65,7 @@ theorem exists_cpt_split
         K ⊆ (chartAt H p).source ∧
         MapsTo γ (Icc (t n : ℝ) (t (n + 1) : ℝ)) (interior K) := by
   obtain ⟨t, ht0, hmono, hlast, hchart⟩ :=
-    exists_chart_split (H := H) hab hγ
+    exists_chart_subdivision (H := H) hab hγ
   refine ⟨t, ht0, hmono, hlast, ?_⟩
   intro n
   obtain ⟨p, hp⟩ := hchart n

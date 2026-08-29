@@ -53,11 +53,11 @@ theorem nablaRicReal_frame
   let V : Fin 2 → (y : M) → TangentSpace I y :=
     fun q y => if q = 0 then frame a y else frame b y
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (frame d x)).choose
   have hX : X x = frame d x :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (frame d x)).choose_spec
   have hframeAt (r : Idx) :

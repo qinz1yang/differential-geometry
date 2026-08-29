@@ -117,7 +117,7 @@ theorem canNablaSymmAt
   classical
   intro A B C
   obtain ⟨Xsec, hXsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x A
   have hRicSymm :

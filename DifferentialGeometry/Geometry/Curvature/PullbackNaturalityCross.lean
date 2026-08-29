@@ -263,10 +263,10 @@ theorem metricCov_pullbackCross
     rw [← mfderiv_eq_cle_applyCross (I := I) (J := J) Phi x w, hw_def]
     exact e.apply_symm_apply u
   obtain ⟨Xv, hXv⟩ :=
-    ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x v
   obtain ⟨Zw, hZw⟩ :=
-    ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x w
   have hu : pushFwdSectionCross (I := I) (J := J) Phi Zw (Phi x) = u := by
     rw [pushFwdSectionCross_apply_at_image, hZw]; exact hdw
@@ -471,16 +471,16 @@ theorem metricRm04Std_pullbackCross
         (mfderiv I J (Phi : M -> N) x Z)
         (mfderiv I J (Phi : M -> N) x W) := by
   obtain ⟨Xs, hXs⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x X
   obtain ⟨Ys, hYs⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x Y
   obtain ⟨Zs, hZs⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x Z
   obtain ⟨Ws, hWs⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x W
   rw [metricRm04StdAt_apply, metricRm04StdAt_apply]
   unfold metricRm04At

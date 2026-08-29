@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionNod
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionNodeSame
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ActionRegular
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeC1Overlap
-import DifferentialGeometry.Topology.CurveChartHead
+import DifferentialGeometry.Topology.Manifold.CurveChart.InitialSegment
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGram
 
 set_option autoImplicit false
@@ -129,7 +129,7 @@ theorem lFinNode_vel
   have hgammaMid : ContinuousOn gamma (Icc (t j.castSucc) d) :=
     hgamma1.continuousOn.mono (Icc_subset_Icc le_rfl hdj.le)
   obtain ⟨c, hc0, hcd, hsrcHead⟩ :=
-    DifferentialGeometry.Geometry.exists_chart_head (H := H)
+    DifferentialGeometry.Geometry.exists_chart_initial_segment (H := H)
       hjd hgammaMid hpNode
   have hc1 : c < t j.succ := hcd.trans_lt hdj
   let gammaHead : Real → M := fun r ↦ gamma (t j.castSucc + r)

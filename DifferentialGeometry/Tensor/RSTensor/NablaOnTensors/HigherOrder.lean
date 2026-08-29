@@ -786,13 +786,13 @@ theorem nabla0SFun_add [T2Space M] {s : ℕ}
   let V : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
     fun a =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (basis (idx a))).choose
   have hV : ∀ a : Fin s, V a x = basis (idx a) := by
     intro a
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (basis (idx a))).choose_spec
   have hslots : (fun a : Fin s => V a x) = fun a : Fin s => basis (idx a) := by
@@ -873,13 +873,13 @@ theorem nabla0SFun_smul [T2Space M] {s : ℕ}
   let V : Fin s -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
     fun a =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (basis (idx a))).choose
   have hV : ∀ a : Fin s, V a x = basis (idx a) := by
     intro a
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (basis (idx a))).choose_spec
   have hslots : (fun a : Fin s => V a x) = fun a : Fin s => basis (idx a) := by

@@ -12,7 +12,6 @@ import Mathlib.Analysis.Normed.Module.Dual
 import Mathlib.Geometry.Manifold.BumpFunction
 import Mathlib.LinearAlgebra.Multilinear.Basic
 
-
 namespace DifferentialGeometry
 
 open scoped Manifold ContDiff

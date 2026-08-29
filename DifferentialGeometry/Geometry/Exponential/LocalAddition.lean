@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Exponential.DiagExpDerivative
 import DifferentialGeometry.Geometry.Metric.OpenSubtype
-import DifferentialGeometry.Topology.FiberBundleT2
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 import Mathlib.Topology.Connected.LocallyConnected
 
 

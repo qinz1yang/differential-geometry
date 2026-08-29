@@ -291,13 +291,13 @@ theorem coordinate_second_ricci_covariant_derivative_of_realization
   let V : Fin 3 -> (x : M) -> TangentSpace I x :=
     fun q y => if q = 0 then frame a y else if q = 1 then frame i y else frame j y
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x0 (frame d x0)).choose
   have hX : X x0 = frame d x0 := by
     dsimp [X]
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x0 (frame d x0)).choose_spec
   have hframeAt (r : Idx) :
@@ -673,7 +673,7 @@ theorem ricciLapOfSol
   let X : (x : M) -> Idx ->
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
     fun x i =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (basis x i)).choose
   have hframe : ∀ x i, basis x i = frame i x := by
@@ -689,7 +689,7 @@ theorem ricciLapOfSol
     intro x i
     dsimp [X]
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (basis x i)).choose_spec
   have hlapTrace : ∀ t x,

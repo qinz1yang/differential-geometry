@@ -9,7 +9,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.TensorLoweringParallel
 import DifferentialGeometry.Geometry.Curvature.AlgebraicTensorMetric
 import DifferentialGeometry.Analysis.Calculus.MatrixInverseSmooth
-import DifferentialGeometry.Topology.FiberBundleT2
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
 
 set_option autoImplicit false
 
@@ -1881,16 +1881,16 @@ private theorem nablaKRm04Field_one_anti12_cond
       (nablaKRm04Field (I := I) S t 1 x) (Fin.cons u slots) = 0 := by
   classical
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x u).choose
   have hX : X x = u :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x u).choose_spec
   let V : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    fun a => (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    fun a => (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x (slots a)).choose
   have hV : ∀ a : Fin 4, V a x = slots a := fun a =>
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x (slots a)).choose_spec
   let perms : Bool → Equiv.Perm (Fin 4) :=
     fun k => if k then Equiv.swap (0 : Fin 4) (1 : Fin 4) else 1
@@ -1956,16 +1956,16 @@ private theorem nablaKRm04Field_one_anti34_cond
       (nablaKRm04Field (I := I) S t 1 x) (Fin.cons u slots) = 0 := by
   classical
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x u).choose
   have hX : X x = u :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x u).choose_spec
   let V : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    fun a => (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    fun a => (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x (slots a)).choose
   have hV : ∀ a : Fin 4, V a x = slots a := fun a =>
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x (slots a)).choose_spec
   let perms : Bool → Equiv.Perm (Fin 4) :=
     fun k => if k then Equiv.swap (2 : Fin 4) (3 : Fin 4) else 1
@@ -2341,14 +2341,14 @@ private lemma fiberRegion_nabla_of_algCurvForm
   classical
   intro u X Y Z W
   let U : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u).choose
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u).choose
   have hU : U x = u :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u).choose_spec
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u).choose_spec
   let V : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    fun a => (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
+    fun a => (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
       (vec4 X Y Z W a)).choose
   have hV : ∀ a : Fin 4, V a x = vec4 X Y Z W a := fun a =>
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
       (vec4 X Y Z W a)).choose_spec
   let s : Fin 4 → TangentSpace I x := fun b => V b x
   let d : Fin 4 → TangentSpace I x := fun a => (cov (fun p : M => V a p) x) (U x)
@@ -2725,18 +2725,18 @@ private lemma fiberRegion_nabla2_of_algCurvForm
     fun y => fiberRegion_nabla_of_algCurvForm (I := I) cov α nablaα hA hAlg y
   intro u1 u2 X Y Z W
   let U1 : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u1).choose
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u1).choose
   have hU1 : U1 x = u1 :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u1).choose_spec
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u1).choose_spec
   let U2 : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u2).choose
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u2).choose
   have hU2 : U2 x = u2 :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u2).choose_spec
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x u2).choose_spec
   let V : Fin 4 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
-    fun a => (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
+    fun a => (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
       (vec4 X Y Z W a)).choose
   have hV : ∀ a : Fin 4, V a x = vec4 X Y Z W a := fun a =>
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x
       (vec4 X Y Z W a)).choose_spec
   let W2 : Fin 5 → ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _) :=
     fiberRegion_fin5_cons U2 V

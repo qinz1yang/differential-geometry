@@ -38,7 +38,7 @@ theorem covAlong_diff
         ((mfderiv (modelWithCornersSelf Real Real) I gamma t :
           Real →L[Real] TangentSpace I (gamma t)) (1 : Real)) := by
   classical
-  obtain ⟨Y, hY⟩ := ContMDiffSection.exists_eq_at_gen
+  obtain ⟨Y, hY⟩ := ContMDiffSection.exists_eq_at
     (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
     (gamma t) (V t)
   let W : ∀ r, TangentSpace I (gamma r) := fun r ↦ Y (gamma r)

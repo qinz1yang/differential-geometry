@@ -36,11 +36,11 @@ theorem totalNabla0SFun_smul {s : ℕ}
   apply ext0S_basis (I := I) basis
   intro idx
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (basis (idx 0))).choose
   have hX : X x = basis (idx 0) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (basis (idx 0))).choose_spec
   have hcons :
@@ -74,11 +74,11 @@ theorem totalNabla0SFun_add {s : ℕ}
   apply ext0S_basis (I := I) basis
   intro idx
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (basis (idx 0))).choose
   have hX : X x = basis (idx 0) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (basis (idx 0))).choose_spec
   have hcons :

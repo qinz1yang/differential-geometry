@@ -59,17 +59,17 @@ theorem metricCovDeriv_restrictOpen_apply
   | succ a ih =>
       intro x slots
       obtain ⟨X, hX⟩ :=
-        ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+        ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
           (n := (⊤ : ℕ∞)) (x : M) (slots 0)
       let V : Fin (a + 2) ->
           ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
         fun q =>
-          (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+          (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
             (n := (⊤ : ℕ∞)) (x : M) (slots q.succ)).choose
       have hV : ∀ q : Fin (a + 2), V q (x : M) = slots q.succ := by
         intro q
         exact
-          (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+          (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
             (n := (⊤ : ℕ∞)) (x : M) (slots q.succ)).choose_spec
       let XU : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : U -> Type _) :=
         restrictOpenTangentSection (I := I) U X

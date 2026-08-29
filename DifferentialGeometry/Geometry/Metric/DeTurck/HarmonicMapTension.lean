@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.DeTurck.Naturality
 import DifferentialGeometry.Geometry.Metric.Pullback
-import DifferentialGeometry.Bundle.VectorFieldPushforward
+import DifferentialGeometry.Bundle.VectorField.Pushforward
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

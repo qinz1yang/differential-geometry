@@ -3,7 +3,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.RegAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ScalarCompact
 import DifferentialGeometry.Geometry.Operator.MetricFamilyGramWeak
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.ChartTimeH1
-import DifferentialGeometry.Topology.CurveChartCover
+import DifferentialGeometry.Topology.Manifold.CurveChart.Subdivision
+import DifferentialGeometry.Topology.UniformConvergence
 
 set_option autoImplicit false
 
@@ -88,8 +89,8 @@ theorem exists_chartH1_fin
         (interior (Kman i)) := by
       intro s _
       exact hgammaK i s.2
-    have hev := DifferentialGeometry.Geometry.mapsTo_eventually
-      isCompact_univ hgammaCont.continuousOn isOpen_interior hmap (hconv i)
+    have hev := DifferentialGeometry.eventually_mapsTo_of_tendstoUniformly
+      (hconv i) isCompact_univ hgammaCont.continuousOn isOpen_interior hmap
     filter_upwards [hev] with n hn
     intro s hs
     exact hn (mem_univ (⟨s, hs⟩ : Icc (t i.castSucc) (t i.succ)))

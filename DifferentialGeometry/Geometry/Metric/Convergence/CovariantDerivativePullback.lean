@@ -110,17 +110,17 @@ theorem metricCovDeriv_one_pullback
           (fun a : Fin 2 => mfderiv I I (Phi : M -> N) x (v a))) := by
   classical
   obtain ⟨X, hX⟩ :=
-    ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x v0
   let V : Fin 2 ->
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
     fun a =>
-      (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) x (v a)).choose
   have hV : ∀ a : Fin 2, V a x = v a := by
     intro a
     exact
-      (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) x (v a)).choose_spec
   simpa [hX, hV, pushFwdSection_apply_at_image] using
     metricCovDeriv_one_pullback_sections (I := I) h gRef Phi X V x
@@ -212,17 +212,17 @@ theorem metricCovDeriv_pullback
   | succ a ih =>
       intro x slots
       obtain ⟨X, hX⟩ :=
-        ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+        ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
           (n := (⊤ : ℕ∞)) x (slots 0)
       let V : Fin (a + 2) ->
           ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
         fun q =>
-          (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+          (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
             (n := (⊤ : ℕ∞)) x (slots q.succ)).choose
       have hV : ∀ q : Fin (a + 2), V q x = slots q.succ := by
         intro q
         exact
-          (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+          (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
             (n := (⊤ : ℕ∞)) x (slots q.succ)).choose_spec
       have hsmooth :
           metricCovDeriv (I := I) (Diffeomorph.pullbackMetric (I := I) h Phi)
@@ -377,17 +377,17 @@ theorem covDerivOfField_pullback
   | succ a ih =>
       intro x slots
       obtain ⟨X, hX⟩ :=
-        ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+        ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
           (n := (⊤ : ℕ∞)) x (slots 0)
       let V : Fin (a + 2) ->
           ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
         fun q =>
-          (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+          (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
             (n := (⊤ : ℕ∞)) x (slots q.succ)).choose
       have hV : ∀ q : Fin (a + 2), V q x = slots q.succ := by
         intro q
         exact
-          (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+          (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
             (n := (⊤ : ℕ∞)) x (slots q.succ)).choose_spec
       have hsmooth :
           covDerivOfField (I := I) (Diffeomorph.pullbackMetric (I := I) gRef Phi) A0M (a + 1) x

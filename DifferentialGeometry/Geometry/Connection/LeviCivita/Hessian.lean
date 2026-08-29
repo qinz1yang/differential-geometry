@@ -98,10 +98,10 @@ private theorem leviCivita_nablaDuSec_pointwise_symm_direct
   classical
   let cov := leviCivitaConnectionOfMetric (I := I) g
   obtain ⟨X, hXx⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x U
   obtain ⟨Y, hYx⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x V
   have hXmd : MDiffAt (T% (fun p : M => X p)) x :=
     X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
@@ -289,7 +289,7 @@ theorem oneFormLastTwoSymmAt_of_leviCivita_du
   intro X Y Z
   let cov := leviCivitaConnectionOfMetric (I := I) g
   obtain ⟨S, hSx⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x X
   have hleft := nabla2OneFormRealizesAt_apply
     (I := I) cov duSec nablaDuSec x nabla2Du hnabla2 S Y Z

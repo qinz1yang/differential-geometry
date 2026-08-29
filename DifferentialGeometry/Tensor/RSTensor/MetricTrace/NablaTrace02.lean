@@ -476,11 +476,11 @@ theorem nablaTrace02
   let dTrace := differential1FormFun (I := I) traceA x
   let Xsec : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x X).choose
   have hXsec : Xsec x = X :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x X).choose_spec
   have hinner :=

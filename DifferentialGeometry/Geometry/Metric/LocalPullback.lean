@@ -128,11 +128,11 @@ noncomputable def localPullMetric
   isVonNBounded := localPullInner_bdd (I := I) (J := J) g hf
   contMDiff := by
     classical
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_continuousLinearMap_section_of_apply
       (V₂ := fun x : M => TangentSpace I x →L[Real] Real)
       (φ := fun x : M => localPullInner (I := I) (J := J) g f x)
     intro Y
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_continuousLinearMap_section_of_apply
       (V₂ := fun _ : M => Real)
       (φ := fun x : M =>
         localPullInner (I := I) (J := J) g f x (Y x))

@@ -489,17 +489,17 @@ theorem nablaProd_eval {s q : ℕ}
             (Fin.cons X (fun a : Fin q => w (Fin.natAdd s a))) := by
   classical
   let Xsec : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x X).choose
   have hXsec : Xsec x = X :=
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x X).choose_spec
   let V : Fin (s + q) -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
-    fun a => (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    fun a => (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x (w a)).choose
   have hV : ∀ a : Fin (s + q), V a x = w a := fun a =>
-    (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
       (n := (⊤ : ℕ∞)) x (w a)).choose_spec
   have h1 := totalNabla0SFun_eval_section (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (s + q) cov Xsec

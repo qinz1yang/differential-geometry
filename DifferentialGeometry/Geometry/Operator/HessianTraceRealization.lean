@@ -310,20 +310,20 @@ theorem hess_sub_conn
   intro slots
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (basis (slots 0))).choose
   let Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (basis (slots 1))).choose
   have hX : X x = basis (slots 0) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (basis (slots 0))).choose_spec
   have hY : Y x = basis (slots 1) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       x (basis (slots 1))).choose_spec
   have hslots :
@@ -386,19 +386,19 @@ theorem hessSec_inner_cov
       g.inner x ((cov (fun y : M => gradientFun (I := I) g f y) x) v) w := by
   let X : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x v).choose
   let Y : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x w).choose
   let G : (y : M) -> TangentSpace I y :=
     fun y => gradientFun (I := I) g f y
   have hX : X x = v :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x v).choose_spec
   have hY : Y x = w :=
-    (ContMDiffSection.exists_eq_at_gen
+    (ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x w).choose_spec
   have hXm : MDiffAt (T% fun y : M => X y) x :=
     X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
@@ -868,14 +868,14 @@ theorem scalarLap_canon
       CoordinateIdx (𝕜 := Real) E ->
         ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
     fun i =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (basis i)).choose
   have hfields : SmoothBasisFieldsAt (I := I) basis X := by
     intro i
     dsimp [X]
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (basis i)).choose_spec
   exact scalarLaplacianRealizesTraceAt_of_nablaDu (I := I) cov g hmc basis gInv
@@ -984,14 +984,14 @@ theorem lapTrace_nablaSec
       CoordinateIdx (𝕜 := Real) E ->
         ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
     fun i =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         y (basis i)).choose
   have hfields : SmoothBasisFieldsAt (I := I) basis X := by
     intro i
     dsimp [X]
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         y (basis i)).choose_spec
   exact scalarLapTraceAt_of_nablaDu (I := I) cov g hmc basis gInv

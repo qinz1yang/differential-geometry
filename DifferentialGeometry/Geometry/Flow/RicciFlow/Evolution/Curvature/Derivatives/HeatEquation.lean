@@ -221,14 +221,14 @@ theorem nablaKNormHeatAt
   let X : Idx → ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M → Type _) :=
     fun i =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (basis i)).choose
   have hfields : SmoothBasisFieldsAt (I := I) basis X := by
     intro i
     dsimp [X]
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (basis i)).choose_spec
   have hf := nablaKNorm_smooth (I := I) S (t : Real) k

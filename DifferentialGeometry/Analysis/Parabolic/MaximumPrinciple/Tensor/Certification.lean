@@ -340,7 +340,7 @@ theorem strictCert_sec
   refine ⟨⟨fun t x => nabla2S t x, fun t x => nablaS t x, hstrict, ?_⟩⟩
   intro hnull d
   obtain ⟨Xsec, hXsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
       d.x1 (X d.t1 d.x1)
   have hsym :

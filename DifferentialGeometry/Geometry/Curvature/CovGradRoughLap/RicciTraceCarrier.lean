@@ -91,7 +91,7 @@ theorem ricEndoRaisedFib_contMDiff (g : SmoothRiemannianMetric I M) :
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E)
         (E := fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y) x
         (ricEndoRaisedFib (I := I) g x)) := by
-  apply cotangentCov_clmSection_smooth_aux (I := I) (M := M)
+  apply contMDiff_continuousLinearMap_section_of_apply (I := I) (M := M)
     (F₂ := E) (V₂ := fun y : M => TangentSpace I y)
     (φ := fun x : M => ricEndoRaisedFib (I := I) g x)
   intro Y

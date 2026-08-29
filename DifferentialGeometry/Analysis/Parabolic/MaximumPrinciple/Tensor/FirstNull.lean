@@ -415,7 +415,7 @@ private theorem nablaEval_ker_tangent
       mvfderiv (I := I)
         (fun p : M => B p (vec2 (I := I) (Vsec p) (Vsec p))) x A := by
   obtain ⟨Ysec, hYsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x A
   let V : Fin 2 ->
       ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _) :=
@@ -1371,10 +1371,10 @@ theorem nabla2Eval_hess_slots
     simpa [phi, Slots, vec2_self_eq_const] using hraw
   intro U W
   obtain ⟨Xsec, hXsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x U
   obtain ⟨Ysec, hYsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x W
   have hA_at := hAreg Ysec
   have hdphi :

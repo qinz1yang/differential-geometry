@@ -280,11 +280,11 @@ theorem ccTensorBilin_contMDiff (g : SmoothRiemannianMetric I M)
         (E := fun b : M => TangentSpace I b →L[ℝ] TangentSpace I b →L[ℝ] ℝ)
         b (smoothCcTensorBilinForm (I := I) g T b)) := by
   classical
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
     (φ := fun x : M => smoothCcTensorBilinForm (I := I) g T x)
   intro Y
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun _ : M => ℝ)
     (φ := fun x : M => smoothCcTensorBilinForm (I := I) g T x (Y x))
   intro W
@@ -332,11 +332,11 @@ theorem ccTensorBilinSymm_contMDiff (g : SmoothRiemannianMetric I M)
         (E := fun b : M => TangentSpace I b →L[ℝ] TangentSpace I b →L[ℝ] ℝ)
         b (ccTensorBilinSymm (I := I) g T b)) := by
   classical
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun x : M => TangentSpace I x →L[ℝ] ℝ)
     (φ := fun x : M => ccTensorBilinSymm (I := I) g T x)
   intro Y
-  apply cotangentCov_clmSection_smooth_aux
+  apply contMDiff_continuousLinearMap_section_of_apply
     (V₂ := fun _ : M => ℝ)
     (φ := fun x : M => ccTensorBilinSymm (I := I) g T x (Y x))
   intro W

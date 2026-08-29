@@ -876,7 +876,7 @@ private theorem eval_pt0S
           (Function.update (fun r : Fin s => V r x) q
             ((cov (fun y : M => V q y) x) W)) := by
   obtain ⟨Wsec, hWsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x W
   have h0 := TotalNabla0SRealizes.eval_smooth_slots
     (I := I) hA Wsec V x
@@ -903,7 +903,7 @@ theorem du_norm02
       2 * inner02 (I := I) g x
         (tensor02FreezeNabla (I := I) (nablaA x) W) (A x) := by
   obtain ⟨Wsec, hWsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x W
   have hinner :=
     tensor02_inner_mvfderiv_eq_inner_nabla
@@ -1028,10 +1028,10 @@ theorem freeze02_deriv
       funext a
       fin_cases a <;> rfl
     obtain ⟨Z, hZ⟩ :=
-      ContMDiffSection.exists_eq_at_gen
+      ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (v 0)
     obtain ⟨W, hW⟩ :=
-      ContMDiffSection.exists_eq_at_gen
+      ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (v 1)
     let V2 : Fin 2 -> ContMDiffSection I E (∞ : WithTop ℕ∞)
         (TangentSpace I : M -> Type _) :=

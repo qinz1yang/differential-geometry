@@ -1,6 +1,6 @@
-import DifferentialGeometry.Topology.DirectLimitManifold
+import DifferentialGeometry.Topology.DirectLimit.Manifold
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Bundle.ClmSectionSmooth
+import DifferentialGeometry.Bundle.ContinuousLinearMapSection
 
 set_option autoImplicit false
 
@@ -314,11 +314,11 @@ noncomputable def limitMetric (g : ∀ k, SmoothRiemannianMetric I (A k))
   pos z v hv := S.stageInner_pos g _ (S.mem_range_rep z) v hv
   isVonNBounded z := S.stageInner_bounded g _ (S.mem_range_rep z)
   contMDiff := by
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_continuousLinearMap_section_of_apply
       (V₂ := fun z : S.toSeqSystem.Lim => TangentSpace I z →L[ℝ] ℝ)
       (φ := fun z => S.stageInner g (S.toSeqSystem.rep z).1 z)
     intro Y
-    apply cotangentCov_clmSection_smooth_aux
+    apply contMDiff_continuousLinearMap_section_of_apply
       (V₂ := fun _ : S.toSeqSystem.Lim => ℝ)
       (φ := fun z => S.stageInner g (S.toSeqSystem.rep z).1 z (Y z))
     intro W z₀

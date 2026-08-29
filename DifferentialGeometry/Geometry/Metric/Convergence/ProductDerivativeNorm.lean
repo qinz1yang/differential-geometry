@@ -61,9 +61,9 @@ theorem totalNabla0SRealizes_unique {s : ℕ}
   refine tensor0SSpace_ext (I := I) (s + 1) x (fun v => ?_)
   obtain ⟨X, hX⟩ :
       ∃ X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M → Type _), X x = v 0 :=
-    ⟨(ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+    ⟨(ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) x (v 0)).choose,
-      (ContMDiffSection.exists_eq_at_gen (I := I) (F := E) (V := TangentSpace I)
+      (ContMDiffSection.exists_eq_at (I := I) (F := E) (V := TangentSpace I)
         (n := (⊤ : ℕ∞)) x (v 0)).choose_spec⟩
   have hcons : Fin.cons (X x) (Fin.tail v) = v := by rw [hX]; exact Fin.cons_self_tail v
   have e1 := h1 X x (Fin.tail v)

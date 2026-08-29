@@ -1024,7 +1024,7 @@ theorem ricMixedSharpEndoFib_contMDiff (g₀ g₁ : SmoothRiemannianMetric I M) 
       (fun x : M => TotalSpace.mk' (E →L[ℝ] E)
         (E := fun y : M => TangentSpace I y →L[ℝ] TangentSpace I y) x
         (ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x)) := by
-  apply cotangentCov_clmSection_smooth_aux (I := I) (M := M)
+  apply contMDiff_continuousLinearMap_section_of_apply (I := I) (M := M)
     (F₂ := E) (V₂ := fun y : M => TangentSpace I y)
     (φ := fun x : M => ricMixedSharpEndoFib (I := I) (M := M) g₀ g₁ x)
   intro Y

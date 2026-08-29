@@ -65,7 +65,7 @@ private theorem covSelfOneAt
     metricCovDeriv (I := I) g g 1 x = 0 := by
   apply ContinuousMultilinearMap.ext
   intro slots
-  obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at_gen
+  obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at
     (I := I) (F := E) (V := TangentSpace I)
     (n := (⊤ : ℕ∞)) x (slots 0)
   have hcons : Fin.cons (X x) (Fin.tail slots) = slots := by

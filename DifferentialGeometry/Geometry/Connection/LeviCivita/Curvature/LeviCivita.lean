@@ -626,7 +626,7 @@ private theorem exists_contMDiffSection_eventuallyEq_tangentConstAt
               rfl
     calc
       V p = ∑ i, (b.repr vModel i) • s' i p := by
-        simp [V, ContMDiffSection.finset_sum_apply_gen]
+        simp [V, ContMDiffSection.finset_sum_apply]
       _ = ∑ i, (b.repr vModel i) • e.localFrame b i p := by
         apply Finset.sum_congr rfl
         intro i hi
@@ -1065,19 +1065,19 @@ theorem rm04InputSkewAt_of_leviCivita_realizes
       Rm04 x (vec4 Y X Z W) = -Rm04 x (vec4 X Y Z W) := by
   intro X Y Z W
   obtain ⟨Wsec, hWsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
       (n := (⊤ : ℕ∞)) x W
   obtain ⟨Xsec, hXsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
       (n := (⊤ : ℕ∞)) x X
   obtain ⟨Ysec, hYsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
       (n := (⊤ : ℕ∞)) x Y
   obtain ⟨Zsec, hZsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
       (n := (⊤ : ℕ∞)) x Z
   have hleft := hRm04 Ysec Xsec Zsec Wsec x
@@ -1113,19 +1113,19 @@ theorem rm04InputSkew_ofRealizes
       Rm04 x (vec4 Y X Z W) = -Rm04 x (vec4 X Y Z W) := by
   intro X Y Z W
   obtain ⟨Wsec, hWsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
       (n := (⊤ : ℕ∞)) x W
   obtain ⟨Xsec, hXsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
       (n := (⊤ : ℕ∞)) x X
   obtain ⟨Ysec, hYsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
       (n := (⊤ : ℕ∞)) x Y
   obtain ⟨Zsec, hZsec⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := (TangentSpace I : M -> Type _))
       (n := (⊤ : ℕ∞)) x Z
   have hleft := hRm04 Ysec Xsec Zsec Wsec x
@@ -1349,13 +1349,13 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
     simpa [cov] using
       leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally_one (I := I) g
   obtain ⟨Xsec, hXx⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x X
   obtain ⟨Ysec, hYx⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x Y
   obtain ⟨Zsec, hZx⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x Z
   let Xf : (p : M) -> TangentSpace I p := fun p => Xsec p
   let Yf : (p : M) -> TangentSpace I p := fun p => Ysec p
@@ -1479,10 +1479,10 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
       nablaOneFormSectionRealizes_eval_moving_C1_slot
         (I := I) cov Ysec alphaSec nablaAlphaSec hnabla XZc x hXZc1
   obtain ⟨XYsec, hXYsecx⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x XYv
   obtain ⟨YXsec, hYXsecx⟩ :=
-    ContMDiffSection.exists_eq_at_gen
+    ContMDiffSection.exists_eq_at
       (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞)) x YXv
   let XYf : (p : M) -> TangentSpace I p := fun p => XYsec p
   let YXf : (p : M) -> TangentSpace I p := fun p => YXsec p

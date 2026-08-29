@@ -628,7 +628,7 @@ theorem lCost_lt_param
     rw [hstart]
     exact mem_chart_source H x
   obtain ⟨c, hc, hcb₂, hsrcHead⟩ :=
-    DifferentialGeometry.Geometry.exists_chart_head (H := H)
+    DifferentialGeometry.Geometry.exists_chart_initial_segment (H := H)
       (a := (0 : Real)) (b := b / 2) (half_pos hb)
       (halpha.continuous.continuousOn.mono
         (Icc_subset_Icc_right (half_le_self hb.le))) hxSrc

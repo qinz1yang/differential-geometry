@@ -369,7 +369,7 @@ private theorem diff_swap
     (w u : TangentSpace I x) :
     ((CovariantDerivative.difference cov cov' x) w) u
       = -(((CovariantDerivative.difference cov' cov x) w) u) := by
-  obtain ⟨σ, hσ⟩ := ContMDiffSection.exists_eq_at_gen (I := I) (F := E)
+  obtain ⟨σ, hσ⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E)
     (V := TangentSpace I) (n := (⊤ : ℕ∞)) x w
   have hd1 := IsCovariantDerivativeOn.difference_apply
     (hcov := cov.isCovariantDerivativeOnUniv) (hcov' := cov'.isCovariantDerivativeOnUniv)
@@ -436,7 +436,7 @@ private theorem metricCovDeriv_self_one_zero (g : SmoothRiemannianMetric I M) (x
   classical
   have : IsManifold I ((∞ : WithTop ℕ∞) + 1) M := by change IsManifold I ∞ M; infer_instance
   refine ContinuousMultilinearMap.ext (fun w => ?_)
-  obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at_gen (I := I) (F := E)
+  obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at (I := I) (F := E)
     (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (w 0)
   have hw : w = Fin.cons (X x) (Fin.tail w) := by
     rw [hX]; exact (Fin.cons_self_tail w).symm
