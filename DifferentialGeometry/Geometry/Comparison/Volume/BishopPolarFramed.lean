@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Integration.Measure.BasisHaar
 import DifferentialGeometry.Geometry.Comparison.Volume.BishopPolar
 import DifferentialGeometry.Geometry.Exponential.FramedNormalCoordinates
 open DifferentialGeometry.Geometry.Curvature
@@ -23,7 +24,7 @@ variable {E : Type*} [NormedAddCommGroup E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners Real E H}
   [I.Boundaryless]
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-  [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+  [IsManifold I ((⊤ : ℕ∞) : WithTop ℕ∞) M] [T2Space M]
   [SigmaCompactSpace M] [T2Space (TangentBundle I M)]
 
 private local instance : MeasurableSpace E := borel E
@@ -134,6 +135,131 @@ private lemma frame_det_ne
     (modelBasisAt (I := I) (E := E) p).det (frameBasis (I := I) g p) ≠ 0 :=
   ((modelBasisAt (I := I) (E := E) p).isUnit_det
     (frameBasis (I := I) g p)).ne_zero
+
+omit [Nontrivial E] [T2Space M] [SigmaCompactSpace M]
+  [NeZero (Module.finrank ℝ E)] in
+theorem framedDens_zero
+    (g : SmoothRiemannianMetric I M) (p : M) :
+    paramDensity (I := I) g (framedExpDiffeo (I := I) g p) 0 =
+      Real.sqrt (Matrix.of fun i j =>
+        inner Real (chartModelBasis E i) (chartModelBasis E j)).det := by
+  rw [paramDensity_apply]
+  apply congrArg Real.sqrt
+  apply congrArg Matrix.det
+  ext i j
+  rw [paramGramMatrix_apply]
+  change framedMetric (I := I) g p 0 (chartModelBasis E i)
+      (chartModelBasis E j) = _
+  rw [framedMetric_zero]
+  rfl
+
+omit [Nontrivial E] [T2Space M] [SigmaCompactSpace M]
+  [NeZero (Module.finrank ℝ E)] in
+theorem framedDens_haar
+    (g : SmoothRiemannianMetric I M) (p : M) :
+    ENNReal.ofReal
+          (paramDensity (I := I) g (framedExpDiffeo (I := I) g p) 0) •
+        (modelHaar (E := E)) =
+      (volume : Measure E) := by
+  classical
+  let e : Module.Basis (Fin (Module.finrank Real E)) Real E :=
+    (stdOrthonormalBasis Real E).toBasis
+  let b : Module.Basis (Fin (Module.finrank Real E)) Real E :=
+    chartModelBasis E
+  let L : E →L[Real] E := ContinuousLinearMap.id Real E
+  have hchange :
+      basisGram (innerSL Real) (fun i => L (b i)) =
+        (e.toMatrix b).transpose *
+          basisGram (innerSL Real) (fun i => L (e i)) * e.toMatrix b := by
+    ext i j
+    change (innerSL Real) (L (b i)) (L (b j)) = _
+    rw [show b i = ∑ k, (e.repr (b i)) k • e k from (e.sum_repr (b i)).symm]
+    rw [show b j = ∑ l, (e.repr (b j)) l • e l from (e.sum_repr (b j)).symm]
+    simp only [basisGram, Matrix.of_apply, Matrix.mul_apply, Matrix.transpose_apply,
+      Module.Basis.toMatrix_apply, map_sum, map_smul,
+      sum_apply, smul_apply, smul_eq_mul]
+    simp only [Finset.mul_sum, Finset.sum_mul]
+    apply Finset.sum_congr rfl
+    intro l _
+    ring_nf
+  have heGram : basisGram (innerSL Real) (fun i => L (e i)) = 1 := by
+    ext i j
+    simp only [basisGram, Matrix.of_apply, L, ContinuousLinearMap.id_apply, e,
+      OrthonormalBasis.coe_toBasis, Matrix.one_apply]
+    exact (stdOrthonormalBasis Real E).inner_eq_ite i j
+  have hdet :
+      (Matrix.of fun i j => inner Real (b i) (b j)).det = (e.det b) ^ 2 := by
+    have h := gram_det_change (innerSL Real) L e b hchange
+    rw [heGram, Matrix.det_one, mul_one] at h
+    change (Matrix.of fun i j => inner Real (b i) (b j)).det = (e.det b) ^ 2 at h
+    exact h
+  have hdensity :
+      Real.sqrt (Matrix.of fun i j => inner Real (b i) (b j)).det =
+        |e.det b| := by
+    rw [hdet, Real.sqrt_sq_eq_abs]
+  rw [framedDens_zero]
+  change ENNReal.ofReal
+      (Real.sqrt (Matrix.of fun i j => inner Real (b i) (b j)).det) •
+        b.addHaar = (volume : Measure E)
+  rw [hdensity]
+  calc
+    ENNReal.ofReal |e.det b| • b.addHaar = e.addHaar :=
+      Module.Basis.det_smul_addHaar e b
+    _ = (volume : Measure E) :=
+      (stdOrthonormalBasis Real E).addHaar_eq_volume
+
+omit [Nontrivial E] [T2Space M] [SigmaCompactSpace M]
+  [NeZero (Module.finrank ℝ E)] in
+theorem normalHaar_eq
+    (g : SmoothRiemannianMetric I M) (p : M) :
+    ENNReal.ofReal (normalChartDensity (I := I) g p 0) •
+        (modelHaar (E := E)) =
+      Measure.map (normalFrame (I := I) g p) (volume : Measure E) := by
+  classical
+  let b : Module.Basis (Fin (Module.finrank Real E)) Real E :=
+    chartModelBasis E
+  let L : E ≃L[Real] E := normalFrame (I := I) g p
+  let b' : Module.Basis (Fin (Module.finrank Real E)) Real E :=
+    b.map L.toLinearEquiv
+  let d : Real := b.det b'
+  have hdensity :
+      paramDensity (I := I) g (framedExpDiffeo (I := I) g p) 0 =
+        |d| * normalChartDensity (I := I) g p 0 := by
+    rw [paramDensity, normalDensity_det]
+    rw [frame_gram_change (I := I) g p
+      (zero_mem_framedExp_source (I := I) g p)]
+    change Real.sqrt (d ^ 2 *
+        (normalGramMatrix (I := I) g p (L 0)).det) =
+      |d| * Real.sqrt (normalGramMatrix (I := I) g p 0).det
+    rw [map_zero, Real.sqrt_mul (sq_nonneg d), Real.sqrt_sq_eq_abs]
+  have hmap : Measure.map L (modelHaar (E := E)) = b'.addHaar := by
+    simpa only [b, b', L, modelHaar] using
+      Module.Basis.map_addHaar b L
+  change ENNReal.ofReal (normalChartDensity (I := I) g p 0) •
+      b.addHaar = Measure.map L (volume : Measure E)
+  calc
+    ENNReal.ofReal (normalChartDensity (I := I) g p 0) • b.addHaar =
+        ENNReal.ofReal (normalChartDensity (I := I) g p 0) •
+          (ENNReal.ofReal |d| • b'.addHaar) := by
+      rw [Module.Basis.det_smul_addHaar b b']
+    _ = (ENNReal.ofReal |d| *
+          ENNReal.ofReal (normalChartDensity (I := I) g p 0)) •
+        b'.addHaar := by
+      rw [smul_smul, mul_comm]
+    _ = ENNReal.ofReal
+          (|d| * normalChartDensity (I := I) g p 0) • b'.addHaar := by
+      rw [ENNReal.ofReal_mul (abs_nonneg d)]
+    _ = ENNReal.ofReal
+          (paramDensity (I := I) g (framedExpDiffeo (I := I) g p) 0) •
+        b'.addHaar := by
+      rw [hdensity]
+    _ = Measure.map L
+          (ENNReal.ofReal
+              (paramDensity (I := I) g (framedExpDiffeo (I := I) g p) 0) •
+            modelHaar (E := E)) := by
+      rw [Measure.map_smul, hmap]
+    _ = Measure.map L (volume : Measure E) := by
+      rw [framedDens_haar (I := I) g p]
 
 omit [Nontrivial E] in
 omit [T2Space M]

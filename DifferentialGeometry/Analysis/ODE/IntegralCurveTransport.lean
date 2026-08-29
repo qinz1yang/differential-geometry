@@ -6,12 +6,12 @@ import Mathlib.Analysis.Calculus.Deriv.MeanValue
 noncomputable section
 
 open MeasureTheory
-open scoped Manifold Topology
+open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry.Analysis.ODE
 
-variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
-variable {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+variable {H : Type*} [TopologicalSpace H] {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable {I : ModelWithCorners ℝ E H}
 
 theorem hasDerivAt_df_comp_integralCurve
@@ -327,7 +327,7 @@ theorem f_add_of_integralCurve_back (f : M → ℝ) (hf : ContMDiff I 𝓘(ℝ, 
     exact hc
   linarith
 
-theorem integralCurve_eq_of_agree [IsManifold I (⊤ : WithTop ℕ∞) M] [BoundarylessManifold I M]
+theorem integralCurve_eq_of_agree [IsManifold I ∞ M] [BoundarylessManifold I M]
     [T2Space M]
     (v : (x : M) → TangentSpace I x)
     (hv : CMDiff 1 (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
@@ -335,7 +335,7 @@ theorem integralCurve_eq_of_agree [IsManifold I (⊤ : WithTop ℕ∞) M] [Bound
     {t₀ : ℝ} (h : γ t₀ = γ' t₀) : γ = γ' :=
   isMIntegralCurve_Ioo_eq_of_contMDiff_boundaryless hv hγ hγ' h
 
-theorem integralCurve_eq_of_agree_zero [IsManifold I (⊤ : WithTop ℕ∞) M] [BoundarylessManifold I M]
+theorem integralCurve_eq_of_agree_zero [IsManifold I ∞ M] [BoundarylessManifold I M]
     [T2Space M]
     (v : (x : M) → TangentSpace I x)
     (hv : CMDiff 1 (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
@@ -346,7 +346,7 @@ theorem integralCurve_eq_of_agree_zero [IsManifold I (⊤ : WithTop ℕ∞) M] [
 theorem curveAt_hcomplete_irrel {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type} [TopologicalSpace H] {M : Type} [TopologicalSpace M] [ChartedSpace H M]
     {I : ModelWithCorners ℝ E H} [I.Boundaryless]
-    [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M]
+    [IsManifold I ∞ M] [T2Space M]
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) (1 : WithTop ℕ∞)
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))

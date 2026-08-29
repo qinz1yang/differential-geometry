@@ -178,5 +178,61 @@ theorem exists_pos_Ioo_of_eventually_nhdsWithin
     rw [Real.dist_eq, sub_zero, abs_of_pos htpos]
     exact htlt
   exact hball hdist htpos
+theorem le_of_upper_support
+    {f : Real -> Real} {a b c : Real}
+    (hf : ContinuousOn f (Icc a b)) (ha : f a <= c)
+    (hsupport : ∀ t ∈ Ico a b, c < f t ->
+      exists phi : Real -> Real, exists d : Real,
+        phi t = f t ∧
+        f ≤ᶠ[nhdsWithin t (Ioi t)] phi ∧
+        HasDerivAt phi d t ∧ d < 0) :
+    ∀ t ∈ Icc a b, f t <= c := by
+  intro t ht
+  refine le_of_forall_pos_le_add fun delta hdelta => ?_
+  let s : Set Real := {r | f r <= c + delta}
+  have hs_closed : IsClosed (s ∩ Icc a b) := by
+    have hconst : ContinuousOn (fun _ : Real => c + delta) (Icc a b) :=
+      continuousOn_const
+    change IsClosed {x | f x ≤ c + delta ∧ x ∈ Icc a b}
+    simpa only [and_comm] using isClosed_Icc.isClosed_le hf hconst
+  have ha_s : a ∈ s := by
+    dsimp only [s]
+    exact ha.trans (le_add_of_nonneg_right hdelta.le)
+  have hs_all : Icc a b ⊆ s := by
+    apply hs_closed.Icc_subset_of_forall_exists_gt ha_s
+    rintro x ⟨hx_s, hx⟩ y hxy
+    change f x <= c + delta at hx_s
+    rcases hx_s.lt_or_eq with hx_lt | hx_eq
+    · have hnear : ∀ᶠ z in nhdsWithin x (Icc a b), f z < c + delta :=
+        hf x (Ico_subset_Icc_self hx) (Iio_mem_nhds hx_lt)
+      have hright : ∀ᶠ z in nhdsWithin x (Ioi x), f z < c + delta :=
+        nhdsWithin_le_of_mem (Icc_mem_nhdsGT_of_mem hx) hnear
+      obtain ⟨z, hz_lt, hz_mem⟩ :=
+        (hright.and (Ioc_mem_nhdsGT (show x < y from hxy))).exists
+      exact ⟨z, ⟨show z ∈ s from hz_lt.le, hz_mem⟩⟩
+    · have hcfx : c < f x := by
+        rw [hx_eq]
+        linarith
+      obtain ⟨phi, d, hphi_eq, hupper, hphi_deriv, hd_neg⟩ :=
+        hsupport x hx hcfx
+      have hslope : ∀ᶠ z in nhdsWithin x (Ioi x), slope phi x z < 0 :=
+        (hphi_deriv.tendsto_slope.mono_left (nhdsGT_le_nhdsNE x)).eventually_lt_const hd_neg
+      have hphi_lt : ∀ᶠ z in nhdsWithin x (Ioi x), phi z < phi x := by
+        filter_upwards [hslope, self_mem_nhdsWithin] with z hz_slope hxz
+        rw [slope_def_field] at hz_slope
+        have hdiff : phi z - phi x < 0 := by
+          simpa only [zero_mul] using
+            (div_lt_iff₀ (sub_pos.mpr hxz)).mp hz_slope
+        exact sub_lt_zero.mp hdiff
+      have hright : ∀ᶠ z in nhdsWithin x (Ioi x), f z < c + delta := by
+        filter_upwards [hupper, hphi_lt] with z hle hlt
+        calc
+          f z <= phi z := hle
+          _ < phi x := hlt
+          _ = c + delta := hphi_eq.trans hx_eq
+      obtain ⟨z, hz_lt, hz_mem⟩ :=
+        (hright.and (Ioc_mem_nhdsGT (show x < y from hxy))).exists
+      exact ⟨z, ⟨show z ∈ s from hz_lt.le, hz_mem⟩⟩
+  exact hs_all ht
 
 end DifferentialGeometry

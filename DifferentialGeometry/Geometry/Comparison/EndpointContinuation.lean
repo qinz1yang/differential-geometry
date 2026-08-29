@@ -21,7 +21,6 @@ import DifferentialGeometry.Geometry.Comparison.GeodesicSpeedBound
 import DifferentialGeometry.Geometry.Comparison.ChartVelocityConvergence
 import DifferentialGeometry.Geometry.Comparison.LocalGeodesicSeed
 
-
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -104,9 +103,11 @@ theorem chartPhaseVF_orbit_uniqueness_Icc_left
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
-theorem hasEndpointContinuation_of_complete
+omit [CompleteSpace M] in
+theorem endpointCont_of_lim
     [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
     (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {aL b c : ℝ}
+    (y : M)
     (haLb : aL < b)
     (hc_nonneg : 0 ≤ c)
     (hγ_smooth : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Ioo aL b))
@@ -114,14 +115,13 @@ theorem hasEndpointContinuation_of_complete
       ‖mfderiv 𝓘(ℝ, ℝ) I γ τ (1 : ℝ)‖ₑ ≤ ENNReal.ofReal c)
     (hSpeedSq : ∀ s ∈ Set.Ioo aL b,
       (g.inner (γ s)) (mfderiv 𝓘(ℝ, ℝ) I γ s 1) (mfderiv 𝓘(ℝ, ℝ) I γ s 1) ≤ c ^ 2)
-    (_hγ : IsGeodesicOn (I := I) g γ (Set.Ioo aL b)) :
+    (_hγ : IsGeodesicOn (I := I) g γ (Set.Ioo aL b))
+    (hy_metric : Tendsto γ (nhdsWithin b (Set.Iio b))
+      (@nhds M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace y)) :
     HasEndpointContinuation (I := I) g γ b := by
   have : CompleteSpace E := FiniteDimensional.complete ℝ E
   have hγ_mdiff_on : MDifferentiableOn 𝓘(ℝ, ℝ) I γ (Set.Ioo aL b) :=
     hγ_smooth.mdifferentiableOn (by norm_num)
-  obtain ⟨y, hy_metric⟩ :=
-    curve_exists_limit_of_bounded_speed (I := I) (γ := γ) (a := aL) (b := b) (c := c)
-      haLb hc_nonneg hγ_smooth hSpeedBound
   have hy_mfld : Tendsto γ (𝓝[<] b) (𝓝 y) :=
     tendsto_nhds_of_tendsto_metric_nhds (I := I) (l := 𝓝[<] b) (f := γ) (p := y)
       hy_metric
@@ -514,6 +514,49 @@ theorem hasEndpointContinuation_of_complete
     _ = (extChartAt I y).symm (uη (s - b)) := by rw [hfst]
     _ = (extChartAt I y).symm (extChartAt I y (η (s - b))) := by rw [huη_s]
     _ = η (s - b) := hround_η
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+theorem hasEndpointContinuation_of_complete
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {aL b c : ℝ}
+    (haLb : aL < b)
+    (hc_nonneg : 0 ≤ c)
+    (hγ_smooth : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Ioo aL b))
+    (hSpeedBound : ∀ τ ∈ Set.Ioo aL b,
+      ‖mfderiv 𝓘(ℝ, ℝ) I γ τ (1 : ℝ)‖ₑ ≤ ENNReal.ofReal c)
+    (hSpeedSq : ∀ s ∈ Set.Ioo aL b,
+      (g.inner (γ s)) (mfderiv 𝓘(ℝ, ℝ) I γ s 1) (mfderiv 𝓘(ℝ, ℝ) I γ s 1) ≤ c ^ 2)
+    (hγ : IsGeodesicOn (I := I) g γ (Set.Ioo aL b)) :
+    HasEndpointContinuation (I := I) g γ b := by
+  obtain ⟨y, hy_metric⟩ :=
+    curve_exists_limit_of_bounded_speed (I := I) (γ := γ) (a := aL) (b := b) (c := c)
+      haLb hc_nonneg hγ_smooth hSpeedBound
+  exact endpointCont_of_lim (I := I) g y haLb hc_nonneg hγ_smooth hSpeedBound
+    hSpeedSq hγ hy_metric
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+omit [CompleteSpace M] in
+theorem endpointCont_compact
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {aL b c : ℝ} {K : Set M}
+    (haLb : aL < b)
+    (hc_nonneg : 0 ≤ c)
+    (hγ_smooth : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Ioo aL b))
+    (hSpeedBound : ∀ τ ∈ Set.Ioo aL b,
+      ‖mfderiv 𝓘(ℝ, ℝ) I γ τ (1 : ℝ)‖ₑ ≤ ENNReal.ofReal c)
+    (hSpeedSq : ∀ s ∈ Set.Ioo aL b,
+      (g.inner (γ s)) (mfderiv 𝓘(ℝ, ℝ) I γ s 1) (mfderiv 𝓘(ℝ, ℝ) I γ s 1) ≤ c ^ 2)
+    (hγ : IsGeodesicOn (I := I) g γ (Set.Ioo aL b))
+    (hK : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace K)
+    (hγK : ∀ᶠ t in nhdsWithin b (Set.Iio b), γ t ∈ K) :
+    HasEndpointContinuation (I := I) g γ b := by
+  obtain ⟨y, _hyK, hy_metric⟩ :=
+    curve_lim_of_compact (I := I) (γ := γ) (a := aL) (b := b) (c := c)
+      haLb hc_nonneg hγ_smooth hSpeedBound hK hγK
+  exact endpointCont_of_lim (I := I) g y haLb hc_nonneg hγ_smooth hSpeedBound
+    hSpeedSq hγ hy_metric
 
 end HopfRinow
 end Riemannian

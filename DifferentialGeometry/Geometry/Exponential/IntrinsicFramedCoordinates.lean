@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Exponential.Smoothness.IntrinsicMfderivZero
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
 open Bundle Set
@@ -87,6 +86,36 @@ omit [ConnectedSpace M] in
       expMapIntrinsic (I := I) g hEnorm p
         (normalFrame (I := I) g p z) := by
   rw [intrinsicFramedExp, intrFrameCLM_apply]
+
+omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
+omit [ConnectedSpace M] in
+theorem intrFrame_mem_eball
+    [PseudoEMetricSpace M]
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [IsRiemannianManifold I M] [CompleteSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) {r : Real} {z : E} (hz : ‖z‖ < r) :
+    intrinsicFramedExp (I := I) g hEnorm p z ∈
+      Metric.eball p (ENNReal.ofReal r) := by
+  have hdist :=
+    intrinsicGeodesic_riemannianEDist_le (I := I) g hEnorm p
+      (normalFrame (I := I) g p z)
+      (s := (0 : Real)) (t := (1 : Real)) zero_le_one
+  have hrad :
+      edist p (intrinsicFramedExp (I := I) g hEnorm p z) ≤
+        ENNReal.ofReal ‖z‖ := by
+    change edist p
+      (expMapIntrinsic (I := I) g hEnorm p
+        (normalFrame (I := I) g p z)) ≤ ENNReal.ofReal ‖z‖
+    rw [IsRiemannianManifold.out (I := I) p
+      (expMapIntrinsic (I := I) g hEnorm p (normalFrame (I := I) g p z))]
+    simpa only [intrinsicGeodesic_zero, ← expMapIntrinsic_def,
+      intrFrame_apply, normalFrame_sqrt, sub_zero, mul_one] using hdist
+  rw [Metric.mem_eball']
+  exact hrad.trans_lt
+    ((ENNReal.ofReal_lt_ofReal_iff_of_nonneg (norm_nonneg z)).2 hz)
 
 omit [CompleteSpace E] [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in

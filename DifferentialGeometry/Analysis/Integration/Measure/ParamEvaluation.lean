@@ -3,7 +3,6 @@ import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
 noncomputable section
 
-
 open Bundle Manifold Set MeasureTheory
 open scoped Manifold Topology ContDiff ENNReal Matrix
 
@@ -1203,6 +1202,105 @@ theorem riemannianVolumeMeasure_image_param_eq
     (chartAtlasPOU I M) (chartAtlasPOU_isSubordinate I M)]
   exact riemannianMeasure_image_param_eq (I := I) g (chartAtlasPOU I M)
     (chartAtlasPOU_isSubordinate I M) Ψ hB_meas hB_source
+
+omit [IsManifold I ∞ M] in
+private lemma param_measEmb
+    [T2Space M]
+    (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
+    {B : Set E} (hB_meas : MeasurableSet B)
+    (hB_source : B ⊆ Ψ.source) :
+    MeasurableEmbedding (fun w : B => Ψ (w : E)) where
+  injective u v huv := Subtype.ext <|
+    Ψ.toPartialEquiv.injOn (hB_source u.2) (hB_source v.2) huv
+  measurable :=
+    (continuousOn_iff_continuous_domRestrict.mp
+      (Ψ.contMDiffOn_toFun.continuousOn.mono hB_source)).measurable
+  measurableSet_image' := by
+    intro C hC
+    have hcoeC : MeasurableSet (((↑) : B → E) '' C) :=
+      hB_meas.subtype_image hC
+    have hcoeC_source : ((↑) : B → E) '' C ⊆ Ψ.source := by
+      rintro _ ⟨w, _, rfl⟩
+      exact hB_source w.2
+    simpa only [Function.comp_apply, Set.image_image] using
+      measurableSet_image_param_global (I := I) Ψ hcoeC hcoeC_source
+
+private lemma riemVol_param_map
+    [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M)
+    (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
+    {B : Set E} (hB_meas : MeasurableSet B)
+    (hB_source : B ⊆ Ψ.source) :
+    Measure.map (fun w : B => Ψ (w : E))
+        (Measure.comap ((↑) : B → E)
+          ((modelHaar (E := E)).withDensity
+            (fun w => ENNReal.ofReal (paramDensity (I := I) g Ψ w)))) =
+      (riemannianVolumeMeasure (I := I) (M := M) g).restrict (Ψ '' B) := by
+  let ν : Measure E :=
+    (modelHaar (E := E)).withDensity
+      (fun w => ENNReal.ofReal (paramDensity (I := I) g Ψ w))
+  have hΨB : MeasurableEmbedding (fun w : B => Ψ (w : E)) :=
+    param_measEmb (I := I) Ψ hB_meas hB_source
+  ext A hA
+  rw [Measure.map_apply hΨB.measurable hA, Measure.restrict_apply hA]
+  rw [comap_subtype_coe_apply hB_meas]
+  let C : Set E := ((↑) : B → E) '' ((fun w : B => Ψ (w : E)) ⁻¹' A)
+  have hC_meas : MeasurableSet C := by
+    dsimp only [C]
+    exact hB_meas.subtype_image (hΨB.measurable hA)
+  have hC_source : C ⊆ Ψ.source := by
+    rintro _ ⟨w, _, rfl⟩
+    exact hB_source w.2
+  have himage : Ψ '' C = A ∩ Ψ '' B := by
+    ext x
+    constructor
+    · rintro ⟨_, ⟨w, hwA, rfl⟩, rfl⟩
+      exact ⟨hwA, ⟨w, w.2, rfl⟩⟩
+    · rintro ⟨hxA, w, hwB, rfl⟩
+      exact ⟨w, ⟨⟨w, hwB⟩, hxA, rfl⟩, rfl⟩
+  change ν C = riemannianVolumeMeasure (I := I) (M := M) g (A ∩ Ψ '' B)
+  calc
+    ν C = ∫⁻ w in C, ENNReal.ofReal (paramDensity (I := I) g Ψ w)
+        ∂(modelHaar (E := E)) := by
+      change ((modelHaar (E := E)).withDensity
+        (fun w => ENNReal.ofReal (paramDensity (I := I) g Ψ w))) C = _
+      rw [MeasureTheory.withDensity_apply _ hC_meas]
+    _ = riemannianVolumeMeasure (I := I) (M := M) g (Ψ '' C) :=
+      (riemannianVolumeMeasure_image_param_eq
+        (I := I) g Ψ hC_meas hC_source).symm
+    _ = riemannianVolumeMeasure (I := I) (M := M) g (A ∩ Ψ '' B) := by
+      rw [himage]
+
+theorem riemVol_param_lint
+    [T2Space M] [SigmaCompactSpace M]
+    (g : SmoothRiemannianMetric I M)
+    (Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1)
+    (F : M → ℝ≥0∞)
+    {B : Set E} (hB_meas : MeasurableSet B)
+    (hB_source : B ⊆ Ψ.source) :
+    ∫⁻ y in Ψ '' B, F y ∂riemannianVolumeMeasure (I := I) (M := M) g =
+      ∫⁻ w in B, ENNReal.ofReal (paramDensity (I := I) g Ψ w) * F (Ψ w)
+        ∂modelHaar (E := E) := by
+  let ν : Measure E :=
+    (modelHaar (E := E)).withDensity
+      (fun w => ENNReal.ofReal (paramDensity (I := I) g Ψ w))
+  have hΨB : MeasurableEmbedding (fun w : B => Ψ (w : E)) :=
+    param_measEmb (I := I) Ψ hB_meas hB_source
+  have hdens : AEMeasurable
+      (fun w => ENNReal.ofReal (paramDensity (I := I) g Ψ w))
+      ((modelHaar (E := E)).restrict B) :=
+    ENNReal.measurable_ofReal.comp_aemeasurable
+      (((paramDensity_contOn (I := I) g Ψ).mono hB_source).aemeasurable hB_meas)
+  have hdens_lt : ∀ᵐ w ∂(modelHaar (E := E)).restrict B,
+      ENNReal.ofReal (paramDensity (I := I) g Ψ w) < (∞ : ℝ≥0∞) :=
+    Filter.Eventually.of_forall (fun w => ENNReal.ofReal_lt_top)
+  rw [← riemVol_param_map (I := I) g Ψ hB_meas hB_source]
+  rw [hΨB.lintegral_map]
+  rw [← (MeasurableEmbedding.subtype_coe hB_meas).lintegral_map
+    (μ := Measure.comap ((↑) : B → E) ν) (fun w : E => F (Ψ w))]
+  rw [map_comap_subtype_coe hB_meas]
+  exact MeasureTheory.setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable₀
+    (modelHaar (E := E)) hdens (fun w => F (Ψ w)) hB_meas hdens_lt
 
 theorem param_vol_ge
     [T2Space M] [SigmaCompactSpace M]

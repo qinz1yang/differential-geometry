@@ -564,17 +564,14 @@ attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
- in
-theorem curve_exists_limit_of_bounded_speed
+  [CompleteSpace M] in
+theorem curve_cauchy_speed
     {γ : ℝ → M} {a b c : ℝ} (hab : a < b) (hc_nonneg : 0 ≤ c)
     (hγ_smooth : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Ioo a b))
     (hSpeedBound : ∀ τ ∈ Set.Ioo a b,
       ‖mfderiv 𝓘(ℝ, ℝ) I γ τ (1 : ℝ)‖ₑ ≤ ENNReal.ofReal c) :
-    ∃ y : M, Tendsto γ (nhdsWithin b (Set.Iio b))
-      (@nhds M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace y) := by
+    Cauchy (Filter.map γ (nhdsWithin b (Set.Iio b))) := by
   have hNB : (nhdsWithin b (Set.Iio b)).NeBot := nhdsLT_neBot b
-  suffices hcauchy : Cauchy (Filter.map γ (nhdsWithin b (Set.Iio b))) by
-    exact cauchy_map_iff_exists_tendsto.mp hcauchy
   refine EMetric.cauchy_iff.mpr ⟨?_, ?_⟩
   · have : (Filter.map γ (nhdsWithin b (Set.Iio b))).NeBot := Filter.map_neBot
     exact Filter.NeBot.ne this
@@ -647,6 +644,41 @@ theorem curve_exists_limit_of_bounded_speed
       _ < ENNReal.ofReal δ₀ := by
             rw [ENNReal.ofReal_lt_ofReal_iff hδ₀_pos]; exact h_cts_lt
       _ < ε := hδ₀_ofReal_lt
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
+  [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] in
+theorem curve_exists_limit_of_bounded_speed
+    {γ : ℝ → M} {a b c : ℝ} (hab : a < b) (hc_nonneg : 0 ≤ c)
+    (hγ_smooth : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Ioo a b))
+    (hSpeedBound : ∀ τ ∈ Set.Ioo a b,
+      ‖mfderiv 𝓘(ℝ, ℝ) I γ τ (1 : ℝ)‖ₑ ≤ ENNReal.ofReal c) :
+    ∃ y : M, Tendsto γ (nhdsWithin b (Set.Iio b))
+      (@nhds M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace y) := by
+  have : (nhdsWithin b (Set.Iio b)).NeBot := nhdsLT_neBot b
+  exact cauchy_map_iff_exists_tendsto.mp
+    (curve_cauchy_speed (I := I) hab hc_nonneg hγ_smooth hSpeedBound)
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+omit [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
+  [I.Boundaryless] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M]
+  [CompleteSpace M] in
+theorem curve_lim_of_compact
+    {γ : ℝ → M} {a b c : ℝ} {K : Set M}
+    (hab : a < b) (hc_nonneg : 0 ≤ c)
+    (hγ_smooth : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Ioo a b))
+    (hSpeedBound : ∀ τ ∈ Set.Ioo a b,
+      ‖mfderiv 𝓘(ℝ, ℝ) I γ τ (1 : ℝ)‖ₑ ≤ ENNReal.ofReal c)
+    (hK : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace K)
+    (hγK : ∀ᶠ t in nhdsWithin b (Set.Iio b), γ t ∈ K) :
+    ∃ y ∈ K, Tendsto γ (nhdsWithin b (Set.Iio b))
+      (@nhds M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace y) := by
+  have hcauchy := curve_cauchy_speed (I := I) hab hc_nonneg hγ_smooth hSpeedBound
+  exact hK.isComplete _ hcauchy (by
+    rw [le_principal_iff, mem_map]
+    exact hγK)
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in

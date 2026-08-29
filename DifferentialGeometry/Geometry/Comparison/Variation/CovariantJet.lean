@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.FirstVariation
 import DifferentialGeometry.Geometry.Comparison.Variation.GeneralCurvatureCommutation
 
-
 set_option autoImplicit false
 
 noncomputable section
@@ -203,9 +202,8 @@ theorem covFst_add
       (chartRep_fst_diff (I := I) f V hV s t)
       (chartRep_fst_diff (I := I) f W hW s t)
 
-omit [NeZero (Module.finrank ℝ E)] in
-omit [SigmaCompactSpace M] in
-theorem cov_commute_at
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+theorem cov_commute_global
     (g : SmoothRiemannianMetric I M) (f : Real -> Real -> M)
     (hf : IsSmoothVariation (I := I) f)
     (V : forall s t : Real, TangentSpace I (f s t))

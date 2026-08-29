@@ -40,7 +40,6 @@ set_option autoImplicit false
 
 noncomputable section
 
-
 namespace DifferentialGeometry.Geometry.Connection
 
 open Bundle DifferentialGeometry.Tensor0SBundle
@@ -222,9 +221,8 @@ private theorem contMDiffAt_metric_inner
   rw [contMDiffAt_totalSpace] at htotal
   exact htotal.2
 
-
 omit [CompleteSpace E] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
-private theorem nabla0SFun_two_eval_smooth_slots
+theorem nabla0S_two_apply
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
     (X Y Z : ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _))
@@ -1171,7 +1169,6 @@ theorem firstBianchi_ofTF
   rw [hXYZ, hYZX, hZXY]
   simpa [map_add, map_zero] using hinner
 
-
 omit [IsManifold I 1 M] in
 omit [SigmaCompactSpace M] in
 theorem firstBianchiAt_of_leviCivita_realizes
@@ -1295,7 +1292,6 @@ theorem rm04PairSymm_ofLC
       (metricCompatible_of_isLeviCivita (I := I) hLC) Rm04 hRm04)
     (firstBianchi_ofTF (I := I) g cov hcov
       (torsionFree_of_isLeviCivita (I := I) hLC) Rm04 hRm04)
-
 
 omit [SigmaCompactSpace M] in
 theorem rm04PairSymmAt_of_leviCivita_realizes
@@ -1512,7 +1508,7 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
           nablaAlphaSec x (vec2 (I := I) (Yf x) (XZc x)) := by
     have h2 := nabla2OneFormRealizesAt_apply (I := I) cov alphaSec
       nablaAlphaSec x nabla2Alpha hnabla2 Xsec Y Z
-    have hraw := nabla0SFun_two_eval_smooth_slots
+    have hraw := nabla0S_two_apply
       (I := I) cov Xsec Ysec Zsec nablaAlphaSec x
     calc
       nabla2Alpha (vec3 (I := I) X Y Z)
@@ -1532,7 +1528,7 @@ private theorem oneFormThirdCovDerivCommAt_of_leviCivita_higherOrder
           nablaAlphaSec x (vec2 (I := I) (Xf x) (YZc x)) := by
     have h2 := nabla2OneFormRealizesAt_apply (I := I) cov alphaSec
       nablaAlphaSec x nabla2Alpha hnabla2 Ysec X Z
-    have hraw := nabla0SFun_two_eval_smooth_slots
+    have hraw := nabla0S_two_apply
       (I := I) cov Ysec Xsec Zsec nablaAlphaSec x
     calc
       nabla2Alpha (vec3 (I := I) Y X Z)
@@ -1677,6 +1673,5 @@ theorem tensor0S_ricciIdentity_of_leviCivita
     hnablaAlpha hnabla2 ?_
   have htf := leviCivitaConnectionOfMetric_isTorsionFree (I := I) g
   simpa [IsTorsionFreeAt] using htf x
-
 
 end DifferentialGeometry.Geometry.Connection

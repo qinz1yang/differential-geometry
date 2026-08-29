@@ -24,6 +24,9 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I (⊤ : WithTop ℕ∞) M] [T2Space M] [SigmaCompactSpace M]
   [T2Space (TangentBundle I M)]
 
+private local instance : MeasurableSpace E := borel E
+private local instance : BorelSpace E := ⟨rfl⟩
+
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in
 theorem framedBall_eq_small
@@ -124,6 +127,161 @@ theorem localBall_eq_normal
   rw [localBallVolume, normalBallVolume, hball]
   congr 1
   exact (framedBall_eq_small (I := I) g hEnorm p hR hRexp).symm
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+theorem exists_ball_ratio
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [T3Space M] [ConnectedSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) (ε : Real) (hε : 0 < ε) :
+    ∃ c : Real,
+      c = paramDensity (I := I) g (framedExpDiffeo (I := I) g p) 0 ∧
+      0 < c ∧ ∃ ρ : Real, 0 < ρ ∧ ∀ {r : Real}, 0 < r → r < ρ →
+        ENNReal.ofReal ((1 - ε) * c) *
+            (ENNReal.ofReal (r ^ Module.finrank Real E) *
+              (modelHaar (E := E)) (ball (0 : E) 1)) ≤
+          localBallVolume (I := I) g p r ∧
+        localBallVolume (I := I) g p r ≤
+          ENNReal.ofReal ((1 + ε) * c) *
+            (ENNReal.ofReal (r ^ Module.finrank Real E) *
+              (modelHaar (E := E)) (ball (0 : E) 1)) := by
+  let : MeasurableSpace E := borel E
+  let : BorelSpace E := ⟨rfl⟩
+  let : MeasurableSpace M := borel M
+  let : BorelSpace M := ⟨rfl⟩
+  let Ψ := framedExpDiffeo (I := I) g p
+  let f : E → Real := paramDensity (I := I) g Ψ
+  have hzero : (0 : E) ∈ Ψ.source := by
+    simpa only [Ψ] using zero_mem_framedExp_source (I := I) g p
+  have hfpos : 0 < f 0 := by
+    exact paramDensity_pos (I := I) g Ψ hzero
+  refine ⟨f 0, by rfl, hfpos, ?_⟩
+  have hcont : ContinuousWithinAt f Ψ.source 0 := by
+    exact (paramDensity_contOn (I := I) g Ψ) 0 hzero
+  obtain ⟨δ, hδ, hclose⟩ :=
+    (Metric.continuousWithinAt_iff.mp hcont) (ε * f 0) (mul_pos hε hfpos)
+  obtain ⟨s, hs, hsource⟩ := exists_framed_ball (I := I) g p
+  let e : Real := expDiffeoRadius (I := I) g hEnorm p
+  let ρ : Real := min δ (min s e)
+  have he : 0 < e := by
+    simpa only [e] using expDiffeoRadius_pos (I := I) g hEnorm p
+  have hρ : 0 < ρ := by
+    simpa only [ρ] using lt_min hδ (lt_min hs he)
+  refine ⟨ρ, hρ, ?_⟩
+  intro r hr hrρ
+  have hrδ : r < δ := hrρ.trans_le (min_le_left _ _)
+  have hrs : r < s :=
+    hrρ.trans_le ((min_le_right _ _).trans (min_le_left _ _))
+  have hre : r < expDiffeoRadius (I := I) g hEnorm p := by
+    simpa only [e] using
+      hrρ.trans_le ((min_le_right _ _).trans (min_le_right _ _))
+  have hrsource : ball (0 : E) r ⊆ Ψ.source := by
+    simpa only [Ψ] using (Metric.ball_subset_ball hrs.le).trans hsource
+  have hdens (z : E) (hz : z ∈ ball (0 : E) r) :
+      (1 - ε) * f 0 ≤ f z ∧ f z ≤ (1 + ε) * f 0 := by
+    have hzδ : dist z (0 : E) < δ :=
+      (Metric.mem_ball.mp hz).trans hrδ
+    have hzclose := hclose (hrsource hz) hzδ
+    rw [Real.dist_eq] at hzclose
+    exact ⟨by nlinarith [neg_lt_of_abs_lt hzclose],
+      by nlinarith [lt_of_abs_lt hzclose]⟩
+  have hlow :
+      ENNReal.ofReal ((1 - ε) * f 0) *
+          (modelHaar (E := E)) (ball (0 : E) r) ≤
+        riemannianVolumeMeasure (I := I) (M := M) g
+          (Ψ '' ball (0 : E) r) := by
+    exact param_vol_ge (I := I) g Ψ measurableSet_ball hrsource
+      (fun z hz => (hdens z hz).1)
+  have hupp :
+      riemannianVolumeMeasure (I := I) (M := M) g
+          (Ψ '' ball (0 : E) r) ≤
+        ENNReal.ofReal ((1 + ε) * f 0) *
+          (modelHaar (E := E)) (ball (0 : E) r) := by
+    rw [riemannianVolumeMeasure_image_param_eq
+      (I := I) g Ψ measurableSet_ball hrsource]
+    calc
+      (∫⁻ z in ball (0 : E) r, ENNReal.ofReal (f z)
+          ∂(modelHaar (E := E))) ≤
+          ∫⁻ _z in ball (0 : E) r, ENNReal.ofReal ((1 + ε) * f 0)
+            ∂(modelHaar (E := E)) := by
+        refine MeasureTheory.setLIntegral_mono' measurableSet_ball ?_
+        intro z hz
+        exact ENNReal.ofReal_le_ofReal (hdens z hz).2
+      _ = ENNReal.ofReal ((1 + ε) * f 0) *
+          (modelHaar (E := E)) (ball (0 : E) r) := by
+        rw [MeasureTheory.setLIntegral_const]
+  have hball : localBallVolume (I := I) g p r =
+      riemannianVolumeMeasure (I := I) (M := M) g
+        (Ψ '' ball (0 : E) r) := by
+    rw [localBall_eq_normal (I := I) g hEnorm p hr hre]
+    rfl
+  constructor
+  · rw [hball]
+    simpa only [f, Ψ, modelHaar_ball (E := E) hr] using hlow
+  · rw [hball]
+    simpa only [f, Ψ, modelHaar_ball (E := E) hr] using hupp
+
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+theorem exists_euclid_ratio
+    [RiemannianBundle (fun x : M => TangentSpace I x)]
+    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
+    [T3Space M] [ConnectedSpace M]
+    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : IsMetricNorm (I := I) (M := M) g)
+    (p : M) (ε : Real) (hε : 0 < ε) (hε1 : ε < 1) :
+    ∃ ρ : Real, 0 < ρ ∧ ∀ {r : Real}, 0 < r → r < ρ →
+      ENNReal.ofReal (1 - ε) *
+          (ENNReal.ofReal (r ^ Module.finrank Real E) *
+            (MeasureTheory.volume : MeasureTheory.Measure E) (ball (0 : E) 1)) ≤
+        localBallVolume (I := I) g p r ∧
+      localBallVolume (I := I) g p r ≤
+        ENNReal.ofReal (1 + ε) *
+          (ENNReal.ofReal (r ^ Module.finrank Real E) *
+            (MeasureTheory.volume : MeasureTheory.Measure E) (ball (0 : E) 1)) := by
+  obtain ⟨c, hc, _hcpos, ρ, hρ, hratio⟩ :=
+    exists_ball_ratio (I := I) g hEnorm p ε hε
+  have hhaar :
+      ENNReal.ofReal c * (modelHaar (E := E)) (ball (0 : E) 1) =
+        (MeasureTheory.volume : MeasureTheory.Measure E) (ball (0 : E) 1) := by
+    have h := congrArg (fun μ : MeasureTheory.Measure E => μ (ball (0 : E) 1))
+      (framedDens_haar (I := I) g p)
+    simpa only [MeasureTheory.Measure.smul_apply, smul_eq_mul, hc] using h
+  have hoflow : ENNReal.ofReal ((1 - ε) * c) =
+      ENNReal.ofReal (1 - ε) * ENNReal.ofReal c :=
+    ENNReal.ofReal_mul (sub_nonneg.mpr hε1.le)
+  have hofupp : ENNReal.ofReal ((1 + ε) * c) =
+      ENNReal.ofReal (1 + ε) * ENNReal.ofReal c :=
+    ENNReal.ofReal_mul (by positivity)
+  refine ⟨ρ, hρ, ?_⟩
+  intro r hr hrρ
+  obtain ⟨hlow, hupp⟩ := hratio hr hrρ
+  constructor
+  · calc
+      ENNReal.ofReal (1 - ε) *
+          (ENNReal.ofReal (r ^ Module.finrank Real E) *
+            (MeasureTheory.volume : MeasureTheory.Measure E) (ball (0 : E) 1)) =
+          ENNReal.ofReal ((1 - ε) * c) *
+            (ENNReal.ofReal (r ^ Module.finrank Real E) *
+              (modelHaar (E := E)) (ball (0 : E) 1)) := by
+        rw [hoflow, ← hhaar]
+        simp only [mul_assoc, mul_comm, mul_left_comm]
+      _ ≤ localBallVolume (I := I) g p r := hlow
+  · calc
+      localBallVolume (I := I) g p r ≤
+          ENNReal.ofReal ((1 + ε) * c) *
+            (ENNReal.ofReal (r ^ Module.finrank Real E) *
+              (modelHaar (E := E)) (ball (0 : E) 1)) := hupp
+      _ = ENNReal.ofReal (1 + ε) *
+          (ENNReal.ofReal (r ^ Module.finrank Real E) *
+            (MeasureTheory.volume : MeasureTheory.Measure E) (ball (0 : E) 1)) := by
+        rw [hofupp, ← hhaar]
+        simp only [mul_assoc, mul_comm, mul_left_comm]
 
 attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
   Tensor0SBundle.tangentSpace_normedSpace in

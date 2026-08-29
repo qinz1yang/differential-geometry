@@ -411,6 +411,29 @@ theorem isGeodesicOn_Ioo_extend
   intro t ht
   simp only [hG_def, if_pos ht]
 
+attribute [-instance] Tensor0SBundle.tangentSpace_normedAddCommGroup
+  Tensor0SBundle.tangentSpace_normedSpace in
+omit [CompleteSpace M] in
+theorem geo_Ioo_extend_cpt
+    [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
+    (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {a b c : ℝ} {K : Set M}
+    (hab : a < b) (hc_nonneg : 0 ≤ c)
+    (hγ_smooth : ContMDiffOn 𝓘(ℝ, ℝ) I 1 γ (Set.Ioo a b))
+    (hSpeedBound : ∀ τ ∈ Set.Ioo a b,
+      ‖mfderiv 𝓘(ℝ, ℝ) I γ τ (1 : ℝ)‖ₑ ≤ ENNReal.ofReal c)
+    (hSpeedSq : ∀ s ∈ Set.Ioo a b,
+      (g.inner (γ s)) (mfderiv 𝓘(ℝ, ℝ) I γ s 1) (mfderiv 𝓘(ℝ, ℝ) I γ s 1) ≤ c ^ 2)
+    (hγ : IsGeodesicOn (I := I) g γ (Set.Ioo a b))
+    (hK : @IsCompact M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace K)
+    (hγK : ∀ᶠ t in nhdsWithin b (Set.Iio b), γ t ∈ K) :
+    ∃ (γ' : ℝ → M) (b' : ℝ), b < b' ∧
+      IsGeodesicOn (I := I) g γ' (Set.Ioo a b') ∧
+      ContinuousOn γ' (Set.Ioo a b') ∧
+      (∀ t < b, γ' t = γ t) := by
+  refine isGeodesicOn_Ioo_extend (I := I) g hab hγ hγ_smooth.continuousOn ?_
+  exact endpointCont_compact (I := I) g hab hc_nonneg hγ_smooth hSpeedBound
+    hSpeedSq hγ hK hγK
+
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M]
     [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] [I.Boundaryless] in

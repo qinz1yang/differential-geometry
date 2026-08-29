@@ -1,4 +1,6 @@
 import Mathlib.Analysis.Normed.Group.Basic
+import Mathlib.Topology.ContinuousMap.Bounded.ArzelaAscoli
+import Mathlib.Topology.ContinuousMap.Compact
 import Mathlib.Topology.MetricSpace.ProperSpace
 import Mathlib.Topology.Metrizable.ContinuousMap
 import Mathlib.Topology.Order.Compact
@@ -219,6 +221,52 @@ end HCGCompactness
 end DifferentialGeometry
 
 namespace DifferentialGeometry.Analysis
+
+open Filter Set Topology
+open scoped Topology BoundedContinuousFunction
+
+theorem arzela_subseq_cpt
+    {X Y : Type*} [TopologicalSpace X] [CompactSpace X]
+    [PseudoMetricSpace Y] [T2Space Y]
+    (K : Set Y) (hK : IsCompact K) (f : Nat -> C(X, Y))
+    (hval : forall n x, f n x ∈ K)
+    (hequi : Equicontinuous (fun n => (f n : X -> Y))) :
+    exists (phi : Nat -> Nat) (g : C(X, Y)),
+      StrictMono phi ∧ TendstoUniformly (fun n => f (phi n)) g atTop := by
+  classical
+  let fb : Nat → (X →ᵇ Y) := fun n => BoundedContinuousFunction.mkOfCompact (f n)
+  let A : Set (X →ᵇ Y) := Set.range fb
+  have hEq : Equicontinuous ((↑) : A -> X -> Y) := by
+    let idx : A -> Nat := fun q => Classical.choose q.2
+    have hidx : forall q : A, fb (idx q) = q.1 :=
+      fun q => Classical.choose_spec q.2
+    have hsub := hequi.comp idx
+    have hfun :
+        ((fun n : Nat => (f n : X -> Y)) ∘ idx) =
+          (fun q : A => (q.1 : X -> Y)) := by
+      funext q x
+      calc
+        f (idx q) x = fb (idx q) x := rfl
+        _ = q.1 x := by rw [hidx q]
+    simpa only [hfun] using hsub
+  have hcompact : IsCompact (closure A) :=
+    BoundedContinuousFunction.arzela_ascoli K hK A
+      (by
+        intro q x hq
+        rcases hq with ⟨n, rfl⟩
+        exact hval n x)
+      hEq
+  have hmem : forall n : Nat, fb n ∈ closure A :=
+    fun n => subset_closure ⟨n, rfl⟩
+  rcases hcompact.tendsto_subseq hmem with
+    ⟨g, _hg, phi, hphi, htendsto⟩
+  refine ⟨phi, g.toContinuousMap, hphi, ?_⟩
+  have hunif : TendstoUniformly (fun n => fb (phi n)) g atTop :=
+    BoundedContinuousFunction.tendsto_iff_tendstoUniformly.mp
+      (by simpa only [Function.comp_def] using htendsto)
+  change TendstoUniformly (fun n x => f (phi n) x) (fun x => g x) atTop
+  change TendstoUniformly (fun n x => fb (phi n) x) (fun x => g x) atTop at hunif
+  simpa only [fb, BoundedContinuousFunction.mkOfCompact_apply] using hunif
 
 alias arzela_ascoli_isCompact_closure :=
   HCGCompactness.arzelaAscoli_isCompact_closure

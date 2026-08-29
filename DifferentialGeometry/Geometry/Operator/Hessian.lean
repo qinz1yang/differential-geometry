@@ -370,6 +370,44 @@ lemma hessFun_apply (g : SmoothRiemannianMetric I M) (f : M → ℝ) (x : M)
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] in
+@[simp]
+theorem hessFun_smul (g : SmoothRiemannianMetric I M) (c : ℝ) (f : M → ℝ) :
+    hessFun (I := I) g (c • f) = c • hessFun (I := I) g f := by
+  classical
+  have hpartial (i : Fin (Module.finrank ℝ E)) (u : E → ℝ) (y : E) :
+      partialDeriv (E := E) i (c • u) y = c * partialDeriv (E := E) i u y := by
+    unfold partialDeriv
+    rw [congrFun (fderiv_const_smul_field (𝕜 := ℝ) (f := u) c) y]
+    rfl
+  have hchart (x : M) (i j : Fin (Module.finrank ℝ E)) :
+      chartHessianTensor (I := I) g x (c • f) i j x =
+        c * chartHessianTensor (I := I) g x f i j x := by
+    rw [chartHessianTensor_def, chartHessianTensor_def,
+      chartIteratedPartialDeriv_def, chartIteratedPartialDeriv_def]
+    have hscalar : scalarOnE (I := I) x (c • f) =
+        c • scalarOnE (I := I) x f := rfl
+    rw [hscalar]
+    have hj : partialDeriv (E := E) j (c • scalarOnE (I := I) x f) =
+        c • partialDeriv (E := E) j (scalarOnE (I := I) x f) := by
+      funext y
+      exact hpartial j _ y
+    rw [hj, hpartial]
+    simp_rw [hpartial]
+    rw [mul_sub, Finset.mul_sum]
+    congr 1
+    refine Finset.sum_congr rfl fun k _ => ?_
+    ring
+  funext x
+  ext v w
+  simp only [hessFun_apply, Pi.smul_apply, LinearMap.smul_apply, smul_eq_mul]
+  simp_rw [hchart]
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  ring
+
+omit [NeZero (Module.finrank ℝ E)] in
 theorem hessFun_symm_of_boundaryless [I.Boundaryless]
     (g : SmoothRiemannianMetric I M)
     {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f) :

@@ -163,15 +163,22 @@ private theorem ratio_le_half
     _ = (V + P) * ENNReal.ofReal (L / 2) := by
       rw [add_comm P V, mul_comm]
 
-omit [T2Space (TangentBundle I M)] [ConnectedSpace M] in
-theorem flatLoop_ge_cgt
+omit [T2Space (TangentBundle I M)] in
+omit [ConnectedSpace M] in
+private theorem flatLoop_ge_cgt_on
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
     (p : M) {K R r₀ s ell : Real}
     (hK : 0 < K) (hR : 0 < R)
     (hRpi : R ≤ Real.pi / Real.sqrt K)
-    (hRm : Rm04GlobalBound (I := I) (M := M) g K)
+    (hRm :
+      ∀ z : E, ‖z‖ < 3 * R / 4 →
+        Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
+          (intrinsicFramedExp (I := I) g hEnorm p z) 4
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
+            (I := I) (M := M) g
+            (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (hloc :
       IsLocalDiffeomorphOn (modelWithCornersSelf Real E) I
         (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -223,15 +230,6 @@ theorem flatLoop_ge_cgt
       _ = (2 * r₀ * Real.sqrt K) ^ 2 := by
         ring
       _ < (Real.pi / 2) ^ 2 := hsq
-  have hRmLocal :
-      ∀ z : E, ‖z‖ < 3 * R / 4 →
-        Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
-          (intrinsicFramedExp (I := I) g hEnorm p z) 4
-          (DifferentialGeometry.Geometry.Curvature.metricRm04At
-            (I := I) (M := M) g
-            (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K := by
-    intro z _
-    exact hRm _
   have harea_of_L :
       ∀ L : Real, 2 * ell < L → L < r₀ →
         ((⌊r₀ / L⌋₊ : Nat) : ENNReal) * V ≤ P := by
@@ -285,7 +283,7 @@ theorem flatLoop_ge_cgt
       intro y hy
       have hcount' :=
         CGT.intrFiber_count_core (I := I) g hEnorm p
-          hR h4rR hL.le hr₀.le hfitL hloc hK.le hsmall hRmLocal
+          hR h4rR hL.le hr₀.le hfitL hloc hK.le hsmall hRm
           c hc hcLenL A hA (N - 1) hpredMul hs has
           (q := y) (by simpa only [S, Set.mem_ofPred_eq] using hy)
       have hENat :
@@ -339,8 +337,9 @@ theorem flatLoop_ge_cgt
   dsimp only [L] at hArealL
   linarith
 
-omit [T2Space (TangentBundle I M)] [ConnectedSpace M] in
-theorem collision_ge_cgt
+omit [T2Space (TangentBundle I M)] in
+omit [ConnectedSpace M] in
+theorem flatLoop_ge_cgt
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
@@ -348,6 +347,46 @@ theorem collision_ge_cgt
     (hK : 0 < K) (hR : 0 < R)
     (hRpi : R ≤ Real.pi / Real.sqrt K)
     (hRm : Rm04GlobalBound (I := I) (M := M) g K)
+    (hloc :
+      IsLocalDiffeomorphOn (modelWithCornersSelf Real E) I
+        (↑(⊤ : ℕ∞) : WithTop ℕ∞)
+        (intrinsicFramedExp (I := I) g hEnorm p)
+        (ball (0 : E) R))
+    (hr₀ : 0 < r₀) (hs : 0 < s)
+    (hfit : r₀ + 2 * s < R) (hquarter : r₀ < R / 4)
+    (c : Path p p) (hc : IsFlatC1Path (I := I) c)
+    (hell : 0 < ell)
+    (hcLen : pathLen (I := I) c = ENNReal.ofReal (2 * ell))
+    (A : IntrFrameLift (I := I) g hEnorm p c.extend 0 1)
+    (hA : A.toFun 1 ≠ 0) :
+    ENNReal.ofReal (r₀ / 2) *
+          riemannianVolumeMeasure (I := I) (M := M) g
+            {y : M | riemannianEDist I p y < ENNReal.ofReal s} /
+        (riemannianVolumeMeasure (I := I) (M := M) g
+            {y : M | riemannianEDist I p y < ENNReal.ofReal s} +
+          intrPullVol (I := I) g hEnorm p (r₀ + s))
+      ≤ ENNReal.ofReal ell := by
+  exact
+    flatLoop_ge_cgt_on (I := I) g hEnorm p hK hR hRpi
+      (fun z _ ↦ hRm (intrinsicFramedExp (I := I) g hEnorm p z))
+      hloc hr₀ hs hfit hquarter c hc hell hcLen A hA
+
+omit [T2Space (TangentBundle I M)] in
+omit [ConnectedSpace M] in
+private theorem collision_ge_cgt_on
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (p : M) {K R r₀ s ell : Real}
+    (hK : 0 < K) (hR : 0 < R)
+    (hRpi : R ≤ Real.pi / Real.sqrt K)
+    (hRm :
+      ∀ z : E, ‖z‖ < 3 * R / 4 →
+        Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
+          (intrinsicFramedExp (I := I) g hEnorm p z) 4
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
+            (I := I) (M := M) g
+            (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (hloc :
       IsLocalDiffeomorphOn (modelWithCornersSelf Real E) I
         (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -481,10 +520,46 @@ theorem collision_ge_cgt
         norm_num
       _ = v := hBv
   exact
-    flatLoop_ge_cgt (I := I) g hEnorm p hK hR hRpi hRm hloc
+    flatLoop_ge_cgt_on (I := I) g hEnorm p hK hR hRpi hRm hloc
       hr₀ hs hfit hquarter c hc hell hcLen A hA
 
-omit [T2Space (TangentBundle I M)] [ConnectedSpace M] in
+omit [T2Space (TangentBundle I M)] in
+omit [ConnectedSpace M] in
+theorem collision_ge_cgt
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (p : M) {K R r₀ s ell : Real}
+    (hK : 0 < K) (hR : 0 < R)
+    (hRpi : R ≤ Real.pi / Real.sqrt K)
+    (hRm : Rm04GlobalBound (I := I) (M := M) g K)
+    (hloc :
+      IsLocalDiffeomorphOn (modelWithCornersSelf Real E) I
+        (↑(⊤ : ℕ∞) : WithTop ℕ∞)
+        (intrinsicFramedExp (I := I) g hEnorm p)
+        (ball (0 : E) R))
+    (hr₀ : 0 < r₀) (hs : 0 < s)
+    (hfit : r₀ + 2 * s < R) (hquarter : r₀ < R / 4)
+    {u v : E} (huv : u ≠ v)
+    (hcollision :
+      intrinsicFramedExp (I := I) g hEnorm p u =
+        intrinsicFramedExp (I := I) g hEnorm p v)
+    (hell : 0 < ell) (hlen : ‖u‖ + ‖v‖ = 2 * ell)
+    (hshort : ‖u‖ + ‖v‖ < R) :
+    ENNReal.ofReal (r₀ / 2) *
+          riemannianVolumeMeasure (I := I) (M := M) g
+            {y : M | riemannianEDist I p y < ENNReal.ofReal s} /
+        (riemannianVolumeMeasure (I := I) (M := M) g
+            {y : M | riemannianEDist I p y < ENNReal.ofReal s} +
+          intrPullVol (I := I) g hEnorm p (r₀ + s))
+      ≤ ENNReal.ofReal ell := by
+  exact
+    collision_ge_cgt_on (I := I) g hEnorm p hK hR hRpi
+      (fun z _ ↦ hRm (intrinsicFramedExp (I := I) g hEnorm p z))
+      hloc hr₀ hs hfit hquarter huv hcollision hell hlen hshort
+
+omit [T2Space (TangentBundle I M)] in
+omit [ConnectedSpace M] in
 theorem intrLoop_ge_cgt
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
@@ -545,14 +620,20 @@ theorem intrLoop_ge_cgt
 
 omit [T2Space (TangentBundle I M)] in
 omit [ConnectedSpace M] in
-theorem intrInj_ge_cgt
+theorem intrInj_ge_cgt_on
     (g : SmoothRiemannianMetric I M)
     (hEnorm : ∀ (y : M) (w : TangentSpace I y),
       ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
     (p : M) {K R r₀ s : Real}
     (hK : 0 < K) (hR : 0 < R)
     (hRpi : R ≤ Real.pi / Real.sqrt K)
-    (hRm : Rm04GlobalBound (I := I) (M := M) g K)
+    (hRm :
+      ∀ z : E, ‖z‖ < 3 * R / 4 →
+        Real.sqrt (Tensor0SBundle.normSq0S (I := I) g
+          (intrinsicFramedExp (I := I) g hEnorm p z) 4
+          (DifferentialGeometry.Geometry.Curvature.metricRm04At
+            (I := I) (M := M) g
+            (intrinsicFramedExp (I := I) g hEnorm p z))) ≤ K)
     (hloc :
       IsLocalDiffeomorphOn (modelWithCornersSelf Real E) I
         (↑(⊤ : ℕ∞) : WithTop ℕ∞)
@@ -625,7 +706,7 @@ theorem intrInj_ge_cgt
   have hcg :
       A₀ ≤ ENNReal.ofReal ell := by
     simpa only [A₀, V, P] using
-      collision_ge_cgt (I := I) g hEnorm p hK hR hRpi hRm hloc
+      collision_ge_cgt_on (I := I) g hEnorm p hK hR hRpi hRm hloc
         hr₀ hs hfit hquarter huv hcollision hell hlen hshort
   have hellReal : ell < A₀.toReal := by
     dsimp only [ell]
@@ -633,5 +714,34 @@ theorem intrInj_ge_cgt
   have hellA₀ : ENNReal.ofReal ell < A₀ :=
     (ENNReal.ofReal_lt_iff_lt_toReal hell.le hA₀top).2 hellReal
   exact (not_le_of_gt hellA₀) hcg
+
+omit [T2Space (TangentBundle I M)] in
+omit [ConnectedSpace M] in
+theorem intrInj_ge_cgt
+    (g : SmoothRiemannianMetric I M)
+    (hEnorm : ∀ (y : M) (w : TangentSpace I y),
+      ‖w‖ₑ = ENNReal.ofReal (Real.sqrt (g.inner y w w)))
+    (p : M) {K R r₀ s : Real}
+    (hK : 0 < K) (hR : 0 < R)
+    (hRpi : R ≤ Real.pi / Real.sqrt K)
+    (hRm : Rm04GlobalBound (I := I) (M := M) g K)
+    (hloc :
+      IsLocalDiffeomorphOn (modelWithCornersSelf Real E) I
+        (↑(⊤ : ℕ∞) : WithTop ℕ∞)
+        (intrinsicFramedExp (I := I) g hEnorm p)
+        (ball (0 : E) R))
+    (hr₀ : 0 < r₀) (hs : 0 < s)
+    (hfit : r₀ + 2 * s < R) (hquarter : r₀ < R / 4) :
+    ENNReal.ofReal (r₀ / 2) *
+          riemannianVolumeMeasure (I := I) (M := M) g
+            {y : M | riemannianEDist I p y < ENNReal.ofReal s} /
+        (riemannianVolumeMeasure (I := I) (M := M) g
+            {y : M | riemannianEDist I p y < ENNReal.ofReal s} +
+          intrPullVol (I := I) g hEnorm p (r₀ + s))
+      ≤ intrInjRadius (I := I) g hEnorm p := by
+  exact
+    intrInj_ge_cgt_on (I := I) g hEnorm p hK hR hRpi
+      (fun z _ ↦ hRm (intrinsicFramedExp (I := I) g hEnorm p z))
+      hloc hr₀ hs hfit hquarter
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison

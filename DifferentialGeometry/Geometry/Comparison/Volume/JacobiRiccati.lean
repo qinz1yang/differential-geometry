@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Comparison.Variation.JacobiShape
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
-
 noncomputable section
 
 open Matrix Set
@@ -267,7 +266,7 @@ theorem curvTrace_eq_ricci
 
 omit [NeZero (Module.finrank ℝ E)]
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
-theorem mean_sq_le_shape
+private theorem shape_trace_model
     {ι : Type*} [Fintype ι] [DecidableEq ι]
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
     (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
@@ -282,9 +281,14 @@ theorem mean_sq_le_shape
     (e : Fin (Module.finrank ℝ E - 1) → TangentSpace I (γ t))
     (hON : ∀ i j, g.inner (γ t) (e i) (e j) = if i = j then 1 else 0)
     (hEperp : ∀ i, g.inner (γ t) (e i) u = 0) :
-    (curveMean (I := I) g γ V t) ^ 2 ≤
-      ((Module.finrank ℝ E - 1 : ℕ) : ℝ) *
-        trace ((curveShape (I := I) g γ V t) ^ 2) := by
+    ∃ B : Matrix (Fin (Module.finrank ℝ E - 1))
+        (Fin (Module.finrank ℝ E - 1)) ℝ,
+      B.IsSymm ∧
+      curveMean (I := I) g γ V t = trace B ∧
+      trace ((curveShape (I := I) g γ V t) ^ 2) = trace (B ^ 2) ∧
+      ∀ c : ℝ, (B = c • (1 : Matrix (Fin (Module.finrank ℝ E - 1))
+          (Fin (Module.finrank ℝ E - 1)) ℝ) ↔
+        curveShape (I := I) g γ V t = c • (1 : Matrix ι ι ℝ)) := by
   classical
   obtain ⟨a, hDV⟩ := exists_deriv_coeff (I := I) g γ V t u hcard hu
     hVperp hDVperp hLI
@@ -486,9 +490,91 @@ theorem mean_sq_le_shape
         LinearMap.trace_eq_matrix_trace ℝ bE (A.comp A)
       _ = trace (B ^ 2) := by
         simp only [B, pow_two, LinearMap.toMatrix_comp bE bE bE A A]
+  refine ⟨B, hBsymm, hmean, hsq, fun c => ?_⟩
+  constructor
+  · intro hB
+    have hA : A = c • (1 : W →ₗ[ℝ] W) := by
+      apply (LinearMap.toMatrix bE bE).injective
+      simpa only [B, map_smul, LinearMap.toMatrix_one] using hB
+    rw [hshapeM, hA]
+    simp only [map_smul, LinearMap.toMatrix_one]
+  · intro hshapeC
+    have hA : A = c • (1 : W →ₗ[ℝ] W) := by
+      apply (LinearMap.toMatrix bV bV).injective
+      rw [← hshapeM]
+      simpa only [map_smul, LinearMap.toMatrix_one] using hshapeC
+    simp only [B, hA, map_smul, LinearMap.toMatrix_one]
+
+omit [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+theorem mean_sq_le_shape
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
+    (u : TangentSpace I (γ t))
+    (hcard : Fintype.card ι = Module.finrank ℝ E - 1)
+    (hu : 0 < g.inner (γ t) u u)
+    (hVperp : ∀ i, g.inner (γ t) u (V i t) = 0)
+    (hDVperp : ∀ i,
+      g.inner (γ t) u (covDerivAlong (I := I) g γ (V i) t) = 0)
+    (hLI : LinearIndependent ℝ fun i => V i t)
+    (hW : ∀ i j, jacobiWronskian g γ (V i) (V j) t = 0)
+    (e : Fin (Module.finrank ℝ E - 1) → TangentSpace I (γ t))
+    (hON : ∀ i j, g.inner (γ t) (e i) (e j) = if i = j then 1 else 0)
+    (hEperp : ∀ i, g.inner (γ t) (e i) u = 0) :
+    (curveMean (I := I) g γ V t) ^ 2 ≤
+      ((Module.finrank ℝ E - 1 : ℕ) : ℝ) *
+        trace ((curveShape (I := I) g γ V t) ^ 2) := by
+  obtain ⟨B, hBsymm, hmean, hsq, _⟩ := shape_trace_model
+    (I := I) g γ V t u hcard hu hVperp hDVperp hLI hW e hON hEperp
   have hineq := DifferentialGeometry.Analysis.trace_sq_le_mul B hBsymm
   rw [hmean, hsq]
   simpa only [Fintype.card_fin] using hineq
+
+omit [NeZero (Module.finrank ℝ E)]
+    [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
+theorem mean_sq_eq_iff
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (V : ι → ∀ t, TangentSpace I (γ t)) (t : ℝ)
+    (u : TangentSpace I (γ t))
+    (hcard : Fintype.card ι = Module.finrank ℝ E - 1)
+    (hd : 0 < Module.finrank ℝ E - 1)
+    (hu : 0 < g.inner (γ t) u u)
+    (hVperp : ∀ i, g.inner (γ t) u (V i t) = 0)
+    (hDVperp : ∀ i,
+      g.inner (γ t) u (covDerivAlong (I := I) g γ (V i) t) = 0)
+    (hLI : LinearIndependent ℝ fun i => V i t)
+    (hW : ∀ i j, jacobiWronskian g γ (V i) (V j) t = 0)
+    (e : Fin (Module.finrank ℝ E - 1) → TangentSpace I (γ t))
+    (hON : ∀ i j, g.inner (γ t) (e i) (e j) = if i = j then 1 else 0)
+    (hEperp : ∀ i, g.inner (γ t) (e i) u = 0) :
+    (curveMean (I := I) g γ V t) ^ 2 =
+        ((Module.finrank ℝ E - 1 : ℕ) : ℝ) *
+          trace ((curveShape (I := I) g γ V t) ^ 2) ↔
+      curveShape (I := I) g γ V t =
+        (curveMean (I := I) g γ V t /
+          ((Module.finrank ℝ E - 1 : ℕ) : ℝ)) • (1 : Matrix ι ι ℝ) := by
+  let : Nonempty (Fin (Module.finrank ℝ E - 1)) := ⟨⟨0, hd⟩⟩
+  obtain ⟨B, hBsymm, hmean, hsq, hscalar⟩ := shape_trace_model
+    (I := I) g γ V t u hcard hu hVperp hDVperp hLI hW e hON hEperp
+  constructor
+  · intro heq
+    have hBeq : (trace B) ^ 2 =
+        (Fintype.card (Fin (Module.finrank ℝ E - 1)) : ℝ) * trace (B ^ 2) := by
+      simpa only [hmean, hsq, Fintype.card_fin] using heq
+    have hBscalar :=
+      (DifferentialGeometry.Analysis.trace_sq_eq_iff B hBsymm).mp hBeq
+    apply (hscalar (curveMean (I := I) g γ V t /
+      ((Module.finrank ℝ E - 1 : ℕ) : ℝ))).mp
+    simpa only [hmean, Fintype.card_fin] using hBscalar
+  · intro hshapeScalar
+    have hBscalar := (hscalar (curveMean (I := I) g γ V t /
+      ((Module.finrank ℝ E - 1 : ℕ) : ℝ))).mpr hshapeScalar
+    have hBeq :=
+      (DifferentialGeometry.Analysis.trace_sq_eq_iff B hBsymm).mpr (by
+        simpa only [hmean, Fintype.card_fin] using hBscalar)
+    simpa only [hmean, hsq, Fintype.card_fin] using hBeq
 
 omit [SigmaCompactSpace M] in
 theorem mean_riccati_le
@@ -552,6 +638,86 @@ theorem mean_riccati_le
     simpa only [mul_comm] using hshape
   rw [hcurv]
   nlinarith
+
+omit [SigmaCompactSpace M] in
+theorem mean_riccati_eq_iff
+    {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (g : SmoothRiemannianMetric I M) (γ : ℝ → M)
+    (V : ι → ∀ t, TangentSpace I (γ t)) (t q a : ℝ)
+    (u : TangentSpace I (γ t))
+    (huvel : curveVelocity (I := I) γ t = u)
+    (hcard : Fintype.card ι = Module.finrank ℝ E - 1)
+    (hd : 0 < Module.finrank ℝ E - 1)
+    (ha : 0 < a)
+    (hu : g.inner (γ t) u u = a ^ 2)
+    (hVperp : ∀ i, g.inner (γ t) u (V i t) = 0)
+    (hDVperp : ∀ i,
+      g.inner (γ t) u (covDerivAlong (I := I) g γ (V i) t) = 0)
+    (hLI : LinearIndependent ℝ fun i => V i t)
+    (hW : ∀ i j, jacobiWronskian g γ (V i) (V j) t = 0)
+    (e : Fin (Module.finrank ℝ E - 1) → TangentSpace I (γ t))
+    (hON : ∀ i j, g.inner (γ t) (e i) (e j) = if i = j then 1 else 0)
+    (hEperp : ∀ i, g.inner (γ t) (e i) u = 0)
+    (hRic : BonnetMyers.RicciBoundedBelow (I := I) g
+      (-(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2))) :
+    -trace ((curveGram (I := I) g γ V t)⁻¹ *
+        curveCurvGram (I := I) g γ V t) -
+          trace ((curveShape (I := I) g γ V t) ^ 2) =
+        ((Module.finrank ℝ E - 1 : ℕ) : ℝ) * (q * a) ^ 2 -
+          (curveMean (I := I) g γ V t) ^ 2 /
+            ((Module.finrank ℝ E - 1 : ℕ) : ℝ) ↔
+      ricciTensor (I := I) g (γ t) u u =
+          -(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * (q * a) ^ 2) ∧
+        curveShape (I := I) g γ V t =
+          (curveMean (I := I) g γ V t /
+            ((Module.finrank ℝ E - 1 : ℕ) : ℝ)) • (1 : Matrix ι ι ℝ) := by
+  have hupos : 0 < g.inner (γ t) u u := by
+    rw [hu]
+    positivity
+  have hcurv := curvTrace_eq_ricci (I := I) g γ V t u huvel hcard hupos
+    hVperp hLI e hON hEperp
+  have hshape := mean_sq_le_shape (I := I) g γ V t u hcard hupos hVperp
+    hDVperp hLI hW e hON hEperp
+  have hshapeEq := mean_sq_eq_iff (I := I) g γ V t u hcard hd hupos hVperp
+    hDVperp hLI hW e hON hEperp
+  have hric := hRic (γ t) u
+  rw [hu] at hric
+  have hdR : (0 : ℝ) < ((Module.finrank ℝ E - 1 : ℕ) : ℝ) := by
+    exact_mod_cast hd
+  have hshapeDiv :
+      (curveMean (I := I) g γ V t) ^ 2 /
+          ((Module.finrank ℝ E - 1 : ℕ) : ℝ) ≤
+        trace ((curveShape (I := I) g γ V t) ^ 2) := by
+    rw [div_le_iff₀ hdR]
+    simpa only [mul_comm] using hshape
+  constructor
+  · intro heq
+    rw [hcurv] at heq
+    have hricEq : ricciTensor (I := I) g (γ t) u u =
+        -(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * (q * a) ^ 2) := by
+      nlinarith
+    have hshapeDivEq :
+        (curveMean (I := I) g γ V t) ^ 2 /
+            ((Module.finrank ℝ E - 1 : ℕ) : ℝ) =
+          trace ((curveShape (I := I) g γ V t) ^ 2) := by
+      nlinarith
+    have hshapeEq' :
+        (curveMean (I := I) g γ V t) ^ 2 =
+          ((Module.finrank ℝ E - 1 : ℕ) : ℝ) *
+            trace ((curveShape (I := I) g γ V t) ^ 2) := by
+      rw [div_eq_iff hdR.ne'] at hshapeDivEq
+      simpa only [mul_comm] using hshapeDivEq
+    exact ⟨hricEq, hshapeEq.mp hshapeEq'⟩
+  · rintro ⟨hricEq, hshapeScalar⟩
+    have hshapeEq' := hshapeEq.mpr hshapeScalar
+    have hshapeDivEq :
+        (curveMean (I := I) g γ V t) ^ 2 /
+            ((Module.finrank ℝ E - 1 : ℕ) : ℝ) =
+          trace ((curveShape (I := I) g γ V t) ^ 2) := by
+      rw [div_eq_iff hdR.ne']
+      simpa only [mul_comm] using hshapeEq'
+    rw [hcurv, hricEq, hshapeDivEq]
+    ring
 
 end Volume
 end Riemannian

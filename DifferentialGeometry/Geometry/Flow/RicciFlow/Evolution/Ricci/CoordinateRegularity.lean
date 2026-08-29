@@ -28,7 +28,6 @@ variable {u : Set M}
 
 section CoordinateFrameRicciEvolution
 
-
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem coordInvMdiff
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -1348,6 +1347,82 @@ theorem coordGammaMix
     exact coordGammaRhsMd (I := I) S x₀ t x hx i j k
   · intro t ht x hx
     exact hGamma ⟨t, ht⟩ x hx i j k
+
+omit [SigmaCompactSpace M] in
+theorem coordGammaBack
+    [I.Boundaryless]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) (x₀ : M) (T tau : Real)
+    (ht : T - tau ∈ D.regular) (x : M)
+    (hx : x ∈ coordinateFrameSet (I := I) x₀)
+    (i j k : CoordinateIdx (𝕜 := Real) E) :
+    HasDerivAt
+      (fun s : Real ↦
+        christoffelSymbolInFrame
+          (S.family.connection (T - s)) (coordinateFrameAt (I := I) x₀)
+          (coordinateFrameAt_isLocalFrame_one (I := I) x₀) x i j k)
+      (-christoffelEvolutionRHSInFrame
+        (M := M) (coordInv (I := I) S x₀)
+        (nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀))
+        (T - tau) x i j k)
+      tau := by
+  have hmetric := coordMetricMix (I := I) S hS x₀
+    (coordMetricDeriv (I := I) S hS x₀)
+  have hforward := coordGammaEvol (I := I) S hS x₀ hmetric
+    ⟨T - tau, ht⟩ x hx i j k
+  have hforwardAt := hforward.hasDerivAt (D.regular_mem_nhds ht)
+  have hsub : HasDerivAt (fun s : Real ↦ T - s) (-1) tau := by
+    exact (hasDerivAt_id tau).const_sub T
+  have hcomp := hforwardAt.comp tau hsub
+  convert hcomp using 1
+  · rfl
+  · rfl
+  · funext s
+    rfl
+  · ring
+
+omit [SigmaCompactSpace M] in
+theorem coordConnBack
+    [I.Boundaryless]
+    {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) (x₀ : M) (T tau : Real)
+    (ht : T - tau ∈ D.regular) (x : M)
+    (hx : x ∈ coordinateFrameSet (I := I) x₀)
+    (i j l : CoordinateIdx (𝕜 := Real) E) :
+    HasDerivAt
+      (fun s : Real ↦
+        connectionDiffLoweredInFrame (I := I) S
+          (coordinateFrameAt (I := I) x₀)
+          (T - s) (T - tau) (T - s) x i j l)
+      (-christoffelVariationLoweredRHSInFrame
+        (nablaRicComp (I := I) S (coordinateFrameAt (I := I) x₀))
+        (T - tau) x i j l)
+      tau := by
+  let frame := coordinateFrameAt (I := I) x₀
+  let N := nablaRicComp (I := I) S frame
+  let metricDt : Real → M → CoordinateIdx (𝕜 := Real) E →
+      CoordinateIdx (𝕜 := Real) E → CoordinateIdx (𝕜 := Real) E → Real :=
+    fun t y d a b ↦ (-2 : Real) * N t y d a b
+  have hmetric := coordMetricMix (I := I) S hS x₀
+    (coordMetricDeriv (I := I) S hS x₀)
+  have hdiff := variableMetricConnectionDiffDerivative_of_metricCovDeriv
+    (I := I) S frame (coordinateFrameAt_isLocalFrame_one (I := I) x₀)
+    (coordinateFrameSet_open (I := I) x₀) metricDt N hmetric
+    (metricCovDerivDerivativeIsRicciFlowInFrame_neg_two (M := M) N)
+    ⟨T - tau, ht⟩ x hx i j l
+  have hforwardAt := hdiff.hasDerivAt (D.regular_mem_nhds ht)
+  have hsub : HasDerivAt (fun s : Real ↦ T - s) (-1) tau := by
+    exact (hasDerivAt_id tau).const_sub T
+  have hcomp := hforwardAt.comp tau hsub
+  convert hcomp using 1
+  · rfl
+  · rfl
+  · funext s
+    rfl
+  · simp only [frame, N]
+    ring
 
 omit [SigmaCompactSpace M] in
 theorem coordNab2At

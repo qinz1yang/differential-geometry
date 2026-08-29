@@ -50,7 +50,7 @@ open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [T2Space M] [SigmaCompactSpace M] in
 private lemma chartCoord_covDerivAlong_eq_chartCovDerivAlong_chartRepAtBase
-    {n : WithTop ℕ∞} [ENat.LEInfty n] (hn : n ≠ 0)
+    {n : WithTop ℕ∞} (hn : n ≠ 0)
     (g : SmoothRiemannianMetric I M) (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t))
     (t : ℝ) (β : M)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I n γ) (hβ : γ t ∈ (chartAt H β).source)
@@ -58,7 +58,7 @@ private lemma chartCoord_covDerivAlong_eq_chartCovDerivAlong_chartRepAtBase
     (trivializationAt E (TangentSpace I) β).continuousLinearMapAt ℝ (γ t)
         (covDerivAlong (I := I) g γ V t)
       = chartCovDerivAlong (I := I) g β γ (chartRepAtBase (I := I) β γ V) t := by
-  have hinv := covDerivAlong_chart_foot_invariance (I := I) hn g γ V t β hγ hβ hV
+  have hinv := covDerivAlong_chart_foot_invariance (I := I) (E := E) hn g γ V t β hγ hβ hV
   rw [← hinv]
   have hmem : γ t ∈ (trivializationAt E (TangentSpace I) β).baseSet := by
     rw [TangentBundle.trivializationAt_baseSet]; exact hβ

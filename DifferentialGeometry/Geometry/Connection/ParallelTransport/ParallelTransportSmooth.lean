@@ -193,7 +193,7 @@ theorem parallelTransport_section_contMDiffOn [I.Boundaryless]
     have hfoot :
         (trivializationAt E (TangentSpace I) α).symmL ℝ (γ s)
             (chartCovDerivAlong (I := I) g α γ Y s) = 0 := by
-      have hinv := covDerivAlong_chart_foot_invariance (I := I) (n := ∞) (by simp) g γ V s α
+      have hinv := covDerivAlong_chart_foot_invariance (I := I) (E := E) (n := ∞) (by simp) g γ V s α
         hγ hs_src hVdiff_s
       rw [hY_def]
       rw [hinv]
@@ -345,7 +345,7 @@ theorem parallelTransport_section_contMDiffOn_Ioo [I.Boundaryless]
       have hfoot :
           (trivializationAt E (TangentSpace I) α).symmL ℝ (γ s)
               (chartCovDerivAlong (I := I) g α γ Y s) = 0 := by
-        have hinv := covDerivAlong_chart_foot_invariance (I := I) (n := ∞) (by simp) g γ V s α
+        have hinv := covDerivAlong_chart_foot_invariance (I := I) (E := E) (n := ∞) (by simp) g γ V s α
           hγ hs_src hVdiff_s
         rw [hY_def]
         rw [hinv]
