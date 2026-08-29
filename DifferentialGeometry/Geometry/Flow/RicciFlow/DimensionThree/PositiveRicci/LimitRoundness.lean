@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Blowup
 import Mathlib.Analysis.InnerProductSpace.PiL2
-import DifferentialGeometry.Geometry.Comparison.BonnetMyers.Headlines
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 import DifferentialGeometry.Geometry.Curvature.PullbackNaturalityCross
 open DifferentialGeometry.Analysis.Spectral

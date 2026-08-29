@@ -1957,7 +1957,9 @@ import DifferentialGeometry.Geometry.Boundary.Orientation
 import DifferentialGeometry.Geometry.Boundary.OutwardNormal
 import DifferentialGeometry.Geometry.Boundary.SecondFundamentalForm
 import DifferentialGeometry.Geometry.Boundary.SurfaceMeasure
-import DifferentialGeometry.Geometry.Comparison.BonnetMyers.Headlines
+import DifferentialGeometry.Geometry.Comparison.BonnetMyers.Compactness
+import DifferentialGeometry.Geometry.Comparison.BonnetMyers.Diameter
+import DifferentialGeometry.Geometry.Comparison.BonnetMyers.FundamentalGroup
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.LengthBound
 import DifferentialGeometry.Geometry.Comparison.BonnetMyers.RicciBound
 import DifferentialGeometry.Geometry.Comparison.CenterOfMass

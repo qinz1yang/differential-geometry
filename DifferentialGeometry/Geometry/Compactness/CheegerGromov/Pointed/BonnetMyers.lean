@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Defs
-import DifferentialGeometry.Geometry.Comparison.BonnetMyers.Headlines
+import DifferentialGeometry.Geometry.Comparison.BonnetMyers.Compactness
 import DifferentialGeometry.Geometry.Metric.TensorInner.TangentNormDiamond
 
 open DifferentialGeometry.Geometry.Curvature
